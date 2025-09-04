@@ -3,7 +3,6 @@
     
     /* Button Styling */
     .dx-button {
-        background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
         padding: 6px 12px !important; /* Reduced button padding */
@@ -297,7 +296,7 @@
       <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNew1")
-                .Text(new JS("formatMessage('Add New e-Invoice Credit Note')"))
+            .Text(new JS("formatMessage('Add New e-Invoice Credit Note')"))
             .Width("100%")
             .Icon("plus")
             .OnClick("addNewRow") // Attach function

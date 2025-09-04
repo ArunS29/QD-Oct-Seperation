@@ -34,10 +34,7 @@
     }
 
     .form-container1 {
-        margin: 15px;
-        width: 99%;
-        padding: 5px;
-        border-radius: 1px;
+        padding: 5px 10px;
     }
 
     .form-container {
@@ -1189,7 +1186,7 @@
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	function dataGridInitialized2(e) {
@@ -1208,22 +1205,22 @@
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "";
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
-		const title = "";
+		const title = "Add New Quotation Status";
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/VAT/SalesPersonMaster`;
-		const title = "";
+		const title = "Sales Person Master";
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = "";
+		const title = "Client Master";
 		openModal(url, title);
 	}
 	function dataGridSelectionChanged3(e) {
@@ -1631,7 +1628,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -1649,7 +1646,7 @@
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "", function () {
+					openModal(url, "Goods and Services", function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2163,7 +2160,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/VATGoodsandService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -2174,7 +2171,7 @@
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "");
+					openModal(url, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -5488,7 +5485,7 @@
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "";
+		const title = "Signatories";
 		openModal(url, title);
 	}
 
@@ -5499,12 +5496,7 @@
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
-		openModal(url, title);
-	}
-	function AddTypeReq() {
-		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	$(function () {

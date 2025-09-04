@@ -132,7 +132,6 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
         width: 100%;
     }
 
@@ -167,7 +166,7 @@
 </div> *@
 
 <!-- Filter/Info Section -->
-<div class="dx-fieldset" id="storeFormValidationGroup">
+<div id="storeFormValidationGroup">
         <div class="form-row">
             @(Html.DevExtreme().TextBox()
                 .ID("StoreName")
@@ -290,7 +289,7 @@
                             });
 
                         })
-                        .Height("60vh")
+                        .Height("68vh")
                         .ColumnAutoWidth(true)
                         .AllowColumnReordering(true)
                         .AllowColumnResizing(true)

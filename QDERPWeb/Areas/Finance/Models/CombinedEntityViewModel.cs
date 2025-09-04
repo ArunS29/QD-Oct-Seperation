@@ -40,7 +40,24 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ClientCategory { get; set; }
         public short ClientCategoryCode { get; set; }
     }
-
+    public class PostAvgCostDto
+    {
+        public string GSCode { get; set; }
+    public DateTime EndDate { get; set; }
+    public long DeliveryNoteSlNo { get; set; }   // use long (or long?)
+    public decimal IssuedUnitPrice { get; set; }
+    }
+    public class ApproveDeliveryNoteDto
+    {
+        public string DeliveryNoteNo { get; set; }
+        public string ApprovedBy { get; set; }
+    }
+    public class PostJournalDto
+    {
+        public string DeliveryNoteNo { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public int DeliveryType { get; set; } 
+    }
     public class VoucherEntryDisplayDTO
     {
         public string VoucherNo { get; set; }
@@ -1241,6 +1258,113 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public int Currency { get; set; }
         public decimal CurrencyRate { get; set; }
     }
+
+
+
+public class InvoiceRequest
+    {
+        public string InvoiceNo { get; set; }
+        public string UniqueInvoiceID { get; set; }
+        public DateTime? InvoiceIssueDate { get; set; }   // yyyy-MM-dd
+        public DateTime? InvoiceIssueTime { get; set; }   // HH:mm:ss
+        public short? InvoiceTypeCode { get; set; }    // e.g. "388"
+        public string InvoiceTransactionCode { get; set; } // e.g. "Standard"
+        public string InvoiceCurrencyCode { get; set; }    // e.g. "SAR"
+        public string TaxCurrencyCode { get; set; }
+
+        public string InvoiceSubTypeCode { get; set; }
+        public string PurchaseOrderNo { get; set; }
+        public string ContractNo { get; set; }
+        public int InvoiceCounterValue { get; set; }
+        public string PreviousInvoiceHash { get; set; }
+
+        public Seller Seller { get; set; }
+        public Buyer Buyer { get; set; }
+
+        public List<InvoiceLine> Items { get; set; } = new();
+        public List<InvoiceTotal> Totals { get; set; } = new();
+        public List<AllowanceCharge> AllowanceCharges { get; set; } = new();
+        public List<PrepaidAdjustment> PrepaidAdjustments { get; set; } = new();
+        public List<VatBreakdown> VatBreakdowns { get; set; } = new();
+    }
+
+    public class Seller
+    {
+        public string VATNumber { get; set; }
+        public string Name { get; set; }
+        public string CRN { get; set; }         // Commercial Registration No
+        public string Address { get; set; }
+        public string AdditionalID { get; set; }
+    }
+
+    public class Buyer
+    {
+        public string VATNumber { get; set; }
+        public string Name { get; set; }
+        public string CRN { get; set; }
+        public string Address { get; set; }
+        public string AdditionalID { get; set; }
+    }
+
+    public class InvoiceLine
+    {
+        public int LineNo { get; set; }
+        public string Description { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal VATAmount { get; set; }
+        public decimal LineTotal { get; set; }
+        public decimal VATRate { get; set; }
+    }
+
+    public class InvoiceTotal
+    {
+        public string Code { get; set; }   // e.g. "1001" for TotalExcludingVAT
+        public decimal Amount { get; set; }
+    }
+
+    public class AllowanceCharge
+    {
+        public string Reason { get; set; }
+        public decimal Amount { get; set; }
+        public bool ChargeIndicator { get; set; } // true=charge, false=allowance
+    }
+
+    public class PrepaidAdjustment
+    {
+        public string Reason { get; set; }
+        public decimal Amount { get; set; }
+    }
+
+    public class VatBreakdown
+    {
+        public decimal Rate { get; set; }
+        public decimal TaxableAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+    }
+
+    public class InvoiceData
+    {
+        public Qry201630EInvoiceToXmlmaster01 Master { get; set; }
+        public List<Qry201636EInvoiceToXmlInvoiceLine> Lines { get; set; }
+        public List<Qry201634EInvoiceToXmlchildLineItemsVatbreakDown02> VatBreakdowns { get; set; }
+        public List<Qry201635EInvoiceToXmlchildLineItemsTotal> Totals { get; set; }
+        public List<Qry201636EInvoiceToXmlAllowanceCharge> AllowanceCharges { get; set; }
+        public Qry90132InvoiceSubmissionStatus SubmissionStatus { get; set; }
+        public List<Qry201642prepaidAdjustmentListforXml02> PrepaidAdjustments { get; set; }
+    }
+
+    public class ZatcaRequestDto
+    {
+        public string InvNo { get; set; }
+        public string ConnectionStatus { get; set; }
+    }
+
+
+
+
+
+
 
 }
 

@@ -254,6 +254,14 @@
         z-index: 9999;
         white-space: nowrap;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 <div class="WorkFlow">
     <div class="workflow-container">
@@ -346,59 +354,60 @@
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
-            .ID("btnPrint1")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .Width(132)
-            .ElementAttr(new { @class = "bold-button" })
-            .DropDownOptions(options => options.Width(230))
-            .ShowArrowIcon(false)
-            .Items(items =>
-            {
-                items.Add()
-                    .Text("Print Regular TAX Invoice")
+                .ID("btnPrint1")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .Width(132)
+                .ElementAttr(new { @class = "bold-button" })
+                .DropDownOptions(options => options.Width(230))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Regular TAX Invoice')"))
                     .Icon("print")
                     .Option("color", "#FF7043"); // Orange
 
-                items.Add()
-                    .Text("Print Simplified TAX Invoice")
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Simplified TAX Invoice')"))
                     .Icon("file")
                     .Option("color", "#00ACC1"); // Cyan
 
-                items.Add()
-                    .Text("Additional Formats")
+                    items.Add()
+                    .Text(new JS("formatMessage('Additional Formats')"))
                     .Icon("folder")
                     .Option("color", "#AB47BC"); // Purple
 
-                items.Add()
-                    .Text("Edit Sales Voucher")
+                    items.Add()
+                    .Text(new JS("formatMessage('Edit Sales Voucher')"))
                     .Icon("edit")
                     .Option("color", "#FBBC05") // Yellow
                     .OnClick("showSalesVoucherEditPopup");
 
-                items.Add()
-                    .Text("Upload Items from Excel")
+                    items.Add()
+                    .Text(new JS("formatMessage('Upload Items from Excel')"))
                     .Icon("upload")
                     .Option("color", "#EA4335") // Red
                     .OnClick("navigateInventoryListtoUpload");
 
-                items.Add()
-                    .Text("Profit On Sale")
+                    items.Add()
+                    .Text(new JS("formatMessage('Profit On Sale')"))
                     .Icon("chart")
                     .Option("color", "#34A853") // Green
                     .OnClick("navigateToLoss");
 
-                items.Add()
-                    .Text("Invoice Cost Posting")
+                    items.Add()
+                    .Text(new JS("formatMessage('Invoice Cost Posting')"))
                     .Icon("money")
                     .Option("color", "#4285F4") // Blue
                     .OnClick("navigateToInvoiceCostPosting");
 
-                items.Add()
-                    .Text("Advance / Prepayment Adjustments")
+                    items.Add()
+                    .Text(new JS("formatMessage('Advance / Prepayment Adjustments')"))
                     .Icon("wallet")
                     .Option("color", "#AB47BC"); // Purple
-            })
+                })
+                
             .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
                     <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
@@ -412,7 +421,9 @@
             </text>)
             .OnItemClick("addPrintButton_click")
             )
-    </div>
+    </div> 
+   
+
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnVerify")
@@ -521,7 +532,28 @@
 
 
 <script type="text/javascript">
+       $.get("/api/VoucherMaster/GetDefaultCurrencyDecimals", function (res) {
+    if (res && res.ShowVatButtons) { // <-- Fix property name
+        var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+        var items = dropdown.option("items");
 
+        // Insert after the first two buttons
+        items.splice(2, 0,
+            {
+                text: "Print VAT Invoice (English Only)",
+                icon: "print",
+                color: "#009688" // Teal
+            },
+            {
+                text: "Print VAT Invoice (Foreign Currency)",
+                icon: "money",
+                color: "#3F51B5" // Indigo
+            }
+        );
+
+        dropdown.option("items", items);
+    }
+});
  
      let isPosted=null;
     function moveRow(direction) {
@@ -1556,6 +1588,12 @@
                 case "Print Tax Invoice - (Foreign Currency)":
                     reportName = "Foreigncurrency1";
                     break;
+                 case "Print VAT Invoice (Foreign Currency)":
+                     reportName = "PrintVATInvoiceForeignCurrency";
+                    break;
+                 case "Print VAT Invoice (English Only)":
+                    reportName = "PrintVATInvoiceEnglishOnly";
+                    break;
                 case "Print Regular Tax Invoice - Without Signatories (Format 05)":
                     reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
                     break;
@@ -1680,6 +1718,8 @@
                 "Preview Invoices in (Foreign Currency)",
                 "Preview Invoices in Foreign Currency(English)",
                 "Preview Invoice(English)",
+                 "Print VAT Invoice (English Only)",
+                 "Print VAT Invoice (Foreign Currency)",
                 "Preview Proforma Invoice(NewFormat)",
                     "Preview Invoice",
                     "Preview Invoices in -with discount",
@@ -1967,6 +2007,52 @@
     }
 
 
+    // Attachment Count
+    //1. Button Modify in btn-attach
+    //2. Get Update the count of button for Attachment
+
+    function updateAttachButtonCount(buttonSelector, count) {
+        var btn = $(buttonSelector);
+        var btnInstance = btn.dxButton("instance");
+        if (!btnInstance) return;
+
+        var originalText = btnInstance.option("text");
+        var color = count > 0 ? "green" : "red";
+
+        btnInstance.option({
+            template: function() {
+                // Icon element
+                var iconElement = $("<span>")
+                .addClass("dx-icon dx-icon-attach")
+                .addClass(count > 0 ? "icon-green" : "icon-red")
+                .css({
+                    "font-size": "15px",
+                    "vertical-align": "middle",
+                    "margin-right": "4px"
+                })[0];
+
+                // Create fragment
+                var fragment = document.createDocumentFragment();
+                fragment.appendChild(iconElement);
+
+                // Append count only if > 0
+                if (count > 0) {
+                    var countSpan = document.createElement("span");
+                    countSpan.style.color = color;
+                    countSpan.style.fontWeight = "bold";
+                    countSpan.style.fontSize = "15px";
+                    countSpan.style.marginRight = "2px";
+                    countSpan.textContent = count;
+                    fragment.appendChild(countSpan);
+                }
+
+                // Append original text
+                fragment.appendChild(document.createTextNode(originalText));
+
+                return fragment;
+            }
+        });
+    }
     
   
 </script>

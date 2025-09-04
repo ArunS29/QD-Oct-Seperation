@@ -40,6 +40,10 @@
 	border-radius: 20px;
 	}
 
+	center-header{
+		text-align:center;
+	}
+
 	.slider:before {
 	position: absolute;
 	content: "";
@@ -398,11 +402,39 @@
 		font-family: Arial, sans-serif;
 	}
 
-
+	
 
 		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
+			.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+
+    text-align: center !important;
+
+}
+
+    .header-wrap {
+
+        white-space: normal !important; /* Enable word wrap */
+
+        text-align: center !important; /* Center align text */
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-weight: bold;
+
+    }
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+
+        text-align: center !important;
+
+    }
+ 
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -542,7 +574,7 @@
 														.ID("ledgerAccountPopup")
 														.Width("80%")
 														.Height("85%")
-														.Title("Add Ledger Account")
+													    .Title(new JS("formatMessage('Add Ledger Account')"))
 														.ShowTitle(true)
 														.CloseOnOutsideClick(true)
 														.Visible(false)
@@ -581,6 +613,7 @@
                                 .DisplayFormat("dd-MMM-yyyy")
                                 .Value(DateTime.Now)
                                 .LabelMode(EditorLabelMode.Floating)
+								//.OnValueChanged("onVoucherDateChanged")
                             )
                         </div>
               @*           <div class="col-6">
@@ -997,7 +1030,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Company Branch / Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDivision")
 																						.ShowClearButton(true)
@@ -1005,8 +1038,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("BranchCode")
-																						.DisplayExpr("BranchName")
+																						.ValueExpr("CompanyId")
+																						.DisplayExpr("CompanyName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1019,7 +1052,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDebitNoteDivision")
 																						.ShowClearButton(true)
@@ -1027,8 +1060,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("CompanyId")
-																						.DisplayExpr("CompanyName")
+																						.ValueExpr("BranchCode")
+																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1458,8 +1491,8 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit ID')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Center);
 
 
 										})
@@ -1484,7 +1517,7 @@
 											.ShowBorders(true)
 											.SearchPanel(sp => sp.HighlightSearchText(true))
 											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-											.OnSelectionChanged("dataGridSupplierNameSelectionChanged")
+											.OnSelectionChanged("dataGridSupplierNameSelectionChangedAr")
 											.OnInitialized("dataGridSupplierNameInitialized")
 											// .HeaderFilter(p => p.Visible(true))
 											.ShowBorders(true)
@@ -1715,10 +1748,10 @@
 														.ID("division-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDivision")
+															.LoadAction("GetDebitNoteDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("BranchCode")
+															.Key("CompanyId")
 
 													)
 													.WordWrapEnabled(true)
@@ -1747,8 +1780,9 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
+															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														
 													})
 
 												)
@@ -1811,11 +1845,9 @@
 														.Columns(columns =>
 
 														{
-
-															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center).Width(100);
-
-															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
-
+														
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
+														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
 
 														})
 
@@ -1957,10 +1989,10 @@
 														.ID("debitnotedivision-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDebitNoteDivision")
+															.LoadAction("GetDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("CompanyId")
+															.Key("BranchCode")
 
 													)
 													.WordWrapEnabled(true)
@@ -1989,8 +2021,8 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Branch Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                                        columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Center);
 													})
 
 												)
@@ -2067,6 +2099,7 @@
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function () {
+					getDocumentCount();
 				}
 
 			});
@@ -2152,7 +2185,7 @@
 											{
 												btnPostToLedgerdisableEditing();
 											}
-
+											getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -2244,70 +2277,12 @@
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
-									// Bind Attachment After Amend
-
-									const invoiceNo = InvNo;
-									var menuType = "vat";
-
-									
-									var formType = "VATPurchase Bill";
-									// 1. Get Documents
-									const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-									const documents = await getDocRes.json();
-									if (!documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-													return;
-									}
-									// 2. Generate DocumentNo to each documents
-									const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-									const newDocNos = await docNoRes.json();
-									if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-													return;
-									}
-									// 3. Reupload each document to AddDocumentsEntry
-									const generateNo = $("#DebitNoteNo").dxTextBox("instance").option("value");
-
-									const PostVoucherType = "e-Invoice DebitNote";
-									const isMaster = false;
-									const PostMenuType = 'vat';
-									for (let i = 0; i < documents.length; i++) {
-										const doc = documents[i];
-										const newDocNo = newDocNos[i];
-
-										try {
-											const fileResponse = await fetch(doc.FileUrl);
-											const blob = await fileResponse.blob();
-
-											const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-											const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-											const formData = new FormData();
-											formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-											formData.append("DocumentNo", newDocNo);
-											formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-											formData.append("DocumentType", doc.DocumentType ?? "1");
-											formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-											formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-											formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-											formData.append("LedgerNo", generateNo); // new folder id
-
-
-												const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-												method: "POST",
-												body: formData
-											});
-
-											const uploadResult = await uploadRes.json();
-											console.log("Uploaded document:", uploadResult);
-										} catch (uploadError) {
-														console.error("Error re-uploading document:", uploadError);
-										}
-									}
+									getDocumentCount();
 
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+										getDocumentCount();
 								}
 							});
 						} else {
@@ -2356,7 +2331,7 @@
 
 								dataField: "ItemCode",
 
-								caption: "Item Code",
+								caption: formatMessage('Item Code'),
 
 								width: 200
 
@@ -2365,8 +2340,8 @@
 						  {
 
 				dataField: "DetailedDescription",
-
-				caption: "Description",
+				
+				caption:formatMessage('Description'),
 
 				width: 550,
 
@@ -2713,7 +2688,7 @@
 
 							dataField: "UnitRateMethodDesc",
 
-							caption: "Unit Rate Method",
+							caption: formatMessage('Unit Rate Method'),
 
 							width: 200,
 
@@ -2837,9 +2812,9 @@
 							}
 
 						},
-						{ dataField: "UnitsToDebited", caption: "Units To Bill", width: 150,format: getDecimalFormat(currencyDecimals),alignment: "right" },
+						{ dataField: "UnitsToDebited", caption: formatMessage('Units To Bill'), width: 150,format: getDecimalFormat(currencyDecimals),alignment: "right" },
 
-						{ dataField: "QuantityDebited", caption: "Qty", width: 150,alignment: "right",
+						{ dataField: "QuantityDebited", caption: formatMessage('Qty'), width: 150,alignment: "right",
 						editorOptions: {
                             onInput: function(e) {
                             let maxLength = 8; // Example: allow max 5 digits
@@ -2850,7 +2825,7 @@
                         }
                     } },
 
-						{ dataField: "UnitRate", caption: "Unit Price", width: 150,format: getDecimalFormat(currencyDecimals),
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),
 						editorOptions: {
 							onInput: function(e) {
 							let maxLength = 8; // Example: allow max 5 digits
@@ -2867,13 +2842,13 @@
 
 						// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
-						{ dataField: "CalcLineAmount", caption: "Amount", width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals) },
+						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals) },
 
 						//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 						{
 			dataField: "VATPercentage",
-			caption: "VAT Description",
+			caption: formatMessage('VAT Description'),
 			width: 150,
 			editCellTemplate: function(cellElement, cellInfo) {
 				getTaxSlabData().done(function (dropdownData) {
@@ -2925,7 +2900,7 @@
 
 						// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
 
-						{ dataField: "CalcTaxAmount", caption: "VAT", width: 150,format: getDecimalFormat(currencyDecimals) },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,format: getDecimalFormat(currencyDecimals) },
 
 						// { dataField: "LineTotal", caption: "Total", width: 150 },
 
@@ -2995,7 +2970,7 @@
 
 							dataField: "ItemCode",
 
-							caption: "Item Code",
+							caption: formatMessage('Item Code'),
 
 							cssClass: "center-header",
 
@@ -3007,7 +2982,7 @@
 
 			dataField: "DetailedDescription",
 
-			caption: "Description",
+			caption: formatMessage('Description'),
 
 			cssClass: "center-header",
 
@@ -3536,7 +3511,7 @@
 
 						dataField: "DescriptionDetails",
 
-						caption: "Unit Rate Method",
+						caption: formatMessage('Unit Rate Method'),
 
 						cssClass: "center-header",
 
@@ -3663,8 +3638,8 @@
 
 					},
 
-						{ dataField: "UnitsToDebited", caption: "Units To Bill",cssClass: "center-header", width: 150 },
-						{ dataField: "QuantityDebited", caption: "Qty",cssClass: "center-header", width: 150,				 
+						{ dataField: "UnitsToDebited", caption: formatMessage('Units To Bill'),cssClass: "center-header", width: 150 },
+						{ dataField: "QuantityDebited", caption: formatMessage('Qty'),cssClass: "center-header", width: 150,				 
 						editorOptions: {
 	               		onInput: function(e) {
 	               		let maxLength = 8; // Example: allow max 5 digits
@@ -3675,7 +3650,7 @@
 	               	}
 	               } },
 
-						{ dataField: "UnitRate", caption: "Unit Price", cssClass: "center-header",width: 150,		
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), cssClass: "center-header",width: 150,		
 						editorOptions: {
 	                      		onInput: function(e) {
 	                      		let maxLength = 8; // Example: allow max 5 digits
@@ -3686,13 +3661,13 @@
 	                      	}
 	                      } },
 
-					{ dataField: "CalcLineAmount", caption: "Amount",cssClass: "center-header", width: 150,allowEditing: false },
+					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'),cssClass: "center-header", width: 150,allowEditing: false },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
 					{
 		dataField: "VATPercentage",
-		caption: "VAT Description",
+		caption: formatMessage('VAT Description'),
 		cssClass: "center-header",
 		width: 150,
 		editCellTemplate: function(cellElement, cellInfo) {
@@ -3761,7 +3736,7 @@
 		}
 	},
 
-					{ dataField: "CalcTaxAmount", caption: "VAT", cssClass: "center-header",width: 150 },
+					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
 
 					 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
 
@@ -4150,6 +4125,35 @@
 						supplierid=selectedRowData[0].AccountId;
 
 
+
+				} else {
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						return;
+				}
+			}
+
+		}
+		}
+
+		
+		function dataGridSupplierNameSelectionChangedAr(e) {
+			const selectedKey = e.selectedRowKeys[0];
+			const ddbInstance = $("#ddlSupplierNameArabic").dxDropDownBox("instance");
+			supplierid = selectedKey;
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+				if(IsCurrent!="true" && IsAmend !="true") {
+
+					var selectedRowData = $("#ddlSupplierNameArabic-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					// Get ReferenceNo from selected row
+					if (selectedRowData.length > 0) {
+
+						@* accheadid=selectedRowData[0].AccountHead;
+						supplierid=selectedRowData[0].AccountId; *@
 
 				} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -5661,6 +5665,7 @@ function SaveInvoiceDetails() {
 					"Debit Note Details updated Successfully.","success",2000
 				);
 				button.option("disabled", false);
+					getDocumentCount();
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6284,66 +6289,9 @@ if(clientnameValidation.isValid)
 						
 						if(response.IsDirect == true)
 						{
-								const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
-								const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
-								var menuType = "vat";
-
-								var formType ="e-Invoice DebitNote";
-								// 1. Get Documents
-								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-								const documents = await getDocRes.json();
-								if (!documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-												return;
-								}
-								// 2. Generate DocumentNo to each documents
-								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-								const newDocNos = await docNoRes.json();
-								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-												return;
-								}
-								// 3. Reupload each document to AddDocumentsEntry
-								const generateNo = debitNoteNo;
-
-								const PostVoucherType = "journal";
-								const isMaster = false;
-								const PostMenuType = 'finance';
-								for (let i = 0; i < documents.length; i++) {
-									const doc = documents[i];
-									const newDocNo = newDocNos[i];
-
-									try {
-										const fileResponse = await fetch(doc.FileUrl);
-										const blob = await fileResponse.blob();
-
-										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-										const formData = new FormData();
-										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-										formData.append("DocumentNo", newDocNo);
-										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-										formData.append("DocumentType", doc.DocumentType ?? "1");
-										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-										formData.append("LedgerNo", generateNo); // new folder id
-
-
-											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-											method: "POST",
-											body: formData
-										});
-
-										const uploadResult = await uploadRes.json();
-										console.log("Uploaded document:", uploadResult);
-									} catch (uploadError) {
-													console.error("Error re-uploading document:", uploadError);
-									}
-								}
+								
 							DevExpress.ui.notify(
-								"VAT Invoice has been posted to the Accounting Books With Documents.","success",2000
+								"VAT Invoice has been posted to the Accounting Books.","success",2000
 							
 							);
 						}
@@ -6628,6 +6576,7 @@ if(clientnameValidation.isValid)
 							const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
 							if (invoiceBox) {
 								invoiceBox.option("value", data || "");
+								getDocumentCount();
 							} else {
 								console.warn("Invoice TextBox not initialized.");
 							}
@@ -6901,6 +6850,7 @@ $(function () {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -6955,6 +6905,7 @@ $(function () {
 								}
 							});
 						}
+						grid.saveEditData();
 					}
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
@@ -7029,7 +6980,7 @@ $(function () {
 	$.get("/api/VATModule/GetCurrencyDecimals")
 		.done(function (decimals) {
 			currencyDecimals = decimals || 2;
-			 applyDynamicFormat(currencyDecimals);
+			// applyDynamicFormat(currencyDecimals);
 		})
 		.fail(function () {
 			DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
@@ -7058,5 +7009,39 @@ $(function () {
 		});
 	}
 
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+		const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
+        const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
+        var formType ="e-Invoice DebitNote";
+        var menuType = "vat";
+		const response = await fetch(`/api/VATModule/GetInvoiceNoFromDebitNote?debitNoteNo=${encodeURIComponent(debitNoteNo)}`);
+        var invoiceNofromPurchase = await response.text(); // Get Invoice No
+        console.log(invoiceNofromPurchase);
+        var invoiceRes = null, invoiceData = null;
+        let folderId2 = "";
+        if(invoiceNofromPurchase?.trim()) {
+            invoiceRes = await fetch(`/api/VATModule/GetPONosFromPurchaseInvoice?purchaseInvoiceNo=${encodeURIComponent(invoiceNofromPurchase)}`);
+            invoiceData = await invoiceRes.json();
+            if (invoiceData) {
+                folderId2 = [
+                    invoiceData.PurchaseVoucherNo,
+                    invoiceData.MaterialReceiptNo,
+                    invoiceData.PurchaseOrderNo, 
+                ]
+                .filter(Boolean)   //remove null/empty
+                .join(",");
+            }
+        }
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+		updateAttachButtonCount("#btnAttach", count);
+	}
 
 </script>

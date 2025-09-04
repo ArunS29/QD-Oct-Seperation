@@ -387,7 +387,33 @@
 		background-color: #f5f5f5;
 		box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 	}
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
 
+    text-align: center !important;
+
+}
+
+    .header-wrap {
+
+        white-space: normal !important; /* Enable word wrap */
+
+        text-align: center !important; /* Center align text */
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-weight: bold;
+
+    }
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+
+        text-align: center !important;
+
+    }
 		.deduction-card h5 {
 			margin-top: 0;
 			font-weight: 600;
@@ -659,7 +685,7 @@
 														.ID("ledgerAccountPopup")
 														.Width("80%")
 														.Height("85%")
-														.Title("Add Ledger Account")
+														.Title(new JS("formatMessage('Add Ledger Account')"))
 														.ShowTitle(true)
 														.CloseOnOutsideClick(true)
 														.Visible(false)
@@ -1059,7 +1085,7 @@
 													.Controller("VATModule")
 													.LoadAction("GetRevenueAccounts")
 													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("IncomeLedger")
+													.Key("AccountId")
 													)
 												.ValidationRules(rules =>
 												{
@@ -1074,8 +1100,8 @@
 													.OpenOnFieldClick(false)
 													.ValueChangeEvent("input")
 													.HoverStateEnabled(true)
-													.ValueExpr("IncomeLedger")
-													.DisplayExpr("AccountGroup")
+													.ValueExpr("AccountId")
+													.DisplayExpr("IncomeLedger")
 													.OnInput("dropDownBoxOnInput")
 													.OnOpened("onOpened")
 													//.Width(650)
@@ -1139,7 +1165,7 @@
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.InputAttr("aria-label", "Date")
-														.Label(new JS("formatMessage('Invoice Submitted On:')"))
+														.Label(new JS("formatMessage('Supplier Invoice Received On:')"))
 														.LabelMode(EditorLabelMode.Floating)
 														.ShowClearButton(true)
 														.Value(DateTime.Now)
@@ -1227,7 +1253,7 @@
 
 
 
-						<h5>Deductions:Advance / Retention</h5>
+						<h5 id="deductionadvancepurchase"></h5>
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
@@ -1528,7 +1554,7 @@
 																			.DisplayExpr("SupplierNameArabic")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
+																			.OpenOnFieldClick(true)
 																			.ValueChangeEvent("input")
 																			.HoverStateEnabled(true)
 																			.DropDownOptions(o => o.Width(600))
@@ -1588,7 +1614,7 @@
 										.Caption(new JS("formatMessage('Voucher Entry No')"))
 										.Visible(false);
 
-											columns.Add().DataField("SNo").Caption("SNo").Width(200);
+											columns.Add().DataField("SNo").Caption(new JS("formatMessage('SNo')")).Width(200);
 
 											columns.Add().DataField("ItemCode")
 										.Caption(new JS("formatMessage('Item Code')"))
@@ -1843,7 +1869,10 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("PurchaseBillNo").Caption("Purchase Bill No").Alignment(HorizontalAlignment.Left);
+					columns.Add().DataField("PurchaseBillNo")
+					.Caption(new JS("formatMessage('Purchase Bill No')"))
+					.Alignment(HorizontalAlignment.Left);
+
 					})
 					)
 		}
@@ -1926,11 +1955,26 @@
 						.Height(400)
 						.Columns(columns =>
 						{
-						columns.Add().DataField("AccountId").Caption("Supplier Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption("AccountHead").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHeadArabic").Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("SupplierVatno").Caption("SupplierVatno").Alignment(HorizontalAlignment.Center);
-							columns.Add().DataField("RecordStatus").Caption("RecordStatus").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountId")
+						.Caption(new JS("formatMessage('Supplier Code')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("AccountHead")
+						.Caption(new JS("formatMessage('Account Head')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("AccountHeadArabic")
+						.Caption(new JS("formatMessage('Account Head Arabic')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("SupplierVatno")
+						.Caption(new JS("formatMessage('Supplier VAT No')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("RecordStatus")
+						.Caption(new JS("formatMessage('Record Status')"))
+						.Alignment(HorizontalAlignment.Center);
+
 							columns.Add().DataField("IsLedgerObselete")
 						.Caption(new JS("formatMessage('Is Ledger Obselete')"))
 						.Alignment(HorizontalAlignment.Center)
@@ -1986,7 +2030,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SupplierName").Caption("VAT No");
+						columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('VAT No')"));
 
 					})
 					)
@@ -2059,8 +2103,14 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("BuyerIdtypeName")
+						.Caption(new JS("formatMessage('Branch Code')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("BuyerOtherIdtype")
+						.Caption(new JS("formatMessage('Other ID Type')"))
+						.Alignment(HorizontalAlignment.Center);
+
 					})
 					.OnSelectionChanged("dataGridSelectionChanged")
 					.OnInitialized("dataGridInitialized")
@@ -2220,8 +2270,12 @@
 	   )
 				.Columns(columns =>
 				{
-					columns.Add().DataField("CompanyId").Visible(false); // ✅ Hide key field
-					columns.Add().DataField("CompanyName").Caption("Company Name");
+					columns.Add().DataField("CompanyId")
+                    .Visible(false); // ✅ Hide key field
+
+                    columns.Add().DataField("CompanyName")
+                     .Caption(new JS("formatMessage('Company Name')"));
+
 				})
 				.OnSelectionChanged(@<text>
 	function(e) {
@@ -2245,7 +2299,7 @@
 															.LoadAction("GetRevenueAccounts")
 														.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
-													.Key("IncomeLedger")
+													.Key("AccountId")
 
 														)
 
@@ -2382,7 +2436,7 @@
 											.Columns(columns =>
 											{
 												columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
@@ -3110,6 +3164,7 @@
 						InvoiceOPenToSave(data);
 					if (invoiceBox) {
 						invoiceBox.option("value", data || "");
+						getDocumentCount();
 					}
 				},
 				error: function (xhr, status, error) {
@@ -3273,7 +3328,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 	                                        {
 	                                        	btnPostToLedgerdisableEditing();
 	                                        }
-
+											getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -3294,9 +3349,11 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
+									getDocumentCount();
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+									getDocumentCount();
 								}
 							});
 						} else {
@@ -3320,7 +3377,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			keyExpr: "SNo",
 			columns: [
 						{ dataField: "PurchaseChildSlNo", caption: "PurchaseChildSlNo", width: 100, allowEditing: false, visible: false },
-				{ dataField: "PurchaseChildSlNo", caption: "SNo", width: 100, allowEditing: false },
+				{ dataField: "PurchaseChildSlNo", caption: formatMessage('SNo'), width: 100, allowEditing: false },
 				{ dataField: "ItemCode", caption: formatMessage('Item Code'), width: 200,allowEditing: false },
 				{
 					dataField: "DetailedDescription",
@@ -3560,7 +3617,6 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							}
 						}
 					}},
-				 { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals)  },
 				{ dataField: "CalcLineDiscount", caption: formatMessage('Discount'), width: 150,format: getDecimalFormat(currencyDecimals), 
                 editorOptions: {
 					format: getDecimalFormat(currencyDecimals), 
@@ -3755,7 +3811,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 					   dataField: "SNo",
 
-					   caption: "SNo",
+					   caption: formatMessage('SNo'),
 					
 					   width: 100,
 
@@ -4106,8 +4162,6 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
                             }
                         }
                     } },
-
-				   { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 				   { dataField: "CalcLineDiscount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header",
 				   editorOptions: {
@@ -6267,7 +6321,8 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					PurchaseOrderDate: $("#OrderDate").dxDateBox("instance").option("value") || null, 
 					PurchaseBillDate: $("#OrderDate").dxDateBox("instance").option("value") || null,
 					MaterialReceiptNo: $("#MaterialReceipt").dxTextBox("instance").option("value") || null,      
-				    PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null,      
+				    PurchaseDeliveryDate: $("#SupplyDates").dxDateBox("instance").option("value") || null, 
+					PurchaseLedgerAccountNo: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,  
 
 					// Second Card (Right side)
 					SupplierCode: accheadid || null,                                                            
@@ -6379,6 +6434,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						"Purchase Invoice Details updated Successfully.","success",2000
 					);
 					button.option("disabled", false);
+					getDocumentCount();
 						}
 						// error: function (xhr) {
 						// 	DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6388,6 +6444,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 					button.option("disabled", false);
+						getDocumentCount();
 				}
 			});
 			}
@@ -6542,6 +6599,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							
 						);
 button.option("disabled", false);
+						getDocumentCount();
 						//history.back();
 
                           const url = `/${tenantName}/VAT/VATPurchaseMasterView`;
@@ -6557,6 +6615,7 @@ button.option("disabled", false);
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						getDocumentCount();
 					}
 				});
 				}
@@ -7039,67 +7098,9 @@ if(clientnameValidation.isValid)
 							if(response.IsDirect == true)
 							{
 								
-								// attachment bind to sales in finance with posting
-
-								const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-								const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-								var menuType = "vat";
-								var formType ="VATPurchase Bill";
-								// 1. Get Documents
-								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-								const documents = await getDocRes.json();
-								if (!documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-												return;
-								}
-								// 2. Generate DocumentNo to each documents
-								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-								const newDocNos = await docNoRes.json();
-								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-												return;
-								}
-								// 3. Reupload each document to AddDocumentsEntry
-								const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-								const PostVoucherType = "purchase";
-								const isMaster = false;
-								const PostMenuType = 'finance';
-								for (let i = 0; i < documents.length; i++) {
-									const doc = documents[i];
-									const newDocNo = newDocNos[i];
-
-									try {
-										const fileResponse = await fetch(doc.FileUrl);
-										const blob = await fileResponse.blob();
-
-										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-										const formData = new FormData();
-										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-										formData.append("DocumentNo", newDocNo);
-										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-										formData.append("DocumentType", doc.DocumentType ?? "1");
-										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-										formData.append("LedgerNo", generateNo); // new folder id
-
-
-											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-											method: "POST",
-											body: formData
-										});
-
-										const uploadResult = await uploadRes.json();
-										console.log("Uploaded document:", uploadResult);
-									} catch (uploadError) {
-													console.error("Error re-uploading document:", uploadError);
-									}
-	}
+								
 								DevExpress.ui.dialog.alert(
-									"VAT Invoice has been posted to the Accounting Books With Attachments.",
+									"VAT Invoice has been posted to the Accounting Books.",
 									"Invoice Posted Successfully."
 								)
 							}
@@ -7349,30 +7350,28 @@ if(clientnameValidation.isValid)
 	}
 
 
-
-
 				function onVoucherDateChanged(e) {
       	 if(IsCurrent!="true")
 			{
 		const newDate = new Date(e.value);
 		if (!newDate) return;
-
-		const formattedNewDate = newDate.toISOString().split("T")[0];
-		const cutoffDate = new Date("2021-12-31");
-		const currentDate = new Date();
-		const formattedCurrentDate = currentDate.toISOString().split("T")[0];
-
-		const oldDateString = $("#OldVoucherDate").val();
-		const oldDate = new Date(oldDateString);
 		debugger;
-		// Step 1: Check cutoff date
-		if (newDate < cutoffDate) {
-			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+		const formattedNewDate = newDate.toISOString().split("T")[0];
+		// const cutoffDate = new Date("2021-12-31");
+		// const currentDate = new Date();
+		// const formattedCurrentDate = currentDate.toISOString().split("T")[0];
 
-			// Reset to current date
-			$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
-			return;
-		}
+		const oldDateString = $("#InvoiceDate").val();
+		const oldDate = new Date(oldDateString);
+		// debugger;
+		// // Step 1: Check cutoff date
+		// if (newDate < cutoffDate) {
+		// 	DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+		// 	// Reset to current date
+		// 	$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
+		// 	return;
+		// }
 
 		// Step 2: Check if year has changed
 		if (newDate.getFullYear() !== oldDate.getFullYear()) {
@@ -7381,12 +7380,12 @@ if(clientnameValidation.isValid)
 				if (dialogResult) {
 					// Yes: Call backend to get new Voucher No
 					$.ajax({
-						url: '/Voucher/GetNewVoucherNumber', // Controller endpoint
+						url: 'api/VATModule/GetNewVoucherNumber', // Controller endpoint
 						type: 'POST',
 						data: { date: formattedNewDate },
 						success: function (newVoucherNo) {
 							$("#VoucherNo").val(newVoucherNo); // Update voucher number
-							$("#OldVoucherDate").val(formattedNewDate); // Update stored old date
+							$("#InvoiceDate").val(formattedNewDate); // Update stored old date
 							DevExpress.ui.notify("Voucher Number has been updated.", "success", 2000);
 						},
 						error: function () {
@@ -7401,30 +7400,6 @@ if(clientnameValidation.isValid)
 		}
 	  }
 	}
-
-	// 	 function validateSupplierInvoiceNo(e) {
-	// 	const value = e.value;
-	// 	let isDuplicate = false;
-
-	// 	const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
-	// 	const dataSource = dropDown.getDataSource();
-
-	// 	// Get all loaded items and check for duplicates
-	// 	const items = dataSource.items();
-
-	// 	if (items && items.length) {
-	// 		isDuplicate = items.some(item => item.InvoiceNo === value);
-	// 	}
-
-	// 	if (isDuplicate) {
-	// 		e.rule.message = "Supplier Invoice is already available in the system, Please review again.";
-	// 		return false;
-	// 	}
-
-	// 	return true;
-	// }
-
-
 			function onSupplierInvoiceValueChanged(e) {
 		const newValue = e.value;
 		const ddbInstance = e.component;
@@ -7453,8 +7428,6 @@ if(clientnameValidation.isValid)
 			});
 		}
 	}
-
-
 
 	  $(function () {
 		  
@@ -7678,29 +7651,6 @@ if(clientnameValidation.isValid)
 			}
 		});
 	}
-
-
-		// function disableEditing() {
-		// 	// Disable all input fields and buttons except for specific ones
-		// 	$('input, select, textarea').prop('disabled', true);
-		// 	
-
-		// 		$('.dx-button','.dx-dropdownbutton').each(function () {
-		// 			const allowedButtons = ['btnMoveDown','btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint2','btnBack'];
-		// 		if (!allowedButtons.includes($(this).attr('id'))) {
-		// 			$(this).dxButton('option', 'disabled', true);
-		// 		}
-		// 	});
-
-
-		// // Disable DataGrid Editing and Deleting
-		// var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		// if (dataGrid) {
-		// 	dataGrid.option("editing.allowUpdating", false);
-		// 	dataGrid.option("editing.allowDeleting", false);
-		// }
-
-		// }
 
 				function disableEditing() {
 				// Disable all input fields and buttons except for specific ones
@@ -8005,6 +7955,7 @@ if(clientnameValidation.isValid)
 
 				if (action === "add") {
 					grid.addRow();
+					grid.saveEditData();
 				}
 				else if (action === "delete") {
 					if (selectedRowKey !== null) {
@@ -8060,6 +8011,7 @@ if(clientnameValidation.isValid)
 								});
 							}
 						}
+						grid.saveEditData();
 					} else {
 						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 					}
@@ -8067,7 +8019,7 @@ if(clientnameValidation.isValid)
 				else if (action === "deleteAll") {
 					if (selectedRowKey !== null) {
 						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-						if (rowIndex >= 0) {
+						// if (rowIndex >= 0) {
 							const rowData = grid.getDataSource().items()[rowIndex];
 							const { InvoiceNo } = rowData;
 
@@ -8119,9 +8071,10 @@ if(clientnameValidation.isValid)
 								});
 							}
 						}
-					} else {
-						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-					}
+						grid.saveEditData();
+					// } else {
+					// 	DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+					// }
 				}
 
 				$("#contextMenu").hide();
@@ -8206,10 +8159,6 @@ if(clientnameValidation.isValid)
 				}
 			});
 		}
-
-
-
-
 			function syncWorkflowFromFields() {
 				const status = getWorkflowStatusFromFields();
 				updateWorkflowVisual(status);
@@ -8279,13 +8228,13 @@ if(clientnameValidation.isValid)
 			function CurrencyClick() {
 
 				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-				let title = "Currency Master";
+				let title = " ";
 				openModal(url, title);
 	    }
 		function CurrencySClick() {
 
 				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-					let title = "Currency Master";
+					let title = " ";
 				openModal(url, title);
 		}
 
@@ -8325,7 +8274,193 @@ function formatSummaryValue(value) {
     });
 }
 
+$(function () {
+		$("#deductionadvancepurchase").text(formatMessage("Deductions:Advance / Retention"));
+	});
+// Attachment Count
+//1. Get Document Count from Grid Load in Ledger Documents
+function setAttachCount(count) {
+	updateAttachButtonCount("#btnAttach", count);
+}
+//2. Get Document Count
+async function getDocumentCount() {
 
+	const purchaseNoBox = $("#InvoiceNo").dxTextBox("instance");
+    const purchaseNo = purchaseNoBox ? purchaseNoBox.option("value") : null;
+    var formType ="VATPurchase Bill";
+    var menuType = "vat";
+	let folderId2 = "";
+	const invoiceRes = await fetch(`/api/VATModule/GetPONosFromPurchaseInvoice?purchaseInvoiceNo=${encodeURIComponent(invoiceNofromPurchase)}`);
+	const invoiceData = await invoiceRes.json();
+	if (invoiceData) {
+		folderId2 = [
+			invoiceData.PurchaseVoucherNo,
+			invoiceData.MaterialReceiptNo,
+			invoiceData.PurchaseOrderNo,
+		]
+		.filter(Boolean)   //remove null/empty
+		.join(",");
+	}
+	const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+	const docs = await res.json();
+	const count = docs.length;
+
+	updateAttachButtonCount("#btnAttach", count);
+}
+
+
+
+			$(function () {
+				var selectedRowKey = null;
+			// Hide context menu when clicking outside
+			$(document).on("click", function () {
+				$("#contextMenu").hide();
+			});
+
+			// Handle context menu item clicks
+			$(".context-menu-itemInvoice").on("click", function (e) {
+				e.stopPropagation(); // Prevent menu from hiding immediately
+
+				const action = $(this).data("action");
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				const selectedRowKeys = grid.getSelectedRowKeys();
+				selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+
+				if (!grid) {
+					DevExpress.ui.notify("Grid instance not found.", "error", 2000);
+					return;
+				}
+
+				if (action === "add") {
+					grid.addRow();
+					grid.saveEditData();
+				}
+				else if (action === "delete") {
+					if (selectedRowKey !== null) {
+						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+						if (rowIndex >= 0) {
+							const rowData = grid.getDataSource().items()[rowIndex];
+									const { PurchaseChildSlNo, PurchaseVoucherNo } = rowData;
+
+									if (!PurchaseChildSlNo) {
+								grid.deleteRow(rowIndex); // Deletes from UI
+							} else {
+								DevExpress.ui.dialog.confirm(
+									"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
+									"Delete Invoice"
+								).done(function (confirmResult) {
+									if (confirmResult) {
+										$.ajax({
+												url: "/api/VATModule/DeletePurchaseInvoiceChild",
+											type: "POST",
+											contentType: "application/json",
+												data: JSON.stringify(PurchaseChildSlNo),
+											success: function (response) { 
+												if (response.success) {
+													grid.refresh();
+													DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+
+													// Fetch updated data and re-bind the grid
+													$.ajax({
+														type: "GET",
+													    url: `/api/VATModule/GetPurchaseChildInvoiceDetails?InvoiceNo=${encodeURIComponent(PurchaseVoucherNo)}`,
+														dataType: 'json',
+														success: function (data) {
+
+															const newRowData = data.map((item, index) => ({
+																SNo: index + 1,
+																...item
+															}));
+															initializeDataGrid(newRowData);
+														},
+														error: function () {
+															DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+														}
+													});
+												} else {
+													DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+												}
+											},
+											error: function (xhr) {
+												DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+											}
+										});
+									}
+								});
+							}
+						}
+						grid.saveEditData();
+					} else {
+						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+					}
+				}
+				else if (action === "deleteAll") {
+		if (selectedRowKey !== null) {
+			const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+			//if (rowIndex >= 0) {
+				debugger;
+				const rowData = grid.getDataSource().items()[rowIndex];
+					const InvoiceNo = rowData.PurchaseVoucherNo; // ✅ Only the string
+
+				if (!InvoiceNo) {
+					const dataSource = grid.option("dataSource");
+					dataSource.length = 0;
+					grid.option("dataSource", dataSource);
+					grid.refresh();
+				} else {
+					DevExpress.ui.dialog.confirm(
+						"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
+						"Delete Invoice"
+					).done(function (confirmResult) {
+						if (confirmResult) {
+							$.ajax({
+									url: "/api/VATModule/DeletePurchaseInvoiceAllLineItem",
+								type: "POST",
+								contentType: "application/json",
+								data: JSON.stringify(InvoiceNo), // ✅ Sending raw string
+								success: function (response) {
+									if (response) {
+										grid.refresh();
+
+
+										$.ajax({
+											type: "GET",
+										 url: `/api/VATModule/GetPurchaseChildInvoiceDetails?InvoiceNo=${encodeURIComponent(PurchaseVoucherNo)}`,
+											dataType: 'json',
+											success: function (data) {
+												const newRowData = data.map((item, index) => ({
+													SNo: index + 1,
+													...item
+												}));
+												initializeDataGrid(newRowData);
+												   DevExpress.ui.notify("VAT Invoice Line Items Deleted Successfully.","successs",3000);
+											},
+											error: function () {
+												DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+											}
+										});
+									} else {
+										DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+									}
+								},
+								error: function (xhr) {
+									DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+								}
+							});
+						}
+					});
+				}
+					grid.saveEditData();
+			}
+		// } else {
+		// 	DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+		// }
+	}
+
+
+				$("#contextMenu").hide();
+			});
+		});
 
 </script>
 

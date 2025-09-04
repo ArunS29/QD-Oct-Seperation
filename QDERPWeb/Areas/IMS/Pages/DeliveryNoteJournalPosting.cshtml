@@ -1,0 +1,928 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.DeliveryNoteJournalPostingModel
+@{
+}
+
+
+<link rel="stylesheet" href="~/css/animationCard.css"/>
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+	
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.ledgerResult{
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.tabs {
+		display: flex;
+		justify-content: space-around;
+		margin-bottom: 15px;
+	}
+
+	.tab-text {
+		cursor: pointer;
+		font-weight: bold;
+		color: #333;
+	}
+
+		.tab-text.active {
+			color: #2196f3;
+		}
+
+	.tab-content {
+		display: none;
+		text-align: center;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+	.count {
+		font-size: 31px;
+		font-weight: bold;
+		margin-top: 10px;
+	}
+
+		.count.bounce {
+			animation: bounce 0.5s ease;
+		}
+
+	@@keyframes bounce {
+		0%
+
+	{
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.2);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+
+	}
+
+	.voucher-slider {
+		position: relative;
+		height: 120px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+		.voucher-slide.slide-up {
+			transform: translateY(-100%);
+		}
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+		.voucher-slide1.slide-up {
+			transform: translateY(-100%);
+		}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 355px;
+		bottom: 10px;
+	}
+</style>
+
+<input id="formId" value="frm60107DeliveryNoteJournalPosting" type="hidden" />
+@* <div class="title" id="kpiCarousel">
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">Quotation to Clients</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
+			</div>
+		</div>
+	</div>
+
+	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation Details</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4 style="text-align:left">New Quotation</h4>
+				<h1 id="newquotationtotals" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide">
+				<h4 style="text-align:left">Pending of Approvals</h4>
+				<h1 id="pendingofapproval" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide">
+				<h4 style="text-align:left">Waiting for sale order</h4>
+				<h1 id="waitingsaleorder" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M35.1094 18.375H23.625C22.5377 18.375 21.6096 17.9906 20.8408 17.2217C20.0719 16.4529 19.6875 15.5248 19.6875 14.4375V2.95312C19.6875 2.86252 19.6555 2.78518 19.5914 2.72111C19.5273 2.65704 19.45 2.625 19.3594 2.625H11.8125C10.3628 2.625 9.12532 3.13756 8.10019 4.16269C7.07506 5.18782 6.5625 6.42525 6.5625 7.875V34.125C6.5625 35.5747 7.07506 36.8122 8.10019 37.8373C9.12532 38.8624 10.3628 39.375 11.8125 39.375H30.1875C31.6372 39.375 32.8747 38.8624 33.8998 37.8373C34.9249 36.8122 35.4375 35.5747 35.4375 34.125V18.7031C35.4375 18.6125 35.4055 18.5352 35.3414 18.4711C35.2773 18.407 35.2 18.375 35.1094 18.375ZM27.5625 31.5H14.4375C14.0751 31.5 13.7657 31.3719 13.5094 31.1156C13.2531 30.8593 13.125 30.5499 13.125 30.1875C13.125 29.8251 13.2531 29.5157 13.5094 29.2594C13.7657 29.0031 14.0751 28.875 14.4375 28.875H27.5625C27.9249 28.875 28.2343 29.0031 28.4906 29.2594C28.7469 29.5157 28.875 29.8251 28.875 30.1875C28.875 30.5499 28.7469 30.8593 28.4906 31.1156C28.2343 31.3719 27.9249 31.5 27.5625 31.5ZM27.5625 24.9375H14.4375C14.0751 24.9375 13.7657 24.8094 13.5094 24.5531C13.2531 24.2968 13.125 23.9874 13.125 23.625C13.125 23.2626 13.2531 22.9532 13.5094 22.6969C13.7657 22.4406 14.0751 22.3125 14.4375 22.3125H27.5625C27.9249 22.3125 28.2343 22.4406 28.4906 22.6969C28.7469 22.9532 28.875 23.2626 28.875 23.625C28.875 23.9874 28.7469 24.2968 28.4906 24.5531C28.2343 24.8094 27.9249 24.9375 27.5625 24.9375Z" fill="white" fill-opacity="0.301961" />
+				<path d="M34.3891 15.4702L22.5922 3.67332C22.5688 3.65001 22.5408 3.63514 22.5084 3.62873C22.4759 3.62231 22.4444 3.62543 22.4139 3.63806C22.3833 3.6507 22.3588 3.67074 22.3404 3.6982C22.3219 3.72565 22.3126 3.75591 22.3125 3.78899V14.4375C22.3125 14.7999 22.4406 15.1093 22.6969 15.3655C22.9532 15.6218 23.2626 15.75 23.625 15.75H34.2735C34.3066 15.7498 34.3368 15.7405 34.3643 15.7221C34.3917 15.7037 34.4118 15.6792 34.4244 15.6486C34.437 15.618 34.4402 15.5865 34.4337 15.5541C34.4273 15.5216 34.4125 15.4937 34.3891 15.4702Z" fill="white" fill-opacity="0.301961" />
+			</svg>
+
+		</div>
+	</div>
+
+
+
+	<!-- QUOTATION AMOUNT CARD -->
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Quotation Invoices</h4>
+		<div class="voucher-slider">
+		<div class="voucher-slide1 active">
+			<h4 style="color: white;text-align:left;">No of quotation raised today</h4>
+				<h1 id="quotationraisetoday" style="color: white; font-weight: bold;text-align:left;">
+				0
+			</h1>
+		</div>
+			<div class="voucher-slide1">
+				<h4 style="color: white;text-align:left;">Total no of quotation</h4>
+				<h1 id="totalnoofquotation" style="color: white; font-weight: bold;text-align:left;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
+		</div>
+	</div>
+</div> *@
+@* <div class="title">
+	<div class="header-container">
+		<div id="Quotation" class="no-border-input"></div>
+	</div>
+</div> *@
+
+
+@await Html.PartialAsync("/Pages/Shared/IMS/DNJournalPostingFooter.cshtml")
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-up")
+		.TabIndex(4)
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			        items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+		)
+  
+</div>
+<div class="dx-field ledgerResult">
+	@(   
+    Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60304deliveryNoteViewMaster>() 
+    .ID("dataGrid")                                    
+    .RemoteOperations(false)
+	 .Selection(s => s
+        .Mode(SelectionMode.Multiple) // enable multiple selection
+        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // always show checkboxes
+    )
+    .OnInitialized("onStatusCardReady")
+    .DataSource(new JS("[]"))
+    .Columns(columns =>
+    {
+      // ✅ Visible fields
+	   columns.AddFor(m => m.DeliveryType).Caption("Delivery Type").Visible(true);
+	    columns.AddFor(m => m.IsPosted)
+    .Caption("Is Posted")
+    .DataType(GridColumnDataType.Boolean)
+    .Width(100)
+    .Alignment(HorizontalAlignment.Center);
+
+	    columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Visible(true);
+        columns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Visible(true);
+        columns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Format("dd-MMM-yyyy").Visible(true);
+       
+        columns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Visible(true);
+        columns.AddFor(m => m.DeliveredTo).Caption("Delivered To").Visible(true);
+
+        // ❌ Hidden fields
+        columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
+        columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+        columns.AddFor(m => m.ClientPono).Caption("Client PO No").Visible(false);
+        columns.AddFor(m => m.QuotationNo).Caption("Quotation No").Visible(false);
+        columns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Visible(false);
+        columns.AddFor(m => m.MaterialRequestNo).Caption("Material Request No").Visible(false);
+        columns.AddFor(m => m.ClientProject).Caption("Client Project").Visible(false);
+        columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
+        columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
+        columns.AddFor(m => m.StoreId).Caption("Store Id").Visible(false);
+        columns.AddFor(m => m.NoteOfItems).Caption("Note Of Items").Visible(false);
+        columns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Visible(false);
+        columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
+        columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+        columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+        columns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
+        columns.AddFor(m => m.PreparedOn).Caption("Prepared On").Visible(false);
+        columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+        columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+        columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+        columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+        columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+        columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+        columns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
+        columns.AddFor(m => m.Attention).Caption("Attention").Visible(false);
+        columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
+        columns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Visible(false);
+        columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
+        columns.AddFor(m => m.DeliveryNoteRemarks).Caption("Delivery Note Remarks").Visible(false);
+        columns.AddFor(m => m.Salesman).Caption("Salesman").Visible(false);
+        columns.AddFor(m => m.TransportedBy).Caption("Transported By").Visible(false);
+        columns.AddFor(m => m.DriversName).Caption("Driver's Name").Visible(false);
+        columns.AddFor(m => m.DriversId).Caption("Driver's Id").Visible(false);
+        columns.AddFor(m => m.VehicleNo).Caption("Vehicle No").Visible(false);
+        columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
+        columns.AddFor(m => m.Mprno).Caption("MPR No").Visible(false);
+        columns.AddFor(m => m.IssuedFromStoreCode).Caption("Issued From Store Code").Visible(false);
+        columns.AddFor(m => m.IssuedFromStoreName).Caption("Issued From Store Name").Visible(false);
+       
+        columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+        columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+        columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
+        columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
+        columns.AddFor(m => m.ProjectDuration).Caption("Project Duration").Visible(false);
+        columns.AddFor(m => m.ProjectLocation).Caption("Project Location").Visible(false);
+        columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group Id").Visible(false);
+        columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
+        columns.AddFor(m => m.TotalIssuedQty).Caption("Total Issued Qty").Visible(false);
+        columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+        columns.AddFor(m => m.SaesPersonUserId).Caption("Sales Person User Id").Visible(false);
+        columns.AddFor(m => m.QuoteTotalBeforeDiscount).Caption("Quote Total Before Discount").Visible(false);
+    })
+    .Height("60vh")
+    .ColumnAutoWidth(true)
+    .Width("98%")
+    .ColumnChooser(cc => cc.Enabled(false).Mode(GridColumnChooserMode.DragAndDrop))
+    .AllowColumnReordering(true)
+    .AllowColumnResizing(true)
+    .ColumnFixing(fixing => fixing.Enabled(true))
+    .Paging(p => p.PageSize(10))
+    .Pager(pager => {
+        pager.ShowPageSizeSelector(true);
+        pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+        pager.ShowNavigationButtons(true);
+        pager.Visible(true);
+    })
+    .GroupPanel(g => g.Visible(false))
+    .ShowBorders(true)
+    .ShowRowLines(true)
+    .StateStoring(s => s.Enabled(true).Type(StateStoringType.LocalStorage).StorageKey("gridContainerState"))
+    .OnInitialized("function(e) { loadGridState(); }")
+)
+
+
+	
+
+</div>
+<div id="invoiceErrorPopup"></div>
+
+<script>
+$("#btnApproveDNs").dxButton({
+    text: "Approve Selected Delivery Notes",
+    type: "success",
+    onClick: function () {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var selectedRows = dataGrid.getSelectedRowsData();
+
+        if (selectedRows.length === 0) {
+            DevExpress.ui.notify("Please select at least one delivery note.", "warning", 2000);
+            return;
+        }
+
+        var payload = selectedRows.map(r => ({
+            DeliveryNoteNo: r.DeliveryNoteNo,
+            
+        }));
+
+        $.ajax({
+            url: "/api/DeliveryNoteJournalPosting/ApproveDeliveryNotes",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
+            success: function (res) {
+                if (res.success) {
+                    DevExpress.ui.notify(res.message, "success", 2000);
+                    dataGrid.refresh();
+                } else {
+                    DevExpress.ui.notify(res.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error approving notes: " + xhr.responseText, "error", 3000);
+            }
+        });
+    }
+});
+
+ $("#btnPostJournals").dxButton({
+            text: "Post Selected Delivery Notes to Journal",
+            type: "success",
+            icon: "check",
+            onClick: function () {
+                 var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var selectedRows = dataGrid.getSelectedRowsData();
+
+        if (selectedRows.length === 0) {
+            DevExpress.ui.notify("Please select at least one delivery note.", "warning", 2000);
+            return;
+        }
+
+                // Prepare payload
+                var payload = selectedRows.map(r => ({
+                    DeliveryNoteNo: r.DeliveryNoteNo,
+                    DeliveryDate: r.DeliveryDate,
+                    DeliveryType: r.DeliveryType
+                }));
+
+                $.ajax({
+                    url: "/api/DeliveryNoteJournalPosting/PostDeliveryNotesToJournal",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(payload),
+                    success: function (res) {
+                        if (res.success) {
+                            DevExpress.ui.notify(res.message, "success", 3000);
+                            deliveryNoteGrid.refresh();
+                        } else {
+                            DevExpress.ui.notify(res.message, "error", 3000);
+                        }
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                    }
+                });
+            }
+        });
+  
+
+
+	$(function() {
+
+    // Footer Button click
+    $("#btnPostAvgCost").dxButton({
+        text: "Post Average Cost",
+        onClick: function() {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var selectedRows = grid.getSelectedRowsData();
+
+            if (!selectedRows || selectedRows.length === 0) {
+                DevExpress.ui.notify("Please select at least one row to post.", "info", 2000);
+                return;
+            }
+
+            var endDate = $("#todateBox").dxDateBox("instance").option("value");
+
+            // Map selected rows to DTO
+            var payload = selectedRows.map(r => ({
+                GSCode: r.Gscode,
+                 EndDate: $("#todateBox").dxDateBox("instance").option("value").toISOString(), // Convert to string
+                DeliveryNoteSlNo:String(r.DeliveryNoteSlNo), 
+                IssuedUnitPrice: r.IssuedUnitPrice
+            }));
+
+            DevExpress.ui.notify("Posting average cost...", "info", 2000);
+
+            $.ajax({
+                url: '/api/AverageCostPosting/PostAvgCost',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function(res) {
+                    if (res.success) {
+                        DevExpress.ui.notify("Average cost posted successfully!", "success", 2000);
+                        grid.refresh();
+                    } else {
+                        DevExpress.ui.notify("Error: " + res.message, "error", 3000);
+                    }
+                },
+                error: function(err) {
+                    DevExpress.ui.notify("Server error: " + err.responseText, "error", 3000);
+                }
+            });
+        }
+    });
+
+});
+
+					
+
+
+				 $(function () {
+				const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#frmdateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#frmdateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+			 $(function () {
+				const dateBox = $("#todateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#todateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#todateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+
+		 $(function () {
+	$("#Quotation").dxTextBox({
+	text: formatMessage("Quotation"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
+			$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
+	function ddBtnShowRecords_click(duration) {
+		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+			var toDateBox = $("#todateBox").dxDateBox("instance");
+			var frmDate = new Date(frmDateBox.option("value"));
+			var toDate = new Date(toDateBox.option("value"));
+			var currentDate = new Date();
+			switch (duration) {
+				case 'today':
+					frmDate = toDate = currentDate;
+					break;
+				case 'yesterday':
+					var dateObj = new Date();
+					// Subtract one day from current time
+					dateObj.setDate(dateObj.getDate() - 1);
+					frmDate = toDate = dateObj;
+					break;
+				case 'week':
+					var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+					// Calculate the start of the week (Saturday)
+					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+					// Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+				frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
+					toDate = new Date(currentDate.setDate(startOfWeek + 6));
+					break;
+				case 'tillmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = currentDate; //Today
+					break;
+				case 'fullmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+					break;
+				case 'tillyear':
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = currentDate;// Today
+					break;
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
+					break;
+				case 'lastyear':
+					// Get the first and last day of the last year
+					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+					break;
+				case 'lastmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+					break;
+						case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
+
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
+			}
+						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
+
+				$.ajax({
+		url:'/api/DeliveryNoteJournalPosting/GetDNJournalPosting',
+		type: 'GET',
+		data: {
+			fromDate: frmDate,
+			toDate: toDate
+		},
+		success: function (data) {
+			console.log("Returned Data: ", data); // debug
+			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+		},
+		error: function (xhr) {
+			console.log("AJAX Error", xhr.responseText); // debug
+			DevExpress.ui.notify("Error while loading data", "error", 2000);
+		}
+	});
+
+
+
+	}
+		function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	
+
+
+
+				$(document).ready(function () {
+
+
+					const urlParams = new URLSearchParams(window.location.search);
+					const module = urlParams.get("module");
+					const status = urlParams.get("status");
+
+					if (module && status) {
+						const grid = $("#dataGrid").dxDataGrid("instance");
+
+						if (grid) {
+							grid.beginCustomLoading("Loading...");
+							$.ajax({
+									url: '/api/Quotation/GetIMSQuotation',
+								type: 'GET',
+								data: { module, status },
+								success: function (data) {
+									grid.option("dataSource", data);
+									grid.endCustomLoading();
+								},
+								error: function () {
+									grid.endCustomLoading();
+								}
+							});
+						}
+					}
+				});
+				
+$(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+		// Form ID
+		var formId = "frm60107DeliveryNoteJournalPosting";
+
+		// Call the API to get permissions
+		$.ajax({	
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				console.log("API Response:", response); // Log the API response
+
+				if (response.success && response.permissions) {
+					// Default visibility and enable status for buttons
+					var controlStates = {
+						"ddButtonLayout": { "Visible": false, "Enabled": false },
+						"btnPrint": { "Visible": false, "Enabled": false },
+						"btnToggleSearch": { "Visible": false, "Enabled": false },
+	                    "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnApproveDNs": { "Visible": false, "Enabled": false },
+						"btnPostJournals": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+						"btnColumnChooser": { "Visible": false, "Enabled": false }
+					};
+
+					// Check for full access
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
+
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						// Grant full access: make all controls visible and enabled
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						// Update states based on specific permissions for each control
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
+
+					console.log("Control States:", controlStates);
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							// Handle visibility
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							// Handle enable/disable state
+							button.disabled = !controlStates[key].Enabled;
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+						} else {
+							console.warn(`Button with ID "${key}" not found in the DOM.`);
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+	});
+</script>

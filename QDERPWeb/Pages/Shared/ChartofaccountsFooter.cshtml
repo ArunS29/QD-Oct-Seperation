@@ -9,7 +9,6 @@
     }
     /* Button Styling */
     .dx-button {
-        background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
         padding: 6px 12px !important; /* Reduced button padding */
@@ -189,9 +188,9 @@
     
 
     // Handle button clicks
-    function AccountGroupsOrdering() {
+       function AccountGroupsOrdering() {
         let url = `/${tenantName}/Finance/AccountGroupsOrdering`;
-        let title = formatMessage('');
+        let title = formatMessage('Account Group Master: Ordering'); // Set the proper title
         openModal(url, title);
     }
     // Hide context menu on click outside

@@ -4,6 +4,8 @@ using DevExpress.Spreadsheet.Charts;
 using DevExpress.XtraCharts;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.FileProviders;
 using QD.ERP.Web;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Middleware;
@@ -27,6 +30,7 @@ using System.Text;
 using System.Text.Json;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2; 
+
 
 
 if (FirebaseApp.DefaultInstance == null)
@@ -294,6 +298,11 @@ if (!app.Environment.IsDevelopment())
 //}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "node_modules")),
+    RequestPath = "/node_modules"
+});
 app.UseMiddleware<TenantSessionMiddleware>();
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseMiddleware<TokenRenewalMiddleware>();

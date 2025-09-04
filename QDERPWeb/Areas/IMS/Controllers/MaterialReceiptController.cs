@@ -110,14 +110,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			{
 				try
 				{
-					var StoreName = dbContext.Qry70002projectsViewMasters.Select(i => new
+					var ProjectName = dbContext.Qry70002projectsViewMasters.Select(i => new
 					{
 						i.ProjectId,
 						i.ProjectDescription
 
 					});
 
-					return Json(await DataSourceLoader.LoadAsync(StoreName, loadOptions));
+					return Json(await DataSourceLoader.LoadAsync(ProjectName, loadOptions));
 				}
 				catch (Exception ex)
 				{

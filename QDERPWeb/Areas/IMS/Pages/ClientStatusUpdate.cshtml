@@ -108,12 +108,12 @@
         <div id="ClientStatusUpdate" class="no-border-title"></div>
     </div>
 </div>  *@
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Client Status Update</h3>
-</div>
+</div> *@
 <div class="form-container">
 
 
@@ -333,7 +333,7 @@
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
                $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
-        getReportedBy();
+    
            if (clientStatusNo) {
               bindClientStatusById(clientStatusNo);
               $("#btnSave").dxButton("instance").option("text", "Update");
@@ -342,13 +342,11 @@
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
     }
-       
-
-
-       
-
-
+  
     });
+       $(document).ready(function () {
+                 getReportedBy();
+                 });
     function bindClientStatusById(clientStatusNo) {
      
         $.ajax({

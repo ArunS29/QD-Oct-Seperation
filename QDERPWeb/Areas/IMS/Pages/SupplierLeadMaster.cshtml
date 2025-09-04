@@ -159,12 +159,6 @@
         <div id="SupplierMaster" class="no-border-title"></div>
     </div>
 </div> *@
-<div class="dx-card-header minimal-header">
-    <div class="card-title-icon">
-        <i class="fas fa-file-invoice-dollar"></i>
-    </div>
-    <h3 class="card-title-text">Supplier Master</h3>
-</div>
 <div class="form-container1">
 
     <div class="col-md-12">
@@ -541,7 +535,7 @@
                                 {
                                     columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
                                     columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
-                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Width(300);
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center);
                                 })
                                 )
         }
@@ -1125,7 +1119,7 @@
 
         function redirectToSupplierContact() {
             let url = `/${tenantName}/IMS/SupplierContactList`;
-            let title = "";
+            let title = "Supplier Contact List";
             openModal(url, title);
         }
         //Imageupload
@@ -1199,11 +1193,10 @@
                             function Goback() {
             window.parent.closeModal(); // This closes the current window/tab
         }
-
-             $(function () {
-            // Initialize the TextBox with default text
+        $(function () {
+            // Initialize the TextBox with default value
             $("#LedgerActive").dxTextBox({
-                    value: "Local Supplier:",
+                value: formatMessage("Local Supplier:"),
                 readOnly: true
             });
 
@@ -1213,18 +1206,26 @@
             // Handle value change event
             switchInstance.option("onValueChanged", function (e) {
                 let textBoxInstance = $("#LedgerActive").dxTextBox("instance");
+                let inputElement = $("#LedgerActive .dx-texteditor-input");
 
                 if (e.value) {
-                    // When switched ON, update text and apply red color
-                                textBoxInstance.option("value", "International Supplier:");
-                    $("#LedgerActive .dx-texteditor-input").css("color", "red");
+                    // When switched ON, update text and apply red + bold
+                    textBoxInstance.option("value", formatMessage("International Supplier:"));
+                    inputElement.css({
+                        "color": "red",
+                        "font-weight": "bold"
+                    });
                 } else {
-                    // When switched OFF, update text and reset color
-                        textBoxInstance.option("value", "Local Supplier:");
-                    $("#LedgerActive .dx-texteditor-input").css("color", "black");
+                    // When switched OFF, update text and reset style
+                    textBoxInstance.option("value", formatMessage("Local Supplier:"));
+                    inputElement.css({
+                        "color": "black",
+                        "font-weight": "normal"
+                    });
                 }
             });
         });
+
 
          $(function () {
             const dateBox = $("#ClientVisitedOn").dxDateBox("instance");

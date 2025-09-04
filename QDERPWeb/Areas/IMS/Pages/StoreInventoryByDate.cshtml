@@ -232,6 +232,14 @@
 		.WordWrapEnabled(true)
 		.Height("73vh")
 		.Width("98%")
+		.Paging(p => p.PageSize(10))  
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
 		.Columns(columns =>
 		{
 			// Stock Details Band

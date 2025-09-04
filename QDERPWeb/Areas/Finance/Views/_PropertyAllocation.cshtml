@@ -11,15 +11,15 @@
 	long voucherEntryNo = ViewBag.VoucherEntryNo;
 	string accountId = ViewBag.AccountID;
 	decimal currencyRate = ViewBag.CurrencyRate;
-	double? originalAmount = null;
+	decimal? originalAmount = null;
 
-	double? voucherAmountParsed = null;
+	decimal? voucherAmountParsed = null;
 
 	// Try parsing the voucherAmount to a nullable double
 	if (!string.IsNullOrEmpty(voucherAmount))
 	{
-		double parsedAmount;
-		if (double.TryParse(voucherAmount, out parsedAmount))
+		decimal parsedAmount;
+		if (decimal.TryParse(voucherAmount, out parsedAmount))
 		{
 			voucherAmountParsed = parsedAmount;
 		}
@@ -30,7 +30,7 @@
 	{
 		// Format the amount to 2 decimal places and then parse it back to double
 		voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
-		originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
+		originalAmount = (decimal)(voucherAmountParsed.Value / (decimal)currencyRate);
 	}
 
 }
@@ -235,7 +235,7 @@
 			<div class="col-md-2 col-6">
 				@(Html.DevExtreme().NumberBox()
 								.ID("propertyAmount")
-								.Value(originalAmount)
+								.Value((double?)originalAmount)
 								.ShowSpinButtons(true)
 								.ReadOnly(true)
 								.Format("#,##0.00")
@@ -302,10 +302,10 @@
 
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.PropertyAllocationId).Caption("CostAllocation Id").DataField("PropertyAllocationId").Width(100).Visible(false).AllowEditing(false);
+						columns.AddFor(m => m.PropertyAllocationId).Caption(new JS("formatMessage('Cost Allocation Id')")).DataField("PropertyAllocationId").Width(100).Visible(false).AllowEditing(false);
 						columns.AddFor(m => m.PropertyNo)
 					.DataField("PropertyDescription")
-					.Caption("Property Name")
+					.Caption(new JS("formatMessage('Property Name')"))
 					.Width(500)
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -376,7 +376,7 @@
 
 		</text>);
 						columns.AddFor(m => m.EffectiveDate)
-					.Caption("Effective Date")
+					.Caption(new JS("formatMessage('Effective Date')"))
 					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -395,8 +395,8 @@
 			)
 		</text>);
 
-						@* columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
-					columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
+						@* columns.Add().Caption(new JS("formatMessage('Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
+					columns.AddFor(m => m.AmountAllocated).Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
 					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
 					"        var val = data.VoucherAmount / currencyRate; " +
 					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
@@ -406,8 +406,8 @@
 					.CustomizeText("function(e) { " +
 					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
 					"}");
-						columns.AddFor(m => m.PropertyAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-						columns.AddFor(m => m.PropertyAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
+					columns.AddFor(m => m.PropertyAllocDrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
+					columns.AddFor(m => m.PropertyAllocRemarks).Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
 
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
@@ -451,7 +451,7 @@
 		<div class="fixed-footer-toolbar">
 			@(Html.DevExtreme().Button()
 						.ID("btnpropertySave")
-						.Text("Save & Close")
+						.Text(new JS("formatMessage('Save & Close')"))
 						.Type(ButtonType.Normal)
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("save")
@@ -460,7 +460,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("btnpropertyPrint")
-						.Text("Print")
+						.Text(new JS("formatMessage('Print')"))
 						.Type(ButtonType.Normal)
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("print")
@@ -469,7 +469,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("btnPropertyBack")
-						.Text("Back")
+						.Text(new JS("formatMessage('Back')"))
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("arrowleft")
 						.OnClick("ClosePropertyModel")
@@ -478,7 +478,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("btnpropertyDelete")
-						.Text("Delete")
+						.Text(new JS("formatMessage('Delete')"))
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("close")
 						.ElementAttr(new { @class = "footer-button delete-btn" })
@@ -524,10 +524,10 @@
 			.Selection(s => s.Mode(SelectionMode.Single))
 			.Columns(columns =>
 			{
-				columns.Add().Caption("Property No").DataField("PropertyNo");
-				columns.Add().Caption("Property Description").DataField("PropertyDescription");
-				columns.Add().Caption("Property Type").DataField("PropertyType");
-				columns.Add().Caption("Plate No").DataField("PlateNo");
+			columns.Add().Caption(new JS("formatMessage('Property No')")).DataField("PropertyNo");
+			columns.Add().Caption(new JS("formatMessage('Property Description')")).DataField("PropertyDescription");
+			columns.Add().Caption(new JS("formatMessage('Property Type')")).DataField("PropertyType");
+				columns.Add().Caption(new JS("formatMessage('Plate No')")).DataField("PlateNo");
 			})
 			)
 	}

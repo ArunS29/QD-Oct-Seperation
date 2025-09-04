@@ -13,6 +13,9 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
+        private string _requestNo;
+        private bool _showSign1;
+
         public MaterialRequestInventory()
         {
             InitializeComponent();
@@ -20,7 +23,13 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
         }
 
         public MaterialRequestInventory(
+              Image logoImage,
+           Image sealImage,
+                bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             string RequestNo,
+            bool showSign1,
             string tenantName,
             string companyName,
             string companyAddress,
@@ -31,13 +40,23 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _isApproved = isApproved;
+            _requestNo = RequestNo;
+            _showSign1 = showSign1; 
 
             InitializeComponent();
-            SetReportParameters(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters(logoImage,sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr);
             LoadReportData(RequestNo);
+
+            // Attach the BeforePrint event ONCE
+            this.BeforePrint += MaterialRequestInventory_BeforePrint;
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
         }
 
-        private void SetReportParameters(string RequestNo, string tenantName, string companyName, string companyAddress, string companyNameAr, string companyAddressAr)
+
+
+        private void SetReportParameters(Image logoImage, Image sealImage, bool showSeal, bool showSignature, bool printLetterhead, string RequestNo, bool showSign1, string tenantName, string companyName, string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -66,7 +85,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
-                tenantLabel.Text = tenantName;
+                tenantLabel.Text = tenantName;  
 
             if (FindControl("xrLabelCompanyName", true) is XRLabel companyNameLabel)
                 companyNameLabel.Text = companyName;
@@ -79,8 +98,16 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
-        }
 
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
+
+                logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
+
+                sealPictureBox.Image = sealImage;
+        }
+        //
         private void LoadReportData(string RequestNo)
         {
             DataTable dt = GetReportData(RequestNo);
@@ -88,16 +115,43 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
-               
+                CreateNoDataLabel();
+
             }
             else
             {
                 this.DataSource = dt;
-                this.DataMember = "";
-               
+                this.DataMember = ""; 
+                SetWatermark();
+
             }
         }
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
 
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel75", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel76", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine4", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
         private DataTable GetReportData(string RequestNo)
         {
             DataTable dt = new DataTable();
@@ -160,7 +214,114 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
+        private int GetTypeOfMPR(string requestNo)
+        {
+            int typeOfMPR = 0;
 
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                {
+                    string connectionString = tenant.ConnectionString;
 
+                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    {
+                        string query = "SELECT ISNULL(TypeOfMPR,0) FROM tbl606_01PurchaseRequestMaster WHERE MPRNo = @RequestNo";
+
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.AddWithValue("@RequestNo", requestNo);
+
+                            conn.Open();
+                            object result = cmd.ExecuteScalar();
+                            if (result != null && result != DBNull.Value)
+                                typeOfMPR = Convert.ToInt32(result);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching TypeOfMPR: {ex.Message}");
+            }
+
+            return typeOfMPR;
+        }
+
+        private void SetLabelsVisibility(int typeOfMPR)
+        {
+            // Find all labels
+            XRLabel lbl8 = FindControl("xrLabel8", true) as XRLabel;
+            XRLabel lbl9 = FindControl("xrLabel9", true) as XRLabel;
+            XRLabel lbl5 = FindControl("xrLabel5", true) as XRLabel;
+            XRLabel lbl6 = FindControl("xrLabel6", true) as XRLabel;
+            XRLabel lbl10 = FindControl("xrLabel10", true) as XRLabel;
+            XRLabel lbl55 = FindControl("xrLabel55", true) as XRLabel;
+            XRLabel lbl25 = FindControl("xrLabel25", true) as XRLabel;
+            XRLabel lbl11 = FindControl("xrLabel11", true) as XRLabel;
+            XRLabel lbl12 = FindControl("xrLabel12", true) as XRLabel;
+            XRLabel lbl13 = FindControl("xrLabel13", true) as XRLabel;
+            XRLabel lbl14 = FindControl("xrLabel14", true) as XRLabel;
+            XRLabel lbl4 = FindControl("xrLabel4", true) as XRLabel;
+            XRLabel lbl69 = FindControl("xrLabel69", true) as XRLabel;
+            XRLabel lbl70 = FindControl("xrLabel70", true) as XRLabel;
+            XRLabel lbl71 = FindControl("xrLabel71", true) as XRLabel;
+            XRLabel lbl72 = FindControl("xrLabel72", true) as XRLabel;
+
+            // Hide all labels first
+            foreach (var lbl in new[] { lbl8, lbl9, lbl5, lbl6, lbl10, lbl55, lbl25, lbl11, lbl12, lbl13, lbl14, lbl4, lbl69, lbl70, lbl71, lbl72 })
+            {
+                if (lbl != null) lbl.Visible = false;
+            }
+
+            // Show labels based on TypeOfMPR
+            switch (typeOfMPR)
+            {
+                case 1:
+                    ShowLabels(lbl6, lbl10, lbl5, lbl11, lbl8, lbl13, lbl14, lbl55, lbl9,  lbl25);
+                    break;
+                case 2:
+                    ShowLabels(lbl4, lbl10, lbl71, lbl69, lbl8, lbl13, lbl14, lbl55, lbl9, lbl25);
+                    break;
+                case 3:
+                    ShowLabels(lbl70, lbl10, lbl71, lbl11, lbl8, lbl13, lbl14, lbl55, lbl9, lbl25);
+                    break;
+                default:
+                    // Optionally show a message or log if TypeOfMPR is not 1, 2, or 3
+                    System.Diagnostics.Debug.WriteLine($"TypeOfMPR value '{typeOfMPR}' does not match any label set.");
+                    break;
+            }
+
+            foreach (var name in new[] { "xrLabel10", "xrLabel69", "xrLabel72", "xrLabel11", "xrLabel12", "xrLabel5", "xrLabel4", "xrLabel13", "xrLabel14", "xrLabel8", "xrLabel9", "xrLabel55", "xrLabel25", "xrLabel6", "xrLabel70", "xrLabel71" })
+            {
+                var lbl = FindControl(name, true) as XRLabel;
+                System.Diagnostics.Debug.WriteLine($"{name}: {(lbl != null ? "Found" : "Not Found")}, Visible: {lbl?.Visible}");
+            }
+        }
+
+        private void ShowLabels(params XRLabel[] labels)
+        {
+            foreach (var lbl in labels)
+            {
+                if (lbl != null)
+                {
+                    lbl.Visible = true;
+                    System.Diagnostics.Debug.WriteLine($"{lbl.Name} set to Visible");
+                }
+            }
+        }
+
+        // Ensure the handler is 'protected' or 'public' and matches the expected signature for BeforePrintEventHandler
+        private void MaterialRequestInventory_BeforePrint(object sender, EventArgs e)
+        {
+            int typeOfMPR = GetTypeOfMPR(_requestNo);
+            SetLabelsVisibility(typeOfMPR);
+
+            if (this.GroupFooter1 != null)
+            {
+                this.GroupFooter1.Visible = _showSign1;
+            }
+        }
     }
 }

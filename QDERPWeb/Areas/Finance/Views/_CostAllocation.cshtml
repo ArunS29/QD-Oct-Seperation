@@ -10,13 +10,13 @@
     string voucherAmount = ViewBag.VoucherAmount;
     long voucherEntryNo = ViewBag.VoucherEntryNo;
     decimal currencyRate = ViewBag.CurrencyRate;
-    double? voucherAmountParsed = null;
-    double? originalAmount = null;
+    decimal? voucherAmountParsed = null;
+    decimal? originalAmount = null;
     // Try parsing the voucherAmount to a nullable double
     if (!string.IsNullOrEmpty(voucherAmount))
     {
-        double parsedAmount;
-        if (double.TryParse(voucherAmount, out parsedAmount))
+        decimal parsedAmount;
+        if (decimal.TryParse(voucherAmount, out parsedAmount))
         {
             voucherAmountParsed = parsedAmount;
         }
@@ -27,7 +27,7 @@
     {
         // Format the amount to 2 decimal places and then parse it back to double
         voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
-        originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
+        originalAmount = (decimal)(voucherAmountParsed.Value / (decimal)currencyRate);
     }
 
 }
@@ -251,7 +251,7 @@
                                         .ID("CostAmount")
                                         .Label(new JS("formatMessage('Amount')"))
                                         .LabelMode(EditorLabelMode.Floating)
-                                        .Value(originalAmount)
+                                        .Value((double?)originalAmount)
                                         .ShowSpinButtons(true)
                                         .ReadOnly(true)
                                         .Format("#,##0.00")
@@ -308,11 +308,11 @@
                     .DataSource(new object[] { })
                     .Columns(columns =>
                     {
-                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
-                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(60).AllowEditing(false);
+                                    columns.AddFor(m => m.CostAllocationId).Caption(new JS("formatMessage('Cost Allocation Id')")).DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
+                                    columns.AddFor(m => m.CostAllocDrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(60).AllowEditing(false);
                         columns.AddFor(m => m.CostAllocationUnitId)
                     .DataField("CostAllocationUnit")
-                    .Caption("Cost Allocated (Projects/Jobs)")
+                                    .Caption(new JS("formatMessage('Cost Allocated (Projects/Jobs)')"))
                     .Width(500)
                     .AllowEditing(true)
                     // Normal Grid Mode
@@ -383,7 +383,7 @@
 
             </text>);
                         columns.AddFor(m => m.EffectiveDate)
-                    .Caption("Effective Date")
+                                    .Caption(new JS("formatMessage('Effective Date')"))
                     .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                     .AllowEditing(true)
                     .Width(95)
@@ -403,7 +403,7 @@
                 )
             </text>);
                                     columns.AddFor(m => m.AmountAllocated)
-                                    .Caption("Amount")
+                                    .Caption(new JS("formatMessage('Amount')"))
                                     .DataField("VoucherAmount")
                                     .DataType(GridColumnDataType.Number)
                                     .Alignment(HorizontalAlignment.Right)
@@ -417,7 +417,7 @@
                                     .CustomizeText("function(e) { " +
                                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
                                     "}");
-                                    columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
+                                    columns.AddFor(m => m.CostAllocRemarks).Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
 
                     })
                 //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
@@ -459,7 +459,7 @@
             <div class="fixed-footer-toolbar">
                 @(Html.DevExtreme().Button()
                                 .ID("btnCostmasterSaveAndClose")
-                                .Text("Save and Close")
+                                .Text(new JS("formatMessage('Save and Close')"))
                                 .Type(ButtonType.Normal)
                                 .StylingMode(ButtonStylingMode.Outlined)
                                 .Icon("save")
@@ -468,14 +468,14 @@
 
                 @(Html.DevExtreme().Button()
                                 .ID("btnCostDelete")
-                                .Text("Delete")
+                                .Text(new JS("formatMessage('Delete')"))
                                 .Icon("close")
                                 .ElementAttr(new { @class = "bold-button me-2" })
                                 )
 
                 @(Html.DevExtreme().Button()
                                 .ID("btncostBack")
-                                .Text("Back")
+                                .Text(new JS("formatMessage('Back')"))
                                 .Icon("arrowleft")
                                 .ElementAttr(new { @class = "bold-button me-2" })
                                 .OnClick("closeParentModal")
@@ -483,7 +483,7 @@
 
                 @(Html.DevExtreme().Button()
                                 .ID("btnaddcost")
-                                .Text("Add New Cost Center")
+                                .Text(new JS("formatMessage('Add New Cost Center')"))
                                 .Icon("plus")
                                 .ElementAttr(new { @class = "bold-button" })
                                 )
@@ -524,10 +524,10 @@
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Cost Allocation UnitID").DataField("CostAllocationUnitId");
-                        columns.Add().Caption("Cost Allocation Unit").DataField("CostAllocationUnit");
-                        columns.Add().Caption("Cost Allocation Group").DataField("CostAllocationGroup");
-                        columns.Add().Caption("Is Disabled").DataField("IsDisabled")
+                    columns.Add().Caption(new JS("formatMessage('Cost Allocation UnitID')")).DataField("CostAllocationUnitId");
+                    columns.Add().Caption(new JS("formatMessage('Cost Allocation Unit')")).DataField("CostAllocationUnit");
+                    columns.Add().Caption(new JS("formatMessage('Cost Allocation Group')")).DataField("CostAllocationGroup");
+                                columns.Add().Caption(new JS("formatMessage('Is Disabled')")).DataField("IsDisabled")
                     .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>

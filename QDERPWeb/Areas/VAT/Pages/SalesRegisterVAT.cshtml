@@ -269,15 +269,15 @@
 <div class="content-container-top">
 
 
-<div class="title">
+	<div class="title" id="kpiCarousel">
 	<input id="formId" value="frm20162VATInvoiceMasterView" type="hidden" />
 
 		<div class="card blue shine compact with-sidebar">
 			<div class="tile-content">
 				<div class="title-text">
-					<h2 class="title-slide">VAT Invoice Register</h2>
+					<h2 class="title-slide" id="VATInvoiceRegisterss"></h2>
 					<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-					<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+					<h6 class="fade-in" id="QuickDiceERPSolutions9"></h6>
 				</div>
 				<div class="tile-icon">
 					<!-- Icon as SVG -->
@@ -293,9 +293,9 @@
 
 		<div id="mainCard" class="card today-bg with-sidebar">
 			<div class="tabs" style="gap:5px;">
-				<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-				<div class="tab-text" onclick="switchTab(1)">Approved</div>
-				<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+				<div class="tab-text active" onclick="switchTab(0)" id="Verifiedvatsalesregister"></div>
+				<div class="tab-text" onclick="switchTab(1)" id="approvedsalesregister"></div>
+				<div class="tab-text" onclick="switchTab(2)" id="submittedsalesregister"></div>
 			</div>
 
 			<div class="tab-content active">
@@ -318,10 +318,10 @@
 			</div>
 		</div>
 		<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
-			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Invoice Details</h2>
+			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="salesinvoicedetails"></h2>
 
 			<!-- Rotating Heading -->		
-			<h5 id="statusHeading" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
+			<h5 id="statusHeading" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;" >Invoice Amount</h5>
 
 			<!-- Value with SVG -->
 			<div id="switchValue" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
@@ -345,7 +345,7 @@
 		<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
 
 			<!-- Main Heading: Voucher Count -->
-			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="vouchercountsales"></h2>
 
 			<!-- Rotating Heading -->
 			<h3 id="statusHeading1" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
@@ -373,23 +373,23 @@
 
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
-		<i class="dx-icon-search"></i> View e-Invoice
+		<i class="dx-icon-search" id="salesregisterview"></i>
 	</div>
 
 	<div class="context-menu-itemInvoice" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+		<i class="dx-icon-close" id="salesregistercancel"></i>
 	</div>
 	<div class="context-menu-itemInvoice has-submenu">
-		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
+		<i class="dx-icon-file" id="salesregistervatobselete"></i>
 		<div class="submenu">
 			<div class="context-menu-itemInvoice" onclick="checkIfOldVATInvoice('INV001')">
-				<i class="dx-icon-file"></i> View VAT Invoice
+				<i class="dx-icon-file" id="salesregisterviewvatss"></i> 
 			</div>
 		</div>
 	</div>
 
 	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
+		<i class="dx-icon-copy" id="clonesalesregister"></i>
 	</div>
 </div>
 
@@ -556,9 +556,22 @@
 						   		</text>);
 
 
-					subColumns.AddFor(m => m.TotalInvoiceAmount)
-					.Caption("Invoiced Amount")
-					.Alignment(HorizontalAlignment.Right)
+			subColumns.AddFor(m => m.TotalInvoiceAmount)
+			.Caption(new JS("formatMessage('Invoiced Amount')"))
+			.EncodeHtml(false) // Required to render HTML content
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, {
+				minimumFractionDigits: currencyDecimals,
+				maximumFractionDigits: currencyDecimals
+		});
+		return '<span style=""display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+				")
 					.HeaderCellTemplate(@<text>
 								 			<div class="Invoice-header" style="font-weight: bold;">
 								 				<%= column.caption %>
@@ -571,7 +584,8 @@
 						   		</text>).Visible(false);
 
 					subColumns.AddFor(m => m.ConvertedTotalInvoiceAmount)
-					.Caption("Invoiced Amount")
+					.Caption(new JS("formatMessage('Invoiced Amount')"))
+					.EncodeHtml(false) // Required to render HTML content
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
 								 			<div class="Invoice-header" style="font-weight: bold;">
@@ -1290,7 +1304,7 @@
 		const headingEl = document.getElementById("statusHeading");
 		const valueEl = document.getElementById("switchValue");
 
-		headingEl.textContent = headings[currentIndex];
+		headingEl.textContent = formatMessage(headings[currentIndex]);
 		valueEl.innerHTML = `
 			
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
@@ -1339,30 +1353,36 @@
 		}, 30);
 	}
 
-		let isLast5Years = true; // Initial state
+			let isLast5Years = true; // Initial state
 
 	function switchData() {
 		const heading = document.getElementById("statusHeading1");
 		const value = document.getElementById("valueDisplay1");
 
 		if (isLast5Years) {
-			heading.textContent = "New Voucher Today";
+			heading.textContent = formatMessage("New Voucher Today");
 
 			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
 			animateTodayVoucherCount(todayTarget); // Animate count-up
 		} else {
-			heading.textContent = "Last 5 Years";
+			heading.textContent = formatMessage("Last 5 Years");
 			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
 		}
 
 		isLast5Years = !isLast5Years;
 	}
 
+	// Dummy formatMessage (replace with your i18n one)
+	function formatMessage(key) {
+		return key;
+	}
+
 	// Call once on page load
 	switchData();
 
-	// Automatically switch every 5 seconds
-	setInterval(switchData, 2000); // 5000 ms = 5 seconds
+	// Automatically switch every 2 seconds
+	setInterval(switchData, 2000);
+
 
 	const card = document.getElementById('mainCard');
 	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
@@ -1680,6 +1700,8 @@
 		});
 		console.log('End permission handling');
 	});
+
+
 	let selectedVoucherNo = null;
 	$(function () {
 			ddBtnShowRecords_click("range")
@@ -2127,26 +2149,26 @@
 	}
 	
 
-	$(function () {
-		$("#VATInvoiceRegister").dxTextBox({
-			text: formatMessage("VAT Invoice Register"),
-			readOnly: true,
-			onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+	// $(function () {
+	// 	$("#VATInvoiceRegister").dxTextBox({
+	// 		text: formatMessage("VAT Invoice Register"),
+	// 		readOnly: true,
+	// 		onContentReady: function(e) {
+	// 					$(e.element).addClass("dx-textbox-heading");
+	// 			}
 
-		});
-	});
-	$(function () {
-		$("#QuickDiceERPSolutions").dxTextBox({
-			text: formatMessage("QuickDice ERP Solutions"),
-			readOnly: true,
-			onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+	// 	});
+	// });
+	// $(function () {
+	// 	$("#QuickDiceERPSolutions").dxTextBox({
+	// 		text: formatMessage("QuickDice ERP Solutions"),
+	// 		readOnly: true,
+	// 		onContentReady: function(e) {
+	// 					$(e.element).addClass("dx-textbox-heading");
+	// 			}
 
-		});
-	});
+	// 	});
+	// });
 
 
 		
@@ -2423,7 +2445,29 @@
 		}).dxContextMenu("instance").show();
 	}
 
-
+	$(function () {
+		$("#VATInvoiceRegisterss").text(formatMessage("VAT Invoice Register"));
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions9").text(formatMessage("Quick Dice ERP Solutions"));
+	});
+	$(function () {
+		$("#Verifiedvatsalesregister").text(formatMessage("Verified"));
+	});
+	$(function () {
+		$("#approvedsalesregister").text(formatMessage("Approved"));
+	});
+	$(function () {
+		$("#submittedsalesregister").text(formatMessage("Submitted"));
+	});
+	$(function () {
+		$("#salesinvoicedetails").text(formatMessage("Invoice Details"));
+	});
+	
+	$(function () {
+		$("#vouchercountsales").text(formatMessage("Voucher Count"));
+	});
+	
 
 
 	function closeMainDropdown() {
@@ -2476,5 +2520,20 @@
 			maximumFractionDigits: currencyDecimals
 		});
 	}
+	 $(function () {
+		   $("#salesregisterviewvatss").text(formatMessage("View VAT Invoice"));
+	   });
+	 $(function () {
+		   $("#salesregistervatobselete").text(formatMessage("VAT Invoices (Obselete)"));
+	   });
+	 $(function () {
+		   $("#salesregistercancel").text(formatMessage("Cancel/Amend this Invoice (Invoice Credit Note)"));
+	   });
+	 $(function () {
+		   $("#salesregisterview").text(formatMessage("View e-Invoice"));
+	   });
+	 $(function () {
+		   $("#clonesalesregister").text(formatMessage("Clone e-Invoice"));
+	   });
 </script>
 

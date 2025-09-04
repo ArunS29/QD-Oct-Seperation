@@ -271,7 +271,7 @@
 			display: block;
 		}
 </style>
-<div class="title">
+<div class="title" id="kpiCarousel">
 
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
@@ -964,8 +964,7 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
-				toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
+				
 				frmDate = frmDate.toISOString().split('T')[0];
 				toDate = toDate.toISOString().split('T')[0];
 
@@ -1088,10 +1087,7 @@
 								messageType
 							);
 
-							if (result.success) {
-								const grid = $("#dataGrid").dxDataGrid("instance");
-								grid.refresh();
-							}
+							ddBtnShowRecords_click('range');
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error deleting purchase order", "error", 2000);

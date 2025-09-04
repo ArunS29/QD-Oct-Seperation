@@ -271,8 +271,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0;
+                    decimal aEntryAmount = 0;
+                    decimal Amt = 0;
                     var Remarks = "";
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
@@ -304,7 +304,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
-                       
+
                     }
 
                     bool isVoucherExists = dbContext.Tbl201VoucherMasters
@@ -342,7 +342,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -381,7 +381,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.DrAmount);
+                                debitamt = (decimal)(debitamt + entry.DrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Cr" && crCount == 1)
@@ -422,13 +422,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                             // Accumulate `aEntryAmount` correctly
                                             foreach (var mEntry in matchingEntries)
                                             {
-                                                aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
+                                                aEntryAmount += (decimal)mEntry.CrAmount; // Accumulate CrAmount correctly
                                             }
 
                                             // Process voucherEntries
                                             foreach (var mVoucherEntry in voucherEntries)
                                             {
-                                                int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                                decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                                 Amt = aEntryAmount + eAmount;
 
                                             }
@@ -617,8 +617,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0;
+                    decimal aEntryAmount = 0;
+                    decimal Amt = 0;
                     bool IsMatchingEntry = false;
 
                     //var matchingEntries;
@@ -682,7 +682,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -721,7 +721,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.DrAmount);
+                                debitamt = (decimal)(debitamt + entry.DrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Cr" && crCount == 1)
@@ -760,13 +760,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                             // Accumulate `aEntryAmount` correctly
                                             foreach (var mEntry in matchingEntries)
                                             {
-                                                aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly
+                                                aEntryAmount += (decimal)mEntry.CrAmount; // Accumulate CrAmount correctly
                                             }
 
                                             // Process voucherEntries
                                             foreach (var mVoucherEntry in voucherEntries)
                                             {
-                                                int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                                decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                                 Amt = aEntryAmount + eAmount;
 
                                                 // Do something with Amt if required
@@ -831,8 +831,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                    
+                    decimal CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
 
                     //var matchingEntries;
@@ -861,7 +861,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         matchingEntries = resultList1.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].CrAmount;
                             IsMatchingEntry = true;
                         }
 
@@ -905,7 +905,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    
 
                     int crCount = resultList.Count(i => i.DrCr == "Dr");
 
@@ -924,7 +924,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         pettycashid = petty.AccountHead;
-                        NewCrMinusAmt = (int)petty.CrAmount;
+                        NewCrMinusAmt = (decimal)petty.CrAmount;
                     }
 
                     foreach (var entry in resultList)
@@ -932,7 +932,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         if (!entry.SysRemarks.Contains("Paid thru:"))
                         {
-                            CrMinusAmt = (int)entry.VoucherAmountFormatted;
+                            CrMinusAmt = (decimal)entry.VoucherAmountFormatted;
 
                             entry.CrAmount = CrMinusAmt;
                             if (IsMatchingEntry == true)
@@ -1218,7 +1218,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-              
+
 
                 string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
                 byte defaultCompanyByte = 0; // or any default value you want
@@ -1839,8 +1839,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0; decimal? mCrAmt = 0;
+                    decimal aEntryAmount = 0;
+                    decimal Amt = 0; decimal? mCrAmt = 0;
                     var Remarks = "";
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
@@ -1855,8 +1855,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                                   .ToList();
 
                     var voucherNos1 = voucherEntries1.Select(ve => ve.VoucherNo).Distinct();
-                    int ExistingCrAmt = 0;
-
+                    
                     var qryListOfAccountlists1 = dbContext.Qry201VoucherEntryScreenDisplays
                         .Where(p => voucherNos1.Contains(p.VoucherNo))
                         .OrderBy(i => i.DrCr == "Cr" ? 1 : 0) // Ensures "Dr" entries come first
@@ -1921,8 +1920,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         if (record != null)
                         {
-                             rAmt = record.VoucherAmount;
-                            if(record.AccountHead != ExistingAccHeadID)
+                            rAmt = record.VoucherAmount;
+                            if (record.AccountHead != ExistingAccHeadID)
                             {
                                 dbContext.Tbl201VoucherEntries.Remove(record);
                                 IsRemoved = true;
@@ -1978,7 +1977,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Cr");
                     int drCount = resultList.Count(i => i.DrCr == "Dr");
@@ -2018,7 +2017,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.DrAmount);
+                                debitamt = (decimal)(debitamt + entry.DrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Cr" && crCount == 1)
@@ -2051,7 +2050,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         entry.CrAmount = debitamt;
                                     }
                                 }
-                                else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == ExistingAccHeadID && IsRemoved==true)
+                                else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == ExistingAccHeadID && IsRemoved == true)
                                 {
                                     if (entry.DrCr == "Cr")
                                     {
@@ -2061,14 +2060,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                             // Accumulate `aEntryAmount` correctly
                                             foreach (var mEntry in matchingEntries)
                                             {
-                                                aEntryAmount += (int)mEntry.CrAmount; // Accumulate CrAmount correctly //Matching entries  - Delete entry
+                                                aEntryAmount += (decimal)mEntry.CrAmount; // Accumulate CrAmount correctly //Matching entries  - Delete entry
                                                 mCrAmt = aEntryAmount - rAmt;
                                             }
 
                                             // Process voucherEntries
                                             foreach (var mVoucherEntry in voucherEntries)
                                             {
-                                                int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                                decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                                 if (aEntryAmount == 0)
                                                 {
                                                     Amt = Amt - eAmount;
@@ -2132,7 +2131,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     }
 
-                    
+
 
                     return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
                 }
@@ -2539,14 +2538,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     await dbContext.SaveChangesAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = VM.VoucherNo,
-                             ActionType = "You have one Payment Voucher to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = VM.VoucherNo,
+                        ActionType = "You have one Payment Voucher to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
                 }
@@ -2790,7 +2789,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var existingInvoice = await dbContext.Tbl20166VatpurchaseMasters
                                                                  .FirstOrDefaultAsync(v => v.PurchaseVoucherNo == InvoiceMaster.PurchaseVoucherNo);
-                    
+
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
 
@@ -2810,14 +2809,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.PurchaseVoucherNo,
-                             ActionType = "You have one Purchase Invoice to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.PurchaseVoucherNo,
+                        ActionType = "You have one Purchase Invoice to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
 
 
@@ -2855,7 +2854,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         if (child.PurchaseChildSlNo == null || child.PurchaseChildSlNo == 0)
                         {
-                            if(child.TaxSlabCode==null)
+                            if (child.TaxSlabCode == null)
                             {
                                 child.TaxSlabCode = 2;
                             }
@@ -2928,8 +2927,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                        var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
-                                                                 .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
+                    var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
+                                                             .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
 
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
@@ -2950,14 +2949,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.InvoiceNo,
-                             ActionType = "You have one Sales Invoice to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.InvoiceNo,
+                        ActionType = "You have one Sales Invoice to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -3019,6 +3018,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DiscountInOc = child.Discount,
                                 UnitsToBill = 1,
                                 UnitRateMethod = child.UnitRateMethod,
+                                TaxExemptionReasonCode = child.TaxExemptionReasonCode,
                                 ItemCode = child.ItemCode ?? string.Empty,
                                 UoM = "Each"
                             };
@@ -3051,6 +3051,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.Discount = child.Discount;
                                 existingChild.UnitRateInOc = child.UnitRate;
                                 existingChild.DiscountInOc = child.Discount;
+                                existingChild.TaxExemptionReasonCode = child.TaxExemptionReasonCode;
                                 dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
                                 savedChildren.Add(existingChild);
                             }
@@ -3112,11 +3113,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.CreditNoteNo,
-                             ActionType = "You have one Credit Note to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.CreditNoteNo,
+                        ActionType = "You have one Credit Note to verify",
+                        TenantName = TenantName
                     };
 
                     await _fcmService.SendNotificationAsync(notifyRequest);
@@ -3250,11 +3251,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.DebitNoteNo,
-                             ActionType = "You have one Debit Note to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.DebitNoteNo,
+                        ActionType = "You have one Debit Note to verify",
+                        TenantName = TenantName
                     };
 
                     await _fcmService.SendNotificationAsync(notifyRequest);
@@ -3325,8 +3326,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.DetailedDescription = child.DetailedDescription;
                                 existingChild.QuantityDebited = child.QuantityDebited;
                                 existingChild.TaxSlabCode = child.TaxSlabCode;
-                                existingChild.UnitsToDebited = child.UnitsToDebited; 
-                                existingChild.UnitRateMethod = child.UnitRateMethod; 
+                                existingChild.UnitsToDebited = child.UnitsToDebited;
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
                                 existingChild.Discount = child.Discount;
                                 existingChild.UnitRateInOc = child.UnitRate;
                                 existingChild.DiscountInOc = child.Discount;
@@ -3572,63 +3573,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok(new { success = true, invoiceNo = purchaseVoucherNo });
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddCPCrVoucherEntry(DataSourceLoadOptions loadOptions, [FromBody] List<Tbl201VoucherEntry> voucherEntries, string AccountHead, string PaymentAccoutHeadName, int Gridcount)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                if (voucherEntries == null || !voucherEntries.Any())
-                {
-                    return BadRequest(new { success = false, message = "Invalid data received." });
-                }
-
-                try
-                {
-                    Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
-                    bool IsMatchingEntry = false;
-
-                    List<VoucherEntryDisplayDTO> matchingEntries = new();
-
-                    // Add entries to the database
-                    dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
-                    await dbContext.SaveChangesAsync();
-
-               
-
-
-                    var voucherNos = voucherEntries.Select(ve => ve.VoucherNo).Distinct();
-                    var qryListOfAccountlists = dbContext.Qry201VoucherEntryScreenDisplays
-                        .Where(p => voucherNos.Contains(p.VoucherNo))
-                        .OrderBy(i => i.DrCr == "Dr" ? 1 : 0) // "Dr" entries first
-                        .Select(i => new VoucherEntryDisplayDTO
-                        {
-                            VoucherNo = i.VoucherNo,
-                            VoucherEntryNo = i.VoucherEntryNo,
-                            DrCr = i.DrCr,
-                            DrAmount = i.DrAmount,
-                            CrAmount = i.CrAmount,
-                            VoucherAmountFormatted = i.VoucherAmountFormatted,
-                            EntryNarration = i.EntryNarration,
-                            AccountHead = i.AccountHead,
-                            SysRemarks = i.SysRemarks
-                        });
-
-                    var resultList = await qryListOfAccountlists.ToListAsync();
-
-                    // You may process or modify resultList here if needed
-
-                    return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+       
 
         [HttpGet]
         public async Task<IActionResult> GetChequeDetailsByVoucherNo(string voucherNo)
@@ -3666,7 +3611,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                bool exists = dbContext.Tbl201VoucherMasters.Any(v => v.VoucherNo == voucherNo);
+                bool exists = dbContext.Tbl201VoucherEntries.Any(v => v.VoucherNo == voucherNo);
                 return Json(exists);
             }
             return Unauthorized();
@@ -3754,6 +3699,113 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultCurrencyDecimals()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    int.TryParse(defaultCompanyString, out int defaultCompanyId);
+
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .Where(c => c.CompanyId == defaultCompanyId)
+                        .Select(c => new { c.DefaultCurrencyDecimals, c.CurrencyType })
+                        .FirstOrDefaultAsync();
+
+                    if (company == null)
+                        return NotFound(new { message = "Company not found" });
+
+                    bool showVatButtons = (company.DefaultCurrencyDecimals == 3
+                                           || company.CurrencyType == "AED"
+                                           || company.CurrencyType == "USD"
+                                           || company.CurrencyType == "QAR");
+
+                    return Ok(new
+                    {
+                        company.DefaultCurrencyDecimals,
+                        company.CurrencyType,
+                        ShowVatButtons = showVatButtons
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultCurrencyDecimalsCredit()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    int.TryParse(defaultCompanyString, out int defaultCompanyId);
+
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .Where(c => c.CompanyId == defaultCompanyId)
+                        .Select(c => new { c.DefaultCurrencyDecimals, c.CurrencyType })
+                        .FirstOrDefaultAsync();
+
+            return Ok(new { DefaultCurrencyDecimals = company });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+    return Unauthorized(new { message = "Invalid tenant.", success = false });
+}
+        [HttpGet]
+        public async Task<IActionResult> GetPostedNoFromJournalregister(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var postedFromNo = await (
+                    from j in dbContext.Tbl20126JournalRegisterMasters
+                    join v in dbContext.Tbl201VoucherMasters
+                        on j.PostedVoucherNo equals v.VoucherNo
+                    where j.PostedVoucherNo == voucherNo
+                          && j.IsPosted == true
+                    select j.JournalRefNo
+                ).FirstOrDefaultAsync();
+
+                if (postedFromNo != null)
+                    return Ok(postedFromNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPostedNoFromExpenses(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var postedFromNo = await (
+                    from j in dbContext.Tbl20102ExpenseClaimMasters
+                    join v in dbContext.Tbl201VoucherMasters
+                        on j.PaymentVoucherNo equals v.VoucherNo
+                    where j.PaymentVoucherNo == voucherNo
+                          && j.IsPaid == true
+                    select j.ClaimRefNo
+                ).FirstOrDefaultAsync();
+
+                if (postedFromNo != null)
+                    return Ok(postedFromNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+                   
+
     }
 
 }

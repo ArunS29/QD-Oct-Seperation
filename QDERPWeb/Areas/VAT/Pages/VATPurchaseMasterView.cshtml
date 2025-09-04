@@ -299,15 +299,15 @@
 
 </style>
 
-<div class="title">
+<div class="title" id="kpiCarousel">
 <input id="formId" value="frm20165VATPurchaseMasterView" type="hidden" />
 
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">VAT Purchase Register</h2>
+				<h2 class="title-slide" id="vatpurchaseregister"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="QuickDiceERPSolutions10"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -321,9 +321,9 @@
 
 	<div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs" style="gap:5px;">
-			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Posted</div>
+			<div class="tab-text active" onclick="switchTab(0)" id="Verifiedvatpurchaseregister"></div>
+			<div class="tab-text" onclick="switchTab(1)" id="approvedpurchaseregister"></div>
+			<div class="tab-text" onclick="switchTab(2)" id="submittedpurchaseregister"></div>
 		</div>
 
 		<div class="tab-content active">
@@ -346,7 +346,7 @@
 	</div>
 
 	<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Purchase Details</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="salesinvoicedetailspurchase"></h2>
 
 		<!-- Rotating Heading -->
 		<h5 id="statusHeading1" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Bill Amount</h5>
@@ -371,7 +371,7 @@
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
 
 		<!-- Main Heading: Voucher Count -->
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="vouchercountpurchase"></h2>
 
 		<!-- Rotating Heading -->
 		<h3 id="statusHeading2" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
@@ -1033,80 +1033,81 @@
 
 			});
 			});
-			columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head Arabic").Visible(false);
-			columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-			columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-			columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
-			columns.AddFor(m => m.AdvanceText).Caption("Advance Text").Visible(false);
-			columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-			columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-			columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
-			columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
-			columns.AddFor(m => m.CompanyId).Caption("Company ID");
-			columns.AddFor(m => m.CompanyName).Caption("Company Branch").Visible(false);
-			columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
-			columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
-			columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
-			columns.AddFor(m => m.CostCenterCode).Caption("Cost Center Code").Visible(false);
-			columns.AddFor(m => m.CostCenterIncharge).Caption("Cost Center Incharge").Visible(false);
-			columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
-			columns.AddFor(m => m.InventoryEffectiveDate).Caption("Inventory Effective Date").Visible(false);
-			columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-			columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-			columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-			columns.AddFor(m => m.MaterialReceiptDate).Caption("Material Receipt Date").Visible(false);
-			columns.AddFor(m => m.MaterialReceiptNo).Caption("Material Receipt No").Visible(false);
-			columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-			columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-			columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
-			columns.AddFor(m => m.PurchaseAccountGroupName).Caption("Purchase Account Group Name").Visible(false);
-			columns.AddFor(m => m.PurchaseAccountMasterName).Caption("Purchase Account Master Name").Visible(false);
-			columns.AddFor(m => m.PurchaseBillDate).Caption("Supplier Bill Date").Visible(false);
-			columns.AddFor(m => m.PurchaseBillNo).Caption("Supplier Bill No").Visible(false);
-			columns.AddFor(m => m.PurchaseDeliveryDate).Caption("Purchase Delivery Date").Visible(false);
-			columns.AddFor(m => m.PurchaseDueDate).Caption("Purchase Due Date");
-			columns.AddFor(m => m.PurchaseEffectiveDate).Caption("Purchase Effective Date").Visible(false);
-			columns.AddFor(m => m.PurchaseLedgerAccountNo).Caption("Purchase Ledger Account No").Visible(false);
-			columns.AddFor(m => m.PurchaseLedgerName).Caption("Purchase Ledger Name").Visible(false);
-			columns.AddFor(m => m.PurchaseOrderDate).Caption("Purchase Order Date").Visible(false);
-			columns.AddFor(m => m.PurchaseOrderNo).Caption("Purchase Order No").Visible(false);
-			columns.AddFor(m => m.PurchasePeriod).Caption("Purchase Period").Visible(false);
-			columns.AddFor(m => m.PurchaseTaxCategoryCode).Caption("Purchase Tax Category Code").Visible(false);
-			columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-			columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
-			columns.AddFor(m => m.RemarksAr).Caption("Remarks Ar").Visible(false);
-			columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
-			columns.AddFor(m => m.RetentionText).Caption("Retention Text").Visible(false);
-			columns.AddFor(m => m.SupplierAdditionalNumber).Caption("Supplier Additional Number").Visible(false);
-			columns.AddFor(m => m.SupplierAdditionalStreet).Caption("Supplier Additional Street").Visible(false);
-			columns.AddFor(m => m.SupplierAdditionalStreetAr).Caption("Supplier Additional Street Ar").Visible(false);
-			columns.AddFor(m => m.SupplierAddress).Caption("Supplier Address").Visible(false);
-			columns.AddFor(m => m.SupplierAddressAr).Caption("Supplier Address Ar").Visible(false);
-			columns.AddFor(m => m.SupplierAddressStreet).Caption("Supplier Address Street").Visible(false);
-			columns.AddFor(m => m.SupplierAddressStreetAr).Caption("Supplier Address Street Ar").Visible(false);
-			columns.AddFor(m => m.SupplierBuildingNumber).Caption("Supplier Building Number").Visible(false);
-			columns.AddFor(m => m.SupplierCity).Caption("Supplier City").Visible(false);
-			columns.AddFor(m => m.SupplierCityAr).Caption("Supplier City Ar").Visible(false);
-			columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Visible(false);
-			columns.AddFor(m => m.SupplierCountryCode).Caption("Supplier Country Code").Visible(false);
-			columns.AddFor(m => m.SupplierInvRecdBy).Caption("Supplier Inv Recd By").Visible(false);
-			columns.AddFor(m => m.SupplierInvRecdOn).Caption("Supplier Inv Recd On").Visible(false);
-			columns.AddFor(m => m.SupplierName).Caption("Supplier Name").Visible(false);
-			columns.AddFor(m => m.SupplierNameAr).Caption("Supplier Name Ar").Visible(false);
-			columns.AddFor(m => m.SupplierNameAr002).Caption("Supplier Name Ar002").Visible(false);
-			columns.AddFor(m => m.SupplierNameArOnCashPurchase).Caption("Supplier Name Ar On Cash Purchase").Visible(false);
-			columns.AddFor(m => m.SupplierNameOnCashPurchase).Caption("Supplier Name On Cash Purchase").Visible(false);
-			columns.AddFor(m => m.SupplierNameOrCashSupplier).Caption("Supplier Name Or Cash Supplier").Visible(false);
-			columns.AddFor(m => m.SupplierNeighborhood).Caption("Supplier Neighborhood").Visible(false);
-			columns.AddFor(m => m.SupplierNeighborhoodAr).Caption("Supplier Neighborhood Ar").Visible(false);
-			columns.AddFor(m => m.SupplierPostalCode).Caption("Supplier Postal Code").Visible(false);
-			columns.AddFor(m => m.SupplierProvince).Caption("Supplier Province").Visible(false);
-			columns.AddFor(m => m.SupplierProvinceAr).Caption("Supplier Province Ar");
-			columns.AddFor(m => m.TotalQtyInvoiced).Caption("Total Qty Invoiced").Visible(false);
-			columns.AddFor(m => m.TypeOfPurchase).Caption("Type Of Purchase").Visible(false);
-			columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-			columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+			columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head Arabic')")).Visible(false);
+			columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+			columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+			columns.AddFor(m => m.AdvanceAmount).Caption(new JS("formatMessage('Advance Amount')")).Visible(false);
+			columns.AddFor(m => m.AdvanceText).Caption(new JS("formatMessage('Advance Text')")).Visible(false);
+			columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+			columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false);
+			columns.AddFor(m => m.BranchCode).Caption(new JS("formatMessage('Branch Code')")).Visible(false);
+			columns.AddFor(m => m.BranchName).Caption(new JS("formatMessage('Branch Name')")).Visible(false);
+			columns.AddFor(m => m.CompanyId).Caption(new JS("formatMessage('Company ID')"));
+			columns.AddFor(m => m.CompanyName).Caption(new JS("formatMessage('Company Branch')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationGroup).Caption(new JS("formatMessage('Cost Allocation Group')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationMasterGroup).Caption(new JS("formatMessage('Cost Allocation Master Group')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationUnit).Caption(new JS("formatMessage('Cost Allocation Unit')")).Visible(false);
+			columns.AddFor(m => m.CostCenterCode).Caption(new JS("formatMessage('Cost Center Code')")).Visible(false);
+			columns.AddFor(m => m.CostCenterIncharge).Caption(new JS("formatMessage('Cost Center Incharge')")).Visible(false);
+			columns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Visible(false);
+			columns.AddFor(m => m.InventoryEffectiveDate).Caption(new JS("formatMessage('Inventory Effective Date')")).Visible(false);
+			columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+			columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+			columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+			columns.AddFor(m => m.MaterialReceiptDate).Caption(new JS("formatMessage('Material Receipt Date')")).Visible(false);
+			columns.AddFor(m => m.MaterialReceiptNo).Caption(new JS("formatMessage('Material Receipt No')")).Visible(false);
+			columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+			columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false);
+			columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+			columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+			columns.AddFor(m => m.PurchaseAccountGroupName).Caption(new JS("formatMessage('Purchase Account Group Name')")).Visible(false);
+			columns.AddFor(m => m.PurchaseAccountMasterName).Caption(new JS("formatMessage('Purchase Account Master Name')")).Visible(false);
+			columns.AddFor(m => m.PurchaseBillDate).Caption(new JS("formatMessage('Supplier Bill Date')")).Visible(false);
+			columns.AddFor(m => m.PurchaseBillNo).Caption(new JS("formatMessage('Supplier Bill No')")).Visible(false);
+			columns.AddFor(m => m.PurchaseDeliveryDate).Caption(new JS("formatMessage('Purchase Delivery Date')")).Visible(false);
+			columns.AddFor(m => m.PurchaseDueDate).Caption(new JS("formatMessage('Purchase Due Date')"));
+			columns.AddFor(m => m.PurchaseEffectiveDate).Caption(new JS("formatMessage('Purchase Effective Date')")).Visible(false);
+			columns.AddFor(m => m.PurchaseLedgerAccountNo).Caption(new JS("formatMessage('Purchase Ledger Account No')")).Visible(false);
+			columns.AddFor(m => m.PurchaseLedgerName).Caption(new JS("formatMessage('Purchase Ledger Name')")).Visible(false);
+			columns.AddFor(m => m.PurchaseOrderDate).Caption(new JS("formatMessage('Purchase Order Date')")).Visible(false);
+			columns.AddFor(m => m.PurchaseOrderNo).Caption(new JS("formatMessage('Purchase Order No')")).Visible(false);
+			columns.AddFor(m => m.PurchasePeriod).Caption(new JS("formatMessage('Purchase Period')")).Visible(false);
+			columns.AddFor(m => m.PurchaseTaxCategoryCode).Caption(new JS("formatMessage('Purchase Tax Category Code')")).Visible(false);
+			columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+			columns.AddFor(m => m.Remarks).Caption(new JS("formatMessage('Remarks')")).Visible(false);
+			columns.AddFor(m => m.RemarksAr).Caption(new JS("formatMessage('Remarks Ar')")).Visible(false);
+			columns.AddFor(m => m.RetentionAmount).Caption(new JS("formatMessage('Retention Amount')")).Visible(false);
+			columns.AddFor(m => m.RetentionText).Caption(new JS("formatMessage('Retention Text')")).Visible(false);
+			columns.AddFor(m => m.SupplierAdditionalNumber).Caption(new JS("formatMessage('Supplier Additional Number')")).Visible(false);
+			columns.AddFor(m => m.SupplierAdditionalStreet).Caption(new JS("formatMessage('Supplier Additional Street')")).Visible(false);
+			columns.AddFor(m => m.SupplierAdditionalStreetAr).Caption(new JS("formatMessage('Supplier Additional Street Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddress).Caption(new JS("formatMessage('Supplier Address')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddressAr).Caption(new JS("formatMessage('Supplier Address Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddressStreet).Caption(new JS("formatMessage('Supplier Address Street')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddressStreetAr).Caption(new JS("formatMessage('Supplier Address Street Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierBuildingNumber).Caption(new JS("formatMessage('Supplier Building Number')")).Visible(false);
+			columns.AddFor(m => m.SupplierCity).Caption(new JS("formatMessage('Supplier City')")).Visible(false);
+			columns.AddFor(m => m.SupplierCityAr).Caption(new JS("formatMessage('Supplier City Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Visible(false);
+			columns.AddFor(m => m.SupplierCountryCode).Caption(new JS("formatMessage('Supplier Country Code')")).Visible(false);
+			columns.AddFor(m => m.SupplierInvRecdBy).Caption(new JS("formatMessage('Supplier Inv Recd By')")).Visible(false);
+			columns.AddFor(m => m.SupplierInvRecdOn).Caption(new JS("formatMessage('Supplier Inv Recd On')")).Visible(false);
+			columns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameAr).Caption(new JS("formatMessage('Supplier Name Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameAr002).Caption(new JS("formatMessage('Supplier Name Ar002')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameArOnCashPurchase).Caption(new JS("formatMessage('Supplier Name Ar On Cash Purchase')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameOnCashPurchase).Caption(new JS("formatMessage('Supplier Name On Cash Purchase')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameOrCashSupplier).Caption(new JS("formatMessage('Supplier Name Or Cash Supplier')")).Visible(false);
+			columns.AddFor(m => m.SupplierNeighborhood).Caption(new JS("formatMessage('Supplier Neighborhood')")).Visible(false);
+			columns.AddFor(m => m.SupplierNeighborhoodAr).Caption(new JS("formatMessage('Supplier Neighborhood Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierPostalCode).Caption(new JS("formatMessage('Supplier Postal Code')")).Visible(false);
+			columns.AddFor(m => m.SupplierProvince).Caption(new JS("formatMessage('Supplier Province')")).Visible(false);
+			columns.AddFor(m => m.SupplierProvinceAr).Caption(new JS("formatMessage('Supplier Province Ar')"));
+			columns.AddFor(m => m.TotalQtyInvoiced).Caption(new JS("formatMessage('Total Qty Invoiced')")).Visible(false);
+			columns.AddFor(m => m.TypeOfPurchase).Caption(new JS("formatMessage('Type Of Purchase')")).Visible(false);
+			columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+			columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false);
+
 
 		
 		})
@@ -1271,7 +1272,7 @@
 		const headingEl = document.getElementById("statusHeading1");
 		const valueEl = document.getElementById("switchValue");
 
-		headingEl.textContent = headings[currentIndex];
+		headingEl.textContent = formatMessage(headings[currentIndex]);
 		valueEl.innerHTML = `
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -1336,18 +1337,20 @@
 		const value = document.getElementById("valueDisplay2");
 
 		if (isLast5Years) {
-			heading.textContent = "New Voucher Today";
+			heading.textContent = formatMessage("New Voucher Today");
 
 			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
 			animateTodayVoucherCount(todayTarget); // Animate count-up
 		} else {
-			heading.textContent = "Last 5 Years";
+			heading.textContent = formatMessage("Last 5 Years");
 			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
 		}
 
 		isLast5Years = !isLast5Years;
 	}
-
+	function formatMessage(key) {
+		return key;
+	}
 	// Call once on page load
 	switchData();
 
@@ -2399,4 +2402,26 @@
 		});
 	}
 
+		$(function () {
+		$("#vatpurchaseregister").text(formatMessage("VAT Purchase Register"));
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions10").text(formatMessage("Quick Dice ERP Solutions"));
+	});
+	$(function () {
+		$("#Verifiedvatpurchaseregister").text(formatMessage("Verified"));
+	});
+	$(function () {
+		$("#approvedpurchaseregister").text(formatMessage("Approved"));
+	});
+	$(function () {
+		$("#submittedpurchaseregister").text(formatMessage("Posted"));
+	});
+	$(function () {
+		$("#salesinvoicedetailspurchase").text(formatMessage("Purchase Details"));
+	});
+
+	$(function () {
+		$("#vouchercountpurchase").text(formatMessage("Voucher Count"));
+	});
 </script>

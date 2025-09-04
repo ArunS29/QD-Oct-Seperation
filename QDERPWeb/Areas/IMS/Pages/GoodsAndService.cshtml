@@ -55,12 +55,12 @@
         display: none !important;
     }
 </style>
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Goods and Services</h3>
-</div>
+</div> *@
 
 <div class="form-grid" style="padding:10px;">
     <!-- Row 1 -->
@@ -109,11 +109,12 @@
                 .Buttons(buttons =>
                 {
                     buttons.Add()
-                            .Name("btnAddUOM1")
+                    .Name("btnAddUOM1")
                     .Location(TextEditorButtonLocation.After)
                     .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus")
+                    .OnClick("StockGroup")
                     .ElementAttr(new { @class = "custom-hover-button add-hover" }));
                     buttons.Add()
                     .Name("dropDown");
@@ -210,7 +211,7 @@
                 .Label(new JS("formatMessage('Packing Unit:')"))
             .LabelMode(EditorLabelMode.Floating)
             .Value(1)
-            .Width("100%"))
+            .Width("88%"))
        </div>
        <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
@@ -825,4 +826,9 @@ function bindGoodsAndServiceData() {
             function onBack(){
                 window.parent.closeModal();
             }
+            function StockGroup(){
+                const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+                const title = "Stock Group";
+                openModal(url, title,"","70%");
+          }
 </script>

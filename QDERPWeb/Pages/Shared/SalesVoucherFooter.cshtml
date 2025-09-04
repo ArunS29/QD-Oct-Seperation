@@ -306,6 +306,14 @@
     .dx-button {
         height: 35px !important;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 
 
@@ -367,7 +375,7 @@
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
         .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
+        .Icon("attach")
         .Hint("Click to Attach")
         .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-attach" })
@@ -1344,11 +1352,81 @@
             var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
             var voucherType = voucherTypeBox.option("value");
             const isMaster = false;
+            var folderNo2 = voucherNo;
             console.log(voucherType)
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
             const title = "Transaction Documents";
             openModal(url, title);
         }
+    }
+
+
+    // Attachment Count
+        //1. Button Modify in btn-attach
+        //2. Get Update the count of button for Attachment
+
+        function updateAttachButtonCount(buttonSelector, count) {
+            var btn = $(buttonSelector);
+            var btnInstance = btn.dxButton("instance");
+            if (!btnInstance) return;
+
+            var originalText = btnInstance.option("text");
+            var color = count > 0 ? "green" : "red";
+
+            btnInstance.option({
+                template: function() {
+                    // Icon element
+                    var iconElement = $("<span>")
+                    .addClass("dx-icon dx-icon-attach")
+                    .addClass(count > 0 ? "icon-green" : "icon-red")
+                    .css({
+                        "font-size": "15px",
+                        "vertical-align": "middle",
+                        "margin-right": "4px"
+                    })[0];
+
+                    // Create fragment
+                    var fragment = document.createDocumentFragment();
+                    fragment.appendChild(iconElement);
+
+                    // Append count only if > 0
+                    if (count > 0) {
+                        var countSpan = document.createElement("span");
+                        countSpan.style.color = color;
+                        countSpan.style.fontWeight = "bold";
+                        countSpan.style.fontSize = "15px";
+                        countSpan.style.marginRight = "2px";
+                        countSpan.textContent = count;
+                        fragment.appendChild(countSpan);
+                    }
+
+                    // Append original text
+                    fragment.appendChild(document.createTextNode(originalText));
+
+                    return fragment;
+                }
+            });
+        }
+
+    //1. Get Document Count from Grid Load in Ledger Documents
+    function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
+    }
+    //2. Get Document Count
+    async function getDocumentCount() {
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+        var voucherType = voucherTypeBox.option("value");
+        var folderNo2 = voucherNo;
+        var menuType = "finance";
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+
+        // No need to return anything if you don't want to
     }
 
 

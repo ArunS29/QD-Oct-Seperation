@@ -19,6 +19,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
     public partial class cashPayments : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly Tenant _resolvedTenant; // ✅ Cached tenant for use outside HttpContext
 
         public cashPayments(
             string voucherNo,
@@ -33,19 +34,60 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
+            // ✅ Resolve tenant once while HttpContext is valid
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
+
             InitializeComponent();
-            SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
+            SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
             LoadReportData(voucherNo);
             LoadSubreport(voucherNo);
 
-
-            // ✅ Hook BeforePrint event here
+            // ✅ Hook BeforePrint event handlers
             xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
-
-
+            xrSubreport2.BeforePrint += xrSubreport2_BeforePrint;
         }
 
+        // ---------------- Subreport 2 ----------------
+        private void xrSubreport2_BeforePrint(object sender, EventArgs e)
+        {
+            string drCr = GetCurrentColumnValue("DrCr")?.ToString();
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
 
+            if (string.IsNullOrWhiteSpace(drCr) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport2.Visible = false;
+                return;
+            }
+
+            var tenant = _resolvedTenant; // ✅ Use cached tenant instead of HttpContext
+            if (_drCrWithEmpAllocations.Contains(drCr) && tenant != null)
+            {
+                var subReport = new rpt201empReport();
+                subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);
+
+                if ((subReport.DataSource as DataTable)?.Rows.Count > 0)
+                {
+                    xrSubreport2.ReportSource = subReport;
+                    xrSubreport2.Visible = true;
+                }
+                else
+                {
+                    xrSubreport2.Visible = false;
+                }
+            }
+            else
+            {
+                xrSubreport2.Visible = false;
+            }
+        }
+
+        // ---------------- Collections ----------------
+        private HashSet<string> _drCrWithEmpAllocations =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Dr", "Cr"
+            };
 
         private void xrSubreport1_BeforePrint(object sender, EventArgs e)
         {
@@ -58,12 +100,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                 return;
             }
 
-            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) &&
-                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+            var tenant = _resolvedTenant; // ✅ Use cached tenant
+            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) && tenant != null)
             {
                 var subReport = new subCostReport();
-
-
                 subReport.LoadData(voucherNo, currentAccountHead, tenant.ConnectionString);
                 xrSubreport1.ReportSource = subReport;
                 xrSubreport1.Visible = true;
@@ -74,17 +114,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
         }
 
-
-
         private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
 
         private void LoadSubreport(string voucherNo)
         {
             if (string.IsNullOrWhiteSpace(voucherNo)) return;
 
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
-                throw new Exception("Unable to retrieve tenant context.");
-
+            var tenant = _resolvedTenant ?? throw new Exception("Tenant not resolved.");
             DataTable dt = new DataTable();
 
             using (var conn = new SqlConnection(tenant.ConnectionString))

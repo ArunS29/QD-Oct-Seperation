@@ -803,7 +803,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return Ok(new
                 {
                     success = true,
-                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
+                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully.",
+                    salesOrderNo = model.SalesOrderNo
                 });
             }
             catch (Exception ex)
@@ -1867,17 +1868,25 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
         }
 
         [HttpGet]
-        public async Task<IActionResult> HasLedger(string clientCode)
+        public async Task<IActionResult> HasLedger(string clientName)
         {
             try
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var hasLedger = await dbContext.Tbl30101ClientMasters
-                        .AnyAsync(c => c.ClientCode == clientCode && c.ClientName != null);
+                    var client = await dbContext.Tbl30101ClientMasters
+                        .Where(c => c.ClientName.Trim() == clientName.Trim() && c.ClientAccountLedgerNo != null)
+                        .Select(c => new { c.ClientCode })
+                        .FirstOrDefaultAsync();
 
-
-                    return Ok(hasLedger);
+                    if (client != null)
+                    {
+                        return Ok(client.ClientCode);
+                    }
+                    else
+                    {
+                        return Ok(false); // or return NotFound() if you prefer
+                    }
                 }
                 return BadRequest("Tenant or database context not found.");
             }

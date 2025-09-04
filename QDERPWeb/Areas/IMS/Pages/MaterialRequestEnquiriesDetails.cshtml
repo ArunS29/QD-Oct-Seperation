@@ -273,7 +273,7 @@
 		top: 70% !important;
 	}
 </style>
-<div class="title">
+<div class="title" id="kpiCarousel">
 	<input id="formId" value="frm60112PurchaseRequestView" type="hidden" />
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
@@ -322,7 +322,7 @@
 	</div>
 
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
 				<h4 style="text-align:left">No of Requested Today</h4>
@@ -541,68 +541,68 @@
 					columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 				 {
 				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
-		function(cellElement, cellInfo) {
-		if (cellInfo.value != null && cellInfo.value !== '') {
-		$('<span>')
-		.text(cellInfo.value)
-		.css({
-		display: 'inline-block',
-		backgroundColor: '#ffe6e6',
-		color: '#d93025',
-		fontWeight: 'bold',
-		padding: '4px 10px',
-		borderRadius: '20px',
-		minWidth: '24px',
-		textAlign: 'center'
-		})
-		.appendTo(cellElement);
-		}
-	 
-		}
-		"));
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#C0C0FF',
+				color: '#2951A7',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+			
+				}
+				"));
 				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
-												function(cellElement, cellInfo) {
-												if (cellInfo.value != null) {
-												const formattedValue = new Intl.NumberFormat('en-US', {
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2
-												}).format(cellInfo.value);
-												$('<span>')
-												.text(formattedValue)
-												.css({
-												display: 'inline-block',
-												backgroundColor: '#ffe6e6',
-												color: '#d93025',
-												fontWeight: 'bold',
-												padding: '4px 10px',
-												borderRadius: '20px'
-												})
-												.appendTo(cellElement);
-												}
-												}
-												"));
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#C0C0FF',
+				color: '#2951A7',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
 				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
-																function(cellElement, cellInfo) {
-																if (cellInfo.value != null) {
-																const formattedValue = new Intl.NumberFormat('en-US', {
-																minimumFractionDigits: 2,
-																maximumFractionDigits: 2
-																}).format(cellInfo.value);
-																$('<span>')
-																.text(formattedValue)
-																.css({
-																display: 'inline-block',
-																backgroundColor: '#e6ffe6',
-																color: '#1a8f1a',
-																fontWeight: 'bold',
-																padding: '4px 10px',
-																borderRadius: '20px'
-																})
-																.appendTo(cellElement);
-																}
-																}
-																"));
-														});
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#C0C0FF',
+				color: '#2951A7',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				});
 
 					columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
 					 {
@@ -971,7 +971,8 @@
 						document.getElementById('loadingSpinner').style.display = 'block';
 	});
 	function ddBtnShowRecords_click(duration) {
-						document.getElementById('loadingSpinner').style.display = 'block';
+		hidequarterSubmenus();
+		document.getElementById('loadingSpinner').style.display = 'block';
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		var toDateBox = $("#todateBox").dxDateBox("instance");
 		var frmDate = new Date(frmDateBox.option("value"));
@@ -1161,6 +1162,60 @@
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
+			debugger;
+			console.log(e.row.data.IsCancelled);
+			if (e.row.data.IsCancelled) {
+            e.items = [
+                {
+					text: "Clone Request / Enquiry",
+					icon: "copy",
+					onItemClick: function () {
+						const mprNo = e.row.data.Mprno; // ✅ consistent name
+
+						if (!mprNo) {
+							DevExpress.ui.notify("MPR No not found.", "error", 2000);
+							return;
+						}
+
+						DevExpress.ui.dialog.confirm(
+							"You are about to Clone this Request/Enquiry. Are you sure you want to continue?",
+							"Confirm Clone"
+						).done(function (result) {
+							if (result) {
+								$.ajax({
+										url: "/api/MaterialRequestEnquiriesDetails/ClonePurchaseRequest",
+									type: "POST",
+									contentType: "application/json",
+									data: JSON.stringify(mprNo), // ✅ pass as string
+									success: function (response) {
+										DevExpress.ui.notify(response.message, "success", 2000);
+											ddBtnShowRecords_click('range');
+										$("#dataGrid").dxDataGrid("instance").refresh(); // ✅ refresh grid
+									},
+									error: function (xhr) {
+										let msg = xhr.responseJSON?.message || "Clone failed.";
+										DevExpress.ui.notify(msg, "error", 2000);
+										console.error("Clone error:", xhr.responseJSON);
+									}
+								});
+							}
+						});
+					}
+				},
+                {
+					text: "View Revision History",
+					icon: "clock",
+					onItemClick: function () {
+						let Mprno = e.row.data.Mprno;
+						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
+							let title = `Material Request Revised History - ${Mprno}`;
+						openModal(url, title);
+						
+					}
+				}
+            ];
+        } else {
 			e.items = [
 				{
 					text: "Edit Request / Enquiry",
@@ -1561,6 +1616,7 @@
 					}
 				}
 			];
+		}
 		}
 	}
 		$(function () {

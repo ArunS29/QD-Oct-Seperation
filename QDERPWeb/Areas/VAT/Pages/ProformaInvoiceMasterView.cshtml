@@ -312,15 +312,15 @@
 	</div>
 </div>
  *@
-<div class="title">
+<div class="title" id="kpiCarousel">
 
 	<input id="formId" value="frm201LedgerView" type="hidden" />
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Proforma Invoice Register</h2>
+				<h2 class="title-slide" id="proformainvoiceregister"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="QuickDiceERPSolutionsproforma"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -333,9 +333,9 @@
 	</div>
 	<div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs" style="gap:10px;">
-			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Posted</div>
+			<div class="tab-text active" onclick="switchTab(0)" id="proformaverified"></div>
+			<div class="tab-text" onclick="switchTab(1)" id="proformaapproved"></div>
+			<div class="tab-text" onclick="switchTab(2)" id="proformaposted"></div>
 		</div>
 
 		<div class="tab-content active">
@@ -358,10 +358,10 @@
 		</div>
 	</div>
 	<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Invoice Details</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="proformainvoicedetails"></h2>
 
 		<!-- Rotating Heading -->
-		<h5 id="statusHeading3" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
+		<h5 id="statusHeading3" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;"></h5>
 
 		<!-- Value with SVG -->
 		<div id="switchValue33" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
@@ -384,10 +384,10 @@
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
 
 		<!-- Main Heading: Voucher Count -->
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="proformavouchercount"></h2>
 
 		<!-- Rotating Heading -->
-		<h3 id="statusHeading4" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
+		<h3 id="statusHeading4" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;"></h3>
 
 		<!-- Value -->
 		<div id="statusValue4" style="color: white; font-size: 24px; font-weight: bold;">
@@ -411,16 +411,16 @@
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-edit"></i> Edit Proforma Invoice
+		<i class="dx-icon-edit" id="editproformainvoice"></i>
 	</div>
 	<div class="context-menu-item" onclick="DeleteProformaInvoice()">
-		<i class="dx-icon-close"></i> Delete Proforma Invoice
+		<i class="dx-icon-close" id="deleteproformainvoice"></i>
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlock"></i> Unlock Proforma Invoice
+		<i class="dx-icon-unlock" id="unlockproformainvoice"></i>
 	</div>
 	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Duplicate Proforma Invoice
+		<i class="dx-icon-copy" id="duplicateproformainvoice"></i>
 	</div>
 </div>
 
@@ -1004,7 +1004,7 @@
 		const headingEl = document.getElementById("statusHeading3");
 		const valueEl = document.getElementById("switchValue33");
 
-		headingEl.textContent = headings[currentIndex];
+		headingEl.textContent = formatMessage(headings[currentIndex]);
 		valueEl.innerHTML = `
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -1057,18 +1057,20 @@
 		const value = document.getElementById("valueDisplay4");
 
 		if (isLast5Years) {
-			heading.textContent = "New Voucher Today";
+			heading.textContent = formatMessage("New Voucher Today");
 
 			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
 			animateTodayVoucherCount(todayTarget); // Animate count-up
 		} else {
-			heading.textContent = "Last 5 Years";
+			heading.textContent = formatMessage("Last 5 Years");
 			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
 		}
 
 		isLast5Years = !isLast5Years;
 	}
-
+	function formatMessage(key) {
+		return key;
+	}
 	// Call once on page load
 	switchData();
 
@@ -1137,16 +1139,16 @@
 			});
 		}
 			
-	$(function () {
-					$("#ProformaInvoiceMasterView").dxTextBox({
-						text: formatMessage("Proforma Invoice Master View"),
-						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
-							}
+	// $(function () {
+	// 				$("#ProformaInvoiceMasterView").dxTextBox({
+	// 					text: formatMessage("Proforma Invoice Master View"),
+	// 					readOnly: true,
+	// 								onContentReady: function(e) {
+	// 								$(e.element).addClass("dx-textbox-heading");
+	// 						}
 
-					});
-				});
+	// 				});
+	// 			});
 	$(function () {
 			ddBtnShowRecords_click("range")
 		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
@@ -1920,7 +1922,39 @@
 			maximumFractionDigits: currencyDecimals
 		});
 	}
-
-
+	   $(function () {
+		   $("#proformainvoiceregister").text(formatMessage("Proforma Invoice Register"));
+	   });
+	    $(function () {
+		   $("#QuickDiceERPSolutionsproforma").text(formatMessage("Quick Dice ERP Solutions"));
+		});
+	    $(function () {
+			$("#proformaverified").text(formatMessage("Verified"));
+		});
+		$(function () {
+			$("#proformaapproved").text(formatMessage("Approved"));
+		});
+		$(function () {
+			$("#proformaposted").text(formatMessage("Posted"));
+		});
+		$(function () {
+			$("#proformainvoicedetails").text(formatMessage("Invoice Details"));
+		});
+		$(function () {
+			$("#proformavouchercount").text(formatMessage("Voucher Count"));
+		});
+		$(function () {
+			$("#editproformainvoice").text(formatMessage("Edit Proforma Invoice"));
+		});
+		
+		$(function () {
+			$("#deleteproformainvoice").text(formatMessage("Delete Proforma Invoice"));
+		});
+		$(function () {
+			$("#unlockproformainvoice").text(formatMessage("Unlock Proforma Invoice"));
+		});
+		$(function () {
+			$("#duplicateproformainvoice").text(formatMessage("Duplicate Proforma Invoice"));
+		});
 		
 </script>
