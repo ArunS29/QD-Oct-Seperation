@@ -299,41 +299,55 @@
                         </td>
                         <td>
                             <div style="display: flex; align-items: flex-end;">
-                                <div style="flex: 1;">
-                                    @(Html.DevExtreme().DropDownBox()
-                                    .ID("ClientNames")
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("ClientNamesDropDown")
+                                                                    .Label("Client Name")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("ERSalesOrders")
+                                                                    .LoadAction("GetClientNames")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("ClientCode")
+                                                                    )
+                                                                    .ValueExpr("ClientCode")
+                                                                    .DisplayExpr("ClientName")
+                                                                    .Width("100%")
+                                                                    .ValidationRules(rules =>
+                                                                    {
+                                                                        rules.AddRequired()
+                                                                    .Message("Client Name is required");
+                                                                    })
+                                                                    .Buttons(buttons =>
+                                                                    {
+                                                                      // dropdown arrow
+                                                                        buttons.Add().Name("dropDown");
 
-                                    .ValueExpr("ClientCode")
-                                    .DisplayExpr("ClientName")
-                                    .DataSource(ds => ds
-                                    .Mvc()
-                                    .Controller("ERSalesOrders")
-                                    .LoadAction("GetClientNames")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("ClientCode")
-                                    )
-                                    .Label("Client Name")
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    .ValidationRules(rules =>
-                                    {
-                                    rules.AddRequired()
-                                    .Message("Client Name is required");
-                                    })
-                                    .ContentTemplate(new TemplateName("ClientDropDownTemplate"))
+                                                                        // edit button
+                                                                        buttons.Add()
+                                                                    .Name("editClient")
+                                                                    .Location(TextEditorButtonLocation.After)
+                                                                    .Widget(w => w.Button()
+                                                                    .Type(ButtonType.Default)
+                                                                    .Icon("edit")
+                                                                    .Hint("Edit Client")
+                                                                    .OnClick("EditClient")
+                                                                    );
 
-                                    )
+                                                                        // add button
+                                                                        buttons.Add()
+                                                                    .Name("addClient")
+                                                                    .Location(TextEditorButtonLocation.After)
+                                                                    .Widget(w => w.Button()
+                                                                    .Type(ButtonType.Default)
+                                                                    .Icon("plus")
+                                                                    .Hint("Add Client")
+                                                                    .OnClick("AddClients")
+                                                                    );
+                                                                    })
+                                                                    )
 
 
-                                </div>
-                                <div style="margin-left: 5px;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddClient")
-                                    .Icon("plus")
-                                    .Hint("Add Client")
-                                    .OnClick("AddClients")
-                                    )
-                                </div>
+
                             </div>
                         </td>
                     </tr>
@@ -366,15 +380,7 @@
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
-                                <div class="col-md-4" >
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("ClientEmail")
-                                    .Label("Client Email:")
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Mode(TextBoxMode.Email)
-                                    .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
-                                </div>
+                               
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
@@ -1403,25 +1409,40 @@
             }
             });
         });
-       
+
+
+    function EditClient() {
+        var dropDownBox = $("#ClientNamesDropDown").dxDropDownBox("instance");
+        var selectedValue = dropDownBox.option("value");
+
+        if (!selectedValue) {
+            DevExpress.ui.notify("Please select a client.", "warning", 2000);
+            return;
+        }
+
+        var url = "/" + tenantName + "/IMS/ClientLeadMaster?clientCode=" + encodeURIComponent(selectedValue);
+        openModal(url, "Client Master");
+    }
+
+
          function AddClients(){
                 const url = `/${tenantName}/ERM/ClientLeadMaster`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
             ////AddnewProject
          function AddProject(){
                 const url = `/${tenantName}/ERM/Projects`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
 
               ////Addnewsignatory
          function Signatorynew(){
                 const url = `/${tenantName}/ERM/Signatories`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
 
 
             $(function () {

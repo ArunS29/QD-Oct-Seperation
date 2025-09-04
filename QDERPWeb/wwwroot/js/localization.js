@@ -4336,7 +4336,34 @@ var dictionary = {
         "Category Code": "Category Code",
         "Type a New Property Group & Add to the Existing List:": "Type a New Property Group & Add to the Existing List:",
         "Property Group Code": "Property Group Code",
-        "Property Group": "Property Group"
+        "Property Group": "Property Group",
+        "Job Site": "Job Site",
+        "Transportation Scope": "Transportation Scope",
+        "Equipment Quoted for:": "Equipment Quoted for:",
+        "Quote Method:": "Quote Method:",
+        "Quantity:": "Quantity:",
+        "Unit Rate:": "Unit Rate:",
+        "Add": "Add",
+        "Detailed Description / Specification": "Detailed Description / Specification",
+        "Certification": "Certification",
+        "Capacity": "Capacity",
+        "Operator": "Operator",
+        "WITHOUT OPERATOR": "WITHOUT OPERATOR",
+        "With OPERATOR": "With OPERATOR",
+        "WITH ARAMCO CERTIFIED OPERATOR": "WITH ARAMCO CERTIFIED OPERATOR",
+        "Attachment": "Attachment",
+        "Rate": "Rate",
+        "Quote Method 2": "Quote Method 2",
+        "Quote Method 3": "Quote Method 3",
+        "Notes": "Notes",
+        "Additional Notes": "Additional Notes",
+        "Mob Rate": "Mob Rate",
+        "Demob Rate": "Demob Rate",
+        "Rate (1)": "Rate (1)",
+        "Unit Method (1)":"Unit Method (1)",
+        "Delivery Details": "Delivery Details",
+        "Submit": "Submit",
+        "Detailed Description": "Detailed Description"
 
 
     },
@@ -7791,7 +7818,42 @@ var dictionary = {
         "Subject Details": "تفاصيل الموضوع",
         "Shipment & Discount": "الشحنة والخصم",
         "Request No:": "رقم الطلب:",
-        "VAT Applicable % :": "نسبة الضريبة على القيمة المضافة :"
+        "VAT Applicable % :": "نسبة الضريبة على القيمة المضافة :",
+        "Job Site" : "موقع العمل",
+        "Transportation Scope" : "نطاق النقل",
+        "Equipment Quoted for:" : "المعدات المعروضة للأسعار:",
+        "Quote Method:" : "طريقة الاقتباس:",
+        "Quantity:" : "الكمية:",
+        "Unit Rate:" : "الكمية:",
+        "Add" : "إضافة",
+        "Detailed Description / Specification" : "وصف مفصل / مواصفات",
+        "Certification" : "شهادة",
+        "Capacity" : "سعة",
+        "Operator" : "مشغل",
+        "WITHOUT OPERATOR" : "بدون مشغل",
+        "With OPERATOR" : "مع المشغل",
+        "WITH ARAMCO CERTIFIED OPERATOR" : "مع مشغل معتمد من أرامكو",
+        "Attachment" :  "المرفق",
+        "Rate": "تقييم",
+        "Quote Method 2": "طريقة التسعير 2", 
+        "Quote Method 3" : "اقتباس الطريقة 3",
+        "Notes": "ملاحظات",
+        "Additional Notes" : "ملاحظات إضافية",
+        "Delivery Details" : "تفاصيل التسليم",
+        "Submit": "إرسال",
+        "Detailed Description": "وصف تفصيلي",
+        "Mob Rate": "معدل التعبئة",
+        "Demob Rate": "معدل التفكيك",
+        "Rate (1)": "معدل (1)",
+        "Unit Method (1)": "طريقة الوحدة (1)",
+        "Quotation for Equipment's Rental Services": "عرض أسعار لخدمات تأجير المعدات",
+
+        "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "نأمل أن يكون عرضنا متوافقًا مع متطلباتكم. يرجى الإشارة في أمر الشراء إلى مرجع عرض الأسعار الخاص بنا والموافقة على الشروط والأحكام.",
+
+        "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "بالإشارة إلى استفساركم بخصوص خدمات تأجير المعدات، نود أن نقدم لكم عرض الأسعار للاطلاع.",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه."
+
     },
              
                 // Mandrian Chinese Languange Translations
@@ -11055,6 +11117,41 @@ var dictionary = {
         "RCM @5% VAT": "RCM @5% 增值税",
         "RCM @10% VAT": "RCM @10% 增值税",
         "RCM @15% VAT": "RCM @15% 增值税",
+        "Job Site": "工作地点",
+        "Transportation Scope": "运输范围",
+        "Equipment Quoted for:": "报价设备:",
+        "Quote Method:": "报价方式:",
+        "Quantity:": "数量:",
+        "Unit Rate:": "单价:",
+        "Add": "添加",
+        "Detailed Description / Specification": "详细说明 / 规格",
+        "Certification": "认证",
+        "Capacity": "容量",
+        "Operator": "操作员",
+        "WITHOUT OPERATOR": "无操作员",
+        "With OPERATOR": "有操作员",
+        "WITH ARAMCO CERTIFIED OPERATOR": "拥有阿美公司认证操作员",
+        "Attachment": "附件",
+        "Rate": "费率",
+        "Quote Method 2": "报价方式2", 
+        "Quote Method 3": "报价方式 3",
+        "Notes": "备注",
+        "Additional Notes": "附加备注",
+        "Mob Rate": "动员费率",
+        "Demob Rate": "撤离费率",
+        "Rate (1)": "费率 (1)",
+        "Unit Method (1)": "单位方法 (1)",
+        "Delivery Details": "交付详情",
+        "Submit": "提交",
+        "Detailed Description": "详细说明",
+        "Quotation for Equipment's Rental Services": "设备租赁服务报价",
+
+        "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "我们希望我们的报价符合您的要求。请在采购订单中注明我们的报价参考并接受条款和条件。",
+
+        "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "关于您对设备租赁服务的询价，我们特此提交报价供您参考。",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "此外，如果您需要任何进一步的说明，请随时联系下方签名人。"
+
 
 
     },
@@ -14427,7 +14524,43 @@ var dictionary = {
         "Positions": "पद",
         "Manpower Rentals": "मानव बल किराया",
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स",
-        "Receipts": "रसीदें"
+        "Receipts": "रसीदें",
+        "Job Site": "कार्य स्थल",
+        "Transportation Scope": "परिवहन का दायरा",
+        "Equipment Quoted for:": "उपकरण का उद्धरण:",
+        "Quote Method:": "उद्धरण विधि:",
+        "Quantity:": "मात्रा:",
+        "Unit Rate:": "इकाई दर:",
+        "Add": "जोड़ें",
+        "Detailed Description / Specification": "विस्तृत विवरण / विनिर्देश",
+        "Certification": "प्रमाणीकरण",
+        "Capacity": "क्षमता",
+        "Operator": "संचालक",
+        "WITHOUT OPERATOR": "संचालक के बिना",
+        "With OPERATOR": "संचालक के साथ",
+        "WITH ARAMCO CERTIFIED OPERATOR": "एरामको प्रमाणित संचालक के साथ",
+        "Attachment": "संलग्नक",
+        "Rate": "दर",
+        "Quote Method 2": "उद्धरण विधि 2", 
+        "Quote Method 3": "उद्धरण विधि 3",
+        "Notes": "टिप्पणियाँ",
+        "Additional Notes": "अतिरिक्त टिप्पणियाँ",
+        "Mob Rate": "सक्रियण दर",
+        "Demob Rate": "निष्क्रियण दर",
+        "Rate (1)": "दर (1)",
+        "Unit Method (1)": "इकाई विधि (1)",
+        "Delivery Details": "वितरण विवरण",
+        "Submit": "जमा करें",
+        "Detailed Description": "विस्तृत विवरण",
+        "Quotation for Equipment's Rental Services": "उपकरण किराया सेवाओं के लिए उद्धरण",
+
+        "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "हमें आशा है कि हमारा प्रस्ताव आपकी आवश्यकताओं के अनुरूप है। कृपया अपने खरीद आदेश में हमारे उद्धरण संदर्भ और नियम एवं शर्तों की स्वीकृति का उल्लेख करें।",
+
+        "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "उपकरण किराया सेवाओं के संबंध में आपके प्रश्न के संदर्भ में, हम यहां आपका अवलोकन करने हेतु उद्धरण प्रस्तुत करते हैं।",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "इसके अतिरिक्त, यदि आपको और किसी स्पष्टीकरण की आवश्यकता हो तो कृपया निःसंकोच नीचे हस्ताक्षरकर्ता से संपर्क करें।"
+
+
     },
 
                  // Urdu Language Translation
@@ -17877,7 +18010,43 @@ var dictionary = {
         "Preview Credit Note (Foreign Currency)": "کریڈٹ نوٹ کا پیش منظر (غیر ملکی کرنسی)",
         "VAT Purchase Register": "وی اے ٹی خریداری رجسٹر",
         "Supplier Province Ar": "سپلائر صوبہ",
-        "Purchase Due Date": "خریداری کی مقررہ تاریخ"
+        "Purchase Due Date": "خریداری کی مقررہ تاریخ",
+        "Job Site": "جگہ برائے کام",
+        "Transportation Scope": "نقل و حمل کا دائرہ",
+        "Equipment Quoted for:": "آلات کی قیمت:",
+        "Quote Method:": "قیمت دینے کا طریقہ:",
+        "Quantity:": "مقدار:",
+        "Unit Rate:": "یونٹ ریٹ:",
+        "Add": "شامل کریں",
+        "Detailed Description / Specification": "تفصیلی وضاحت / وضاحتیں",
+        "Certification": "تصدیق",
+        "Capacity": "صلاحیت",
+        "Operator": "آپریٹر",
+        "WITHOUT OPERATOR": "بغیر آپریٹر",
+        "With OPERATOR": "آپریٹر کے ساتھ",
+        "WITH ARAMCO CERTIFIED OPERATOR": "آرامکو سند یافتہ آپریٹر کے ساتھ",
+        "Attachment": "منسلکہ",
+        "Rate": "ریٹ",
+        "Quote Method 2": "اقتباس کا طریقہ 2",
+        "Quote Method 3": "قیمت دینے کا طریقہ 3",
+        "Notes": "نوٹس",
+        "Additional Notes": "اضافی نوٹس",
+        "Mob Rate": "موبلائزیشن ریٹ",
+        "Demob Rate": "ڈی موبلائزیشن ریٹ",
+        "Rate (1)": "ریٹ (1)",
+        "Unit Method (1)": "یونٹ طریقہ (1)",
+        "Delivery Details": "ترسیل کی تفصیلات",
+        "Submit": "جمع کریں",
+        "Detailed Description": "تفصیلی وضاحت",
+        "Quotation for Equipment's Rental Services": "آلات کے کرایہ کی خدمات کے لیے کوٹیشن",
+
+        "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "ہم امید کرتے ہیں کہ ہماری پیشکش آپ کی ضروریات کے مطابق ہے۔ براہ کرم اپنے خریداری آرڈر میں ہمارے کوٹیشن ریفرنس اور شرائط و ضوابط کی منظوری درج کریں۔",
+
+        "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "آلات کرایہ کی خدمات کے حوالے سے آپ کی استفسار کے پیش نظر ہم یہ کوٹیشن آپ کے ملاحظے کے لیے پیش کرتے ہیں۔",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "مزید یہ کہ اگر آپ کو کسی اور وضاحت کی ضرورت ہو تو بلا جھجک نیچے دستخط کنندہ کو کال کریں۔"
+
+
     },
 
                // Korean Language Translation
@@ -21120,7 +21289,43 @@ var dictionary = {
         "Domestic 10 % Purchase": "국내 10% 구매",
         "Postal Amount": "우편 금액",
         "Total Purchase Amount": "총 구매 금액",
-        "Tax Summary Report – Debit Notes": "세금 요약 보고서 - 차변 노트"
+        "Tax Summary Report – Debit Notes": "세금 요약 보고서 - 차변 노트",
+        "Job Site": "작업 현장",
+        "Transportation Scope": "운송 범위",
+        "Equipment Quoted for:": "견적 장비:",
+        "Quote Method:": "견적 방법:",
+        "Quantity:": "수량:",
+        "Unit Rate:": "단가:",
+        "Add": "추가",
+        "Detailed Description / Specification": "상세 설명 / 사양",
+        "Certification": "인증",
+        "Capacity": "용량",
+        "Operator": "운전원",
+        "WITHOUT OPERATOR": "운전원 없음",
+        "With OPERATOR": "운전원 포함",
+        "WITH ARAMCO CERTIFIED OPERATOR": "아람코 인증 운전원 포함",
+        "Attachment": "첨부 파일",
+        "Rate": "요율",
+        "Quote Method 2": "견적 방법 2" ,
+        "Quote Method 3": "견적 방법 3",
+        "Notes": "비고",
+        "Additional Notes": "추가 비고",
+        "Mob Rate": "동원 요율",
+        "Demob Rate": "철수 요율",
+        "Rate (1)": "요율 (1)",
+        "Unit Method (1)": "단위 방법 (1)",
+        "Delivery Details": "배송 세부 정보",
+        "Submit": "제출",
+        "Detailed Description": "상세 설명",
+        "Quotation for Equipment's Rental Services": "장비 임대 서비스 견적",
+
+        "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "저희 제안이 귀하의 요구 사항에 부합하기를 바랍니다. 구매 주문서에 당사 견적 참조와 약관 수락을 명시해 주시기 바랍니다.",
+
+        "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "장비 임대 서비스에 대한 귀하의 문의에 따라 검토를 위해 견적을 제출드립니다.",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "또한 추가 설명이 필요하시면 아래 서명자에게 언제든지 연락 주시기 바랍니다."
+
+
 
         
     }

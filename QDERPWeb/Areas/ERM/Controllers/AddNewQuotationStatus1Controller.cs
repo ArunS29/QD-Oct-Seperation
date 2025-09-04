@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
+using System.Xml.Linq;
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
 {
@@ -12,9 +14,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewQuotationStatus1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public AddNewQuotationStatus1Controller(ILogger<AddNewQuotationStatus1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public AddNewQuotationStatus1Controller(ILogger<AddNewQuotationStatus1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -79,6 +84,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                         module: "ERM > Save Status",
+                        actionDetail: $"Saved Status {model}",
+                         documentNo: $"{model}"
+                    );
 
                     return Ok(new { success = true, message = "Saved successfully", id = model.QuoteStatusId });
                 }
@@ -108,6 +118,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60107quotationStatuses.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                         module: "ERM > Delete Quotation Status",
+                        actionDetail: $"Deleted Quotation Status {id}",
+                         documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }
