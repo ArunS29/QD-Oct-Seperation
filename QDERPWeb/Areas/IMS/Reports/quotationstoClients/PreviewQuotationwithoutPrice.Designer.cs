@@ -341,6 +341,7 @@
             this.xrLabel75 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLine3 = new DevExpress.XtraReports.UI.XRLine();
+            this.calcPropertyDescription = new DevExpress.XtraReports.UI.CalculatedField();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -2188,6 +2189,12 @@
             this.xrLine3.SizeF = new System.Drawing.SizeF(767F, 8.000008F);
             this.xrLine3.StylePriority.UseForeColor = false;
             // 
+            // calcPropertyDescription
+            // 
+            this.calcPropertyDescription.DataMember = "qry601_05QuotationReport";
+            this.calcPropertyDescription.Expression = "Iif(IsNullOrEmpty([AddlDescription]), [GSDescrpition]  , [AddlDescription] )";
+            this.calcPropertyDescription.Name = "calcPropertyDescription";
+            // 
             // PreviewQuotationwithoutPrice
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -2202,6 +2209,8 @@
             this.ReportFooter,
             this.PageFooter});
             this.BorderColor = System.Drawing.Color.Silver;
+            this.CalculatedFields.AddRange(new DevExpress.XtraReports.UI.CalculatedField[] {
+            this.calcPropertyDescription});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.sqlDataSource1});
             this.DataMember = "qry601_05QuotationReport";
@@ -2324,5 +2333,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel75;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox11;
         private DevExpress.XtraReports.UI.XRLine xrLine3;
+        private DevExpress.XtraReports.UI.CalculatedField calcPropertyDescription;
     }
 }
