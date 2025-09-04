@@ -574,13 +574,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="purchaseaddline"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="delete">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="purchasedeleteline"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
-		<i class="dx-icon-trash"></i> Delete All Line Items
+		<i class="dx-icon-trash" id="purchasedeleteallline"></i>
 	</div>
 </div>
 
@@ -3454,13 +3454,13 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						 { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -3504,7 +3504,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -3516,7 +3516,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			onClick: function () {
 			
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -3532,7 +3532,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					allowEditing: true,
 					editCellTemplate: function (cellElement, cellInfo) {
 						let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
-						let title = "VAT Details Description";
+						let title = formatMessage("VAT Details Description");
 						window.currentDescriptionCell = cellInfo;
 						openModal(url, title);
 					}
@@ -3560,10 +3560,10 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 										height: 300,
 										scrolling: { mode: "virtual" },
 										columns: [
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 										],
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
@@ -3588,7 +3588,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 								hint: "Add new item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATMasterModule`;
-									let title = "Unit of Measure";
+									let title = formatMessage("Unit of Measure");
 									openModal(url, title);
 								},
 								width: 60,
@@ -3682,8 +3682,8 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function (selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -3910,13 +3910,13 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				},
 				selection: { mode: "single" },
 				columns: [
-					{ dataField: "GSCode", caption: "Code", width: 80 },
-					{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-					{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-					{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-					{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-					{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-					{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					 { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 				],
 				onSelectionChanged: function (selectedItems) {
 					const selectedItem = selectedItems.selectedRowsData[0];
@@ -3960,7 +3960,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 		icon: "plus",
 		hint: "Add new item",
 		onClick: function () {
-			openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+			openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 		},
 		width: 60,
 		height: 30
@@ -3973,7 +3973,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			
 			
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Services"));
 		},
 		width: 60,
 		height: 30
@@ -4001,7 +4001,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 					   // Open modal
 					   let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
-					   let title = "VAT Details Description";
+					   let title = formatMessage("VAT Details Description");
 					   openModal(url, title);
 				   }
 			   }).appendTo(container);
@@ -4069,13 +4069,10 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 										   columns: [
 
-											   { dataField: "UnitCode", caption: "Code", width: 80 },
-
-											   { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-											   { dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-											   { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											   { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										   ],
 
@@ -4122,7 +4119,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 								   onClick: function () {
 
 									   let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-										let title = "Unit of Measure";
+										let title = formatMessage("Unit of Measure");
 									   openModal(url, title);
 									   //window.location.href = url;
 
@@ -4223,8 +4220,8 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 										   height: 300,
 										   scrolling: { mode: "virtual" },
 										   columns: [
-											   { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-											   { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+											   { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+											   { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 										   ],
 											   onSelectionChanged: function (selectedItems) {
 	                                        	let selectedItem = selectedItems.selectedRowsData[0];
@@ -8307,6 +8304,15 @@ async function getDocumentCount() {
 
 	updateAttachButtonCount("#btnAttach", count);
 }
+$(function () {
+		   $("#purchasedeleteallline").text(formatMessage("Delete All Line Items"));
+	  });
+	$(function () {
+		   $("#purchasedeleteline").text(formatMessage("Delete Line Item"));
+	  });
+	$(function () {
+		   $("#purchaseaddline").text(formatMessage("Add Line Item"));
+	  });
 
 
 

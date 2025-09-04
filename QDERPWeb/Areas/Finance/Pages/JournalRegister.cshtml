@@ -460,9 +460,6 @@
         </div>
     </div>
 
-
-
-
 <div class="dx-fieldset horizontal-container ">
 
 
@@ -523,7 +520,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("UserName");
+                columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')"));
                 columns.Add().DataField("UserId").Visible(false);
 
 
@@ -613,7 +610,7 @@
                 columns.AddFor(m => m.JournalModifiedOn).Caption(new JS("formatMessage('Journal Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
-                columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+              //  columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
                 columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -1521,13 +1518,13 @@
         }
     }
         $(function () {
-                    $("#Journalregister").text(formatMessage("Journal Register"));
+            $("#Journalregister").text(formatMessage("Journal Register"));
         });
         $(function () {
             $("#QuickDiceERPSolutions5").text(formatMessage("Quick Dice ERP Solutions"));
         });
         $(function () {
-                $("#accountingvoucherstotal").text(formatMessage("Total Vouchers"));
+            $("#accountingvoucherstotal").text(formatMessage("Total Vouchers"));
         });
         $(function () {
             $("#TotalsDebitjournal").text(formatMessage("Total Debit"));
@@ -1535,6 +1532,7 @@
         $(function () {
             $("#Totalscreditjournal").text(formatMessage("Total Credit"));
         });
+      
        
 </script>
 

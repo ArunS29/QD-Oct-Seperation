@@ -144,7 +144,7 @@
                 
                 <div class="form-group col-md-2 col-sm-6">
                     @(Html.DevExtreme().SelectBox()
-                                        .Label(new JS("formatMessage('VoucherType')"))
+                                        .Label(new JS("formatMessage('Voucher Type')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                         .ID("VoucherType")
                                         .DataSource(new[] { "Journal" })
@@ -617,12 +617,16 @@ function(data) {
 
         </div>
     </div>
+
+  
+
      <!-- Context Menu for Actions -->
   <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
+
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("CostAllocationPopup")
-                .Title("Cost Allocation")
+                .Title(new JS("formatMessage('Cost Allocation')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -650,7 +654,7 @@ function(data) {
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("PropertyAllocationPopup")
-                .Title("Property Allocation")
+                .Title(new JS("formatMessage('Property Allocation')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -679,7 +683,7 @@ function(data) {
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("BillsReceivablePopup")
-                .Title("Finance Module: Receivables / Payables")
+                .Title(new JS("formatMessage('Finance Module: Receivables / Payables')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -896,7 +900,7 @@ function(data) {
                         columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).Alignment(HorizontalAlignment.Left).Visible(false);
                         columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).Alignment(HorizontalAlignment.Left).Visible(false);
                         columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Is Profit Loss Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
                         columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).Alignment(HorizontalAlignment.Left).Visible(false);
                         columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).Alignment(HorizontalAlignment.Left).Visible(false);
                         columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -977,7 +981,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("CostAllocationPopup")
-        .Title("Cost Allocation")
+        .Title(new JS("formatMessage('Cost Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1005,7 +1009,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("PropertyAllocationPopup")
-        .Title("Property Allocation")
+        .Title(new JS("formatMessage('Property Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1033,7 +1037,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("EmployeeAllocationPopup")
-        .Title("Employee Allocation")
+        .Title(new JS("formatMessage('Employee Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1061,7 +1065,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("BillsReceivablePopup")
-        .Title("Finance Module: Receivables / Payables")
+        .Title(new JS("formatMessage('Finance Module: Receivables / Payables')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1090,7 +1094,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("SalaryPaidEntryPopup")
-        .Title("Finance Module: Employee Salary Payables")
+        .Title(new JS("formatMessage('Finance Module: Employee Salary Payables')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -2781,56 +2785,55 @@ function(data) {
     });
 
 
-    //RightClik button  Localization
-    $(function () {
-        $("#EditCostAllocation").dxTextBox({
-            text: formatMessage("Edit Cost Allocation"),
-            readOnly: true
+    // $(function () {
+    //     $("#EditCostAllocation").dxTextBox({
+    //         text: formatMessage("Edit Cost Allocation"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#DeleteAllLineEntries").dxTextBox({
-            text: formatMessage("Delete All Line Entries"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#DeleteAllLineEntries").dxTextBox({
+    //         text: formatMessage("Delete All Line Entries"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#EditBillReceivable").dxTextBox({
-            text: formatMessage("Edit Bills Payable/ Bills Receivables"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#EditBillReceivable").dxTextBox({
+    //         text: formatMessage("Edit Bills Payable/ Bills Receivables"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#EditSalaryPayable").dxTextBox({
-            text: formatMessage("Edit Salary Payable"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#EditSalaryPayable").dxTextBox({
+    //         text: formatMessage("Edit Salary Payable"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#EditEmployeeAllocation").dxTextBox({
-            text: formatMessage("Edit Employee Allocation"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#EditEmployeeAllocation").dxTextBox({
+    //         text: formatMessage("Edit Employee Allocation"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#EditPropertyAllocation").dxTextBox({
-            text: formatMessage("Edit Property Allocation"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#EditPropertyAllocation").dxTextBox({
+    //         text: formatMessage("Edit Property Allocation"),
+    //         readOnly: true
 
-        });
-    });
-    $(function () {
-        $("#DeleteLineEntry").dxTextBox({
-            text: formatMessage("Delete Line Entry"),
-            readOnly: true
+    //     });
+    // });
+    // $(function () {
+    //     $("#DeleteLineEntry").dxTextBox({
+    //         text: formatMessage("Delete Line Entry"),
+    //         readOnly: true
 
-        });
-    });
+    //     });
+    // });
 
     //Popup right click button code
 
@@ -3629,14 +3632,14 @@ function showMainFooter() {
          }
      });
  }
-      const menuItems = [
-        { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
-        { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3" },
-        { id: "editSalaryPayable", text: "Edit Salary Payable", icon: "money", color: "#FF9800" },
-        { id: "editEmployeeAllocation", text: "Edit Employee Allocation", icon: "user", color: "#9C27B0" },
-        { id: "editPropertyAllocation", text: "Edit Property Allocation", icon: "preferences", color: "#795548" },
-        
-    ];
+        const menuItems = [
+   { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50"},
+    { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3"},
+    { id: "editSalaryPayable", text: "Edit Salary Payable", icon: "money", color: "#FF9800"},
+    { id: "editEmployeeAllocation", text: "Edit Employee Allocation", icon: "user", color: "#9C27B0"},
+    { id: "editPropertyAllocation", text: "Edit Property Allocation", icon: "preferences", color: "#795548"},
+    
+];
         // ---- state ----
     let currentIndex = 0;
 

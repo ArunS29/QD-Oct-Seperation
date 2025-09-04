@@ -373,7 +373,7 @@
                             .Format("#,##0.00")
                             )
             </text>);
-                    columns.Add().Caption(new JS("formatMessage('Action')")).Width(120)
+                    columns.Add().Caption(new JS("formatMessage('Actions')")).Width(120)
                     .CellTemplate(@<text>
                                        <div class="dropdown-wrapper">
                     @(Html.DevExtreme().Button()
@@ -410,7 +410,7 @@
                                     .OnValueChanged("gridLedger_valueChanged")
                                     .ValueExpr("AccountId")
                                     .DisplayExpr("AccountHead")
-                                    .Placeholder("Select AccountHead")
+                                    .Placeholder(new JS("formatMessage('Select Account Head')"))
                                     .Width(350)
                                     .DropDownOptions(o => o.Width(800))
                                     .Value(new JS("data.AccountId"))
@@ -451,7 +451,7 @@
                                     .OnValueChanged("gridCost_valueChanged")
                                     .ValueExpr("CostAllocationUnitId")
                                     .DisplayExpr("CostAllocationUnit")
-                                    .Placeholder("Select Cost Center")
+                                    .Placeholder(new JS("formatMessage('Select Cost Center')"))
                                     .Width(350)
                                     .DropDownOptions(o => o.Width(400))
                                     .Value(new JS("data.CostCenterCode"))
@@ -510,11 +510,11 @@
                                 .ID("Voucher")
                                 .Value(null)
                                 .ReadOnly(true)
-                                .Label("Voucher")
+                                .Label(new JS("formatMessage('Voucher')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
             </div>
-            <div class="col-4 d-flex justify-content-between align-items-center">
+            @* <div class="col-4 d-flex justify-content-between align-items-center">
                     <div class="form-group">
                 @(Html.DevExtreme().RadioGroup()
                                 .ID("radioGroup")
@@ -522,6 +522,22 @@
                                 .Value(null)
                                 .Layout(Orientation.Horizontal)
                                 .OnValueChanged("onRadioGroupValueChanged"))
+            </div> *@
+            <div class="col-4 d-flex justify-content-between align-items-center">
+                <div class="form-group">
+                    @(Html.DevExtreme().RadioGroup()
+                                        .ID("radioGroup")
+                                        .DataSource(new[]
+                                        {
+                                        new { text = new JS("formatMessage('Cash Payment')") },
+                                        new { text = new JS("formatMessage('Bank Payment')") }
+                                        })
+                                        .DisplayExpr("text")
+                                        .ValueExpr("text")
+                                       
+                                        .Layout(Orientation.Horizontal)
+                                        .OnValueChanged("onRadioGroupValueChanged")
+                                        )
             </div>
             <div class="form-group">
                 @(Html.DevExtreme().TextBox()
@@ -742,10 +758,10 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
-                        columns.Add().DataField("AccountHeadArabic");
-                        columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account ID')"));
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
     <div class="dx-icon">
         <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -790,8 +806,9 @@
 
                             .Columns(columns =>
                             {
-                                    columns.Add().DataField("CostAllocationUnitId").MinWidth(100).Alignment(HorizontalAlignment.Center);
-                                columns.Add().DataField("CostAllocationUnit").Alignment(HorizontalAlignment.Center);
+                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit ID')")).Alignment(HorizontalAlignment.Center);
+                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Center);
+                                  
 
 
                             })
@@ -837,13 +854,13 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().Caption("Account ID").DataField("AccountId");
-                            columns.Add().Caption("Account").DataField("AccountHead");
-                            columns.Add().Caption("Account Group").DataField("AccountGroup");
-                            columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
-                            columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                            columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                            columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                            columns.Add().Caption(new JS("formatMessage('Account Group')")).DataField("AccountGroup");
+                            columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
+                            columns.Add().Caption(new JS("formatMessage('Reference No')")).DataField("ReferenceNo");
                             columns.Add().DataField("IsLedgerObselete")
-
+                            .Caption(new JS("formatMessage('Is Ledger Obselete')"))
 
                         .Alignment(HorizontalAlignment.Center)
                         .CellTemplate(@<text>
@@ -896,12 +913,8 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CostAllocationUnitId").Visible(false);
-                            columns.Add().Caption("Cost for Projects/Jobs").DataField("CostAllocationUnit");
-
-
-
-
+                            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit Id')")).Visible(false);
+                            columns.Add().Caption(new JS("formatMessage('Cost for Projects/Jobs')")).DataField("CostAllocationUnit");
 
                         })
                             .OnToolbarPreparing("accountHeadToolbarPreparing")

@@ -223,13 +223,13 @@
 				.Columns(columns =>
 				{
 					columns.Add().DataField("StockClassId")
-					.Caption("ID")
+					.Caption(new JS("formatMessage('ID')"))
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
 
 					columns.Add().DataField("StockClassification")
-					.Caption("Stock Classification")
+					.Caption(new JS("formatMessage('Stock Classification')"))
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);

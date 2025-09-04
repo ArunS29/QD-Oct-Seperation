@@ -169,11 +169,11 @@
 				 <div class="form-group col-md-2 col-sm-6" style="margin-bottom:15px;">
 				  <div class="d-flex align-items-center mb-1">
 						@(Html.DevExtreme().CheckBox()
-												.Text("") // Empty so label appears separately
+												.Text(new JS("formatMessage('Received Date')")) // Empty so label appears separately
 												.ID("UseSubmittedDate")
 												.OnValueChanged("updateDueDate")
 												)
-						<label for="UseSubmittedDate" style="margin: 0; font-size: 13px;">@Html.Raw("Received Date")</label>
+
 					</div>
 
 					<div >
@@ -1010,32 +1010,46 @@ buttons.Add()
 						.Height(345)
 						.Selection(s => s.Mode(SelectionMode.Single))
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-						.Columns(columns =>
-						{
-					columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-					columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-					columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-					columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-					columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-					columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-					columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-					columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-					columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-				.Alignment(HorizontalAlignment.Center)
-				.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>);
-				})
+					.Columns(columns =>
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+    columns.Add().DataField("IsLedgerObselete")
+           .Visible(true)
+           .Caption(new JS("formatMessage('Ledger Obselete')"))
+           .Alignment(HorizontalAlignment.Center)
+           .CellTemplate(@<text>
+                <div class="dx-icon">
+                    <%= data.IsLedgerObselete 
+                        ? '<i style="color:red" class="fa fa-toggle-on"></i>' 
+                        : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+                </div>
+            </text>);
+})
+
 			.OnRowPrepared("onAccountHeadRowPrepared")
 					)
 	}
@@ -1068,30 +1082,35 @@ buttons.Add()
 						.Selection(s => s.Mode(SelectionMode.Single))
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
-						{
-					columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-					columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-					columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-					columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-					columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-					columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-					columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-					columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-					columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-				.Alignment(HorizontalAlignment.Center)
-				.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>);
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+    columns.Add().DataField("IsLedgerObselete")
+        .Visible(true)
+        .Caption(new JS("formatMessage('Ledger Obselete')"))
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete 
+                    ? '<i style="color:red" class="fa fa-toggle-on"></i>' 
+                    : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+
 				})
 			.OnRowPrepared("onAccountHeadRowPrepared")
 					)
@@ -1146,109 +1165,109 @@ buttons.Add()
 <script>
 	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, paymentaccheadname, paymentaccheadId, paymentIsLedgerObselete, IsDrCr = false;
 
-$(function () {
-										$("#EditCostAllocation").dxTextBox({
-													text:formatMessage("Edit Cost Allocation"),
-												readOnly: true
+// $(function () {
+// 										$("#EditCostAllocation").dxTextBox({
+// 													text:formatMessage("Edit Cost Allocation"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
+// 								});
+// 								});
+// 	$(function () {
 
-										$("#DeleteAllLineEntries").dxTextBox({
-													text:formatMessage("Delete All Line Entries"),
-											readOnly: true
+// 										$("#DeleteAllLineEntries").dxTextBox({
+// 													text:formatMessage("Delete All Line Entries"),
+// 											readOnly: true
 
-							});
-							});
-	$(function () {
+// 							});
+// 							});
+// 	$(function () {
 
-										$("#EditBillReceivable").dxTextBox({
-												text:formatMessage("Edit Bill Receivable"),
-											readOnly: true
+// 										$("#EditBillReceivable").dxTextBox({
+// 												text:formatMessage("Edit Bill Receivable"),
+// 											readOnly: true
 
-							});
-							});
-	$(function () {
-										  $("#EditSalaryPayable").dxTextBox({
-													text:formatMessage("Edit Salary Payable"),
-												readOnly: true
+// 							});
+// 							});
+// 	$(function () {
+// 										  $("#EditSalaryPayable").dxTextBox({
+// 													text:formatMessage("Edit Salary Payable"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
-											$("#EditPropertyAllocation").dxTextBox({
-													text:formatMessage("Edit Property Allocation"),
-												readOnly: true
+// 								});
+// 								});
+// 	$(function () {
+// 											$("#EditPropertyAllocation").dxTextBox({
+// 													text:formatMessage("Edit Property Allocation"),
+// 												readOnly: true
 
-								});
-								});
-									$(function () {
-											$("#EditEmployeeAllocation").dxTextBox({
-													text:formatMessage("Edit Employee Allocation"),
-												readOnly: true
+// 								});
+// 								});
+// 									$(function () {
+// 											$("#EditEmployeeAllocation").dxTextBox({
+// 													text:formatMessage("Edit Employee Allocation"),
+// 												readOnly: true
 
-								});
-								});
-									$(function () {
-											$("#EditBillsPayable").dxTextBox({
-													text:formatMessage("Edit Bills Payable"),
-												readOnly: true
+// 								});
+// 								});
+// 									$(function () {
+// 											$("#EditBillsPayable").dxTextBox({
+// 													text:formatMessage("Edit Bills Payable"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
-											$("#DeleteLineEntry").dxTextBox({
-														text:formatMessage("Delete Line Entry"),
-												readOnly: true
+// 								});
+// 								});
+// 	$(function () {
+// 											$("#DeleteLineEntry").dxTextBox({
+// 														text:formatMessage("Delete Line Entry"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
+// 								});
+// 								});
+// 	$(function () {
 
-											$("#PurchaseVoucher").dxTextBox({
-														text:formatMessage("Purchase Voucher"),
-															readOnly: true,
-														onContentReady: function(e) {
-					$(e.element).addClass("dx-textbox-heading");
-			}
+// 											$("#PurchaseVoucher").dxTextBox({
+// 														text:formatMessage("Purchase Voucher"),
+// 															readOnly: true,
+// 														onContentReady: function(e) {
+// 					$(e.element).addClass("dx-textbox-heading");
+// 			}
 
-										});
-										});
-	$(function () {
+// 										});
+// 										});
+// 	$(function () {
 
-												$("#ApprovedOn").dxTextBox({
-															text:formatMessage("Approved On:"),
-															readOnly: true,
-															width:"105px"
+// 												$("#ApprovedOn").dxTextBox({
+// 															text:formatMessage("Approved On:"),
+// 															readOnly: true,
+// 															width:"105px"
 
-										});
-									});
-	$(function () {
+// 										});
+// 									});
+// 	$(function () {
 
-												$("#VerifiedOn").dxTextBox({
-															text:formatMessage("Verified On:"),
-															readOnly: true,
-															 width:"95px"
+// 												$("#VerifiedOn").dxTextBox({
+// 															text:formatMessage("Verified On:"),
+// 															readOnly: true,
+// 															 width:"95px"
 
-										});
-										});
-	$(function () {
-								 $("#Days").dxTextBox({
-													text:formatMessage("Days"),
-														readOnly: true,
-
-
-								});
-								});
-	$(function () {
-								 $("#ReceivedDate").dxTextBox({
-													text:formatMessage("Received Date"),
-														readOnly: true,
+// 										});
+// 										});
+// 	$(function () {
+// 								 $("#Days").dxTextBox({
+// 													text:formatMessage("Days"),
+// 														readOnly: true,
 
 
-								});
-								});
+// 								});
+// 								});
+// 	$(function () {
+// 								 $("#ReceivedDate").dxTextBox({
+// 													text:formatMessage("Received Date"),
+// 														readOnly: true,
+
+
+// 								});
+// 								});
 
 	function isModal() {
 		return new URLSearchParams(window.location.search).get("modal") === "true";
@@ -4364,7 +4383,7 @@ function showMainFooter() {
                  <div class="side-bar" style="background-color:${item.color};"></div>
                  <div class="item-content">
                      <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
-                     <div class="item-title">${item.text}</div>
+                        <div class="item-title">${formatMessage(item.text)}</div>
                  </div>
              </div>
          `;

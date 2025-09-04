@@ -210,45 +210,45 @@
         .LoadAction("GetAssetView"))
         .Columns(columns =>
         {
-            columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
-            columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-            columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-            columns.AddFor(m => m.AssetDescription).Caption("Asset Description").Visible(false);
-            //columns.AddFor(m => m.AccumDepLedgerNo).Caption("Accum Dep Ledger No").Visible(false);
-            columns.AddFor(m => m.AssetType).Caption("Asset Type").Visible(false);
-            columns.AddFor(m => m.BMV).Caption("BMV").Visible(false);
-            columns.AddFor(m => m.CalculatedDepreciationAmount).Caption("Calculated Depreciation Amount").Visible(false);
-            columns.AddFor(m => m.CurrentCondition).Caption("Current Condition").Visible(false);
-            columns.AddFor(m => m.CurrentReading).Caption("Current Reading").Visible(false);
-            columns.AddFor(m => m.DepAsOnDate).Caption("Dep As On Date").Visible(false);
-            columns.AddFor(m => m.DepreciationLedgerNo).Caption("Depreciation Ledger No").Visible(false);
+                    columns.AddFor(m => m.AccumDepLedgerNo).Caption(new JS("formatMessage('Accum Dep Ledger No')")).Visible(false);
+                    columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+                    columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+                    columns.AddFor(m => m.AssetDescription).Caption(new JS("formatMessage('Asset Description')")).Visible(false);
+            //columns.AddFor(m => m.AccumDepLedgerNo).Caption(new JS("formatMessage('Accum Dep Ledger No')")).Visible(false);
+                    columns.AddFor(m => m.AssetType).Caption(new JS("formatMessage('Asset Type')")).Visible(false);
+                    columns.AddFor(m => m.BMV).Caption(new JS("formatMessage('BMV Numbers')")).Visible(false);
+                    columns.AddFor(m => m.CalculatedDepreciationAmount).Caption(new JS("formatMessage('Calculated Depreciation Amount')")).Visible(false);
+                    columns.AddFor(m => m.CurrentCondition).Caption(new JS("formatMessage('Current Condition')")).Visible(false);
+                    columns.AddFor(m => m.CurrentReading).Caption(new JS("formatMessage('Current Reading')")).Visible(false);
+                    columns.AddFor(m => m.DepAsOnDate).Caption(new JS("formatMessage('Dep As On Date')")).Visible(false);
+                    columns.AddFor(m => m.DepreciationLedgerNo).Caption(new JS("formatMessage('Depreciation Ledger No')")).Visible(false);
             @* columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0); *@
             @*  columns.Add().DataField("AccountID").Visible(true); *@
-            columns.Add().Caption(new JS("formatMessage('AssetDetails')")).Columns(group =>
+            columns.Add().Caption(new JS("formatMessage('Asset Details')")).Columns(group =>
     {
         //  group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
-                group.Add().DataField("AccountId").Caption(new JS("formatMessage('AssetLedgerNo')"));
-                group.Add().DataField("AccountHead").Caption(new JS("formatMessage('AccountHead')"));
-                group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('AssetDescription')"));
+                group.Add().DataField("AccountId").Caption(new JS("formatMessage('Asset Ledger No')"));
+                group.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('Asset Description')"));
                 group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')")).CssClass("wrap-text");
-                group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0); ;
-                group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('PropertyNo')"));
+                group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).GroupIndex(0); ;
+                group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
 
             });
 
-            columns.Add().Caption(new JS("formatMessage('DepreciationDetails')")).Columns(group =>
+            columns.Add().Caption(new JS("formatMessage('Depreciation Details')")).Columns(group =>
             {
-                group.Add().DataField("DepreciationMethod").Caption(new JS("formatMessage('DepreciationMethod')"));
+                group.Add().DataField("DepreciationMethod").Caption(new JS("formatMessage('Depreciation Method')"));
                 @*                         group.Add().DataField("ScrapValueOfProperty").Caption(new JS("formatMessage('ScrapValue')")).Alignment(HorizontalAlignment.Right);
  *@
                 group.Add().DataField("ScrapValueOfProperty")
-.Caption(new JS("formatMessage('ScrapValue')"))
+.Caption(new JS("formatMessage('Scrap Value')"))
 .Alignment(HorizontalAlignment.Right)
 .CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('LifeSpanOfProperty')")).Alignment(HorizontalAlignment.Right);
+                group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('Life Span Of Property')")).Alignment(HorizontalAlignment.Right);
                 group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('OpeningTotal')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Trans TotalDebit')")).Alignment(HorizontalAlignment.Right)
+                group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('Opening Total')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                @* group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Trans Total Debit')")).Alignment(HorizontalAlignment.Right)
                 .CellTemplate(@<text>                                                                                                                                                                                                    
                     <div class="debit-pill">                                                                                                                                                                                         
                         <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
@@ -256,9 +256,9 @@
                             <%- data.TotalDebit != null ? data.TotalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                             </div>
                          </text>                                                                                                                                                                                                                                
-                    ).Visible(false);
+                    ).Visible(false); *@
 
-                        group.Add().DataField("ConvertedTotalDebit").Caption(new JS("formatMessage('TotalDebit')")).Alignment(HorizontalAlignment.Right)
+                        group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Total Debit')")).Alignment(HorizontalAlignment.Right)
                  .HeaderCellTemplate(@<text>
                                      <div class='debit-header' style='font-weight: bold;'>
                                          <%= column.caption %>
@@ -267,7 +267,7 @@
         )
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedTotalDebit;
+                                       var val = data.TotalDebit;
                                        let displayValue;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
@@ -283,9 +283,9 @@
                                    </text>);
                         
 
-      group.Add()
+     @*  group.Add()
     .DataField("TotalCredit")
-    .Caption(new JS("formatMessage('Tras TotalCredit')"))
+    .Caption(new JS("formatMessage('Tras Total Credit')"))
     .Alignment(HorizontalAlignment.Right)
                     .CellTemplate(@<text>
                                        <div class="credit-pill">
@@ -295,13 +295,13 @@
                         </div>
                     </text>
                     )
-    .Visible(false); // Make it visible to test output
+    .Visible(false); // Make it visible to test output *@
 
 
 
                group.Add()
-    .DataField("ConvertedTotalCredit")
-    .Caption(new JS("formatMessage('TotalCredit')"))
+    .DataField("TotalCredit")
+    .Caption(new JS("formatMessage('Total Credit')"))
     .Alignment(HorizontalAlignment.Right)
     .HeaderCellTemplate(@<text>
                                              <div class='credit-header' style='font-weight: bold;'>
@@ -310,7 +310,7 @@
     </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedTotalCredit;
+                                       var val = data.TotalCredit;
                                        let displayValue;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
@@ -328,7 +328,7 @@
 
 
 
-                group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Trans ClosingBalance')")).Alignment(HorizontalAlignment.Right)
+                @* group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Trans Closing Balance')")).Alignment(HorizontalAlignment.Right)
                 .CellTemplate(@<text>                                                                                                                                                                                                    
                     <div class="closing-pill">                                                                                                                                                                                         
                         <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
@@ -337,9 +337,9 @@
                             </div>
                          </text>                                                                                                                                                                                                                                
 
-                    ).Visible(false);
+                    ).Visible(false); *@
 
-                      group.Add().DataField("ConvertedClosingBalance").Caption(new JS("formatMessage('ClosingBalance')")).Alignment(HorizontalAlignment.Right)
+                      group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).Alignment(HorizontalAlignment.Right)
                       .HeaderCellTemplate(@<text>
                                      <div class='closing-header' style='font-weight: bold;'>
                                          <%= column.caption %>
@@ -348,12 +348,12 @@
         )
                     .CellTemplate(@<text>
                                        <div class="closing-pill">
-                                           <%- data.ConvertedClosingBalance != null ? data.ConvertedClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                           <%- data.ClosingBalance != null ? data.ClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>)
                                    .Visible(true);
 
-                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Trans TotalDepreciated')")).Alignment(HorizontalAlignment.Right)
+                       @*  group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Trans Total Depreciated')")).Alignment(HorizontalAlignment.Right)
                         .CellTemplate(@<text>
                                        <div class="depreciation-pill">
                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
@@ -361,10 +361,10 @@
                             <%- data.TotalDepreciatedAmount != null ? data.TotalDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                         </div>
                     </text>
-                    ).Visible(false);
-                   
+                    ).Visible(false); *@
 
-                        group.Add().DataField("ConvertedDepreciatedAmount").Caption(new JS("formatMessage('TotalDepreciated')")).Alignment(HorizontalAlignment.Right)
+
+                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Total Depreciated')")).Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
                                              <div class='depreciation-header' style='font-weight: bold;'>
                                                  <%= column.caption %>
@@ -373,11 +373,11 @@
                     )
                     .CellTemplate(@<text>
                                        <div class="depreciation-pill">
-                                           <%- data.ConvertedDepreciatedAmount != null ? data.ConvertedDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                           <%- data.TotalDepreciatedAmount != null ? data.TotalDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>);
 
-                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Trans NetBookValue')")).Alignment(HorizontalAlignment.Right)
+               @*  group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Trans Net Book Value')")).Alignment(HorizontalAlignment.Right)
                 .CellTemplate(@<text>
                                  <div class="book-pill">
                                       <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
@@ -386,9 +386,9 @@
                         </div>
                     </text>
 
-                    ).Visible(false);
+                    ).Visible(false); *@
 
-                group.Add().DataField("ConvertedNetBookValue").Caption(new JS("formatMessage('NetBookValue')")).Alignment(HorizontalAlignment.Right)
+                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Net Book Value')")).Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
                                              <div class='book-header' style='font-weight: bold;'>
                                                  <%= column.caption %>
@@ -397,68 +397,68 @@
                     )
                     .CellTemplate(@<text>
                                        <div class="book-pill">
-                                           <%- data.ConvertedNetBookValue != null ? data.ConvertedNetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                           <%- data.NetBookValue != null ? data.NetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>);
             });
 
             columns.Add().Caption(new JS("formatMessage('Specifications')")).Columns(group =>
             {
-                group.Add().DataField("AssetCategory").Caption(new JS("formatMessage('AssetCategory')"));
-                group.Add().DataField("AssetLocation").Caption(new JS("formatMessage('AssetLocation')"));
+                group.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')"));
+                group.Add().DataField("AssetLocation").Caption(new JS("formatMessage('Asset Location')"));
                 group.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
-                group.Add().DataField("PlateNo").Caption(new JS("formatMessage('PlateNo')"));
+                group.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')"));
                 group.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
                 group.Add().DataField("Year").Caption(new JS("formatMessage('Year')"));
                 group.Add().DataField("Ownership").Caption(new JS("formatMessage('Ownership')"));
-                group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('PurchaseDate')")).DataType(GridColumnDataType.Date)
+                group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('Purchase Date')")).DataType(GridColumnDataType.Date)
             .Format("dd-MMM-yyyy");
-                group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('PurchasedValue')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
-                group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('PurchasedAs')"));
+                group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('Purchased Value')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('Purchased As')"));
             });
 
 
             columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
             {
                 group.Add().DataField("IsFinanced")
-            .Caption(new JS("formatMessage('IsFinanced')"))
+            .Caption(new JS("formatMessage('Is Financed')"))
             .DataType(GridColumnDataType.Boolean);
 
                 group.Add().DataField("FinancedFrom")
-            .Caption(new JS("formatMessage('FinancedFrom')"));
+            .Caption(new JS("formatMessage('Financed From')"));
 
                 group.Add().DataField("NoOfInstallments")
-            .Caption(new JS("formatMessage('NoOfInstallments')"))
+            .Caption(new JS("formatMessage('No Of Installments')"))
             .DataType(GridColumnDataType.Number)
             .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InitialDownPayment")
-            .Caption(new JS("formatMessage('InitialDownPayment')"))
+            .Caption(new JS("formatMessage('Initial Down Payment')"))
             .DataType(GridColumnDataType.Number)
             .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InitialDocCharges")
-            .Caption(new JS("formatMessage('InitialDocCharges')"))
+            .Caption(new JS("formatMessage('Initial Doc Charges')"))
             .DataType(GridColumnDataType.Number)
             .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("MonthlyInstallment")
-            .Caption(new JS("formatMessage('MonthlyInstallment')"))
+            .Caption(new JS("formatMessage('Monthly Installment')"))
             .DataType(GridColumnDataType.Number)
             .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("FinalInstallment")
-            .Caption(new JS("formatMessage('FinalInstallment')"))
+            .Caption(new JS("formatMessage('Final Installment')"))
             .DataType(GridColumnDataType.Number)
             .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
 
                 group.Add().DataField("InstallmentStartDate")
-            .Caption(new JS("formatMessage('InstallmentStartDate')"))
+            .Caption(new JS("formatMessage('Installment Start Date')"))
             .DataType(GridColumnDataType.Date)
             .Format("dd-MMM-yyyy");
 
                 group.Add().DataField("InstallmentEndDate")
-            .Caption(new JS("formatMessage('InstallmentEndDate')"))
+            .Caption(new JS("formatMessage('Installment End Date')"))
             .DataType(GridColumnDataType.Date)
             .Format("dd-MMM-yyyy");
             });

@@ -62,13 +62,18 @@
 
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="VATInvoiceReportingInDetails" class="no-border-input"></div>
     </div>
+</div> *@
+
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <div id="VATInvoiceReportingInDetails" class="titleText no-border-title"></div>
 </div>
-
-
 <div class="container" style="display: flex; flex-direction: column; width:100%;">
 
     <div class="Head">
@@ -142,16 +147,18 @@
 
 <script type="text/javascript">
     let pivotData=[];
-    $(function () {
-        $("#VATInvoiceReportingInDetails").dxTextBox({
-            text: formatMessage("Sales Reporting In Details"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
+    // $(function () {
+    //     $("#VATInvoiceReportingInDetails").dxTextBox({
+    //         text: formatMessage("Sales Reporting In Details"),
+    //         readOnly: true,
+    //         onContentReady: function (e) {
+    //             $(e.element).addClass("dx-textbox-heading");
+    //         }
+    //     });
+    // });
+            $(function () {
+        $("#VATInvoiceReportingInDetails").text(formatMessage("Sales Reporting In Details"));
     });
-
     $(document).ready(function () {
         loadDefaultRecords();
     });
@@ -255,12 +262,14 @@
                     data: data
                 },
                 fields: [
-                    { dataField: "ClientName", area: "row", caption: "Client Name" },
-                    { dataField: "InvoiceMonth", area: "column", caption: "Invoice Month", dataType: "date", format: "MMM-yyyy" },
-                    { dataField: "AmountAfterDiscount", area: "data", caption: "Amount After Discount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "VatAmount", area: "data", caption: "Vat Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "Total", area: "data", caption: "Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } }
-                ]
+                       
+        { dataField: "ClientName", area: "row", caption: formatMessage("Client Name") },
+        { dataField: "InvoiceMonth", area: "column", caption: formatMessage("Invoice Month"), dataType: "date", format: "MMM-yyyy" },
+        { dataField: "AmountAfterDiscount", area: "data", caption: formatMessage("Amount After Discount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "VatAmount", area: "data", caption: formatMessage("Vat Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "Total", area: "data", caption: formatMessage("Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } }
+    ]
+
             },
             width: "100%",
             height: $(window).height() - 50,
@@ -360,48 +369,51 @@
         const dataSource = pivotGrid.getDataSource();
 
         const baseFields = [
-             { dataField: "ClientName", area: "row", caption: "Client Name" },
-                    { dataField: "InvoiceMonth", area: "column", caption: "Invoice Month", dataType: "date", format: "MMM-yyyy" },
-                    { dataField: "AmountAfterDiscount", area: "data", caption: "Amount After Discount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "VatAmount", area: "data", caption: "Vat Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "Total", area: "data", caption: "Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } }
-        ];
+                 
+        { dataField: "ClientName", area: "row", caption: formatMessage("Client Name") },
+        { dataField: "InvoiceMonth", area: "column", caption: formatMessage("Invoice Month"), dataType: "date", format: "MMM-yyyy" },
+        { dataField: "AmountAfterDiscount", area: "data", caption: formatMessage("Amount After Discount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "VatAmount", area: "data", caption: formatMessage("Vat Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "Total", area: "data", caption: formatMessage("Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } }
+    ];
 
-        const extraFields = [
-            { dataField: "InvoiceNo", area: "filter", caption: "Invoice No" },
-            { dataField: "InvoiceDate", area: "filter", caption: "InvoiceDate" },
-            { dataField: "BillingName", area: "filter", caption: "Billing Name" },
-            { dataField: "ItemCode", area: "filter", caption: "Item Code" },
-            { dataField: "DetailedDescription", area: "filter", caption: "GS Description", format: { type: "fixedPoint", precision: 2 } },
-            { dataField: "QuantityInvoiced", area: "filter", caption: "Quantity Invoiced" },
-            { dataField: "UnitDesc", area: "filter", caption: "Unit Desc" },
-            { dataField: "UnitRate", area: "filter", caption: "Unit Rate" },
-            { dataField: "AmountBeforeDiscount", area: "filter", caption: "Amount Before Discount" },
-            { dataField: "Discount", area: "filter", caption: "Discount" },
-            { dataField: "InvoiceEffectiveDate", area: "filter", caption: "InvoiceEffectiveDate", dataType: "date" },
-            { dataField: "ReferenceNo", area: "filter", caption: "Reference No", dataType: "date" },
-            { dataField: "SalesPerson", area: "filter", caption: "Sales Person" },
-            { dataField: "CompanyBranch", area: "filter", caption: "Company Branch" },
-            { dataField: "CostAllocationMasterGroup", area: "filter", caption: "Cost Allocation Master Group" },
-            { dataField: "CostAllocationGroup", area: "filter", caption: "Cost Allocation Group" },
-            { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Allocation Unit" },
-            { dataField: "SalesPersonName", area: "filter", caption: "Sales Person Name" },
-            { dataField: "StockGroupName", area: "filter", caption: "Stock Group Name" },
-            { dataField: "ItemPartNo", area: "filter", caption: "Item Part No" },
-            { dataField: "ItemBrand", area: "filter", caption: "Item Brand" },
-            { dataField: "ItemMake", area: "filter", caption: "Item Make" },
-            { dataField: "InvoiceStatus", area: "filter", caption: "Invoice Status" },
-            { dataField: "IssuedInvoiceCostPrice", area: "filter", caption: "Issued Invoice Cost Price" },
-            { dataField: "CostAllocationUnitId", area: "filter", caption: "Cost Allocation Unit Id" },
-            { dataField: "NoOfUnitsSold", area: "filter", caption: "No Of Units Sold" },
-            { dataField: "StatusForPosting", area: "filter", caption: "Status For Posting" },
-            { dataField: "CostOfGoodsSold", area: "filter", caption: "Cost Of Goods Sold" },
-            { dataField: "SalesAmount", area: "filter", caption: "Sales Amount" },
-            { dataField: "ProfitOnSales", area: "filter", caption: "Profit On Sales" },
-            { dataField: "EmployeeNo", area: "filter", caption: "Employee No" },
-            { dataField: "IsServicesGroup", area: "filter", caption: "Is Services Group" },
-            { dataField: "RevenueLedgerName", area: "filter", caption: "Revenue Ledger Name" }
-        ];
+
+           const extraFields = [
+        { dataField: "InvoiceNo", area: "filter", caption: formatMessage("Invoice No") },
+        { dataField: "InvoiceDate", area: "filter", caption: formatMessage("Invoice Date") },
+        { dataField: "BillingName", area: "filter", caption: formatMessage("Billing Name") },
+        { dataField: "ItemCode", area: "filter", caption: formatMessage("Item Code") },
+        { dataField: "DetailedDescription", area: "filter", caption: formatMessage("GS Description"), format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "QuantityInvoiced", area: "filter", caption: formatMessage("Quantity Invoiced") },
+        { dataField: "UnitDesc", area: "filter", caption: formatMessage("Unit Desc") },
+        { dataField: "UnitRate", area: "filter", caption: formatMessage("Unit Rate") },
+        { dataField: "AmountBeforeDiscount", area: "filter", caption: formatMessage("Amount Before Discount") },
+        { dataField: "Discount", area: "filter", caption: formatMessage("Discount") },
+        { dataField: "InvoiceEffectiveDate", area: "filter", caption: formatMessage("Invoice Effective Date"), dataType: "date" },
+        { dataField: "ReferenceNo", area: "filter", caption: formatMessage("Reference No"), dataType: "date" },
+        { dataField: "SalesPerson", area: "filter", caption: formatMessage("Sales Person") },
+        { dataField: "CompanyBranch", area: "filter", caption: formatMessage("Company Branch") },
+        { dataField: "CostAllocationMasterGroup", area: "filter", caption: formatMessage("Cost Allocation Master Group") },
+        { dataField: "CostAllocationGroup", area: "filter", caption: formatMessage("Cost Allocation Group") },
+        { dataField: "CostAllocationUnit", area: "filter", caption: formatMessage("Cost Allocation Unit") },
+        { dataField: "SalesPersonName", area: "filter", caption: formatMessage("Sales Person Name") },
+        { dataField: "StockGroupName", area: "filter", caption: formatMessage("Stock Group Name") },
+        { dataField: "ItemPartNo", area: "filter", caption: formatMessage("Item Part No") },
+        { dataField: "ItemBrand", area: "filter", caption: formatMessage("Item Brand") },
+        { dataField: "ItemMake", area: "filter", caption: formatMessage("Item Make") },
+        { dataField: "InvoiceStatus", area: "filter", caption: formatMessage("Invoice Status") },
+        { dataField: "IssuedInvoiceCostPrice", area: "filter", caption: formatMessage("Issued Invoice Cost Price") },
+        { dataField: "CostAllocationUnitId", area: "filter", caption: formatMessage("Cost Allocation Unit Id") },
+        { dataField: "NoOfUnitsSold", area: "filter", caption: formatMessage("No Of Units Sold") },
+        { dataField: "StatusForPosting", area: "filter", caption: formatMessage("Status For Posting") },
+        { dataField: "CostOfGoodsSold", area: "filter", caption: formatMessage("Cost Of Goods Sold") },
+        { dataField: "SalesAmount", area: "filter", caption: formatMessage("Sales Amount") },
+        { dataField: "ProfitOnSales", area: "filter", caption: formatMessage("Profit On Sales") },
+        { dataField: "EmployeeNo", area: "filter", caption: formatMessage("Employee No") },
+        { dataField: "IsServicesGroup", area: "filter", caption: formatMessage("Is Services Group") },
+        { dataField: "RevenueLedgerName", area: "filter", caption: formatMessage("Revenue Ledger Name") }
+    ];
+
 
         // Toggle logic
         if (!extraFieldsVisible) {
@@ -458,8 +470,8 @@
         // Refresh PivotGrid with updated data
         pivotGrid.option("dataSource", {
             fields: [
-                { dataField: "ClientName", area: "row", caption: "Client Name" },
-                { dataField: "AmountAfterDiscount", area: "data", summaryType: "sum", caption: "Invoiced Amount" }
+                { dataField: "ClientName", area: "row", caption: formatMessage("Client Name") },
+                { dataField: "AmountAfterDiscount", area: "data", summaryType: "sum", caption: formatMessage("Invoiced Amount") }
             ],
             store: updatedData
         });

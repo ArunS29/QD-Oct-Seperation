@@ -189,12 +189,12 @@
                 .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
                 .DropDownOptions(options => options.Width(230))
                 .Items(items => {
-                    items.Add().Text("Show Records").Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Month Till Date").Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("Last Year").Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                    items.Add().Text("Last Month").Icon("event").Option("color", "#AB47BC").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text("This Week").Icon("event").Option("color", "#00ACC1").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").Option("color", "#AB47BC").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#00ACC1").OnClick("function() { ddBtnShowRecords_click('week'); }");
                 })
                     .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
@@ -467,7 +467,7 @@ function ddBtnShowRecords_click(option, mode = null) {
     { dataField: "AccountGroup", area: "row", caption: formatMessage("Account Group") },
     { dataField: "AccountHeadName", area: "row", caption: formatMessage("Account Head Name") },
     { dataField: "MonthYear", area: "column", caption: formatMessage("Month Year") },
-    { dataField: "DrCr", area: "column", caption: formatMessage("Dr Cr") },
+    { dataField: "DrCr", area: "column", caption: formatMessage("DrCr") },
     { dataField: "VoucherType", area: "column", caption: formatMessage("Voucher Type") },
     { dataField: "DrAmount", area: "data", caption: formatMessage("Debit Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } },
     { dataField: "CrAmount", area: "data", caption: formatMessage("Credit Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } },
@@ -541,17 +541,18 @@ $("#pivotChartContainer").dxChart({
 }
     },
     series: [
-        {
-            valueField: "debitVisible",
-            name: "Debit (SAR)",
-            color: "#87CEEB"
-        },
-        {
-            valueField: "creditVisible",
-            name: "Credit (SAR)",
-            color: "#F08080"
-        }
-    ],
+    {
+        valueField: "debitVisible",
+        name: formatMessage("Debit (SAR)"),
+        color: "#87CEEB"
+    },
+    {
+        valueField: "creditVisible",
+        name: formatMessage("Credit (SAR)"),
+        color: "#F08080"
+    }
+],
+
     title: {
     text: formatMessage("Trial Balance - Debit vs Credit with Percentage"),
         font: {

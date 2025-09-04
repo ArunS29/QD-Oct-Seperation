@@ -565,7 +565,7 @@
 		<div class="context-menu-item">
 			@(Html.DevExtreme().Button()
 						.ID("btnEditVoucher")
-						.Text("Edit Voucher")
+						.Text(new JS("formatMessage('Edit Voucher')"))
 						.Type(ButtonType.Normal)
 						.StylingMode(ButtonStylingMode.Outlined)
 						.Icon("edit")
@@ -695,7 +695,7 @@
 				.ID("ledgerAccountPopup")
 				.Width("80%")
 				.Height("85%")
-				.Title("Add Ledger Account")
+				.Title(new JS("formatMessage('Add Ledger Account')"))
 				.ShowTitle(true)
 				.CloseOnOutsideClick(true)
 				.Visible(false)
@@ -953,13 +953,13 @@
 					.Visible(false); *@
 
 						columns.AddFor(m => m.VoucherAmountFormatted)
-					.Caption(new JS("formatMessage('VoucherAmountFormatted')"))
+					.Caption(new JS("formatMessage('Voucher Amount Formatted')"))
 					.Alignment(HorizontalAlignment.Left)
 					.Visible(false);
 
 						columns.Add()
 					.DataField("GroupCurrencyName")
-					.Caption("Conversion Currency")
+					.Caption(new JS("formatMessage('Conversion Currency')"))
 
 					.Visible(false);
 						// This makes CurrencyName the first grouping level
@@ -993,14 +993,14 @@
 					.Visible(true);
 
 						/* … unchanged hidden columns … */
-						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('ReferenceNote')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('AccountHeadArabic')")).Alignment(HorizontalAlignment.Left).Visible(false).CssClass("font-times");;
-						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('BillPaidTo')")).Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
+						columns.AddFor(m => m.ReferenceNote).Caption(new JS("formatMessage('Reference Note')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head Arabic')")).Alignment(HorizontalAlignment.Left).Visible(false).CssClass("font-times");;
+						columns.AddFor(m => m.BillPaidTo).Caption(new JS("formatMessage('Bill Paid To')")).Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('BillDate')")).Alignment(HorizontalAlignment.Center).Visible(false);
-						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('Bill Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
+						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('Bill No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('Voucher Modified On')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('Voucher Modified By')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.SysRemarks)
     .Caption(new JS("formatMessage('Remarks')"))
     .Alignment(HorizontalAlignment.Left)
@@ -1010,9 +1010,9 @@
             <%- data.SysRemarks %>
         </div>
     </text>);
-						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('VoucherType')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('Voucher Type')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.EntryNarration)
     .Caption(new JS("formatMessage('EntryNarration')"))
     .Alignment(HorizontalAlignment.Left)
@@ -1023,17 +1023,17 @@
         </div>
     </text>);
 						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('Voucher Entry No')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherApprovedOn)
-					.Caption(new JS("formatMessage('VoucherApprovedOn')")).
+					.Caption(new JS("formatMessage('Voucher Approved On')")).
 					Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
 
-						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).
+						columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('Voucher Verified On')")).
 					Alignment(HorizontalAlignment.Center).Visible(false).Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('Voucher Verified By')")).Alignment(HorizontalAlignment.Left).Visible(false);
 
 
 						columns.AddFor(m => m.VoucherNarration)
