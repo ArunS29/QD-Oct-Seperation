@@ -55489,6 +55489,9 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherType)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            
+            entity.Property(e => e.currencyrate)
+                .HasColumnType("decimal(18,4)");
             entity.Property(e => e.VoucherVerifiedBy).IsUnicode(false);
             entity.Property(e => e.VoucherVerifiedOn).HasColumnType("datetime");
         });
