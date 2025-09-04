@@ -1122,7 +1122,7 @@
 							.Location(TextEditorButtonLocation.After)
 							.Widget(w => w.Button()
 							.Type(ButtonType.Default)
-							.Icon("edit")
+							.Icon("plus")
 							.Disabled(true) // Button is also disabled
 							.ElementAttr(new { @class = "custom-hover-button add-hover" })
 							.OnClick("CurrencyClick"));
@@ -1162,7 +1162,7 @@
 						    .Location(TextEditorButtonLocation.After)
 						    .Widget(w => w.Button()
 						    .Type(ButtonType.Default)
-						    .Icon("edit") // Use "plus" or any other if needed
+						    .Icon("plus") // Use "plus" or any other if needed
 						    .Hint("Edit Description")
 						    .ElementAttr(new { @class = "custom-hover-button add-hover" })
 						    .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -1399,7 +1399,7 @@
 </div>
 
 
-		<div class="footer-fixed" style="width: 96vw;">
+		<div class="footer-fixed" style="width: 95vw;">
 				@await Html.PartialAsync("/Pages/Shared/IMS/QuotationFormFooter.cshtml")
 		</div>
 		
@@ -2947,7 +2947,7 @@ placeholder: "Search..."
 				{ dataField: "LineTotalWithTax", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
-				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 },
+				@* { dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 }, *@
 							{
 		type: "buttons",
 		caption: "Delete",
@@ -3588,7 +3588,7 @@ placeholder: "Search..."
 
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
-				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 },
+				@* { dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 }, *@
 				{ dataField: "AddlDescription", visible: false },
 	{ dataField: "QuoteRemarks", visible: false },
 	{ dataField: "QuoteGroupCode", visible: false },

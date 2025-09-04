@@ -682,7 +682,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit")
+															.Icon("plus")
 															.Disabled(true) // Button is also disabled
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick"));
@@ -722,7 +722,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit") // Use "plus" or any other if needed
+															.Icon("plus") // Use "plus" or any other if needed
 															.Hint("Edit Description")
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick")); // 👈 your existing handler

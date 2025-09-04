@@ -363,7 +363,13 @@ body.dark-mode {
     align-items: flex-end; /* Vertically centers the buttons */
     margin: 0px 10px;
 }
-
+.horizontal-container1 {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin: 0px 10px;
+}
 .button-alignment-down {
     margin-top: 23px;
 }
@@ -391,7 +397,7 @@ body.dark-mode {
 }
 
 .ledgerResult {
-    margin: 15px !important;
+    margin: 0px 15px !important;
 }
 
 #rowHeightMenu {
