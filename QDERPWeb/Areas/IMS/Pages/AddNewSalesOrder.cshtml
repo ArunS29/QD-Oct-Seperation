@@ -492,8 +492,7 @@
                     <tr>
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top; padding: 10px;">
-                            <div style="font-weight: bold;">Signatories:</div>
-                            <div class="mb-3" style="display:flex;">
+                           <div class="mb-3" style="display:flex;">
                                 @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("preparedBy")
                                 .ValueChangeEvent("input")
@@ -509,6 +508,8 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
                                 )
+                                .Label("Signatories:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
@@ -870,10 +871,14 @@
             )
 
     </div>
+    <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
     @(Html.DevExtreme().DataGrid()
-        .ID("itemGrid")
-        .Height("38vh")
-        .DataSource(new JS("window.itemGridDataSource"))        
+        .ID("B2BdataGrid")
+        .Height("33vh")
+        
+        .DataSource(new JS("window.B2BdataGridDataSource"))        
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -1006,9 +1011,7 @@
 </div>
 <div class="Head">
     <div class="footer-fixed">
-
         @await Html.PartialAsync("/Pages/Shared/IMS/SalesOrderEDitFooter.cshtml")
-
     </div>
 </div>
 <!-- Context Menu -->
@@ -1417,7 +1420,7 @@
                 e.event.preventDefault(); // disable browser context menu
 
                 // Select the row that was right-clicked
-                const grid = $("#itemGrid").dxDataGrid("instance");
+                const grid = $("#B2BdataGrid").dxDataGrid("instance");
                 grid.selectRowsByIndexes([e.rowIndex]);
 
                 // Position and show the custom menu
@@ -1439,7 +1442,7 @@
         // Menu action handling
         $(document).on("click", ".ctx-menu-item", function () {
             const action = $(this).data("action");
-            const grid = $("#itemGrid").dxDataGrid("instance");
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
             switch (action) {
                 case "delete-line":
                     const selected = grid.getSelectedRowsData();
@@ -1576,7 +1579,7 @@
                             cellInfo.setValue(selected.Gscode); // ✅ sets value in underlying row
 
                             // Optional: update other columns in the same row
-                            const grid = $("#itemGrid").dxDataGrid("instance");
+                            const grid = $("#B2BdataGrid").dxDataGrid("instance");
                             const rowIndex = grid.getRowIndexByKey(cellInfo.key);
                             grid.cellValue(rowIndex, "Gscode", selected.Gscode);
                             grid.cellValue(rowIndex, "Gsdescrpition", selected.Gsdescrpition);           
@@ -1815,13 +1818,13 @@
 
 
         function serialTemplate(cellElement, cellInfo) {
-             const grid = $("#itemGrid").dxDataGrid("instance");
+             const grid = $("#B2BdataGrid").dxDataGrid("instance");
              const rowIndex = grid.getRowIndexByKey(cellInfo.key);
              if (rowIndex >= 0) {
                  cellElement.text(rowIndex + 1);
              }
          }
-          window.itemGridDataSource = new DevExpress.data.ArrayStore({
+          window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
             key: "ItemCode",
             data: []
         });
@@ -1831,7 +1834,7 @@
             var button = $("#btnSave").dxButton("instance");
             button.option("text", "Update");
 
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
             var totalCount = grid.totalCount();
             var pageSize = grid.pageSize();
@@ -1961,7 +1964,7 @@
                         // ...populate other fields as needed...
                          // Now bind children to grid:
                 if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
-                    var grid = $("#itemGrid").dxDataGrid("instance");
+                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
                   if (data.IsApproved === true) {
@@ -2114,7 +2117,7 @@ function NewSalesOrderNoForSave() {
       function receiveModalFieldData(modalData) {
     console.log("📥 Received from modal:", modalData);
 
-    const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+    const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance"); // ✅ add this line
 
     if (!dataGridInstance) {
         console.error("❌ dataGridInstance is not initialized.");
@@ -2167,7 +2170,7 @@ $("#btnSave").on("click", function (e) {
 });
 
 function saveSalesOrder(salesOrderNo, $btn) {
-    const gridInstance = $("#itemGrid").dxDataGrid("instance");
+    const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
     // ✅ collect children
     const children = gridInstance.getDataSource().items().map(row => ({
@@ -2236,7 +2239,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
             $btn.option("disabled", false);
              // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
+                            window.B2BdataGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
         },
@@ -2250,7 +2253,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     //         $("#btnSave").on("click", function (e) {
     //         e.preventDefault();
 
-    //         const gridInstance = $("#itemGrid").dxDataGrid("instance");
+    //         const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
     //         // ✅ Save pending cell edits before proceeding
     //         if (gridInstance.hasEditData()) {
@@ -2380,7 +2383,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     //                      location.reload();
     //                     // ✅ Reload grid after save
     //                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-    //                         window.itemGridDataSource = data;
+    //                         window.B2BdataGridDataSource = data;
     //                         gridInstance.option("dataSource", data);
     //                     });
     //                 },
@@ -2394,7 +2397,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
          $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
-            const gridInstance = $("#itemGrid").dxDataGrid("instance");
+            const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
             // ✅ Save pending cell edits before proceeding
             if (gridInstance.hasEditData()) {
@@ -2525,7 +2528,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
 						
                         // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
+                            window.B2BdataGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
                         if (window.parent && window.parent.$("#dataGrid").length) {
@@ -2602,7 +2605,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
                    $("#btnGenerateJO").on("click", function () {
             var valveType = $("input[name='joType']:checked").val();
             var salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             var selectedRows = grid.getSelectedRowsData();
 
             if (!salesOrderNo) {
@@ -2839,7 +2842,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
             }
         });
          // Disable DataGrid editing
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
     if (grid) {
         grid.option("editing", {
             allowUpdating: false,
@@ -2854,7 +2857,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
         });
 
         // Make grid look disabled (read-only style)
-        $("#itemGrid").addClass("dx-state-disabled");
+        $("#B2BdataGrid").addClass("dx-state-disabled");
     }
     }
 $(document).ready(function () {
@@ -3033,7 +3036,7 @@ $(document).ready(function () {
         // Get Voucher No safely
         const SalesOrderNOBox = $("#SalesOrderNO").dxTextBox("instance");
         const salesOrderNO = SalesOrderNOBox ? SalesOrderNOBox.option("value") : null;
-        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var dataSource = dataGrid.option("dataSource");
         
@@ -3113,7 +3116,7 @@ $(document).ready(function () {
 
     // On document ready
     $(document).ready(function () {
-        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
         dataGrid.on("selectionChanged", function (e) {
             const selectedRowData = e.selectedRowsData[0];
@@ -3158,7 +3161,7 @@ $(document).ready(function () {
             //MoveupDown functionality
         function moveRowUp() {
             
-                var dataGrid = $("#itemGrid").dxDataGrid("instance");
+                var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Flatten the grouped data
             //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3187,7 +3190,7 @@ $(document).ready(function () {
 
         function moveRowDown() {
 
-            var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Get flattened data
             // var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3224,8 +3227,8 @@ $(document).ready(function () {
 
 
             // Get the DataGrid instance and update the data source
-            var dataGrid1 = $("#itemGrid").dxDataGrid("instance");
-            var dataGrid = $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
+            var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
 
 
             dataGrid1.refresh();
@@ -3251,5 +3254,143 @@ $(document).ready(function () {
          let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
           window.location.href=url;
     });
+    let isVoucherSaved = false;
 
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = " - In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = " - Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
 </script>

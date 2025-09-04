@@ -35,7 +35,7 @@
         overflow-x: hidden;
     }
 
-    ..form-container1 {
+    .form-container1 {
         padding: 5px 10px;
     }
     
@@ -256,7 +256,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(210)
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(200)
                     .Items(item =>
                     {
                         item.Add()
@@ -264,8 +264,8 @@
                     .Icon("folder")
                      .Text(new JS("formatMessage('Delivery Note Details')"))
                     .Template(@<text>
-            <div class="p-3">
-                <div class="row g-2">
+            <div class="p-2">
+                <div class="row">
 
                     <!-- Row 1 -->
                     <div class="col-md-3">
@@ -637,7 +637,7 @@
 
                     item.Add().Text(new JS("formatMessage('Signatories')")).Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
-                <div class="p-3">
+                <div class="p-2">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
@@ -719,7 +719,7 @@
 
         </text>);
                     item.Add().Text(new JS("formatMessage('Branch/Divisions')")).Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-            <div class="p-3">
+            <div class="p-2">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
                     <div class="col-md-4">
@@ -807,7 +807,7 @@
             </div>
         </text>);
                     item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
-                                                                                                                                                                <div class="p-3">
+                                                                                                                                                                <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
                                                                                                                                                                             <td style="width: 30%;">
@@ -915,9 +915,12 @@
                 )
 
     </div>
+    <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
     @(Html.DevExtreme().DataGrid()
-            .ID("itemGrid")
-            .Height("46vh")
+            .ID("B2BdataGrid")
+            .Height("38vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("SNo")
             .Selection(s => s
@@ -1557,7 +1560,7 @@
 
         $(function () {
 
-            dataGridInstance = $("#itemGrid").dxDataGrid({
+            dataGridInstance = $("#B2BdataGrid").dxDataGrid({
                     focusedRowEnabled: true,
                 dataSource: rowData,
 
@@ -1732,7 +1735,7 @@
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-                        const grid = $("#itemGrid").dxDataGrid("instance");
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
 					const visibleRows = grid.getVisibleRows();
 					const rowIndex = cellInfo.rowIndex;
 					const rowData = grid.cellValue(rowIndex, "GSCode");
@@ -1931,7 +1934,7 @@
         width: 200,
         dataType: "number",
         editCellTemplate: function (cellElement, cellInfo) {
-            let dataGrid = $("#itemGrid").dxDataGrid("instance");
+            let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
             console.log("Editing rowIndex:", rowIndex);
@@ -2121,7 +2124,7 @@
                                 //             cellInfo.setValue(selectedItem.PropertyNo);
 
                                 //         // 2️⃣ Get the parent DataGrid instance and row index
-                                //         let dataGrid = $("#itemGrid").dxDataGrid("instance");
+                                //         let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                                 //         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
                                 //         // 3️⃣ Set UnitRateMethod column in the same row
@@ -2292,7 +2295,7 @@ $(function () {
               function receiveModalFieldData(modalData) {
             console.log("📥 Received from modal:", modalData);
 
-            const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+            const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance"); // ✅ add this line
 
             if (!dataGridInstance) {
                 console.error("❌ dataGridInstance is not initialized.");
@@ -2402,7 +2405,7 @@ $(function () {
                  let selectedSNo = null;
 
         $(document).ready(function () {
-            const grid = $("#itemGrid").dxDataGrid("instance");
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
             // Track selected row
             grid.on("selectionChanged", function (e) {
@@ -2431,7 +2434,7 @@ $(function () {
         });
 
         function moveRow(direction) {
-            const grid = $("#itemGrid").dxDataGrid("instance");
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
             let data = grid.getDataSource().items(); // get flat data
 
             if (!selectedSNo) {

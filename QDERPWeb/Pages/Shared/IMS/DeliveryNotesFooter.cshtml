@@ -1,7 +1,179 @@
 ﻿
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
 
+<style type="text/css">
 
-<div class="dx-fieldset horizontal-container mt-2">
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 9px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #9ca3af;
+        opacity: 1;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+
+    .footer-fixed {
+        bottom: 35px !important;
+    }
+</style>
+<div class="WorkFlow">
+    <div class="workflow-container">
+        <div class="workflow-line"></div>
+
+        <div class="workflow-step" id="step-update">
+            <div class="step-circle"><i class="fas fa-user"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg"> - In Progress</div>
+            </div>
+        </div>
+        <div class="workflow-step" id="step-submit">
+            <div class="step-circle" id="circle-submit"><i class="fas fa-paper-plane"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Submitted</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-verify">
+            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg"> - Waiting</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
+        <div id="approvePopover" class="popover-box">Approved by: <span id="approvedByName"></span><br>On: <span id="approvedOn"></span></div>
+
+    </div>
+</div>
+
+<div class="horizontal-container1">
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnSave")
@@ -19,7 +191,7 @@
                 .Icon("save")
                 .Text(new JS("formatMessage('Save And Close')"))
                 .Hint("Save and Close")
-                .Width(150)
+                .Width("100%")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
                // .OnClick("onSaveAndCloseClicked") // Save and go back
                 )
@@ -30,7 +202,7 @@
                 .Text(new JS("formatMessage('Back')"))
                 .Icon("arrowleft")
                 .Hint("Click to go back")
-                .Width(150)
+                .Width("100%")
                 .ElementAttr(new { @class = "dx-button-custom btn-back" })
                
                 )
@@ -42,13 +214,13 @@
                 .Text(new JS("formatMessage('Attach')"))
                 .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-                .Width(200)
+                .Width("100%")
                 )
 
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("btnPrint")
+                .ID("btnPrint1")
                 .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .ElementAttr(new { @class = "bold-button" })
@@ -102,11 +274,29 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("btnPostbooks")
+                .Icon("up")
+                .Text(new JS("formatMessage('Post')"))
+                .Width("100%")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnReceive")
+                .Icon("down")
+                .Text(new JS("formatMessage('Receive')"))
+                .Width("100%")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
                 .ID("btnDelete")
                 .Icon("trash")
                 .Text(new JS("formatMessage('Delete')"))
                 .Hint("Delete")
-                .Width(150)
+                .Width("100%")
                 .ElementAttr(new { @class = "dx-button-custom btn-delete" })
                 .OnClick("onDeleteClick")  // <-- Call JS function here
                 )
@@ -117,7 +307,7 @@
                 .ID("btnApprove")
                 .Icon("verify")
                 .Text(new JS("formatMessage('Approve')"))
-                .Width(200)
+                .Width("100%")
                 .ElementAttr(new { @class = "dx-button-custom btn-approve" })
                 .OnClick("approveDeliveryNote")
                 )
@@ -128,225 +318,20 @@
                 .ID("btnAddNewPayment")
                 .Icon("money")
                 .Text(new JS("formatMessage('Add New Stock Item')"))
-                .Width(200)
+                .Width("100%")
                 )
 
 
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnPostbooks")
-                .Icon("book")
-                .Text(new JS("formatMessage('Post')"))
-                .Width(200)
-                )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnReceive")
-                .Icon("grid")
-                .Text(new JS("formatMessage('Receive')"))
-                .Width(200)
-                )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveUp")
-                .Text(new JS("formatMessage('Move Up')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spinup") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveDown")
-                .Text(new JS("formatMessage('Move Down')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spindown") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Text(new JS("formatMessage('Layout')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().DropDownButton()
-            .ID("rowHeightProperties")
-            .Icon("") // fallback to standard icon if "rowproperties" not working
-            .Width(50)
-            .Text(new JS("formatMessage('Set Row Height')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add()
-                .Text("Short (1 Line)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Short
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('30'); }");
-
-                items.Add()
-                .Text("Medium (2 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Medium
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('60'); }");
-
-                items.Add()
-                .Text("Tall (4 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Tall
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('90'); }");
-
-                items.Add()
-                .Text("Extra Tall (8 Lines)")
-                .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                @for (var i = 1; i <= 8; i++)
-                        {
-                            var y = 1 + (i - 1) * 2;
-                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                        }
-            </svg> Extra Tall
-        </text>)
-                .OnClick("function() { ChangeRowHeight('130'); }");
-            })
-            .ShowArrowIcon(false)
-        )
-    </div>
- 
-
-   
-
- 
-  
- 
 </div>
 <script type="text/javascript">
     
 
         function onAddNewItemClick() {
-        const grid = $("#itemGrid").dxDataGrid("instance");
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
         grid.addRow(); // adds a blank new row
     }
-
-
-
-
-
-    // $(document).ready(function () {
-    //     console.log('Start permission handling');
-    //     // Form ID
-    //     var formId = "frm201VoucherCashPayment";
-
-    //     // Call the API to get permissions
-    //     $.ajax({
-    //         url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-    //         type: 'GET',
-    //         contentType: 'application/json',
-    //         success: function (response) {
-    //             console.log("API Response:", response); // Log the API response
-
-    //             if (response.success && response.permissions) {
-    //                 // Default visibility and enable status for buttons
-    //                 var controlStates = {
-    //                     "btnSave": { "Visible": true, "Enabled": true },
-    //                     "btnSaveAndClose": { "Visible": false, "Enabled": false },
-    //                     "btnPreview1": { "Visible": true, "Enabled": true },
-    //                     "btnPrint": { "Visible": true, "Enabled": true },
-    //                     "btnDelete": { "Visible": false, "Enabled": false },
-    //                     "btnBack": { "Visible": false, "Enabled": false },
-    //                     "btnVerify": { "Visible": true, "Enabled": true },
-    //                     "btnApprove": { "Visible": false, "Enabled": false },
-    //                     "btnAttach": { "Visible": false, "Enabled": false }
-    //                 };
-
-
-    //                 // Check for full access
-    //                 var fullAccess = response.permissions.find(p =>
-    //                     p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-    //                 );
-
-    //                 if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-    //                     // Grant full access: make all controls visible and enabled
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         controlStates[key] = { "Visible": true, "Enabled": true };
-    //                     });
-    //                 } else {
-    //                     // Update states based on specific permissions for each control
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         var controlPermission = response.permissions.find(p =>
-    //                             p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-    //                         );
-    //                         if (controlPermission) {
-    //                             controlStates[key] = {
-    //                                 "Visible": controlPermission.ItemVisible || false,
-    //                                 "Enabled": controlPermission.ItemEnabled || false
-    //                             };
-    //                         }
-    //                     });
-    //                 }
-
-    //                 console.log("Control States:", controlStates); // Log the control states
-
-    //                 // Dynamically update button visibility and enabled state
-    //                 Object.keys(controlStates).forEach(key => {
-    //                     var button = document.getElementById(key);
-    //                     if (button) {
-    //                         // Handle visibility
-    //                         button.style.display = controlStates[key].Visible ? "" : "none";
-    //                         // Handle enable/disable state
-    //                         button.disabled = !controlStates[key].Enabled;
-    //                         // Ensure button text is visible
-    //                         button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
-    //                         console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-    //                     } else {
-    //                         console.warn(`Button with ID "${key}" not found in the DOM.`);
-    //                     }
-    //                 });
-
-    //             } else {
-    //                 console.warn("Failed to fetch permissions or no permissions available.");
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("Error fetching permissions:", error);
-    //             alert('An error occurred while fetching permissions. Please try again.');
-    //         }
-    //     });
-    //     // showColumnChooser();
-    //     console.log('End permission handling');
-    // });
 
 
     let IsDirect = true;
@@ -382,11 +367,6 @@
     function openLayoutClick(e) {
         $("#loadLayoutInput").click();
     }
-
-    
-    
-    
-
 
     function ChangeRowHeight(newHeight) {
         // Update the row height
@@ -441,196 +421,6 @@
     });
       
 
-    //           function saveDeliveryNote(closeAfterSave = false) {
-    //     if (window.edits === false) {
-    //         // New mode: generate number first
-    //         $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumber")
-    //             .done(function(res) {
-    //                 if (res.success && res.deliveryNoteNo) {
-    //                     $("#deliveryNoteNo").dxTextBox("instance").option("value", res.deliveryNoteNo);
-    //                     // window.isNewDeliveryNote = false;
-    //                     // Now save
-    //                     saveDeliveryNoteWithNumber(res.deliveryNoteNo, closeAfterSave);
-    //                 } else {
-    //                     DevExpress.ui.notify("Failed to generate Delivery Note number", "error", 3000);
-    //                 }
-    //             })
-    //             .fail(function() {
-    //                 DevExpress.ui.notify("Error generating Delivery Note number.", "error", 3000);
-    //             });
-    //     } else {
-    //         // Edit mode: use existing number
-    //         const existingNo = $("#deliveryNoteNo").dxTextBox("instance").option("value");
-    //         saveDeliveryNoteWithNumber(existingNo, closeAfterSave);
-    //     }
-    // }
-
-
-
-    // // 🔹 Actual save logic
-    // function saveDeliveryNoteWithNumber(deliveryNoteNo, closeAfterSave = false) {
-    //     const model = {
-    //         deliveryNoteNo: deliveryNoteNo,
-    //         deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
-    //         clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
-    //         salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
-    //         clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
-    //         clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
-    //         attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-    //         clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
-    //         clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-    //         StoreCode: $("#ddStockfromStore").dxDropDownBox("instance").option("value"),
-    //         projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
-    //         clientProject: $("#clientProject").dxTextBox("instance").option("value"),
-    //         deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
-    //         salesman: $("#Salesman").dxTextBox("instance").option("value"),
-    //         transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
-    //         driversName: $("#DriverName").dxTextBox("instance").option("value"),
-    //         driversId: $("#DriverID").dxTextBox("instance").option("value"),
-    //         vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
-    //         companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
-    //         deliveryType: $("#DeliveryType").dxSelectBox("instance").option("value"),
-    //         inventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
-    //         salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
-    //         quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //         enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-    //         Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
-    //         CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //         BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-    //         CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
-    //     };
-
-    //     const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-    //     const items = itemGridInstance.getDataSource().items().map(row => ({
-    //         deliveryNoteSlNo: row.DeliveryNoteSlNo || null,
-    //         gscode: row.Gscode,
-    //         unitRateMethod: row.UnitRateMethod,
-    //         qty: row.Qty,
-    //         issuedUnitPrice: row.IssuedUnitPrice,
-    //         issuedQuoteUnitPrice: row.IssuedQuoteUnitPrice,
-    //         employeeNo: row.EmployeeNo,
-    //         propertyNo: row.PropertyNo,
-    //         addlDescription: row.AddlDescription,
-    //         deliveryRemarks: row.DeliveryRemarks
-    //     }));
-
-    //     const saveNote = $.ajax({
-    //         url: '/api/DeliveryNote/SaveDeliveryNote',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify(model)
-    //     });
-
-    //     const saveItems = $.ajax({
-    //         url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({
-    //             deliveryNoteNo: model.deliveryNoteNo,
-    //             currencyRate: model.CurrencyRate,
-    //             baseCurrencyId: model.BaseCurrencyId,
-    //             currencyId: model.CurrencyId,
-    //             items: items
-    //         })
-    //     });
-
-    //     Promise.all([saveNote, saveItems])
-    //         .then(() => {
-    //             DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
-    //             if (!isUpdate) {
-    //                 $("#btnSave").dxButton("instance").option("text", "Update");
-    //                 $("#btnSave").data("is-update", true);
-    //             }
-    //         })
-    //         .catch(err => {
-    //             DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
-    //         });
-    // }
-
-
-    //     function saveDeliveryNote(closeAfterSave = false) {
-    //     var isUpdate = $("#btnSave").data("is-update");
-
-    //     const model = {
-    //         deliveryNoteNo: $("#deliveryNoteNo").dxTextBox("instance").option("value"),
-    //         deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
-    //         clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
-    //         salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
-    //         clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
-    //         clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
-    //         attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-    //         clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
-    //         clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-    //         StoreCode: $("#ddStockfromStore").dxDropDownBox("instance").option("value"),
-    //         projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
-    //         clientProject: $("#clientProject").dxTextBox("instance").option("value"),
-    //         deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
-    //         salesman: $("#Salesman").dxTextBox("instance").option("value"),
-    //         transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
-    //         driversName: $("#DriverName").dxTextBox("instance").option("value"),
-    //         driversId: $("#DriverID").dxTextBox("instance").option("value"),
-    //         vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
-    //         companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
-    //         deliveryType: $("#DeliveryType").dxSelectBox("instance").option("value"),
-    //         inventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
-    //         salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
-    //         quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //         enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-    //         Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
-    //         CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //         BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-    //         CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
-    //     };
-
-    //     // Get grid data and map correctly
-    //     const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-    //     const items = itemGridInstance.getDataSource().items().map(row => ({
-    //         deliveryNoteSlNo: row.DeliveryNoteSlNo || null, // keep PK if exists
-    //         gscode: row.Gscode,
-    //         unitRateMethod: row.UnitRateMethod,
-    //         qty: row.Qty,
-    //         issuedUnitPrice: row.IssuedUnitPrice,
-    //         issuedQuoteUnitPrice: row.IssuedQuoteUnitPrice,
-    //         employeeNo: row.EmployeeNo,
-    //         propertyNo: row.PropertyNo,
-    //         addlDescription: row.AddlDescription,
-    //         deliveryRemarks: row.DeliveryRemarks
-    //     }));
-
-    //     // Save note
-    //     const saveNote = $.ajax({
-    //         url: '/api/DeliveryNote/SaveDeliveryNote',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify(model)
-    //     });
-
-    //     // Save items
-    //     const saveItems = $.ajax({
-    //         url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
-    //         type: 'POST',
-    //         contentType: 'application/json',
-    //         data: JSON.stringify({
-    //             deliveryNoteNo: model.deliveryNoteNo,
-    //             currencyRate: model.CurrencyRate,
-    //             baseCurrencyId: model.BaseCurrencyId,
-    //             currencyId: model.CurrencyId,
-    //             items: items
-    //         })
-    //     });
-
-    //     Promise.all([saveNote, saveItems])
-    //         .then(([noteRes, itemRes]) => {
-    //             DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
-    //             if (!isUpdate) {
-    //                 $("#btnSave").dxButton("instance").option("text", "Update");
-    //                 $("#btnSave").data("is-update", true);
-    //             }
-    //         })
-    //         .catch(err => {
-    //             DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
-    //         });
-    // }
         function saveDeliveryNote(closeAfterSave = false) {
         var isUpdate = $("#btnSave").data("is-update");
 
@@ -693,8 +483,8 @@
         };
 
         // Get grid data (items)
-        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        const items = itemGridInstance.getDataSource().items();
+        const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+        const items = B2BdataGridInstance.getDataSource().items();
 
         // Call both APIs: 1) save delivery note, 2) save item details
         const saveNote = $.ajax({
@@ -895,7 +685,7 @@
         });
 
         // Disable editing and deleting in the DataGrid
-        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
         if (dataGrid) {
             dataGrid.option("editing.allowUpdating", false);
             dataGrid.option("editing.allowDeleting", false);
@@ -952,7 +742,7 @@
         // Get Voucher No safely
         const deliveryNoBox = $("#deliveryNoteNo").dxTextBox("instance");
         const deliveryNo = deliveryNoBox ? deliveryNoBox.option("value") : null;
-        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var dataSource = dataGrid.option("dataSource");
 
