@@ -18,6 +18,14 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
         }
 
         public ReportforMaterialIssueNote(
+             bool PrintFooterAtBottom,
+ bool ShowItemLineNo,
+ bool printItemPartArabicDesc,
+ bool showSeal,
+ bool showSignature,
+ bool printLetterhead,
+ bool printItemCodeDesc,
+ bool printItemPartNoDesc,
             string deliveryNoteNo,
             string tenantName,
             string companyName,
@@ -33,13 +41,14 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             _deliveryNoteNo = deliveryNoteNo; // <-- ADD THIS LINE
 
             InitializeComponent();
-            SetReportParameters(deliveryNoteNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
+            SetReportParameters(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
             LoadReportData(deliveryNoteNo);
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead, PrintFooterAtBottom);
 
             this.BeforePrint += MaterialRequestInventory_BeforePrint;
         }
 
-        private void SetReportParameters(
+        private void SetReportParameters(bool PrintFooterAtBottom, bool ShowItemLineNo, bool printItemPartArabicDesc, bool showSeal, bool showSignature, bool printLetterhead, bool printItemCodeDesc, bool printItemPartNoDesc,
             string deliveryNoteNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr, string username)
         {
@@ -88,10 +97,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             if (FindControl("UserName", true) is XRLabel usernameLabel)
                 usernameLabel.Text = username;
 
-            if (FindControl("xrPictureBox4", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
 
@@ -108,6 +117,54 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 this.DataSource = dt;
                 this.DataMember = ""; // Set if you use a named data source
             }
+        }
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead, bool printFooterAtBottom)
+        {
+
+            // 🔹 Hide GroupFooter2 if PrintFooterAtBottom = true
+            if (FindControl("GroupFooter2", true) is GroupFooterBand footerBand)
+                footerBand.Visible = printFooterAtBottom;
+
+
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox2", "xrPictureBox0", "xrPictureBox0" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel85", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel86", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrLabel68", true) is XRLabel lbl68)
+                lbl68.Visible = printLetterhead;
+            if (FindControl("xrLabel69", true) is XRLabel lbl69)
+                lbl69.Visible = printLetterhead;
+            if (FindControl("xrLabel70", true) is XRLabel lbl70)
+                lbl70.Visible = printLetterhead;
+            if (FindControl("xrLabel87", true) is XRLabel lbl87)
+                lbl87.Visible = printLetterhead;
+            if (FindControl("xrLabel88", true) is XRLabel lbl88)
+                lbl88.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+
+            if (FindControl("xrLine7", true) is XRLine line7)
+                line7.Visible = printLetterhead;
+            if (FindControl("xrLine8", true) is XRLine line8)
+                line8.Visible = printLetterhead;
         }
 
         private DataTable GetReportData(string deliveryNoteNo)

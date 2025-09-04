@@ -634,31 +634,43 @@
 
                             <tr>
                                 <!-- Prepared By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
-                                </td>
+                              <td>
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
 
-                                <!-- Verified By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
-                                </td>
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
 
-                                <!-- Approved By Checkboxes -->
-                                <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
-                                </td>
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
+
+								</td>
+
+								<!-- Verified By Checkboxes -->
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("ShowItemLineNo").Text("Show Item Line No instead of Sl.No") )
+									<input type="hidden" id="hdnShowItemLineNo" name="hdnShowItemLineNo" value="false" />
+									<br />
+                                    	@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text(new JS("formatMessage('Print Item Code with Description')")) )
+										<input type="hidden" id="hdnprintItemCodeDesc" name="hdnprintItemCodeDesc" value="false" />
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Description')")) )
+										<input type="hidden" id="hdnprintItemPartNoDesc" name="hdnprintItemPartNoDesc" value="false" />
+
+								</td>
+
+								<!-- Approved By Checkboxes -->
+								<td>
+								@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
+										<input type="hidden" id="hdnprintItemPartArabicDesc" name="hdnprintItemPartArabicDesc" value="false" />
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("PrintFooterAtBottom").Value(false).Text("Print Footer At Bottom") )
+										<input type="hidden" id="hdnPrintFooterAtBottom" name="hdnPrintFooterAtBottom" value="false" />
+									<br />
+									
+								</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1237,7 +1249,67 @@
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
 </div>
 <script>
-    
+      $(function() {
+        $("#PrintFooterAtBottom").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPrintFooterAtBottom").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#ShowItemLineNo").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowItemLineNo").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	 
+   
+	  $(function() {
+        $("#printItemPartArabicDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartArabicDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemPartNoDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartNoDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemCodeDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemCodeDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
     window.edits = true;
 
     $(function () {
