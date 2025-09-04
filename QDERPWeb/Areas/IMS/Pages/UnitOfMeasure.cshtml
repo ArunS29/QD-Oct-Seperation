@@ -13,17 +13,6 @@
             display: none !important;
         }
 
-        .dx-fieldset {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            padding: 20px;
-            background-color: transparent;
-            width: 250px;
-            height:10%;
-
-        }
-       
 
         .dx-field {
             display: flex;
@@ -147,6 +136,7 @@
                                     @(Html.DevExtreme().Button()
                                         .Text(new JS("formatMessage('Add')"))
                                         .ID("btnAddGroup3").Icon("plus").Height(60)
+                                        .ElementAttr(new { @class = "custom-ui-button" })
                                         .OnClick("addUomToDatabase"))
                                 </div>
                             </div>
