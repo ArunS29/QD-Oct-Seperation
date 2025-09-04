@@ -44,7 +44,7 @@
                         <td>
                             @(Html.DevExtreme().Button()
                                 .ID("calculateVAT")
-                                .Text("Calculate VAT")
+                                .Text(new JS("formatMessage('Calculate VAT')"))
                                 .Icon("fa fa-calculator")
                                 .Type(ButtonType.Default)
                                 .ElementAttr("style", "color: black;"))
@@ -52,7 +52,7 @@
                         <td>
                             @(Html.DevExtreme().Button()
                                 .ID("saveEntry")
-                                .Text("Save Entry")
+                                .Text(new JS("formatMessage('Save Entry')"))
                                 .Icon("save")
                                 .Type(ButtonType.Success)
                                 .ElementAttr("style", "color: black;"))
@@ -66,7 +66,7 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("PurchaseTaxSlabCode")
                                 )
-                                .Label("TaxPercentage:")
+                                .Label(new JS("formatMessage('Tax Percentage:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ID("taxpercentage")
                                 .ShowClearButton(true)
@@ -122,11 +122,8 @@
 
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("PurchaseTaxSlabCode");
-                                        columns.Add().DataField("PurchaseTaxSlab")
-
-
-
+                                         columns.Add().DataField("PurchaseTaxSlabCode").Caption(new JS("formatMessage('Purchase TaxSlab Code')"));
+                                         columns.Add().DataField("PurchaseTaxSlab").Caption(new JS("formatMessage('Purchase TaxSlab')"))
                                         .Alignment(HorizontalAlignment.Center);
 
 
@@ -143,7 +140,7 @@
                             <div class="input-group">
                                 @(
                                     Html.DevExtreme().NumberBox()
-                                    .Label("Taxable Amount")
+                                     .Label(new JS("formatMessage('Taxable Amount')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("taxableamount")
                                     .Width(160)
@@ -166,7 +163,7 @@
                             <div class="input-group">
                                 @(
                                     Html.DevExtreme().NumberBox()
-                                    .Label("VAT Amount")
+                                     .Label(new JS("formatMessage('VAT Amount')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("vatAmount")
                                     .Width(160)
@@ -189,7 +186,7 @@
                             <div class="input-group">
                                 @(
                                     Html.DevExtreme().NumberBox()
-                                    .Label("Round Off")
+                                     .Label(new JS("formatMessage('Round Off')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("roundoff")
                                     .Width(160)
@@ -212,7 +209,7 @@
                             <div class="input-group">
                                 @(
                                     Html.DevExtreme().NumberBox()
-                                    .Label("Bill Amount")
+                                    .Label(new JS("formatMessage('Bill Amount')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("billAmount")
                                     .Width(160)
@@ -243,7 +240,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("SupplierName")
                                     )
-                                    .Label("Supplier Name:")
+                                    .Label(new JS("formatMessage('Supplier Name:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("suppliername")
                                     .ShowClearButton(true)
@@ -299,10 +296,8 @@
 
                                         .Columns(columns =>
                                         {
-                                            columns.Add().DataField("SupplierName").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("SupplierVATNo").Visible(false)
-
-
+                                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
+                                         columns.Add().DataField("SupplierVATNo").Caption(new JS("formatMessage('Supplier VAT No')")).Visible(false)
 
                                             .Alignment(HorizontalAlignment.Center);
 
@@ -318,7 +313,7 @@
                                 <div style="direction: rtl; display:flex; align-items:end;">
                                     @(Html.DevExtreme().TextBox()
                                         .ID("ar_supplierName")
-                                        .Label("SupplierName(in Arabic)")
+                                        .Label(new JS("formatMessage('Supplier Name(in Arabic)')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                         .StylingMode(EditorStylingMode.Outlined)
                                         .Width("100%")
@@ -341,7 +336,7 @@
                             <div class="input-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("suppliervatno")
-                                    .Label("Supplier VAT No:")
+                                    .Label(new JS("formatMessage('Supplier VAT No:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -352,7 +347,7 @@
                             <div class="input-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("purchaserName")
-                                    .Label("Purchaser Name:")
+                                    .Label(new JS("formatMessage('Purchaser Name:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -363,10 +358,10 @@
 
                     <tr>
                         <td colspan="2">
-                            <label>Line Narration:</label>
+                           
                         </td>
                         <td colspan="2">
-                            <a href="#">Use Expense Description</a>
+                            <a href="#" id="useexpensedescription"></a>
                             @(Html.DevExtreme().Button()
                                 .ID("linenarrationbtn")
 
@@ -379,7 +374,7 @@
                         <td colspan="4" class="narration-cell">
                             @(Html.DevExtreme().TextArea()
                                 .ID("linenarration")
-
+                                 .Label(new JS("formatMessage('Line Narration:')"))                   
                                 .LabelMode(EditorLabelMode.Floating)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
@@ -397,7 +392,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("EmployeeId")
                                     )
-                                    .Label("Cost Allocation For Employees:")
+                                    .Label(new JS("formatMessage('Cost Allocation for Employees:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("costemployees")
                                     .ShowClearButton(true)
@@ -458,10 +453,10 @@
 
                                         .Columns(columns =>
                                         {
-                                            columns.Add().DataField("EmployeeId").Visible(false);
-                                            columns.Add().DataField("EmployeeName").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("NationalId").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("EmployeeReferenceId").Alignment(HorizontalAlignment.Center);
+                                          columns.Add().DataField("EmployeeId").Caption(new JS("formatMessage('Employee ID')")).Visible(false);
+                                          columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')")).Alignment(HorizontalAlignment.Center);
+                                          columns.Add().DataField("NationalId").Caption(new JS("formatMessage('National ID')")).Alignment(HorizontalAlignment.Center);
+                                           columns.Add().DataField("EmployeeReferenceId").Caption(new JS("formatMessage('Employee Reference Id')")).Alignment(HorizontalAlignment.Center);
 
                                         })
 
@@ -479,7 +474,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("PropertyNo")
                                     )
-                                    .Label("Cost Allocation for Property/Equipments:")
+                                                                .Label(new JS("formatMessage('Cost Allocation for Property/Equipments:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("costproperty")
                                     .ShowClearButton(true)
@@ -540,26 +535,100 @@
 
                                         .Columns(columns =>
                                         {
-                                            columns.Add().DataField("PropertyNo").Alignment(HorizontalAlignment.Center).Caption("Property #");
-                                            columns.Add().DataField("PropertyDescription").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("PlateNo").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("ChassisNo").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("PropertyGroup").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("MobilizedTo").Alignment(HorizontalAlignment.Center);
-                                            columns.Add().DataField("Brand").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("Capacity").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("ClientSite").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("CurrentStatus").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("DiscontinuedOn").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("DiscontinuedRemarks").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("DoorNo").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("Model").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("Operator").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("PropertyCategoryName").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("PropertySuppliedBy").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("PropertyType").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("Specifications").Alignment(HorizontalAlignment.Center).Visible(false);
-                                            columns.Add().DataField("Year").Alignment(HorizontalAlignment.Center).Visible(false);
+                                                                        columns.Add().DataField("PropertyNo")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Property #')"));
+
+                                                                        columns.Add().DataField("PropertyDescription")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Property Description')"));
+
+                                                                        columns.Add().DataField("PlateNo")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Plate No')"));
+
+                                                                        columns.Add().DataField("ChassisNo")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Chassis No')"));
+
+                                                                        columns.Add().DataField("PropertyGroup")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Property Group')"));
+
+                                                                        columns.Add().DataField("MobilizedTo")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Caption(new JS("formatMessage('Mobilized To')"));
+
+                                                                        columns.Add().DataField("Brand")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Brand')"));
+
+                                                                        columns.Add().DataField("Capacity")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Capacity')"));
+
+                                                                        columns.Add().DataField("ClientSite")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Client Site')"));
+
+                                                                        columns.Add().DataField("Current Status")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Current Status')"));
+
+                                                                        columns.Add().DataField("DiscontinuedOn")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Discontinued On')"));
+
+                                                                        columns.Add().DataField("DiscontinuedRemarks")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Discontinued Remarks')"));
+
+                                                                        columns.Add().DataField("DoorNo")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Door No')"));
+
+                                                                        columns.Add().DataField("Model")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Model')"));
+
+                                                                        columns.Add().DataField("Operator")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Operator')"));
+
+                                                                        columns.Add().DataField("PropertyCategoryName")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Property Category')"));
+
+                                                                        columns.Add().DataField("PropertySuppliedBy")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Property Supplied By')"));
+
+                                                                        columns.Add().DataField("PropertyType")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Property Type')"));
+
+                                                                        columns.Add().DataField("Specifications")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Specifications')"));
+
+                                                                        columns.Add().DataField("Year")
+                                                                    .Alignment(HorizontalAlignment.Center)
+                                                                    .Visible(false)
+                                                                    .Caption(new JS("formatMessage('Year')"));
+
 
                                         })
 
@@ -1018,4 +1087,7 @@
                 $("#linenarration").dxTextArea("instance").option("value", description);
             });
         });
+          $(function () {
+              $("#useexpensedescription").text(formatMessage("Use Expense Description"));
+       });
 </script>

@@ -586,7 +586,7 @@ columns.AddFor(m => m.ClaimerName)
 
 
 columns.Add()
-.Caption("Total Consumed Amount")
+.Caption(new JS("formatMessage('Total Consumed Amount')"))
 .DataField("TotalConsumedAmount")
 .CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
 .Format(f => f.Type(Format.FixedPoint).Precision(2))
@@ -835,7 +835,7 @@ columns.Add()
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("UserName");
+                    columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')"));
                     columns.Add().DataField("UserId").Visible(false);
                     
 

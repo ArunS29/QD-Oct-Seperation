@@ -169,11 +169,11 @@
 				 <div class="form-group col-md-2 col-sm-6" style="margin-bottom:15px;">
 				  <div class="d-flex align-items-center mb-1">
 						@(Html.DevExtreme().CheckBox()
-												.Text("") // Empty so label appears separately
+												.Text(new JS("formatMessage('Received Date')")) // Empty so label appears separately
 												.ID("UseSubmittedDate")
 												.OnValueChanged("updateDueDate")
 												)
-						<label for="UseSubmittedDate" style="margin: 0; font-size: 13px;" >@Html.Raw(new JS("formatMessage('Received Date')"))</label>
+
 					</div>
 
 					<div >
@@ -1009,7 +1009,7 @@ buttons.Add()
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 {
-    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group Id')")).Visible(false);
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
     columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
     columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
     columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
@@ -1018,17 +1018,17 @@ buttons.Add()
     columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
     columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Use In Sales')"))
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Used In Purchase')"))
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
     columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Balance Sheet Account')"))
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Maintain Bill By Bill')"))
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Use In Reconciliation')"))
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
     columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')"))
            .DataType(GridColumnDataType.Boolean).Visible(false);
@@ -1080,7 +1080,7 @@ buttons.Add()
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 {
-    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group Id')")).Visible(false);
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
     columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
     columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
     columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
@@ -1088,12 +1088,12 @@ buttons.Add()
     columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
     columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
     columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
     columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
-    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
     columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
     columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
     columns.Add().DataField("IsLedgerObselete")

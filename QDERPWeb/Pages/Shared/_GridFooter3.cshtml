@@ -13,14 +13,15 @@
         overflow: auto;
     }
 
-    .dx-popup-content{
-        padding:0px;
+    .dx-popup-content {
+        padding: 0px;
     }
 
     /* Hide outer scrollbar */
     body {
         overflow: hidden;
     }
+
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -75,36 +76,36 @@
 
     @* <div id="ddButtonLayout"></div> *@
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnRefresh")
-        .Text(new JS("formatMessage('Refresh')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("refresh")
-        .Width("100%")
-        .OnClick("function() { refreshPage(); }")
-        )
+        @(Html.DevExtreme().Button()
+                .ID("btnRefresh")
+                .Text(new JS("formatMessage('Refresh')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("refresh")
+                .Width("100%")
+                .OnClick("function() { refreshPage(); }")
+                )
     </div>
     <div class="btn-container">
-    @(Html.DevExtreme().DropDownButton()
-        .ID("ddButtonLayout")
-        .Text(new JS("formatMessage('Layout')"))
-        .Icon("smalliconslayout")
-        .Width("100%")
-        .DropDownOptions(options => options.Width(230))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-            items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-            items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-            items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-        })
-        .ShowArrowIcon(true)
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Text(new JS("formatMessage('Layout')"))
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(true)
 
         @* .OnItemClick("addRecipitsButton_click") *@
 
-        )
-        </div>
+                )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
                 .ID("rowHeightProperties")
@@ -159,46 +160,46 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Width("100%")
-            .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-            )
+                .ID("btnPrint")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Width("100%")
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
     </div>
 
     <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btnToggleSearch")
-        .Text(new JS("formatMessage('Search')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("search")
-        .Width("100%")
-        .OnClick("function() { toggleFilterRow(); }")
-        )
-        </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().Button()
-        .ID("btntoggleGroupPanel")
-        .Text(new JS("formatMessage('Group')"))
-        .Type(ButtonType.Normal)
-        .StylingMode(ButtonStylingMode.Outlined)
-        .Icon("hierarchy")
-        .Width("100%")
-        .OnClick("toggleGroupPanel")
-        )
-</div>
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleSearch")
+                .Text(new JS("formatMessage('Search')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("search")
+                .Width("100%")
+                .OnClick("function() { toggleFilterRow(); }")
+                )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnToggleHeaderFilter")
+                .ID("btntoggleGroupPanel")
+                .Text(new JS("formatMessage('Group')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
+                .Width("100%")
+                .OnClick("toggleGroupPanel")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleHeaderFilter")
 
-            .Text(new JS("formatMessage('Toggle Filter')"))
-            @* .Icon("filter") *@
-            .OnClick("toggleHeaderFilter")
-            .Template(@<text>
+                .Text(new JS("formatMessage('Toggle Filter')"))
+        @* .Icon("filter") *@
+                .OnClick("toggleHeaderFilter")
+                .Template(@<text>
             <div style="display: flex; justify-content: center; align-items: center;">
                 <svg xmlns="http://www.w3.org/2000/svg"
                      width="20" height="20"
@@ -212,7 +213,7 @@
                 </svg>
             </div>
         </text>)
-            )
+                )
 
     </div>
     <div class="btn-container">
@@ -242,9 +243,9 @@
                     items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Option("color", "#EA4335").Icon("event");
                     items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')"))
                     .Icon("optionsgear").Option("color", "#AB47BC")
-                        .OnClick("function() { Mapping('Receivables with unmapped Vouchers'); }");
+                    .OnClick("function() { Mapping('Receivables with unmapped Vouchers'); }");
                 })
-        .ShowArrowIcon(true)
+                .ShowArrowIcon(true)
                 .OnItemClick("handleReportsClick")
                 .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
@@ -257,10 +258,10 @@
                 </div>
             </div>
         </text>)
-        )
-      
-</div>
-   
+                )
+
+    </div>
+
 </div>
 <script type="text/javascript">
 
@@ -372,10 +373,10 @@
 
 
 
-   
+
     //Refresh button function
     function refreshPage() {
-        location.reload(); 
+        location.reload();
     }
     function ReportsByClient(tabIndex) {
         let url = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}`;
@@ -406,14 +407,14 @@
         }
     }
 
- 
+
 
     $(function () {
         // Initialize DevExtreme Popup
         $("#reportsByClientPopup").dxPopup({
             width: 600,
             height: 750,
-            title: formatMessage("Reports by Clients)",
+            title: "Reports by Clients",
             visible: false,
             showCloseButton: true,
             closeOnOutsideClick: true,
@@ -426,7 +427,7 @@
                     width: "100%",
                     height: "100%",
                     frameborder: 0,
-                    
+
                 }).css({
                     overflow: "hidden",
                     border: "none",
@@ -435,7 +436,7 @@
             }
         });
 
-      
+
     });
     function Mapping(reportKey) {
         alert('hi');

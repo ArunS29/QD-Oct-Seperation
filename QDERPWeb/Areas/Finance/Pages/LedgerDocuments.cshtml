@@ -411,7 +411,7 @@
                     <div class="drop-zone" id="dropZone"
                          style="height: 250px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
-                        <p style="margin: 10px 0; font-weight: 500;" id="draganddrop"></p>
+                        <p style="margin: 10px 0; font-weight: 500;" id="draganddropfinance"></p>
                         <input type="file" id="fileUploader" multiple style="display:none;" />
                     </div>
                 </div>
@@ -445,14 +445,38 @@
 
 <script>
 
-    var urlParams = new URLSearchParams(window.location.search);
-    var referenceNo = urlParams.get("ReferenceNo");
-    var moduleType = urlParams.get("ModuleType");
-    var isMaster = urlParams.get("isMaster");
-    var folderNo2 = urlParams.get("FolderNo2") || "";
-    var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
-    document.getElementById("documentTitle").textContent = title + " - " + moduleType;
-    let currentEditRowIndex = -1;
+    // var urlParams = new URLSearchParams(window.location.search);
+    // var referenceNo = urlParams.get("ReferenceNo");
+    // var moduleType = urlParams.get("ModuleType");
+    // var isMaster = urlParams.get("isMaster");
+    // var folderNo2 = urlParams.get("FolderNo2") || "";
+    // var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
+    // document.getElementById("documentTitle").textContent = title + " - " + moduleType;
+    // let currentEditRowIndex = -1;
+        // Wait until the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var referenceNo = urlParams.get("ReferenceNo");
+        var moduleType = urlParams.get("ModuleType");
+        var isMaster = urlParams.get("isMaster");
+        var folderNo2 = urlParams.get("FolderNo2") || "";
+
+        // Compute the localized title using formatMessage inside template literal
+        var title = isMaster === "true"
+            ? formatMessage("Master Documents")
+            : formatMessage("Transaction Documents");
+
+        // Safely set the textContent if the element exists
+        var el = document.getElementById("documentTitle");
+        if(el) {
+            el.textContent = `${title} - ${moduleType}`;
+        }
+
+        // Initialize other variables
+        let currentEditRowIndex = -1;
+    });
+
 
     $(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -616,7 +640,7 @@
                     }
                 },
 
-                { dataField: "DocumentRemarks", caption: "Remarks", allowEditing: true },
+                { dataField: "DocumentRemarks", caption: formatMessage("Remarks"), allowEditing: true },
 
                 {
                     dataField: "DocumentExpDate",
@@ -1179,6 +1203,6 @@
      document.addEventListener("DOMContentLoaded", setupDragDrop);
 
         $(function () {
-            $("#draganddrop").text(formatMessage("Drag & drop files here or click to browse"));
+            $("#draganddropfinance").text(formatMessage("Drag & drop files here or click to browse"));
         });
 </script>

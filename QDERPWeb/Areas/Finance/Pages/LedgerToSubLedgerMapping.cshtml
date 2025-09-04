@@ -228,7 +228,7 @@
 
 <script>
     // ✅ Globally available toggleGrids function
-    function toggleGrids() {
+       function toggleGrids() {
         const btn = $("#btnToggleGrids").dxButton("instance");
         const accid = $("#AccountLedgerNo").dxTextBox("instance").option("value");
 
@@ -237,12 +237,16 @@
             return;
         }
 
-        const currentText = btn.option("text");
+        // Use a custom flag to track toggle state
+        const showingMapping = btn.option("tag") === "mapping";
 
-        if (currentText === "Show Mapping Details") {
+        if (!showingMapping) {
             $("#ledgerGridContainer").hide();
             $("#subledgerGridContainer").show();
-            btn.option("text", "Show Receivable/Payables with Advance");
+            btn.option({
+                text: formatMessage("Show Receivable/Payables with Advance"),
+                tag: "mapping"
+            });
 
             const subGrid = $("#subledgerGrid").dxDataGrid("instance");
             subGrid.option("dataSource", {
@@ -252,7 +256,10 @@
         } else {
             $("#subledgerGridContainer").hide();
             $("#ledgerGridContainer").show();
-            btn.option("text", "Show Mapping Details");
+            btn.option({
+                text: formatMessage("Show Mapping Details"),
+                tag: "receivable"
+            });
 
             const ledgerGrid = $("#ledgerGrid").dxDataGrid("instance");
             ledgerGrid.option("dataSource", {
@@ -261,6 +268,7 @@
             ledgerGrid.refresh();
         }
     }
+
 
     // ✅ On DOM Ready
     $(document).ready(function () {

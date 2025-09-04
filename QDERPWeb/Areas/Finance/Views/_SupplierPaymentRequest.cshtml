@@ -453,8 +453,8 @@
 
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountId").MinWidth(150).Alignment(HorizontalAlignment.Center);
-                columns.Add().DataField("AccountHead")
+                columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')"));
+                columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"))
                 .Alignment(HorizontalAlignment.Center);
 
 

@@ -218,14 +218,14 @@
             .Columns(columns =>
             {
 
-                columns.Add().DataField("DepreciationDocItemSlNo").Visible(false).Width(200);
+            columns.Add().DataField("DepreciationDocItemSlNo").Caption(new JS("formatMessage('Depreciation Doc Item Sl No')")).Visible(false).Width(200);
                 columns.Add().Caption(new JS("formatMessage('Asset Details')")).Columns(band =>
             {
 
 
 
                 band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200).Visible(false);
-        band.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')")).Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
+                band.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')")).Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
         band.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('Ledger No')")).Width(200);
         band.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')")).Width(200);
         band.Add().DataField("AssetDescription").Caption(new JS("formatMessage('Asset Description')")).Width(200);

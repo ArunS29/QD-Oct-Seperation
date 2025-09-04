@@ -126,12 +126,12 @@
         <div id="AssetCategoryManagement" class="no-border-input"></div>
     </div>
 </div> *@
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Asset Category Management</h3>
-</div>
+</div> *@
 <div class="content-container-top">
     <div class="container4">
         <!-- Card Container for Asset Category Form -->
@@ -177,10 +177,10 @@
 </div>
 <div class="footer-fixed">
     <button id="btnUpdate" class="btn btn-primary">
-        <i class="dx-icon-save"></i> Update
+        <i class="dx-icon-save" id="assetcategoryupdate"></i> 
     </button>
     <button id="btnBack" class="btn btn-secondary">
-        <i class="dx-icon-arrowleft"></i> Back
+        <i class="dx-icon-arrowleft" id="assetcategoryback"></i> 
     </button>
 </div>
 <script type="text/javascript">
@@ -265,8 +265,8 @@
                 }
             },
             columns: [
-                { dataField: "AssetCategoryCode", caption: "Asset Category Code", width: 100, editorOptions: { readOnly: true } },
-                    { dataField: "AssetCategory", caption: "Asset Category"},
+                { dataField: "AssetCategoryCode", caption: formatMessage("Asset Category Code"), width: 100, editorOptions: { readOnly: true } },
+                    { dataField: "AssetCategory", caption: formatMessage("Asset Category")},
                     {
                         type: "buttons",
                         width: 100,
@@ -455,5 +455,10 @@ function addAssetCategory() {
         $("#btnBack").on("click", function () {
             window.parent.closeModal();  // Close modal
         });
-
+               $(function () {
+                    $("#assetcategoryback").text(formatMessage("Back"));
+        });
+        $(function () {
+                    $("#assetcategoryupdate").text(formatMessage("Update"));
+        });
 </script>

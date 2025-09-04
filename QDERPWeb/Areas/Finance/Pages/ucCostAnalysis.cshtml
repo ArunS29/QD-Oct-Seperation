@@ -204,6 +204,7 @@
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
             .Label(new JS("formatMessage('Start Date')"))
+
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Date")
             .Type(DateBoxType.Date)
@@ -682,7 +683,7 @@
                   fields: [
         { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Master"), expanded: true },
         { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Center Group"), expanded: true },
-        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Unit"), expanded: true },
+        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Allocation Unit"), expanded: true },
         { dataField: "PL", area: "column", caption: formatMessage("Income / Expense") },
         { dataField: "VoucherTypeAndNo", area: "filter", caption: formatMessage("Voucher No"), visible: true },
 
@@ -907,9 +908,9 @@
 
         // Base fields (always visible)
             const baseFields = [
-        { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Master"), expanded: true },
-        { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Center Group"), expanded: true },
-        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Unit"), expanded: true },
+        { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Allocation Master Group"), expanded: true },
+        { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Allocation Group"), expanded: true },
+        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Allocation Unit"), expanded: true },
         { dataField: "PL", area: "column", caption: formatMessage("Income / Expense") },
         { dataField: "Income", area: "data", summaryType: "sum", caption: formatMessage("Income"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
         { dataField: "Expenses", area: "data", summaryType: "sum", caption: formatMessage("Expenses"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
@@ -918,7 +919,7 @@
 
     // Extra filter fields
     const extraFields = [
-        { dataField: "MasterGroup", area: "filter", caption: formatMessage("Account Master") },
+        { dataField: "MasterGroup", area: "filter", caption: formatMessage("Master Group") },
         { dataField: "AccountGroup", area: "filter", caption: formatMessage("Account Group") },
         { dataField: "AccountHead", area: "filter", caption: formatMessage("Ledger Account Name") },
         { dataField: "CostCenterIncharge", area: "filter", caption: formatMessage("Cost Center Incharge") },

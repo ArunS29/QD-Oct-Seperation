@@ -366,7 +366,7 @@
                 columns.Add().DataField("VoucherEffectiveDate")  .Caption(new JS("formatMessage('Effective On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true);
 
-                    columns.AddFor(m => m.ConvertedDrAmount)
+                    columns.AddFor(m => m.DebitAmount)
                     .Caption(new JS("formatMessage('Debit')"))
                     .Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
@@ -376,13 +376,13 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <div class="debit-pill">
-                                           <%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                                           <%- data.DebitAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
                                        </div>
                                    </text>)
                     .Visible(true);
 
                     /* Credit */
-                    columns.AddFor(m => m.ConvertedCrAmount)
+                    columns.AddFor(m => m.CreditAmount)
                     .Caption(new JS("formatMessage('Credit')"))
                     .Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
@@ -392,12 +392,12 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <div class="credit-pill">
-                                           <%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+                                           <%- data.CreditAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
                                        </div>
                                    </text>)
                     .Visible(true);
 
-                    columns.AddFor(m => m.CreditAmount)
+                   @*  columns.AddFor(m => m.CreditAmount)
                     .Caption(new JS("formatMessage('Trans Credit')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CellTemplate(@<text>
@@ -416,7 +416,7 @@
                                            <%- data.DrAmount != null ? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>)
-                    .Visible(false);
+                    .Visible(false); *@
 
          @*        columns.Add().DataField("DebitAmount").Caption(new JS("formatMessage('Trans Debit')")).Width(100).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2 }) : ''; }").Visible(true)

@@ -300,15 +300,15 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2 id="ChartOfAccounts"></h2>
-                <h6 id="QuickDiceERPSolutions1"></h6>
+                <h2 id="ChartOfAccountfinance"></h2>
+                <h6 id="QuickDiceERPSolutions1s"></h6>
 
             </div>
         </div>
 
         <!-- BALANCE -->
         <div id="cardVoucher" class="titleCard-card cool-blue">
-            <div class="header" id="accoungroupsss"></div>
+            <div class="header" id="accoungroupsssfin"></div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -968,7 +968,7 @@
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
     <div class="context-menu-item" onclick="editLedger()" style="display:flex;">
-        <i class="fa fa-edit" style="margin-top:13px;"></i><div id="EditLedgerAccount" class="no-border-input"></div>
+        <i class="fa fa-edit" style="margin-top:13px;"></i><div id="EditLedgerAccounts" class="no-border-input"></div>
     </div>
     <div class="context-menu-item" onclick="viewTransactions()" style="display:flex;">
         <i class="fa fa-search" style="margin-top:13px;"></i><div id="ViewLedgerTransactions" class="no-border-input"></div>
@@ -984,7 +984,7 @@
         $("#ledgerAccountPopup").dxPopup({
             width: 1200,
             height: 600,
-            title: formatMessage("Ledger Account Details"),
+            title:"Ledger Account Details",
             showCloseButton: true,  // Show close button
             visible: false,  // Initially hidden
             closeOnOutsideClick: true,  // Allow closing when clicking outside
@@ -1024,16 +1024,16 @@
             var popup = $("#ledgerAccountPopup").dxPopup("instance");
             popup.show();
 
-            // Set the iframe src to the Ledger Account URL
+          //  Set the iframe src to the Ledger Account URL
 
             $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 
                 $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 
-                // Close and refresh the DataGrid when the popup is closed
+              //  Close and refresh the DataGrid when the popup is closed
                 popup.option("onHiding", function () {
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
-                    dataGrid.refresh(); // Refresh the DataGrid
+                    dataGrid.refresh(); //Refresh the DataGrid
                 });
 
         }
@@ -1043,32 +1043,7 @@
         $("#btnAddNewAccount").on("click", function () {
             showLedgerAccountPopup();
         });
-
-
-
-
-
-        $(function () {
-            $("#EditLedgerAccount").dxTextBox({
-                text: formatMessage("Edit Ledger Account"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#ViewLedgerTransactions").dxTextBox({
-                text: formatMessage("View Ledger Transactions"),
-                readOnly: true
-
-            });
-        });
-        $(function () {
-            $("#DeleteLedgerAccount").dxTextBox({
-                text: formatMessage("Delete Ledger Account"),
-                readOnly: true
-
-            });
-        });
+      
         // $(function () {
         //     $("#ChartOfAccounts").dxTextBox({
         //         text: formatMessage("Chart Of Accounts"),
@@ -1096,7 +1071,7 @@
                 },
                 width: 1200,
                 height: 600,
-                title: "Ledger Account Details",
+                title: formatMessage("Ledger Account Details"),
                 showCloseButton: true,  // ✅ Displays the (X) close button
                 visible: true,
                 closeOnOutsideClick: true,  // ✅ Allows closing when clicking outside the popup
@@ -1327,19 +1302,50 @@
     voucherOverlay.eq(2).html(`<i class="fa-solid fa-briefcase"></i> ${formatMessage("This Year")}: ${format(yearCount)}`);
 
     }
+       $(function () {
+            $("#EditLedgerAccounts").dxTextBox({
+                text: formatMessage("Edit Ledger Account"),
+                readOnly: true
+
+            });
+        });
+        $(function () {
+            $("#ViewLedgerTransactions").dxTextBox({
+                text: formatMessage("View Ledger Transactions"),
+                readOnly: true
+
+            });
+        });
+        $(function () {
+            $("#DeleteLedgerAccount").dxTextBox({
+                text: formatMessage("Delete Ledger Account"),
+                readOnly: true
+
+            });
+        });
+    // $(function () {
+    //     $("#ViewLedgerTransactions").text(formatMessage("View Ledger Transactions"));
+    // });
+    // $(function () {
+    //     $("#DeleteLedgerAccount").text(formatMessage("Delete Ledger Account"));
+    // });
+    // $(function () {
+    //     $("#EditLedgerAccounts").text(formatMessage("Edit Ledger Account"));
+    // });
     $(function () {
-        $("#ChartOfAccounts").text(formatMessage("Chart Of Accounts"));
+        $("#ChartOfAccountfinance").text(formatMessage("Chart Of Accounts"));
     });
     $(function () {
-        $("#QuickDiceERPSolutions1").text(formatMessage("Quick Dice ERP Solutions"));
+        $("#QuickDiceERPSolutions1s").text(formatMessage("Quick Dice ERP Solutions"));
     });
     $(function () {
-        $("#accoungroupsss").text(formatMessage("Account Group"));
+        $("#accoungroupsssfin").text(formatMessage("Account Group"));
     });
     $(function () {
         $("#Topaccountmastercharof").text(formatMessage("Top Account Master"));
     });
     $(function () {
-        $("#topaccoungroupchartof").text(formatMessage("Top Account Group"));
+        $("#topaccoungroupchartof").text(formatMessage("Top Account Group")); 
+        
     });
 </script>

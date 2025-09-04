@@ -2886,7 +2886,7 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
-                    <div id="HumanResources2" style="color:white;" class="text no-border-input">Quick Dice</div>
+                    <div id="HumanResources2" style="color:white;" class="text no-border-input"></div>
                 </div>
                 <div class="menu">
                     @if (userModules.Contains("HR"))
@@ -5909,6 +5909,9 @@
 
 
         }
+         $(function () {
+            $("#HumanResources2").text(formatMessage("Quick Dice"));
+        });
     </script>
 </body>
 </html>
