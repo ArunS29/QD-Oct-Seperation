@@ -347,6 +347,7 @@ body.dark-mode {
     display: flex;
     justify-content: center;
     align-items: center;
+    color:black;
 }
 
 .dx-dropdownbutton .dx-button-content {

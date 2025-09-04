@@ -31,8 +31,15 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
         }
 
         public PreviewQuotations(
-
+               bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             bool pageBreakBefore,
+            bool pageBreakAfter,
+            bool clientAcknowledgement,
+            bool printItemCodeDesc,
+            bool printItemPartNoDesc,
+            bool printItemPartArabicDesc,
             string quotationNo,
 
             string tenantName,
@@ -58,18 +65,57 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             InitializeComponent();
 
-            SetReportParameters(pageBreakBefore, quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
 
             LoadReportData(quotationNo);
-            
-                this.ReportFooter.PageBreak = pageBreakBefore
-        ? DevExpress.XtraReports.UI.PageBreak.BeforeBand
-        : DevExpress.XtraReports.UI.PageBreak.None;
 
+            if (pageBreakBefore || pageBreakAfter)
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
+            else
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
+
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
+            // Hide labels if clientAcknowledgement is true
+            int[] labelNumbers = { 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 17, 70 };
+            foreach (int num in labelNumbers)
+            {
+                var label = FindControl($"xrLabel{num}", true) as XRLabel;
+                if (label != null)
+                    label.Visible = clientAcknowledgement;
+            }
+    
 
         }
 
-        private void SetReportParameters( bool pageBreakBefore, string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage, string companyAddress,
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox8", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel89", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel90", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox16", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
+        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead, bool pageBreakAfter, bool pageBreakBefore, bool printItemCodeDesc,bool printItemPartNoDesc,bool printItemPartArabicDesc, string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage, string companyAddress,
 
              string companyNameAr, string companyAddressAr)
 
@@ -83,7 +129,6 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 if (Parameters[name] == null)
 
                 {
-
                     Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
 
                     {
@@ -125,6 +170,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
 
+            AddOrUpdateParameter("printItemCodeDesc", printItemCodeDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartNoDesc", printItemPartNoDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartArabicDesc", printItemPartArabicDesc, typeof(bool), false);
+            // AddOrUpdateParameter("pageBreakBefore", pageBreakBefore, typeof(bool), false);
+            // AddOrUpdateParameter("pageBreakAfter", pageBreakAfter, typeof(bool), false);
+            // AddOrUpdateParameter("clientAcknowledgement", clientAcknowledgement, typeof(bool), false);
+
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
 
                 tenantLabel.Text = tenantName;
@@ -145,11 +197,11 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox16", true) is XRPictureBox logoPictureBox)
 
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox8", true) is XRPictureBox sealPictureBox)
 
                 sealPictureBox.Image = sealImage;
 

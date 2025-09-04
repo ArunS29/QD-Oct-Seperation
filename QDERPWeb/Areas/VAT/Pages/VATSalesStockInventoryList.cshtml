@@ -180,13 +180,23 @@
 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel)) {
 		display: none !important;
 	}
+
+	.titleCard-toggle1 {
+		display: none;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="Stockinventorylist" class="no-border-input"></div>
 	</div>
+</div> *@
+<div class="dx-card-header minimal-header">
+	<div class="card-title-icon">
+		<i class="fas fa-file-invoice-dollar"></i>
+	</div>
+	<div id="Stockinventorylist" class="titleText no-border-title"></div>
 </div>
 
 <div class="horizontal-container">
@@ -317,16 +327,18 @@
 			}
 		});
 	});
+	  $(function () {
+		$("#Stockinventorylist").text(formatMessage("Stock Inventory List"));
+	});
+	// $(function () {
+	// 				$("#Stockinventorylist").dxTextBox({
+	// 					text: formatMessage("Stock Inventory List"),
+	// 					width:480,
+	// 					readOnly: true,
+	// 								onContentReady: function(e) {
+	// 								$(e.element).addClass("dx-textbox-heading");
+	// 						}
 
-	$(function () {
-					$("#Stockinventorylist").dxTextBox({
-						text: formatMessage("Stock Inventory List"),
-						width:480,
-						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
-							}
-
-					});
-				});
+	// 				});
+	// 			});
 </script>

@@ -104,7 +104,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddLayoutOptions")
             .Icon("smalliconslayout")
-            .Text("Layout")
+            .Text(new JS("formatMessage('Layout')"))
             .DropDownOptions(d => d.Width(200))
             .Items(items =>
             {
@@ -152,7 +152,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("print")
-            .Text("Print")
+                .Text(new JS("formatMessage('Print')"))
             )
 
     </div>
@@ -162,7 +162,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("hierarchy")
-            .Text("Show Fields")
+                .Text(new JS("formatMessage('Show Fields')"))
             )
 
     </div>
@@ -172,7 +172,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("hierarchy")
-            .Text("Show Row Totals")
+                .Text(new JS("formatMessage('Show Row Totals')"))
 
             )
 

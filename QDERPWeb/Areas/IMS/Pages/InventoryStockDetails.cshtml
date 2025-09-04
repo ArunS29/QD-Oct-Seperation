@@ -1056,7 +1056,7 @@
                         const url = `/${tenantName}/IMS/UnitOfMeasure`;
                         var dropDownBox = $("#UnitOfMeasure").dxDropDownBox("instance");
                         dropDownBox.close();
-                        const title = "Unit Of Measure";
+                        const title = formatMessage("Unit Of Measure");
                         openModal(url, title,"70%","70%");
                     }
                          
@@ -2759,7 +2759,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                    columns.Add().DataField("GsgroupName");
+                    columns.Add().DataField("GsgroupName").Caption(new JS("formatMessage('Group Name')"));
 
 
 
@@ -2795,7 +2795,7 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("StoreName");
+                        columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')"));
 
 
 
@@ -2831,7 +2831,7 @@
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {
-                columns.Add().DataField("StockClassification");
+                columns.Add().DataField("StockClassification").Caption(new JS("formatMessage('Stock Classification')"));
 
 
 
@@ -2867,7 +2867,7 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                            columns.Add().DataField("UnitType");
+                            columns.Add().DataField("UnitType").Caption(new JS("formatMessage('Unit Type')"));
 
 
 
@@ -2933,7 +2933,7 @@
 
         function inventoryDocumentBind(){
                 const url = `/${tenantName}/IMS/IMSLedgerDocument`;
-              const title = "Ledger Document";
+              const title = formatMessage("Ledger Document");
                   openModal(url, title);
           }
 
@@ -2941,21 +2941,21 @@
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
                 var dropDownBox = $("#ItemStore").dxDropDownBox("instance");
                 dropDownBox.close();
-                const title = "Item Store";
+                const title = formatMessage("Item Store");
                 openModal(url, title, "","60%");
           }
             function StockGroup(){
                 const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
                 var dropDownBox = $("#StockGroup").dxDropDownBox("instance");
                 dropDownBox.close();
-                const title = "Stock Group";
+                const title = formatMessage("Stock Group");
                 openModal(url, title,"","70%");
           }
             function AddItemClassification(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
                 var dropDownBox = $("#ItemClassification").dxDropDownBox("instance");
                 dropDownBox.close();
-                const title = "Item Classification";
+                const title = formatMessage("Item Classification");
                 openModal(url, title,"80%","60%");
           }
             $(document).ready(function () {
@@ -3149,7 +3149,7 @@
         const unitCode = unitOfMeasureInstance.option("value");
         // Encode the parameters to ensure URL safety
         const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&UnitCode=${encodeURIComponent(unitCode)}&modal=true`;
-        openModal(url, "Opening Balance Entries");
+        openModal(url, formatMessage("Opening Balance Entries"));
     }
 
     async function convertToArabic() {

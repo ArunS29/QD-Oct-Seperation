@@ -235,13 +235,13 @@ $(function () {
                 allowDeleting: true,  // Allow deleting records
                 useIcons: true,
                 texts: {
-                    saveAll: "Update",
+                    saveAll: formatMessage("Update"),
                     cancelAll: "Cancel All Changes"
                 }
             },
             columns: [
-                { dataField: "AssetMaintenanceTypeId", caption: "Maintenance Type ID", width: 100, allowFiltering: false, editorOptions: { readOnly: true } },
-                { dataField: "AssetMaintenanceType", caption: "Maintenance Type", allowFiltering: false },
+                { dataField: "AssetMaintenanceTypeId", caption: formatMessage("Maintenance Type ID"), width: 100, allowFiltering: false, editorOptions: { readOnly: true } },
+                { dataField: "AssetMaintenanceType", caption: formatMessage("Maintenance Type"), allowFiltering: false },
                 {
                     type: "buttons",
                     width: 100,
@@ -311,7 +311,7 @@ $(function () {
                         widget: "dxButton",
                         options: {
                             icon: "save",
-                            text: "Update",
+                            text: formatMessage("Update"),
                             onClick: function () {
                                 $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
                             }
@@ -323,7 +323,7 @@ $(function () {
                         widget: "dxButton",
                         options: {
                             icon: "arrowleft",
-                            text: "Back",
+                            text: formatMessage("Back"),
                             onClick: function () {
                                     window.parent.closeModal();// This closes the current window/tab
                             }

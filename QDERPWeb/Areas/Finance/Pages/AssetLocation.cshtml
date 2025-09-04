@@ -85,13 +85,13 @@
 
 </style>
 
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
 
         <i class="fas fa-map-marker-plus"></i>
     </div>
     <h3 class="card-title-text">Asset Location Management</h3>
-</div>
+</div> *@
 <div class="content-container-top">
     <div class="container4">
         <div class="card-container">
@@ -135,10 +135,10 @@
 </div>
 <div class="footer-fixed">
     <button id="btnUpdate" class="btn btn-primary">
-        <i class="dx-icon-save"></i> Update
+        <i class="dx-icon-save" id="assetlocationupdate"></i> 
     </button>
     <button id="btnBack" class="btn btn-secondary">
-        <i class="dx-icon-arrowleft"></i> Back
+        <i class="dx-icon-arrowleft" id="assetlocationback"></i> 
     </button>
 </div>
 
@@ -263,8 +263,8 @@ $(function () {
                 }
             },
             columns: [
-                { dataField: "AssetLocationCode", caption: "Asset Location Code", width: 100, editorOptions: { readOnly: true } },
-                { dataField: "AssetLocation", caption: "Asset Location" },
+                { dataField: "AssetLocationCode", caption:formatMessage("Asset Location Code"), width: 100, editorOptions: { readOnly: true } },
+                { dataField: "AssetLocation", caption:formatMessage("Asset Location")},
                  {
                     type: "buttons",
                     width: 100,
@@ -426,5 +426,10 @@ $(function () {
     $("#btnBack").on("click", function () {
         window.parent.closeModal();  // Close modal
     });
-
+           $(function () {
+                    $("#assetlocationback").text(formatMessage("Back"));
+        });
+        $(function () {
+                $("#assetlocationupdate").text(formatMessage("Update"));
+        });
 </script>

@@ -182,6 +182,7 @@
                                                 .OnValueChanged("onReceivingAccountChange") // Call the change handler
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
+                                                .OnClosed("onPaymentDownBoxClosed")
                                                 .TabIndex(3)
                                                 .DropDownOptions(o => o.Width(1000))
                                                 .ElementAttr(new { @class = "white-dropdownbox" })
@@ -384,9 +385,8 @@ buttons.Add()
                                                         columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                                                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                         columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(3)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(3) + ')'; } return cellInfo.value.toFixed(3); }");
+                                                       
                                                     })
                                                     )
                                                 }
@@ -401,12 +401,12 @@ buttons.Add()
                                                 .Min(0)
                                                 .Max(99999)
                                                 .TabIndex(10)
-                                                .Format("#,##0.00")
+                                                .Format("#,##0.000")
                                                 .InputAttr(new
                                                 {
                                                     style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
                                                     type = "number",
-                                                    step = "0.01"
+                                                    step = "0.001"
                                                 })
                                                 .ElementAttr(new { @class = "white-box" })
                                                 )
@@ -557,6 +557,7 @@ buttons.Add()
                                     columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false) .CalculateCellValue("function(data) { " +
                                     "    if (data.DrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.DrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -570,6 +571,7 @@ buttons.Add()
                                     "    debugger; " +
                                     "    if (data.CrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.CrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -640,27 +642,6 @@ buttons.Add()
 
         <div id="chequePopupContainer"></div>
 
-
-        <!-- Context Menu for Actions -->
-        <ul id="contextMenu" class="context-menu" style="display: none;">
-            <li onclick="editCostAllocation()">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocationentry"</div>
-            </li>
-            <li onclick="editBillsReceivable()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivableentry"></div>
-            </li>
-
-            <li onclick="editEmployeeAllocation()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <div id="EditEmployeeAllocationentry"></div>
-            </li>
-            <li onclick="editPropertyAllocation()">
-                <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocationentry"></div>
-            </li>
-
-            <li onclick="onAllRowRemoving()">
-                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteLineEntryentry"></div>
-            </li>
-        </ul>
 
        <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
 
@@ -981,31 +962,63 @@ buttons.Add()
 
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                        columns.Add().DataField("IsLedgerObselete")
+                      columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
 
+columns.Add().DataField("IsRestricted")
+    .Caption(new JS("formatMessage('Is Restricted')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
 
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>);
+columns.Add().DataField("IsUseInSales")
+    .Caption(new JS("formatMessage('Is Use In Sales')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsUsedInPurchase")
+    .Caption(new JS("formatMessage('Is Used In Purchase')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsProfitLossAccount")
+    .Caption(new JS("formatMessage('Profit/Loss Account')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsBalanceSheetAccount")
+    .Caption(new JS("formatMessage('Is Balance Sheet Account')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsMaintainBillByBill")
+    .Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsUseInReconciliation")
+    .Caption(new JS("formatMessage('Is Use In Reconciliation')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("IsSalaryPayable")
+    .Caption(new JS("formatMessage('Is Salary Payable')"))
+    .DataType(GridColumnDataType.Boolean).Visible(false);
+
+columns.Add().DataField("ReferenceNo")
+    .Caption(new JS("formatMessage('Reference No')"))
+    .Visible(false);
+
+// ✅ Custom Icon Column
+columns.Add().DataField("IsLedgerObselete")
+    .Caption(new JS("formatMessage('Ledger Obselete')"))
+    .Alignment(HorizontalAlignment.Center)
+    .CellTemplate(@<text>
+        <div class="dx-icon">
+            <% if (data.IsLedgerObselete) { %>
+                <i style="color:red" class="fa fa-toggle-on"></i>
+            <% } else { %>
+                <i style="color:green" class="fa fa-toggle-off"></i>
+            <% } %>
+        </div>
+    </text>);
+
 
                     })
                     .OnRowPrepared("onAccountHeadRowPrepared")
@@ -1043,30 +1056,89 @@ buttons.Add()
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
-                    {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                        columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
-                                       <div class="dx-icon">
-                                           <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-                                       </div>
-                                   </text>);
+{
+    columns.Add().DataField("MasterGroupId")
+        .Caption(new JS("formatMessage('Master Group ID')"))
+        .Visible(false);
+
+    columns.Add().DataField("MasterGroup")
+        .Caption(new JS("formatMessage('Master Group')"))
+        .Visible(false);
+
+    columns.Add().DataField("AccountGroupId")
+        .Caption(new JS("formatMessage('Account Group Id')"))
+        .Visible(false);
+
+    columns.Add().DataField("AccountGroup")
+        .Caption(new JS("formatMessage('Account Group')"))
+        .Visible(false);
+
+    columns.Add().DataField("AccountId")
+        .Caption(new JS("formatMessage('Account Id')"))
+        .Visible(true);
+
+    columns.Add().DataField("AccountHead")
+        .Caption(new JS("formatMessage('Account Head')"))
+        .Visible(true);
+
+    columns.Add().DataField("AccountHeadArabic")
+        .Caption(new JS("formatMessage('Account Head Arabic')"))
+        .Visible(true);
+
+    columns.Add().DataField("IsRestricted")
+        .Caption(new JS("formatMessage('Is Restricted')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsUseInSales")
+        .Caption(new JS("formatMessage('Is Use In Sales')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsUsedInPurchase")
+        .Caption(new JS("formatMessage('Is Used In Purchase')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsProfitLossAccount")
+        .Caption(new JS("formatMessage('Is Profit Loss Account')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsBalanceSheetAccount")
+        .Caption(new JS("formatMessage('Is Balance Sheet Account')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsMaintainBillByBill")
+        .Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsUseInReconciliation")
+        .Caption(new JS("formatMessage('Is Use In Reconciliation')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("IsSalaryPayable")
+        .Caption(new JS("formatMessage('Is Salary Payable')"))
+        .DataType(GridColumnDataType.Boolean)
+        .Visible(false);
+
+    columns.Add().DataField("ReferenceNo")
+        .Caption(new JS("formatMessage('Reference No')"))
+        .Visible(false);
+
+    columns.Add().DataField("IsLedgerObselete")
+        .Caption(new JS("formatMessage('Ledger Obselete')"))
+        .Visible(true)
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+
                     })
                     .OnRowPrepared("onAccountHeadRowPrepared")
                     )
@@ -1187,9 +1259,9 @@ buttons.Add()
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Account ID").DataField("AccountId");
-                        columns.Add().Caption("Account").DataField("AccountHead");
-                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                        columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                        columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                        columns.Add().Caption(new JS("Account Head Arabic')")).DataField("AccountHeadArabic");
 
                     })
                     )
@@ -1269,10 +1341,10 @@ buttons.Add()
 
             var voucherAmount = $("#Amount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-            currencyRate = Math.round(currencyRate * 100) / 100;
+            currencyRate = Math.round(currencyRate * 1000) / 1000;
 
     // Format to always have 2 decimals
-    currencyRate = parseFloat(currencyRate).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(3);
             var amount = voucherAmount * currencyRate;
               
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
@@ -1634,7 +1706,7 @@ buttons.Add()
                         }
 
                         var button = $("#btnSave").dxButton("instance");
-                        button.option("text", "Update");
+                        button.option("text", formatMessage("Update"));
                     },
                     error: function (xhr, status, error) {
                          resetVoucherButton();
@@ -1799,11 +1871,23 @@ buttons.Add()
                 e.component.option("value", null); // clear if no match found
             }
         }
-        function onOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
+       
+                 function onOpened(e) {
+        setTimeout(() => e.component.focus(), 0);
+
+        // Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+
+        if (grid) {
+            const currentValue = e.component.option("value");
+            grid.getDataSource().reload().done(() => {
+                if (currentValue) {
+                    grid.selectRows([currentValue], false);
+                    grid.option("focusedRowKey", currentValue);
+                }
             });
         }
+    }
 
         function onKeyDown(e) {
             const ddbInstance = e.component;
@@ -1872,10 +1956,13 @@ buttons.Add()
     }
 
 
-        function dataGridAccountHeadInitialized(e) {
-            dataGrid = e.component;
-
-        }
+           function dataGridAccountHeadInitialized(e) {
+       // Store grid instance on the parent DropDownBox
+const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+if (dropDownBox) {
+    dropDownBox.__contentGridInstance = e.component;  // store reference safely
+}
+    }
 
 
 
@@ -1914,9 +2001,13 @@ buttons.Add()
 
 
 
-        function dataGridInitialized(e) {
-            dataGrid = e.component;
-        }
+                   function dataGridInitialized(e) {
+    // Store grid instance on the parent DropDownBox
+    const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+    if (dropDownBox) {
+        dropDownBox.__contentGridInstance = e.component;  // store reference safely
+    }
+}
 
           $("#btnSave").on("click", function (e) {
                 e.preventDefault();
@@ -1936,7 +2027,10 @@ buttons.Add()
 
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
 
-                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                                     "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
 
                     "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
@@ -1992,7 +2086,7 @@ buttons.Add()
 
                                 // Change button label to "Update"
                                 // var button = $("#btnSave").dxButton("instance");
-                                // button.option("text", "Update");
+                                // button.option("text", formatMessage("Update"));
                             } else {
                                 alert("Update failed: " + response.message);
                             }
@@ -2046,7 +2140,10 @@ buttons.Add()
 
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
 
-                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                                      "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
 
                     "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
@@ -2512,6 +2609,8 @@ buttons.Add()
                 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
                 let dataGrid = $("#dataGrid").dxDataGrid("instance");
                  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+                  currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
                 if (!rowIndex || rowIndex < 0) {
                     console.error("Invalid row index detected.");
                     return;
@@ -2555,6 +2654,8 @@ buttons.Add()
                 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
                 let dataGrid = $("#dataGrid").dxDataGrid("instance");
                  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+                  currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
                 if (!rowIndex || rowIndex < 0) {
                     console.error("Invalid row index detected.");
                     return;
@@ -2598,6 +2699,8 @@ buttons.Add()
                 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
                 let dataGrid = $("#dataGrid").dxDataGrid("instance");
                  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+                  currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
                 if (!rowIndex || rowIndex < 0) {
                     console.error("Invalid row index detected.");
                     return;
@@ -2640,6 +2743,8 @@ buttons.Add()
                  let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
                  let dataGrid = $("#dataGrid").dxDataGrid("instance");
                  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+ currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
                   var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
                  if (!rowIndex || rowIndex < 0) {
                      console.error("Invalid row index detected.");
@@ -3195,7 +3300,7 @@ buttons.Add()
                                 dataGrid.option("dataSource", response.data);
                                 dataGrid.refresh();
                                 var button = $("#btnSave").dxButton("instance");
-                                    button.option("text", "Update");
+                                    button.option("text", formatMessage("Update"));
                                     $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
                                     $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
    
@@ -3502,7 +3607,10 @@ function onBaseCurrencyInit(e) {
                  // alert($("#VoucherNo").dxTextBox("instance").option("value"));
                       "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                      "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                     "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                                    "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
                  "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                  "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -3545,7 +3653,7 @@ function onBaseCurrencyInit(e) {
 
                                 // Change button label to "Update"
                                var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+                                button.option("text", formatMessage("Update"));
 
                              if(IsObeselete==true)
                              {
@@ -3942,7 +4050,7 @@ tippy('#circle-approve', {
                  <div class="side-bar" style="background-color:${item.color};"></div>
                  <div class="item-content">
                      <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
-                     <div class="item-title">${item.text}</div>
+                        <div class="item-title">${formatMessage(item.text)}</div>
                  </div>
              </div>
          `;
@@ -4057,5 +4165,22 @@ function resetVoucherButton() {
         text: formatMessage("ADD")
     });
 }
+ function onPaymentDownBoxClosed(e) {
+    const typedText = e.component.option("text");
+    const grid = $(e.component.content()).find("#accountpaymentamount-datagrid").first().dxDataGrid("instance");
 
+    if (!grid || !typedText) return;
+
+    const visibleRows = grid.getVisibleRows();
+    const match = visibleRows.find(r => r.data.AccountHead === typedText);
+    debugger;
+    if (match) {
+        const selectedKey = match.data.AccountId;
+        grid.selectRows([selectedKey], false); // select the row in the grid
+        e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+        grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+    } else {
+        e.component.option("value", null); // clear if no match found
+    }
+}
 </script>

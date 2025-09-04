@@ -262,10 +262,15 @@
                         .OnRowUpdating("onProjectUpdating")                       // Handles saving
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("StoreId").Caption("Store ID");
-                            columns.Add().DataField("StoreName").Caption("Store Name");
+                    columns.Add().DataField("StoreId")
+                    .Caption(new JS("formatMessage('Store ID')"));
 
-                            columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center for Consumption").Width(200)
+                    columns.Add().DataField("StoreName")
+                    .Caption(new JS("formatMessage('Store Name')"));
+
+                    columns.Add().DataField("CostAllocationUnitId")
+                    .Caption(new JS("formatMessage('Cost Center for Consumption')"))
+                    .Width(200)
                             .Lookup(lookup => lookup
                             .DataSource(d => d.WebApi()
                             .Controller("StoreCode")
