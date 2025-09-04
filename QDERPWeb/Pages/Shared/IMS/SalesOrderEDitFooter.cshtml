@@ -307,6 +307,9 @@
         "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
     };
     
+
+
+
          function handleSales(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
@@ -316,17 +319,49 @@
             alert("Sales Order number is required.");
             return;
         }
+          try {
+            const reportName = salesReportMap[itemText];
 
-        const reportName = salesReportMap[itemText];
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
 
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
-        }
+            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+              const salesReport= [
+                "Preview  Sales Order", 
+                "Preview Sales Order(without Price)"
+              ];
 
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+
+        if (salesReport.includes(itemText)) {
+                // Collect parameters only if true
+                const params = {
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val()
+                };
+
+                // Append only those that are "true"
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
     }
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
 
        function toggleHeaderFilter() {
            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
