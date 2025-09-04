@@ -3,11 +3,9 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "@devexpress/analytics-core": "24.2.9",
+    "@devexpress/analytics-core": "24.2-stable",
     "bootstrap": "^4.3.1",
-    "devexpress-reporting": "24.2.9",
-    "devextreme": "24.2.9",
-    "devextreme-dist": "24.2.9",
-    "devexpress-richedit": "24.2.9"
+    "devexpress-reporting": "24.2-stable",
+    "devextreme": "24.2-stable"
   }
 }
