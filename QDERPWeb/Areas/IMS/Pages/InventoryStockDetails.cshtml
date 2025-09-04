@@ -458,6 +458,17 @@
                             .ID("ItemNameArabic")
                             .Label(new JS("formatMessage('Item Name / Description (In Arabic)')"))
                             .LabelMode(EditorLabelMode.Floating)
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("convertToArabic1"));
+                            })
                             .Width("100%"))
                 </tr>
             </table>
@@ -2068,6 +2079,7 @@
                     .Type(ButtonType.Default)
                     .Width(140)
                     .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                    .ElementAttr(new { @class = "custom-ui-button" })
                     )
                 </div>
 
@@ -2925,7 +2937,7 @@
                 var dropDownBox = $("#ItemClassification").dxDropDownBox("instance");
                 dropDownBox.close();
                 const title = "Item Classification";
-                openModal(url, title);
+                openModal(url, title,"80%","60%");
           }
             $(document).ready(function () {
           // Ensure dxTabs has loaded, then get the selected index

@@ -253,13 +253,11 @@
             }
 
         });
-
-        // Handle Back button click
-        $(document).on('click', '#btnBack', function () {
-            window.history.back();
-        });
-
     });
+
+        $(document).on('click', '#btnBack', function () {
+            window.parent.closeModal();
+        });
 
 
         async function convertToArabic() {

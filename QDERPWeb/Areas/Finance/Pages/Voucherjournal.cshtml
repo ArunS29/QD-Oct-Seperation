@@ -204,7 +204,7 @@
                                                 .DisplayExpr("AccountHead")
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
-                                               
+                                               .OnClosed("onDropDownBoxClosed")
                                                 .TabIndex(4)
                                                 .DropDownOptions(o => o.Width(1000))
                                                 .OnKeyDown("onKeyDown")
@@ -341,9 +341,8 @@ buttons.Add()
                                                 columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                                                 columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                 columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-                                                columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-                                                columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+                                                columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(3)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(3) + ')'; } return cellInfo.value.toFixed(3); }");
+                                                
 
                                             })
                                             )
@@ -358,12 +357,12 @@ buttons.Add()
                             .Min(0)
                             .Max(99999)
                              .TabIndex(7)
-                            .Format("#,##0.00")
+                            .Format("#,##0.000")
                             .InputAttr(new
                             {
                                 style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
                                 type = "number",
-                                step = "0.01"
+                                step = "0.001"
                             })
                             .ElementAttr(new { @class = "white-box" })
                             )
@@ -513,7 +512,7 @@ function(data) {
 
     if (DrAmount != null) {
         var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value');
-        currencyRate = Math.round(currencyRate * 100) / 100;
+        currencyRate = Math.round(currencyRate * 1000) / 1000;
 
         var val = DrAmount / currencyRate;
         return Math.round(val * 100) / 100; // keep 2 decimals
@@ -536,7 +535,7 @@ function(data) {
 
     if (CrAmount != null) {
         var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value');
-        currencyRate = Math.round(currencyRate * 100) / 100;
+        currencyRate = Math.round(currencyRate * 1000) / 1000;
 
         var val = CrAmount / currencyRate;
         return Math.round(val * 100) / 100; // keep 2 decimals
@@ -1201,10 +1200,10 @@ function(data) {
     // Format to always have 2 decimals
     amount = parseFloat(amount).toFixed(2);
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-             currencyRate = Math.round(currencyRate * 100) / 100;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
 
     // Format to always have 2 decimals
-    currencyRate = parseFloat(currencyRate).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(3);
             var voucherAmount = amount * currencyRate;
               
         var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");; // Set DrCr based on the previous entry
@@ -1427,7 +1426,10 @@ function(data) {
             VoucherMaster: {
                     "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                        "currencyrate": Number(
+        ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+            .toFixed(3)
+    ),
                    "VoucherNo" : finalVoucherNo, // Pass the latest VoucherNo
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
                 "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
@@ -1541,7 +1543,10 @@ function(data) {
             VoucherMaster: {
                      "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                         "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                        "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                         "currencyrate": Number(
+        ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+            .toFixed(3)
+    ),
                     "VoucherNo": finalVoucherNo, // Pass the latest VoucherNo
                     "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
                     "VoucherEffectiveDate": $("#EffectiveDate").dxDateBox("instance").option("value"),
@@ -1676,11 +1681,23 @@ function(data) {
         }
     }
 
-    function onOpened(e) {
-        setTimeout(() => {
-            e.component.focus();
+                function onOpened(e) {
+    setTimeout(() => e.component.focus(), 0);
+
+    // Use the stored grid instance
+    const grid = e.component.__contentGridInstance;
+
+    if (grid) {
+        const currentValue = e.component.option("value");
+        grid.getDataSource().reload().done(() => {
+            if (currentValue) {
+                grid.selectRows([currentValue], false);
+                grid.option("focusedRowKey", currentValue);
+            }
         });
     }
+}
+
 
     function onKeyDown(e) {
         const ddbInstance = e.component;
@@ -1712,8 +1729,12 @@ function(data) {
         dataGrid = e.component;
     }
     function dataGridAccountHeadInitialized(e) {
-        dataGrid = e.component;
-    }
+                   // Store grid instance on the parent DropDownBox
+            const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+            if (dropDownBox) {
+                dropDownBox.__contentGridInstance = e.component;  // store reference safely
+            }
+                }
     function onRowRemoved(e) {
         $.ajax({
      url: "/api/VoucherJournal/Delete",
@@ -3091,6 +3112,8 @@ function(data) {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
              var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+              currencyRate = Math.round(currencyRate * 1000) / 1000;
+ currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3132,6 +3155,8 @@ function(data) {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
              var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+              currencyRate = Math.round(currencyRate * 1000) / 1000;
+ currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3175,6 +3200,8 @@ function(data) {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
              var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+              currencyRate = Math.round(currencyRate * 1000) / 1000;
+ currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3217,6 +3244,8 @@ function(data) {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
+ currencyRate = parseFloat(currencyRate).toFixed(3);
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
@@ -3788,4 +3817,22 @@ function showMainFooter() {
 
 
     renderContextMenu();
+    function onDropDownBoxClosed(e) {
+        const typedText = e.component.option("text");
+        const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+
+        if (!grid || !typedText) return;
+
+        const visibleRows = grid.getVisibleRows();
+        const match = visibleRows.find(r => r.data.AccountHead === typedText);
+        debugger;
+        if (match) {
+            const selectedKey = match.data.AccountId;
+            grid.selectRows([selectedKey], false); // select the row in the grid
+            e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+            grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+        } else {
+            e.component.option("value", null); // clear if no match found
+        }
+    }
 </script>

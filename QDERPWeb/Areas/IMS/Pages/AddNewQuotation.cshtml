@@ -255,14 +255,14 @@
         <div class="card-title-icon">
             <i class="fas fa-file-invoice-dollar"></i>
         </div>
-        <div id="AddNewQuotation" class="titleText no-border-title">Add New Quotation</div>
+        <div id="AddNewQuotation" class="titleText no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(220)
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(200)
                 .Items(item =>
                 {
                     item.Add()
@@ -270,7 +270,7 @@
                 .Icon("folder")
                 .Text("Quotation Details")
                 .Template(@<text>
-            <div class="p-3">
+            <div class="p-2">
                 <div class="row g-2">
 
                     <!-- Row 1 -->
@@ -335,15 +335,8 @@
         })
        .Buttons(buttons =>
 		{
-			// Clear button
 			buttons.Add()
 				.Name("clear");
-
-			// Drop-down toggle button (must be 'dropDown')
-			buttons.Add()
-				.Name("dropDown");
-
-			// Add new client button
 			buttons.Add()
 				.Name("addLedger")
 				.Location(TextEditorButtonLocation.After)
@@ -353,8 +346,6 @@
 					.ElementAttr(new { @class = "custom-hover-button add-hover" })
 					.OnClick("AddNewClient")
 				);
-
-			// Edit client button
 			buttons.Add()
 				.Name("editLedger")
 				.Location(TextEditorButtonLocation.After)
@@ -373,6 +364,8 @@
 						openModal(url, 'Client Master');
 					}")
 				);
+			buttons.Add()
+				.Name("dropDown");
 		}))
 </div>
                     <!-- Row 2 -->
@@ -1061,11 +1054,17 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
+
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
+									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
+
 								</td>
 
 								<!-- Verified By Checkboxes -->
@@ -1074,17 +1073,24 @@
 									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
+									<input type="hidden" id="hdnPageAfterBefore" name="hdnPageAfterBefore" value="false" />
+
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text(new JS("formatMessage('Print Client Acknowledgement')")) )
+									<input type="hidden" id="hdnclientAcknowledgement" name="hdnclientAcknowledgement" value="false" />
+
 								</td>
 
 								<!-- Approved By Checkboxes -->
 								<td>
 									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text(new JS("formatMessage('Print Item Code with Description')")) )
+										<input type="hidden" id="hdnprintItemCodeDesc" name="hdnprintItemCodeDesc" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Description')")) )
+										<input type="hidden" id="hdnprintItemPartNoDesc" name="hdnprintItemPartNoDesc" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
+										<input type="hidden" id="hdnprintItemPartArabicDesc" name="hdnprintItemPartArabicDesc" value="false" />
 								</td>
                             </tr>
                         </tbody>
@@ -1199,6 +1205,9 @@
             )
 
     </div>
+	<div>
+		@await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+	</div>
 	@(
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 			.ID("B2BdataGrid")
@@ -1387,7 +1396,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height("40vh")
+		.Height("39vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1403,7 +1412,7 @@
 </div>
 
 
-		<div class="footer-fixed" >
+		<div class="footer-fixed" style="width: 96vw;">
 				@await Html.PartialAsync("/Pages/Shared/IMS/QuotationFormFooter.cshtml")
 		</div>
 		
@@ -1930,27 +1939,66 @@
             }
         });
     });
-
-    @* function openQuotationReport(reportName) {
-        const tenantName = window.tenantName || "";
-        const quotationNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-        const pageBreakBefore = $("#hdnPageBreakBefore").val(); // get from hidden field
-
-        if (!quotationNo) {
-            DevExpress.ui.notify("Quotation number is required.", "error", 2000);
-            return;
-        }
-
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}&pageBreakBefore=${pageBreakBefore}`;
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    } *@
-
-    // Attach to your print button or dropdown as needed
-    @* $("#btnPrint").dxButton({
-        onClick: function() {
-            openQuotationReport("PreviewQuotations");
-        }
-    }); *@
+	  $(function() {
+        $("#pageBreakAfter").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageAfterBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#clientAcknowledgement").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnclientAcknowledgement").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemPartArabicDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartArabicDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemPartNoDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartNoDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemCodeDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemCodeDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
 	  function onOpened(e) {
     const gridId = e.component.option("dataGridId"); // 👈 Get common ID
     const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
@@ -2463,7 +2511,6 @@ function checkDateLocking() {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -3146,7 +3193,6 @@ placeholder: "Search..."
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -5928,7 +5974,7 @@ function loadChildDataAndBindGrid(quoteno) {
 					type: 'DELETE',
 					success: function (response) {
 						DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
-							location.reload(); // Reload after user clicks OK
+							window.location.href =`/${tenantName}/IMS/AddNewQuotation`
 						});
 					},
 					error: function (xhr) {
@@ -6193,6 +6239,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 	//MoveupDown functionality
 	function moveRowUp() {
+		debugger;
 		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Flatten the grouped data
@@ -6221,7 +6268,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 
 	function moveRowDown() {
-
+		debugger;
 		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Get flattened data
@@ -7319,21 +7366,21 @@ function saveField(fieldName, dxId,name) {
 
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = "Done";
+                statusMsg.textContent = " - Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = "In Progress";
+                statusMsg.textContent = " - In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = "Pending";
+                statusMsg.textContent = " - Pending";
             }
 
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = "Done";
+                statusMsg.textContent = " - Done";
                 icon.className = "fas fa-check-circle";
             }
         });

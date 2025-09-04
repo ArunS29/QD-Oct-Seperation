@@ -2,7 +2,10 @@
 var dictionary = {
 
     "en": {
-
+        "Terms & Conditions List:":"Terms & Conditions List:",
+        "Approve All select DN": "Approve All select DN",
+        "Post to Journal":"Post to Journal",
+        "Post Average Cost":"Post Average Cost",
         "DeliveryNoteSlNo": "Delivery Note Sl No",
         "DeliveryNoteNo": "Delivery Note No",
         "DeliveryDate": "Delivery Date",

@@ -260,7 +260,7 @@
 
                                 .Icon("plus")
                                 .OnClick("function() { addSalesPerson(); }")
-                                .ElementAttr(new { @class = "dx-button-add" })
+                                .ElementAttr(new { @class = "custom-ui-button" })
                                 )
             </div>
         </div>
@@ -398,29 +398,14 @@
                                     url: "/api/Master/DeleteSalesPerson/" + salesPersonCode,
                                     success: function (response) {
                                         if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage('Sales person deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
+                                            dataGrid.refresh();
+                                            DevExpress.ui.notify("Sales person deleted successfully.", "success", 2000);
                                         } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
+                                            DevExpress.ui.notify(response.message, "error", 2000);
                                         }
                                     },
                                     error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
-                                        });
+                                        DevExpress.ui.notify(xhr.responseText, "error", 2000);
                                     }
                                 });
                             }
@@ -503,22 +488,6 @@
                 cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
                 dataGrid.option("toolbar.items", toolbarItems);
              },
-            // onRowUpdated: function (e) {
-            //     Swal.fire({
-            //         icon: 'success',
-            //         title: formatMessage('Row Updated'),
-            //         text: formatMessage('The row data was successfully updated.'),
-            //         confirmButtonText: 'OK'
-            //     });
-            // },
-            // onRowRemoved: function (e) {
-            //     Swal.fire({
-            //         icon: 'info',
-            //         title: formatMessage('Row Removed'),
-            //         text: formatMessage('The row has been removed from the grid.'),
-            //         confirmButtonText: 'OK'
-            //     });
-            // },
             height: "68vh",
             width: "100%"
         });
@@ -619,7 +588,7 @@
                     contentType: "application/json",
                     success: function (response) {
                         DevExpress.ui.notify("Sales Person Added Successfully", "success", 2000);
-                        
+                        $("#gridContainer").dxDataGrid("instance").refresh();
                     },
                     error: function (xhr) {
                         var errorMessage = xhr.status === 500
@@ -644,12 +613,7 @@
 
         // Validate if all required fields are filled
         if (!salesPersonName || !userCode || !emailAddress || !salesPersonContactNo || !SalesPersonCode ||!TargetPerMonth) {
-            Swal.fire({
-                icon: 'warning',
-                title: formatMessage('Incomplete Form'),
-                text: formatMessage('Please fill in all fields before submitting.'),
-                confirmButtonText: 'OK'
-            });
+            DevExpress.ui.notify("Please fill in all fields before submitting.", "warning", 2000);
             return; // Stop further processing if fields are not filled
         }
 
@@ -679,12 +643,7 @@
                     ? "Server error: Please try again later."
                     : "Validation error: " + xhr.responseText;
 
-                Swal.fire({
-                    icon: formatMessage('error'),
-                    title: 'Error',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
-                });
+                DevExpress.ui.notify(errorMessage, "error", 2000);
             }
         });
     }
@@ -788,7 +747,7 @@
             const contactNumber = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
 
             // Regular expression for validating a 10-digit contact number
-            const regex = /^[0-9]{10}$/;
+            const regex = /^\d*$/;
 
             // Check if the contact number is valid
             if (!regex.test(contactNumber)) {

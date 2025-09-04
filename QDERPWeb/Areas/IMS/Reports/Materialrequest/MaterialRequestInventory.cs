@@ -14,6 +14,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private bool _isApproved;
         private string _requestNo;
+        private bool _showSign1;
+
         public MaterialRequestInventory()
         {
             InitializeComponent();
@@ -21,7 +23,13 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
         }
 
         public MaterialRequestInventory(
+              Image logoImage,
+           Image sealImage,
+                bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             string RequestNo,
+            bool showSign1,
             string tenantName,
             string companyName,
             string companyAddress,
@@ -33,16 +41,22 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
             _tenantDbContextHelper = tenantDbContextHelper;
             _isApproved = isApproved;
             _requestNo = RequestNo;
+            _showSign1 = showSign1; 
 
             InitializeComponent();
-            SetReportParameters(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters(logoImage,sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr);
             LoadReportData(RequestNo);
 
             // Attach the BeforePrint event ONCE
             this.BeforePrint += MaterialRequestInventory_BeforePrint;
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
         }
 
-        private void SetReportParameters(string RequestNo, string tenantName, string companyName, string companyAddress, string companyNameAr, string companyAddressAr)
+
+
+        private void SetReportParameters(Image logoImage, Image sealImage, bool showSeal, bool showSignature, bool printLetterhead, string RequestNo, bool showSign1, string tenantName, string companyName, string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -84,6 +98,14 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
+
+                logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
+
+                sealPictureBox.Image = sealImage;
         }
         //
         private void LoadReportData(string RequestNo)
@@ -104,7 +126,32 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
 
             }
         }
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
 
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel75", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel76", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine4", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
         private DataTable GetReportData(string RequestNo)
         {
             DataTable dt = new DataTable();
@@ -270,6 +317,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports
         {
             int typeOfMPR = GetTypeOfMPR(_requestNo);
             SetLabelsVisibility(typeOfMPR);
+
+            if (this.GroupFooter1 != null)
+            {
+                this.GroupFooter1.Visible = _showSign1;
+            }
         }
     }
 }
