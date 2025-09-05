@@ -929,24 +929,49 @@
             return;
         }
 
-        const DeliverynoteReportMap = {
-            "Preview Delivery Note": "PreviewDeliveryNote",
-            "Preview Material Issue Note": "ReportforMaterialIssueNote",
-            "Preview Delivery Note (with Price)": "PreviewDeliveryNotewithPrice",
-            "Preview Delivery Note (Dot Matrix)": "DotMatrics",
-            "Preview Delivery Note (WIth Cost Price)": "DeliveryNoteWithCostPrice"
-        };
+         try {
+            const reportName = DeliverynoteReportMap[itemText];
 
-        const reportName = DeliverynoteReportMap[itemText];
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+                        let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&DeliveryNoteNo=${encodeURIComponent(deliveryNote)}`;
 
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
-        }
-
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&DeliveryNoteNo=${encodeURIComponent(deliveryNote)}`;
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        const DeliverynoteReport = [
+            "Preview Delivery Note",
+            "Preview Material Issue Note",
+            "Preview Delivery Note (with Price)",
+            "Preview Delivery Note (Dot Matrix)",
+            "Preview Delivery Note (WIth Cost Price)"
+        ];
+             if (DeliverynoteReport.includes(itemText)) {
+                // Collect parameters only if true
+                const params = {
+                    PrintFooterAtBottom: $("#hdnPrintFooterAtBottom").val(),
+                    ShowItemLineNo: $("#hdnShowItemLineNo").val(),
+                    printItemPartArabicDesc: $("#hdnprintItemPartArabicDesc").val(),
+                    printItemPartNoDesc: $("#hdnprintItemPartNoDesc").val(),
+                    printItemCodeDesc: $("#hdnprintItemCodeDesc").val(),
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val()
+                };
+                    // Append only those that are "true"
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
     }
+     window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
 
     function onIMSAttachmentButtonClick(e) {
         // Get Voucher No safely
