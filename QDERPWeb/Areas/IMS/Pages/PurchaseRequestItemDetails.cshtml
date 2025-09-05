@@ -64,28 +64,6 @@
 			background-color: #0056b3;
 		}
 
-	.dx-texteditor {
-		background-color: transparent !important;
-		border: 1px solid #d6e4f0 !important;
-		border-radius: 4px !important;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-		font-size: 14px !important;
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important;
-	}
-
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
-			border-color: #86b7fe !important;
-		}
-
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-			border-color: #508ae1 !important;
-		}
-
 	.no-border-input {
 		border: none !important;
 		outline: none !important;
@@ -145,11 +123,20 @@
 </style>
 
 <input id="formId" value="frm60135PurchaseRequestItemDetails" type="hidden" />
-<div class="title">
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="PurchaseRequestwithItem" class="titleText no-border-title"></div>
+	</div>
+</div>
+
+@* <div class="title">
 	<div class="header-container">
 		<div id="Quotation" class="no-border-input"></div>
 	</div>
-</div>
+</div> *@
 
 
 @await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
@@ -223,7 +210,7 @@
 		.Columns(columns =>
 		{
 				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+			columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(false).GroupIndex(0);
 				columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
 			columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy"); 
 					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
@@ -470,12 +457,12 @@
 			columns.AddFor(m => m.ProjectSubUnitName).Caption(new JS("formatMessage('Project Sub Unit')")).Alignment(HorizontalAlignment.Center).Visible(false);
 
 		})
-		.Height("60vh") 
+		.Height("70vh") 
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
-		.OnCellClick("function(e) {handleCellClick(e);}")
+				.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.OnCellClick("handleCellClick")
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
@@ -488,13 +475,14 @@
 			pager.ShowNavigationButtons(true);
 			pager.Visible(true);
 		})
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
+	
 		.ShowBorders(true)
 		.ShowRowLines(true)
 
 		//.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		//.Grouping(grouping => grouping.AutoExpandAll(true))
 		.ShowBorders(true)
 		.StateStoring(stateStoring =>
 		{
@@ -511,58 +499,80 @@
 				items.Add().Column("Gsdescrpition")
 			.SummaryType(SummaryType.Count)
 			.ShowInGroupFooter(true)
-			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return 'No of Items: ' + e.value;
+		}
+		");
+
 				items.Add().Column("QtyRequested")
 			.SummaryType(SummaryType.Sum)
 			.ShowInGroupFooter(true)
 			.CustomizeText(@"
-	function(e) {
-	if (e.value === null || e.value === undefined) {
-	return '';
-	}
-	return e.value.toLocaleString(undefined, {
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2
-	});
-	}
-	");
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return 'SUM: ' + e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 			});
+
 			summary.TotalItems(items =>
 			{
-
 				items.Add().Column("Gsdescrpition")
 			.SummaryType(SummaryType.Count)
 			.DisplayFormat("No of Items: {0}");
+
 				items.Add().Column("QtyRequested")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"
-	function(e) {
-	if (e.value === null || e.value === undefined) {
-	return '';
-	}
-	return e.value.toLocaleString(undefined, {
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2
-	});
-	}
-	");
-				
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return 'SUM:' + e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 			});
+
 		})
 		)
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-	$("#Quotation").dxTextBox({
-				text: formatMessage("Purchase Request with Item Details"),
+			  $(function () {
+	$("#PurchaseRequestwithItem").dxTextBox({
+	text: formatMessage("Purchase Request with Item"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+			$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});
+		function handleCellClick(e) {
+		// ✅ Allow DevExtreme to handle expand/collapse of groups
+		if (e.rowType === "group") {
+			return;
+		}
+
+		// ✅ Custom logic for normal rows
+		if (e.rowType === "data") {
+			console.log("Row clicked:", e.data);
+			// Example: navigate
+			// window.location.href = "/Details/" + e.data.Mprno;
+		}
+	}
 
 
 		 $(function () {
@@ -600,6 +610,7 @@
 		$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
 		$("#todateBox").dxDateBox("instance").option("value", tillmonth);
 		ddBtnShowRecords_click('range');
+		document.getElementById('loadingSpinner').style.display = 'block';
 	});
 	function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
@@ -657,8 +668,15 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				//frmDate = frmDate.toISOString().split('T')[0];
+	           //toDate = toDate.toISOString().split('T')[0];
+			   	frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
 
 				$.ajax({
 			url: '/api/MaterialRequestEnquiriesDetails/GetPurchaseRequestDetails',

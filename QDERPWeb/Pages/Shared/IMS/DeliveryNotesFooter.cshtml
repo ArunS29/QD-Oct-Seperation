@@ -692,10 +692,21 @@
                 CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
         };
 
-        // Get grid data (items)
-        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        const items = itemGridInstance.getDataSource().items();
+     
 
+           const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+        const items = itemGridInstance.getDataSource().items().map(row => ({
+            deliveryNoteSlNo: row.DeliveryNoteSlNo || null, // keep PK if exists
+            gscode: row.Gscode,
+            unitRateMethod: row.UnitRateMethod,
+            qty: row.Qty,
+            issuedUnitPrice: row.IssuedUnitPrice,
+            issuedQuoteUnitPrice: row.IssuedQuoteUnitPrice,
+            employeeNo: row.EmployeeNo,
+            propertyNo: row.PropertyNo,
+            addlDescription: row.AddlDescription,
+            deliveryRemarks: row.DeliveryRemarks
+        }));
         // Call both APIs: 1) save delivery note, 2) save item details
         const saveNote = $.ajax({
             url: '/api/DeliveryNote/SaveDeliveryNote',
@@ -736,7 +747,82 @@
    
 
 
- 
+ //SaveAndClose
+        function onSaveAndCloseClicked(closeAfterSave = false) {
+           var isUpdate = $("#btnSave").data("is-update");
+
+           const model = {
+               deliveryNoteNo: $("#deliveryNoteNo").dxTextBox("instance").option("value"),
+               deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
+               clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+               salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
+               clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
+               clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
+               attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+               clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
+               clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+               StoreCode: $("#ddStockfromStore").dxDropDownBox("instance").option("value"),
+               projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
+               clientProject: $("#clientProject").dxTextBox("instance").option("value"),
+               deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
+               salesman: $("#Salesman").dxTextBox("instance").option("value"),
+               transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
+               driversName: $("#DriverName").dxTextBox("instance").option("value"),
+               driversId: $("#DriverID").dxTextBox("instance").option("value"),
+               vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
+               companyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
+               deliveryType: $("#DeliveryType").dxSelectBox("instance").option("value"),
+               inventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
+               salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
+               quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+               enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
+               Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                   CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                   BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                   CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+           };
+
+           // Get grid data (items)
+           const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+           const items = itemGridInstance.getDataSource().items();
+
+           // Call both APIs: 1) save delivery note, 2) save item details
+           const saveNote = $.ajax({
+               url: '/api/DeliveryNote/SaveDeliveryNote',
+               type: 'POST',
+               contentType: 'application/json',
+               data: JSON.stringify(model)
+           });
+
+            const saveItems = $.ajax({
+           url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
+           type: 'POST',
+           contentType: 'application/json',
+           data: JSON.stringify({
+               deliveryNoteNo: model.deliveryNoteNo,
+               items: items
+           })
+       });
+
+
+         Promise.all([saveNote, saveItems])
+       .then(function ([noteRes, itemRes]) {
+           DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+           if (!isUpdate) {
+               $("#btnSave").dxButton("instance").option("text", "Update");
+               $("#btnSave").data("is-update", true);
+           }
+
+           // Navigate back after success
+           setTimeout(() => {
+               window.history.back();
+           }, 1000);
+       })
+       .catch(function (err) {
+           DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
+       });
+       }
 
         function onDeleteClick() {
         const gscode = $("#StockNoItemCode").dxTextBox("instance").option("value");

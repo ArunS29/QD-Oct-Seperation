@@ -913,7 +913,7 @@
 																					.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																					.OnClick("AddReqUnit")
 																					);
-																					// Custom editLedger button
+																					@* // Custom editLedger button
 																					buttons.Add()
 																					.Name("EditReqUnit")
 																					.Location(TextEditorButtonLocation.After)
@@ -922,7 +922,7 @@
 																					.Icon("edit")
 																					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
 																																					//.OnClick("showLedgerAccountEditPopup")
-																					);
+																					); *@
 																					buttons.Add()
 																					.Name("dropDown");
 																				})
@@ -1134,7 +1134,7 @@
 										.Location(TextEditorButtonLocation.After)
 										.Widget(w => w.Button()
 										.Type(ButtonType.Default)
-										.Icon("edit")
+										.Icon("plus")
 										.Disabled(true) // Button is also disabled
 										.ElementAttr(new { @class = "custom-hover-button add-hover" })
 										.OnClick("CurrencyClick"));
@@ -1173,7 +1173,7 @@
 										.Location(TextEditorButtonLocation.After)
 										.Widget(w => w.Button()
 										.Type(ButtonType.Default)
-										.Icon("edit") // Use "plus" or any other if needed
+										.Icon("plus") // Use "plus" or any other if needed
 										.Hint("Edit Description")
 										.ElementAttr(new { @class = "custom-hover-button add-hover" })
 										.OnClick("CurrencyClick")); // 👈 your existing handler
@@ -1581,6 +1581,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
+						columns.Add().DataField("SalesPersonCode");
 						columns.Add().DataField("SalesPersonName");
 					})
 					)
@@ -2437,8 +2438,7 @@ let edit=false;
 				$('#ddRevNo').dxTextBox("instance").option("value", RevisionNo);
 			}
 		   
-				//getSalesPersonByUser();
-				getDefaultCompany();
+				
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
@@ -2566,6 +2566,8 @@ if (gridInstance) {
 			}
 		});
 	}
+
+
 		function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -2583,6 +2585,11 @@ if (gridInstance) {
 			}
 		});
 	}
+	$(document).ready(function () {
+		//getSalesPersonByUser();
+				getDefaultCompany();
+	});
+
 	function getDefaultCompany() {
     $.ajax({
         type: "GET",
@@ -2726,6 +2733,7 @@ if (gridInstance) {
 					return;
 				}
 				$.getJSON(`/api/VATModule/GetGoodsAndServiceByCode?code=${options.value}`)
+				//$.getJSON(`/api/GoodsandServices/GetGoodsAndServiceByCode?code=${options.value}`)
 					.done(function (data) {
 						$("<span>").text(data.GSDescrpition).appendTo(container);
 					});
@@ -2744,6 +2752,7 @@ if (gridInstance) {
 					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
 					const pageSize = loadOptions.take;
 						return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+							//return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", {
 						pageNumber,
 						pageSize
 					}).then(response => {
@@ -3052,55 +3061,55 @@ if (gridInstance) {
 							onContextMenuPreparing: function (e) {
 			if (e.target === "content") {
 				e.items = [
-						{
-			text: "Delete Line Item",
-			icon: "trash",
-			onItemClick: function () {
-				const rowIndex = e.row?.rowIndex;
-				if (rowIndex >= 0) {
-					DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
-						if (!result) return;
-						const childId = e.row?.data?.MprchildSlNo;
-						if (childId) {
-							// ✅ Delete from database
-							$.ajax({
-								url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
-								type: "DELETE",
-								success: function (res) {
-									if (res.success) {
-										// ✅ Remove from rowData by ID
-										const index = rowData.findIndex(r => r.MprchildSlNo === childId);
-										if (index !== -1) rowData.splice(index, 1);
-										// ✅ Resequence LineOrderNo
-										rowData.forEach((row, idx) => {
-											row.LineOrderNo = idx + 1;
-										});
-										dataGridInstance.option("dataSource", rowData);
-										dataGridInstance.refresh();
-										DevExpress.ui.notify("Row deleted successfully", "success", 2000);
-									} else {
-										DevExpress.ui.notify(res.message, "error", 2000);
-									}
-								},
-								error: function () {
-									DevExpress.ui.notify("Failed to delete row", "error", 2000);
-								}
-							});
-						} else {
-							// ✅ Unsaved row deletion
-							rowData.splice(rowIndex, 1);
-							// ✅ Resequence LineOrderNo
-							rowData.forEach((row, idx) => {
-								row.LineOrderNo = idx + 1;
-							});
-							dataGridInstance.option("dataSource", rowData);
-							dataGridInstance.refresh();
-							DevExpress.ui.notify("Row removed", "success", 1500);
-						}
-					});
-				}
-			}
-		},
+		// 				{
+		// 	text: "Delete Line Item",
+		// 	icon: "trash",
+		// 	onItemClick: function () {
+		// 		const rowIndex = e.row?.rowIndex;
+		// 		if (rowIndex >= 0) {
+		// 			DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+		// 				if (!result) return;
+		// 				const childId = e.row?.data?.MprchildSlNo;
+		// 				if (childId) {
+		// 					// ✅ Delete from database
+		// 					$.ajax({
+		// 						url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+		// 						type: "DELETE",
+		// 						success: function (res) {
+		// 							if (res.success) {
+		// 								// ✅ Remove from rowData by ID
+		// 								const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+		// 								if (index !== -1) rowData.splice(index, 1);
+		// 								// ✅ Resequence LineOrderNo
+		// 								rowData.forEach((row, idx) => {
+		// 									row.LineOrderNo = idx + 1;
+		// 								});
+		// 								dataGridInstance.option("dataSource", rowData);
+		// 								dataGridInstance.refresh();
+		// 								DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+		// 							} else {
+		// 								DevExpress.ui.notify(res.message, "error", 2000);
+		// 							}
+		// 						},
+		// 						error: function () {
+		// 							DevExpress.ui.notify("Failed to delete row", "error", 2000);
+		// 						}
+		// 					});
+		// 				} else {
+		// 					// ✅ Unsaved row deletion
+		// 					rowData.splice(rowIndex, 1);
+		// 					// ✅ Resequence LineOrderNo
+		// 					rowData.forEach((row, idx) => {
+		// 						row.LineOrderNo = idx + 1;
+		// 					});
+		// 					dataGridInstance.option("dataSource", rowData);
+		// 					dataGridInstance.refresh();
+		// 					DevExpress.ui.notify("Row removed", "success", 1500);
+		// 				}
+		// 			});
+		// 		}
+		// 	}
+		// },
 							{
 			text: "Delete Selected Rows",
 			icon: "trash",
@@ -3609,55 +3618,55 @@ if (gridInstance) {
 					onContextMenuPreparing: function (e) {
 		if (e.target === "content") {
 			e.items = [
-					{
-		text: "Delete Line Item",
-		icon: "trash",
-		onItemClick: function () {
-			const rowIndex = e.row?.rowIndex;
-			if (rowIndex >= 0) {
-				DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
-					if (!result) return;
-					const childId = e.row?.data?.MprchildSlNo;
-					if (childId) {
-						// ✅ Delete from database
-						$.ajax({
-							url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
-							type: "DELETE",
-							success: function (res) {
-								if (res.success) {
-									// ✅ Remove from rowData by ID
-									const index = rowData.findIndex(r => r.MprchildSlNo === childId);
-									if (index !== -1) rowData.splice(index, 1);
-									// ✅ Resequence LineOrderNo
-									rowData.forEach((row, idx) => {
-										row.LineOrderNo = idx + 1;
-									});
-									dataGridInstance.option("dataSource", rowData);
-									dataGridInstance.refresh();
-									DevExpress.ui.notify("Row deleted successfully", "success", 2000);
-								} else {
-									DevExpress.ui.notify(res.message, "error", 2000);
-								}
-							},
-							error: function () {
-								DevExpress.ui.notify("Failed to delete row", "error", 2000);
-							}
-						});
-					} else {
-						// ✅ Unsaved row deletion
-						rowData.splice(rowIndex, 1);
-						// ✅ Resequence LineOrderNo
-						rowData.forEach((row, idx) => {
-							row.LineOrderNo = idx + 1;
-						});
-						dataGridInstance.option("dataSource", rowData);
-						dataGridInstance.refresh();
-						DevExpress.ui.notify("Row removed", "success", 1500);
-					}
-				});
-			}
-		}
-	},
+	// 				{
+	// 	text: "Delete Line Item",
+	// 	icon: "trash",
+	// 	onItemClick: function () {
+	// 		const rowIndex = e.row?.rowIndex;
+	// 		if (rowIndex >= 0) {
+	// 			DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+	// 				if (!result) return;
+	// 				const childId = e.row?.data?.MprchildSlNo;
+	// 				if (childId) {
+	// 					// ✅ Delete from database
+	// 					$.ajax({
+	// 						url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+	// 						type: "DELETE",
+	// 						success: function (res) {
+	// 							if (res.success) {
+	// 								// ✅ Remove from rowData by ID
+	// 								const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+	// 								if (index !== -1) rowData.splice(index, 1);
+	// 								// ✅ Resequence LineOrderNo
+	// 								rowData.forEach((row, idx) => {
+	// 									row.LineOrderNo = idx + 1;
+	// 								});
+	// 								dataGridInstance.option("dataSource", rowData);
+	// 								dataGridInstance.refresh();
+	// 								DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+	// 							} else {
+	// 								DevExpress.ui.notify(res.message, "error", 2000);
+	// 							}
+	// 						},
+	// 						error: function () {
+	// 							DevExpress.ui.notify("Failed to delete row", "error", 2000);
+	// 						}
+	// 					});
+	// 				} else {
+	// 					// ✅ Unsaved row deletion
+	// 					rowData.splice(rowIndex, 1);
+	// 					// ✅ Resequence LineOrderNo
+	// 					rowData.forEach((row, idx) => {
+	// 						row.LineOrderNo = idx + 1;
+	// 					});
+	// 					dataGridInstance.option("dataSource", rowData);
+	// 					dataGridInstance.refresh();
+	// 					DevExpress.ui.notify("Row removed", "success", 1500);
+	// 				}
+	// 			});
+	// 		}
+	// 	}
+	// },
 						{
 		text: "Delete Selected Rows",
 		icon: "trash",
@@ -5621,15 +5630,20 @@ function saveQuotation(mprNoNew, $btn) {
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
-				// Refresh parent DataGrid if present
-				if (window.parent && window.parent.$("#dataGrid").length) {
-					const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance").refresh();
-					if (dataGrid) {
-						dataGrid.refresh();
-					}
-				}
-				
-				history.back();
+
+				setTimeout(function () {
+    
+    if (window.parent && window.parent.$("#dataGrid").length) {
+        const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            dataGrid.refresh();
+        }
+    }
+
+    history.back();
+
+}, 3000);
+	
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
@@ -6801,7 +6815,7 @@ function onIMSAttachmentButtonClick(e) {
 	const isMaster = false;
 	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
 	
-	openModal(url, "");
+	openModal(url, "Transaction Documents - Client Request");
 }
    function onBaseCurrencyInitialized(e) {
             const ddb = e.component;

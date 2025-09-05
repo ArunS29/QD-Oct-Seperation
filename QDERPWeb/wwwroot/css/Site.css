@@ -414,6 +414,7 @@ body.dark-mode {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     color: var(--title-background-color) !important;
+    width: fit-content;
 }
 
 /*#btnAddNewQuotation:hover {

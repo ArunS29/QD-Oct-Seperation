@@ -1161,7 +1161,7 @@
 										.Location(TextEditorButtonLocation.After)
 										.Widget(w => w.Button()
 										.Type(ButtonType.Default)
-										.Icon("edit")
+										.Icon("plus")
 										.Disabled(true) // Button is also disabled
 										.ElementAttr(new { @class = "custom-hover-button add-hover" })
 										.OnClick("CurrencyClick"));
@@ -1200,7 +1200,7 @@
 										.Location(TextEditorButtonLocation.After)
 										.Widget(w => w.Button()
 										.Type(ButtonType.Default)
-										.Icon("edit") // Use "plus" or any other if needed
+										.Icon("plus") // Use "plus" or any other if needed
 										.Hint("Edit Description")
 										.ElementAttr(new { @class = "custom-hover-button add-hover" })
 										.OnClick("CurrencyClick")); // 👈 your existing handler
@@ -2757,7 +2757,7 @@ if (gridInstance) {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+			
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -2944,81 +2944,81 @@ if (gridInstance) {
 					}
 					},
 				{
-					dataField: "UnitRateMethod",
-					caption: formatMessage('Unit Rate Method'),
-					width: 200,
-					cellTemplate: function (container, options) {
-						getUnitRateMethods().done(function (unitRates) {
-							const selectedItem = unitRates.find(item => item.UnitCode === options.value);
-							$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
-						});
-					},
-					editCellTemplate: function (cellElement, cellInfo) {
-						getUnitRateMethods().done(function (unitRates) {
-							// Create container for dropdown + button
-							let $container = $("<div>").css({
-								display: "flex",
-								alignItems: "center",
-								gap: "5px",
-								width: "100%"
-							}).appendTo(cellElement);
-							// DropDownBox inside container
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-								dataSource: unitRates,
-								valueExpr: "UnitCode",
-								displayExpr: "UnitDesc",
-								value: cellInfo.value || null,
-								placeholder: "Select Unit Rate Method",
-								dropDownOptions: { width: 600 },
-								contentTemplate: function (e) {
-									return $("<div>").dxDataGrid({
+				dataField: "UnitRateMethod",
+				caption: formatMessage('Unit Rate Method'),
+				width: 200,
+				cellTemplate: function (container, options) {
+								getUnitRateMethods().done(function (unitRates) {
+									const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+									$("<span>").text(selectedItem ? selectedItem.UnitType : "").appendTo(container);
+								});
+				},
+				editCellTemplate: function (cellElement, cellInfo) {
+								getUnitRateMethods().done(function (unitRates) {
+									// Create container for dropdown + button
+									let $container = $("<div>").css({
+										display: "flex",
+										alignItems: "center",
+										gap: "5px",
+										width: "100%"
+									}).appendTo(cellElement);
+									// DropDownBox inside container
+									$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
 										dataSource: unitRates,
-										keyExpr: "UnitCode",
-										selection: { mode: "single" },
-										height: 300,
-										scrolling: { mode: "virtual" },
-										searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
-										columns: [
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
-										],
-										onSelectionChanged: function (selectedItems) {
-											let selectedItem = selectedItems.selectedRowsData[0];
-											if (selectedItem) {
-												e.component.option("value", selectedItem.UnitCode);
+										valueExpr: "UnitCode",
+										displayExpr: "UnitType",
+										value: cellInfo.value || null,
+										placeholder: "Select Unit Rate Method",
+										dropDownOptions: { width: 200 },
+										contentTemplate: function (e) {
+											return $("<div>").dxDataGrid({
+												dataSource: unitRates,
+												keyExpr: "UnitCode",
+												selection: { mode: "single" },
+												height: 300,
+												scrolling: { mode: "virtual" },
+                        searchPanel: {
+												visible: true,
+												highlightCaseSensitive: true,
+												width: 130,
+												placeholder: "Search..."
+												},
+												columns: [
+													{ dataField: "UnitCode", caption: "Code", width: 80,visible:false },
+												//	{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+												//	{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 },
+													{ dataField: "UnitType", caption: "Unit Type"}
+												],
+												onSelectionChanged: function (selectedItems) {
+													let selectedItem = selectedItems.selectedRowsData[0];
+													if (selectedItem) {
+														e.component.option("value", selectedItem.UnitCode);
 												cellInfo.setValue(selectedItem.UnitCode);
-												let grid = $("#B2BdataGrid").dxDataGrid("instance");
-												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-												if (rowIndex !== -1) {
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+														let grid = $("#B2BdataGrid").dxDataGrid("instance");
+														let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+														if (rowIndex !== -1) {
+															grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitType);
+														}
+														e.component.close();
+													}
 												}
-												e.component.close();
-											}
+											});
 										}
 									});
-								}
-							});
-							// âœ… Add Button
-							$("<div>").dxButton({
-								icon: "plus",
-								hint: "Add new item",
-								onClick: function () {
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-									openModal(url, "");
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
-						});
-					}
-				},
+									// âœ… Add Button
+									$("<div>").dxButton({
+										icon: "plus",
+										hint: "Add new item",
+										onClick: function () {
+											let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
+										   openModal(url, "Unit Of Measure");
+										},
+										width: 60,
+										height: 30
+									}).appendTo($container);
+								});
+				}
+},
 										{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
 							editorOptions: {
             onInput: function(e) {
@@ -3336,7 +3336,7 @@ if (gridInstance) {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -3504,79 +3504,79 @@ if (gridInstance) {
 				}
 				},
 				{
-					dataField: "UnitRateMethod",
-					caption: formatMessage('Unit Rate Method'),
-					width: 200,
-					cellTemplate: function (container, options) {
-						getUnitRateMethods().done(function (unitRates) {
-							const selectedItem = unitRates.find(item => item.UnitCode === options.value);
-							$("<span>").text(selectedItem ? selectedItem.UnitDesc : "").appendTo(container);
-						});
-					},
-					editCellTemplate: function (cellElement, cellInfo) {
-						getUnitRateMethods().done(function (unitRates) {
-							// Create container for dropdown + button
-							let $container = $("<div>").css({
-								display: "flex",
-								alignItems: "center",
-								gap: "5px",
-								width: "100%"
-							}).appendTo(cellElement);
-							// DropDownBox inside container
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-								dataSource: unitRates,
-								valueExpr: "UnitCode",
-								displayExpr: "UnitDesc",
-								value: cellInfo.value || null,
-								placeholder: "Select Unit Rate Method",
-								dropDownOptions: { width: 600 },
-								contentTemplate: function (e) {
-									return $("<div>").dxDataGrid({
-										dataSource: unitRates,
-										keyExpr: "UnitCode",
-										selection: { mode: "single" },
-										height: 300,
-										scrolling: { mode: "virtual" },
-										searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
-										columns: [
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
-										],
-										onSelectionChanged: function (selectedItems) {
-											let selectedItem = selectedItems.selectedRowsData[0];
-											if (selectedItem) {
-												// Set the value of the DropDownBox
-												e.component.option("value", selectedItem.UnitCode);
-												// Update the cell value in the grid
-												cellInfo.setValue(selectedItem.UnitCode);
-												// Close the DropDownBox
-												e.component.close();
-											}
-										}
-									});
-								}
-							});
-							// âœ… Add Button
-							$("<div>").dxButton({
-								icon: "plus",
-								hint: "Add new item",
-								onClick: function () {
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-									openModal(url, "");
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
-						});
-					}
+				dataField: "UnitRateMethod",
+				caption: formatMessage('Unit Rate Method'),
+				width: 200,
+				cellTemplate: function (container, options) {
+					getUnitRateMethods().done(function (unitRates) {
+						const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+						$("<span>").text(selectedItem ? selectedItem.UnitType : "").appendTo(container);
+					});
 				},
+				editCellTemplate: function (cellElement, cellInfo) {
+					getUnitRateMethods().done(function (unitRates) {
+						// Create container for dropdown + button
+						let $container = $("<div>").css({
+							display: "flex",
+							alignItems: "center",
+							gap: "5px",
+							width: "100%"
+						}).appendTo(cellElement);
+						// DropDownBox inside container
+						$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+							dataSource: unitRates,
+							valueExpr: "UnitCode",
+							displayExpr: "UnitType",
+							value: cellInfo.value || null,
+							placeholder: "Select Unit Rate Method",
+							dropDownOptions: { width: 200 },
+							contentTemplate: function (e) {
+								return $("<div>").dxDataGrid({
+									dataSource: unitRates,
+									keyExpr: "UnitCode",
+									selection: { mode: "single" },
+									height: 300,
+									scrolling: { mode: "virtual" },
+										searchPanel: {
+											visible: true,
+											highlightCaseSensitive: true,
+											width: 130,
+											placeholder: "Search..."
+											},
+									columns: [
+											{ dataField: "UnitCode", caption: formatMessage("Code"),width: 80,visible: false },
+											//{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
+											//{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type")}
+									],
+									onSelectionChanged: function (selectedItems) {
+										let selectedItem = selectedItems.selectedRowsData[0];
+										if (selectedItem) {
+											// Set the value of the DropDownBox
+											e.component.option("value", selectedItem.UnitCode);
+											// Update the cell value in the grid
+											cellInfo.setValue(selectedItem.UnitCode);
+											// Close the DropDownBox
+											e.component.close();
+										}
+									}
+								});
+							}
+						});
+						// âœ… Add Button
+						$("<div>").dxButton({
+							icon: "plus",
+							hint: "Add new item",
+							onClick: function () {
+								let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
+								openModal(url, "Unit Of Measure");
+							},
+							width: 60,
+							height: 30
+						}).appendTo($container);
+					});
+				}
+},
 										{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
 							editorOptions: {
             onInput: function(e) {
@@ -5574,14 +5574,18 @@ function saveQuotation(mprNoNew, $btn) {
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
-				history.back();
-				// Refresh parent DataGrid (ensure the correct selector is used)
-				if (window.parent && window.parent.$("#dataGrid").length) {
-					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					if (dataGrid) {
-						dataGrid.refresh();
-					}
-				}
+								setTimeout(function () {
+    
+    if (window.parent && window.parent.$("#dataGrid").length) {
+        const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            dataGrid.refresh();
+        }
+    }
+
+    history.back();
+
+}, 3000);
 				
 			},
 			error: function (xhr) {
@@ -6652,7 +6656,9 @@ function onIMSAttachmentButtonClick(e) {
 	console.log("Voucher Type:", formType);
 	const isMaster = false;
 	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-	const title = "";
+
+	const title = "Transaction Documents - Store Request";
+
 	openModal(url, title);
 }
    function onBaseCurrencyInitialized(e) {
