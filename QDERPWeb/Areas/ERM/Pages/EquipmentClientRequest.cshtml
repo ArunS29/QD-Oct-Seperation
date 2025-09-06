@@ -378,10 +378,6 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-
-
-
-
 <div id="tab-content-1" class="tab-content" style="height: 180px;">
 
 				<table style="width:100%;">
@@ -999,7 +995,7 @@
 					"));
 						columns.Add()
 						.DataField("PropertyTypeId") 
-						.Caption("Description")
+						.Caption(new JS("formatMessage('Description')"))
 						.Width(400)
 						.EditCellTemplate(new JS("descriptionDropDownTemplate"))
 						.CellTemplate(new JS(@"
@@ -1013,67 +1009,34 @@
 						.Caption("...")
 						.CssClass("center-header")
 						.Width(90)
-						.AllowEditing(true)
-						.CellTemplate(new JS(@"
-							function(container, options) {
-							const gsCode = options.data.Gscode;
-							const salesOrderChildId = options.data.SalesOrderChildId;
-
-							$('<div>').dxButton({
-							icon: 'user',
-							hint: 'Edit IMS Details Description',
-							stylingMode: 'text',
-							width: 60,
-							onClick: function () {
-							window.currentDescriptionCell = options;
-							const queryParams = [];
-							if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
-							if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
-							const url = `/${tenantName}/ERM/EnquiryDetailsDescription?${queryParams.join('&')}`;
-							openModal(url, 'Details Description','60%','60%');
-							}
-							}).appendTo(container);
-							}
-							"))
-								.EditCellTemplate(new JS(@"
-							function(container, options) {
-							const gsCode = options.data.Gscode;
-							const salesOrderChildId = options.data.SalesOrderChildId;
-
-							$('<div>').dxButton({
-							icon: 'user',
-							hint: 'Edit ERM Details Description',
-							stylingMode: 'text',
-							width: 60,
-							onClick: function () {
-							window.currentDescriptionCell = options;
-							const queryParams = [];
-							if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
-							if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
-							const url = `/${tenantName}/ERM/EnquiryDetailsDescription?${queryParams.join('&')}`;
-							openModal(url, 'Details Description');
-							}
-							}).appendTo(container);
-							}
-							"));
+						.AllowEditing(false)
+						.CellTemplate(@<text>
+							<div style="text-align:center">
+								<a href="javascript:void(0)" 
+								   onclick="openDescriptionEditor('<%= data.RequestChildSlNo %>')">
+									<i class="dx-icon dx-icon-edit"></i>
+								</a>
+							</div>
+						</text>);
 						columns.Add()
 						.DataField("UnitRateMethod")
-						.Caption("Unit Rate Method")
+						.Caption(new JS("formatMessage('Unit Rate Method')"))
 						.Width(400)
 						.EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
 						.CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 						columns.Add()
 										.DataField("QtyRequested")
-										.Caption("Qty")
+										.Caption(new JS("formatMessage('Qty')"))
+
 										.Width(150)
 										.EditorOptions(new {
 											maxLength = 8
 										});
-									columns.Add().DataField("ExpectedUnitRate").Caption("Expected Rate").EditorOptions(new {value = 0});
+									columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Rate')")).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("UnitsRequested").Caption("Units Requested").EditorOptions(new {value = 0});
+									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("LineOrderNo").Caption("Line Total");
+									columns.Add().DataField("LineOrderNo").Caption(new JS("formatMessage('Line Total')"));
 					})
 					.ColumnAutoWidth(true)
 					.Width("100%")
@@ -1146,11 +1109,10 @@
 											.ID("invoicecurrecy-datagrid")
 										.DataSource(d => d.WebApi()
 										.Controller("VATModule")
-												.LoadAction("GetInvoiceCurrency")
+										.LoadAction("GetInvoiceCurrency")
 										.LoadMode(DataSourceLoadMode.Raw)
-												.Key("CurrencyExchangeId")
-
-										)
+										.Key("CurrencyExchangeId")
+										)		
 										.WordWrapEnabled(true)
 										.ShowBorders(true)
 										.SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1195,15 +1157,15 @@
 							.ShowBorders(true)
 							.HoverStateEnabled(true)
 							.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(false))//
+							.FilterRow(f => f.Visible(false))
 							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(345)
 							.Selection(s => s.Mode(SelectionMode.Single))
 							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 							.Columns(columns =>
 							{
-								columns.Add().DataField("ProjectId");
-								columns.Add().DataField("ProjectDescription");
+								columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('ID')"));
+								columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Description')"));
 
 
 
@@ -1237,7 +1199,7 @@
 					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ClientName");
+						columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
 					})
 					)
 				}
@@ -1255,7 +1217,6 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged2")
 					.OnInitialized("dataGridInitialized2")
@@ -1264,14 +1225,13 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ModeOfRequest");
+						columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"));
 
 
 
@@ -1291,8 +1251,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("dataGridSelectionChanged3")
 					.OnInitialized("dataGridInitialized3")
 					.HeaderFilter(p => p.Visible(true))
@@ -1300,14 +1259,13 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("TypeOfRequest");
+						columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
 
 
 
@@ -1326,8 +1284,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("dataGridSelectionChanged4")
 					.OnInitialized("dataGridInitialized4")
 					.HeaderFilter(p => p.Visible(true))
@@ -1342,7 +1299,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SalesPersonName");
+						columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Name')"));
 
 					})
 					)
@@ -1359,8 +1316,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("dataGridSelectionChanged5")
 					.OnInitialized("dataGridInitialized5")
 					.HeaderFilter(p => p.Visible(true))
@@ -1395,8 +1351,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single)) 
 					.OnSelectionChanged("dataGridSelectionChanged6")
 					.OnInitialized("dataGridInitialized6")
 					.HeaderFilter(p => p.Visible(true))
@@ -1429,15 +1384,14 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("dataGridSelectionChanged7")
 					.OnInitialized("dataGridInitialized7")
 					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(false)) 
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1462,15 +1416,14 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))  
 					.OnSelectionChanged("dataGridSelectionChanged8")
 					.OnInitialized("dataGridInitialized8")
 					.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
+					.FilterRow(f => f.Visible(false))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1495,8 +1448,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("dataGridSelectionChanged9")
 					.OnInitialized("dataGridInitialized9")
 					.HeaderFilter(p => p.Visible(true))
@@ -1529,15 +1481,14 @@
 							)
 							.WordWrapEnabled(true)
 							.ShowBorders(true)
-							   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.Selection(sl => sl.Mode(SelectionMode.Single)) 
 							.OnSelectionChanged("dataGridSelectionChanged10")
 							.OnInitialized("dataGridInitialized10")
 							.HeaderFilter(p => p.Visible(true))
 							.ShowBorders(true)
 							.HoverStateEnabled(true)
 							.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(false))//
+							.FilterRow(f => f.Visible(false))
 							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(345)
 							.Selection(s => s.Mode(SelectionMode.Single))
@@ -1920,8 +1871,115 @@
 
 	</div>
 </div>
-
+<div id="descPopup"></div>
 	<script>
+
+
+		    $(function () {
+        $("#descPopup").dxPopup({
+            title: "Enquiry Detail Description",
+            width: 800,
+            height: 600,
+            showTitle: true,
+            visible: false, // hidden by default
+            dragEnabled: true,
+            closeOnOutsideClick: true,
+            contentTemplate: function (contentElement) {
+                contentElement.append(`
+                    <div class="p-3">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
+                            <div id="btnUseDetailedDescription"></div>
+                            <div id="btnUseItemDesc"></div>
+                        </div>
+
+                        <div id="DetailedDescription"></div>
+                        <div id="Remarks"></div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+                            <div id="Size"></div>
+                            <div id="Manufacturer"></div>
+                            <div id="Brand"></div>
+                            <div id="PartNo"></div>
+                            <div id="DeliveryPeriod"></div>
+                            <div id="PlanNo"></div>
+                        </div>
+                    </div>
+                `);
+
+                // init DevExtreme widgets inside popup
+                $("#btnUseDetailedDescription").dxButton({
+                    text: "Use Detailed Description",
+                    icon: "info",
+                    stylingMode: "outlined"
+                });
+
+                $("#btnUseItemDesc").dxButton({
+                    text: "Use Item Desc.",
+                    icon: "info",
+                    stylingMode: "outlined"
+                });
+
+                $("#DetailedDescription").dxTextArea({
+                    label: "Detailed Description / Specification",
+                    labelMode: "floating",
+                    height: 80,
+                    width: "100%"
+                });
+
+                $("#Remarks").dxTextBox({
+                    label: "Remarks",
+                    labelMode: "floating",
+                    width: "100%"
+                });
+
+                $("#Size").dxTextBox({
+                    label: "Size",
+                    labelMode: "floating",
+                    disabled: true
+                });
+
+                $("#Manufacturer").dxTextBox({
+                    label: "Manufacturer",
+                    labelMode: "floating",
+                    disabled: true
+                });
+
+                $("#Brand").dxTextBox({
+                    label: "Brand",
+                    labelMode: "floating",
+                    disabled: true
+                });
+
+                $("#PartNo").dxTextBox({
+                    label: "Part No",
+                    labelMode: "floating",
+                    disabled: true
+                });
+
+                $("#DeliveryPeriod").dxTextBox({
+                    label: "Delivery Period",
+                    labelMode: "floating"
+                });
+
+                $("#PlanNo").dxTextBox({
+                    label: "Plan No",
+                    labelMode: "floating"
+                });
+            }
+        });
+    });
+
+    // Function to open popup
+    function openDescriptionEditor(RequestChildSlNo) {
+        var popup = $("#descPopup").dxPopup("instance");
+        popup.show();
+
+        // optional: load row data into popup fields using requestNo
+        // e.g. make ajax call and set dxTextBox values here
+    } 
+
+
+
 
 		 let unitCodesList = [];
 
@@ -2048,45 +2106,62 @@
 				key: "ItemCode",
 				data: []
 			});
+			$(function () {
+    $("#btnAddNew").on("click", function () {
+        var button = $("#btnSave").dxButton("instance");
+        button.option("text", "Update");
 
+        var grid = $("#itemGrid").dxDataGrid("instance");
+        grid.addRow().done(function () {
+            var rowIndex = grid.getVisibleRows().length - 1;
+            grid.editCell(rowIndex, 0);
+        });
 
-				$(function () {
-					$("#btnAddNew").on("click", function () {
-						var button = $("#btnSave").dxButton("instance");
-						button.option("text", "Update");
+        // ✅ Reset fields inside popup
+        $("#DetailedDescription").dxTextArea("instance")?.option("value", "");
+        $("#Remarks").dxTextBox("instance")?.option("value", "");
+        $("#DeliveryPeriod").dxTextBox("instance")?.option("value", "");
+        $("#PlanNo").dxTextBox("instance")?.option("value", "");
+    });
+});
 
-						var grid = $("#itemGrid").dxDataGrid("instance");
-						grid.addRow().done(function() {
-							var rowIndex = grid.getVisibleRows().length - 1;
-							grid.editCell(rowIndex, 0); 
-						});
-					});
-				});
+				// $(function () {
+				// 	$("#btnAddNew").on("click", function () {
+				// 		var button = $("#btnSave").dxButton("instance");
+				// 		button.option("text", "Update");
 
-	function onGridRightClick(e) {
-    if (e.row && e.row.rowType === "data") {
-        e.items = []; // wipe defaults if you only want custom
+				// 		var grid = $("#itemGrid").dxDataGrid("instance");
+				// 		grid.addRow().done(function() {
+				// 			var rowIndex = grid.getVisibleRows().length - 1;
+				// 			grid.editCell(rowIndex, 0); 
+				// 		});
+				// 	});
+				// });
 
-        e.items.push(
-            {
-                text: "Add Line",
-                icon: "plus",
-                onItemClick: function () {
-                    e.component.addRow();
-                }
-            },
-              {
-                text: "Delete Line",
-                icon: "trash",
-                onItemClick: function () {
-                    // ✅ Pass the key field (mprChildSlNo) to your deleteChild function
-                    const RequestChildSlNo = e.row.data.RequestChildSlNo;
-                    deleteChild(RequestChildSlNo);
-                }
-            },
-        );
-    }
-}
+				function onGridRightClick(e) {
+				if (e.row && e.row.rowType === "data") {
+					e.items = []; // wipe defaults if you only want custom
+
+					e.items.push(
+						{
+							text: "Add Line",
+							icon: "plus",
+							onItemClick: function () {
+								e.component.addRow();
+							}
+						},
+						  {
+							text: "Delete Line",
+							icon: "trash",
+							onItemClick: function () {
+								// ✅ Pass the key field (mprChildSlNo) to your deleteChild function
+								const RequestChildSlNo = e.row.data.RequestChildSlNo;
+								deleteChild(RequestChildSlNo);
+							}
+						},
+					);
+				}
+			}
 			function deleteChild(requestChildSlNo) {
 				if (confirm("Are you sure you want to delete this child record?")) {
 					$.ajax({
@@ -3564,7 +3639,7 @@
 							});
 							$(function () {
 								$("#Remarks").dxTextBox({
-									text: formatMessage("Remarks:"),
+									text: formatMessage("Remarks"),
 									readOnly: true
 
 								});
@@ -4135,18 +4210,40 @@
 			};
 
 			// ✅ Step 4: Get child records
-			const children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
+				const desc = $("#DetailedDescription").dxTextArea("instance");
+				if (desc) desc.option("value", firstChild.AddlDescription || "");
 
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				$btn.option("disabled", false); // Re-enable the button
-				return;
-			}
+				const remarks = $("#Remarks").dxTextBox("instance");
+				if (remarks) remarks.option("value", firstChild.ItemRemarks || "");
 
-			const model = {
-				...master,
-					EquipmentPropertychild: children
-			};
+				const delivery = $("#DeliveryPeriod").dxTextBox("instance");
+				if (delivery) delivery.option("value", firstChild.DeliveryPeriod || "");
+
+				const plan = $("#PlanNo").dxTextBox("instance");
+				if (plan) plan.option("value", firstChild.PlanNo || "");
+
+
+		// ✅ Step 5: Get child records and attach extra fields
+		let children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
+
+		if (!children || children.length === 0) {
+			DevExpress.ui.notify("No child records to save.", "error", 3000);
+			$btn.option("disabled", false); // Re-enable the button
+			return;
+		}
+
+		children = children.map(item => ({
+			...item,
+			AddlDescription: AddlDescription,
+			ItemRemarks: ItemRemarks,
+			DeliveryPeriod: DeliveryPeriod,
+			PlanNo: PlanNo
+		}));
+
+		const model = {
+			...master,
+			EquipmentPropertychild: children
+		};
 
 			// ✅ Step 5: Send data via AJAX
 			$.ajax({
@@ -4264,37 +4361,63 @@
 			});
 		}
 
-			function loadRequestChildren(EqiupmentRequestNo) {
-			debugger;
-			$.ajax({
-				url: `/api/AddNewClientRequest1/GetEnquiryChildren?EquipmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
-				type: "GET",
-				dataType: "json",
-				success: function (gridData) {
-					console.log("Children Response:", gridData);
+		function loadRequestChildren(EqiupmentRequestNo) {
+    $.ajax({
+        url: `/api/AddNewClientRequest1/GetEnquiryChildren?EquipmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
+        type: "GET",
+        dataType: "json",
+        success: function (gridData) {
+            console.log("Children Response:", gridData);
 
-					if (!Array.isArray(gridData) || gridData.length === 0) {
-						DevExpress.ui.notify("No child records found.", "info", 3000); 
-					}
+            if (!Array.isArray(gridData) || gridData.length === 0) {
+                DevExpress.ui.notify("No child records found.", "info", 3000); 
+                return;
+            }
 
-					const rowData = gridData.map((item, index) => ({
-						SNo: index + 1,
-						...item
-					}));
+            // ✅ Map ALL fields needed by the grid
+            const rowData = gridData.map((item, index) => ({
+                SNo: index + 1,
+                RequestChildSlNo: item.RequestChildSlNo,
+                PropertyType: item.PropertyType,
+                PropertyTypeId: item.PropertyTypeId,
+                UnitRateMethod: item.UnitRateMethod,
+                QtyRequested: item.QtyRequested,
+                ExpectedUnitRate: item.ExpectedUnitRate,
+                UnitsRequested: item.UnitsRequested,
+                LineOrderNo: item.LineOrderNo,
+                // Add your extra fields
+                DeliveryPeriod: item.DeliveryPeriod || null,
+                PlanNo: item.PlanNo || null,
+                ItemRemarks: item.ItemRemarks || null,
+                AddlDescription: item.AddlDescription || null
+            }));
 
-					const gridInstance = $("#itemGrid").dxDataGrid("instance");
-					if (gridInstance) {
-						gridInstance.option("dataSource", rowData);
-					} else {
-						// If not initialized, call initializeItemGrid(rowData);
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading children:", error);
-					DevExpress.ui.notify("Error loading child records: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-				}
-			});
-		}
+            // ✅ Bind into grid
+            const gridInstance = $("#itemGrid").dxDataGrid("instance");
+            if (gridInstance) {
+                gridInstance.option("dataSource", rowData);
+                gridInstance.refresh();
+            }
+
+            // ✅ Bind the first child’s values back into your editors
+            const firstChild = rowData[0];
+            if (firstChild) {
+                $("#DetailedDescription").dxTextArea("instance").option("value", firstChild.AddlDescription || null);
+                $("#Remarks").dxTextBox("instance").option("value", firstChild.ItemRemarks || null);
+                $("#DeliveryPeriod").dxTextBox("instance").option("value", firstChild.DeliveryPeriod || null);
+                $("#PlanNo").dxTextBox("instance").option("value", firstChild.PlanNo || null);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading children:", error);
+            DevExpress.ui.notify(
+                "Error loading child records: " + (xhr.responseJSON?.message || xhr.statusText),
+                "error",
+                3000
+            );
+        }
+    });
+}
 
 			$("#btnSaveAndClose").on("click", function (e) {
 			const $btn = $(this).dxButton("instance");

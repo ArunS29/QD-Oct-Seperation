@@ -224,41 +224,52 @@
 </div>
 <div class="dx-field ledgerResult">
 	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60212salesOrderItemsWithDetail>()
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp40108EquipmentRevenueCostReportResult>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Sales Orders Details").Columns(subColumns =>
+			columns.Add().Caption("Property / Equipment Details").Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderDate).Caption("Sales Order Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("GSCode").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("GSDescrpition").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitType).Caption("UnitType").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitDesc).Caption("UnitDesc").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("QuotedQuantity").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryTerms).Caption("DeliveryTerms").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuoteRemarks).Caption("QuoteRemarks").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedUnitPrice).Caption("QuotedUnitPrice").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption("LineTotalBeforeDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedDiscount).Caption("QuotedDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption("LineTotalAfterDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTaxAmount).Caption("LineTaxAmount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalWithTax).Caption("LineTotalWithTax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.BalanceToDeliver).Caption("BalanceToDeliver").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalOrderedQty).Caption("TotalOrderedQty").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalIssdQty).Caption("TotalIssdQty").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryPeriod).Caption("DeliveryPeriod").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.CostPrice).Caption("CostPrice").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.PropertyNo).Caption("Property No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.PropertyDescription).Caption("Property Description").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.PropertyType).Caption("Property Type").Alignment(HorizontalAlignment.Center).Visible(true);
+			});
 
+			columns.Add().Caption("Rental to the Clients (Timesheet)").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.ClientRegHoursTotal).Caption("Client Reg. Hours").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientOTHoursTotal).Caption("Client O.T. Hours").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientRegAmountTotal).Caption("Client Reg. Total").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientOTAmountTotal).Caption("Client O.T. Total").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientAmountTotal).Caption("Client Total Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.Add().Caption("Details").Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+
+			columns.Add().Caption("Hiring Details of Supplier (Timesheet)").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.SuppRegHoursTotal).Caption("Supplier Reg. Hours").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SuppOTHoursTotal).Caption("Supplier O.T. Hours").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SuppRegAmountTotal).Caption("Supplier Reg. Total Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SuppOTAmountTotal).Caption("Supplier O.T. Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SuppAmountTotal).Caption("Supplier Total Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+
+			columns.Add().Caption("Revenue Details").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.InvoicedAmountTotal).Caption("Invoiced Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+
+			columns.Add().Caption("Finance Records").Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.RevenueAllocTotal).Caption("Revenue Allocated Amount").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.ExpensesAllocTotal).Caption("Expenses Allocated Amount").Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 		})
-		.Height(680) // Fixed height for the grid
+
+		.Height(680)
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)

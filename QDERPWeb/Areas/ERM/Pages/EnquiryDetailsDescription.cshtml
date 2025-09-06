@@ -98,16 +98,19 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("Size")
+                .Disabled(true)
                 .Label("Size")
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Manufacturer")
+                .Disabled(true)
                 .Label("Manufacturer")
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Brand")
+                .Disabled(true)
                 .Label("Brand")
                 .LabelMode(EditorLabelMode.Floating))
     </div>
@@ -117,6 +120,7 @@
         @(Html.DevExtreme().TextBox()
                 .ID("PartNo")
                 .Label("Part No")
+                .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
@@ -128,10 +132,84 @@
                 .ID("PlanNo")
                 .Label("Plan No")
                 .LabelMode(EditorLabelMode.Floating))
-    </div>
+    @* </div>
             @(Html.DevExtreme().Button()
                 .ID("btnApplyAndClose")
                 .Text("Apply & Close")
-               // .OnClick("applyAndClose1")
+                .OnClick("applyAndClose1")
                 .Icon("check"))
-</div>
+</div> *@
+<script>
+       function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Get values from URL
+    const propertyType = getQueryParam('PropertyType');
+    const equipmentRequestNo = getQueryParam('EqiupmentRequestNo');
+
+    $(function () {
+        $("#btnUseItemDesc").dxButton("instance").option("onClick", function () {
+            if (!propertyType) {
+                DevExpress.ui.notify("Property Type is missing.", "error", 2000);
+                return;
+            }
+
+            // 🔑 Get the existing text from the textarea
+            const textArea = $("#DetailedDescription").dxTextArea("instance");
+            const existingValue = textArea.option("value") || "";
+
+            // 🔑 Append the PropertyType (with a space or new line)
+            const newValue = existingValue
+                ? existingValue + " " + propertyType
+                : propertyType;
+
+            // 🔑 Set the updated value back
+            textArea.option("value", newValue);
+        });
+    });
+
+      function applyAndClose1() {
+          debugger;
+        var equipmentRequestNo = getQueryParam('EqiupmentRequestNo'); // Note: spelling matches your code
+        var deliveryPeriod = $("#DeliveryPeriod").dxTextBox("instance").option("value");
+        var addlDescription = $("#DetailedDescription").dxTextArea("instance").option("value");
+        var itemRemarks = $("#Remarks").dxTextBox("instance").option("value");
+        var planNo = $("#PlanNo").dxTextBox("instance").option("value");
+
+        if (!equipmentRequestNo) {
+            DevExpress.ui.notify("Equipment Request No is missing.", "error", 2000);
+            return;
+        }
+
+        var data = {
+            EquipmentRequestNo: equipmentRequestNo,
+            DeliveryPeriod: deliveryPeriod,
+            AddlDescription: addlDescription,
+            ItemRemarks: itemRemarks,
+            PlanNo: planNo
+        };
+
+        $.ajax({
+            url: `/api/AddNewClientRequest1/SaveOrUpdateEnquiryChild`,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    // Optionally close modal or redirect
+                    window.close(); // Or use your modal close logic
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 2000);
+            }
+        });
+    }
+
+</script>
+    

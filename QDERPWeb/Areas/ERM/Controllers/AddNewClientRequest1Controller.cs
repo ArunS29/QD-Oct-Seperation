@@ -14,6 +14,7 @@ using SkiaSharp;
 using System.Data;
 using System.Dynamic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static QD.ERP.Web.Areas.ERM.Controllers.AddNewQuotation1Controller;
 
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
@@ -478,7 +479,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // Remove and save
                 dbContext.Tbl40137PropertyRequestChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+               module: "ERM > Delete Request",
+              actionDetail: $"Delete Request{requestChildSlNo}",
+               documentNo: $"{requestChildSlNo}"
+           );
                 return Ok(new { message = "Child record deleted successfully." });
             }
             catch (Exception ex)
@@ -546,11 +551,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         public class PropertyRequestChildViewModel
         {
             public int PropertyTypeId { get; set; }
+            public long RequestChildSlNo { get; set; }
             public byte? UnitRateMethod { get; set; }
             public decimal QtyRequested { get; set; }
+            public string EquipmentRequestNo { get; set; }
             public decimal ExpectedUnitRate { get; set; }
             public decimal UnitsRequested { get; set; }
             public int LineOrderNo { get; set; }
+            public string PlanNo { get; set; }
+            public string ItemRemarks { get; set; }
+            public string AddlDescription { get; set; }
+            public string DeliveryPeriod { get; set; }
         }
 
         [HttpPost]
@@ -633,34 +644,62 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         .ToListAsync();
 
                     // Remove old children not in the new list
-                    dbContext.Tbl40137PropertyRequestChildren.RemoveRange(existingChildren);
+                   // dbContext.Tbl40137PropertyRequestChildren.RemoveRange(existingChildren);
 
                     // Ensure currency rate is available
                     var currencyRate = VM.CurrencyRate ?? 1;
 
                     // Add new children
-                    foreach (var child in VM.EquipmentPropertychild)
-                    {
-                        var newChild = new Tbl40137PropertyRequestChild
+                        foreach (var child in VM.EquipmentPropertychild)
                         {
-                            PropertyTypeId = child.PropertyTypeId,
-                            UnitRateMethod = child.UnitRateMethod,
-                            QtyRequested = child.QtyRequested,
-                            // ✅ Calculate ExpectedUnitRate * CurrencyRate
-                            ExpectedUnitRate = child.ExpectedUnitRate * currencyRate,
-                            UnitsRequested = child.UnitsRequested,
-                            LineOrderNo = child.LineOrderNo,
-                            EquipmentRequestNo = VM.EqiupmentRequestNo
-                        };
+                            // Check if child exists in DB by PropertyTypeId (or another key)
+                            var existingChild = existingChildren
+                                .FirstOrDefault(x => x.RequestChildSlNo == child.RequestChildSlNo);
 
-                        await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
-                    }
+                            if (existingChild == null)
+                            {
+                                // New child → insert
+                                var newChild = new Tbl40137PropertyRequestChild
+                                {
+                                    PropertyTypeId = child.PropertyTypeId,
+                                    UnitRateMethod = child.UnitRateMethod,
+                                    QtyRequested = child.QtyRequested,
+                                    ExpectedUnitRate = child.ExpectedUnitRate * currencyRate,
+                                    UnitsRequested = child.UnitsRequested,
+                                    LineOrderNo = child.LineOrderNo,
+                                    EquipmentRequestNo = VM.EqiupmentRequestNo,
+                                    PlanNo = child.PlanNo,
+                                    ItemRemarks = child.ItemRemarks,
+                                    AddlDescription = child.AddlDescription,
+                                    DeliveryPeriod = child.DeliveryPeriod
+                                };
+
+                                await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
+                            }
+                            else
+                            {
+                                // Existing child → update
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
+                                existingChild.QtyRequested = child.QtyRequested;
+                                existingChild.ExpectedUnitRate = child.ExpectedUnitRate * currencyRate;
+                                existingChild.UnitsRequested = child.UnitsRequested;
+                                existingChild.LineOrderNo = child.LineOrderNo;
+                                existingChild.EquipmentRequestNo = VM.EqiupmentRequestNo;
+                                existingChild.PlanNo = child.PlanNo;
+                                existingChild.ItemRemarks = child.ItemRemarks;
+                                existingChild.AddlDescription = child.AddlDescription;
+                                existingChild.DeliveryPeriod = child.DeliveryPeriod;
+                            }
+                        }
                 }
 
-
                 await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Property saved/updated successfully." });
+				await _userActionLogger.LogAsync(
+			  module: "ERM > Save Enquiry",
+			 actionDetail: $"Saved Enquiry Request{VM.EqiupmentRequestNo}",
+			  documentNo: $"{VM.EqiupmentRequestNo}"
+		  );
+				return Ok(new { success = true, message = "Property saved/updated successfully." });
             }
             catch (Exception ex)
             {
@@ -668,6 +707,76 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error. Please try again later." });
             }
         }
+
+        //public class PropertyDetailsChildViewModel
+        //{
+        //    public string EquipmentRequestNo { get; set; }
+        //    public string PlanNo { get; set; }
+        //    public string ItemRemarks { get; set; }
+        //    public string AddlDescription { get; set; }
+        //    public string DeliveryPeriod { get; set; }
+        //    public long RequestChildSlNo { get; set; }
+        //}
+        //[HttpPost]
+        //public async Task<IActionResult> SaveOrUpdateEnquiryChild([FromBody] PropertyDetailsChildViewModel request)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        return Unauthorized(new { success = false, message = "Invalid tenant context." });
+        //    }
+
+        //    if (request == null || string.IsNullOrEmpty(request.EquipmentRequestNo))
+        //    {
+        //        return BadRequest(new { success = false, message = "Request No is required." });
+        //    }
+
+        //    try
+        //    {
+        //        // Check if quotation already exists
+        //        var existing = await dbContext.Tbl40137PropertyRequestChildren
+        //            .FirstOrDefaultAsync(x => x.EquipmentRequestNo == request.EquipmentRequestNo && x.RequestChildSlNo == request.RequestChildSlNo);
+
+        //        if (existing != null)
+        //        {
+        //            // Update existing record
+        //            existing.DeliveryPeriod = request.DeliveryPeriod;
+        //            existing.AddlDescription = request.AddlDescription;
+        //            existing.ItemRemarks = request.ItemRemarks;
+        //            existing.PlanNo = request.PlanNo;
+        //            existing.EquipmentRequestNo = request.EquipmentRequestNo;
+        //        }
+        //        else
+        //        {
+        //            // Insert new record
+        //            var newChild = new Tbl40137PropertyRequestChild
+        //            {
+
+        //                PlanNo = request.PlanNo,
+        //                ItemRemarks = request.ItemRemarks,
+        //                AddlDescription = request.AddlDescription,
+        //                DeliveryPeriod = request.DeliveryPeriod,
+        //                EquipmentRequestNo = request.EquipmentRequestNo
+
+        //            };
+
+        //            await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
+        //        }
+
+        //        await dbContext.SaveChangesAsync();
+
+        //        await _userActionLogger.LogAsync(
+        //            module: "ERM > Save Quotation Child",
+        //            actionDetail: $"Saved Quotation Child: {request.EquipmentRequestNo}",
+        //            documentNo: $"{request.EquipmentRequestNo}"
+        //        );
+
+        //        return Ok(new { success = true, message = "Detail child is saved successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = ex.Message });
+        //    }
+        //}
         [HttpGet]
 		public async Task<IActionResult> GetEnquiryProperty(string EqiupmentRequestNo)
 		{
@@ -937,8 +1046,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
 				module: "ERM > Submit MPR",
-			   actionDetail: $"Submited MPR {mprNo}",
-				documentNo: $"{mprNo}"
+			   actionDetail: $"Submited MPR {EqiupmentRequestNo}",
+				documentNo: $"{EqiupmentRequestNo}"
 			);
 
             return Ok(new { success = true, message = "MPR submitted successfully." });
@@ -990,8 +1099,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				await dbContext.SaveChangesAsync();
 				   await _userActionLogger.LogAsync(
 					   module: "ERM > Verify MPR",
-					  actionDetail: $"Verify MPR {mprNo}",
-					   documentNo: $"{mprNo}"
+					  actionDetail: $"Verify MPR {EqiupmentRequestNo}",
+					   documentNo: $"{EqiupmentRequestNo}"
 				   );
 
                 return Ok(new
@@ -1006,7 +1115,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			}
 		}
         [HttpPost]
-      //  [RequirePermission("EquipmentClientRequest_btnApprove")]
+      //[RequirePermission("EquipmentClientRequest_btnApprove")]
         public async Task<ActionResult> ApproveMPR(string EqiupmentRequestNo)
 
         {
@@ -1063,7 +1172,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // ✅ Ensure EF tracks changes
                 dbContext.Tbl40136PropertyRequestMasters.Update(voucher);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                     module: "ERM > Approved MPR",
+                    actionDetail: $"Approved MPR {EqiupmentRequestNo}",
+                     documentNo: $"{EqiupmentRequestNo}"
+                 );
                 return Ok(new
                 {
                     success = true,
@@ -1184,25 +1297,25 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 mpr.RequestSignatory = 34; // Re-Initiated
 
                 await dbContext.SaveChangesAsync();
-                //await _userActionLogger.LogAsync(
-                //    module: "IMS > Unlock the MPR",
-                //    actionDetail: $"Unlock the MPR By Id: {request.Mprno}",
-                //   documentNo: $"{request.Mprno}"
-                //);
-                // ✅ Optional: Logging to stored procedure
-                //string logDetails = $"IMS Purchase Request Ref No. {request.Mprno} has been Unlocked by User ID: {currentUserId}, User Name: {userName}.";
+				await _userActionLogger.LogAsync(
+					module: "IMS > Unlock the MPR",
+					actionDetail: $"Unlock the MPR By Id: {request.EqiupmentRequestNo}",
+				   documentNo: $"{request.EqiupmentRequestNo}"
+				);
+				// ✅ Optional: Logging to stored procedure
+				//string logDetails = $"IMS Purchase Request Ref No. {request.Mprno} has been Unlocked by User ID: {currentUserId}, User Name: {userName}.";
 
-                //await dbContext.Database.ExecuteSqlRawAsync(
-                //    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
-                //    new object[]
-                //    {
-                //"IMS Purchase Request", // @p0
-                //logDetails,             // @p1
-                //userName,               // @p2
-                //request.Mprno           // @p3
-                //    });
+				//await dbContext.Database.ExecuteSqlRawAsync(
+				//    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
+				//    new object[]
+				//    {
+				//"IMS Purchase Request", // @p0
+				//logDetails,             // @p1
+				//userName,               // @p2
+				//request.Mprno           // @p3
+				//    });
 
-                return Ok(new { success = true, message = "Enquiry has been unlocked." });
+				return Ok(new { success = true, message = "Enquiry has been unlocked." });
             }
             catch (Exception ex)
             {
@@ -1242,8 +1355,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     await _userActionLogger.LogAsync(
                       module: "ERM > Cancel MPR",
-                     actionDetail: $"Canceled MPR: {mprNo}",
-                      documentNo: $"{mprNo}"
+                     actionDetail: $"Canceled MPR: {RequestNo}",
+                      documentNo: $"{RequestNo}"
                     );
 
                     return Ok(new
