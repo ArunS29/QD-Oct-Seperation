@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Service;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<addNewQuotationItemSubGroup1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public addNewQuotationItemSubGroup1Controller(ILogger<addNewQuotationItemSubGroup1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public addNewQuotationItemSubGroup1Controller(ILogger<addNewQuotationItemSubGroup1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -61,6 +65,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60107quotationChildItemGroups.Add(documentType);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                          module: "ERM > Add Sub Group",
+                         actionDetail: $"Added Sub Group {documentType}",
+                          documentNo: $"{documentType}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type added successfully." });
                 }
@@ -115,6 +124,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Entry(existing).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                          module: "ERM > Update Sub Group",
+                         actionDetail: $"Updated SubGroup {documentType}",
+                          documentNo: $"{documentType}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type updated successfully." });
                 }
@@ -142,6 +156,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60107quotationChildItemGroups.Remove(entity);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                         module: "ERM > Delete SubGroup",
+                        actionDetail: $"Deleted SubGroup {documentType}",
+                         documentNo: $"{documentType}"
+                    );
+
+
 
                     return Ok(new { success = true, message = "Sub Group deleted successfully." });
                 }

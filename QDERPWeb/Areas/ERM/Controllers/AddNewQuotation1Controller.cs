@@ -97,7 +97,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     // Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
                     int noOfDigits = dbContext.Tbl901CompanyDetails02s
                                               .Where(c => c.CompanyId == company.CompanyId)
-                                              .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                                              .Select(c => c.NoOfDigitsToEquipmentQuotation ?? 4)
                                               .FirstOrDefault(); // Default to 4 if not found
 
                     // Step 5: Extract values for quotation number
@@ -130,7 +130,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         {
             try
             {
-                var mprNumbers = dbContext.Tbl60101quotationMasters
+                var mprNumbers = dbContext.Tbl40103PropertyQuoteMasters
                     .Where(d => d.QuoteNo != null &&
                                 d.QuoteNo.Length >= noOfDigits &&
                                 (!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
@@ -301,7 +301,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string VerifiedSignatory { get; set; }
             public string ApprovedSignatory { get; set; }
 
-
+            public decimal? CurrencyRate { get; set; }
+            public int? BaseCurrencyId { get; set; }
+            public int? CurrencyId { get; set; }
 
 
 
@@ -480,7 +482,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     existingMaster.PreparedBy = VM.PreparedBy;
                     existingMaster.VerifiedSignatory = VM.VerifiedSignatory;
                     existingMaster.ApprovedSignatory = VM.ApprovedSignatory;
-                    
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
+
 
                 }
                 else
@@ -520,7 +525,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         VatapplicableRate=VM.VATApplicableRate,
                         PreparedBy=VM.PreparedBy,
                         VerifiedSignatory = VM.VerifiedSignatory,
-                        ApprovedSignatory = VM.ApprovedSignatory
+                        ApprovedSignatory = VM.ApprovedSignatory,
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1,
 
 
                     };
@@ -564,11 +572,15 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     if (child.QuoteChildId == 0)
                     {
                         // New child entry
-                        child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
-
-                        //child.CostPrice = child.CostPrice * currencyRate;
-                        //child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
-                        //child.QuotedDiscount = child.QuotedDiscount * currencyRate;
+                        child.QuoteNo = VM.QuoteNo;
+                        child.LineOrderNo = child.LineOrderNo;
+                        child.AddlNotes = child.AddlNotes;
+                        child.PropertyAddlDescription = child.PropertyAddlDescription;
+                        child.QuotedQuantity = child.QuotedQuantity;
+                        child.QuoteMethod = child.QuoteMethod;
+                        child.UnitRate1 = child.UnitRate1 * VM.CurrencyRate;
+                        child.MobRate = child.MobRate * VM.CurrencyRate;
+                        child.DemobRate = child.DemobRate * VM.CurrencyRate;
 
                         await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(child);
                     }
@@ -580,7 +592,14 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                         if (existingChild != null)
                         {
-                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                            existingChild.LineOrderNo = child.LineOrderNo;
+                            existingChild.AddlNotes = child.AddlNotes;
+                            existingChild.PropertyAddlDescription = child.PropertyAddlDescription;
+                            existingChild.QuotedQuantity = child.QuotedQuantity;
+                            existingChild.UnitRateMethod1 = child.UnitRateMethod1;
+                            existingChild.UnitRate1 = (child.UnitRate1 ?? 0) * (VM.CurrencyRate ?? 1);
+                            existingChild.MobRate = (child.MobRate ?? 0) * (VM.CurrencyRate ?? 1);
+                            existingChild.DemobRate = (child.DemobRate ?? 0) * (VM.CurrencyRate ?? 1);
                         }
                     }
                 }
@@ -590,7 +609,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 var rows = await dbContext.SaveChangesAsync();
 
                 await _userActionLogger.LogAsync(
-                    module: "IMS > Save Quotation",
+                    module: "ERM > Save Quotation",
                    actionDetail: $"Saved Quotation: {VM.QuoteNo}",
                     documentNo: $"{VM.QuoteNo}"
                 );
@@ -623,16 +642,19 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         {
             public string QuoteNo { get; set; }
             public string DetailedDescription { get; set; }
-            // public bool? Operator { get; set; }
-            public byte? QuoteMethod2 { get; set; }
-            public decimal? Rate2 { get; set; }
-            public byte? QuoteMethod3 { get; set; }
-            public decimal? Rate3 { get; set; }
+            public string Certification { get; set; }
+            public string Capacity { get; set; }
+            public string Operator { get; set; }
+            public string Attachment { get; set; }
+            public string UnitRateMethod2 { get; set; }
+            public decimal? UnitRate2 { get; set; }
+            public string UnitRateMethod3 { get; set; }
+            public decimal? UnitRate3 { get; set; }
+            public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
             public decimal? MobilizationRate { get; set; }
             public decimal? DemobRate { get; set; }
             public string DeliveryDetails { get; set; }
-
         }
 
 
@@ -667,15 +689,19 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 {
                     // Update existing record
                     existing.PropertyAddlDescription = request.DetailedDescription;
-                    // existing.IsWithOperator = request.Operator;
-                    existing.UnitRateMethod2 = request.QuoteMethod2;
-                    existing.UnitRate2 = request.Rate2;
-                    existing.UnitRateMethod3 = request.QuoteMethod3;
-                    existing.UnitRate3 = request.Rate3;
+                    existing.Certification = request.Certification;
+                    existing.Capacity = request.Capacity;
+                    existing.Operator = request.Operator;
+                    existing.Attachment = request.Attachment;
+                    existing.UnitRateMethod2 = request.UnitRateMethod2;
+                    existing.UnitRate2 = request.UnitRate2;
+                    existing.UnitRateMethod3 = request.UnitRateMethod3;
+                    existing.UnitRate3 = request.UnitRate3;
+                    existing.Notes = request.Notes;
                     existing.AddlNotes = request.AdditionalNotes;
                     existing.MobRate = request.MobilizationRate;
                     existing.DemobRate = request.DemobRate;
-                    existing.DeliveryTerms = request.DeliveryDetails;
+                    existing.DeliveryDetails = request.DeliveryDetails;
                 }
                 else
                 {
@@ -684,15 +710,19 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     {
                         QuoteNo = request.QuoteNo,
                         PropertyAddlDescription = request.DetailedDescription,
-                        // IsWithOperator = request.Operator,
-                        UnitRateMethod2 = request.QuoteMethod2,
-                        UnitRate2 = request.Rate2,
-                        UnitRateMethod3 = request.QuoteMethod3,
-                        UnitRate3 = request.Rate3,
+                        Certification = request.Certification,
+                        Capacity = request.Capacity,
+                        Operator = request.Operator,
+                        Attachment = request.Attachment,
+                        UnitRateMethod2 = request.UnitRateMethod2,
+                        UnitRate2 = request.UnitRate2,
+                        UnitRateMethod3 = request.UnitRateMethod3,
+                        UnitRate3 = request.UnitRate3,
+                        Notes = request.Notes,
                         AddlNotes = request.AdditionalNotes,
                         MobRate = request.MobilizationRate,
                         DemobRate = request.DemobRate,
-                        DeliveryTerms = request.DeliveryDetails,
+                        DeliveryDetails = request.DeliveryDetails,
                     };
 
                     await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(newChild);
@@ -700,12 +730,82 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Detailed Description saved successfully." });
+                await _userActionLogger.LogAsync(
+                    module: "ERM > Save Quotation Child",
+                    actionDetail: $"Saved Quotation Child: {request.QuoteNo}",
+                    documentNo: $"{request.QuoteNo}"
+                );
+
+                return Ok(new { success = true, message = "Quotation Child saved successfully." });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetQuoteGridData(string QuoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var currencyRate = await dbContext.Tbl40103PropertyQuoteMasters
+                        .Where(x => x.QuoteNo == QuoteNo)
+                        .Select(x => x.CurrencyRate)
+                        .FirstOrDefaultAsync();
+
+                    var result = dbContext.Tbl40104PropertyQuoteChildren
+                        .Where(x => x.QuoteNo == QuoteNo)
+                        .Select(x => new
+                        {
+                            LineOrderNo = x.LineOrderNo,
+                            Description = x.AddlNotes,                  // adjust if needed
+                            DetailedDescription = x.PropertyAddlDescription,
+                            Qty = x.QuotedQuantity,
+                            UnitMethod = x.QuoteMethod,
+                            Rate1 = x.UnitRate1 / currencyRate,
+                            MobRate = x.MobRate / currencyRate,
+                            DemobRate = x.DemobRate / currencyRate
+                        })
+                        .ToList();
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -789,6 +889,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 await dbContext.SaveChangesAsync();
 
+                await _userActionLogger.LogAsync(
+                    module: "ERM > Delete Quotation",
+                   actionDetail: $"Deleted Quotation: {QuoteNo}",
+                    documentNo: $"{QuoteNo}"
+                );
+
                 return Ok(new { success = true, message = "Quotation details deleted successfully." });
             }
             catch (Exception ex)
@@ -815,7 +921,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             }
 
             // Retrieve MPR master record
-            var master = await dbContext.Tbl60101quotationMasters.FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
+            var master = await dbContext.Tbl40103PropertyQuoteMasters.FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
             if (master == null)
             {
                 return NotFound(new { success = false, message = "MPR not found." });
@@ -854,6 +960,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             // Save changes to the database
             await dbContext.SaveChangesAsync();
 
+            await _userActionLogger.LogAsync(
+                    module: "ERM >  Quotation Submit",
+                   actionDetail: $" Quotation Submitted: {QuoteNo}",
+                    documentNo: $"{QuoteNo}"
+                );
+
             return Ok(new { success = true, message = "Quotation submitted successfully." });
         }
         [HttpPost]
@@ -869,7 +981,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return BadRequest(new { message = "Quote is required." });
             }
 
-            var voucher = await dbContext.Tbl60101quotationMasters
+            var voucher = await dbContext.Tbl40103PropertyQuoteMasters
                 .FirstOrDefaultAsync(v => v.QuoteNo == QuoteNo);
 
             if (voucher == null)
@@ -899,6 +1011,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             await dbContext.SaveChangesAsync();
 
+            await _userActionLogger.LogAsync(
+                    module: "ERM > Verify Quotation",
+                   actionDetail: $"Verified Quotation: {QuoteNo}",
+                    documentNo: $"{QuoteNo}"
+                );
+
             return Ok(new
             {
                 message = "Quotation has been Verified and processed for Approval."
@@ -924,7 +1042,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         return BadRequest(new { Message = "Quote number is required." });
                     }
 
-                    var voucher = dbContext.Tbl60101quotationMasters
+                    var voucher = dbContext.Tbl40103PropertyQuoteMasters
                                            .FirstOrDefault(v => v.QuoteNo == QuoteNo);
 
                     if (voucher == null)
@@ -944,6 +1062,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     //}
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+                    module: "ERM > Approve Quotation",
+                   actionDetail: $"Approved Quotation: {QuoteNo}",
+                    documentNo: $"{QuoteNo}"
+                );
 
                     return Ok(new
                     {

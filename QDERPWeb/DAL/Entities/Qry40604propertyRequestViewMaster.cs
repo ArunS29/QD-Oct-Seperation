@@ -74,4 +74,8 @@ public partial class Qry40604propertyRequestViewMaster
     public decimal? TotalRequestCost { get; set; }
 
     public int? NoOfItems { get; set; }
+
+    public bool? IsSubmitted { get; set; }
+
+    public bool? IsVerified { get; set; }
 }

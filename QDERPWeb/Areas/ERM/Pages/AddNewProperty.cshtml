@@ -375,7 +375,49 @@
                             .Name("dropDown");
                         }) )
         </div>
+        <div>
+            @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Base Currency')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("VATModule")
+                        .LoadAction("GetTaxCurrency")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CurrencyExchangeId")
+                        )
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("ddlGoodsGroup4")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .OnInitialized("onBaseCurrencyInitialized")
+                        .ValueExpr("CurrencyExchangeId")
+                        .DisplayExpr("CurrencyName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Disabled(true)
+                        .DropDownOptions(o => o.Width(425))
+                        .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+                        .Width("100%")
+                        .Buttons(buttons =>
+                        {
+                            buttons.Add()
+                            .Name("btnEditTaxCurrency")
+                            .Location(TextEditorButtonLocation.After)
+                            .Widget(w => w.Button()
+                            .Type(ButtonType.Default)
+                            .Icon("edit")
+                            .Disabled(true)
+                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                            .OnClick("CurrencyClick")
+                            );
 
+                            buttons.Add().Name("dropDown");
+                        })
+                        )
+        </div>
     </div>
 
     <!-- Image -->
@@ -998,6 +1040,7 @@
                         .ID("Addattach")
                         .Icon("attach")
                         .Text(new JS("formatMessage('Add & Attach File')"))
+                        .OnClick("OnAttachfile")
                         .Width("97%")
                         )
 
@@ -1022,8 +1065,14 @@
                 .ShowBorders(true)
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
+                .OnInitialized("OnDocument")
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
+                .DataSource(d => d.WebApi()
+                .Controller("AddNewProperty")
+                .LoadAction("GetByDocument")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
                     columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocumentNo");
@@ -1068,7 +1117,7 @@
                         .OnInitialized("OnmobilzationInitialize")
                         .OnContextMenuPreparing("onDeliveryContextMenu")
                         .RowAlternationEnabled(true)
-                        .Height(300)
+                        .Height("40vh")
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewProperty")
                         .LoadAction("GetByMobilzation")
@@ -1100,7 +1149,7 @@
                 .OnInitialized("OnMaintenance")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .DataSource(d => d.WebApi()
                 .Controller("AddNewProperty")
                 .LoadAction("GetByMaintenance")
@@ -1129,8 +1178,9 @@
                         .ID("Checkclick")
                         .Icon("smalliconslayout")
                         .Text(new JS("formatMessage('Details Report By Date')"))
-                        .OnClick("ShowDatePopup"))
-                        )
+                        .OnClick("ShowDatePopup")
+            )
+                        
         </div>
 
         <!-- Document DataGrid -->
@@ -1141,7 +1191,7 @@
                 .OnInitialized("OnCostSummary")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .DataSource(d => d.WebApi()
                 .Controller("AddNewProperty")
                 .LoadAction("GetByCostSummary")
@@ -1206,7 +1256,7 @@
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .OnContextMenuPreparing("onClientsGridContextMenu1")
                 .OnInitialized("onItemReceivedGridInitialized")
                 .DataSource(d => d.WebApi()
@@ -1218,16 +1268,16 @@
                 )
                 .Columns(columns =>
                 {
-                    columns.Add().Caption("Employee ID").DataField("EmployeeId");
-                    columns.Add().Caption("Operator Type").DataField("PropertyOperatorTypeId");
-                    columns.Add().Caption("Operator Name").DataField("OperatorName");
-                    columns.Add().Caption("Start Date").DataField("WorkStartDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("End Date").DataField("WorkEndDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("Hourly Rate").DataField("OperatorRegHourlyRate");
-                    columns.Add().Caption("Overtime Rate").DataField("OperatorOthourlyRate");
-                    columns.Add().Caption("Working Shift").DataField("WorkingShift");
-                    columns.Add().Caption("EquipmentNo").DataField("EquipmentNo").Visible(false);
-                    columns.Add().Caption("PropertyOperatorCode").DataField("PropertyOperatorCode").Visible(false);
+                    columns.Add().Caption(new JS("formatMessage('Employee ID')")).DataField("EmployeeId");
+                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("PropertyOperatorTypeId");
+                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("OperatorName");
+                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("WorkStartDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("WorkEndDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("OperatorRegHourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("OperatorOthourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("WorkingShift");
+                    columns.Add().Caption(new JS("formatMessage('Equipment No')")).DataField("EquipmentNo").Visible(false);
+                    columns.Add().Caption(new JS("formatMessage('Property OperatorC ode')")).DataField("PropertyOperatorCode").Visible(false);
                 })
                 )
     </div> 
@@ -1292,9 +1342,45 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                    columns.Add().DataField("PropertyCategoryName").Caption("Property Category");
+                            columns.Add().DataField("PropertyCategoryName").Caption(new JS("formatMessage('Property Category')"));
                     })
                     )
+                    }
+@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+
+                    .ID("taxcurrecy-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("VATModule")
+                       .LoadAction("GetTaxCurrency")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                      .Key("CurrencyExchangeId")
+
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                    .OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+                    .OnInitialized("onBaseCurrencyInitialized")
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+                    })
+                )
                     }
 @using (Html.DevExtreme().NamedTemplate("GetSupplierContentTemplate"))
 {
@@ -1322,7 +1408,7 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                    columns.Add().DataField("SupplierName");
+                            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
                     })
                     )
                     }
@@ -1352,8 +1438,8 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("PropertyGroup").Caption("Property Group");
-                            columns.Add().DataField("PropertyGroupCode").Caption("Property Group Code");
+                                columns.Add().DataField("PropertyGroup").Caption(new JS("formatMessage('Property Group')"));
+                                columns.Add().DataField("PropertyGroupCode").Caption(new JS("formatMessage('Property Group Code')"));
                         })
                      )
 }
@@ -1470,6 +1556,28 @@
              }
          });
      }
+       function OnDocument(e) {
+          const grid = e.component;
+          const urlParams = new URLSearchParams(window.location.search);
+          const propertyNo = urlParams.get("code");
+
+          console.log("PropertyNo from query:", propertyNo);
+
+          $.ajax({
+                url: `/api/AddNewProperty/GetByDocument`,
+              type: "GET",
+              data: { PropertyNo: propertyNo },
+              success: function (data) {
+                  console.log("API Data:", data);
+
+                  grid.option("dataSource", data);
+                  grid.refresh();
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error fetching mobilization data:", error);
+              }
+          });
+      }
         function OnMaintenance(e) {
           const grid = e.component;
           const urlParams = new URLSearchParams(window.location.search);
@@ -1924,8 +2032,8 @@
                     openModal(url, title);
             }
               function Propertycategory(){
-                  const url = `/${tenantName}/IMS/Propertycategory`;
-                const title = "";
+                  const url = `/${tenantName}/ERM/Propertycategory`;
+                const title = "Property Category";
                     openModal(url, title);
             }
               function ItemClassification(){
@@ -2273,4 +2381,99 @@
         }
     }
 
+        // Attachment
+     function OnAttachfile() {
+           // Get Voucher No safely
+           const PropertyNoBox = $("#PropertyNo").dxTextBox("instance");
+            const PropertyNo = PropertyNoBox ? PropertyNoBox.option("value") : null;
+           var button = $("#btnSave").dxButton("instance");
+           var buttonText = button ? button.option("text") : "";
+
+
+              if (!PropertyNo || PropertyNo == null || PropertyNo == "") {
+               DevExpress.ui.notify(
+                   "Fill Property No",
+                   "warning",
+                   4000
+               );
+               return;
+           }
+
+
+           if (buttonText !== "Update") {
+               DevExpress.ui.notify(
+                   "Please, Save Property Detail",
+                   "warning",
+                       4000
+               );
+               return;
+           }
+           var menuType = "erm";
+
+
+            var formType ="Equipment Property";
+         //    let folderId2 = "";
+           // Log and build URL
+            console.log("Property No", PropertyNo);
+           console.log("Equipment Property");
+           const isMaster = false;
+           const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(PropertyNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+           const title = "Transaction Documents";
+
+           openModal(url, title);
+       }
+
+       function dropDownBoxOnInput(e) {
+           const ddbInstance = e.component;
+           if (!ddbInstance.option("opened")) ddbInstance.open();
+
+           const text = ddbInstance.option("text");
+           const gridId = ddbInstance.option("dataGridId");
+           if (gridId) {
+               const grid = $("#" + gridId).dxDataGrid("instance");
+               if (grid) {
+                   grid.option("searchPanel.text", text);
+               }
+           }
+       }
+
+         function onBaseCurrencyInitialized(e) {
+                     const ddb = e.component;
+
+                     setTimeout(() => {
+                         const ds = ddb.getDataSource();
+
+                         if (ds) {
+                             ds.load().done(function (data) {
+                                 if (data && data.length > 0) {
+                                     const firstItemId = data[0].CurrencyExchangeId;
+                                     ddb.option("value", firstItemId);
+                                 }
+                             });
+                         } else {
+                             console.warn("DataSource is not available yet.");
+                         }
+                     }, 100);
+                 }
+                   function CurrencyClick() {
+                 let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+                 let title = "Currency Master";
+                 openModal(url, title);
+             }
+               function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+                 const selectedRow = e.selectedRowsData[0]; // full object
+                 const selectedKey = e.selectedRowKeys[0];
+                 const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+
+                 if (selectedKey) {
+                     ddbInstance.option("value", selectedKey); // CurrencyId
+                     if (ddbInstance.option("opened")) {
+                         ddbInstance.close();
+                     }
+
+                     // Set CurrencyRate from the selected grid row
+                     const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+                     $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
+                 }
+             }
 </script>

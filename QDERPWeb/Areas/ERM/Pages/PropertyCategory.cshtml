@@ -223,12 +223,12 @@
 			.Columns(columns =>
 			{
 			columns.Add().DataField("PropertyCategoryId")
-			.Caption("Category Code")
+			.Caption(new JS("formatMessage('Category Code')"))
 			.Width(100)
 			.Alignment(HorizontalAlignment.Center)
 			.AllowEditing(false);
 			columns.Add().DataField("PropertyCategoryName")
-			.Caption("Property Category")
+			.Caption(new JS("formatMessage('Property Category')"))
 			.Width(300)
 			.Alignment(HorizontalAlignment.Center)
 			.AllowEditing(true);
