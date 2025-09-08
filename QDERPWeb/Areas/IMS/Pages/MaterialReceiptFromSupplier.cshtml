@@ -250,7 +250,7 @@
 	<div class="form-container">
 		<!-- Tab Menu -->
 		@(
-					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%").Height(210)
+					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%").Height(200)
 					.Items(item =>
 					{
 						item.Add()
@@ -258,7 +258,7 @@
 					.Icon("folder")
 					.Text("Material Recipts Details")
 					.Template(@<text>
-			<div style="padding: 20px;">
+			<div style="padding: 10px;">
 				<!-- Row 1 -->
 				<div style="display: flex; gap: 10px;">
 					<div style="flex: 1;">
@@ -506,7 +506,7 @@
 
 						item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
 
-			<div style="padding: 15px; margin-top: 15px;">
+			<div style="padding: 10px;">
 				<div style="display: flex; gap: 10px; align-items: flex-start;">
 					<!-- Signatory and Checkboxes -->
 					<div style="flex: 1;">
@@ -565,7 +565,7 @@
 
 		</text>);
 						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-			<div style="padding: 15px;display:flex;gap:10px;">
+			<div style="padding: 10px;display:flex;gap:10px;">
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Company Branch/Division')"))
 					.DataSource(d => d.WebApi()
@@ -646,7 +646,7 @@
 
 		</text>);
 					item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
-																																								<div class="p-3">
+																																								<div class="p-2">
 																																									<table style="width:100%; font-size:14px; margin:5px;">
 																																										<tr>
 																																											<td style="width: 30%;">
@@ -682,7 +682,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit")
+															.Icon("plus")
 															.Disabled(true) // Button is also disabled
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick"));
@@ -722,7 +722,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit") // Use "plus" or any other if needed
+															.Icon("plus") // Use "plus" or any other if needed
 															.Hint("Edit Description")
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick")); // 👈 your existing handler
@@ -752,7 +752,10 @@
 				)
 
 	</div>
-	<div style="padding:10px;">
+	<div style="padding:5px 10px;">
+	<div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
 	@(
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 			.ID("B2BdataGrid")
@@ -940,7 +943,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height("45vh")
+		.Height("38vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1623,33 +1626,7 @@
 
 		if (response) {
 
-			 Approved = response.IsApproved;
-
-		// ✅ Disable buttons if already approved
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
-					hideAllButtonsExcept([
-					"btnPrint",
-					   "ddButtonLayout",
-						"btnBack",
-						"btnAttach"
-				]);
-				disableAllDropDownsAndSelects();
-				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-	if (gridInstance) {
-		gridInstance.option({
-			editing: {
-				allowUpdating: false,
-				allowAdding: false,
-				allowDeleting: false
-			},
-			selection: {
-				mode: "none"
-			}
-		});
-	}
-			}
+	
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data  ReceiptSignatory
 
@@ -1695,6 +1672,33 @@
 							console.error("Error fetching grid data:", error);
 						}
 					});
+					  		 Approved = response.IsApproved;
+
+		// ✅ Disable buttons if already approved
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+					hideAllButtonsExcept([
+					"btnPrint",
+					   "ddButtonLayout",
+						"btnBack",
+						"btnAttach"
+				]);
+				disableAllDropDownsAndSelects();
+				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	if (gridInstance) {
+		gridInstance.option({
+			editing: {
+				allowUpdating: false,
+				allowAdding: false,
+				allowDeleting: false
+			},
+			selection: {
+				mode: "none"
+			}
+		});
+	}
+			}
 
 				} else {
 					console.warn("No Material Receipt details found in the response.");
@@ -1705,7 +1709,10 @@
 			}
 		});
 	}
-
+	$(document).ready(function () {
+	//getSalesPersonByUser();
+			getDefaultCompany();
+});
 			function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -4898,14 +4905,15 @@ function saveQuotation(receiptNoNew, $btn) {
 					DevExpress.ui.notify(response.message, "success", 3000);
 
 								 const receiptno = response.receiptno;
+								 window.location.href-=`/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
 
-						 loadChildDataAndBindGrid(receiptno);
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
+						// loadChildDataAndBindGrid(receiptno);
+					// if (window.parent && window.parent.$("#dataGrid").length) {
+					// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+					// 	if (dataGrid) {
+					// 		dataGrid.refresh();
+					// 	}
+					// }
 
 
 				},

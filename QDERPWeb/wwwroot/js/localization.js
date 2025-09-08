@@ -2,6 +2,7 @@
 var dictionary = {
 
     "en": {
+        "Purchase Request with Item":"Purchase Request with Item",
         "Terms & Conditions List:":"Terms & Conditions List:",
         "Approve All select DN": "Approve All select DN",
         "Post to Journal":"Post to Journal",
