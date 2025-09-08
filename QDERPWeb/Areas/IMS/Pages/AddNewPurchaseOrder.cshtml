@@ -1031,33 +1031,48 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
+                                  
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text(new JS("formatMessage('Show Signature')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
+                                       @(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+									<br />        
+                                   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Value(false).Text(new JS("formatMessage('Page Break before Terms')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter2").Value(false).Text(new JS("formatMessage('Page Break after Terms')")))
+                                 	@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
+									<input type="hidden" id="hdnPageAfterBefore" name="hdnPageAfterBefore" value="false" />
                                     <br />
                                     @(Html.DevExtreme().CheckBox().ID("ShowHSCodeinsteadStockCode").Value(false).Text(new JS("formatMessage('Show HS Code instead Stock Code')")))
+                                    <input type="hidden" id="hdnShowHSCodeinsteadStockCode" name="hdnShowHSCodeinsteadStockCode" value="false" />
+
                                     <br />
                                     @(Html.DevExtreme().CheckBox().ID("ShowitemPartNumberinsteadStockCode").Value(false).Text(new JS("formatMessage('Show item Part Number instead Stock Code')")))
+                                    <input type="hidden" id="hdnShowitemPartNumberinsteadStockCode" name="hdnShowitemPartNumberinsteadStockCode" value="false" />
+
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
                                     @(Html.DevExtreme().CheckBox().ID("ShowFullSupplierAcceptance").Value(false).Text(new JS("formatMessage('Show Full Supplier Acceptance')")))
+                                    <input type="hidden" id="hdnShowFullSupplierAcceptance" name="hdnShowFullSupplierAcceptance" value="false" />
+
                                     <br />
                                     @(Html.DevExtreme().CheckBox().ID("ShowSimpleSuppilerAcceptance").Value(false).Text(new JS("formatMessage('Show Simple Suppiler Acceptance (One Line Only)')")))
+                                     <input type="hidden" id="hdnShowSimpleSuppilerAcceptance" name="hdnShowSimpleSuppilerAcceptance" value="false" />
                                     <br />
                                     @(Html.DevExtreme().CheckBox().ID("ShowSignatoryPositionOnly").Value(false).Text(new JS("formatMessage('Show Signatory Position Only')")))
+                                     <input type="hidden" id="hdnShowSignatoryPositionOnly" name="hdnShowSignatoryPositionOnly" value="false" />
                                     <br />
                                     @(Html.DevExtreme().CheckBox().ID("ShowPaymentTermsShippingDetails").Value(false).Text(new JS("formatMessage('Show Payment Terms & Shipping Details')")))
+                                     <input type="hidden" id="hdnShowPaymentTermsShippingDetails" name="hdnShowPaymentTermsShippingDetails" value="false" />
                                 </td>
                             </tr>
                         </tbody>
@@ -1339,6 +1354,90 @@
 
 
 <script>
+    
+	  $(function() {
+        $("#pageBreakBefore").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageBreakBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+  
+	  $(function() {
+        $("#pageBreakAfter").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageAfterBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#ShowPaymentTermsShippingDetails").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowPaymentTermsShippingDetails").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#ShowSignatoryPositionOnly").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowSignatoryPositionOnly").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#ShowSimpleSuppilerAcceptance").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowSimpleSuppilerAcceptance").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#ShowFullSupplierAcceptance").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowFullSupplierAcceptance").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#ShowitemPartNumberinsteadStockCode").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowitemPartNumberinsteadStockCode").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#ShowHSCodeinsteadStockCode").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowHSCodeinsteadStockCode").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
     function onSelectBoxOpened(e) {
     const ds = e.component.getDataSource();
     if (ds) {

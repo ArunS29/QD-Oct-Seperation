@@ -14,6 +14,7 @@ using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
 using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
 using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
 using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
 using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
 using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
 using QD.ERP.Web.Areas.IMS.Reports.SalesOrder;
@@ -49,7 +50,8 @@ namespace QD.ERP.Web.Pages
         }
 
         public IActionResult OnGet(string reportName, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo, string RequestNo, string quotationNo, string salesOrderNo, string deliveryNoteNo, string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false,
-            bool clientAcknowledgement = false, bool printItemCodeDesc = false, bool printItemPartNoDesc = false, bool printItemPartArabicDesc = false, bool showSign1 = false, bool showSeal = false, bool showSignature = false, bool printLetterhead = false, bool ShowItemLineNo = false, bool PrintFooterAtBottom = false)
+            bool clientAcknowledgement = false, bool printItemCodeDesc = false, bool printItemPartNoDesc = false, bool printItemPartArabicDesc = false, bool showSign1 = false, bool showSeal = false, bool showSignature = false, bool printLetterhead = false, bool ShowItemLineNo = false, bool PrintFooterAtBottom = false,
+           bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false)
         {
 
             if (string.IsNullOrEmpty(reportName))
@@ -231,7 +233,7 @@ namespace QD.ERP.Web.Pages
                 {
                     case "RFQEdit":
 
-                        Report = new RFQEdit(rfqNo,
+                        Report = new RFQEdit(showSeal, showSignature, printLetterhead, rfqNo,
                                               tenantName,
                                               companyName,
                                               logoImage,
@@ -249,7 +251,78 @@ namespace QD.ERP.Web.Pages
                         return NotFound("Report not found.");
                 }
             }
+            else if (!string.IsNullOrEmpty(purchaseOrderNo))
+            {
 
+                switch (reportName)
+                {
+                    case "PreviewPurchaseOrder":
+
+                        Report = new PreviewPurchaseOrder(ShowPaymentTermsShippingDetails,
+      ShowitemPartNumberinsteadStockCode,
+      ShowHSCodeinsteadStockCode,
+      showSeal,
+      showSignature,
+      printLetterhead,
+      pageBreakAfter,
+      pageBreakBefore,
+      purchaseOrderNo,
+      tenantName,
+      companyName,
+      logoImage,
+      companySealImage,
+      companyAddress,
+      companyNameAr,
+      companyAddressAr,
+      _tenantDbContextHelper
+  ); break;
+                    case "PreviewPurchaseOrderForeignCurrency":
+
+                        Report = new PreviewPurchaseOrderForeignCurrency(
+                                               pageBreakAfter, pageBreakBefore,
+                                               purchaseOrderNo,
+                                               tenantName,
+                                               companyName,
+
+                                               companySealImage,
+                                               companyAddress,
+                                               companyNameAr,
+                                               companyAddressAr,
+                                               _tenantDbContextHelper
+                                           ); break;
+                    case "PreviewPurchaseOrderWithoutVAT":
+
+                        Report = new PreviewPurchaseOrderWithoutVAT(
+                                               pageBreakAfter, pageBreakBefore,
+                                              purchaseOrderNo,
+                                              tenantName,
+                                              companyName,
+
+                                              companySealImage,
+                                              companyAddress,
+                                              companyNameAr,
+                                              companyAddressAr,
+                                              _tenantDbContextHelper
+                                          ); break;
+                    case "WithoutVATTotalPrice":
+
+
+                        Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(
+                                pageBreakAfter, pageBreakBefore,
+                            purchaseOrderNo,
+                            tenantName,
+                            companyName,
+
+                            companySealImage,
+                            companyAddress,
+                            companyNameAr,
+                            companyAddressAr,
+                            _tenantDbContextHelper
+                        ); break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
             return Page();
         }
     }

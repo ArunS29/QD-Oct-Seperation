@@ -327,16 +327,13 @@
                 return;
             }
 
-            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
               const salesReport= [
                 "Preview  Sales Order", 
                 "Preview Sales Order(without Price)"
               ];
 
-            if (!reportName) {
-                alert("Invalid report format selected.");
-                return;
-            }
+           
 
         if (salesReport.includes(itemText)) {
                 // Collect parameters only if true

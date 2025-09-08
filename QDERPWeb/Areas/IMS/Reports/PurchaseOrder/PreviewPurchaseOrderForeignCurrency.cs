@@ -18,6 +18,8 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
         }
 
         public PreviewPurchaseOrderForeignCurrency(
+             bool pageBreakBefore,
+            bool pageBreakAfter,
             string purchaseNo,
             string tenantName,
             string companyName,
@@ -31,11 +33,16 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters( pageBreakAfter, pageBreakBefore, purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
             LoadReportData(purchaseNo);
+
+            if (pageBreakBefore || pageBreakAfter)
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
+            else
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
         }
 
-        private void SetReportParameters(string purchaseNo, string tenantName, string companyName, Image sealImage,
+        private void SetReportParameters(bool pageBreakAfter, bool pageBreakBefore, string purchaseNo, string tenantName, string companyName, Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
