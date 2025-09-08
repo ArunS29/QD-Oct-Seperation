@@ -193,7 +193,7 @@
     .ID("gridCurrencyMaster")
    .DataSource(new JS("[]")) // Assuming a Model with Currency List.
     .ShowBorders(true)
-        .Height(350) // Increase height
+        .Height(450) // Increase height
         .Width("100%")
     .Columns(columns =>
     {
@@ -251,14 +251,14 @@
             }
             });
         });
-    $(function () {
-        $("#TypeCurrency").dxTextBox({
-            width: "600px",
-            text: formatMessage("Type a New Currency Details & Add to the Existing List:"),
-            readOnly: true,
+    // $(function () {
+    //     $("#TypeCurrency").dxTextBox({
+    //         width: "600px",
+    //         text: formatMessage("Type a New Currency Details & Add to the Existing List:"),
+    //         readOnly: true,
             
-        });
-    });
+    //     });
+    // });
 
 
     async function convertDetailedDescToArabic() {

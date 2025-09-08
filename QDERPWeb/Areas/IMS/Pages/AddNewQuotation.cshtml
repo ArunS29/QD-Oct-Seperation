@@ -1135,7 +1135,7 @@
 							.Location(TextEditorButtonLocation.After)
 							.Widget(w => w.Button()
 							.Type(ButtonType.Default)
-							.Icon("edit")
+							.Icon("plus")
 							.Disabled(true) // Button is also disabled
 							.ElementAttr(new { @class = "custom-hover-button add-hover" })
 							.OnClick("CurrencyClick"));
@@ -1175,7 +1175,7 @@
 						    .Location(TextEditorButtonLocation.After)
 						    .Widget(w => w.Button()
 						    .Type(ButtonType.Default)
-						    .Icon("edit") // Use "plus" or any other if needed
+						    .Icon("plus") // Use "plus" or any other if needed
 						    .Hint("Edit Description")
 						    .ElementAttr(new { @class = "custom-hover-button add-hover" })
 						    .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -1412,7 +1412,7 @@
 </div>
 
 
-		<div class="footer-fixed" style="width: 96vw;">
+		<div class="footer-fixed" style="width: 95vw;">
 				@await Html.PartialAsync("/Pages/Shared/IMS/QuotationFormFooter.cshtml")
 		</div>
 		
@@ -2269,8 +2269,7 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const QuoteNos = urlParams.get('QuoteNo');
 		const QuoteNo = QuoteNos ? QuoteNos.split("?")[0] : null;
-		//getSalesPersonByUser();
-		getDefaultCompany("ddGetCompany");
+		
 		loadClientDetails(QuoteNo);
 
 		if (QuoteNo) {
@@ -2321,31 +2320,7 @@
 
         if (response) {
 				
-			 Approved = response.IsApproved;
 
-		// ✅ Disable buttons if already approved
-		if (Approved === true) {
-				hideAllButtonsExcept([
-				"btnPrint",
-				"ddButtonLayout",
-				"btnBack",
-				"btnAttach"
-			]);
-			disableAllDropDownsAndSelects();
-			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-if (gridInstance) {
-    gridInstance.option({
-        editing: {
-            allowUpdating: false,
-            allowAdding: false,
-            allowDeleting: false
-        },
-        selection: {
-            mode: "none"
-        }
-    });
-}
-		}
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 
@@ -2415,6 +2390,31 @@ if (gridInstance) {
 							console.error("Error fetching grid data:", error);
 						}
 					});
+					 			 Approved = response.IsApproved;
+
+		// ✅ Disable buttons if already approved
+		if (Approved === true) {
+				hideAllButtonsExcept([
+				"btnPrint",
+				"ddButtonLayout",
+				"btnBack",
+				"btnAttach"
+			]);
+			disableAllDropDownsAndSelects();
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
+		}
 
 				} else {
 					console.warn("No Quotation details found in the response.");
@@ -2425,7 +2425,10 @@ if (gridInstance) {
 			}
 		});
 	}
-
+	$(document).ready(function () {
+	//getSalesPersonByUser();
+			getDefaultCompany();
+});
 	function getSalesPersonByUser() {
 	$.ajax({
 		type: "GET",
@@ -2999,7 +3002,7 @@ placeholder: "Search..."
 				{ dataField: "LineTotalWithTax", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
-				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 },
+				@* { dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 }, *@
 							{
 		type: "buttons",
 		caption: "Delete",
@@ -3640,7 +3643,7 @@ placeholder: "Search..."
 
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
-				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 },
+				@* { dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 }, *@
 				{ dataField: "AddlDescription", visible: false },
 	{ dataField: "QuoteRemarks", visible: false },
 	{ dataField: "QuoteGroupCode", visible: false },
@@ -5772,18 +5775,17 @@ function saveQuotation(quotationNoNew, $btn) {
 					
               // ✅ Update textbox with final number from API
 					const quoteno = response.quoteno;
-					
-                   console.log("quoteno",quoteno);
-    
+				window.location.href=`/${tenantName}/IMS/AddNewQuotation?QuoteNo=${QuoteNo}`;
+                  
 				
-				 loadChildDataAndBindGrid(quoteno);
-					// Refresh parent DataGrid (ensure the correct selector is used)
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
+				 // loadChildDataAndBindGrid(quoteno);
+					// // Refresh parent DataGrid (ensure the correct selector is used)
+					// if (window.parent && window.parent.$("#dataGrid").length) {
+					// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+					// 	if (dataGrid) {
+					// 		dataGrid.refresh();
+					// 	}
+					// }
 
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());

@@ -170,15 +170,21 @@
                             )
                     </div>
 
-                    <div class="form-group">
-                        @(Html.DevExtreme().TextBox()
-                            .ID("SignatoryContact")
-                            .Label(new JS("formatMessage('Signatory Contact No.')"))
-                             .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                <div class="form-group">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("SignatoryContact")
+                                        .Label(new JS("formatMessage('Signatory Contact No.')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .InputAttr(new { type = "text", maxlength = "20" }) // allow for + and spaces
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddCustom()
+                                            .ValidationCallback("validateContact")
+                                            .Message("Contact number must be 7–15 digits (digits, +, and spaces allowed)");
+                                        })
+                                        )
+                </div>
 
-                            .LabelMode(EditorLabelMode.Floating)
-                            )
-                    </div>
 
                     <div class="form-group">
                         <div style="display: flex; gap: 10px; align-items: flex-end;margin-top: 40px;flex-wrap: wrap;">
@@ -215,8 +221,8 @@
                                                     allowedPageSizes: [5, 10, 20]
                                                 },
                                                 columns: [
-                                        { dataField: "SignatoryID",caption: formatMessage("ID"), width: 180 },
-                                            { dataField: "SignatoryName",caption: formatMessage("Name"), width: 200 }
+                                        { dataField: "SignatoryID",caption: formatMessage("ID"), width: 150 },
+                                            { dataField: "SignatoryName",caption: formatMessage("Name") }
                                                 ],
                                                 onSelectionChanged: function (e) {
                                                     var selected = e.selectedRowsData[0];
@@ -362,8 +368,9 @@
                     .Message("Contact No. is required");
 
                         rules.AddCustom()
-                    .ValidationCallback("validateContact")
-                    .Message("Contact number must be 7–15 digits and contain only numbers");
+    .ValidationCallback("validateContact")
+    .Message("Contact number must be 7–15 digits (digits, +, and spaces allowed)");
+
                     });
 
 
@@ -406,7 +413,7 @@ columns.Add().DataField("SignatoryEmail")
                 });
                
   })
-        .Height("38vh")
+        .Height("48vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -449,15 +456,14 @@ columns.Add().DataField("SignatoryEmail")
     </div>
 </div>
  <script>
-         function validateContact(e) {
-        if (!e.value) return false; // empty is already blocked by required
+             function validateContact(e) {
+        if (!e.value) return false;
 
-        const regex = /^[0-9]+$/;   // digits only
-        if (!regex.test(e.value)) return false;
+        // Allow + and spaces, but require 7–15 digits total
+        const digitsOnly = e.value.replace(/\D/g, ""); // remove all non-digits
+        const isValid = digitsOnly.length >= 7 && digitsOnly.length <= 15;
 
-        if (e.value.length < 7 || e.value.length > 15) return false;
-
-        return true;
+        return isValid;
     }
 
     $(document).ready(function () {
