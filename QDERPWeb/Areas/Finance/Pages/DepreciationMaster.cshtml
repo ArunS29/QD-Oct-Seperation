@@ -486,9 +486,10 @@
             $("#voucherPopup").dxPopup("instance").hide();
         }
     });
-      function onDepreciationContextMenuPreparing(e) {
+         function onDepreciationContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") {
-            e.items = [
+            // Default menu items
+            let items = [
                 {
                     text: formatMessage("Edit Depreciation"),
                     icon: "edit", // DevExtreme built-in icon
@@ -498,6 +499,12 @@
                     },
                     cssClass: "context-menu-edit"
                 },
+                    text: "Edit Depreciation",
+                    icon: "edit",
+                    onItemClick: () => { editDepreciation(e.row.data); },
+                    cssClass: "context-menu-edit",
+                    permissionSuffix: "EditDepreciation"
+                },
                 {
                     text: formatMessage("Delete Depreciation"),
                     icon: "trash", // DevExtreme built-in icon
@@ -505,10 +512,32 @@
                         deleteDepreciation(e.row.data);
                     },
                     cssClass: "context-menu-delete"
+                    text: "Delete Depreciation",
+                    icon: "trash",
+                    onItemClick: () => { deleteDepreciation(e.row.data); },
+                    cssClass: "context-menu-delete",
+                    permissionSuffix: "DeleteDepreciation"
                 }
             ];
+
+            // Filter based on permissions (populated globally in document.ready)
+            if (window.depreciationPermissions) {
+                items = items.map(item => {
+                    const permission = window.depreciationPermissions.find(p =>
+                        p.ItemName &&
+                        p.ItemName.trim().toLowerCase() === ("frmDepreciationView_" + item.permissionSuffix).toLowerCase()
+                    );
+
+                    if (!permission || !permission.ItemVisible) {
+                        return { ...item, visible: false, disabled: true };
+                    }
+                    return item;
+                });
+            }
+
+            e.items = items;
         }
-      }
+    }
      function editDepreciation(rowData) {
       
         const depreciationDocNo = rowData.DepreciationDocNo;

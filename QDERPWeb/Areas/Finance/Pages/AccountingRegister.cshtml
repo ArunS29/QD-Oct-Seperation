@@ -2,6 +2,15 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	.dx-context-menu .dx-menu-item.dx-state-hover {
+		background-color: var(--title-background-color) !important;
+		color: white !important;
+	}
+
+		/* Also ensure icon gets white color */
+		.dx-context-menu .dx-menu-item.dx-state-hover .dx-icon {
+			color: white !important;
+		}
 	.overlay {
 		display: none;
 		position: fixed;
@@ -1431,5 +1440,35 @@
 	$(function () {
 		$("#registertotalcredit").text(formatMessage("Total Credit"));
 	});
+		$(document).ready(function () {
+		$("#dataGrid").dxDataGrid({
+			// ... your grid options ...
+			onContextMenuPreparing: function (e) {
+				e.items = [];
+
+				
+
+				if (e.target === "header") {
+					e.items.push(
+						{
+							text: "Column Chooser",
+							icon: "columnchooser",  // ✅ correct icon
+							onItemClick: function () {
+								$("#dataGrid").dxDataGrid("instance").showColumnChooser();
+							}
+						},
+						{
+							text: "Refresh Data",
+							icon: "refresh",
+							onItemClick: function () {
+								$("#dataGrid").dxDataGrid("instance").refresh();
+							}
+						}
+					);
+				}
+			}
+		});
+	});
+
 
 </script>

@@ -556,7 +556,36 @@
                             console.warn(`Button with ID "${key}" not found in the DOM.`);
                         }
                     });
+                          var restrictedMenuItems = [
+                        { id: "editCostAllocation", permissionSuffix: "CostAllocation" },
+                        { id: "editBillsReceivable", permissionSuffix: "BillsReceivable" },
+                        { id: "editSalaryPayable", permissionSuffix: "SalaryPayable" },
+                        { id: "editEmployeeAllocation", permissionSuffix: "EmployeeAllocation" },
+                        { id: "editPropertyAllocation", permissionSuffix: "PropertyAllocation" },
+                        { id: "onAllRowRemoving", permissionSuffix: "DeleteAllLineEntries" }
+                    ];
 
+                        // ✅ Mutate menuItems safely
+                    menuItems.forEach(item => {
+                        const mapping = restrictedMenuItems.find(r => r.id === item.id);
+                        if (mapping) {
+                            const perm = response.permissions.find(p =>
+                                p.ItemName &&
+                                p.ItemName.trim().toLowerCase() === (formId + "_" + mapping.permissionSuffix).trim().toLowerCase()
+                            );
+
+                            if (!perm || !perm.ItemVisible) {
+                                item.hidden = true;   // hide
+                            } else if (!perm.ItemEnabled) {
+                                item.disabled = true; // disable
+                            }
+                        }
+                    });
+
+                    console.log("Updated Context Menu Items:", menuItems);
+
+                    // Re-render after applying permissions
+                    renderContextMenu();
                 } else {
                     console.warn("Failed to fetch permissions or no permissions available.");
                 }
