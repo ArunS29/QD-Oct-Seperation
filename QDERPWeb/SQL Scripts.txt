@@ -3920,3 +3920,6 @@ FROM     Aicon.tbl201CostAllocationMaster LEFT OUTER JOIN
 UPDATE Aicon.tbl20104EmployeeAllocationMaster
 SET CurrencyRate = 1.00
 WHERE CurrencyRate IS NULL;
+
+ALTER TABLE Aicon.Tbl201VoucherMaster
+ALTER COLUMN currencyrate DECIMAL(18,4);

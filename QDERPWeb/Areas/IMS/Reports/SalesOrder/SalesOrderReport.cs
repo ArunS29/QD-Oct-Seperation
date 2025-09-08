@@ -18,6 +18,9 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
         }
 
         public SalesOrderReport(
+             bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             string salesorderNo,
             string tenantName,
             string companyName,
@@ -35,11 +38,12 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(salesorderNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyPhone, companyEmail, companyWebsite, companyNameAr, companyAddressAr, username);
+            SetReportParameters(showSeal, showSignature, printLetterhead, salesorderNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyPhone, companyEmail, companyWebsite, companyNameAr, companyAddressAr, username);
             LoadReportData(salesorderNo);
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
         }
 
-        private void SetReportParameters(
+        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead,
             string salesorderNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress, string companyPhone, string companyEmail, string companyWebsite,
             string companyNameAr, string companyAddressAr, string username)
@@ -153,6 +157,34 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 }
             }
         }
+
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox8", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel89", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel90", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox16", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
+
         private DataTable GetReportData(string salesorderNo)
         {
             DataTable dt = new DataTable();

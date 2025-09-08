@@ -254,13 +254,13 @@
         <div class="card-title-icon">
             <i class="fas fa-pen-nib header-icon"></i>
         </div>
-        <h3 class="card-title-text">Cost Center Master</h3>
+        <h3 class="card-title-text" id="costcentermasters"></h3>
     </div>
     <div class="container5">
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().TextBox()
                         .ID("CostAllocationUnitID")
-                        .Label("Cost Center Code")
+                        .Label(new JS("formatMessage('Cost Center Code')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(null)
                         .Width("100%")
@@ -270,7 +270,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().TextBox()
                         .ID("CostAllocationUnit")
-                        .Label("Cost Center Unit")
+                        .Label(new JS("formatMessage('Cost Center Unit')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(null)
                         .Width("100%"))
@@ -287,7 +287,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().TextBox()
                         .ID("CostUnitRemarks")
-                        .Label("Remarks")
+                        .Label(new JS("formatMessage('Remarks')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(null)
                         .Width("100%")
@@ -297,7 +297,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().TextBox()
                         .ID("CostCenterIncharge")
-                        .Label("Incharge")
+                        .Label(new JS("formatMessage('Incharge')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(null)
                         .Width("100%"))
@@ -306,7 +306,7 @@
         <div class="dx-fieldset horizontal-container" style="align-items: flex-end; justify-content: space-between;">
             @(Html.DevExtreme().DropDownBox()
                         .ID("GetProjectDropDown")
-                        .Label("Project")
+                        .Label(new JS("formatMessage('Project')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(d => d.WebApi().Controller("CostCenterMaster").LoadAction("GetProject").LoadMode(DataSourceLoadMode.Raw).Key("ProjectId"))
                         .Width(900)
@@ -326,7 +326,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().DropDownBox()
                         .ID("GetBranchCodeDropDown")
-                        .Label("Division / Branch")
+                        .Label(new JS("formatMessage('Division/Branch')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(d => d.WebApi().Controller("CostCenterMaster").LoadAction("GetBranchCode").LoadMode(DataSourceLoadMode.Raw).Key("Branch"))
                         .Width(900)
@@ -342,7 +342,7 @@
                         .ContentTemplate(new TemplateName("GetBranchCodeContentTemplate")))
             @(Html.DevExtreme().CheckBox()
                         .ID("Discontinued")
-                        .Text("Discontinued")
+                        .Text(new JS("formatMessage('Discontinued')"))
                         .ElementAttr("style", "color: crimson; margin-left: auto;"))
         </div>
     </div>
@@ -350,19 +350,19 @@
     <div class="container5" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;">
         <div class="col-md-1">
            
-            @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true).Label("Created By:").LabelMode(EditorLabelMode.Floating))
+            @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true).Label(new JS("formatMessage('Created By:')")).LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
             
-            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true).Label("Created On:").LabelMode(EditorLabelMode.Floating))
+            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true).Label(new JS("formatMessage('Created On:')")).LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
             
-            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true).Label("Modified By:").LabelMode(EditorLabelMode.Floating))
+            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true).Label(new JS("formatMessage('Modified By:')")).LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
             
-            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true).Label("Modified On:").LabelMode(EditorLabelMode.Floating))
+            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true).Label(new JS("formatMessage('Modified On:')")).LabelMode(EditorLabelMode.Floating))
         </div>
     </div>
 </div>
@@ -457,7 +457,7 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Project')")).DataField("ProjectId");
-                columns.Add().DataField("ProjectDescription");
+                columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
 
             })
@@ -575,7 +575,7 @@
     $(function () {
         $("#costCenterComboBox").dxSelectBox({
             width: 1000,
-            label: "Cost Center Group",                  // Label text
+            label: formatMessage("Cost Center Group"),                  // Label text
             labelMode: "floating",
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
@@ -617,7 +617,7 @@
     $(function () {
         $("#costCenterMaster1").dxSelectBox({
             width: 1000,
-            label: "Cost Center Group",                  // Label text
+            label: formatMessage("Cost Center Group"),                  // Label text
             labelMode: "floating",
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
@@ -727,7 +727,7 @@
             // Change the Save button to Update
             // $("#btnSave").text("Update");
             var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+            button.option("text", formatMessage("Update"));
             
             // Fetch and bind data to form fields if CostAllocationUnitId is in the query string
             $.ajax({
@@ -1003,7 +1003,9 @@ function formatDate(date) {
         history.back();
         
     }
-
+           $(function () {
+                    $("#costcentermasters").text(formatMessage("Cost Center Master"));
+        });
 </script>
 
 

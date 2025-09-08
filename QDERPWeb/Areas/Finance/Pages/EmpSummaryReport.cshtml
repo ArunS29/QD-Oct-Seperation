@@ -5,14 +5,14 @@
 }
 
 
-<h2>Employee Summary Report</h2>
+<h2 id="employeesummaryreport"></h2>
 
 <div class="toolbar custom-toolbar">
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
-.LabelMode(EditorLabelMode.Floating)
+            .Label(new JS("formatMessage('Start Date')"))
+            .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Start Date")
             .Type(DateBoxType.Date)
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -24,7 +24,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
 .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "End Date")
             .Type(DateBoxType.Date)
@@ -37,7 +37,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().TextBox()
             .ID("accountIdLabel")
-            .Label("Ledger No")
+            .Label(new JS("formatMessage('Ledger No')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Ledger No")
             .ReadOnly(true)
@@ -78,6 +78,9 @@
 <div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
 
 <script>
+       $(function () {
+         $("#employeesummaryreport").text(formatMessage("Employee Summary Report"));
+    });
     $(document).ready(function () {
       
         const accountId = getQueryParam('accountId');
@@ -126,40 +129,41 @@
             },
             dataSource: {
                 fields: [
-                    { dataField: "Department", area: "row", caption: "Department" },
-                    { dataField: "EmployeeName", area: "row", caption: "Employee Name" },
-                    { dataField: "AmountAllocated", area: "row", caption: "Amount Allocated" },
+                        { dataField: "Department", area: "row", caption: formatMessage("Department") },
+    { dataField: "EmployeeName", area: "row", caption: formatMessage("Employee Name") },
+    { dataField: "AmountAllocated", area: "row", caption: formatMessage("Amount Allocated") },
 
-                    { dataField: "VoucherNo" },
-                    { dataField: "VoucherEntryId" },
-                    { dataField: "EmployeeNo" },
-                    { dataField: "EmpAllocDrCr" },
-                    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency" },
-                    { dataField: "VoucherRefNo" },
-                    { dataField: "AccountHead" },
-                    { dataField: "EmployeeName" },
-                    { dataField: "VoucherDate", dataType: "date", displayFormat: "dd-MMM-yyyy" },
-                    { dataField: "EffectiveDate", dataType: "date", displayFormat: "dd-MMM-yyyy" },
-                    { dataField: "CategoryTitle" },
-                    { dataField: "NationalityEn" },
-                    { dataField: "VisaPositionTitle" },
-                    { dataField: "WorkSite" },
-                    { dataField: "SponsorName" },
-                    { dataField: "NationalId" },
-                    { dataField: "IsDiscontinued" },
-                    { dataField: "EmployeeGroup" },
-                    { dataField: "JobTitle" },
-                    { dataField: "CostCentreCode" },
-                    { dataField: "CostCentreTitle" },
-                    { dataField: "DepartmentCode" },
-                    { dataField: "Department" },
-                    { dataField: "EmployeeReferenceId" },
-                    { dataField: "BankAccountNo" },
-                    { dataField: "BankName" },
-                    { dataField: "VoucherType" },
-                    { dataField: "AccountHeadName" },
-                    { dataField: "VoucherNarration" },
-                    { dataField: "BillRemarks" }
+    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
+    { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
+    { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
+    { dataField: "EmpAllocDrCr", caption: formatMessage("Emp Alloc DrCr") },
+    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
+    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
+    { dataField: "AccountHead", caption: formatMessage("Account Head") },
+    { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
+    { dataField: "VoucherDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
+    { dataField: "EffectiveDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
+    { dataField: "CategoryTitle", caption: formatMessage("Category Title") },
+    { dataField: "NationalityEn", caption: formatMessage("Nationality En") },
+    { dataField: "VisaPositionTitle", caption: formatMessage("Visa Position Title") },
+    { dataField: "WorkSite", caption: formatMessage("Work Site") },
+    { dataField: "SponsorName", caption: formatMessage("Sponsor Name") },
+    { dataField: "NationalId", caption: formatMessage("National ID") },
+    { dataField: "IsDiscontinued", caption: formatMessage("Is Discontinued") },
+    { dataField: "EmployeeGroup", caption: formatMessage("Employee Group") },
+    { dataField: "JobTitle", caption: formatMessage("Job Title") },
+    { dataField: "CostCentreCode", caption: formatMessage("Cost Centre Code") },
+    { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") },
+    { dataField: "DepartmentCode", caption: formatMessage("Department Code") },
+    { dataField: "Department", caption: formatMessage("Department") },
+    { dataField: "EmployeeReferenceId", caption: formatMessage("Employee Reference Id") },
+    { dataField: "BankAccountNo", caption: formatMessage("Bank Account No") },
+    { dataField: "BankName", caption: formatMessage("Bank Name") },
+    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
+    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name") },
+    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
+    { dataField: "BillRemarks", caption: formatMessage("Bill Remarks") },
+
                 ]
             },
             width: "100%",

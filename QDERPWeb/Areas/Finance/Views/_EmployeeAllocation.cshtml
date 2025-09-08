@@ -11,14 +11,14 @@
 	long voucherEntryNo = ViewBag.VoucherEntryNo;
 	string accountId = ViewBag.AccountID;
 	decimal currencyRate = ViewBag.CurrencyRate;
-	double? originalAmount = null;
-	double? voucherAmountParsed = null;
+	decimal? originalAmount = null;
+	decimal? voucherAmountParsed = null;
 
 	// Try parsing the voucherAmount to a nullable double
 	if (!string.IsNullOrEmpty(voucherAmount))
 	{
-		double parsedAmount;
-		if (double.TryParse(voucherAmount, out parsedAmount))
+		decimal parsedAmount;
+		if (decimal.TryParse(voucherAmount, out parsedAmount))
 		{
 			voucherAmountParsed = parsedAmount;
 
@@ -30,7 +30,7 @@
 	{
 		// Format the amount to 2 decimal places and then parse it back to double
 		voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
-		originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
+		originalAmount = (decimal)(voucherAmountParsed.Value / (decimal)currencyRate);
 	}
 }
 
@@ -230,7 +230,7 @@
 				<div class="col-md-1">
 					@(Html.DevExtreme().NumberBox()
 										.ID("vAmount")
-										.Value(originalAmount)
+										.Value((double?)originalAmount)
 										.Format("#,##0.000")
 										.Label(new JS("formatMessage('Amount')"))
 										.LabelMode(EditorLabelMode.Floating)

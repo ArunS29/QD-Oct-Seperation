@@ -5,6 +5,7 @@
 @* @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
 } *@
+<link rel="stylesheet" href="~/css/loader.css" />
 <style>
 	.titleCard-toggle1 {
 		display: none;
@@ -589,7 +590,9 @@
         background-color: #eee;
     }
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -3248,7 +3251,7 @@
 
 													{
 
-														columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center);
 													})
 
 												)
@@ -3831,7 +3834,7 @@
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-			const title = "";
+			const title = formatMessage("Add Signatory");
 			openModal(url, title); // opens in modal instead of new window
 		}
 
@@ -3983,7 +3986,7 @@
 											    btnPostToLedgerdisableEditing();
 											}
 											 var button = $("#btnSave").dxButton("instance");
-						                     button.option("text", "Update");
+						                     button.option("text", formatMessage("Update"));
 											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -4101,13 +4104,13 @@
                 },
                 selection: { mode: "single" },
                 columns: [
-                    { dataField: "GSCode", caption: "Code", width: 80 },
-                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-                    { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-                    { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-                    { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                    { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
                 ],
                 onSelectionChanged: function (selectedItems) {
                     const selectedItem = selectedItems.selectedRowsData[0];
@@ -4167,7 +4170,7 @@
           
 
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url,formatMessage("Goods and Services"));
         },
         width: 60,
         height: 30
@@ -4178,7 +4181,7 @@
         hint: "Stock Inventory Edit",
         onClick: function () {
             const url = `/${tenantName}/IMS/InventoryStockDetails?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-		    openModal(url, "Inventory Stock");
+		    openModal(url, formatMessage("Inventory Stock"));
         },
         width: 60,
         height: 30
@@ -4375,10 +4378,10 @@
 													placeholder: "Search..."
 													},
                                     columns: [
-                                        { dataField: "UnitCode", caption: "Code", width: 80 },
-                                        { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-                                        { dataField: "UnitType", caption: "Unit Type", width: 150 },
-                                        { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+                                        { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                                        { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                                        { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                                        { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
                                     ],
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -4405,7 +4408,7 @@
                             hint: "Add new item",
                             onClick: function () {
                                 let url = `/${tenantName}/VAT/VATMasterModule`;
-                                let title = "Unit of Measure";
+                                let title = formatMessage("Unit of Measure");
                                 openModal(url, title);
                             },
                             width: 60,
@@ -4549,8 +4552,8 @@
 													placeholder: "Search..."
 													},
                         columns: [
-                            { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                            { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                            { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+                            { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
                         ],
                         onSelectionChanged: function (selectedItems) {
                             let selectedItem = selectedItems.selectedRowsData[0];
@@ -4631,7 +4634,8 @@
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.TaxExemptionReasonCode || "Select Reason")
+
+      .text(options.data.TaxExemptionReasonCode || formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -4651,7 +4655,7 @@
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -4671,7 +4675,7 @@
 
               // OK button
               $("#okButton_" + options.rowIndex).dxButton({
-                text: "OK",
+                text: formatMessage("OK"),
                 type: "success",
                 icon: "check",
                 onClick: function () {
@@ -4682,13 +4686,13 @@
                   const selectedObj = reasons.find(r => r.TaxExemptionReasonCode === selectedCode);
                   const selectedText = selectedObj ? selectedObj.TaxExemptionReason : "";
 
-                  DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
+                  DevExpress.ui.notify(formatMessage("Selected") + ": " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
                   grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+                  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -4696,7 +4700,7 @@
 
               // Close button
               $("#closeButton_" + options.rowIndex).dxButton({
-                text: "Close",
+                text: formatMessage("Close"),
                 type: "normal",
                 icon: "close",
                 onClick: function () {
@@ -4915,13 +4919,13 @@ editCellTemplate: function (cellElement, cellInfo) {
                 },
                 selection: { mode: "single" },
                 columns: [
-                    { dataField: "GSCode", caption: "Code", width: 80 },
-                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-                    { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-                    { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-                    { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                   { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
                 ],
                 onSelectionChanged: function (selectedItems) {
                     const selectedItem = selectedItems.selectedRowsData[0];
@@ -4980,7 +4984,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 
 	        const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Services"));
         },
         width: 60,
         height: 30
@@ -4991,7 +4995,7 @@ editCellTemplate: function (cellElement, cellInfo) {
         hint: "Stock Inventory Edit",
         onClick: function () {
 		    const url = `/${tenantName}/IMS/InventoryStockDetails?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-		    openModal(url, "Inventory Stock");
+		    openModal(url, formatMessage("Inventory Stock"));
             // openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
         },
         width: 60,
@@ -5268,13 +5272,10 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 										columns: [
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                                        { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                                        { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                                        { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -5323,7 +5324,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 								onClick: function () {
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-									 let title = "Unit of Measure";
+									 let title = formatMessage("Unit of Measure");
 									openModal(url, title);
 									//window.location.href = url;
 
@@ -5444,8 +5445,8 @@ editCellTemplate: function (cellElement, cellInfo) {
 										height: 300,
 										scrolling: { mode: "virtual" },
 										columns: [
-											{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-											{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+											{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+											{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 										],
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
@@ -5503,7 +5504,8 @@ editCellTemplate: function (cellElement, cellInfo) {
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.TaxExemptionReasonCode || "Select Reason")
+
+      .text(options.data.TaxExemptionReasonCode ||formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -5523,7 +5525,7 @@ editCellTemplate: function (cellElement, cellInfo) {
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -5560,7 +5562,7 @@ editCellTemplate: function (cellElement, cellInfo) {
                   grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				   grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+                  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -6021,10 +6023,6 @@ if (popover.option("visible")) {
 
 			});
 		}
-
-	
-
-
 
 
 		  function PaymentMeansdataGridSelectionChanged(e) {
@@ -7747,14 +7745,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSave").dxButton("instance");
-            button.option("disabled", true);
 
-			
-			var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
-			SaveAndClosebtn.option("disabled", true);
-
-
+		    document.getElementById('loadingSpinner').style.display = 'block';
 			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
@@ -7939,37 +7931,34 @@ if (popover.option("visible")) {
 									error: function (xhr, status, error) {
 
 										console.error("Error fetching grid data:", error);
-   button.option("disabled", false);
-  SaveAndClosebtn.option("disabled", false);
+	                                 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-								  button.option("disabled", false);
+								
 								  getDocumentCount();
-								  SaveAndClosebtn.option("disabled", false);
+						 document.getElementById('loadingSpinner').style.display = 'none';
 							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-							 button.option("disabled", false);
-							  SaveAndClosebtn.option("disabled", false);
+						
+							 document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                         button.option("disabled", false);
-						  SaveAndClosebtn.option("disabled", false);
+                     document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
 				  DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				  button.option("disabled", false);
-				   SaveAndClosebtn.option("disabled", false);
+				 document.getElementById('loadingSpinner').style.display = 'none';
 			}
 
 		 }
@@ -7980,11 +7969,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSaveAndClose").dxButton("instance");
-             button.option("disabled", true);
-
-			 	var Savebtn = $("#btnSave").dxButton("instance");
-            Savebtn.option("disabled", true);
+   	          document.getElementById('loadingSpinner').style.display = 'block';
+	       
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -8170,37 +8156,32 @@ if (popover.option("visible")) {
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
-										       button.option("disabled", false);
-										       Savebtn.option("disabled", false);
+										 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 							 history.back();
-							  button.option("disabled", false);
-							      Savebtn.option("disabled", false);
+			 document.getElementById('loadingSpinner').style.display = 'none';
 						},
 
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                           button.option("disabled", false);
-						       Savebtn.option("disabled", false);
+             document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-					 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+					 document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
                    DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				   		 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+              document.getElementById('loadingSpinner').style.display = 'none';
 
 			}
 
@@ -8608,7 +8589,7 @@ if (popover.option("visible")) {
         result.done(function (dialogResult) {
             if (dialogResult) {
                 // ✅ Navigate to VATZatcaPortal.cshtml
-					let url = `/${tenantName}/VAT/VATZatcaPortal?InvoiceNo=${encodeURIComponent(InvoiceNo)}`; // Update this route if needed
+					let url = `/${tenantName}/VAT/VATZatcaPortal?InvoiceNo=${encodeURIComponent(vno)}`; // Update this route if needed
 				window.location.href = url;
              
             }
@@ -9027,7 +9008,7 @@ if (popover.option("visible")) {
 
 		$(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		button.option("text", formatMessage("Update"));
 	});
 
 		
@@ -9237,7 +9218,10 @@ if (popover.option("visible")) {
 	function onAddSalesPersonClick() {
 
 		    let url = `/${tenantName}/VAT/SalesPersonMaster`; // Example edit page
-            let title = " ";
+
+            let title = formatMessage("Sales Person Master");
+
+           
             openModal(url, title);
 	}
 
@@ -9245,13 +9229,13 @@ if (popover.option("visible")) {
 	function CurrencyClick() {
 
 			let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-            let title = " ";
+            let title = formatMessage("Database Master Module:Foriegn Currency Master");
             openModal(url, title);
 }
 	function CurrencySClick() {
 		
 			let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-				let title = " ";
+				let title = formatMessage("Database Master Module:Foriegn Currency Master");
             openModal(url, title);
 	}
 
@@ -9308,6 +9292,7 @@ if (popover.option("visible")) {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9363,6 +9348,7 @@ if (popover.option("visible")) {
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}
@@ -9370,8 +9356,8 @@ if (popover.option("visible")) {
 			else if (action === "deleteAll") {
     if (selectedRowKey !== null) {
         const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-        if (rowIndex >= 0) {
-            debugger;
+        // if (rowIndex >= 0) {
+        //     debugger;
             const rowData = grid.getDataSource().items()[rowIndex];
             const InvoiceNo = rowData.InvoiceNo; // ✅ Only the string
 
@@ -9424,9 +9410,9 @@ if (popover.option("visible")) {
                 });
             }
         }
-    } else {
-        DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-    }
+    // } else {
+    //     DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+    // }
 }
 
 

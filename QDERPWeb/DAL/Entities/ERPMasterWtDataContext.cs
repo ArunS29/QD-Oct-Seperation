@@ -3426,7 +3426,11 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<Qry01SupplierOutstanding> Qry01SupplierOutstanding { get; set; }
     public DbSet<ZeroToWonDto> ZeroToWonDtos { get; set; }
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
+    public DbSet<PostAvgCostDto> PostAvgCostDtos { get; set; }
+    public DbSet<PostJournalDto> PostJournalDtos { get; set; }
+    public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
     public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
+   
    // public DbSet<CreateQuotationRequest> CreateQuotationRequests { get; set; }
 
 
@@ -3454,7 +3458,10 @@ public partial class ERPMasterWtDataContext : DbContext
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
+        modelBuilder.Entity<PostAvgCostDto>().HasNoKey();
+        modelBuilder.Entity<PostJournalDto>().HasNoKey();
         modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
+        modelBuilder.Entity<ApproveDeliveryNoteDto>().HasNoKey();
        // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();
         modelBuilder.Entity<UpdateIsWonDto>().HasNoKey();
         modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
@@ -55489,6 +55496,9 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VoucherType)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            
+            entity.Property(e => e.currencyrate)
+                .HasColumnType("decimal(18,4)");
             entity.Property(e => e.VoucherVerifiedBy).IsUnicode(false);
             entity.Property(e => e.VoucherVerifiedOn).HasColumnType("datetime");
         });

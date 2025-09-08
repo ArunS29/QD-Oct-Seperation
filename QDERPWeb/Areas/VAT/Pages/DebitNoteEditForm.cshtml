@@ -1030,7 +1030,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Company Branch / Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDivision")
 																						.ShowClearButton(true)
@@ -1038,8 +1038,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("BranchCode")
-																						.DisplayExpr("BranchName")
+																						.ValueExpr("CompanyId")
+																						.DisplayExpr("CompanyName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1052,7 +1052,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDebitNoteDivision")
 																						.ShowClearButton(true)
@@ -1060,8 +1060,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("CompanyId")
-																						.DisplayExpr("CompanyName")
+																						.ValueExpr("BranchCode")
+																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1748,10 +1748,10 @@
 														.ID("division-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDivision")
+															.LoadAction("GetDebitNoteDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("BranchCode")
+															.Key("CompanyId")
 
 													)
 													.WordWrapEnabled(true)
@@ -1780,8 +1780,9 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
+															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														
 													})
 
 												)
@@ -1844,11 +1845,9 @@
 														.Columns(columns =>
 
 														{
-
-															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center).Width(100);
-
-															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
-
+														
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
+														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
 
 														})
 
@@ -1990,10 +1989,10 @@
 														.ID("debitnotedivision-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDebitNoteDivision")
+															.LoadAction("GetDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("CompanyId")
+															.Key("BranchCode")
 
 													)
 													.WordWrapEnabled(true)
@@ -2022,8 +2021,8 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Branch Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                                        columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Center);
 													})
 
 												)
@@ -2416,13 +2415,13 @@
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -2466,7 +2465,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Service"));
 			},
 			width: 60,
 			height: 30
@@ -2478,7 +2477,7 @@
 			onClick: function () {
 			
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Service"));
 			},
 			width: 60,
 			height: 30
@@ -2518,7 +2517,7 @@
 									height: "auto",
 									position: "bottom",
 									showTitle: true,
-									title: "VAT Description",
+									title: formatMessage("VAT Description"),
 									contentTemplate: function () {
 										const formHtml = `
 					<div class="form-wrapper">
@@ -2743,13 +2742,10 @@
 
 												columns: [
 
-														{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-													{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-													{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-													{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 												],
 
@@ -2797,7 +2793,7 @@
 										onClick: function () {
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-									 let title = "Unit of Measure";
+									 let title = formatMessage("Unit of Measure");
 									openModal(url, title);
 
 										},
@@ -2826,7 +2822,7 @@
                         }
                     } },
 
-						{ dataField: "UnitRate", caption: formatMeessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),
 						editorOptions: {
 							onInput: function(e) {
 							let maxLength = 8; // Example: allow max 5 digits
@@ -2880,8 +2876,8 @@
 								height: 300,
 								scrolling: { mode: "virtual" },
 								columns: [
-									{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-									{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+									{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+									{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 								],
 								onSelectionChanged: function(selectedItems) {
 									let selectedItem = selectedItems.selectedRowsData[0];
@@ -3059,13 +3055,13 @@
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -3109,7 +3105,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`,formatMessage("Goods and Service"));
 			},
 			width: 60,
 			height: 30
@@ -3121,7 +3117,7 @@
 			onClick: function () {
 				
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Service"));
 			},
 			width: 60,
 			height: 30
@@ -3568,13 +3564,10 @@
 
 											columns: [
 
-													{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-												{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-												{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-												{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+													{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 											],
 
@@ -3622,7 +3615,7 @@
 									onClick: function () {
 
 											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-	 let title = "Unit of Measure";
+	 let title = formatMessage("Unit of Measure");
 	openModal(url, title);
 
 									},
@@ -3708,8 +3701,8 @@
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function(selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -6851,6 +6844,7 @@ $(function () {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -6905,6 +6899,7 @@ $(function () {
 								}
 							});
 						}
+						grid.saveEditData();
 					}
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
@@ -7037,7 +7032,7 @@ $(function () {
             }
         }
 
-		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(creditNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
 		const docs = await res.json();
 		const count = docs.length;
 		updateAttachButtonCount("#btnAttach", count);

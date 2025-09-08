@@ -260,7 +260,7 @@
 		)
 	@(Html.DevExtreme().CheckBox()
 		.ID("chkUseEffectiveDate")
-		.Text("Use Effective Date")
+		.Text(new JS("formatMessage('Use Effective Date')"))
 		.Value(false)
 		 // Adjust margin as needed
 		)
@@ -273,67 +273,67 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Purchase Bill Details").Columns(bill =>
+			columns.Add().Caption(new JS("formatMessage('Purchase Bill Details')")).Columns(bill =>
 			{
-				/* bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0); */
-				bill.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseVoucherDate).Caption("Voucher Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseBillNo).Caption("Bill No").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.PurchaseBillDate).Caption("Bill Date").Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.SupplierName).Caption("Supplier").Alignment(HorizontalAlignment.Left);
-				bill.AddFor(m => m.SupplierVatnumber).Caption("VAT Number").Alignment(HorizontalAlignment.Center);
-				bill.AddFor(m => m.CostCenterCode).Caption("CostCenterCode").Alignment(HorizontalAlignment.Right);
+				/* bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0); */
+				bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillNo).Caption(new JS("formatMessage('Bill No')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillDate).Caption(new JS("formatMessage('Bill Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier')")).Alignment(HorizontalAlignment.Left);
+				bill.AddFor(m => m.SupplierVatnumber).Caption(new JS("formatMessage('VAT Number')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.CostCenterCode).Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Right);
 			});
 
-			columns.Add().Caption("Item Details").Columns(item =>
+			columns.Add().Caption(new JS("formatMessage('Item Details')")).Columns(item =>
 			{
-				item.AddFor(m => m.ItemCode).Caption("Item Code").Alignment(HorizontalAlignment.Center);
-				item.AddFor(m => m.Gsdescrpition).Caption("Description").Alignment(HorizontalAlignment.Left);
-				item.AddFor(m => m.UnitDesc).Caption("Unit").Alignment(HorizontalAlignment.Center);
-				item.AddFor(m => m.QuantityInvoiced).Caption("Qty").Alignment(HorizontalAlignment.Right);
+				item.AddFor(m => m.ItemCode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Left);
+				item.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Qty')")).Alignment(HorizontalAlignment.Right);
 
 				item.AddFor(m => m.UnitRate)
-			.Caption("Unit Rate")
+			.Caption(new JS("formatMessage('Unit Rate')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				item.AddFor(m => m.LineDiscount)
-			.Caption("Discount")
+			.Caption(new JS("formatMessage('Discount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				item.AddFor(m => m.LineAmountBeforeDiscount)
-			.Caption("Amount Before Discount")
+			.Caption(new JS("formatMessage('Amount Before Discount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				item.AddFor(m => m.TaxAmount)
-			.Caption("VAT Amount")
+			.Caption(new JS("formatMessage('VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 				item.AddFor(m => m.CalcLineWithTax)
-			.Caption("Amount After Tax")
+			.Caption(new JS("formatMessage('Amount After Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 			});
 
-			columns.Add().Caption("Goods In Transit(Additional Cost On Purchase Of Material)").Columns(transit =>
+			columns.Add().Caption(new JS("formatMessage('Goods In Transit(Additional Cost On Purchase Of Material)')")).Columns(transit =>
 			{
 				transit.AddFor(m => m.IsGoodsInTransitAccount)
-			.Caption("Is Goods In Transit Account")
+			.Caption(new JS("formatMessage('Is Goods In Transit Account')"))
 			.Alignment(HorizontalAlignment.Center);
 
 				transit.AddFor(m => m.GoodsInTransitAccountNo)
-			.Caption("GIT Account No")
+			.Caption(new JS("formatMessage('GIT Account No')"))
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitAccountLedger)
-			.Caption("GIT Account Ledger")
+			.Caption(new JS("formatMessage('GIT Account Ledger')"))
 			.Alignment(HorizontalAlignment.Left);
 
 				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
-			.Caption("GIT Purchase Voucher Linked")
+			.Caption(new JS("formatMessage('GIT Purchase Voucher Linked')"))
 			.Alignment(HorizontalAlignment.Center);
 			});
 		})

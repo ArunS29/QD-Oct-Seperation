@@ -847,8 +847,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     // set default value
                     model.CreatedBy = addedBy;
                     model.CreatedOn = DateTime.Now;
-                    model.ModifiedBy = null;
-                    model.ModifiedOn = null;
+                    model.ModifiedBy = addedBy;
+                    model.ModifiedOn = DateTime.Now;
+                    model.IsDiscontinued = (model.IsDiscontinued == true) ? true : false;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
 
@@ -898,6 +899,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ModifiedBy = addedBy;
                     existingItem.ModifiedOn = DateTime.Now;
                     existingItem.ItemImage = model.ItemImage;
+                    existingItem.IsDiscontinued = model.IsDiscontinued;
 
                     // Update opening balance using SP
                     await dbContext.Database.ExecuteSqlRawAsync(

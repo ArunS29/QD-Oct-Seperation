@@ -803,7 +803,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return Ok(new
                 {
                     success = true,
-                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
+                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully.",
+                    salesOrderNo = model.SalesOrderNo
                 });
             }
             catch (Exception ex)

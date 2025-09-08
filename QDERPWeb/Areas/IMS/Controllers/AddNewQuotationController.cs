@@ -28,48 +28,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			_logger = logger;
 		}
 
-		//[HttpGet]
-		//public ActionResult<string> GetNewDebitNoteNoApi()
-		//{
-		//	try
-		//	{
-		//		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-		//		{
-
-
-		//			var company = dbContext.Tbl901CompanyDetails
-		//								   .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
-
-
-		//			if (company == null)
-		//			{
-		//				return NotFound("Company not found.");
-		//			}
-
-		//			string invoiceAbbrv = company.InvoiceAbbrv;
-		//			int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-
-		//			bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-
-		//			DateTime invoiceDate = DateTime.Now;
-
-
-
-		//			// Step 4: Generate New Debit Note No
-		//			string newDebitNoteNo = GetNewDebitNoteNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
-
-		//			return Ok(newDebitNoteNo);
-		//		}
-		//		else
-		//		{
-		//			return BadRequest("Tenant or DB Context not found.");
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return StatusCode(500, "Internal server error: " + ex.Message);
-		//	}
-		//}
+		
 
 		[HttpGet]
 		public ActionResult<string> GetNewDebitNoteNoApi()
@@ -391,6 +350,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             .Where(x => x.QuoteNo == VM.QuoteNo)
                             .Select(x => x.CurrencyRate)
                             .FirstOrDefaultAsync();
+                currencyRate = currencyRate ?? VM.CurrencyRate;
                 // Track QuoteChildId from client
                 var incomingIds = VM.QuotationDetailses
                     .Where(x => x.QuoteChildId > 0)

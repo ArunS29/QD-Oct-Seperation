@@ -119,7 +119,7 @@
 										.ElementAttr(new { @class = "custom-disabled-textbox" })
 
 						.OnValueChanged("onVoucherNoChanged")
-						.Disabled(false)
+						.Disabled(true)
 						)
 		</div>
 			 <div class="form-group col-md-1 col-sm-6">
@@ -169,11 +169,11 @@
 				 <div class="form-group col-md-2 col-sm-6" style="margin-bottom:15px;">
 				  <div class="d-flex align-items-center mb-1">
 						@(Html.DevExtreme().CheckBox()
-												.Text("") // Empty so label appears separately
+												.Text(new JS("formatMessage('Received Date')")) // Empty so label appears separately
 												.ID("UseSubmittedDate")
 												.OnValueChanged("updateDueDate")
 												)
-						<label for="UseSubmittedDate" style="margin: 0; font-size: 13px;">@Html.Raw("Received Date")</label>
+
 					</div>
 
 					<div >
@@ -248,6 +248,7 @@
 								.DisplayExpr("AccountHead")
 								.OnInput("dropDownBoxOnInput")
 								.OnOpened("onOpened")
+								.OnClosed("onAccountdownBoxClosed")
 								
 												.ElementAttr(new { @class = "white-dropdownbox" })
 
@@ -315,6 +316,7 @@ buttons.Add()
 										.DisplayExpr("AccountHead")
 										.OnInput("dropDownBoxOnInput")
 										.OnOpened("onOpened")
+										.OnClosed("onPaymentDownBoxClosed")
 													.DropDownOptions(o => o
 													.Width(1000)
 													)
@@ -460,9 +462,8 @@ buttons.Add()
 								columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
 								columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
 								columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-								columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-								columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
-								columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+								columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(3)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(3) + ')'; } return cellInfo.value.toFixed(3); }");
+								
 
 							})
 							)
@@ -479,12 +480,12 @@ buttons.Add()
 
 						.Min(0)
 						.Max(99999)
-						.Format("#,##0.00")
+						.Format("#,##0.000")
 						.InputAttr(new
 						{
 							style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
 							type = "number",
-							step = "0.01"
+							step = "0.001"
 						})
 
 						)
@@ -630,6 +631,7 @@ buttons.Add()
 						columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false)   .CalculateCellValue("function(data) { " +
                                     "    if (data.DrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+									"        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.DrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -649,6 +651,7 @@ buttons.Add()
                                     "    debugger; " +
                                     "    if (data.CrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+									"        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.CrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -1007,32 +1010,46 @@ buttons.Add()
 						.Height(345)
 						.Selection(s => s.Mode(SelectionMode.Single))
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-						.Columns(columns =>
-						{
-					columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-					columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-					columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-					columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-					columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-					columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-					columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-					columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-					columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-				.Alignment(HorizontalAlignment.Center)
-				.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>);
-				})
+					.Columns(columns =>
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')"))
+           .DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+    columns.Add().DataField("IsLedgerObselete")
+           .Visible(true)
+           .Caption(new JS("formatMessage('Ledger Obselete')"))
+           .Alignment(HorizontalAlignment.Center)
+           .CellTemplate(@<text>
+                <div class="dx-icon">
+                    <%= data.IsLedgerObselete 
+                        ? '<i style="color:red" class="fa fa-toggle-on"></i>' 
+                        : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+                </div>
+            </text>);
+})
+
 			.OnRowPrepared("onAccountHeadRowPrepared")
 					)
 	}
@@ -1065,30 +1082,35 @@ buttons.Add()
 						.Selection(s => s.Mode(SelectionMode.Single))
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
-						{
-					columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-					columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-					columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-					columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-					columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-					columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-					columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-					columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-					columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-					columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-				.Alignment(HorizontalAlignment.Center)
-				.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>);
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+    columns.Add().DataField("IsLedgerObselete")
+        .Visible(true)
+        .Caption(new JS("formatMessage('Ledger Obselete')"))
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete 
+                    ? '<i style="color:red" class="fa fa-toggle-on"></i>' 
+                    : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+
 				})
 			.OnRowPrepared("onAccountHeadRowPrepared")
 					)
@@ -1139,113 +1161,113 @@ buttons.Add()
 
 
 
-</div>
+
 <script>
 	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, paymentaccheadname, paymentaccheadId, paymentIsLedgerObselete, IsDrCr = false;
 
-$(function () {
-										$("#EditCostAllocation").dxTextBox({
-													text:formatMessage("Edit Cost Allocation"),
-												readOnly: true
+// $(function () {
+// 										$("#EditCostAllocation").dxTextBox({
+// 													text:formatMessage("Edit Cost Allocation"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
+// 								});
+// 								});
+// 	$(function () {
 
-										$("#DeleteAllLineEntries").dxTextBox({
-													text:formatMessage("Delete All Line Entries"),
-											readOnly: true
+// 										$("#DeleteAllLineEntries").dxTextBox({
+// 													text:formatMessage("Delete All Line Entries"),
+// 											readOnly: true
 
-							});
-							});
-	$(function () {
+// 							});
+// 							});
+// 	$(function () {
 
-										$("#EditBillReceivable").dxTextBox({
-												text:formatMessage("Edit Bill Receivable"),
-											readOnly: true
+// 										$("#EditBillReceivable").dxTextBox({
+// 												text:formatMessage("Edit Bill Receivable"),
+// 											readOnly: true
 
-							});
-							});
-	$(function () {
-										  $("#EditSalaryPayable").dxTextBox({
-													text:formatMessage("Edit Salary Payable"),
-												readOnly: true
+// 							});
+// 							});
+// 	$(function () {
+// 										  $("#EditSalaryPayable").dxTextBox({
+// 													text:formatMessage("Edit Salary Payable"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
-											$("#EditPropertyAllocation").dxTextBox({
-													text:formatMessage("Edit Property Allocation"),
-												readOnly: true
+// 								});
+// 								});
+// 	$(function () {
+// 											$("#EditPropertyAllocation").dxTextBox({
+// 													text:formatMessage("Edit Property Allocation"),
+// 												readOnly: true
 
-								});
-								});
-									$(function () {
-											$("#EditEmployeeAllocation").dxTextBox({
-													text:formatMessage("Edit Employee Allocation"),
-												readOnly: true
+// 								});
+// 								});
+// 									$(function () {
+// 											$("#EditEmployeeAllocation").dxTextBox({
+// 													text:formatMessage("Edit Employee Allocation"),
+// 												readOnly: true
 
-								});
-								});
-									$(function () {
-											$("#EditBillsPayable").dxTextBox({
-													text:formatMessage("Edit Bills Payable"),
-												readOnly: true
+// 								});
+// 								});
+// 									$(function () {
+// 											$("#EditBillsPayable").dxTextBox({
+// 													text:formatMessage("Edit Bills Payable"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
-											$("#DeleteLineEntry").dxTextBox({
-														text:formatMessage("Delete Line Entry"),
-												readOnly: true
+// 								});
+// 								});
+// 	$(function () {
+// 											$("#DeleteLineEntry").dxTextBox({
+// 														text:formatMessage("Delete Line Entry"),
+// 												readOnly: true
 
-								});
-								});
-	$(function () {
+// 								});
+// 								});
+// 	$(function () {
 
-											$("#PurchaseVoucher").dxTextBox({
-														text:formatMessage("Purchase Voucher"),
-															readOnly: true,
-														onContentReady: function(e) {
-					$(e.element).addClass("dx-textbox-heading");
-			}
+// 											$("#PurchaseVoucher").dxTextBox({
+// 														text:formatMessage("Purchase Voucher"),
+// 															readOnly: true,
+// 														onContentReady: function(e) {
+// 					$(e.element).addClass("dx-textbox-heading");
+// 			}
 
-										});
-										});
-	$(function () {
+// 										});
+// 										});
+// 	$(function () {
 
-												$("#ApprovedOn").dxTextBox({
-															text:formatMessage("Approved On:"),
-															readOnly: true,
-															width:"105px"
+// 												$("#ApprovedOn").dxTextBox({
+// 															text:formatMessage("Approved On:"),
+// 															readOnly: true,
+// 															width:"105px"
 
-										});
-									});
-	$(function () {
+// 										});
+// 									});
+// 	$(function () {
 
-												$("#VerifiedOn").dxTextBox({
-															text:formatMessage("Verified On:"),
-															readOnly: true,
-															 width:"95px"
+// 												$("#VerifiedOn").dxTextBox({
+// 															text:formatMessage("Verified On:"),
+// 															readOnly: true,
+// 															 width:"95px"
 
-										});
-										});
-	$(function () {
-								 $("#Days").dxTextBox({
-													text:formatMessage("Days"),
-														readOnly: true,
-
-
-								});
-								});
-	$(function () {
-								 $("#ReceivedDate").dxTextBox({
-													text:formatMessage("Received Date"),
-														readOnly: true,
+// 										});
+// 										});
+// 	$(function () {
+// 								 $("#Days").dxTextBox({
+// 													text:formatMessage("Days"),
+// 														readOnly: true,
 
 
-								});
-								});
+// 								});
+// 								});
+// 	$(function () {
+// 								 $("#ReceivedDate").dxTextBox({
+// 													text:formatMessage("Received Date"),
+// 														readOnly: true,
+
+
+// 								});
+// 								});
 
 	function isModal() {
 		return new URLSearchParams(window.location.search).get("modal") === "true";
@@ -1823,10 +1845,10 @@ $(function () {
 	var ClientName = $("#accountDropDownBox").dxDropDownBox("instance");
 	 var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-  currencyRate = Math.round(currencyRate * 100) / 100;
+  currencyRate = Math.round(currencyRate * 1000) / 1000;
 
     // Format to always have 2 decimals
-    currencyRate = parseFloat(currencyRate).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(3);
  var amount = voucherAmount * currencyRate;
   
 
@@ -2054,6 +2076,7 @@ $.ajax({
 
 				// Get the latest entry from the filtered data
 				var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
+				debugger;
 				Savevoucherdatas();
 				if (accheadname) {
 					resetVoucherButton();
@@ -2169,102 +2192,102 @@ $.ajax({
                     var latestEntry = filteredData.length > 0 ? filteredData[filteredData.length - 1] : null;
                     console.log(latestEntry);
                     resetVoucherButton();
-                    if (accheadname != null) {
+       //              if (accheadname != null) {
 
-                        if (accheadname && accheadname.startsWith("Salary Payable")) {
-                            $("#SalaryPaidEntryPopup").dxPopup({
-                                title: "Salary Paid Entry",
-                                width: 1250,
-                                height: 860,
-                                showCloseButton: true,
-                                visible: true
-                            });
-                        }
+       //                  if (accheadname && accheadname.startsWith("Salary Payable")) {
+       //                      $("#SalaryPaidEntryPopup").dxPopup({
+       //                          title: "Salary Paid Entry",
+       //                          width: 1250,
+       //                          height: 860,
+       //                          showCloseButton: true,
+       //                          visible: true
+       //                      });
+       //                  }
 
-                        //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
-                        else if (accheadname.startsWith("Salary Payable")) {
-                            var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
+       //                  //  $("#txtVoucherAmount").dxNumberBox("instance").option("value", "0.00")
+       //                  else if (accheadname.startsWith("Salary Payable")) {
+       //                      var voucherNo1 = $("#VoucherNo").dxTextBox("instance").option("value");
 
-                            $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
-                            dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
-                            $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
+       //                      $("#VoucherEntryID").dxTextBox("instance").option("value", voucherNo1);
+       //                      dataGridSelectionChangedPaymentAccount({ selectedRowKeys: [accheadname] });
+       //                      $("#SPtxtVoucherAmount").dxNumberBox("instance").option("value", amount + ".00");
 
-                        }
-                        else if (accheadname.startsWith("Salary Advance") || accheadname.startsWith("Salary Paid") || accheadname.startsWith("SALARY ADVANCE")) {
+       //                  }
+       //                  else if (accheadname.startsWith("Salary Advance") || accheadname.startsWith("Salary Paid") || accheadname.startsWith("SALARY ADVANCE")) {
 
 
-                            const params = {
-                                VoucherNo: encodeURIComponent(voucherNo),
-                                AccountHeadVal: encodeURIComponent(accheadname),
-                                VoucherAmount: encodeURIComponent(amount),
-                                DrCr: encodeURIComponent(sbDrCr),
-                                AccountID: encodeURIComponent(paymentaccheadId)
+       //                      const params = {
+       //                          VoucherNo: encodeURIComponent(voucherNo),
+       //                          AccountHeadVal: encodeURIComponent(accheadname),
+       //                          VoucherAmount: encodeURIComponent(amount),
+       //                          DrCr: encodeURIComponent(sbDrCr),
+       //                          AccountID: encodeURIComponent(paymentaccheadId)
 
-                            };
+       //                      };
 
-                            const queryString = Object.keys(params)
-                                .map(key => `${key}=${params[key]}`)
-                                .join("&");
+       //                      const queryString = Object.keys(params)
+       //                          .map(key => `${key}=${params[key]}`)
+       //                          .join("&");
 
-                            $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
-                                $("#CostAllocationModal").modal("show");
-                                $(".close").on("click", function () {
-                                    $("#CostAllocationModal").modal("hide");
-                                });
-                                DevExpress.ui.repaintFloatingActionButton();
-                            });
-                        }
+       //                      $("#CostAllocationContent").load(`/${tenantName}/Finance/AE?${queryString}`, function () {
+       //                          $("#CostAllocationModal").modal("show");
+       //                          $(".close").on("click", function () {
+       //                              $("#CostAllocationModal").modal("hide");
+       //                          });
+       //                          DevExpress.ui.repaintFloatingActionButton();
+       //                      });
+       //                  }
 
-                        else if (accheadname && accheadname.startsWith("Cost")) {
+       //                  else if (accheadname && accheadname.startsWith("Cost")) {
 
-                            const params = {
-                                VoucherNo: encodeURIComponent(voucherNo),
-                                VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                AccountHead: encodeURIComponent(accheadname),
-                                VoucherAmount: encodeURIComponent(amount),
-                                DrCr: encodeURIComponent(sbDrCr)
-                            };
-                            openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-                        }
-                        else if (accheadname) {
-                            // Function to check allocation
-                            function checkAllocation(url, successCallback) {
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    data: {
-                                        AccountHead: accheadname,
-                                        AccountID: accheadid
-                                    },
-                                    success: function (response) {
-                                        if (response.isAllocated) {
-                                            const params = {
-                                                VoucherNo: encodeURIComponent(voucherNo),
-                                                VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                                AccountHead: encodeURIComponent(accheadname),
-                                                VoucherAmount: encodeURIComponent(amount),
-                                                DrCr: encodeURIComponent(sbDrCr),
-                                                AccountID: encodeURIComponent(accheadid)
-                                            };
-                                            successCallback(params);
-                                        }
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error(`Error checking allocation: ${error}`);
-                                    }
-                                });
-                            }
+       //                      const params = {
+       //                          VoucherNo: encodeURIComponent(voucherNo),
+       //                          VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+       //                          AccountHead: encodeURIComponent(accheadname),
+       //                          VoucherAmount: encodeURIComponent(amount),
+       //                          DrCr: encodeURIComponent(sbDrCr)
+       //                      };
+       //                      openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
+       //                  }
+       //                  else if (accheadname) {
+       //                      // Function to check allocation
+       //                      function checkAllocation(url, successCallback) {
+       //                          $.ajax({
+       //                              type: "GET",
+       //                              url: url,
+       //                              data: {
+       //                                  AccountHead: accheadname,
+       //                                  AccountID: accheadid
+       //                              },
+       //                              success: function (response) {
+       //                                  if (response.isAllocated) {
+       //                                      const params = {
+       //                                          VoucherNo: encodeURIComponent(voucherNo),
+       //                                          VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
+       //                                          AccountHead: encodeURIComponent(accheadname),
+       //                                          VoucherAmount: encodeURIComponent(amount),
+       //                                          DrCr: encodeURIComponent(sbDrCr),
+       //                                          AccountID: encodeURIComponent(accheadid)
+       //                                      };
+       //                                      successCallback(params);
+       //                                  }
+       //                              },
+       //                              error: function (xhr, status, error) {
+       //                                  console.error(`Error checking allocation: ${error}`);
+       //                              }
+       //                          });
+       //                      }
 
-                            // Check Property Allocation
-                            checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+       //                      // Check Property Allocation
+       //                      checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
 
-                            // Check Employee Allocation
-                            checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+       //                      // Check Employee Allocation
+       //                      checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
-                            checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
-							resetVoucherButton();
-                        }
-                    }
+       //                      checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+							// resetVoucherButton();
+       //                  }
+       //              }
 
                     var button = $("#btnSave").dxButton("instance");
                     button.option("text", "Update");
@@ -2361,7 +2384,10 @@ $.ajax({
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 					"basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 					"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-					"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+					               "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
 				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 				"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
@@ -2431,11 +2457,23 @@ $.ajax({
 		}
 	}
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
+	
+                 function onOpened(e) {
+        setTimeout(() => e.component.focus(), 0);
+
+        // Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+
+        if (grid) {
+            const currentValue = e.component.option("value");
+            grid.getDataSource().reload().done(() => {
+                if (currentValue) {
+                    grid.selectRows([currentValue], false);
+                    grid.option("focusedRowKey", currentValue);
+                }
+            });
+        }
+    }
 
 	function onKeyDown(e) {
 		const ddbInstance = e.component;
@@ -2504,12 +2542,20 @@ $.ajax({
 			}
 		}
 	}
-	function dataGridInitialized(e) {
-		dataGrid = e.component;
-	}
-	function dataGridAccountHeadInitialized(e) {
-		dataGrid = e.component;
-	}
+	            function dataGridInitialized(e) {
+    // Store grid instance on the parent DropDownBox
+    const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+    if (dropDownBox) {
+        dropDownBox.__contentGridInstance = e.component;  // store reference safely
+    }
+}
+	    function dataGridAccountHeadInitialized(e) {
+       // Store grid instance on the parent DropDownBox
+const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+if (dropDownBox) {
+    dropDownBox.__contentGridInstance = e.component;  // store reference safely
+}
+    }
 
 	function redirectToLedgerAccount() {
 		DevExpress.ui.notify("Working on Progress", "success", 2000);
@@ -2563,6 +2609,10 @@ $.ajax({
 			let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
 			let dataGrid = $("#dataGrid").dxDataGrid("instance");
 			var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+			currencyRate = Math.round(currencyRate * 1000) / 1000;
+
+    // Format to always have 3 decimals
+    currencyRate = parseFloat(currencyRate).toFixed(3);
 			if (!rowIndex || rowIndex < 0) {
 				console.error("Invalid row index detected.");
 				return;
@@ -2607,6 +2657,10 @@ $.ajax({
 			let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
 			let dataGrid = $("#dataGrid").dxDataGrid("instance");
 			var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+			currencyRate = Math.round(currencyRate * 1000) / 1000;
+
+    // Format to always have 3 decimals
+    currencyRate = parseFloat(currencyRate).toFixed(3);
 			if (!rowIndex || rowIndex < 0) {
 				console.error("Invalid row index detected.");
 				return;
@@ -2650,6 +2704,10 @@ $.ajax({
 			let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
 			let dataGrid = $("#dataGrid").dxDataGrid("instance");
 			var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+			currencyRate = Math.round(currencyRate * 1000) / 1000;
+
+    // Format to always have 3 decimals
+    currencyRate = parseFloat(currencyRate).toFixed(3);
 			if (!rowIndex || rowIndex < 0) {
 				console.error("Invalid row index detected.");
 				return;
@@ -2694,6 +2752,10 @@ $.ajax({
 				 let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
 				 let dataGrid = $("#dataGrid").dxDataGrid("instance");
 				 var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+				 currencyRate = Math.round(currencyRate * 1000) / 1000;
+
+    // Format to always have 3 decimals
+    currencyRate = parseFloat(currencyRate).toFixed(3);
 				  var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
 				 if (!rowIndex || rowIndex < 0) {
 					 console.error("Invalid row index detected.");
@@ -3332,7 +3394,10 @@ $.ajax({
 			"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 			 "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                      "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                     "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                                   "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
 			"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 			"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
 			"InvoiceSubmittedDate": $("#InvoiceSubmittedDate").dxDateBox("instance").option("value"),
@@ -3560,7 +3625,10 @@ $.ajax({
 			var VM = {
 						"basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
 						"currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-						"currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+						               "currencyrate": Number(
+    ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+        .toFixed(3)
+),
 				"VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 				"VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
 				"VoucherEffectiveDate": $("#VoucherEffectiveDate").dxDateBox("instance").option("value"),
@@ -4315,7 +4383,7 @@ function showMainFooter() {
                  <div class="side-bar" style="background-color:${item.color};"></div>
                  <div class="item-content">
                      <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
-                     <div class="item-title">${item.text}</div>
+                        <div class="item-title">${formatMessage(item.text)}</div>
                  </div>
              </div>
          `;
@@ -4422,4 +4490,40 @@ function showMainFooter() {
 
 
  renderContextMenu();
+  function onPaymentDownBoxClosed(e) {
+    const typedText = e.component.option("text");
+    const grid = $(e.component.content()).find("#suppliername-datagrid").first().dxDataGrid("instance");
+
+    if (!grid || !typedText) return;
+
+    const visibleRows = grid.getVisibleRows();
+    const match = visibleRows.find(r => r.data.AccountHead === typedText);
+    debugger;
+    if (match) {
+        const selectedKey = match.data.AccountId;
+        grid.selectRows([selectedKey], false); // select the row in the grid
+        e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+        grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+    } else {
+        e.component.option("value", null); // clear if no match found
+    }
+}
+ function onAccountdownBoxClosed(e) {
+    const typedText = e.component.option("text");
+    const grid = $(e.component.content()).find("#accounthead-datagrid").first().dxDataGrid("instance");
+
+    if (!grid || !typedText) return;
+
+    const visibleRows = grid.getVisibleRows();
+    const match = visibleRows.find(r => r.data.AccountHead === typedText);
+    debugger;
+    if (match) {
+        const selectedKey = match.data.AccountId;
+        grid.selectRows([selectedKey], false); // select the row in the grid
+        e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+        grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+    } else {
+        e.component.option("value", null); // clear if no match found
+    }
+}
 </script>

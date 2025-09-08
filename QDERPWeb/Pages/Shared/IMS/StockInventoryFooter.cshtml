@@ -383,7 +383,7 @@
     function UseClick() {
         const grid = $("#dataGrid").dxDataGrid("instance");
         grid.clearFilter();
-        grid.filter(["IsDiscontinued", "=", false]);
+        grid.filter(["IsDiscontinued", "<>", true]); 
     }
     const reportMappings = {
         "Inventory Report(With Expiry date)": "InventoryReportWithExpireDates",

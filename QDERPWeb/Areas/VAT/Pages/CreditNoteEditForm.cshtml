@@ -453,19 +453,18 @@
 	</div>
 </div>
 
-<div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-plus"></i> Add Line Item
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
+		<i class="dx-icon-plus" id="b2baddlineitem"></i> 
 	</div>
-
-	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-close"></i> Delete Line Item
+	<div class="context-menu-itemInvoice" data-action="delete">
+		<i class="dx-icon-close" id="b2bdeletelineitem"></i> 
 	</div>
-	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-close"></i> Delete All Line Items
+	<div class="context-menu-itemInvoice" data-action="deleteAll">
+		<i class="dx-icon-trash" id="b2bdeletealllineitem"></i> 
 	</div>
-	
 </div>
+
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
 		<div class="horizontal-container" style="width:100%;">
@@ -2736,7 +2735,7 @@
 														.Columns(columns =>
 
 														{
-															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center);
 														})
 
 													)
@@ -3844,13 +3843,13 @@
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+								{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -3885,7 +3884,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+						openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3902,7 +3901,7 @@
 
 					const selected = selectedItemData;
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -4127,10 +4126,10 @@
                                     height: 300,
                                     scrolling: { mode: "virtual" },
                                     columns: [
-                                        { dataField: "UnitCode", caption: "Code", width: 80 },
-                                        { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-                                        { dataField: "UnitType", caption: "Unit Type", width: 150 },
-                                        { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+	                            { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
                                     ],
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -4155,7 +4154,7 @@
                             hint: "Add new item",
                             onClick: function () {
                                 let url = `/${tenantName}/VAT/VATMasterModule`;
-                                let title = "Unit of Measure";
+                                let title = formatMessage("Unit of Measure");
                                 openModal(url, title);
                             },
                             width: 60,
@@ -4253,8 +4252,8 @@
                         height: 300,
                         scrolling: { mode: "virtual" },
                         columns: [
-                            { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                            { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                            { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+                            { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
                         ],
                         onSelectionChanged: function (selectedItems) {
                             let selectedItem = selectedItems.selectedRowsData[0];
@@ -4568,13 +4567,13 @@
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -4618,7 +4617,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4631,7 +4630,7 @@
 		
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 				//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4896,13 +4895,11 @@
 
 											columns: [
 
-													{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-												{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-												{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-												{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
+												
 
 											],
 
@@ -4951,7 +4948,7 @@
 										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
 																	
-let title = "Unit of Measure";
+let title = formatMessage("Unit of Measure");
 openModal(url, title);
 
 									},
@@ -5040,8 +5037,8 @@ openModal(url, title);
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function(selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -8438,7 +8435,7 @@ $(function () {
 			
 $(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		button.option("text", formatMessage("Update"));
 	});
 
 		$(document).ready(function () {
@@ -8838,6 +8835,15 @@ $(document).ready(function () {
 		const count = docs.length;
 		updateAttachButtonCount("#btnAttach", count);
 	}
+		 $(function () {
+		   $("#b2bdeletealllineitem").text(formatMessage("Delete All Line Items"));
+	  });
+	$(function () {
+		   $("#b2bdeletelineitem").text(formatMessage("Delete Line Item"));
+	  });
+	$(function () {
+		   $("#b2baddlineitem").text(formatMessage("Add Line Item"));
+	  });
 
 
 	function getExemptionCode(rowIndex, callback) {
@@ -8865,6 +8871,159 @@ $(document).ready(function () {
 		}
 	  });
 	}
+
+			$(function () {
+				var selectedRowKey = null;
+			// Hide context menu when clicking outside
+			$(document).on("click", function () {
+				$("#contextMenu").hide();
+			});
+
+			// Handle context menu item clicks
+			$(".context-menu-itemInvoice").on("click", function (e) {
+				e.stopPropagation(); // Prevent menu from hiding immediately
+
+				const action = $(this).data("action");
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				const selectedRowKeys = grid.getSelectedRowKeys();
+				selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+
+				if (!grid) {
+					DevExpress.ui.notify("Grid instance not found.", "error", 2000);
+					return;
+				}
+
+				if (action === "add") {
+					grid.addRow();
+					grid.saveEditData();
+				}
+				else if (action === "delete") {
+					if (selectedRowKey !== null) {
+						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+						if (rowIndex >= 0) {
+							const rowData = grid.getDataSource().items()[rowIndex];
+									const { CreditNoteChildSlNo, CreditNoteNo } = rowData;
+
+									if (!CreditNoteChildSlNo) {
+								grid.deleteRow(rowIndex); // Deletes from UI
+							} else {
+								DevExpress.ui.dialog.confirm(
+									"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
+									"Delete Invoice"
+								).done(function (confirmResult) {
+									if (confirmResult) {
+										$.ajax({
+												url: "/api/VATModule/DeleteCreditInvoiceChild",
+											type: "POST",
+											contentType: "application/json",
+												data: JSON.stringify(CreditNoteChildSlNo),
+											success: function (response) { 
+												if (response.success) {
+													grid.refresh();
+													DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+
+													// Fetch updated data and re-bind the grid
+													$.ajax({
+														type: "GET",
+													    url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+														dataType: 'json',
+														success: function (data) {
+
+															const newRowData = data.map((item, index) => ({
+																SNo: index + 1,
+																...item
+															}));
+															initializeDataGrid(newRowData);
+														},
+														error: function () {
+															DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+														}
+													});
+												} else {
+													DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+												}
+											},
+											error: function (xhr) {
+												DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+											}
+										});
+									}
+								});
+							}
+						}
+						grid.saveEditData();
+					} else {
+						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+					}
+				}
+				else if (action === "deleteAll") {
+		if (selectedRowKey !== null) {
+			const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+			//if (rowIndex >= 0) {
+				debugger;
+				const rowData = grid.getDataSource().items()[rowIndex];
+					const InvoiceNo = rowData.CreditNoteNo; // ✅ Only the string
+
+				if (!InvoiceNo) {
+					const dataSource = grid.option("dataSource");
+					dataSource.length = 0;
+					grid.option("dataSource", dataSource);
+					grid.refresh();
+				} else {
+					DevExpress.ui.dialog.confirm(
+						"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
+						"Delete Invoice"
+					).done(function (confirmResult) {
+						if (confirmResult) {
+							$.ajax({
+									url: "/api/VATModule/DeleteCreditNoteInvoiceAllLineItem",
+								type: "POST",
+								contentType: "application/json",
+								data: JSON.stringify(InvoiceNo), // ✅ Sending raw string
+								success: function (response) {
+									if (response) {
+										grid.refresh();
+
+
+										$.ajax({
+											type: "GET",
+													url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+											dataType: 'json',
+											success: function (data) {
+												const newRowData = data.map((item, index) => ({
+													SNo: index + 1,
+													...item
+												}));
+												initializeDataGrid(newRowData);
+												   DevExpress.ui.notify("VAT Invoice Line Items Deleted Successfully.","successs",3000);
+											},
+											error: function () {
+												DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+											}
+										});
+									} else {
+										DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+									}
+								},
+								error: function (xhr) {
+									DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+								}
+							});
+						}
+					});
+				}
+					grid.saveEditData();
+			}
+		// } else {
+		// 	DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+		// }
+	}
+
+
+				$("#contextMenu").hide();
+			});
+		});
+
 
 </script>
 

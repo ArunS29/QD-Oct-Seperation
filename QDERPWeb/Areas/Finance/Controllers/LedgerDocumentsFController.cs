@@ -433,7 +433,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         var docsForFolder = await dbContext.Tbl20116LedgerDocuments
                             .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                        EF.Functions.Like(d.AzurePath, $"%{cleanedFid}%"))
+                                        EF.Functions.Like(d.AzurePath, $"%/{cleanedFid}/%"))
                             .ToListAsync();
 
                         folderDocs.AddRange(docsForFolder);
@@ -441,6 +441,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     folderDocs = folderDocs.Distinct().ToList();
                 }
+
 
                 // Optionally convert to array
                 var folderDocsArray = folderDocs.ToArray();

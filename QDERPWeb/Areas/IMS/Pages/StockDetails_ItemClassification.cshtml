@@ -150,7 +150,6 @@
 	}
 
 	.mainContainer {
-		margin-top: 1em;
 		width: 100%;
 	}
 
@@ -167,7 +166,7 @@
 <!-- Filter/Info Section -->
 
 
-<div class="dx-fieldset">
+<div>
 	<div class="store-master-container">
 		<!-- Store Name Input -->
 		<div>
@@ -199,7 +198,7 @@
 	<div>
 		@(Html.DevExtreme().DataGrid()
 				.ID("storeGrid")
-				.Height(400)
+				.Height("75vh")
 				.Width("100%")
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
@@ -224,13 +223,13 @@
 				.Columns(columns =>
 				{
 					columns.Add().DataField("StockClassId")
-					.Caption("ID")
+					.Caption(new JS("formatMessage('ID')"))
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
 
 					columns.Add().DataField("StockClassification")
-					.Caption("Stock Classification")
+					.Caption(new JS("formatMessage('Stock Classification')"))
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);

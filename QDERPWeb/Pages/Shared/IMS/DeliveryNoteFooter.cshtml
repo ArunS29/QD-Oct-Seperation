@@ -172,7 +172,7 @@
                     </div>
                 </div>
             </text>)
-            @* .OnItemClick("addNewDeliveryNotePosting") *@
+            .OnItemClick("addNewDeliveryNotePosting") 
             .ShowArrowIcon(false)
             )
     </div>
@@ -180,6 +180,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddDeliverynote")
             .Icon("add")
+            .ElementAttr(new { @class = "custom-ui-button" })
             .Text(new JS("formatMessage('Add')"))
             .DropDownOptions(options => options.Width(325))
             .Items(items =>
@@ -271,4 +272,21 @@
 
             window.location.href = url;
         }
+           function addNewDeliveryNotePosting(e) {
+        let url = ''; // Declare once
+        switch (e.itemData.text) {
+           case formatMessage('Posting Of Cost Prices'):
+                url = `/${tenantName}/IMS/AverageCostPosting`;
+                break;
+            case formatMessage('Posting of DN to Journal Books'):
+                url = `/${tenantName}/IMS/DeliveryNoteJournalPosting`;
+                break;
+           
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
+        }
+
+        window.location.href = url;
+    }
 </script>

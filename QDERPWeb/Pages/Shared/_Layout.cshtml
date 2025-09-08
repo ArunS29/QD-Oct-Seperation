@@ -1123,7 +1123,6 @@
             background: white;
             border-radius: 8px;
             padding: 0;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
             overflow: hidden; /* Prevents content overflow */
         }
 
@@ -1353,7 +1352,7 @@
         .notification-sidebar {
             position: fixed;
             top: 0;
-            right: -420px;
+            right: -430px;
             width: 420px;
             height: 100%;
             background: #fff;
@@ -2181,7 +2180,7 @@
                 </div>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
-            <iframe id="modalIframe" src="" frameborder="0"></iframe>
+            <iframe id="modalIframe" src="" frameborder="0" style="padding: 5px;"></iframe>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -2887,7 +2886,7 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
-                    <div id="HumanResources2" style="color:white;" class="text no-border-input">Quick Dice</div>
+                    <div id="HumanResources2" style="color:white;" class="text no-border-input"></div>
                 </div>
                 <div class="menu">
                     @if (userModules.Contains("HR"))
@@ -3281,7 +3280,7 @@
                         readOnly: true
                     });
                     $("#AccountConfirmationLetter").dxTextBox({
-                        text: formatMessage("AccountConfirmationLetter"),
+                        text: formatMessage("Account Confirmation Letter"),
                         width:400,
                         readOnly: true
                     });
@@ -5910,6 +5909,9 @@
 
 
         }
+         $(function () {
+            $("#HumanResources2").text(formatMessage("Quick Dice"));
+        });
     </script>
 </body>
 </html>

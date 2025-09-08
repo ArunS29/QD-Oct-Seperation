@@ -13,17 +13,6 @@
             display: none !important;
         }
 
-        .dx-fieldset {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            padding: 20px;
-            background-color: transparent;
-            width: 250px;
-            height:10%;
-
-        }
-       
 
         .dx-field {
             display: flex;
@@ -83,7 +72,6 @@
         }
 
         .mainContainer {
-            margin-top: 1em;
             width:98%;
         }
 
@@ -94,7 +82,7 @@
    
 </head>
 <body>
-        <h3>Database Master Module:Unit of Measure</h3>
+      @* <h3>Database Master Module:Unit of Measure</h3> *@
         <!-- Row 1: Type a New UOM & Add to the Existing List: -->
             <div class="dx-field">
                 <table>
@@ -145,10 +133,11 @@
                                         .InputAttr("dir", "rtl")
                                         .Height(45))
                                 </div>
-                                <div style="flex: 1; padding-top:25px;">
+                                <div style="flex: 1;">
                                     @(Html.DevExtreme().Button()
                                         .Text(new JS("formatMessage('Add')"))
                                         .ID("btnAddGroup3").Icon("plus").Height(60)
+                                        .ElementAttr(new { @class = "custom-ui-button" })
                                         .OnClick("addUomToDatabase"))
                                 </div>
                             </div>
@@ -237,7 +226,7 @@
             .AllowColumnResizing(true)
             .Paging(p => p.Enabled(false))
             .HeaderFilter(filter => filter.Visible(false))
-            .Height("45vh")
+            .Height("55vh")
             .SearchPanel(p => p.HighlightSearchText(true)) 
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -272,8 +261,8 @@
                                 .ID("btnBack")
                                 .Text(new JS("formatMessage('Back')"))
                                 .Icon("arrowleft")
-                                                   // .OnClick("onBackButtonClick")
-                        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                                .OnClick("onBack")
+                                .ElementAttr(new { @class = "dx-button-custom btn-back" })
                         )
             </div>
         </div>
@@ -426,6 +415,8 @@
                 });
             }
         }
-
+        function onBack(){
+            window.parent.closeModal();
+        }
 
 </script>

@@ -601,13 +601,13 @@
 
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="addlineb2c"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="delete">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="deletelineb2c"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
-		<i class="dx-icon-trash"></i> Delete All Line Items
+		<i class="dx-icon-trash" id="deletealllineb2c"></i>
 	</div>
 </div>
 
@@ -3189,7 +3189,7 @@
 
 														{
 
-															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center);
 														})
 
 													)
@@ -3847,7 +3847,7 @@
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-			const title = "";
+			const title =  formatMessage("Add Signatory");
 			openModal(url, title); // opens in modal instead of new window
 		}
 
@@ -3994,7 +3994,7 @@
 		                                       	btnPostToLedgerdisableEditing();
 		                                    }
 											 var button = $("#btnSave").dxButton("instance");
-											 button.option("text", "Update");
+											 button.option("text", formatMessage("Update"));
 											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -4116,13 +4116,13 @@
                 },
                 selection: { mode: "single" },
                 columns: [
-                    { dataField: "GSCode", caption: "Code", width: 80 },
-                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-                    { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-                    { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-                    { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                   { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
                 ],
                 onSelectionChanged: function (selectedItems) {
                     const selectedItem = selectedItems.selectedRowsData[0];
@@ -4179,7 +4179,7 @@
               const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 
 			//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-			openModal(url, "Goods and Services");
+			openModal(url, formatMessage("Goods and Services"));
         },
         width: 60,
         height: 30
@@ -4189,7 +4189,7 @@
         icon: "paste",
         hint: "Stock Inventory Edit",
         onClick: function () {
-            openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
+            openModal(`/${tenantName}/IMS/InventoryStockDetails`, formatMessage("Inventory Stock"));
         },
         width: 60,
         height: 30
@@ -4419,10 +4419,10 @@
 											placeholder: "Search..."
 											},
 										columns: [
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+											{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+											{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 										],
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
@@ -4447,7 +4447,7 @@
 								hint: "Add new item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATMasterModule`;
-									let title = "Unit of Measure";
+									let title = formatMessage("Unit of Measure");
 									openModal(url, title);
 								},
 								width: 60,
@@ -4587,8 +4587,8 @@
 							placeholder: "Search..."
 							},
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function (selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -4643,7 +4643,7 @@
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.ExcemptionCode || "Select Reason")
+      .text(options.data.ExcemptionCode || formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -4663,7 +4663,7 @@
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -4700,7 +4700,7 @@
                   grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+                  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -4948,13 +4948,13 @@
 				},
 				selection: { mode: "single" },
 				columns: [
-					{ dataField: "GSCode", caption: "Code", width: 80 },
-					{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-					{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-					{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-					{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-					{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-					{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 				],
 				onSelectionChanged: function (selectedItems) {
 					const selectedItem = selectedItems.selectedRowsData[0];
@@ -4998,7 +4998,7 @@
 		icon: "plus",
 		hint: "Add new item",
 		onClick: function () {
-			openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+			openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Service"));
 		},
 		width: 60,
 		height: 30
@@ -5012,7 +5012,7 @@
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 
 			//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-			openModal(url, "Goods and Services");
+			openModal(url, formatMessage("Goods and Services"));
 		},
 		width: 60,
 		height: 30
@@ -5448,10 +5448,10 @@
 						},
 					
 						columns: [
-							{ dataField: "UnitCode", caption: "Code", width: 80 },
-							{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-							{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-							{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+							{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							let selectedItem = selectedItems.selectedRowsData[0];
@@ -5476,7 +5476,7 @@
 				hint: "Add new item",
 				onClick: function () {
 					let url = `/${tenantName}/VAT/VATMasterModule`;
-					let title = "Unit of Measure";
+					let title = formatMessage("Unit of Measure");
 					openModal(url, title);
 				},
 				width: 60,
@@ -5582,8 +5582,8 @@
 											height: 300,
 											scrolling: { mode: "virtual" },
 											columns: [
-												{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-												{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+												{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+												{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 											],
 											onSelectionChanged: function (selectedItems) {
 												let selectedItem = selectedItems.selectedRowsData[0];
@@ -5615,7 +5615,7 @@
 
     // Show the current value (code or text)
     $("<div>")
-     .text(options.data.TaxExemptionReasonCode || "Select Reason")
+     .text(options.data.TaxExemptionReasonCode || formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -5635,7 +5635,7 @@
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -5672,7 +5672,7 @@
                   grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+                  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -6470,7 +6470,15 @@ if (popover.option("visible")) {
 				dataGrid = e.component;
 			}
 
-
+			 $(function () {
+   $("#deletealllineb2c").text(formatMessage("Delete All Line Items"));
+  });
+$(function () {
+   $("#deletelineb2c").text(formatMessage("Delete Line Item"));
+  });
+$(function () {
+   $("#addlineb2c").text(formatMessage("Add Line Item"));
+  });
 		function dataGridInvoiceCurrencyHeadInitialized(e) {
 				dataGrid = e.component;
 			}
@@ -9410,7 +9418,7 @@ SaveAndClosebtn.option("disabled", false);
 
 		$(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		button.option("text", formatMessage("Update"));
 	});
 
 		
@@ -9620,7 +9628,9 @@ SaveAndClosebtn.option("disabled", false);
 	function onAddSalesPersonClick() {
 
 			let url = `/${tenantName}/VAT/SalesPersonMaster`; // Example edit page
-			let title = " ";
+
+			let title = formatMessage("Sales Person Master");
+
 			openModal(url, title);
 	}
 
@@ -9628,13 +9638,13 @@ SaveAndClosebtn.option("disabled", false);
 	function CurrencyClick() {
 
 			let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-			let title = " ";
+			let title = formatMessage("Database Master Module:Foriegn Currency Master");
 			openModal(url, title);
 }
 	function CurrencySClick() {
 
 			let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-				let title = " ";
+				let title = formatMessage("Database Master Module:Foriegn Currency Master");
 			openModal(url, title);
 	}
 
@@ -9695,6 +9705,7 @@ SaveAndClosebtn.option("disabled", false);
 
 			if (action === "add") {
 				grid.addRow();
+               grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9749,6 +9760,7 @@ SaveAndClosebtn.option("disabled", false);
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}

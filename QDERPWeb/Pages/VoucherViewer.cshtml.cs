@@ -1,11 +1,26 @@
 ﻿using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
-using QD.ERP.Web.Areas.Finance.Reports.test;
 using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
+// using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
+using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
+using QD.ERP.Web.Areas.Finance.Reports.test;
+using QD.ERP.Web.Areas.IMS.Inventory_Reports;
+using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
+using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
+using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
+using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.Web.Areas.IMS.Reports.SalesOrder;
 using QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE;
+using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
+using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
@@ -13,23 +28,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
-using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-// using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
-using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
-using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
-
-using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
-
-using QD.ERP.Web.Areas.IMS.Inventory_Reports;
-using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
-using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
-using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
-using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
-using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
-using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
-using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
 
 
 namespace QD.ERP.Web.Pages
@@ -49,9 +48,29 @@ namespace QD.ERP.Web.Pages
         public XtraReport Report { get; private set; }
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
+        public string invoiceNo { get; private set; }
+        public string debitNoteNo { get; private set; }
+        public string CreditNoteNo { get; private set; }
+        public string RequestNo { get; private set; }
+        public string quotationNo { get; private set; }
+        public string salesOrderNo { get; private set; }
+        public string deliveryNoteNo { get; private set; }
+        public string rfqNo { get; private set; }
+        public string purchaseOrderNo { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
+            bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false)
         {
+            // Set the properties for Razor
+            ReportName = reportName;
+            this.quotationNo = quotationNo;
+            this.RequestNo = RequestNo;
+            this.salesOrderNo = salesOrderNo;
+            this.deliveryNoteNo = deliveryNoteNo;
+            this.rfqNo = rfqNo;
+            this.purchaseOrderNo = purchaseOrderNo;
+
+
             if (string.IsNullOrEmpty(reportName))
             {
                 return BadRequest("Invalid report name.");
@@ -433,13 +452,13 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "MaterialRequestInventory")
 
                 {
-                    Report = new MaterialRequestInventory(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                    Report = new MaterialRequestInventory(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
 
                 else if (reportName == "MaterialPurcchaseRequestion")
 
                 {
-                    Report = new MaterialPurcchaseRequestion(RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                    Report = new MaterialPurcchaseRequestion(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
                 }
 
 
@@ -460,44 +479,44 @@ namespace QD.ERP.Web.Pages
                 {
                     case "PreviewQuotations":
                      
-                        Report = new PreviewQuotations(quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithadditionalDetails":
 
-                        Report = new PreviewQuotationwithadditionalDetails(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithoutPrice":
 
-                        Report = new PreviewQuotationwithoutPrice(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "QuotationWOvat":
                      
-                        Report = new QuotationWOvat(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "vatTotalPricewithout":
 
-                        Report = new vatTotalPricewithout(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "withoutvatDiscount":
 
-                        Report = new withoutvatDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
 
                     case "GroupCode":
 
-                        Report = new GroupCode(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new GroupCode(showSeal, showSignature, printLetterhead,pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "wtDiscount":
 
-                        Report = new wtDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
+                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationWithImage":
 
-                        Report = new PreviewQuotationWithImage(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationWithSubGroup":
 
-                        Report = new PreviewQuotationWithSubGroup(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
                         break;
 
                     default:
@@ -519,7 +538,12 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "SalesOrderReport")
 
                 {
-                    Report = new SalesOrderReport(salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                else if (reportName == "SalesOrderReportWithoutPrice")
+
+                {
+                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
 
 
@@ -544,17 +568,17 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "PreviewDeliveryNote")
 
                 {
-                    Report = new previewDeliveryNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "ReportforMaterialIssueNote")
 
                 {
-                    Report = new ReportforMaterialIssueNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "PreviewDeliveryNotewithPrice")
 
                 {
-                    Report = new PreviewDeliveryNotewithPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "DotMatrics")
 
@@ -564,7 +588,7 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "DeliveryNoteWithCostPrice")
 
                 {
-                    Report = new DeliveryNoteWithCostPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
                 }
 
 

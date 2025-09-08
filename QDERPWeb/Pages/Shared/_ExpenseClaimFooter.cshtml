@@ -11,7 +11,6 @@
     }
     /* Button Styling */
     .dx-button {
-        background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
         padding: 6px 12px !important; /* Reduced button padding */
@@ -276,6 +275,7 @@
             .Width("90%")
             .Height(500)
             .Visible(false)
+            .Title(new JS("formatMessage('Supplier Payment Request')"))
             .ShowCloseButton(true)
             .ResizeEnabled(true)
             .DragEnabled(true)
@@ -1218,14 +1218,14 @@
         }
         function addExpenseButton_click(e) {
             switch (e.itemData.text) {
-
-                case ('Expense Claim Request'):
+                  
+                  case (formatMessage('Expense Claim Request')):
                     window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                     break;
-                case ('Petty Cash Request'):
+                 case (formatMessage('Petty Cash Request')):
                     window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                     break;
-                case 'Supplier Payment Request':
+                 case (formatMessage('Supplier Payment Request')):
 
                     $.ajax({
 

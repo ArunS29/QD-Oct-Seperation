@@ -401,7 +401,7 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-			<div id="tab-content-1" class="tab-content" style="height:200px;">
+			<div id="tab-content-1" class="tab-content" style="height:180px;">
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
 						<td colspan="3" style="width:100%;">
@@ -773,7 +773,7 @@
 
 
 
-			<div id="tab-content-2" class="tab-content" style="height:200px;" >
+			<div id="tab-content-2" class="tab-content" style="height:180px;" >
 
 				<div class="card-container">
 
@@ -869,11 +869,12 @@
 						<tr>
 
 							<td>
-								<label id="Remarks1">Remarks:</label>
 								@(Html.DevExtreme().TextArea()
-															.ID("txtRemarks")
-															.ElementAttr("style", "height:150px !important;")
-															.Width(775))
+									.ID("txtRemarks")
+									.Label(new JS("formatMessage('Remarks:')"))
+									.ElementAttr("style", "height:150px !important;")
+									.LabelMode(EditorLabelMode.Floating)
+									.Width(775))
 							</td>
 						</tr>
 					</table>
@@ -881,7 +882,7 @@
 
 			</div>
 
-			<div id="tab-content-3" class="tab-content" style="height:200px;">
+			<div id="tab-content-3" class="tab-content" style="height:180px;">
 				<div class="row">
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
@@ -1021,8 +1022,6 @@
 																				.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddGetRequesstingUnit")
 																				.Width(900)
-																				@*  .ShowClearButton(true)
-										.AcceptCustomValue(true) *@
 																				.OpenOnFieldClick(false)//
 																					.ValueChangeEvent("input")
 																					.HoverStateEnabled(true)
@@ -1136,7 +1135,7 @@
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content" style="height:200px;" >
+			<div id="tab-content-4" class="tab-content" style="height:180px;" >
 
 
 				<div class="row">
@@ -1247,50 +1246,37 @@
 				<!-- Row 2: CheckBox 1 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Print in Letter Head')"))
-													.ID("txtLetter")
-													.Value(null)
-													)
+					@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
 					</div>
 				</div>
 
 				<!-- Row 3: CheckBox 2 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Company Seal')"))
-													.ID("txtShowSeal")
-													.Value(null)
-													)
+							@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
 					</div>
 				</div>
 
 				<!-- Row 4: CheckBox 3 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Signature')"))
-													.ID("txtShowSign")
-													.Value(null)
-													)
+						@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
 					</div>
-
-				</div>
-					<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Print Signatures At Bottom')"))
-													.ID("txtShowSign")
-													.Value(null)
-													)
-					</div>
-
+							@(Html.DevExtreme().CheckBox()
+							.Text(new JS("formatMessage('Print Signatures At Bottom')"))
+							.ID("txtShowSign1")
+							.Value(false)
+							)
+						<input type="hidden" id="hdntxtShowSign1" name="hdntxtShowSign1" value="false" />
 				</div>
 			</div>
 
 
-			<div id="tab-content-5" class="tab-content" style="height:200px;" >
+			<div id="tab-content-5" class="tab-content" style="height:180px;" >
 
 					 <div class="p-3">
 								 <table style="width:100%; font-size:14px; margin:5px;">
@@ -2463,6 +2449,35 @@
 </div>
 
 <script>
+
+	  $(function() {
+        $("#txtShowSign1").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdntxtShowSign1").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	$(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
 	
 
 	function onOpened(e) {
@@ -2741,18 +2756,23 @@
 
 	
 	let Approved=null;
+	let edit=false;
 	//View e-Invoice
 	$(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
 		const mprnos = urlParams.get('Mprno');
 		const mprno = mprnos ? mprnos.split("?")[0] : null;
-		getSalesPersonByUser();
+		//getSalesPersonByUser();
 			getDefaultCompany();
 		if (mprno) {
 			// If Mprno is present, load client details
 			loadClientDetails(mprno);
+			edit=true;
 		} else {
-			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
+	NewNoGeneration();
+		}
+	});
+	function NewNoGeneration(){
 			$.ajax({
 				url: "/api/AddNewClientRequest/GetNewRequestNoApi",
 				type: "GET",
@@ -2771,9 +2791,15 @@
 					DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
 				}
 			});
-		}
-	});
+	}
+	//For concurrency
 
+	function NewNoGeneration1() {
+    return $.ajax({
+       url: "/api/AddNewClientRequest/GetNewRequestNoApi",
+        type: "GET"
+    });
+}
 	function loadClientDetails(mprno) {
 	$.ajax({
 		url: `/api/AddNewClientRequest/GetClientdataByCode?Mprno=${encodeURIComponent(mprno)}`,
@@ -3767,7 +3793,7 @@ if (gridInstance) {
             hint: "Add new item",
             onClick: function () {
                 let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
-               openModal(url, "");
+               openModal(url, "Quotation Item Sub Group");
             },
             width: 60,
             height: 30
@@ -6293,12 +6319,32 @@ AddlDescription: null,
 		DevExpress.ui.notify("Details saved", "success", 1500);
 	}
 
-
 	$("#btnSave").on("click", function (e) {
-	const $btn = $(this).dxButton("instance");
+   	const $btn = $(this).dxButton("instance");
 	$btn.option("disabled", true);
-		let master = {
-			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var mprNoNew = data;
+            $("#txtRequestNo").dxTextBox("instance").option("value", mprNoNew);
+
+            saveQuotation(mprNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var mprNoNew = $('#txtRequestNo').dxTextBox("instance").option("value") || null;
+        saveQuotation(mprNoNew, $btn);
+    }
+});
+
+function saveQuotation(mprNoNew, $btn) {
+    debugger;
+			let master = {
+			Mprno: mprNoNew,
 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
 			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
 			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
@@ -6366,9 +6412,87 @@ AddlDescription: null,
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
 			}
 		});
-	});
+}
+
+
+
+
+	// $("#btnSave").on("click", function (e) {
+	// const $btn = $(this).dxButton("instance");
+	// $btn.option("disabled", true);
+	// 	let master = {
+	// 		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+	// 		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+	// 		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+	// 		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+	// 		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+	// 		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+	// 		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+	// 		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+	// 		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+	// 		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+	// 		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+	// 		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+	// 		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+	// 		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+	// 		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+	// 		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+	// 		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+	// 		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+	// 		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+	// 		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+	// 		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+	// 		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+	// 		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+	// 		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+	// 		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+	// 		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+	// 		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+	// 		StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
+	// 		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+ //            BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+ //            CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+	// 	};
+
+	// 	const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+
+	// 	if (!children || children.length === 0) {
+	// 		DevExpress.ui.notify("No child records to save.", "error", 3000);
+	// 		return;
+	// 	}
+
+	// 	const model = {
+	// 		...master,
+	// 		PurchaseRequestDetails: children
+	// 	};
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
+	// 		contentType: "application/json",
+	// 		data: JSON.stringify(model),
+	// 		success: function (response) {
+	// 			DevExpress.ui.notify(response.message, "success", 3000);
+	// 				 const mprno = response.mprno;
+				
+	// 			 loadChildDataAndBindGrid(mprno);
+	// 			// Refresh parent DataGrid (ensure the correct selector is used)
+	// 			if (window.parent && window.parent.$("#dataGrid").length) {
+	// 				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+	// 				if (dataGrid) {
+	// 					dataGrid.refresh();
+	// 				}
+	// 			}
+
+	// 		},
+	// 		error: function (xhr) {
+	// 			DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+	// 		}
+	// 	});
+	// });
+
 		function loadChildDataAndBindGrid(mprno) {
-		//
+		
     if (!mprno) {
         console.warn("No MPR number provided.");
         return;
@@ -7947,4 +8071,161 @@ function onIMSAttachmentButtonClick(e) {
             }
         }
     }
+	function onUploadButtonClick() {
+	const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	const totalCount = gridInstance.totalCount();
+	console.log("Total Count from DataSource:", totalCount);
+
+    const requestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+    if (!requestNo) {
+        DevExpress.ui.notify("Request No is required.", "error", 2000);
+        return;
+    }
+	const requestBody = {
+		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		PurchaseRequestDetails:[],
+    };
+	$.ajax({
+        url: "/api/InventoryUpload/SaveMprno",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestBody),
+        success: function (result) {
+            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+			if(totalCount > 0){
+				handleUploadConfirm(requestNo);
+			}else{
+				window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+			}
+        },
+        error: function (xhr) {
+            console.error("UploadStock error:", xhr);
+            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+        }
+    });
+}
+
+	(function(){
+      const dialog = document.getElementById('confirmDialog');
+      const form = document.getElementById('confirmForm');
+      const titleEl = document.getElementById('confirmTitle');
+      const messageEl = document.getElementById('confirmMessage');
+      const stepChoice = document.getElementById('stepChoice');
+      const stepType = document.getElementById('stepType');
+      const phraseInput = document.getElementById('confirmPhrase');
+      const phraseBadge = document.getElementById('phraseBadge');
+      const phraseError = document.getElementById('phraseError');
+      const btnConfirm = document.getElementById('btnConfirm');
+      const chooseYes = document.getElementById('chooseYes');
+      const chooseNo = document.getElementById('chooseNo');
+      
+      let REQUIRED_PHRASE = 'Replace by user';
+      
+      function resetSteps(){
+        stepChoice.classList.add('active');
+        stepType.classList.remove('active');
+        phraseInput.value = '';
+        phraseError.classList.remove('show');
+        btnConfirm.disabled = true;
+      }
+
+      function openDialog(opts){
+        const { title, message, phrase } = opts || {};
+        if(title) titleEl.textContent = title;
+        if(message) messageEl.textContent = message;
+        REQUIRED_PHRASE = phrase || 'Replace by user';
+        phraseBadge.textContent = REQUIRED_PHRASE;
+        resetSteps();
+        if(typeof dialog.showModal === 'function'){
+          dialog.showModal();
+        } else {
+          dialog.setAttribute('open','');
+        }
+      }
+      function closeDialog(){
+        if(dialog.open) dialog.close();
+        dialog.removeAttribute('open');
+      }
+
+      function validate() {
+        const ok = (phraseInput.value || '').trim() === REQUIRED_PHRASE;
+        btnConfirm.disabled = !ok;
+        phraseError.classList.toggle('show', !ok && phraseInput.value.length > 0);
+        return ok;
+      }
+
+      phraseInput.addEventListener('input', validate);
+      form.addEventListener('submit', e => e.preventDefault());
+
+      chooseYes.addEventListener('click', (e)=>{
+        e.preventDefault();
+        stepChoice.classList.remove('active');
+        stepType.classList.add('active');
+        setTimeout(()=>phraseInput.focus(), 0);
+      });
+
+      chooseNo.addEventListener('click', (e)=>{
+        e.preventDefault();
+        closeDialog();
+        if(currentResolver) { currentResolver(false); currentResolver=null; }
+      });
+
+      btnConfirm.addEventListener('click', (e)=>{
+        e.preventDefault();
+        if(validate()){
+          closeDialog();
+          if(currentResolver) { currentResolver(true); currentResolver=null; }
+        }
+      });
+
+	let currentResolver = null;
+	window.confirmDeleteWithPhrase = function(options){
+		debugger;
+		openDialog(options || {});
+		return new Promise(resolve => { currentResolver = resolve; });
+	}
+
+	window.handleUploadConfirm = async function (requestNo) {
+		const ok = await window.confirmDeleteWithPhrase({
+			title: 'Upload via Excel?',
+			message: 'This cannot be undone. Related data may also be removed.',
+			phrase: 'Replace by user'
+		});
+
+		if (ok) {
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+		} else {
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}&exist=true`;
+		}
+	}
+    })();
 </script>
