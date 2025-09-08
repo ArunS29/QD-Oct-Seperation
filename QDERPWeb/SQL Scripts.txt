@@ -3947,3 +3947,232 @@ WHERE CurrencyRate IS NULL;
 
 ALTER TABLE Aicon.Tbl201VoucherMaster
 ALTER COLUMN currencyrate DECIMAL(18,4);
+
+INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (  
+    [SlNo], [ItemForm], [ItemName], [ItemDescription],[ItemEnabled], [ItemVisible],  [Module]  
+)  
+
+VALUES  
+(126,'Finance Voucher Entry Screen','frm201VoucherCashPayment_CostAllocation','Cost Allocation',1,1,'Finance'),    
+
+(127,'Finance Voucher Entry Screen','frm201VoucherCashPayment_EmployeeAllocation','Employee Allocation',1,1,'Finance'),    
+
+(128,'Finance Voucher Entry Screen','frm201VoucherCashPayment_PropertyAllocation','Property Allocation',1,1,'Finance'),    
+
+(129,'Finance Voucher Entry Screen','frm201VoucherCashPayment_BillsReceivable','Bills Receivable',1,1,'Finance'), 
+
+(130,'Finance Voucher Entry Screen','frm201VoucherCashPayment_SalaryPayable','Salary Payable',1,1,'Finance'),
+
+(131,'Finance Voucher Entry Screen','frm201VoucherCashPayment_DeleteAllLineEntries','Delete All Entries',1,1,'Finance'),
+
+
+
+
+(132, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(133, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnSave', 'Save', 1, 1, 'Finance'),  
+
+(134, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnSaveAndClose', 'Save & Close', 1, 1,  'Finance'),  
+
+(135, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnPreview1', 'Preview', 1, 1,  'Finance'),  
+
+(136, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnPrint', 'Print', 1, 1,  'Finance'),  
+
+(137, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnDelete', 'Delete', 1, 1,  'Finance'),  
+
+(138, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnBack', 'Back', 1, 1,  'Finance'),  
+
+(139, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnVerify', 'Verify', 1, 1, 'Finance'),  
+
+(140, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnApprove', 'Approve', 1, 1, 'Finance'),  
+
+(141, 'Finance Voucher Entry Receipts', 'frm201VoucherReceipts_btnAttach', 'Attach', 1, 1,  'Finance'),  
+
+(142,'Finance Voucher Entry Receipts','frm201VoucherReceipts_CostAllocation','Cost Allocation',1,1,'Finance'),    
+
+(143,'Finance Voucher Entry Receipts','frm201VoucherReceipts_EmployeeAllocation','Employee Allocation',1,1,'Finance'),    
+
+(144,'Finance Voucher Entry Receipts','frm201VoucherReceipts_PropertyAllocation','Property Allocation',1,1,'Finance'),    
+
+(145,'Finance Voucher Entry Receipts','frm201VoucherReceipts_BillsReceivable','Bills Receivable',1,1,'Finance'), 
+
+(146,'Finance Voucher Entry Receipts','frm201VoucherReceipts_DeleteAllLineEntries','Delete All Entries',1,1,'Finance'),
+
+
+
+(147, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(148, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnSave', 'Save', 1, 1, 'Finance'),  
+
+(149, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnSaveAndClose', 'Save & Close', 1, 1,  'Finance'),  
+
+(150, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnPreview2', 'Preview', 1, 1,  'Finance'),  
+
+(151, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnPrintp', 'Print', 1, 1,  'Finance'),  
+
+(152, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnDelete', 'Delete', 1, 1,  'Finance'),  
+
+(153, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnBack', 'Back', 1, 1,  'Finance'),  
+
+(154, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnVerify', 'Verify', 1, 1, 'Finance'),  
+
+(155, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnApprove', 'Approve', 1, 1, 'Finance'),  
+
+(156, 'Finance Voucher Entry Purchases', 'frm201PurchaseVoucher_btnAttach', 'Attach', 1, 1,  'Finance'),  
+
+(157,'Finance Voucher Entry Purchases','frm201PurchaseVoucher_CostAllocation','Cost Allocation',1,1,'Finance'),     
+
+(158,'Finance Voucher Entry Purchases','frm201PurchaseVoucher_PropertyAllocation','Property Allocation',1,1,'Finance'),    
+
+(159,'Finance Voucher Entry Purchases','frm201PurchaseVoucher_BillsReceivable','Bills Receivable',1,1,'Finance'), 
+
+(160,'Finance Voucher Entry Purchases','frm201PurchaseVoucher_DeleteAllLineEntries','Delete All Entries',1,1,'Finance'),
+
+
+
+(161, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(162, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnSave', 'Save', 1, 1, 'Finance'),  
+
+(163, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnSaveAndClose', 'Save & Close', 1, 1,  'Finance'),  
+
+(164, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnPreview2', 'Preview', 1, 1,  'Finance'),  
+
+(165, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnPrints', 'Print', 1, 1,  'Finance'),  
+
+(166, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnDelete', 'Delete', 1, 1,  'Finance'),  
+
+(167, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnBack', 'Back', 1, 1,  'Finance'),  
+
+(168, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnVerify', 'Verify', 1, 1, 'Finance'),  
+
+(169, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnApprove', 'Approve', 1, 1, 'Finance'),  
+
+(170, 'Finance Voucher Entry Sales', 'frm201SalesVoucher_btnAttach', 'Attach', 1, 1,  'Finance'),  
+
+(171,'Finance Voucher Entry Sales','frm201SalesVoucher_CostAllocation','Cost Allocation',1,1,'Finance'),     
+
+(172,'Finance Voucher Entry Sales','frm201SalesVoucher_PropertyAllocation','Property Allocation',1,1,'Finance'),    
+
+(173,'Finance Voucher Entry Sales','frm201SalesVoucher_BillsReceivable','Bills Receivable',1,1,'Finance'), 
+
+(174,'Finance Voucher Entry Sales','frm201SalesVoucher_DeleteAllLineEntries','Delete All Entries',1,1,'Finance'),
+
+
+(175, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(176, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnSave', 'Save', 1, 1, 'Finance'),  
+
+(177, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnSaveAndClose', 'Save & Close', 1, 1,  'Finance'),  
+
+(178, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnPreview1', 'Preview', 1, 1,  'Finance'),  
+
+(179, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnPrint', 'Print', 1, 1,  'Finance'),  
+
+(180, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnDelete', 'Delete', 1, 1,  'Finance'),  
+
+(181, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnBack', 'Back', 1, 1,  'Finance'),  
+
+(182, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnVerify', 'Verify', 1, 1, 'Finance'),  
+
+(183, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnApprove', 'Approve', 1, 1, 'Finance'),  
+
+(184, 'Finance Voucher Entry Journal', 'frm201VoucherJournal_btnAttach', 'Attach', 1, 1,  'Finance'),  
+
+(185,'Finance Voucher Entry Journal','frm201VoucherJournal_CostAllocation','Cost Allocation',1,1,'Finance'),    
+
+(186,'Finance Voucher Entry Journal','frm201VoucherJournal_EmployeeAllocation','Employee Allocation',1,1,'Finance'),    
+
+(187,'Finance Voucher Entry Journal','frm201VoucherJournal_PropertyAllocation','Property Allocation',1,1,'Finance'),    
+
+(189,'Finance Voucher Entry Journal','frm201VoucherJournal_BillsReceivable','Bills Receivable',1,1,'Finance'), 
+
+(190,'Finance Voucher Entry Journal','frm201VoucherJournal_SalaryPayable','Salary Payable',1,1,'Finance'),
+
+
+(191, 'Finance Asset View', 'frmAssetView_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(192, 'Finance Asset View', 'frmAssetView_btnPrint', 'Print', 1, 1, 'Finance'),  
+
+(193, 'Finance Asset View', 'frmAssetView_btnRefresh', 'Refresh', 1, 1,  'Finance'),  
+
+(194, 'Finance Asset View', 'frmAssetView_ddButtonLayout', 'Layout', 1, 1,  'Finance'),  
+
+(195, 'Finance Asset View', 'frmAssetView_btnToggleSearch', 'Search', 1, 1,  'Finance'),  
+
+(196, 'Finance Asset View', 'frmAssetView_btntoggleGroupPanel', 'Group', 1, 1,  'Finance'),  
+
+(197, 'Finance Asset View', 'frmAssetView_rowHeightProperties', 'Row Height', 1, 1,  'Finance'),  
+
+(198, 'Finance Asset View', 'frmAssetView_btnColumnChooser', 'Column Chooser', 1, 1, 'Finance'),
+
+(199, 'Finance Asset View', 'frmAssetView_btnDepreciationSchedule', 'Depreciation View', 1, 1,  'Finance'),
+
+(200, 'Finance Asset View', 'frmAssetView_EditAsset', 'Edit Asset', 1, 1, 'Finance'),
+
+(201, 'Finance Asset View', 'frmAssetView_DeleteAsset', 'Delete Asset', 1, 1,  'Finance'),
+
+
+
+
+(202, 'Finance Depreciation View', 'frmDepreciationView_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(203, 'Finance Depreciation View', 'frmDepreciationView_btnPrint', 'Print', 1, 1, 'Finance'),  
+
+(204, 'Finance Depreciation View', 'frmDepreciationView_btnRefresh', 'Refresh', 1, 1,  'Finance'),  
+
+(205, 'Finance Depreciation View', 'frmDepreciationView_ddButtonLayout', 'Layout', 1, 1,  'Finance'),  
+
+(206, 'Finance Depreciation View', 'frmDepreciationView_btnToggleSearch', 'Search', 1, 1,  'Finance'),  
+
+(207, 'Finance Depreciation View', 'frmDepreciationView_btntoggleGroupPanel', 'Group', 1, 1,  'Finance'),  
+
+(208, 'Finance Depreciation View', 'frmDepreciationView_rowHeightProperties', 'Row Height', 1, 1,  'Finance'),  
+
+(209, 'Finance Depreciation View', 'frmDepreciationView_ddBtnShowRecords', 'Show Records', 1, 1, 'Finance'),
+
+(210, 'Finance Depreciation View', 'frmDepreciationView_btndepreciationreport', 'Depreciation Report', 1, 1,  'Finance'),
+
+(211, 'Finance Depreciation View', 'frmDepreciationView_btnnewdepreciation', 'Create Depreciation ', 1, 1,  'Finance'),
+
+(212, 'Finance Depreciation View', 'frmDepreciationView_EditDepreciation', 'Edit Depreciation ', 1, 1,  'Finance'),
+
+(213, 'Finance Depreciation View', 'frmDepreciationView_DeleteDepreciation', 'Delete Depreciation ', 1, 1,  'Finance'),
+
+
+(214, 'Finance Depreciation Edit', 'frmDepreciationCreate_FullAccess', 'Full Access', 1, 1,  'Finance'),  
+
+(215, 'Finance Depreciation Edit', 'frmDepreciationCreate_btndepreciationreportshow', 'Print', 1, 1, 'Finance'),  
+
+(216, 'Finance Depreciation Edit', 'frmDepreciationCreate_btnGenaeratedepreciation', 'Refresh', 1, 1,  'Finance'),  
+
+(217, 'Finance Depreciation Edit', 'frmDepreciationCreate_ddButtonLayout', 'Layout', 1, 1,  'Finance'),  
+
+(218, 'Finance Depreciation Edit', 'frmDepreciationCreate_rowHeightProperties', 'Search', 1, 1,  'Finance'),  
+
+(219, 'Finance Depreciation Edit', 'frmDepreciationCreate_btnPrint', 'Group', 1, 1,  'Finance'),  
+
+(220, 'Finance Depreciation Edit', 'frmDepreciationCreate_btnToggleSearch', 'Row Height', 1, 1,  'Finance'),  
+
+(221, 'Finance Depreciation Edit', 'frmDepreciationCreate_btntoggleGroupPanel', 'Show Records', 1, 1, 'Finance'),
+
+(222, 'Finance Depreciation Edit', 'frmDepreciationCreate_btnDepchildpost', 'Depreciation Report', 1, 1,  'Finance'),
+
+
+
+(223, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_EditClaim', 'Edit Claim', 1, 1,  'Finance'),  
+
+(224, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_UnlockClaim', 'Unlock Claim', 1, 1, 'Finance'),  
+
+(225, 'Finance ExpenseClaim Main', 'frm20107ExpenseClaimView_DeleteClaim', 'Delete Claim', 1, 1,  'Finance'),
+
+
+
+(226, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_EditJournal', 'Edit Journal', 1, 1,  'Finance'),  
+
+(227, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_UnlockJournal', 'Unlock Journal', 1, 1, 'Finance'),  
+
+(228, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_DeleteJournal', 'Delete Journal', 1, 1,  'Finance'),
+
+(229, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_CloneJournal', 'Clone Journal', 1, 1,  'Finance')
+
