@@ -4363,13 +4363,21 @@ var dictionary = {
         "Unit Method (1)":"Unit Method (1)",
         "Delivery Details": "Delivery Details",
         "Submit": "Submit",
-        "Detailed Description": "Detailed Description"
+        "Detailed Description": "Detailed Description",
+        "Property Code": "Property Code",
+        "Expected Rate": "Expected Rate",
+        "Units Requested": "Units Requested",
+        "Line Total": "Line Total"
 
 
     },
                 //Arabic Language Translations
 
     ar: {
+        "Property Code": "رمز العقار",
+        "Expected Rate": "السعر المتوقع",
+        "Units Requested": "الوحدات المطلوبة",
+        "Line Total": "إجمالي السطر",
         "Property Type": "نوع العقار",
         "Type a New Property & Add to the Existing List": "أدخل عقارًا جديدًا وأضفه إلى القائمة الحالية",
         "International Supplier:": "المورد الدولي:",
@@ -7858,6 +7866,10 @@ var dictionary = {
              
                 // Mandrian Chinese Languange Translations
     zh: {
+        "Property Code": "物业代码",
+        "Expected Rate": "预期价格",
+        "Units Requested": "请求的单位",
+        "Line Total": "行合计",
         "Property Type": "物业类型",
         "Type a New Property & Add to the Existing List": "输入新物业并添加到现有列表",
         "Type a New Property Category & Add to the Existing List:": "输入一个新的资产类别并添加到现有列表：",
@@ -11158,6 +11170,10 @@ var dictionary = {
 
                      // Hindi Language Translation
     hi: {
+        "Property Code": "संपत्ति कोड",
+        "Expected Rate": "अपेक्षित दर",
+        "Units Requested": "अनुरोधित इकाइयाँ",
+        "Line Total": "पंक्ति कुल",
         "Property Type": "संपत्ति का प्रकार",
         "Type a New Property & Add to the Existing List": "नई संपत्ति टाइप करें और मौजूदा सूची में जोड़ें",
         "Type a New Property Category & Add to the Existing List:": "एक नई संपत्ति श्रेणी टाइप करें और मौजूदा सूची में जोड़ें:",
@@ -14565,6 +14581,10 @@ var dictionary = {
 
                  // Urdu Language Translation
     ur: {
+        "Property Code": "پراپرٹی کوڈ",
+        "Expected Rate": "متوقع شرح",
+        "Units Requested": "درخواست کی گئی یونٹس",
+        "Line Total": "کل لائن",
         "Property Type": "پراپرٹی کی قسم",
         "Type a New Property & Add to the Existing List": "نئی پراپرٹی ٹائپ کریں اور موجودہ فہرست میں شامل کریں",
         "Type a New Property Category & Add to the Existing List:": "نئی پراپرٹی کیٹیگری ٹائپ کریں اور موجودہ فہرست میں شامل کریں:",
@@ -18051,6 +18071,10 @@ var dictionary = {
 
                // Korean Language Translation
     ko: {
+        "Property Code": "자산 코드",
+        "Expected Rate": "예상 요율",
+        "Units Requested": "요청된 단위",
+        "Line Total": "합계",
         "Property Type": "자산 유형",
         "Type a New Property & Add to the Existing List": "새 자산을 입력하고 기존 목록에 추가하세요",
         "Details Report By Date": "날짜별 상세 보고서",

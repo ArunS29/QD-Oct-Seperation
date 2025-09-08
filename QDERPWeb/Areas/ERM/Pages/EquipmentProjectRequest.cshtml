@@ -1035,7 +1035,7 @@
 								"));
 									columns.Add()
 									.DataField("PropertyTypeId")
-									.Caption("Description")
+									.Caption(new JS("formatMessage('Description')"))
 									.Width(400)
 									.EditCellTemplate(new JS("descriptionDropDownTemplate"))
 									.CellTemplate(new JS(@"
@@ -1051,66 +1051,62 @@
 									.Width(90)
 									.AllowEditing(true)
 									.CellTemplate(new JS(@"
-								function(container, options) {
-								const gsCode = options.data.Gscode;
-								const salesOrderChildId = options.data.SalesOrderChildId;
+							function(container, options) {
+								// Get EquipmentRequestNo from the main form
+								const equipmentRequestNo = $('#txtRequestNo').dxTextBox('instance').option('value');
+								const propertyType = options.data.PropertyType;
 
 								$('<div>').dxButton({
-								icon: 'user',
-								hint: 'Edit IMS Details Description',
-								stylingMode: 'text',
-								width: 60,
-								onClick: function () {
-								window.currentDescriptionCell = options;
-								const queryParams = [];
-								if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
-								if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
-								const url = `/${tenantName}/ERM/DetailedDescriptionSO?${queryParams.join('&')}`;
-								openModal(url, 'Details Description','60%','60%');
-								}
+									icon: 'user',
+									hint: 'ERM Enquiry Details Description',
+									stylingMode: 'text',
+									width: 60,
+									onClick: function () {
+										window.currentDescriptionCell = options;
+										const url = `/${tenantName}/ERM/EnquiryDetailsDescription?EqiupmentRequestNo=${encodeURIComponent(equipmentRequestNo)}&PropertyType=${encodeURIComponent(propertyType)}`;
+										openModal(url, 'Details Description', '60%', '60%');
+									}
 								}).appendTo(container);
-								}
-								"))
-									.EditCellTemplate(new JS(@"
-								function(container, options) {
-								const gsCode = options.data.Gscode;
-								const salesOrderChildId = options.data.SalesOrderChildId;
+							}
+						"))
+								.EditCellTemplate(new JS(@"
+							function(container, options) {
+								// Get EquipmentRequestNo from the main form
+								const equipmentRequestNo = $('#txtRequestNo').dxTextBox('instance').option('value');
+								const propertyType = options.data.PropertyType;
 
 								$('<div>').dxButton({
-								icon: 'user',
-								hint: 'Edit IMS Details Description',
-								stylingMode: 'text',
-								width: 60,
-								onClick: function () {
-								window.currentDescriptionCell = options;
-								const queryParams = [];
-								if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
-								if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
-								const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-								openModal(url, 'Details Description');
-								}
+									icon: 'user',
+									hint: 'ERM Enquiry Details Description',
+									stylingMode: 'text',
+									width: 60,
+									onClick: function () {
+										window.currentDescriptionCell = options;
+										const url = `/${tenantName}/ERM/EnquiryDetailsDescription?EqiupmentRequestNo=${encodeURIComponent(equipmentRequestNo)}&PropertyType=${encodeURIComponent(propertyType)}`;
+										openModal(url, 'Details Description', '60%', '60%');
+									}
 								}).appendTo(container);
-								}
-								"));
+							}
+						"));
 									columns.Add()
 									.DataField("UnitRateMethod")
-									.Caption("Unit Rate Method")
+									.Caption(new JS("formatMessage('Unit Rate Method')"))
 									.Width(400)
 									.EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
 									.CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 
 									columns.Add()
 										.DataField("QtyRequested")
-										.Caption("Qty")
+										.Caption(new JS("formatMessage('Qty')"))
 										.Width(150)
 										.EditorOptions(new {
 											maxLength = 7
 										});
-									columns.Add().DataField("ExpectedUnitRate").Caption("Expected Rate");
+									columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Rate')")).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("UnitsRequested").Caption("Units Requested");
+									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("LineOrderNo").Caption("Line Total");
+									columns.Add().DataField("LineOrderNo").Caption(new JS("formatMessage('Line Total')"));
 
 								})
 								.ColumnAutoWidth(true)

@@ -1,17 +1,21 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.Pdf;
+using DevExpress.Printing.Utils.DocumentStoring;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using ExCSS;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Pdf.IO;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using DevExpress.Printing.Utils.DocumentStoring;
-using DevExpress.Pdf;
-using System.IO;
-using PdfSharpCore.Pdf.IO;
-using PdfSharpCore.Pdf;
+using QD.ERP.Web.Services.Logging;
 using System.Collections.Generic;
 using System.IO;
+using System.IO;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
 {
@@ -22,14 +26,15 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewPropertyController> _logger;
         private readonly IConfiguration _configuration;  
+        private readonly IUserActionLogger _userActionLogger;
 
-        public AddNewPropertyController(ILogger<AddNewPropertyController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
+        public AddNewPropertyController(ILogger<AddNewPropertyController>  logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
-            _configuration = configuration;
+            _userActionLogger = userActionLogger;
         }
-      
+
         [HttpGet]
         public async Task<IActionResult> GetByNo(string code)
         {
@@ -287,7 +292,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 dbContext.Tbl40110PropertyTypes.Add(newPropertyType);
                 dbContext.SaveChanges();
-
+                _userActionLogger.LogAsync(module: "ERM > Property Type",
+                actionDetail: $":Saved Property Type{model.PropertyType}",
+                documentNo: $"{model.PropertyType}"
+                );
                 return Ok(new { message = "Property Type saved successfully." });
             }
             catch (Exception ex)
@@ -325,7 +333,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 JsonConvert.PopulateObject(jsonValues, existing);
 
                 dbContext.SaveChanges();
-
+                _userActionLogger.LogAsync(module: "ERM > Property Type",
+               actionDetail: $":Update Property Type{updateDto.Key}",
+               documentNo: $"{updateDto.Key}"
+               );
                 return Ok(new { message = "Property Type updated successfully." });
             }
             catch (Exception ex)
@@ -334,6 +345,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating.", detailed = ex.Message });
             }
         }
+
         [HttpDelete]
         public IActionResult DeletePropertyType(string key)
         {
@@ -351,7 +363,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 dbContext.Tbl40110PropertyTypes.Remove(propertyType);
                 dbContext.SaveChanges();
-
+                _userActionLogger.LogAsync(module: "ERM > Property Type",
+                actionDetail: $"Deleted Property Type{propertyType}",
+                documentNo: $"{propertyType}"
+                );
                 return Ok(new { message = "Deleted successfully." });
             }
             catch (Exception ex)
@@ -464,7 +479,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                     module: "ERM > Save Good&Service",
+                     actionDetail: $"Saved Goods&Service {model.Gscode}",
+                       documentNo: model.Gscode
+                   );
                 return Ok(new { message = "Record saved successfully", success = true });
             }
             catch (Exception ex)
@@ -506,7 +525,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 dbContext.Tbl20164GoodsAndServicesMasters.Remove(itemToDelete);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                  module: "ERM > Delete Stock Details",
+                  actionDetail: $"Delete stock Details {code}",
+                    documentNo: code
+                );
                 return Ok(new { message = "Stock item deleted successfully", success = true });
             }
             catch (Exception ex)
@@ -668,7 +691,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 dbContext.Tbl40101PropertyMasters.Remove(existing);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                  module: "ERM > Delete Property Asset",
+                  actionDetail: $"Deleted Property Asset {propertyNo}",
+                    documentNo: propertyNo
+                );
                 return Ok(new { success = true, message = $"Property {propertyNo} deleted successfully." });
             }
             catch (Exception ex)
@@ -898,7 +925,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                  module: "ERM > Save Property",
+                  actionDetail: $"Saved Property {VM.PropertyNo}",
+                    documentNo: VM.PropertyNo
+                );
                 return Ok(new { success = true, message = "Property saved successfully." });
             }
             catch (Exception ex)
@@ -1237,7 +1268,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 dbContext.Tbl20164GoodsAndServicesMasters.Remove(item);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                 module: "ERM > Delete by goods&service",
+                 actionDetail: $"Deleted Goods&service {code}",
+                   documentNo: code
+               );
                 return Ok(new { success = true, message = "Stock item deleted successfully." });
             }
             catch (Exception ex)
@@ -1309,6 +1344,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "ERM > Save Document",
+                 actionDetail: $"Saved Documents {model.DocumentNo}",
+                   documentNo: model.DocumentNo
+               );
                 return Json(new { success = true, documentNo = model.DocumentNo });
             }
             catch (Exception ex)

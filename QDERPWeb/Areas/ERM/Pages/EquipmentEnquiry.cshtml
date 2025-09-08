@@ -16,7 +16,7 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Material Request</h2>
+				<h2 class="title-slide">Equipment Enquiry</h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
 				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
 			</div>
@@ -60,7 +60,7 @@
 	</div>
 
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
 				<h4 style="text-align:left">No of Requested Today</h4>
@@ -239,11 +239,23 @@
 						}
 						}
 						"));
-						
+
 				       subColumns.AddFor(m => m.NoOfItems)
                     .Caption(new JS("formatMessage('No Of Items')"))
                     .Alignment(HorizontalAlignment.Center)
                     .Visible(true);
+					subColumns.AddFor(m => m.IsApproved)
+					.Caption(new JS("formatMessage('IsApproved')"))
+                    .Alignment(HorizontalAlignment.Center)
+                    .Visible(false);
+					subColumns.AddFor(m => m.IsVerified)
+					.Caption(new JS("formatMessage('IsVerified')"))
+                    .Alignment(HorizontalAlignment.Center)
+                    .Visible(false);
+					subColumns.AddFor(m => m.IsSubmitted)
+					.Caption(new JS("formatMessage('IsSubmitted')"))
+                    .Alignment(HorizontalAlignment.Center)
+                    .Visible(false);
 				    });
 				})
 				.ColumnChooser(columnChooser => columnChooser
@@ -254,6 +266,7 @@
 				.OnContextMenuPreparing("onContextMenuPreparing")
 				.Height("50vh")
 				.ColumnAutoWidth(true)
+				.OnContentReady("onGridReady")
 				.Width("99%")
 				.WordWrapEnabled(true)
 				.AllowColumnReordering(true)
@@ -281,6 +294,152 @@
 			)
 </div>
 <script>
+
+	let currentSlideIndex = 0;
+		const slides = document.querySelectorAll('.voucher-slide');
+
+		setInterval(() => {
+			slides[currentSlideIndex].classList.remove('active');
+
+			currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+			slides[currentSlideIndex].classList.add('active');
+		}, 2000);
+
+			function updateTodayRequestCount(data) {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		if (!grid) return;
+
+		const today = new Date();
+		const todayDateStr = today.toDateString();
+
+		const allData = grid.getDataSource().items();
+
+		const count = allData.filter(item => {
+			const RequestDate = new Date(item.RequestDate);
+			return RequestDate.toDateString() === todayDateStr;
+		}).length;
+
+		document.getElementById("netqoutedamount").innerHTML = `
+			<div style="font-weight: bold;">${length}</div>`;
+	}
+
+	function  updateTotalRequestCount(data) {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		if (!grid) return;
+
+		const allData = grid.getDataSource().items();
+		const length = data.length;
+
+		document.getElementById("totalRequestCount").innerHTML = `
+			<div>${length}</div>
+		`;
+	}
+
+	function updateRequestCancelledCount(data) {
+		const cancelledCount = data.filter(item => item.IsCancelled === true || item.IsCancelled === "true").length;
+
+		document.getElementById("requestcanceledcount").innerHTML = `
+				<div>${cancelledCount}</div>
+		`;
+	}
+
+
+
+
+		function onGridReady(e) {
+		const gridInstance = e.component;
+		const dataSource = gridInstance.getDataSource();
+
+		if (dataSource) {
+			const items = gridInstance.option("dataSource");
+
+			if (Array.isArray(items)) {
+				updateTotalRequestCount(items); // 👈 Added here
+				updateRequestCancelledCount(items); // 👈 Add this
+				updateStatusTabCounts(items);
+				 updateTodayRequestCount();
+			} else {
+				dataSource.load().done(function (loadedData) {
+				updateTotalRequestCount(loadedData); // 👈 Added here
+				updateRequestCancelledCount(loadedData); // 👈 Add this
+				updateStatusTabCounts(loadedData);
+				updateTodayRequestCount();
+				});
+			}
+		}
+	}
+
+	const card = document.getElementById('mainCard');
+
+
+	// Count elements for each tab
+	const countEls = [
+		document.getElementById("counts0"),
+		document.getElementById("counts1"),
+		document.getElementById("counts2"),
+	];
+
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
+
+	// Hold dynamic count values here
+	let counts = [0, 0, 0];
+
+	function animateCount(el, target) {
+		let i = 0;
+		el.innerText = i;
+		el.classList.remove('bounce');
+
+		const interval = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(interval);
+			} else {
+				el.innerText = i++;
+			}
+		}, 20);
+	}
+
+	function switchTab(index) {
+		tabs.forEach((tab, i) => {
+			tab.classList.toggle('active', i === index);
+			contents[i].classList.toggle('active', i === index);
+		});
+
+		  if (index === 0) card.classList.add("today-bg");
+		  if (index === 1) card.classList.add("week-bg");
+		  if (index === 2) card.classList.add("month-bg");
+		animateCount(countEls[index], counts[index]);
+	}
+
+	// 🔄 Update count values dynamically from DevExtreme grid data
+		function updateStatusTabCounts(data) {
+		let verified = 0, approved = 0, submitted = 0;
+
+		data.forEach(row => {
+			if (row.IsVerified === true || row.IsVerified === "true") verified++;
+			if (row.IsApproved === true || row.IsApproved === "true") approved++;
+			if (row.IsSubmitted === true || row.IsSubmitted === "true") submitted++;
+		});
+
+		counts = [verified, approved, submitted];
+
+		const activeIndex = [...tabs].findIndex(tab => tab.classList.contains('active'));
+		if (activeIndex >= 0) {
+			animateCount(countEls[activeIndex], counts[activeIndex]);
+		}
+	}
+
+	// ✅ Auto-run Verified count on load
+	window.addEventListener("DOMContentLoaded", () => {
+		switchTab(0); // Default tab
+	});
+
+
+
+
 
 	function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
@@ -384,6 +543,8 @@
 			},
 			success: function (data) {
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				 updateTotalRequestCount(data);
+				 updateTodayRequestCount(data);
 				var dataGrid = $("#dataGrid").dxDataGrid("instance");
 				var dataSource = dataGrid.option("dataSource");
 				if (dataSource && dataSource.length > 0) {
