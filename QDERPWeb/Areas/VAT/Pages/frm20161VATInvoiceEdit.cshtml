@@ -1431,7 +1431,7 @@
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup3")
 																.ShowClearButton(true)
-																.Value("Saudi Arabian Riyals")
+																.Value(1)
 																.AcceptCustomValue(true)
 																
 																.OpenOnFieldClick(false)
@@ -5961,6 +5961,7 @@ if (popover.option("visible")) {
 				ClientGrnreferenceNo: $("#ClientGRNReference").dxTextBox("instance").option("value") || null,
 				AddedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
 				AddedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
+				Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 				InvoiceCurrencyCode: InvoiceCurrencyExchangeId || "1",
 				ExchangeRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
 				AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value") || null,
@@ -7767,7 +7768,7 @@ if (popover.option("visible")) {
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 				PaymentMeansTypeCode: paymentmeanstypecode,
 			    //InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-				InvoiceTypeCode:388,
+				InvoiceTypeCode:01,
 			   // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
 			    InvoiceTypeCodeSubType:"01",
 				InvoiceTransactionCode: transcode,
@@ -7819,7 +7820,7 @@ if (popover.option("visible")) {
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 						
-
+			Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 			//Deduction&CurrencyDetails
 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
 			TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
@@ -8042,7 +8043,7 @@ if (popover.option("visible")) {
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 						
-
+			Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 			//Deduction&CurrencyDetails
 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
 			TaxCurrencyCode: TaxCurrencyExchangeId|| "1",

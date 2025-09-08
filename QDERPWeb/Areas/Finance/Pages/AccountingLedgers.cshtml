@@ -2,6 +2,17 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	/* Apply red hover for all context menu items */
+.dx-context-menu .dx-menu-item.dx-state-hover {
+    background-color: var(--title-background-color) !important;
+    color: white !important;
+}
+
+/* Also ensure icon gets white color */
+.dx-context-menu .dx-menu-item.dx-state-hover .dx-icon {
+    color: white !important;
+}
+
 	/* #dataGrid .dx-datagrid-header-panel { */
 	/* 	background: #f8f9fa; */
 	/* } */
@@ -560,20 +571,8 @@
 <div id="inputPopupContainer"></div>
 <div class="content-container-top">
 	<!-- Context Menu -->
-	<div class="context-menu" id="contextMenu">
-		<div id="contextMenuContent"></div>
-		<div class="context-menu-item">
-			@(Html.DevExtreme().Button()
-						.ID("btnEditVoucher")
-						.Text(new JS("formatMessage('Edit Voucher')"))
-						.Type(ButtonType.Normal)
-						.StylingMode(ButtonStylingMode.Outlined)
-						.Icon("edit")
-						.Width(180)
-						@* .OnClick("function() { editRow(); }") *@
-						)
-		</div>
-	</div>
+	
+
 	@* 	<!-- Context Control -->
 	<div class="context-menu" id="contextControl">
 	<div id="contextControlContent"></div>
@@ -2195,36 +2194,36 @@
 		}
 
 
-		// Function to handle right-click event on the grid
-		$(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
-			e.preventDefault(); // Prevent default right-click menu
+		// // Function to handle right-click event on the grid
+		// $(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
+		// 	e.preventDefault(); // Prevent default right-click menu
 
-			let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the grid instance
-			let rowIndex = $(this).index();
-			let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
+		// 	let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the grid instance
+		// 	let rowIndex = $(this).index();
+		// 	let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
-			console.log("Row Data:", rowData); // Debugging
+		// 	console.log("Row Data:", rowData); // Debugging
 
-			if (rowData && rowData.VoucherNo && rowData.VoucherType) {
-				selectedVoucherNo = rowData.VoucherNo; // Store selected voucher number
-				selectedVoucherType = rowData.VoucherType; // Store selected voucher type
-				console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
-			} else {
-				console.log("Voucher data is missing.");
-			}
+		// 	if (rowData && rowData.VoucherNo && rowData.VoucherType) {
+		// 		selectedVoucherNo = rowData.VoucherNo; // Store selected voucher number
+		// 		selectedVoucherType = rowData.VoucherType; // Store selected voucher type
+		// 		console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
+		// 	} else {
+		// 		console.log("Voucher data is missing.");
+		// 	}
 
-			// Show context menu at mouse position
-			$("#contextMenu").css({
-				display: "block",
-				left: e.pageX,
-				top: e.pageY
-			});
-		});
+		// 	// Show context menu at mouse position
+		// 	$("#contextMenu").css({
+		// 		display: "block",
+		// 		left: e.pageX,
+		// 		top: e.pageY
+		// 	});
+		// });
 
-		// Hide context menu when clicking elsewhere
-		$(document).on("click", function () {
-			$("#contextMenu").hide();
-		});
+		// // Hide context menu when clicking elsewhere
+		// $(document).on("click", function () {
+		// 	$("#contextMenu").hide();
+		// });
 
 		// Assign onclick event to btnEditVoucher
 		$("#btnEditVoucher").on("click", function () {
@@ -2558,6 +2557,46 @@ function dropDownBoxValueChanged(e) {
         $("#TotalsCredit").text(formatMessage("Total Credit"));
     });
 	
+	$(document).ready(function () {
+    $("#dataGrid").dxDataGrid({
+        // ... your grid options ...
+        onContextMenuPreparing: function (e) {
+            e.items = [];
+
+            // ✅ Row right-click → Edit Voucher
+            if (e.target === "content" && e.row && e.row.rowType === "data") {
+                e.items.push({
+                    text: "Edit Voucher",
+                    icon: "edit",
+                    onItemClick: function () {
+                        const rowData = e.row.data;
+                        navigateToVoucherPage(rowData.VoucherNo, rowData.VoucherType);
+                    }
+                });
+            }
+
+            // ✅ Header right-click → Column Chooser & Refresh
+            if (e.target === "header") {
+                e.items.push(
+                    {
+                        text: "Column Chooser",
+                        icon: "columnchooser",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    },
+                    {
+                        text: "Refresh Data",
+                        icon: "refresh",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        }
+                    }
+                );
+            }
+        }
+    });
+});
 
 
 
