@@ -1623,33 +1623,7 @@
 
 		if (response) {
 
-			 Approved = response.IsApproved;
-
-		// ✅ Disable buttons if already approved
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
-					hideAllButtonsExcept([
-					"btnPrint",
-					   "ddButtonLayout",
-						"btnBack",
-						"btnAttach"
-				]);
-				disableAllDropDownsAndSelects();
-				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-	if (gridInstance) {
-		gridInstance.option({
-			editing: {
-				allowUpdating: false,
-				allowAdding: false,
-				allowDeleting: false
-			},
-			selection: {
-				mode: "none"
-			}
-		});
-	}
-			}
+	
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data  ReceiptSignatory
 
@@ -1695,6 +1669,33 @@
 							console.error("Error fetching grid data:", error);
 						}
 					});
+					  		 Approved = response.IsApproved;
+
+		// ✅ Disable buttons if already approved
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+					hideAllButtonsExcept([
+					"btnPrint",
+					   "ddButtonLayout",
+						"btnBack",
+						"btnAttach"
+				]);
+				disableAllDropDownsAndSelects();
+				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	if (gridInstance) {
+		gridInstance.option({
+			editing: {
+				allowUpdating: false,
+				allowAdding: false,
+				allowDeleting: false
+			},
+			selection: {
+				mode: "none"
+			}
+		});
+	}
+			}
 
 				} else {
 					console.warn("No Material Receipt details found in the response.");
@@ -1705,7 +1706,10 @@
 			}
 		});
 	}
-
+	$(document).ready(function () {
+	//getSalesPersonByUser();
+			getDefaultCompany();
+});
 			function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -4898,14 +4902,15 @@ function saveQuotation(receiptNoNew, $btn) {
 					DevExpress.ui.notify(response.message, "success", 3000);
 
 								 const receiptno = response.receiptno;
+								 window.location.href-=`/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
 
-						 loadChildDataAndBindGrid(receiptno);
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
+						// loadChildDataAndBindGrid(receiptno);
+					// if (window.parent && window.parent.$("#dataGrid").length) {
+					// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+					// 	if (dataGrid) {
+					// 		dataGrid.refresh();
+					// 	}
+					// }
 
 
 				},

@@ -1312,11 +1312,11 @@
 									title = "Edit Client Request";
 									break;
 								case "Project Request":
-									url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+										url = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${encodeURIComponent(response.newMprNo)}&RevNo=${encodeURIComponent(response.RevisionNo)}`;
 									title = "Edit Project Request";
 									break;
 								case "Store Request":
-									url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+										url = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${encodeURIComponent(response.newMprNo)}&RevNo=${encodeURIComponent(response.RevisionNo)}`;
 									title = "Edit Store Request";
 									break;
 								default:

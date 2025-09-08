@@ -335,21 +335,12 @@
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
-							@(Html.DevExtreme().SelectBox()
+							@(Html.DevExtreme().TextBox()
 														.ID("ddRevNo")
 														.Label(new JS("formatMessage('Rev.No')"))
 														.LabelMode(EditorLabelMode.Floating)
-														.DataSource(d => d.WebApi()
-																					//.Controller("YourControllerName")
-																					//.LoadAction("YourLoadActionName")
-														.Key("Id")
-														)
-														.DisplayExpr("InvoiceNo")
-														.ValueExpr("InvoiceNo")
-														.ShowClearButton(true)
-														.SearchEnabled(true)
-														.Width("100%")
 														.ReadOnly(true)
+														.Width("100%")
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -2499,15 +2490,22 @@
 				  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
 				  let dropDownInstance;
 				  let vatListInstance;
-				  let Approved=null;
-		//View e-Invoice
+
+			//View ProjectRequest  
+			let Approved=null;
+	var rvNo=null;
 	let edit=false;
+
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
 			const mprno = mprnos ? mprnos.split("?")[0] : null;
-			//getSalesPersonByUser();
-	      	getDefaultCompany();
+				const value = $('#ddRevNo').dxTextBox("instance").option("value");
+	if(value == null || value == "" ){
+		const RevisionNo = urlParams.get("RevNo") ?? "";
+		rvNo = urlParams.get("RevNo") ?? "";
+		$
+			
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
@@ -2550,30 +2548,7 @@
 			dataType: 'json',
 			success: function (response) {
 			if (response) {
-						 Approved = response.IsApproved;
-		// ✅ Disable buttons if already approved
-		if (Approved === true) {
-				hideAllButtonsExcept([
-				"btnPrint1",
-				"ddButtonLayout",
-				"btnBack",
-				"btnAttach"
-			]);
-				disableAllDropDownsAndSelects();
-				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-	if (gridInstance) {
-		gridInstance.option({
-			editing: {
-				allowUpdating: false,
-				allowAdding: false,
-				allowDeleting: false
-			},
-			selection: {
-				mode: "none"
-			}
-		});
-	}
-		}
+		
 				 $("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 					$('#txtRequestNo').dxTextBox("instance").option("value", response.Mprno);
@@ -2608,6 +2583,7 @@
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", response.CurrencyRate);
 					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
+					$("#ddRevNo").dxTextBox("instance").option("value", response.MprrevisionNo ?? rvNo);
 				   // Fetch and initialize the data grid with invoice details
 					$.ajax({
 						type: "GET",
@@ -2626,6 +2602,30 @@
 							console.error("Error fetching grid data:", error);
 						}
 					});
+				 Approved = response.IsApproved;
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+					hideAllButtonsExcept([
+					"btnPrint1",
+					"ddButtonLayout",
+					"btnBack",
+					"btnAttach"
+				]);
+					disableAllDropDownsAndSelects();
+					const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+		if (gridInstance) {
+			gridInstance.option({
+				editing: {
+					allowUpdating: false,
+					allowAdding: false,
+					allowDeleting: false
+				},
+				selection: {
+					mode: "none"
+				}
+			});
+		}
+			}
 				} else {
 					console.warn("No client details found in the response.");
 				}
@@ -2635,23 +2635,12 @@
 			}
 		});
 	}
-	function getSalesPersonByUser() {
-		$.ajax({
-			type: "GET",
-			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
-			success: function (data) {
-				if (data && data.SalesPersonCode) {
-						const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
-					if (salesPersonDropDown) {
-							salesPersonDropDown.option("value", data.SalesPersonCode);
-					}
-				}
-			},
-			error: function (xhr) {
-				console.log("SalesPerson fetch failed:", xhr.responseText);
-			}
+		$(document).ready(function () {
+				getDefaultCompany();
+			//getSalesPersonByUser();
+					
 		});
-	}
+	
 		function getDefaultCompany() {
 		$.ajax({
 			type: "GET",
@@ -2671,6 +2660,23 @@
 			}
 		});
 	}
+		function getSalesPersonByUser() {
+			$.ajax({
+				type: "GET",
+				url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+				success: function (data) {
+					if (data && data.SalesPersonCode) {
+							const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
+						if (salesPersonDropDown) {
+								salesPersonDropDown.option("value", data.SalesPersonCode);
+						}
+					}
+				},
+				error: function (xhr) {
+					console.log("SalesPerson fetch failed:", xhr.responseText);
+				}
+			});
+		}
 		// Move the DataGrid configuration into a function for cleanliness
 			function initializeDataGrid(rowData) {
 				let grid = $("#B2BdataGrid").dxDataGrid({
@@ -5344,7 +5350,7 @@
 			grid.repaintRows([rowIndex]);
 			DevExpress.ui.notify("Details saved", "success", 1500);
 		}
-			$("#btnSave").on("click", function (e) {
+$("#btnSave").on("click", function (e) {
 		const $btn = $(this).dxButton("instance");
 		$btn.option("disabled", true);
 		if (edit === false) {
@@ -5418,14 +5424,15 @@
 						  updateWorkflowVisual(getWorkflowStatusFromFields());
 						DevExpress.ui.notify(response.message, "success", 3000);
 								 const mprno = response.mprno;
-						 loadChildDataAndBindGrid(mprno);
+										  window.location.href = `/${tenantName}/IMS/MRAddNewProjectRequest?Mprno=${mprno}`
+						//	 //loadChildDataAndBindGrid(mprno);
 						// Refresh parent DataGrid (ensure the correct selector is used)
-						if (window.parent && window.parent.$("#dataGrid").length) {
-							let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-							if (dataGrid) {
-								dataGrid.refresh();
-							}
-						}
+						// if (window.parent && window.parent.$("#dataGrid").length) {
+						// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+						// 	if (dataGrid) {
+						// 		dataGrid.refresh();
+						// 	}
+						// }
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);

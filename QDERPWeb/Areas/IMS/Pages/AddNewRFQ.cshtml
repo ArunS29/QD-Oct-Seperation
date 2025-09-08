@@ -1407,7 +1407,6 @@
 		const Rfqnos = urlParams.get('Rfqno');
 		const Rfqno = Rfqnos ? Rfqnos.split("?")[0] : null;
 
-			//getSalesPersonByUser();
 		loadClientDetails(Rfqno);
 
 		if (Rfqno) {
@@ -1458,32 +1457,6 @@ function NewNoGeneration(){
 
 			  if (response) {
 
-				 Approved = response.IsApproved;
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
-				hideAllButtonsExcept([
-			 "btnPrint3",
-             "ddButtonLayout",
-             "btnBack",
-             "btnCreatePo"
-				
-			]);
-			disableAllDropDownsAndSelects();
-			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-if (gridInstance) {
-    gridInstance.option({
-        editing: {
-            allowUpdating: false,
-            allowAdding: false,
-            allowDeleting: false
-        },
-        selection: {
-            mode: "none"
-        }
-    });
-}
-		}
 					$("#btnSave").dxButton("instance").option("text", "Update");
                 // Populate DevExtreme controls with the response data
                
@@ -1529,6 +1502,33 @@ if (gridInstance) {
                         console.error("Error fetching grid data:", error);
                     }
                 });
+				  
+				 Approved = response.IsApproved;
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+				hideAllButtonsExcept([
+			 "btnPrint3",
+             "ddButtonLayout",
+             "btnBack",
+             "btnCreatePo"
+				
+			]);
+			disableAllDropDownsAndSelects();
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
+		}
 
             } else {
                 console.warn("No RFQ details found in the response.");
@@ -1539,7 +1539,10 @@ if (gridInstance) {
         }
     });
 }
-
+$(document).ready(function () {
+	//getSalesPersonByUser();
+			getDefaultCompany();
+});
 			function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -4507,16 +4510,16 @@ function saveQuotation(rfqNoNew, $btn) {
 				DevExpress.ui.notify(response.message, "success", 3000);
 
 				 const rfqno = response.rfqno;
-				
-				 loadChildDataAndBindGrid(rfqno);
+				window.location.href=`/${tenantName}/IMS/AddNewRFQ?Rfqno=${Rfqno}`;
+				// loadChildDataAndBindGrid(rfqno);f
 
 				// Refresh parent DataGrid (ensure the correct selector is used)
-				if (window.parent && window.parent.$("#dataGrid").length) {
-					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					if (dataGrid) {
-						dataGrid.refresh();
-					}
-				}
+				// if (window.parent && window.parent.$("#dataGrid").length) {
+				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+				// 	if (dataGrid) {
+				// 		dataGrid.refresh();
+				// 	}
+				// }
 
 
 			},

@@ -1919,131 +1919,213 @@
                           width: 200
 
                       },
-        {
+                                         {
 
-               dataField: "EmployeeNo",
+        dataField: "EmployeeNo",
+
         caption: formatMessage('Employee Name'),
+
         width: 200,
-          cellTemplate: function (container, options) {
-                                        getEmployeeDropdownData().done(function (dropdownData) {
-                                          const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
-                                        $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
-                                  });
-                              },
+        cellTemplate: function (container, options) {
+                               getEmployeeDropdownData().done(function (dropdownData) {
+                                 const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
+                               $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
+                         });
+                     },
         editCellTemplate: function (cellElement, cellInfo) {
-            getEmployeeDropdownData().done(function (dropdownData) {
+
+              getEmployeeDropdownData().done(function (dropdownData) {
+
+                // Create container for dropdown + button
+
                 let $container = $("<div>").css({
+
                     display: "flex",
+
                     alignItems: "center",
+
                     gap: "5px",
+
                     width: "100%"
+
                 }).appendTo(cellElement);
 
+                // DropDownBox inside container
+
                 $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+
                     dataSource: dropdownData,
+
                     valueExpr: "EmployeeID",
+
                     displayExpr: "EmployeeName",
-                    value: cellInfo.value,
-                    dropDownOptions: { width: 800 },
+
+                    value: cellInfo.value || null,
+
+                    placeholder: "Select Employee",
+
+                    dropDownOptions: { width: 200 },
+
                     contentTemplate: function (e) {
+
                         return $("<div>").dxDataGrid({
+
                             dataSource: dropdownData,
-                            selection: { mode: "single" },
+
                             keyExpr: "EmployeeID",
+
+                            selection: { mode: "single" },
+
                             height: 300,
+
                             scrolling: { mode: "virtual" },
+
+                                searchPanel: {
+                                    visible: true,
+                                    highlightCaseSensitive: true,
+                                    width: 130,
+                                    placeholder: "Search..."
+                                    },
+
                             columns: [
-                                { dataField: "EmployeeID", caption: "ID", width: 80 },
-                                { dataField: "EmployeeName", caption: "Name", width: 200 }
+
+
+                                     { dataField: "EmployeeID", caption: "ID", width: 80 },
+                                     { dataField: "EmployeeName", caption: "Name", width: 200 }
+
+
                             ],
+
                             onSelectionChanged: function (selectedItems) {
-                                const selectedData = selectedItems.selectedRowsData[0];
-                                if (selectedData) {
-                                    e.component.option("value", selectedData.EmployeeID);
-                                    cellInfo.setValue(selectedData.EmployeeID);
+                                let selectedItem = selectedItems.selectedRowsData[0];
+                                if (selectedItem) {
+                                    // Set the value of the DropDownBox
+                                    e.component.option("value", selectedItem.EmployeeID);
+                                    // Update the cell value in the grid
+                                    cellInfo.setValue(selectedItem.EmployeeID);
+                                    // Close the DropDownBox
+                                    e.component.close();
                                 }
                             }
+
                         });
-                    },
-                    onValueChanged: function (e) {
-                        cellInfo.setValue(e.value);
+
                     }
+
                 });
+
+
+
             });
+
         }
 
     },
                {
-          dataField: "PropertyNo",
-          caption: formatMessage('PropertyOrEquipment'),
-          width: 200,
-              cellTemplate: function (container, options) {
-                                            getPropertyDropdownData().done(function (dropdownData) {
-                                                const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
-                                            $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
-                                    });
-                                },
-          editCellTemplate: function (cellElement, cellInfo) {
+
+        dataField: "PropertyNo",
+
+        caption: formatMessage('PropertyOrEquipment'),
+
+        width: 200,
+         cellTemplate: function (container, options) {
+                                    getPropertyDropdownData().done(function (dropdownData) {
+                                        const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
+                                    $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
+                            });
+                        },
+        editCellTemplate: function (cellElement, cellInfo) {
+
               getPropertyDropdownData().done(function (dropdownData) {
-                  let $container = $("<div>").css({
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                      width: "100%"
-                  }).appendTo(cellElement);
 
-                  $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-                      dataSource: dropdownData,
-                            valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
-                        displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
-                      value: cellInfo.value,   // Set initial value
+                // Create container for dropdown + button
 
-                      dropDownOptions: { width: 600 },
+                let $container = $("<div>").css({
 
-                      contentTemplate: function (e) {
-                          return $("<div>").dxDataGrid({
-                              dataSource: dropdownData,
-                              selection: { mode: "single" },
-                                keyExpr: "PropertyNo",
-                              height: 300,
-                              scrolling: { mode: "virtual" },
-                              columns: [
+                    display: "flex",
+
+                    alignItems: "center",
+
+                    gap: "5px",
+
+                    width: "100%"
+
+                }).appendTo(cellElement);
+
+                // DropDownBox inside container
+
+                $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+
+                    dataSource: dropdownData,
+
+                    valueExpr: "PropertyNo",
+
+                    displayExpr: "PropertyDescription",
+
+                    value: cellInfo.value || null,
+
+                    placeholder: "Select Property",
+
+                    dropDownOptions: { width: 200 },
+
+                    contentTemplate: function (e) {
+
+                        return $("<div>").dxDataGrid({
+
+                            dataSource: dropdownData,
+
+                            keyExpr: "PropertyNo",
+
+                            selection: { mode: "single" },
+
+                            height: 300,
+
+                            scrolling: { mode: "virtual" },
+
+                                searchPanel: {
+                                    visible: true,
+                                    highlightCaseSensitive: true,
+                                    width: 130,
+                                    placeholder: "Search..."
+                                    },
+
+                            columns: [
+
+
                                       { dataField: "PropertyNo", caption: "Property No", width: 150 },
                                       { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
-                              ],
-                                     onSelectionChanged: function (selectedItems) {
-                                    const selectedData = selectedItems.selectedRowsData[0];
-                                    if (selectedData) {
-                                          e.component.option("value", selectedData.PropertyNo);
-                                          cellInfo.setValue(selectedData.PropertyNo);
-                                    }
+
+
+                            ],
+
+                            onSelectionChanged: function (selectedItems) {
+                                let selectedItem = selectedItems.selectedRowsData[0];
+                                if (selectedItem) {
+                                    // Set the value of the DropDownBox
+                                    e.component.option("value", selectedItem.PropertyNo);
+                                    // Update the cell value in the grid
+                                    cellInfo.setValue(selectedItem.PropertyNo);
+                                    // Close the DropDownBox
+                                    e.component.close();
                                 }
-                              // onSelectionChanged: function (selectedItems) {
-                              //     let selectedItem = selectedItems.selectedRowsData[0];
+                            }
 
-                              //     if (selectedItem) {
-                              //         // 1️⃣ Set the selected value in PropertyOrEquipment
-                              //             cellInfo.setValue(selectedItem.PropertyNo);
+                        });
 
-                              //         // 2️⃣ Get the parent DataGrid instance and row index
-                              //         let dataGrid = $("#itemGrid").dxDataGrid("instance");
-                              //         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                    }
 
-                              //         // 3️⃣ Set UnitRateMethod column in the same row
-                              //         if (rowIndex !== -1) {
-                              //                   dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
-                              //         }
-                              //     }
-                              // }
-                          });
-                      }
-                  });
-              });
-          }
-      },
+                });
+
+
+
+            });
+
+        }
+
+    },
         { dataField: "AddlDescription", visible: false },
               { dataField: "DeliveryRemarks", visible: false },
-                   { dataField: "DeliveryNoteSlNo", visible: true }
+                   { dataField: "DeliveryNoteSlNo", visible: false }
 
                 ],
 

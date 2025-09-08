@@ -2588,8 +2588,9 @@ if (gridInstance) {
 		});
 	}
 	$(document).ready(function () {
+		getDefaultCompany();
 		//getSalesPersonByUser();
-				getDefaultCompany();
+				
 	});
 
 	function getDefaultCompany() {
@@ -5318,7 +5319,7 @@ $("#btnAddNew").on("click", function (e) {
 			grid.repaintRows([rowIndex]);
 			DevExpress.ui.notify("Details saved", "success", 1500);
 		}
-		$("#btnSave").on("click", function (e) {
+$("#btnSave").on("click", function (e) {
     const $btn = $(this).dxButton("instance");
 		// ✅ Step 1: Validate required field
 		const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -5405,15 +5406,15 @@ function saveQuotation(mprNoNew, $btn) {
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
 				 const mprno = response.mprno;
-				
-				 loadChildDataAndBindGrid(mprno);
-				// Refresh parent DataGrid if present
-				if (window.parent && window.parent.$("#dataGrid").length) {
-					const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					if (dataGrid) {
-						dataGrid.refresh();
-					}
-				}
+                window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${mprno}`				
+				// loadChildDataAndBindGrid(mprno);
+				// // Refresh parent DataGrid if present
+				// if (window.parent && window.parent.$("#dataGrid").length) {
+				// 	const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+				// 	if (dataGrid) {
+				// 		dataGrid.refresh();
+				// 	}
+				// }
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
