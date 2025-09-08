@@ -1084,3 +1084,39 @@ dx-item-content dx-list-item-content:hover{
         margin-left: 5px;
         padding: 5px;
     }
+
+/* Target all menu items */
+.dx-menu-item-wrapper .dx-menu-item {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 12px; /* add space for sidebar */
+}
+
+/* Add left sidebar (colored stripe) */
+.dx-menu-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 4px;
+    background-color:var(--title-background-color);
+    border-radius: 0% 50% 50% 0%;
+}
+.dx-menu-item:hover::before {
+    width: 8px;
+    background-color: var(--title-background-color);
+}
+/* Style for icon inside item */
+.dx-menu-item .dx-icon {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Text style */
+.dx-menu-item .dx-menu-item-text {
+    font-size: 14px;
+    color: #333;
+}

@@ -709,7 +709,7 @@ columns.AddFor(m => m.IsServicesGroup).Caption("Is Services Group").Visible(fals
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
-						case 'q1': // Jan - Mar
+				case 'q1': // Jan - Mar
 					frmDate = new Date(new Date().getFullYear(), 0, 1);
 					toDate = new Date(new Date().getFullYear(), 2, 31);
 					break;
@@ -729,6 +729,7 @@ columns.AddFor(m => m.IsServicesGroup).Caption("Is Services Group").Visible(fals
 					toDate = new Date(new Date().getFullYear(), 11, 31);
 					break;
 			}
+			hidequarterSubmenus();
 						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 		FromDate = frmDate;

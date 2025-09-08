@@ -52,8 +52,7 @@
     }
 
     .form-row {
-        display: flex;
-        gap: 10px;
+        display: flex;       
         width: 100%;
     }
 
@@ -66,7 +65,6 @@
         text-align: Left;
         display: flex;
         align-items: center;
-        gap: 10px;
     }
 
     .dx-selectbox {
@@ -94,7 +92,6 @@
 
     .form-row.border-outline {
         border: 1px solid gray;
-        padding: 10px;
         margin-bottom: 15px;
         border-radius: 8px;
     }
@@ -127,13 +124,11 @@
             position: absolute;
         }
 
-    .left-card, .right-card {
-        padding: 10px;
+    .left-card, .right-card { 
         border-radius: 6px;
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 10px;
     }
 
     .flex-row {
@@ -168,10 +163,9 @@
     }
 
     .layout-container {
-        padding: 1rem;
+        padding: 5px;
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
     }
 
     .form-column {
@@ -249,7 +243,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(240)
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(200)
                 .Items(item =>
                 {
                     item.Add()
@@ -257,7 +251,7 @@
                 .Icon("folder")
                 .Text(new JS("formatMessage('Purchase Order Details')"))
                 .Template(@<text>
-            <div class="p-3">
+            <div class="p-2">
                 <table style="table-layout: fixed; width: 100%;">
                     <colgroup>
                         <col style="width: 20%;" />
@@ -624,13 +618,13 @@
         </text>);
                     item.Add().Text(new JS("formatMessage('Shipping Details')")).Icon("home").Title(new JS("formatMessage('Shipping Details')")).Template(@<text>
            <div class="layout-container">
-            <div style="display: flex; gap: 15px; border-radius: 6px;">
+            <div style="display: flex; border-radius: 6px;gap:10px;">
 
                 <!-- Left Card -->
-                <div style=" padding: 10px;flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div style=" flex: 1; display: flex; flex-direction: column;gap: 5px;">
 
                     <!-- Row 1 -->
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex;">
                         <div style="flex: 1;">
                             @(Html.DevExtreme().SelectBox()
                             .ID("PaymentTerm")
@@ -652,7 +646,7 @@
                     </div>
 
                     <!-- Row 2 -->
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex;">
                         <div style="flex: 1;">
                             @(Html.DevExtreme().SelectBox()
                             .ID("DeliveryTerm")
@@ -686,11 +680,10 @@
                 </div>
 
                 <!-- Right Card -->
-                <div style="padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div style=" flex: 1; display: flex; flex-direction: column;gap:5px;">
                     <!-- PoSummary 1 -->
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label for="ShippingAddress" id="Shipping" style="font-weight: bold;"></label>
+                        <div style="display: flex; justify-content:flex-end; align-items: center;">
                             <div style="display: flex; gap: 5px;">
                                 <button class="btn-solid" onclick="setDefaultValue('ShippingAddress')">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
@@ -699,15 +692,15 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("ShippingAddress")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .Label(new JS("formatMessage('Shipping Address')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
 
                     <!-- PoSummary 2 -->
                     <div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <label for="BillingAddress" id="Billing" style="font-weight: bold;"></label>
+                        <div style="display: flex; justify-content: flex-end; align-items: center;">
                             <div style="display: flex; gap: 5px;">
                                 <button class="btn-solid" onclick="setDefaultValue('BillingAddress')">Set Default</button>
                                 <button style="padding: 3px 8px; border: 1px solid #8c8c8c; background-color: transparent; color: #333;">A</button>
@@ -716,7 +709,8 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("BillingAddress")
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .Label(new JS("formatMessage('Billing Address')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -727,7 +721,7 @@
         </text>);
                     item.Add().Text(new JS("formatMessage('Approvals')")).Icon("user").Title(new JS("formatMessage('Approvals')")).Template(@<text>
                      <div class="layout-container">
-                <div class="p-3" style="height:180px;">
+                <div class="p-2" style="height:180px;">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
@@ -759,10 +753,10 @@
 
         </text>);
                     item.Add().Text(new JS("formatMessage('Branch / Division')")).Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-            <div class="layout-container" style="display: flex; gap: 0px;padding: 15px;flex-direction:row;">
+            <div class="layout-container" style="display: flex; gap: 10px;padding: 5px;flex-direction:row;">
 
                 <!-- Branch & Divisions -->
-                <div style="padding: 10px; border-radius: 6px; flex: 1;">
+                <div style=" border-radius: 6px; flex: 1;">
                     <div id="Divisions" style="margin-bottom: 5px;"></div>
 
                     <!-- Company Branch -->
@@ -783,7 +777,7 @@
                     )
 
                     <!-- Type of Request + P.O. Category -->
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <div style="display: flex; margin-top: 10px;">
                         <div style="flex: 1;">
                             @(Html.DevExtreme().SelectBox()
                             .ID("RequestType")
@@ -860,7 +854,7 @@
                 </div>
 
                 <!-- Foreign Currency -->
-                <div style="padding: 10px; flex: 1;">
+                <div style=" flex: 1;">
                     <div id="Foreign" style="margin-bottom: 5px;"></div>
 
                     <!-- Currency -->
@@ -882,7 +876,7 @@
 
 
                     <!-- Exchange Rate -->
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <div style="display: flex; margin-top: 10px;">
                         <div style="flex: 2;">
                             @(Html.DevExtreme().NumberBox()
                             .ID("ExchangeRate")
@@ -899,11 +893,11 @@
                 </div>
 
                 <!-- Shipment & Discounts -->
-                <div style=" padding: 10px; flex: 1;">
+                <div style="  flex: 1;">
                     <div id="Shipment" style="margin-bottom: 5px;"></div>
 
                     <!-- Shipments & Handling -->
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex;">
                         <div style="flex: 2;">
                             @(Html.DevExtreme().TextBox()
                             .ID("ShipmentHandling")
@@ -925,7 +919,7 @@
                     </div>
 
                     <!-- Discount -->
-                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <div style="display: flex; margin-top: 10px;">
                         <div style="flex: 2;">
                             @(Html.DevExtreme().TextBox()
                             .ID("Discount")
@@ -952,15 +946,8 @@
 
                     item.Add().Text(new JS("formatMessage('Signatories')")).Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="layout-container">
-                <div class="p-3">
+                <div class="p-2">
                     <table class=" table-borderless w-100">
-                        <thead>
-                            <tr>
-                                <th id="Prepared">Prepared By</th>
-                                <th id="Verified">Verified By</th>
-                                <th id="Approved">Approved By</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <!-- Prepared By SelectBox -->
@@ -976,6 +963,8 @@
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Prepared By')"))
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .SearchEnabled(true)
                                  .SearchExpr("SignatoryName")
                                   .OnOpened("onSelectBoxOpened")
@@ -1009,6 +998,8 @@
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Verified By')"))
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .SearchEnabled(true)
                                     .SearchExpr("SignatoryName")
                                      .Option("searchMode", "contains") 
@@ -1028,6 +1019,8 @@
                                     .ShowClearButton(true)
                                     .ShowDropDownButton(true)
                                     .Width("100%")
+                                    .Label(new JS("formatMessage('Approved By')"))
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .SearchEnabled(true)                 // ✅ shows search box
                                .SearchExpr("SupplierCode") // ✅ search by multiple fields
                                  .Option("searchMode", "contains") 
@@ -1074,7 +1067,7 @@
 
         </text>);
          item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
-                                                                                                                                                                <div class="p-3">
+                                                                                                                                                                <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
                                                                                                                                                                             <td style="width: 30%;">
@@ -1181,10 +1174,13 @@
 
     </div>
     <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
+    <div>
     @(Html.DevExtreme().DataGrid()
-        .ID("itemGrid")
-        .DataSource(new JS("window.itemGridDataSource"))
-        .Height("42vh")
+        .ID("B2BdataGrid")
+        .DataSource(new JS("window.B2BdataGridDataSource"))
+        .Height("38vh")
         .KeyExpr("SerialNo")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
@@ -1518,7 +1514,7 @@
 
         $(function () {
 
-            dataGridInstance = $("#itemGrid").dxDataGrid({
+            dataGridInstance = $("#B2BdataGrid").dxDataGrid({
                 focusedRowEnabled: true,
                            dataSource: [],
 
@@ -1656,7 +1652,7 @@
 
 							selectedItemData = selectedItem;
 							cellInfo.setValue(selectedItem.GSCode);
-							const dataGrid = $("#itemGrid").dxDataGrid("instance");
+							const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 							const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 							if (rowIndex !== -1) {
@@ -1697,7 +1693,7 @@
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const grid = $("#itemGrid").dxDataGrid("instance");
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
 					const visibleRows = grid.getVisibleRows();
 					const rowIndex = cellInfo.rowIndex;
 					const rowData = grid.cellValue(rowIndex, "Gscode");
@@ -1883,7 +1879,7 @@
             e.component.option("value", unitCodeNumber);
             cellInfo.setValue(unitCodeNumber); // ✅ set number, not string
 
-            let grid = $("#itemGrid").dxDataGrid("instance");
+            let grid = $("#B2BdataGrid").dxDataGrid("instance");
             let rowIndex = grid.getRowIndexByKey(cellInfo.key);
             if (rowIndex !== -1) {
                 grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
@@ -2039,7 +2035,7 @@
                     text: "Delete All Selected Line Items",
                     icon: "remove",
                     onItemClick: function() {
-                        const grid = $("#itemGrid").dxDataGrid("instance");
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
                         const selectedRows = grid.getSelectedRowsData();
                         const poChildNos = selectedRows.map(row => row.PochildNo);
                         if (poChildNos.length > 0) {
@@ -2053,7 +2049,7 @@
                     text: "Add New Line Item",
                     icon: "add",
                     onItemClick: function() {
-                        const grid = $("#itemGrid").dxDataGrid("instance");
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
                         grid.addRow();
                     }
                 }
@@ -2079,7 +2075,7 @@
              e.dataField === "Discount")) {
 
             e.editorOptions.onValueChanged = function (args) {
-                let grid = $("#itemGrid").dxDataGrid("instance");
+                let grid = $("#B2BdataGrid").dxDataGrid("instance");
                 let rowIndex = e.row.rowIndex;
                     
                 let newValue = args.value;
@@ -2117,13 +2113,13 @@
     }
 //   function serialTemplate(cellElement, cellInfo) {
    
-//     const grid = $("#itemGrid").dxDataGrid("instance");
+//     const grid = $("#B2BdataGrid").dxDataGrid("instance");
 //     const rowIndex = grid.getVisibleRows().findIndex(row => row.key === cellInfo.key);
 //     if (rowIndex >= 0) {
 //         cellElement.text(rowIndex + 1);
 //     }
 // }
-//                      window.itemGridDataSource = new DevExpress.data.ArrayStore({
+//                      window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
 //                 key: "ItemCode",
 //                 data: []
 //             });
@@ -2132,7 +2128,7 @@
 //                 var button = $("#btnSave").dxButton("instance");
 //                 button.option("text", "Update");
 
-//                 var grid = $("#itemGrid").dxDataGrid("instance");
+//                 var grid = $("#B2BdataGrid").dxDataGrid("instance");
 //                 grid.addRow();
 
 //                 // ✅ Show a success toast
@@ -2140,13 +2136,13 @@
 //             });
 //         });
          function serialTemplate(cellElement, cellInfo) {
-             const grid = $("#itemGrid").dxDataGrid("instance");
+             const grid = $("#B2BdataGrid").dxDataGrid("instance");
              const rowIndex = grid.getRowIndexByKey(cellInfo.key);
              if (rowIndex >= 0) {
                  cellElement.text(rowIndex + 1);
              }
          }
-          window.itemGridDataSource = new DevExpress.data.ArrayStore({
+          window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
             key: "ItemCode",
             data: []
         });
@@ -2156,7 +2152,7 @@
             var button = $("#btnSave").dxButton("instance");
             button.option("text", "Update");
 
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
             var totalCount = grid.totalCount();
             var pageSize = grid.pageSize();
@@ -2359,8 +2355,8 @@
                                  DevExpress.ui.notify("Approved successfully.", "success", 3000);
 
         // ✅ Disable grid (keep visible)
-        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        itemGridInstance.option({
+        const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+        B2BdataGridInstance.option({
             editing: {
                 allowUpdating: false,
                 allowAdding: false,
@@ -2461,7 +2457,7 @@ function disableSpecificControls() {
                     success: function (response) {
                         if (response.success) {
                             DevExpress.ui.notify(response.message, "success", 2000);
-                            const grid = $("#itemGrid").dxDataGrid("instance");
+                            const grid = $("#B2BdataGrid").dxDataGrid("instance");
                             grid.refresh();
                         } else {
                             DevExpress.ui.notify(response.message, "error", 2000);
@@ -2478,7 +2474,7 @@ function disableSpecificControls() {
 
 
 //     $("#btnSave").on("click", function () {
-//     const grid = $("#itemGrid").dxDataGrid("instance");
+//     const grid = $("#B2BdataGrid").dxDataGrid("instance");
 //     if (grid.hasEditData()) {
 //         grid.saveEditData().done(() => {
 //             savePurchaseOrder();
@@ -2546,7 +2542,7 @@ function disableSpecificControls() {
 //                 data: JSON.stringify(data),
 //                 contentType: 'application/json',
 //                 success: function (response) {
-//                     const grid = $("#itemGrid").dxDataGrid("instance");
+//                     const grid = $("#B2BdataGrid").dxDataGrid("instance");
 //             const rawItems = grid.getDataSource().items();
     
 //                         const pono = data.Pono;
@@ -2588,10 +2584,10 @@ function disableSpecificControls() {
                            
                                     
 //    $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(pono)}`, function (data) {
-//     const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-//         itemGridInstance.cancelEditData();
-//     itemGridInstance.option("dataSource", data.items || []);
-//     itemGridInstance.refresh();
+//     const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+//         B2BdataGridInstance.cancelEditData();
+//     B2BdataGridInstance.option("dataSource", data.items || []);
+//     B2BdataGridInstance.refresh();
 // });
                     
 //                         },
@@ -2655,7 +2651,7 @@ function disableSpecificControls() {
 let isEditMode = false; // set true if params exist (on page load when editing)
 
 $("#btnSave").on("click", function () {
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
     if (grid.hasEditData()) {
         grid.saveEditData().done(() => {
@@ -2756,7 +2752,7 @@ function savePurchaseOrder(poNo) {
     }
 
 
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
 const children = grid.getDataSource().items().map(item => {
 
         return {
@@ -2794,14 +2790,14 @@ const children = grid.getDataSource().items().map(item => {
              isSaved = true; 
             // Reload grid from server if needed
             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
-               const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-    itemGridInstance.cancelEditData();
+               const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+    B2BdataGridInstance.cancelEditData();
     // FULLY RESET the data source using a new ArrayStore
-    itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
+    B2BdataGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
         key: "PochildNo",
         data: data.items || []
     }));
-    itemGridInstance.refresh();
+    B2BdataGridInstance.refresh();
             });
         },
         error: function (xhr) {
@@ -2875,7 +2871,7 @@ const children = grid.getDataSource().items().map(item => {
 //     }
 
 
-//     const grid = $("#itemGrid").dxDataGrid("instance");
+//     const grid = $("#B2BdataGrid").dxDataGrid("instance");
 // const children = grid.getDataSource().items().map(item => {
 
 //         return {
@@ -2913,14 +2909,14 @@ const children = grid.getDataSource().items().map(item => {
 //              isSaved = true; 
 //             // Reload grid from server if needed
 //             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
-//                const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-//     itemGridInstance.cancelEditData();
+//                const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+//     B2BdataGridInstance.cancelEditData();
 //     // FULLY RESET the data source using a new ArrayStore
-//     itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
+//     B2BdataGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
 //         key: "PochildNo",
 //         data: data.items || []
 //     }));
-//     itemGridInstance.refresh();
+//     B2BdataGridInstance.refresh();
 //             });
 //         },
 //         error: function (xhr) {
@@ -2994,7 +2990,7 @@ const children = grid.getDataSource().items().map(item => {
         return;
     }
 
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
     const children = grid.getDataSource().items().map(item => {
         return {
             PochildNo: Number(item.PochildNo) || 0,
@@ -3032,15 +3028,15 @@ const children = grid.getDataSource().items().map(item => {
 
             // Reload grid from server if needed
             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
-                const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-                itemGridInstance.cancelEditData();
+                const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                B2BdataGridInstance.cancelEditData();
 
                 // FULLY RESET the data source using a new ArrayStore
-                itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
+                B2BdataGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
                     key: "PochildNo",
                     data: data.items || []
                 }));
-                itemGridInstance.refresh();
+                B2BdataGridInstance.refresh();
 
                
                 setTimeout(() => {
@@ -3105,7 +3101,7 @@ function makeAllWidgetsReadOnly() {
         });
 
         // Disable grid editing
-        const grid = $("#itemGrid").dxDataGrid("instance");
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
         if (grid) {
             grid.option("editing", {
                 allowUpdating: false,
@@ -3133,14 +3129,6 @@ function makeAllWidgetsReadOnly() {
                  $(function () {
                           $("#Prepared").text(
                                formatMessage("Prepared By"));
-               });
-                $(function () {
-                       $("#Billing").text(
-                            formatMessage("Billing Address"));
-               });
-               $(function () {
-                          $("#Shipping").text(
-                               formatMessage("Shipping Address"));
                });
                $(function () {
                              $("#Divisions").text(
@@ -3278,8 +3266,8 @@ setDxFieldValue("approvedBy2", data.approvedBy);
      setDxFieldValue("ddlGoodsGroup3", data.CurrencyId);
 
                             // Set item grid data
-                            const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-                                   itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
+                            const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                                   B2BdataGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
                                             key: "PochildNo",
                                             data: data.items || []
                                         }));                         
@@ -3288,8 +3276,8 @@ setDxFieldValue("approvedBy2", data.approvedBy);
                                 console.log("Is Approved:", isApproved);
 
   if (isViewMode) {
-                               const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        itemGridInstance.option({
+                               const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+        B2BdataGridInstance.option({
             editing: {
                 allowUpdating: false,
                 allowAdding: false,
@@ -3304,8 +3292,8 @@ setDxFieldValue("approvedBy2", data.approvedBy);
 
                                 DevExpress.ui.notify("This Purchase Order is in view mode. Fields are read-only.", "info", 4000);
  }else if (isEditMode && isApproved) {
-    const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-    itemGridInstance.option({
+    const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+    B2BdataGridInstance.option({
         editing: {
             allowUpdating: false,
             allowAdding: false,
@@ -3332,7 +3320,7 @@ setDxFieldValue("approvedBy2", data.approvedBy);
                             
  else if (isEditMode) {
                                 // Enable grid editing
-                                itemGridInstance.option("editing", {
+                                B2BdataGridInstance.option("editing", {
                                         mode: "cell",
                                         allowUpdating: true,
                                     allowAdding: true,
@@ -3655,7 +3643,7 @@ function selectContact(name, email, mobile, phone) {
 
     // On document ready
     $(document).ready(function () {
-        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
         dataGrid.on("selectionChanged", function (e) {
             const selectedRowData = e.selectedRowsData[0];
@@ -3700,7 +3688,7 @@ function selectContact(name, email, mobile, phone) {
             //MoveupDown functionality
         function moveRowUp() {
             
-                var dataGrid = $("#itemGrid").dxDataGrid("instance");
+                var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Flatten the grouped data
             //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3729,7 +3717,7 @@ function selectContact(name, email, mobile, phone) {
 
         function moveRowDown() {
 
-            var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Get flattened data
             // var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3766,8 +3754,8 @@ function selectContact(name, email, mobile, phone) {
 
 
             // Get the DataGrid instance and update the data source
-            var dataGrid1 = $("#itemGrid").dxDataGrid("instance");
-            var dataGrid = $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
+            var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
 
 
             dataGrid1.refresh();
