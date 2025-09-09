@@ -146,10 +146,18 @@
 </style>
 
 <input id="formId" value="frm60140RFQItemDetails" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="RequestforQuotationList" class="no-border-input"></div>
 	</div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="RequestforQuotationList" class="titleText no-border-title"></div>
+    </div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
@@ -340,7 +348,7 @@
 				subColumns.AddFor(m => m.IsWonForPo).Caption(new JS("formatMessage('Is Won For Po')")).Alignment(HorizontalAlignment.Center);
 			});
 		})
-		.Height("60vh") // Fixed height for the grid
+		.Height("70vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -387,7 +395,7 @@
 	text: formatMessage("RFQ with Item Details"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+		$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});

@@ -19,15 +19,6 @@
         padding: 10px 15px; 
     }
 
-       
-        .dx-tabpanel .dx-tab.dx-selection {
-            background-color: lightblue;
-            color: white !important;
-        }
-    .dx-tabpanel {
-    }
-
-
     .mainContainer {
         overflow-x: hidden;
     }
@@ -39,7 +30,6 @@
     .form-container {
         width: 100%;
         border-radius: 1px;
-		background: var(--background-color);
 	}
 
     .form-row {
@@ -311,7 +301,7 @@
 								})
 						)
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierEmail")
 						.Label(new JS("formatMessage('Supplier Email:')"))
@@ -320,7 +310,7 @@
 						.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%"))
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierContact")
 						.Label(new JS("formatMessage('Supplier Contact No:')"))
