@@ -425,7 +425,7 @@
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                            .OnClick("AddProject"));
+                                        .OnClick("AddProject"));
                                         buttons.Add()
                                         .Name("dropDown");
                                     }))
@@ -462,6 +462,7 @@
                                             .Widget(w => w.Button()
                                             .Type(ButtonType.Default)
                                             .Icon("plus")
+                                            .OnClick("AddTypeReq")
                                             .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                               );
                                             buttons.Add()
@@ -608,9 +609,9 @@
                                 .ID("CompanyBranch")
                                 .ValueExpr("CompanyId")
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+							    .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .DisplayExpr("CompanyName")
                                 .DataSource(ds => ds
                                 .Mvc()
@@ -637,9 +638,9 @@
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+                                .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .ValueExpr("SalesPersonCode")
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
@@ -652,8 +653,8 @@
                                 .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
-                                  .OnOpened("onOpened")
-                                   .Option("dataGridId", "SalesPersonGrid")
+                                .OnOpened("onOpened")
+                                .Option("dataGridId", "SalesPersonGrid")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate"))
 
                                  .Buttons(buttons =>
@@ -664,6 +665,7 @@
                                         .Widget(w => w.Button()
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
+                                        .OnClick("redirecttosalespersonmaster")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                            );
                                         buttons.Add()
@@ -891,7 +893,7 @@
         .Columns(columns =>
         {
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
-            columns.Add().Caption(new JS("formatMessage('#')")).Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
+            columns.Add().Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
             columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120).AllowEditing(false)
                 .CellTemplate(new JS(@"
                     function(container, options) {
@@ -1010,8 +1012,17 @@
         .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
         .AllowDeleting(true)
-        )     
-        .OnContextMenuPreparing("onGridRightClick")
+        )
+        .Columns(columns => {
+            columns.Add().Type(GridCommandColumnType.Buttons)
+            .Caption("Delete")
+                .Buttons(b => {
+                    b.Add().Name(GridColumnButtonName.Edit);
+                    b.Add().Name(GridColumnButtonName.Delete)
+                        .Icon("trash")
+                        .Hint("Delete");
+                });
+        })
         )
 </div>
 <div class="Head">
@@ -1019,24 +1030,6 @@
         @await Html.PartialAsync("/Pages/Shared/IMS/SalesOrderEDitFooter.cshtml")
     </div>
 </div>
-<!-- Context Menu -->
-<div id="lineItemContextMenu" style="display:none; position:absolute; z-index:9999;">
-    <ul style="list-style:none; margin:0; padding:0; min-width:220px;">
-        <li class="ctx-menu-item" data-action="delete-line" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="delete-selected" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Selected Line Items
-        </li>
-        <li class="ctx-menu-item" data-action="add-line" style="padding:8px;cursor:pointer;">
-            <span style="color:green;font-size:18px;">&#10133;</span> Add Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="generate-jo" style="padding:8px;cursor:pointer;">
-            <span style="color:#666;font-size:18px;">&#128202;</span> Generate Job Orders
-        </li>
-    </ul>
-</div>
-
 <!-- Generate Job Order Modal -->
 <div id="generateJobOrderModal" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:white; color:black; padding:20px; border-radius:8px; z-index:10000;">
     <div style="font-weight:bold; margin-bottom:10px;">Create Job Orders for:</div>
@@ -1426,85 +1419,6 @@
 			});
 		});
 
-            // $(document).ready(function () {
-
-            //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            //         if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
-
-            //             $(this).remove();
-
-            //         }
-
-            //     });
-
-            // });
-
-           function onGridRightClick(e) {
-            if (e.row && e.row.rowType === "data") {
-                e.event.preventDefault(); // disable browser context menu
-
-                // Select the row that was right-clicked
-                const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                grid.selectRowsByIndexes([e.rowIndex]);
-
-                // Position and show the custom menu
-                const menu = document.getElementById("lineItemContextMenu");
-                menu.style.left = e.event.pageX + "px";
-                menu.style.top = e.event.pageY + "px";
-                menu.style.display = "block";
-            }
-        }
-
-        // Hide the menu when clicking anywhere else
-        document.addEventListener("click", function (e) {
-            const menu = document.getElementById("lineItemContextMenu");
-            if (!e.target.closest("#lineItemContextMenu")) {
-                menu.style.display = "none";
-            }
-        });
-
-        // Menu action handling
-        $(document).on("click", ".ctx-menu-item", function () {
-            const action = $(this).data("action");
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            switch (action) {
-                case "delete-line":
-                    const selected = grid.getSelectedRowsData();
-                    if (selected.length > 0) {
-                        grid.deleteRow(grid.getRowIndexByKey(selected[0].id)); // Use correct key field
-                    }
-                    break;
-
-                case "delete-selected":
-                    const selectedKeys = grid.getSelectedRowKeys();
-                    selectedKeys.forEach(key => {
-                        const rowIndex = grid.getRowIndexByKey(key);
-                        if (rowIndex >= 0) grid.deleteRow(rowIndex);
-                    });
-                    break;
-
-                case "add-line":
-                    grid.addRow();
-                    break;
-
-               case "generate-jo":
-                     $("#generateJobOrderModal").fadeIn(200);
-        break;
-
-            }
-
-            $("#lineItemContextMenu").hide();
-        });
-
-
-        // Handle Generate JO Button
-        // $("#btnGenerateJO").on("click", function () {
-        //     const selectedType = $("input[name='joType']:checked").val();
-        //     DevExpress.ui.notify(`Generating JO for ${selectedType}`, "success", 2000);
-        //     closeGenerateJobOrderModal();
-        // });
-
         $("#btnCloseJO").on("click", function () {
             closeGenerateJobOrderModal();
         });
@@ -1798,7 +1712,7 @@
             showDropDownButton: true,
             deferRendering: false,
             width: "100%",
-            dropDownOptions: { width: 600 },
+            dropDownOptions: { width: 300 },
             contentTemplate: function (e) {
                 const gridBox = $("<div>").dxDataGrid({
                     dataSource: TaxSlabs,
@@ -2196,7 +2110,13 @@ $("#btnSave").on("click", function (e) {
 
 function saveSalesOrder(salesOrderNo, $btn) {
     const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-
+    if (gridInstance.hasEditData()) {
+        gridInstance.saveEditData().done(() => {
+            validateAndSave();
+        });
+    } else {
+        validateAndSave();
+    }
     // ✅ collect children
     const children = gridInstance.getDataSource().items().map(row => ({
         SalesOrderChildId: row.SalesOrderChildId ?? 0,
@@ -2217,7 +2137,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     // ✅ master
     const master = {
         SalesOrderNo: salesOrderNo,
-        SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
+        SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
         ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
         ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
         QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
@@ -2433,56 +2353,6 @@ function saveSalesOrder(salesOrderNo, $btn) {
                 validateAndSave();
             }
 
-            function validateAndSave() {
-                // ✅ Validate required DropDown fields
-                const requiredFields = [
-                    { id: "#ClientNames", label: "Client Name" },
-                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                    // { id: "#CompanyBranch", label: "Company Branch" },
-                    // Add more if needed
-                ];
-
-                let allValid = true;
-                let missingLabels = [];
-
-                requiredFields.forEach(field => {
-                    const $el = $(field.id);
-                    const inst = $el.dxDropDownBox("instance");
-
-                    if (inst) {
-                        const value = inst.option("value");
-                        if (!value) {
-                            allValid = false;
-                            missingLabels.push(field.label);
-                            $el.addClass("dx-invalid");
-                        } else {
-                            $el.removeClass("dx-invalid");
-                        }
-                    } else {
-                        console.warn("Instance not found:", field.id);
-                    }
-                });
-
-                if (!allValid) {
-                    DevExpress.ui.dialog.alert(
-                        "Please fill the required field(s): " + missingLabels.join(", "),
-                        "Validation Failed"
-                    );
-                    return;
-                }
-
-                // ✅ Helper to extract date in yyyy-MM-dd format
-                   function getDateOnlyValue(dateBoxId) {
-        var val = $(dateBoxId).dxDateBox("instance").option("value");
-        if (!val) return null;
-        // Format as yyyy-MM-dd (local date, no time)
-        return val instanceof Date
-            ? val.getFullYear() + '-' +
-              String(val.getMonth() + 1).padStart(2, '0') + '-' +
-              String(val.getDate()).padStart(2, '0')
-            : val;
-    }
-
                 // ✅ Collect children grid data
                 const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
                 const children = gridInstance.getDataSource().items().map(row => ({
@@ -2557,12 +2427,12 @@ function saveSalesOrder(salesOrderNo, $btn) {
                             gridInstance.option("dataSource", data);
                         });
                         if (window.parent && window.parent.$("#dataGrid").length) {
-				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.refresh();
-				}
-}
-				history.back();
+                            let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                            if (dataGrid) {
+                                dataGrid.refresh();
+                            }
+                        }
+				        history.back();
                         
                     },
                     error: function (xhr) {
@@ -2570,7 +2440,6 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         console.error("Save error:", xhr.responseText);
                     }
                 });
-            }
         });
 
        
@@ -2663,15 +2532,9 @@ function saveSalesOrder(salesOrderNo, $btn) {
                 }
             });
         });
-
-
-
-
-
-            $("#btnBack").on("click", function (e) {
-                history.back();
-                    });
-
+    function onBackButtonClick() {
+        window.history.back();
+    }
      
 
 
@@ -3418,4 +3281,113 @@ $(document).ready(function () {
         delay: [100, 100],
     });
     }
+    function redirecttosalespersonmaster() {
+		const url = `/${tenantName}/IMS/SalesPersonMaster`;
+		const title = "Sales Person Master";
+		openModal(url, title);
+	}
+    function AddTypeReq(){
+        const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+        const title = "Quotation Type Of Request";
+        openModal(url, title);
+    }
+    function getDateOnlyValue(dateBoxId) {
+        var val = $(dateBoxId).dxDateBox("instance").option("value");
+        if (!val) return null;
+        return val instanceof Date? val.getFullYear() + '-' +String(val.getMonth() + 1).padStart(2, '0') + '-' + String(val.getDate()).padStart(2, '0'): val;
+    }
+    function validateAndSave() {
+        // ✅ Validate required DropDown fields
+        const requiredFields = [
+            { id: "#ClientNames", label: "Client Name" },
+            // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
+            // { id: "#CompanyBranch", label: "Company Branch" },
+            // Add more if needed
+        ];
+
+        let allValid = true;
+        let missingLabels = [];
+
+        requiredFields.forEach(field => {
+            const $el = $(field.id);
+            const inst = $el.dxDropDownBox("instance");
+
+            if (inst) {
+                const value = inst.option("value");
+                if (!value) {
+                    allValid = false;
+                    missingLabels.push(field.label);
+                    $el.addClass("dx-invalid");
+                } else {
+                    $el.removeClass("dx-invalid");
+                }
+            } else {
+                console.warn("Instance not found:", field.id);
+            }
+        });
+
+        if (!allValid) {
+            DevExpress.ui.dialog.alert(
+                "Please fill the required field(s): " + missingLabels.join(", "),
+                "Validation Failed"
+            );
+            return;
+        }
+    }
+
+    $("#B2BdataGrid").dxDataGrid({
+    dataSource: window.B2BdataGridDataSource,
+    keyExpr: "id",   // <-- must match your unique field
+    selection: { mode: "multiple" },
+    onContextMenuPreparing: function(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Delete Line Item",
+                    icon: "trash",
+                    onItemClick: function() {
+                        const rowKey = e.row.key;
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const rowIndex = grid.getRowIndexByKey(rowKey);
+                        if (rowIndex >= 0) {
+                            grid.deleteRow(rowIndex);
+                        }
+                    }
+                },
+                {
+                    text: "Delete Selected Items",
+                    icon: "remove",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const keys = grid.getSelectedRowKeys();
+                        if (keys.length === 0) return;
+
+                        const doDelete = () => {
+                            keys.forEach(k => {
+                                const idx = grid.getRowIndexByKey(k);
+                                if (idx >= 0) grid.deleteRow(idx);
+                            });
+                        };
+                        doDelete();
+                    }
+                },
+                {
+                    text: "Add Line Item",
+                    icon: "add",
+                    onItemClick: function() {
+                        $("#B2BdataGrid").dxDataGrid("instance").addRow();
+                    }
+                },
+                {
+                    text: "Generate Job Orders",
+                    icon: "chart",
+                    onItemClick: function() {
+                        $("#generateJobOrderModal").fadeIn(200);
+                    }
+                }
+            ];
+        }
+    }
+});
+
 </script>
