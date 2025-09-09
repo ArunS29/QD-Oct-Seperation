@@ -42,4 +42,5 @@ public partial class Tbl90121eInvoiceLogTable
     public string JasonUuid { get; set; }
 
     public string JasonBase64Invoice { get; set; }
+    public string ZatcaResponse { get; set; }
 }

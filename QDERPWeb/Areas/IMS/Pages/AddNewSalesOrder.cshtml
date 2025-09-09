@@ -425,7 +425,7 @@
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                            .OnClick("AddProject"));
+                                        .OnClick("AddProject"));
                                         buttons.Add()
                                         .Name("dropDown");
                                     }))
@@ -462,6 +462,7 @@
                                             .Widget(w => w.Button()
                                             .Type(ButtonType.Default)
                                             .Icon("plus")
+                                            .OnClick("AddTypeReq")
                                             .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                               );
                                             buttons.Add()
@@ -492,8 +493,7 @@
                     <tr>
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top; padding: 10px;">
-                            <div style="font-weight: bold;">Signatories:</div>
-                            <div class="mb-3" style="display:flex;">
+                           <div class="mb-3" style="display:flex;">
                                 @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("preparedBy")
                                 .ValueChangeEvent("input")
@@ -509,6 +509,8 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
                                 )
+                                .Label("Signatories:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
@@ -607,9 +609,9 @@
                                 .ID("CompanyBranch")
                                 .ValueExpr("CompanyId")
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+							    .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .DisplayExpr("CompanyName")
                                 .DataSource(ds => ds
                                 .Mvc()
@@ -636,9 +638,9 @@
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+                                .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .ValueExpr("SalesPersonCode")
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
@@ -651,8 +653,8 @@
                                 .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
-                                  .OnOpened("onOpened")
-                                   .Option("dataGridId", "SalesPersonGrid")
+                                .OnOpened("onOpened")
+                                .Option("dataGridId", "SalesPersonGrid")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate"))
 
                                  .Buttons(buttons =>
@@ -663,6 +665,7 @@
                                         .Widget(w => w.Button()
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
+                                        .OnClick("redirecttosalespersonmaster")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                            );
                                         buttons.Add()
@@ -805,7 +808,7 @@
 							.Location(TextEditorButtonLocation.After)
 							.Widget(w => w.Button()
 							.Type(ButtonType.Default)
-							.Icon("edit")
+							.Icon("plus")
 							.Disabled(true) // Button is also disabled
 							.ElementAttr(new { @class = "custom-hover-button add-hover" })
 							.OnClick("CurrencyClick"));
@@ -845,7 +848,7 @@
 						    .Location(TextEditorButtonLocation.After)
 						    .Widget(w => w.Button()
 						    .Type(ButtonType.Default)
-						    .Icon("edit") // Use "plus" or any other if needed
+						    .Icon("plus") // Use "plus" or any other if needed
 						    .Hint("Edit Description")
 						    .ElementAttr(new { @class = "custom-hover-button add-hover" })
 						    .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -875,10 +878,14 @@
             )
 
     </div>
+    <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
     @(Html.DevExtreme().DataGrid()
-        .ID("itemGrid")
-        .Height("38vh")
-        .DataSource(new JS("window.itemGridDataSource"))        
+        .ID("B2BdataGrid")
+        .Height("33vh")
+        
+        .DataSource(new JS("window.B2BdataGridDataSource"))        
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -886,7 +893,7 @@
         .Columns(columns =>
         {
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
-            columns.Add().Caption(new JS("formatMessage('#')")).Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
+            columns.Add().Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
             columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120).AllowEditing(false)
                 .CellTemplate(new JS(@"
                     function(container, options) {
@@ -1005,35 +1012,24 @@
         .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
         .AllowDeleting(true)
-        )     
-        .OnContextMenuPreparing("onGridRightClick")
+        )
+        .Columns(columns => {
+            columns.Add().Type(GridCommandColumnType.Buttons)
+            .Caption("Delete")
+                .Buttons(b => {
+                    b.Add().Name(GridColumnButtonName.Edit);
+                    b.Add().Name(GridColumnButtonName.Delete)
+                        .Icon("trash")
+                        .Hint("Delete");
+                });
+        })
         )
 </div>
 <div class="Head">
     <div class="footer-fixed">
-
         @await Html.PartialAsync("/Pages/Shared/IMS/SalesOrderEDitFooter.cshtml")
-
     </div>
 </div>
-<!-- Context Menu -->
-<div id="lineItemContextMenu" style="display:none; position:absolute; z-index:9999;">
-    <ul style="list-style:none; margin:0; padding:0; min-width:220px;">
-        <li class="ctx-menu-item" data-action="delete-line" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="delete-selected" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Selected Line Items
-        </li>
-        <li class="ctx-menu-item" data-action="add-line" style="padding:8px;cursor:pointer;">
-            <span style="color:green;font-size:18px;">&#10133;</span> Add Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="generate-jo" style="padding:8px;cursor:pointer;">
-            <span style="color:#666;font-size:18px;">&#128202;</span> Generate Job Orders
-        </li>
-    </ul>
-</div>
-
 <!-- Generate Job Order Modal -->
 <div id="generateJobOrderModal" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:white; color:black; padding:20px; border-radius:8px; z-index:10000;">
     <div style="font-weight:bold; margin-bottom:10px;">Create Job Orders for:</div>
@@ -1423,85 +1419,6 @@
 			});
 		});
 
-            // $(document).ready(function () {
-
-            //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            //         if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
-
-            //             $(this).remove();
-
-            //         }
-
-            //     });
-
-            // });
-
-           function onGridRightClick(e) {
-            if (e.row && e.row.rowType === "data") {
-                e.event.preventDefault(); // disable browser context menu
-
-                // Select the row that was right-clicked
-                const grid = $("#itemGrid").dxDataGrid("instance");
-                grid.selectRowsByIndexes([e.rowIndex]);
-
-                // Position and show the custom menu
-                const menu = document.getElementById("lineItemContextMenu");
-                menu.style.left = e.event.pageX + "px";
-                menu.style.top = e.event.pageY + "px";
-                menu.style.display = "block";
-            }
-        }
-
-        // Hide the menu when clicking anywhere else
-        document.addEventListener("click", function (e) {
-            const menu = document.getElementById("lineItemContextMenu");
-            if (!e.target.closest("#lineItemContextMenu")) {
-                menu.style.display = "none";
-            }
-        });
-
-        // Menu action handling
-        $(document).on("click", ".ctx-menu-item", function () {
-            const action = $(this).data("action");
-            const grid = $("#itemGrid").dxDataGrid("instance");
-            switch (action) {
-                case "delete-line":
-                    const selected = grid.getSelectedRowsData();
-                    if (selected.length > 0) {
-                        grid.deleteRow(grid.getRowIndexByKey(selected[0].id)); // Use correct key field
-                    }
-                    break;
-
-                case "delete-selected":
-                    const selectedKeys = grid.getSelectedRowKeys();
-                    selectedKeys.forEach(key => {
-                        const rowIndex = grid.getRowIndexByKey(key);
-                        if (rowIndex >= 0) grid.deleteRow(rowIndex);
-                    });
-                    break;
-
-                case "add-line":
-                    grid.addRow();
-                    break;
-
-               case "generate-jo":
-                     $("#generateJobOrderModal").fadeIn(200);
-        break;
-
-            }
-
-            $("#lineItemContextMenu").hide();
-        });
-
-
-        // Handle Generate JO Button
-        // $("#btnGenerateJO").on("click", function () {
-        //     const selectedType = $("input[name='joType']:checked").val();
-        //     DevExpress.ui.notify(`Generating JO for ${selectedType}`, "success", 2000);
-        //     closeGenerateJobOrderModal();
-        // });
-
         $("#btnCloseJO").on("click", function () {
             closeGenerateJobOrderModal();
         });
@@ -1601,7 +1518,7 @@
                             cellInfo.setValue(selected.Gscode); // ✅ sets value in underlying row
 
                             // Optional: update other columns in the same row
-                            const grid = $("#itemGrid").dxDataGrid("instance");
+                            const grid = $("#B2BdataGrid").dxDataGrid("instance");
                             const rowIndex = grid.getRowIndexByKey(cellInfo.key);
                             grid.cellValue(rowIndex, "Gscode", selected.Gscode);
                             grid.cellValue(rowIndex, "Gsdescrpition", selected.Gsdescrpition);           
@@ -1795,7 +1712,7 @@
             showDropDownButton: true,
             deferRendering: false,
             width: "100%",
-            dropDownOptions: { width: 600 },
+            dropDownOptions: { width: 300 },
             contentTemplate: function (e) {
                 const gridBox = $("<div>").dxDataGrid({
                     dataSource: TaxSlabs,
@@ -1840,13 +1757,13 @@
 
 
         function serialTemplate(cellElement, cellInfo) {
-             const grid = $("#itemGrid").dxDataGrid("instance");
+             const grid = $("#B2BdataGrid").dxDataGrid("instance");
              const rowIndex = grid.getRowIndexByKey(cellInfo.key);
              if (rowIndex >= 0) {
                  cellElement.text(rowIndex + 1);
              }
          }
-          window.itemGridDataSource = new DevExpress.data.ArrayStore({
+          window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
             key: "ItemCode",
             data: []
         });
@@ -1856,7 +1773,7 @@
             var button = $("#btnSave").dxButton("instance");
             button.option("text", "Update");
 
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
             var totalCount = grid.totalCount();
             var pageSize = grid.pageSize();
@@ -1986,7 +1903,7 @@
                         // ...populate other fields as needed...
                          // Now bind children to grid:
                 if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
-                    var grid = $("#itemGrid").dxDataGrid("instance");
+                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
                   if (data.IsApproved === true) {
@@ -2139,7 +2056,7 @@ function NewSalesOrderNoForSave() {
       function receiveModalFieldData(modalData) {
     console.log("📥 Received from modal:", modalData);
 
-    const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+    const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance"); // ✅ add this line
 
     if (!dataGridInstance) {
         console.error("❌ dataGridInstance is not initialized.");
@@ -2192,8 +2109,14 @@ $("#btnSave").on("click", function (e) {
 });
 
 function saveSalesOrder(salesOrderNo, $btn) {
-    const gridInstance = $("#itemGrid").dxDataGrid("instance");
-
+    const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+    if (gridInstance.hasEditData()) {
+        gridInstance.saveEditData().done(() => {
+            validateAndSave();
+        });
+    } else {
+        validateAndSave();
+    }
     // ✅ collect children
     const children = gridInstance.getDataSource().items().map(row => ({
         SalesOrderChildId: row.SalesOrderChildId ?? 0,
@@ -2214,7 +2137,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     // ✅ master
     const master = {
         SalesOrderNo: salesOrderNo,
-        SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
+        SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
         ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
         ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
         QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
@@ -2261,7 +2184,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
             $btn.option("disabled", false);
              // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
+                            window.B2BdataGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
         },
@@ -2275,7 +2198,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     //         $("#btnSave").on("click", function (e) {
     //         e.preventDefault();
 
-    //         const gridInstance = $("#itemGrid").dxDataGrid("instance");
+    //         const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
     //         // ✅ Save pending cell edits before proceeding
     //         if (gridInstance.hasEditData()) {
@@ -2405,7 +2328,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     //                      location.reload();
     //                     // ✅ Reload grid after save
     //                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-    //                         window.itemGridDataSource = data;
+    //                         window.B2BdataGridDataSource = data;
     //                         gridInstance.option("dataSource", data);
     //                     });
     //                 },
@@ -2419,7 +2342,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
          $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
-            const gridInstance = $("#itemGrid").dxDataGrid("instance");
+            const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
             // ✅ Save pending cell edits before proceeding
             if (gridInstance.hasEditData()) {
@@ -2429,56 +2352,6 @@ function saveSalesOrder(salesOrderNo, $btn) {
             } else {
                 validateAndSave();
             }
-
-            function validateAndSave() {
-                // ✅ Validate required DropDown fields
-                const requiredFields = [
-                    { id: "#ClientNames", label: "Client Name" },
-                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                    // { id: "#CompanyBranch", label: "Company Branch" },
-                    // Add more if needed
-                ];
-
-                let allValid = true;
-                let missingLabels = [];
-
-                requiredFields.forEach(field => {
-                    const $el = $(field.id);
-                    const inst = $el.dxDropDownBox("instance");
-
-                    if (inst) {
-                        const value = inst.option("value");
-                        if (!value) {
-                            allValid = false;
-                            missingLabels.push(field.label);
-                            $el.addClass("dx-invalid");
-                        } else {
-                            $el.removeClass("dx-invalid");
-                        }
-                    } else {
-                        console.warn("Instance not found:", field.id);
-                    }
-                });
-
-                if (!allValid) {
-                    DevExpress.ui.dialog.alert(
-                        "Please fill the required field(s): " + missingLabels.join(", "),
-                        "Validation Failed"
-                    );
-                    return;
-                }
-
-                // ✅ Helper to extract date in yyyy-MM-dd format
-                   function getDateOnlyValue(dateBoxId) {
-        var val = $(dateBoxId).dxDateBox("instance").option("value");
-        if (!val) return null;
-        // Format as yyyy-MM-dd (local date, no time)
-        return val instanceof Date
-            ? val.getFullYear() + '-' +
-              String(val.getMonth() + 1).padStart(2, '0') + '-' +
-              String(val.getDate()).padStart(2, '0')
-            : val;
-    }
 
                 // ✅ Collect children grid data
                 const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
@@ -2550,16 +2423,16 @@ function saveSalesOrder(salesOrderNo, $btn) {
 						
                         // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
+                            window.B2BdataGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
                         if (window.parent && window.parent.$("#dataGrid").length) {
-				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.refresh();
-				}
-}
-				history.back();
+                            let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                            if (dataGrid) {
+                                dataGrid.refresh();
+                            }
+                        }
+				        history.back();
                         
                     },
                     error: function (xhr) {
@@ -2567,7 +2440,6 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         console.error("Save error:", xhr.responseText);
                     }
                 });
-            }
         });
 
        
@@ -2627,7 +2499,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
                    $("#btnGenerateJO").on("click", function () {
             var valveType = $("input[name='joType']:checked").val();
             var salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             var selectedRows = grid.getSelectedRowsData();
 
             if (!salesOrderNo) {
@@ -2660,15 +2532,9 @@ function saveSalesOrder(salesOrderNo, $btn) {
                 }
             });
         });
-
-
-
-
-
-            $("#btnBack").on("click", function (e) {
-                history.back();
-                    });
-
+    function onBackButtonClick() {
+        window.history.back();
+    }
      
 
 
@@ -2864,7 +2730,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
             }
         });
          // Disable DataGrid editing
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
     if (grid) {
         grid.option("editing", {
             allowUpdating: false,
@@ -2879,7 +2745,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
         });
 
         // Make grid look disabled (read-only style)
-        $("#itemGrid").addClass("dx-state-disabled");
+        $("#B2BdataGrid").addClass("dx-state-disabled");
     }
     }
 $(document).ready(function () {
@@ -3058,7 +2924,7 @@ $(document).ready(function () {
         // Get Voucher No safely
         const SalesOrderNOBox = $("#SalesOrderNO").dxTextBox("instance");
         const salesOrderNO = SalesOrderNOBox ? SalesOrderNOBox.option("value") : null;
-        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var dataSource = dataGrid.option("dataSource");
         
@@ -3138,7 +3004,7 @@ $(document).ready(function () {
 
     // On document ready
     $(document).ready(function () {
-        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
         dataGrid.on("selectionChanged", function (e) {
             const selectedRowData = e.selectedRowsData[0];
@@ -3183,7 +3049,7 @@ $(document).ready(function () {
             //MoveupDown functionality
         function moveRowUp() {
             
-                var dataGrid = $("#itemGrid").dxDataGrid("instance");
+                var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Flatten the grouped data
             //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3212,7 +3078,7 @@ $(document).ready(function () {
 
         function moveRowDown() {
 
-            var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Get flattened data
             // var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3249,8 +3115,8 @@ $(document).ready(function () {
 
 
             // Get the DataGrid instance and update the data source
-            var dataGrid1 = $("#itemGrid").dxDataGrid("instance");
-            var dataGrid = $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
+            var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
 
 
             dataGrid1.refresh();
@@ -3276,5 +3142,252 @@ $(document).ready(function () {
          let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
           window.location.href=url;
     });
+    let isVoucherSaved = false;
+
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = " - In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = " - Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
+    function redirecttosalespersonmaster() {
+		const url = `/${tenantName}/IMS/SalesPersonMaster`;
+		const title = "Sales Person Master";
+		openModal(url, title);
+	}
+    function AddTypeReq(){
+        const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+        const title = "Quotation Type Of Request";
+        openModal(url, title);
+    }
+    function getDateOnlyValue(dateBoxId) {
+        var val = $(dateBoxId).dxDateBox("instance").option("value");
+        if (!val) return null;
+        return val instanceof Date? val.getFullYear() + '-' +String(val.getMonth() + 1).padStart(2, '0') + '-' + String(val.getDate()).padStart(2, '0'): val;
+    }
+    function validateAndSave() {
+        // ✅ Validate required DropDown fields
+        const requiredFields = [
+            { id: "#ClientNames", label: "Client Name" },
+            // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
+            // { id: "#CompanyBranch", label: "Company Branch" },
+            // Add more if needed
+        ];
+
+        let allValid = true;
+        let missingLabels = [];
+
+        requiredFields.forEach(field => {
+            const $el = $(field.id);
+            const inst = $el.dxDropDownBox("instance");
+
+            if (inst) {
+                const value = inst.option("value");
+                if (!value) {
+                    allValid = false;
+                    missingLabels.push(field.label);
+                    $el.addClass("dx-invalid");
+                } else {
+                    $el.removeClass("dx-invalid");
+                }
+            } else {
+                console.warn("Instance not found:", field.id);
+            }
+        });
+
+        if (!allValid) {
+            DevExpress.ui.dialog.alert(
+                "Please fill the required field(s): " + missingLabels.join(", "),
+                "Validation Failed"
+            );
+            return;
+        }
+    }
+
+    $("#B2BdataGrid").dxDataGrid({
+    dataSource: window.B2BdataGridDataSource,
+    keyExpr: "id",   // <-- must match your unique field
+    selection: { mode: "multiple" },
+    onContextMenuPreparing: function(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Delete Line Item",
+                    icon: "trash",
+                    onItemClick: function() {
+                        const rowKey = e.row.key;
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const rowIndex = grid.getRowIndexByKey(rowKey);
+                        if (rowIndex >= 0) {
+                            grid.deleteRow(rowIndex);
+                        }
+                    }
+                },
+                {
+                    text: "Delete Selected Items",
+                    icon: "remove",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const keys = grid.getSelectedRowKeys();
+                        if (keys.length === 0) return;
+
+                        const doDelete = () => {
+                            keys.forEach(k => {
+                                const idx = grid.getRowIndexByKey(k);
+                                if (idx >= 0) grid.deleteRow(idx);
+                            });
+                        };
+                        doDelete();
+                    }
+                },
+                {
+                    text: "Add Line Item",
+                    icon: "add",
+                    onItemClick: function() {
+                        $("#B2BdataGrid").dxDataGrid("instance").addRow();
+                    }
+                },
+                {
+                    text: "Generate Job Orders",
+                    icon: "chart",
+                    onItemClick: function() {
+                        $("#generateJobOrderModal").fadeIn(200);
+                    }
+                }
+            ];
+        }
+    }
+});
 
 </script>

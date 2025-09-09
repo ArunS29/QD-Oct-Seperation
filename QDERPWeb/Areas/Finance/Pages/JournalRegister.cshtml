@@ -11,6 +11,15 @@
     }
 }
 <style>
+    .dx-context-menu .dx-menu-item.dx-state-hover {
+        background-color: var(--title-background-color) !important;
+        color: white !important;
+    }
+
+        /* Also ensure icon gets white color */
+        .dx-context-menu .dx-menu-item.dx-state-hover .dx-icon {
+            color: white !important;
+        }
     .titleCard-toggle1 {
         display: none;
     }
@@ -438,7 +447,7 @@
 </div>
 <!-- HTML -->
 <div class="content-container-top">
-    <div class="context-menu" id="contextMenu">
+    @* <div class="context-menu" id="contextMenu">
         <div id="contextMenuContent"></div>
         <div class="context-menu-item">
             <div class="menu-item">
@@ -458,7 +467,7 @@
                 <span class="spnRightClickGride">Clone Journal Entry Form</span>
             </div>
         </div>
-    </div>
+    </div> *@
 
 <div class="dx-fieldset horizontal-container ">
 
@@ -710,6 +719,9 @@
 <script type="text/javascript">
     let accheadname, accheadid;
     var onload = @requesterIdByte
+
+
+
     $(function () {
                 $("#JournalRegister").dxTextBox({
                         text:formatMessage("Journal Register"),
@@ -721,10 +733,7 @@
                     
         getJournalOnLoad();
             
-        var contextMenu = $("#contextMenu");
-        var contextMenuContent = $("#contextMenuContent");
-        // Apply the custom context menu plugin
-        $("#dataGrid").customizeGridContextMenu();
+       
 
         $(document).on('keydown', function (e) {
             if (e.ctrlKey && e.key === 'r') {
@@ -741,54 +750,187 @@
             }
         });
 
-        // Hide context menu on click outside
-        $(document).on("click", function () {
-            contextMenu.hide();
-        });
-            $(".context-menu").on("click", ".menu-item", function () {
-                const actionLabel = $(this).find(".spnRightClickGride").text().trim();
+                   // ✅ Global keyboard navigation state
+           let currentIndex = 0;
 
-                switch (actionLabel) {
-                    case "Edit Journal Entry Form":
-                        handleEditJournalEntry();
-                        break;
-                    case "Delete Journal Entry Form":
-                        handleDeleteJournalEntry();
-                        break;
-                    case "Unlock Journal Entry Form":
-                        handleUnlockJournalEntry();
-                        break;
-                    case "Clone Journal Entry Form":
-                        handleCloneJournalEntry();
-                        break;
-                    default:
-                        DevExpress.ui.notify("Unknown action.", "warning", 2000);
-                }
-            });
+    $("#dataGrid").dxDataGrid({
+        // ... your grid options ...
+        onContextMenuPreparing: function (e) {
+            e.items = [];
 
-            function handleEditJournalEntry() {
-                const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                const selectedRow = dataGrid.getSelectedRowsData();
+            if (e.target === "content" && e.row && e.row.rowType === "data") {
+                const rowData = e.row.data;
 
-                if (selectedRow.length > 0) {
-                    const journalRefNo = selectedRow[0].JournalRefNo;
-                    if (journalRefNo && journalRefNo.trim() !== "") {
-                        const targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
-                        window.location.href = targetUrl;
-                    } else {
-                        alert("Journal Reference Number is missing.");
+                let menuConfig = [
+                    {
+                        text: "Edit Journal Voucher",
+                        icon: "edit",
+                        color: "#28a745",
+                        permissionKey: "frm20128JournalRegisterMain_EditJournal",
+                        onItemClick: function () {
+                            window.location.href = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(rowData.JournalRefNo)}`;
+                        }
+                    },
+                    {
+                        text: "Unlock Journal Voucher",
+                        icon: "unlock",
+                        color: "#17a2b8",
+                         permissionKey: "frm20128JournalRegisterMain_UnlockJournal",
+                        onItemClick: function () {
+                            handleUnlockJournalEntry(rowData.JournalRefNo, rowData.IsPosted);
+                        }
+                    },
+                    {
+                        text: "Delete Journal Voucher",
+                        icon: "trash",
+                        color: "#dc3545",
+                         permissionKey: "frm20128JournalRegisterMain_DeleteJournal",
+                        onItemClick: function () {
+                            handleDeleteJournalEntry(rowData.JournalRefNo);
+                        }
+                    },
+                    {
+                        text: "Clone Journal Voucher",
+                        icon: "copy",
+                        color: "#6c757d",
+                         permissionKey: "frm20128JournalRegisterMain_CloneJournal",
+                        onItemClick: function () {
+                            handleCloneJournalEntry(rowData.JournalRefNo, rowData.RequesterID);
+                        }
                     }
-                } else {
-                    alert("Please select a row to edit.");
-                }
+                ];
+                    // Apply permissions
+                menuConfig.forEach(item => {
+                    let perm = menuPermissions[item.permissionKey?.toLowerCase()];
+                    if (perm && perm.visible) {
+                        e.items.push({
+                            ...item,
+                            disabled: !perm.enabled
+                        });
+                    }
+                });
             }
 
-            function handleDeleteJournalEntry() {
-                const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                const selectedRow = dataGrid.getSelectedRowsData();
+            if (e.target === "header") {
+                e.items.push(
+                    {
+                        text: "Column Chooser",
+                        icon: "columnchooser",
+                        color: "#007bff",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    },
+                    {
+                        text: "Refresh Data",
+                        icon: "refresh",
+                        color: "#ffc107",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        }
+                    }
+                );
+            }
 
-                if (selectedRow.length > 0) {
-                    const journalRefNo = selectedRow[0].JournalRefNo;
+            // highlight first item after menu opens
+        // setTimeout(() => {
+        //     const menuItems = $(".dx-context-menu .dx-menu-item");
+        //     if (menuItems.length) {
+        //         currentIndex = 0;
+        //         highlightItem(menuItems[currentIndex]);
+        //     }
+        // }, 50);
+        }
+    });
+
+        // ---- helpers ----
+    function isMenuOpen() {
+        const m = document.querySelector(".dx-context-menu");
+        return m && m.style.display === "block";
+    }
+
+    function highlightItem(item) {
+        document.querySelectorAll(".dx-context-menu .dx-menu-item").forEach(li => li.classList.remove("highlighted"));
+        if (item) item.classList.add("highlighted");
+    }
+
+    function hideContextMenu() {
+        const menu = $(".dx-context-menu").dxContextMenu("instance");
+        if (menu) menu.hide();
+        currentIndex = 0;
+    }
+
+    // ---- global listeners ----
+
+    // // 1) Keyboard navigation
+    // $(document).on("keydown", function (e) {
+    //     const menuItems = $(".dx-context-menu .dx-menu-item");
+    //     if (!isMenuOpen() || !menuItems.length) return;
+
+    //     e.preventDefault();
+    //     e.stopPropagation();
+
+    //     if (e.key === "ArrowDown") {
+    //         currentIndex = (currentIndex + 1) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //     } else if (e.key === "ArrowUp") {
+    //         currentIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //     } else if (e.key === "Enter" || e.key === " ") {
+    //         $(menuItems[currentIndex]).trigger("dxclick");
+    //     } else if (e.key === "Escape") {
+    //         hideContextMenu();
+    //     }
+    // });
+
+    // 2) Mouse hover sync
+    $(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+        const menuItems = $(".dx-context-menu .dx-menu-item");
+        currentIndex = menuItems.index(this);
+        highlightItem(this);
+    });
+
+    // ✅ Custom CSS
+    $("<style>")
+        .prop("type", "text/css")
+        .html(`
+            /* Remove DevExtreme default hover/focus */
+            .dx-context-menu .dx-menu-item.dx-state-focused,
+            .dx-context-menu .dx-menu-item.dx-state-hover {
+                    background-color: var(--title-background-color) !important;
+                    color: white !important;
+            }
+
+            /* Our unified highlight */
+            .dx-context-menu .dx-menu-item.highlighted {
+                   background-color: var(--title-background-color) !important;
+                   color: white !important;
+            }
+        `)
+        .appendTo("head");
+
+
+
+
+            // function handleEditJournalEntry() {
+            //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            //     const selectedRow = dataGrid.getSelectedRowsData();
+
+            //     if (selectedRow.length > 0) {
+            //         const journalRefNo = selectedRow[0].JournalRefNo;
+            //         if (journalRefNo && journalRefNo.trim() !== "") {
+            //             const targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
+            //             window.location.href = targetUrl;
+            //         } else {
+            //             alert("Journal Reference Number is missing.");
+            //         }
+            //     } else {
+            //         alert("Please select a row to edit.");
+            //     }
+            // }
+
+            function handleDeleteJournalEntry(journalRefNo) {
+                
 
                     if (journalRefNo && journalRefNo.trim() !== "") {
                         $.ajax({
@@ -843,124 +985,109 @@
                     } else {
                         DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
                     }
-                } else {
-                    DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
-                }
-            }
-            
-
-            function handleUnlockJournalEntry() {
-                const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                const selectedRow = dataGrid.getSelectedRowsData();
-                if (!selectedRow || selectedRow.length === 0) {
-                    DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
-                     return;
-                 }
-    
-
-                   const journalRefNo = selectedRow[0].JournalRefNo;
-                    const isPosted = selectedRow[0].IsPosted;
-
-                  if (isPosted) {
-                         DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
-                         return;
-                   }
-
-                   DevExpress.ui.dialog.confirm(
-                        "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
-                        "Unlock Confirmation"
-                    ).done(function (dialogResult) {
-                 if (dialogResult) {
-                  // Perform AJAX request to update the database
-                   $.ajax({
-                   url:  `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
-                   type: 'POST',
-                   contentType: "application/json",
                 
-                    success: function (response) {
-                    if (response.success) {
-                        getAllSubmissionJournal();
-                        DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
-                        // Optionally refresh your DataGrid here
-                    } else {
-                        DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
-                    }
-                   },
-                     error: function () {
-                    DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
-                      }
-                   });
-                    }
-                  });
             }
-                 function handleCloneJournalEntry() {
-                     const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                const selectedRow = dataGrid.getSelectedRowsData();
-    if (!selectedRow || selectedRow.length === 0) {
-        DevExpress.ui.notify("No Journal Entry selected.", "warning", 2000);
-        return;
-    }
 
-    DevExpress.ui.dialog.confirm(
-        "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
-        "Confirm Clone"
-    ).done(function (dialogResult) {
-        if (dialogResult) {
-            const journalRefNo = selectedRow[0].JournalRefNo;
-            const requesterId = selectedRow[0].RequesterID;
 
-            // Step 1: Get new voucher number
-            $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
-                // Step 2: Call clone action
+               function handleUnlockJournalEntry(journalRefNo, isPosted) {
+        if (!journalRefNo) {
+            DevExpress.ui.notify("Invalid Journal Reference Number.", "error", 2000);
+            return;
+        }
+
+        if (isPosted) {
+            DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm(
+            "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
+            "Unlock Confirmation"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
                 $.ajax({
-                    url: '/api/JournalRegister/CloneJournalEntry',
+                    url: `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
                     type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        fromJournalRefNo: journalRefNo,
-                        toJournalRefNo: newVoucherNo,
-                        requesterId: requesterId
-                    }),
+                    contentType: "application/json",
                     success: function (response) {
                         if (response.success) {
                             getAllSubmissionJournal();
-                            DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
-                            // Optionally refresh DataGrid
+                            DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
                         } else {
-                            DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                            DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
                         }
                     },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                    error: function () {
+                        DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
                     }
                 });
-            });
+            }
+        });
+    }
+
+                   function handleCloneJournalEntry(journalRefNo, requesterId) {
+        if (!journalRefNo) {
+            DevExpress.ui.notify("Invalid Journal Reference Number.", "warning", 2000);
+            return;
         }
-    });
-}
+
+        DevExpress.ui.dialog.confirm(
+            "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
+            "Confirm Clone"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                // Step 1: Get new voucher number
+                $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
+                    // Step 2: Call clone action
+                    $.ajax({
+                        url: '/api/JournalRegister/CloneJournalEntry',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            fromJournalRefNo: journalRefNo,
+                            toJournalRefNo: newVoucherNo,
+                            requesterId: requesterId
+                        }),
+                        success: function (response) {
+                            if (response.success) {
+                                getAllSubmissionJournal();
+                                DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
+                            } else {
+                                DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                            }
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                        }
+                    });
+                });
+            }
+        });
+    }
 
 
-            $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-                e.preventDefault(); // Prevent the default browser context menu
-                e.stopPropagation(); // Stop the event from bubbling to document
 
-                const rowIndex = $(this).index();
-                const rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+            // $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            //     e.preventDefault(); // Prevent the default browser context menu
+            //     e.stopPropagation(); // Stop the event from bubbling to document
 
-                console.log(rowData);
+            //     const rowIndex = $(this).index();
+            //     const rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
 
-                // Clear previous context
-                $("#contextMenuContent").empty();
+            //     console.log(rowData);
 
-                // Optionally display key info in hidden input or div
-                $("#contextMenuContent").append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+            //     // Clear previous context
+            //     $("#contextMenuContent").empty();
 
-                // Show context menu at cursor position
-                $("#contextMenu").css({
-                    top: e.pageY + "px",
-                    left: e.pageX + "px"
-                }).show();
-            });
+            //     // Optionally display key info in hidden input or div
+            //     $("#contextMenuContent").append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+
+            //     // Show context menu at cursor position
+            //     $("#contextMenu").css({
+            //         top: e.pageY + "px",
+            //         left: e.pageX + "px"
+            //     }).show();
+            // });
 
         $("#dataGrid").dxDataGrid({
             onRowUpdating: function (e) {

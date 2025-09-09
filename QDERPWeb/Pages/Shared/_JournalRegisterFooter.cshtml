@@ -336,7 +336,7 @@
 <div id="warningPopup"></div>
 
 <script type="text/javascript">
-
+     let menuPermissions = {};
     $(document).ready(function () {
         console.log('Start permission handling');
         // Form ID
@@ -406,6 +406,14 @@
                             console.warn(`Button with ID "${key}" not found in the DOM.`);
                         }
                     });
+                         response.permissions.forEach(p => {
+                            if (p.ItemName) {
+                                menuPermissions[p.ItemName.trim().toLowerCase()] = {
+                                    visible: p.ItemVisible || false,
+                                    enabled: p.ItemEnabled || false
+                                };
+                            }
+                        });
                 } else {
                     console.warn("Failed to fetch permissions or no permissions available.");
                 }

@@ -418,12 +418,13 @@
 }
 
 .footer-fixed {
-    width: -webkit-fill-available;
+    /*width: -webkit-fill-available;*/
+    width: 95vw;
     position: fixed;
-     bottom: 0px!important; 
+    bottom: 0px!important; 
     height: 60px;
     background: #ffffff;
-    z-index: 999;
+    z-index: 9;
 }
 .content-container-top {
     position: relative;

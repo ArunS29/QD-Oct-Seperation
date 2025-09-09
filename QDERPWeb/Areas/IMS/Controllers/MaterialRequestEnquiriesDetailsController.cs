@@ -510,7 +510,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     .Max(p => p.MprrevisionId ?? 0);
 
                 int nextRevision = currentRevision + 1;
-                string newMprNo = $"{originalMprNo}-(R{currentRevision})";
+                string newMprNo = $"{originalMprNo}-(R{currentRevision})";// but save SP this format
+                string baseMprNo = originalMprNo;//only for showing editpage
                 string user = HttpContext.Session.GetString("UserName") ?? "System";
 
                 // ✅ Execute SP to clone & create new revised MPR
@@ -537,7 +538,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     success = true,
                     message = "Purchase Request revised successfully.",
-                    newMprNo,
+                    newMprNo = baseMprNo,
                     RevisionNo = currentRevisionNo
                 });
             }

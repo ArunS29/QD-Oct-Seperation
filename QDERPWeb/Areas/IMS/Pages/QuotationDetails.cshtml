@@ -604,10 +604,10 @@ $(function () {
 					toDate = new Date(new Date().getFullYear(), 11, 31);
 					break;
 			}
+				$("#frmdateBox").dxDateBox("instance").option("value", frmDate);
+				$("#todateBox").dxDateBox("instance").option("value", toDate);
 				frmDate = frmDate.toISOString().split('T')[0];
 				toDate = toDate.toISOString().split('T')[0];
-				 $("#frmdateBox").dxDateBox("instance").option("value", frmDate);
-				$("#todateBox").dxDateBox("instance").option("value", toDate);
 				$.ajax({
 			url: '/api/Quotation/GetQuotationDetails',
 		type: 'GET',

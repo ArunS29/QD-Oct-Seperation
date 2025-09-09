@@ -167,7 +167,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(215)
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(200)
                 .Items(item =>
                 {
                     item.Add()
@@ -666,7 +666,7 @@
                                                 .Location(TextEditorButtonLocation.After)
                                                 .Widget(w => w.Button()
                                                 .Type(ButtonType.Default)
-                                                .Icon("edit")
+                                                .Icon("plus")
                                                 .Disabled(true) // Button is also disabled
                                                 .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                                 .OnClick("CurrencyClick"));
@@ -706,7 +706,7 @@
                                                 .Location(TextEditorButtonLocation.After)
                                                 .Widget(w => w.Button()
                                                 .Type(ButtonType.Default)
-                                                .Icon("edit") // Use "plus" or any other if needed
+                                                .Icon("plus") // Use "plus" or any other if needed
                                                 .Hint("Edit Description")
                                                 .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                                 .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -735,6 +735,9 @@
                 })
             )
 
+    </div>
+	<div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
     </div>
    <div class="dx-field ledgerResult">
 			@(
@@ -924,7 +927,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height("35vh")
+									.Height("38vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1407,7 +1410,6 @@
 		const Rfqnos = urlParams.get('Rfqno');
 		const Rfqno = Rfqnos ? Rfqnos.split("?")[0] : null;
 
-			//getSalesPersonByUser();
 		loadClientDetails(Rfqno);
 
 		if (Rfqno) {
@@ -1458,32 +1460,6 @@ function NewNoGeneration(){
 
 			  if (response) {
 
-				 Approved = response.IsApproved;
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
-				hideAllButtonsExcept([
-			 "btnPrint3",
-             "ddButtonLayout",
-             "btnBack",
-             "btnCreatePo"
-				
-			]);
-			disableAllDropDownsAndSelects();
-			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-if (gridInstance) {
-    gridInstance.option({
-        editing: {
-            allowUpdating: false,
-            allowAdding: false,
-            allowDeleting: false
-        },
-        selection: {
-            mode: "none"
-        }
-    });
-}
-		}
 					$("#btnSave").dxButton("instance").option("text", "Update");
                 // Populate DevExtreme controls with the response data
                
@@ -1529,6 +1505,33 @@ if (gridInstance) {
                         console.error("Error fetching grid data:", error);
                     }
                 });
+				  
+				 Approved = response.IsApproved;
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+				hideAllButtonsExcept([
+			 "btnPrint3",
+             "ddButtonLayout",
+             "btnBack",
+             "btnCreatePo"
+				
+			]);
+			disableAllDropDownsAndSelects();
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
+		}
 
             } else {
                 console.warn("No RFQ details found in the response.");
@@ -1539,7 +1542,10 @@ if (gridInstance) {
         }
     });
 }
-
+$(document).ready(function () {
+	//getSalesPersonByUser();
+			getDefaultCompany();
+});
 			function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -4507,16 +4513,16 @@ function saveQuotation(rfqNoNew, $btn) {
 				DevExpress.ui.notify(response.message, "success", 3000);
 
 				 const rfqno = response.rfqno;
-				
-				 loadChildDataAndBindGrid(rfqno);
+				window.location.href=`/${tenantName}/IMS/AddNewRFQ?Rfqno=${Rfqno}`;
+				// loadChildDataAndBindGrid(rfqno);f
 
 				// Refresh parent DataGrid (ensure the correct selector is used)
-				if (window.parent && window.parent.$("#dataGrid").length) {
-					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					if (dataGrid) {
-						dataGrid.refresh();
-					}
-				}
+				// if (window.parent && window.parent.$("#dataGrid").length) {
+				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+				// 	if (dataGrid) {
+				// 		dataGrid.refresh();
+				// 	}
+				// }
 
 
 			},
@@ -5842,6 +5848,7 @@ $("#btnCreatePo").on("click", function () {
 	$("#RequestForQuotation").dxTextBox({
 	text: formatMessage("Request for Quotation(RFQ) Edit"),
 		readOnly: true,
+		width:360,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textcolor-heading");
 		}
