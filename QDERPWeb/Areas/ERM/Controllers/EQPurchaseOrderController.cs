@@ -1,16 +1,17 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.Web.Areas.IMS.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -23,9 +24,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<EQPurchaseOrderController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public EQPurchaseOrderController(ILogger<EQPurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public EQPurchaseOrderController(ILogger<EQPurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -370,134 +373,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return BadRequest("Unable to resolve tenant or database context.");
         }
-        //[HttpPost]
-        //public async Task<IActionResult> SavePurchaseOrder([FromBody] Tbl40126PropertyPomaster model)
-        //{
-        //    if (model == null || !ModelState.IsValid)
-        //        return BadRequest(new { message = "Invalid data", success = false });
-
-        //    if (string.IsNullOrWhiteSpace(model.Pono))
-        //        return BadRequest(new { message = "PO No is required", success = false });
-
-        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        return Unauthorized(new { message = "Invalid tenant", success = false });
-
-        //    try
-        //    {
-        //        string userName = HttpContext.Session.GetString("UserName") ?? "System";
-
-        //        var existingPo = await dbContext.Tbl40126PropertyPomasters
-        //            .FirstOrDefaultAsync(x => x.Pono == model.Pono);
-
-        //        if (existingPo == null)
-        //        {
-        //            // New PO - initialize states
-        //            model.AddedBy = userName;
-        //            model.AddedOn = DateTime.Now;
-        //            model.IsApproved = false;
-        //            model.IsVerified = false;
-        //            model.IsSubmitted = model.IsSubmitted ?? false;
-
-        //            if (model.IsSubmitted == true)
-        //            {
-        //                model.SubmittedBy = userName;
-        //                model.SubmittedOn = DateTime.Now;
-        //            }
-
-        //            dbContext.Tbl40126PropertyPomasters.Add(model);
-        //        }
-        //        else
-        //        {
-        //            // If already approved, do NOT allow editing
-        //            if (existingPo.IsApproved == true)
-        //            {
-        //                return BadRequest(new { message = "This purchase order has been approved and cannot be edited.", success = false });
-        //            }
-
-        //            // Update fields normally
-        //            existingPo.Podate = model.Podate;
-        //            existingPo.SupplierCode = model.SupplierCode;
-        //            existingPo.SupplierQuoteNo = model.SupplierQuoteNo;
-        //            existingPo.SupplierQuoteDate = model.SupplierQuoteDate;
-        //            existingPo.SupplierRefNo = model.SupplierRefNo;
-        //            existingPo.Attention = model.Attention;
-        //            existingPo.SupplierContactNo = model.SupplierContactNo;
-        //            existingPo.SupplierContactEmail = model.SupplierContactEmail;
-        //            existingPo.SubjectTitle = model.SubjectTitle;
-
-        //            // Handle submit, verify, approve logic
-
-        //            // Submit
-        //            if (model.IsSubmitted == true && existingPo.IsSubmitted != true)
-        //            {
-        //                existingPo.IsSubmitted = true;
-        //                existingPo.SubmittedBy = userName;
-        //                existingPo.SubmittedOn = DateTime.Now;
-        //            }
-
-        //            // Verify - only if submitted and not verified yet
-        //            if (model.IsVerified == true && existingPo.IsVerified != true)
-        //            {
-        //                if (existingPo.IsSubmitted != true)
-        //                {
-        //                    return BadRequest(new { message = "Cannot verify before submitting.", success = false });
-        //                }
-        //                existingPo.IsVerified = true;
-        //                existingPo.VerifiedBy = userName;
-        //                existingPo.VerifiedOn = DateTime.Now;
-        //            }
-
-        //            // Approve - only if verified and not approved yet
-        //            if (model.IsApproved == true && existingPo.IsApproved != true)
-        //            {
-        //                if (existingPo.IsVerified != true)
-        //                {
-        //                    return BadRequest(new { message = "Cannot approve before verification.", success = false });
-        //                }
-        //                existingPo.IsApproved = true;
-        //                existingPo.ApprovedBy = userName;
-        //                existingPo.ApprovedOn = DateTime.Now;
-        //            }
-
-        //            // Update other fields that can be changed before approval
-        //            existingPo.PreparedBy = model.PreparedBy;
-        //            existingPo.PreparedOn = model.PreparedOn;
-        //            existingPo.Project = model.Project;
-        //            existingPo.Pointroduction = model.Pointroduction;
-        //            existingPo.Posummary = model.Posummary;
-        //            existingPo.RevisionNo = model.RevisionNo;
-        //            existingPo.CompanyBranch = model.CompanyBranch;
-        //            existingPo.AdditionsText = model.AdditionsText;
-        //            existingPo.DiscountsText = model.DiscountsText;
-        //            existingPo.PodueDate = model.PodueDate;
-        //            existingPo.Posignatory = model.Posignatory;
-        //            existingPo.AdditionsAmount = model.AdditionsAmount;
-        //            existingPo.DeductionsAmount = model.DeductionsAmount;
-        //            existingPo.PothanksNote = model.PothanksNote;
-        //            existingPo.ProjectMasterCode = model.ProjectMasterCode;
-        //            existingPo.PoverifiedSign = model.PoverifiedSign;
-        //            existingPo.PoapprovedSign = model.PoapprovedSign;
-        //            existingPo.PorevisionNo = model.PorevisionNo;
-        //            existingPo.ModifiedBy = userName;
-        //            existingPo.ModifiedOn = DateTime.Now;
-        //        }
-
-        //        await dbContext.SaveChangesAsync();
-
-        //        return Ok(new
-        //        {
-        //            message = "Purchase order saved successfully",
-        //            pono = model.Pono,
-        //            isApproved = existingPo?.IsApproved ?? model.IsApproved ?? false,
-        //            success = true
-        //        });
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { message = "Error saving purchase order: " + ex.Message, success = false });
-        //    }
-        //}
         [HttpPost]
         public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderDto dto)
         {
@@ -517,13 +392,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 string userName = HttpContext.Session.GetString("UserName") ?? "System";
 
-                // 🔹 Master check
+                // 🔹 Find existing PO
                 var existingPo = await dbContext.Tbl40126PropertyPomasters
                     .FirstOrDefaultAsync(x => x.Pono == model.Pono);
 
                 if (existingPo == null)
                 {
-                    // Insert
+                    // Insert new master
                     existingPo = new Tbl40126PropertyPomaster
                     {
                         Pono = model.Pono,
@@ -534,14 +409,28 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
                 else
                 {
-                    // Update
+                    // Update existing master
                     existingPo.ModifiedBy = userName;
                     existingPo.ModifiedOn = DateTime.Now;
                 }
 
-                // 🔹 Common master fields
+                // 🔹 Update master common fields
+                existingPo.Podate = model.Podate;
+                existingPo.SupplierCode = model.SupplierCode;
+                existingPo.SupplierQuoteNo = model.SupplierQuoteNo;
+                existingPo.SupplierQuoteDate = model.SupplierQuoteDate;
+                existingPo.SupplierRefNo = model.SupplierRefNo;
+                existingPo.Attention = model.Attention;
+                existingPo.SupplierContactNo = model.SupplierContactNo;
+                existingPo.SupplierContactEmail = model.SupplierContactEmail;
+                existingPo.SubjectTitle = model.SubjectTitle;
+
                 existingPo.PreparedBy = model.PreparedBy;
                 existingPo.PreparedOn = model.PreparedOn;
+                existingPo.ApprovedBy = model.ApprovedBy;
+                existingPo.ApprovedOn = model.ApprovedOn;
+                existingPo.IsApproved = model.IsApproved;
+
                 existingPo.Project = model.Project;
                 existingPo.Pointroduction = model.Pointroduction;
                 existingPo.Posummary = model.Posummary;
@@ -553,35 +442,50 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 existingPo.Posignatory = model.Posignatory;
                 existingPo.AdditionsAmount = model.AdditionsAmount;
                 existingPo.DeductionsAmount = model.DeductionsAmount;
+                existingPo.Posignature1 = model.Posignature1;
                 existingPo.PothanksNote = model.PothanksNote;
                 existingPo.ProjectMasterCode = model.ProjectMasterCode;
                 existingPo.PoverifiedSign = model.PoverifiedSign;
                 existingPo.PoapprovedSign = model.PoapprovedSign;
-                existingPo.PorevisionNo = model.PorevisionNo;
 
-                // 🔹 Handle children
+                existingPo.VatapplicableRate = model.VatapplicableRate;
+                existingPo.IsVerified = model.IsVerified;
+                existingPo.VerifiedBy = model.VerifiedBy;
+                existingPo.VerifiedOn = model.VerifiedOn;
+                existingPo.IsCancelled = model.IsCancelled;
+                existingPo.CancelledBy = model.CancelledBy;
+                existingPo.CancelledOn = model.CancelledOn;
+                existingPo.PorevisionNo = model.PorevisionNo;
+                existingPo.IsSubmitted = model.IsSubmitted;
+                existingPo.SubmittedBy = model.SubmittedBy;
+                existingPo.SubmittedOn = model.SubmittedOn;
+                existingPo.CancellationRemarks = model.CancellationRemarks;
+
+                // 🔹 Children handling
+                var existingChildren = await dbContext.Tbl40127PropertyPochildren
+                    .Where(c => c.PropertyPono == model.Pono)
+                    .ToListAsync();
+
+                // Remove all existing children to avoid duplicates
+                dbContext.Tbl40127PropertyPochildren.RemoveRange(existingChildren);
+
+                // Add all children from DTO as new entries
                 foreach (var child in children)
                 {
-                    // Try to find existing child by its PK
-                    var existingChild = await dbContext.Tbl40127PropertyPochildren
-                        .FirstOrDefaultAsync(c => c.PropertyPochildNo == child.PropertyPochildNo);
+                    var newChild = new Tbl40127PropertyPochild
+                    {
+                        PropertyPono = model.Pono,
+                        PropertyTypeId = child.PropertyTypeId,
+                        UnitRate = child.UnitRate,
+                        QuotedQuantity = child.QuotedQuantity,
+                        UnitRateMethod = child.UnitRateMethod,
+                        LineOrderNo = child.LineOrderNo
+                    };
 
-                    if (existingChild == null)
-                    {
-                        // Insert new child
-                        child.PropertyPono = model.Pono; // FK mapping
-                        dbContext.Tbl40127PropertyPochildren.Add(child);
-                    }
-                    else
-                    {
-                        // Update existing child
-                        existingChild.PropertyTypeId = child.PropertyTypeId;
-                        existingChild.UnitRate = child.UnitRate;
-                        existingChild.QuotedQuantity = child.QuotedQuantity;
-                        existingChild.UnitRateMethod = child.UnitRateMethod;
-                        existingChild.LineOrderNo = child.LineOrderNo;
-                    }
+
+                    await dbContext.Tbl40127PropertyPochildren.AddAsync(newChild);
                 }
+
                 await dbContext.SaveChangesAsync();
 
                 return Ok(new
@@ -599,10 +503,211 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "Error saving purchase order: " + ex.Message, success = false });
             }
         }
+
         public class PurchaseOrderDto
         {
             public Tbl40126PropertyPomaster Master { get; set; }
             public List<Tbl40127PropertyPochild> Children { get; set; }
+            public List<Qry40130PropertyPochild> Childrens { get; set; }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseOrderByRefNo([FromQuery] string poNo)
+        {
+            if (string.IsNullOrWhiteSpace(poNo))
+                return BadRequest(new { message = "PO No is required", success = false });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant", success = false });
+
+            try
+            {
+                // 🔹 Fetch master
+                var po = await dbContext.Tbl40126PropertyPomasters
+                    .FirstOrDefaultAsync(x => x.Pono == poNo);
+
+                if (po == null)
+                    return NotFound(new { message = "Purchase Order not found", success = false });
+
+                // 🔹 Map master fields
+                var masterDto = new
+                {
+                    Pono = po.Pono,
+                    Podate = po.Podate,
+                    SupplierCode = po.SupplierCode,
+                    PorevisionNo = po.PorevisionNo,
+                    SupplierQuoteNo = po.SupplierQuoteNo,
+                    SupplierQuoteDate = po.SupplierQuoteDate,
+                    Attention = po.Attention,
+                    SupplierContactNo = po.SupplierContactNo,
+                    SupplierContactEmail = po.SupplierContactEmail,
+                    ProjectMasterCode = po.ProjectMasterCode,
+                    Posummary = po.Posummary,
+                    Pointroduction = po.Pointroduction,
+                    PothanksNote = po.PothanksNote,
+                    SubjectTitle = po.SubjectTitle,
+                    CancellationRemarks = po.CancellationRemarks,
+                    CompanyBranch = po.CompanyBranch,
+                    SubmittedBy = po.SubmittedBy,
+                    SupplierRefNo = po.SupplierRefNo,
+                    VerifiedBy = po.VerifiedBy,
+                    ApprovedBy = po.ApprovedBy,
+                  //  CurrencyRate = po.CurrencyRate,
+                  //  BaseCurrencyId = po.BaseCurrencyId,
+                 //   CurrencyId = po.CurrencyId,
+                    PreparedBy = po.PreparedBy,
+                    IsApproved = po.IsApproved
+                    // add any other fields you need
+                };
+
+                // 🔹 Fetch children separately
+                var children = await dbContext.Qry40130PropertyPochildren
+                .Where(c => c.PropertyPono == poNo)
+                .OrderBy(c => c.PropertyPochildNo)
+                .ToListAsync();
+
+                var childrenDto = children.Select((c, index) => new
+                {
+                    SNo = index + 1,
+                    c.PropertyPochildNo,
+                    c.PropertyTypeId,
+                    c.UnitRate,
+                    c.QuotedQuantity,
+                    c.UnitRateMethod,
+                    c.CalcLineTotal
+                }).ToList();
+
+                return Ok(new
+                {
+                    Master = masterDto,
+                    Children = childrenDto,
+                    success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error fetching purchase order: " + ex.Message, success = false });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitPurchaseOrder([FromBody] Tbl40126PropertyPomaster data)
+        {
+            try
+            {
+                string pono = data?.Pono;
+                if (string.IsNullOrWhiteSpace(pono))
+                    return BadRequest(new { success = false, message = "PO number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var po = await dbContext.Tbl40126PropertyPomasters.FirstOrDefaultAsync(x => x.Pono == pono);
+                if (po == null)
+                    return Ok(new { success = false, message = "Please save the purchase order before submitting." });
+
+                if (po.IsSubmitted == true)
+                    return Ok(new { success = false, message = "This purchase order is already submitted." });
+
+                po.IsSubmitted = true;
+                po.SubmittedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                po.SubmittedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Submit Purchase Order",
+                  actionDetail: $"Submited Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
+
+                return Ok(new { success = true, message = "Purchase order submitted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> VerifyPurchaseOrder([FromBody] Tbl40126PropertyPomaster data)
+        {
+            try
+            {
+                string pono = data?.Pono;
+                if (string.IsNullOrWhiteSpace(pono))
+                    return BadRequest(new { success = false, message = "PO number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var po = await dbContext.Tbl40126PropertyPomasters.FirstOrDefaultAsync(x => x.Pono == pono);
+                if (po == null)
+                    return Ok(new { success = false, message = "Please save and submit the purchase order before verifying." });
+
+                if (po.IsSubmitted != true)
+                    return Ok(new { success = false, message = "Please submit before verifying." });
+
+                if (po.IsVerified == true)
+                    return Ok(new { success = false, message = "This purchase order is already verified." });
+
+                po.IsVerified = true;
+                po.VerifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                po.VerifiedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Purchase Order",
+                   actionDetail: $"Deleted Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
+
+                return Ok(new { success = true, message = "Purchase order verified successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ApprovePurchaseOrder([FromBody] Tbl40126PropertyPomaster data)
+        {
+            try
+            {
+                string pono = data?.Pono;
+                if (string.IsNullOrWhiteSpace(pono))
+                    return BadRequest(new { success = false, message = "PO number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var po = await dbContext.Tbl40126PropertyPomasters.FirstOrDefaultAsync(x => x.Pono == pono); if (po == null)
+                    return Ok(new { success = false, message = "Please save and submit the purchase order before approving." });
+
+                if (po.IsVerified != true)
+                    return Ok(new { success = false, message = "Please verify before approving." });
+
+                if (po.IsApproved == true)
+                    return Ok(new { success = false, message = "This purchase order is already approved." });
+
+                po.IsApproved = true;
+                po.ApprovedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                po.ApprovedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Approve Purchase Order",
+                   actionDetail: $"Approved Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
+
+                return Ok(new { success = true, message = "Purchase order approved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
         }
 
         [HttpPost]

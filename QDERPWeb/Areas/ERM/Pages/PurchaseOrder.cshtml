@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.ERM.Pages.PurchaseOrderModel
 @{
 }
@@ -221,7 +221,7 @@
 		.Columns(columns =>
 		{
 				columns.Add().Caption(new JS("formatMessage('Purchase Order Details')")).Columns(subColumns =>
-			{ 
+			{
 				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -248,7 +248,7 @@
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Paging(p => p.PageSize(10)) 
 		.Pager(pager =>
 		{
 			pager.ShowPageSizeSelector(true);
@@ -263,6 +263,7 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.StateStoring(stateStoring =>
 		{
 			stateStoring
@@ -355,7 +356,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/PurchaseOrders1/GetPurchaseOrders',
+		url: '/api/EQPurchaseOrder/GetPurchaseOrders',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -370,10 +371,70 @@
 			DevExpress.ui.notify("Error while loading data", "error", 2000);
 		}
 	});
-
-
-
 	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row) {
+			const rowData = e.row.data; // capture once here
+						e.items = [
+						{
+							text: "Edit Purchase Order",
+							icon: "edit",
+							onItemClick: function () {
+								if (!rowData) {
+									console.error("Row data is unavailable.");
+									return;
+								}
 
+								const { Pono } = rowData;
+								const tenantName = window.tenantName || "defaultTenant";
+
+								// redirect to edit screen with Pono
+								window.location.href = `/${tenantName}/ERM/EquipmentPurchaseOrder?Pono=${encodeURIComponent(Pono)}`;
+							}
+						},
+					{
+					text: "Unlock Purchase Order",
+					icon: "unlock",
+					onItemClick: function () {
+								const EqiupmentRequestNo = e.row.data.EqiupmentRequestNo;
+
+						$.ajax({
+								url: "/api/AddNewClientRequest1/UnlockPurchaseRequest",
+								type: "POST",
+								contentType: "application/json",
+								data: JSON.stringify({ EqiupmentRequestNo: EqiupmentRequestNo }), // ✅ sending request data
+								success: function (response) {
+								DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+								if (response.success) {
+									ddBtnShowRecords_click('range');
+								}
+							},
+							error: function (xhr) {
+								let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Request / Enquiry.";
+								DevExpress.ui.notify(msg, "error", 2000);
+								console.error("Unlock failed:", xhr.responseJSON);
+							}
+						});
+					}
+				},
+				{
+					text: "Cancel Purchase Order",
+					icon: "trash",
+					onItemClick: function () {
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+										var EqiupmentRequestNo=e.row.data.EqiupmentRequestNo;
+								console.log("number",);
+									onDeleteRequest(EqiupmentRequestNo);
+							}
+						});
+					}
+				},
+			];
+		}
+	}
 
 </script>

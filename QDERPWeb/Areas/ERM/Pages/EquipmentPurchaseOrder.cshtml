@@ -316,7 +316,6 @@
                                 .DisplayExpr("SupplierName")
                                 .SearchEnabled(true)
                                 .SearchExpr("SupplierName")
-                                //.Option("searchMode", "contains")   // ✅ This sets searchMode manually
                                   .OnOpened("onSelectBoxOpened")
                                 .ShowClearButton(true)
                                 .OnValueChanged("onSupplierChanged")
@@ -350,11 +349,9 @@
 									   .Name("dropDown");
 							})
 						)
-                                                           </div>
+                             </div>
                         </td>
-                       
                     </tr>
-
                     <!-- Row 2 -->
                     <tr>
                         <td>
@@ -946,7 +943,7 @@
             columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
             columns.Add().DataField("QuotedQuantity").Caption("Qty");
             columns.Add().DataField("UnitRate").Caption("Unit Price");
-            columns.Add().DataField("LineOrderNo").Caption("Amount").Format("currency");
+            columns.Add().DataField("CalcLineTotal").Caption("Amount");
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -1239,15 +1236,6 @@
             });
         }, 300); // Delay to allow DevExtreme to finish rendering
     });
-     $(function () {
-        const currencyBox = $("#CurrencyExchange").dxSelectBox("instance");
-
-        currencyBox.getDataSource().load().done(function (data) {
-            if (data.length > 0) {
-                currencyBox.option("value", data[0].CurrencyExchangeId);
-            }
-        });
-    });
          var dataGridInstance;
 
 $(function () {
@@ -1458,7 +1446,7 @@ $(function () {
             },
             { dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
             { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-            { dataField: "LineOrderNo", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } }
+            { dataField: "CalcLineTotal", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } }
         ],
 
                 editing: {
@@ -1747,7 +1735,7 @@ $(function () {
         DevExpress.ui.dialog.confirm("Are you sure you want to submit?", "Confirm Submit").done(function (dialogResult) {
             if (dialogResult) {
                 $.ajax({
-                    url: '/api/PurchaseOrders/SubmitPurchaseOrder',
+                    url: '/api/EQPurchaseOrder/SubmitPurchaseOrder',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({Pono: pono}),
@@ -1778,7 +1766,7 @@ $(function () {
         DevExpress.ui.dialog.confirm("Are you sure you want to verify?", "Confirm Verify").done(function (dialogResult) {
             if (dialogResult) {
                 $.ajax({
-                    url: '/api/PurchaseOrders/VerifyPurchaseOrder',
+                    url: '/api/EQPurchaseOrder/VerifyPurchaseOrder',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ Pono: pono }),
@@ -1809,13 +1797,13 @@ $(function () {
             DevExpress.ui.dialog.confirm("Are you sure you want to approve?", "Confirm Approve").done(function (dialogResult) {
                 if (dialogResult) {
                     $.ajax({
-                        url: '/api/PurchaseOrders/ApprovePurchaseOrder',
+                        url: '/api/EQPurchaseOrder/ApprovePurchaseOrder',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ Pono: pono }),
                         success: function (response) {
                             if (response.success) {
-                                 DevExpress.ui.notify("Approved successfully.", "success", 3000);
+                            DevExpress.ui.notify("Approved successfully.", "success", 3000);
 
         // ✅ Disable grid (keep visible)
         const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
@@ -1940,7 +1928,9 @@ function disableSpecificControls() {
 
 $("#btnSave").on("click", function () {
     debugger;
+        $("#btnSave").dxButton("instance").option("text", "Update");
     const master = {
+
         Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
         Podate: $("#PoDate").dxDateBox("instance").option("value"),
         SupplierCode: $("#SupplierName").dxSelectBox("instance").option("value"),
@@ -1963,9 +1953,6 @@ $("#btnSave").on("click", function () {
         CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
         BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
         CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-        SubmittedOn: new Date(),
-        VerifiedOn: new Date(),
-        ApprovedOn: new Date()
     };
 
     // Ensure PO number exists
@@ -2023,20 +2010,19 @@ $("#btnSave").on("click", function () {
 
 
 
-       $("#btnSaveAndClose").on("click", function () {
-    const requiredFields = [
-        "SupplierName", // Client Name
-    ];
+      $("#btnSaveAndClose").on("click", function () {
+    const requiredFields = ["SupplierName"]; // Client Name
 
     const allValid = validateFields(requiredFields);
-
     if (!allValid) {
         DevExpress.ui.notify("Please fill in all required fields.", "error", 3000);
         return;
     }
 
+             $("#btnSave").dxButton("instance").option("text", "Update");
     const master = {
-          Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
+
+        Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
         Podate: $("#PoDate").dxDateBox("instance").option("value"),
         SupplierCode: $("#SupplierName").dxSelectBox("instance").option("value"),
         PorevisionNo: $("#RevNo").dxSelectBox("instance").option("value"),
@@ -2053,69 +2039,44 @@ $("#btnSave").on("click", function () {
         CancellationRemarks: $("#Cancellation").dxTextArea("instance").option("value"),
         CompanyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
         SubmittedBy: $("#preparedBy2").dxSelectBox("instance").option("value"),
+        SupplierRefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
         VerifiedBy: $("#verifiedBy2").dxSelectBox("instance").option("value"),
         ApprovedBy: $("#approvedBy2").dxSelectBox("instance").option("value"),
-        CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-        SubmittedOn: new Date(),
-        VerifiedOn: new Date(),
-        ApprovedOn: new Date()
+       //CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+       //BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+       //CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
     };
 
-    // Prevent save if PO number is missing
+    // Validate PO number
     if (!master.Pono) {
         DevExpress.ui.notify("PO number is missing. Please refresh and try again.", "error", 3000);
         return;
     }
 
-       const grid = $("#itemGrid").dxDataGrid("instance");
-    if (grid) {
-        grid.saveEditData(); // commit pending changes
-    }
-    // Get actual grid data
-    const children = grid ? grid.getDataSource().items() : [];
-
-    if (!children || children.length === 0) {
-        DevExpress.ui.notify("Please add at least one line item.", "error", 3000);
+    // Handle grid children
+    const grid = $("#itemGrid").dxDataGrid("instance");
+    if (!grid) {
+        console.warn("itemGrid is not initialized");
         return;
     }
 
-    // const grid = $("#itemGrid").dxDataGrid("instance");
-    // const children = grid.getDataSource().items().map(item => {
-    //     return {
-    //         PochildNo: Number(item.PochildNo) || 0,
-    //         Pono: master.Pono,
-    //         Gscode: item.Gscode,
-    //         // GSCode:item.Gscode,
-    //         AddlDescription: item.AddlDescription,
-    //         QuotedQuantity: item.QuotedQuantity,
-    //         UnitRateMethod: item.UnitRateMethod ? Number(item.UnitRateMethod) : null,
-    //         UnitPrice: item.UnitPrice,
-    //         ItemDiscount: item.ItemDiscount,
-    //         PotaxSlab: item.PotaxSlab ? Number(item.PotaxSlab) : null,
-    //         PoitemRemarks: item.PoitemRemarks,
-    //         LineOrderNo: item.LineOrderNo,
-    //         PlanNo: item.PlanNo,
-    //         DeliveryPeriod: item.DeliveryPeriod,
-    //         MritemNo: item.MritemNo,
-    //         LineTaxAmount: item.LineTaxAmount,
-    //         LineTotalWithTax: item.LineTotalWithTax,
-    //         Currency: item.Currency ? Number(item.Currency) : null,
-    //         ExchangeRate: item.ExchangeRate,
-    //         UnitRateInOc: item.UnitRateInOc,
-    //         DiscountInOc: item.DiscountInOc
-    //     };
-    // });
+    grid.saveEditData();
 
-             $.ajax({
-                url: '/api/EQPurchaseOrder/SavePurchaseOrder',
-                type: 'POST',
-                data: JSON.stringify({ master: master, children: children }),
-                contentType: 'application/json',
-               success: function (res) {
+    let children = grid.getDataSource().items() || [];
+    children = children.map(row => {
+        const { PropertyPochildNo, ...rest } = row;
+        return rest;
+    });
+
+    // AJAX
+    $.ajax({
+        url: '/api/EQPurchaseOrder/SavePurchaseOrder',
+        type: 'POST',
+        data: JSON.stringify({ master: master, children: children }),
+        contentType: 'application/json',
+        success: function (res) {
             if (res.success) {
-                DevExpress.ui.notify(res.message, "success", 3000);
+                DevExpress.ui.notify(res.message, "success", 2000);
 
                 const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
                 if (itemGridInstance) {
@@ -2127,19 +2088,130 @@ $("#btnSave").on("click", function () {
                     itemGridInstance.refresh();
                 }
 
-                // ✅ Go back after short delay
-                setTimeout(function () {
-                    window.history.back(); 
-                }, 1500);
+                setTimeout(() => {
+                    if (document.referrer) {
+                        window.history.back();
+                    }
+                }, 2200);
+
             } else {
                 DevExpress.ui.notify(res.message, "error", 3000);
             }
         },
         error: function (xhr) {
-            DevExpress.ui.notify("Failed to save: " + (xhr.responseText || xhr.statusText), "error", 3000);
+            DevExpress.ui.notify(
+                "Failed to save: " + (xhr.responseText || xhr.statusText),
+                "error",
+                3000
+            );
         }
     });
 });
+
+$(document).ready(function () {
+    const poNo = new URLSearchParams(window.location.search).get("Pono"); // same key you passed in URL
+    if (poNo) {
+        loadPurchaseOrder(poNo);
+    } else {
+        DevExpress.ui.notify("PO number not found in URL", "warning", 3000);
+    }
+});
+
+$(document).ready(function () {
+    const poNo = new URLSearchParams(window.location.search).get("Pono"); // same key you passed in URL
+    if (poNo) {
+        loadPurchaseOrder(poNo);
+    } else {
+        DevExpress.ui.notify("PO number not found in URL", "warning", 3000);
+    }
+});
+
+function loadPurchaseOrder(poNo) {
+    $.ajax({
+        url: `/api/EQPurchaseOrder/GetPurchaseOrderByRefNo?poNo=${encodeURIComponent(poNo)}`,
+        type: "GET",
+        dataType: "json",
+        success: function (data) {
+            if (!data || !data.Master) {
+                DevExpress.ui.notify("No PO found.", "warning", 3000);
+                return;
+            }
+
+            console.log("PO Master Response:", data);
+
+            // Change Save button text
+            const btnSave = $("#btnSave").dxButton("instance");
+            if (btnSave) btnSave.option("text", "Update");
+
+            // ✅ Master fields
+            $("#PurchaseOrderNo").dxTextBox("instance")?.option("value", data.Master.Pono ?? "");
+            $("#PoDate").dxDateBox("instance")?.option("value", data.Master.Podate ?? null);
+            setDxFieldValue("SupplierName", data.Master.SupplierCode ?? "");
+            $("#RevNo").dxSelectBox("instance")?.option("value", data.Master.PorevisionNo ?? "");
+            $("#SupplierQuotationNo").dxTextBox("instance")?.option("value", data.Master.SupplierQuoteNo ?? "");
+            $("#SupplierQuoteDate").dxDateBox("instance")?.option("value", data.Master.SupplierQuoteDate ?? null);
+            $("#AttentionTo").dxTextBox("instance")?.option("value", data.Master.Attention ?? "");
+            $("#SupplierContactNo").dxTextBox("instance")?.option("value", data.Master.SupplierContactNo ?? "");
+            $("#SupplierEmail").dxTextBox("instance")?.option("value", data.Master.SupplierContactEmail ?? "");
+            setDxFieldValue("Project", data.Master.ProjectMasterCode ?? "");
+            $("#PoSummary").dxTextArea("instance")?.option("value", data.Master.Posummary ?? "");
+            $("#PoIntro").dxTextArea("instance")?.option("value", data.Master.Pointroduction ?? "");
+            $("#Thanks").dxTextArea("instance")?.option("value", data.Master.PothanksNote ?? "");
+            $("#Subject").dxTextArea("instance")?.option("value", data.Master.SubjectTitle ?? "");
+            $("#Cancellation").dxTextArea("instance")?.option("value", data.Master.CancellationRemarks ?? "");
+            setDxFieldValue("CompanyName", data.Master.CompanyBranch ?? "");
+            setDxFieldValue("preparedBy2", data.Master.SubmittedBy ?? "");
+            $("#ReferenceNo").dxTextBox("instance")?.option("value", data.Master.SupplierRefNo ?? "");
+            setDxFieldValue("verifiedBy2", data.Master.VerifiedBy ?? "");
+            setDxFieldValue("approvedBy2", data.Master.ApprovedBy ?? "");
+            // $("#currencyexchangerate").dxNumberBox("instance")?.option("value", data.Master.CurrencyRate ?? null);
+            // $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value", data.Master.BaseCurrencyId ?? "");
+            // $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value", data.Master.CurrencyId ?? "");
+
+            // ✅ Load children grid
+            if (Array.isArray(data.Children)) {
+                const cleanChildren = data.Children.map((row, index) => ({
+                    ...row,
+                    SNo: index + 1
+                }));
+
+                const grid = $("#itemGrid").dxDataGrid("instance");
+                if (grid) {
+                    grid.option("dataSource", cleanChildren);
+                    grid.refresh();
+                }
+            }
+
+            // ✅ If approved, lock everything
+            if (data.Master.IsApproved) {
+                const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+                if (itemGridInstance) {
+                    itemGridInstance.option({
+                        editing: {
+                            allowUpdating: false,
+                            allowAdding: false,
+                            allowDeleting: false
+                        },
+                        selection: { mode: "none" },
+                        hoverStateEnabled: false,
+                        focusedRowEnabled: false
+                    });
+                }
+
+                // Hide buttons except specific ones
+                hideAllButtonsExcept(["btnPrint4", "btnBack", "btnAttach"]);
+
+                // Disable form controls
+                disableSpecificControls();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading PO:", error);
+            DevExpress.ui.notify("Error loading PO: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+        }
+    });
+}
+
 
 
        
@@ -2294,187 +2366,176 @@ function makeAllWidgetsReadOnly() {
             break;
         }
     }
-}            	let isApproved=null;
-                      document.addEventListener("DOMContentLoaded", function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const Pono = urlParams.get("Pono");
-        const mode = urlParams.get("mode");
-           $("#btnSave").dxButton("instance").option("text", "Update");
-        if (Pono) {
-            const isEditMode = mode === "edit";
-            const isViewMode = mode === "view";
-           
-            setTimeout(() => {
-                fetch(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(Pono)}`)
-                    .then(response => {
-                        if (!response.ok) throw new Error("Failed to load delivery data");
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data) {
-                              console.log("data:", data);
-                            console.log("Is Approved:", data.IsApproved);
+}          
 
-setDxFieldValue("PurchaseOrderNo", data.pono);
-setDxFieldValue("PoDate", data.podate);
-setDxFieldValue("SupplierName", data.supplierCode);
-    setDxFieldValue("RevNo", data.PorevisionNo);
-setDxFieldValue("SupplierQuotationNo", data.supplierQuoteNo);
-setDxFieldValue("SupplierQuoteDate", data.supplierQuoteDate);
-setDxFieldValue("AttentionTo", data.attention);
-setDxFieldValue("SupplierContactNo", data.supplierContactNo);
-setDxFieldValue("SupplierEmail", data.supplierContactEmail);
-setDxFieldValue("RFQNo", data.rfqno);
-setDxFieldValue("Project", data.projectMasterCode);
-setDxFieldValue("SalesPerson", data.salesPersonCode);
-setDxFieldValue("RequestingUnit", data.projectSubUnitCode);
 
-setDxFieldValue("PoSummary", data.posummary);
-setDxFieldValue("PoIntro", data.pointroduction);
-setDxFieldValue("Thanks", data.pothanksNote);
 
-setDxFieldValue("PaymentTerm", data.popaymentTerm);
-setDxFieldValue("DocumentsRequired", data.podocRequired);
-setDxFieldValue("DeliveryTerm", data.podeliveryTerm);
-setDxFieldValue("WarrantyPeriod", data.powarrantyPeriod);
-setDxFieldValue("DeliveryPeriod", data.podeliveryPeriod);
 
-setDxFieldValue("ShippingAddress", data.poshipTo);
-setDxFieldValue("BillingAddress", data.pobillTo);
+// let isApproved=null;
+//                       document.addEventListener("DOMContentLoaded", function () {
+//         const urlParams = new URLSearchParams(window.location.search);
+//         const Pono = urlParams.get("Pono");
+//         const mode = urlParams.get("mode");
+//            $("#btnSave").dxButton("instance").option("text", "Update");
+//         if (Pono) {
+//             const isEditMode = mode === "edit";
+//             setTimeout(() => {
+//                 fetch(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(Pono)}`)
+//                     .then(response => {
+//                         if (!response.ok) throw new Error("Failed to load delivery data");
+//                         return response.json();
+//                     })
+//                     .then(data => {
+//                         if (data) {
+//                               console.log("data:", data);
+//                             console.log("Is Approved:", data.IsApproved);
 
-setDxFieldValue("CompanyName", data.companyBranch);
-setDxFieldValue("POCategory", data.pocategoryId);
-setDxFieldValue("InventoryGroup", data.inventoryMasterGroupId);
+// setDxFieldValue("PurchaseOrderNo", data.pono);
+// setDxFieldValue("PoDate", data.podate);
+// setDxFieldValue("SupplierName", data.supplierCode);
+//     setDxFieldValue("RevNo", data.PorevisionNo);
+// setDxFieldValue("SupplierQuotationNo", data.supplierQuoteNo);
+// setDxFieldValue("SupplierQuoteDate", data.supplierQuoteDate);
+// setDxFieldValue("AttentionTo", data.attention);
+// setDxFieldValue("SupplierContactNo", data.supplierContactNo);
+// setDxFieldValue("SupplierEmail", data.supplierContactEmail);
+// setDxFieldValue("RFQNo", data.rfqno);
+// setDxFieldValue("Project", data.projectMasterCode);
+// setDxFieldValue("SalesPerson", data.salesPersonCode);
+// setDxFieldValue("RequestingUnit", data.projectSubUnitCode);
 
-setDxFieldValue("CurrencyExchange", data.currency);
-setDxFieldValue("ExchangeRate", data.exchangeRate);
+// setDxFieldValue("PoSummary", data.posummary);
+// setDxFieldValue("PoIntro", data.pointroduction);
+// setDxFieldValue("Thanks", data.pothanksNote);
 
-setDxFieldValue("Discount", data.discountsText);
-setDxFieldValue("DiscountMethod", data.discountMethod);
+// setDxFieldValue("PaymentTerm", data.popaymentTerm);
+// setDxFieldValue("DocumentsRequired", data.podocRequired);
+// setDxFieldValue("DeliveryTerm", data.podeliveryTerm);
+// setDxFieldValue("WarrantyPeriod", data.powarrantyPeriod);
+// setDxFieldValue("DeliveryPeriod", data.podeliveryPeriod);
 
-setDxFieldValue("ShipmentHandling", data.shipmentHandling);
-setDxFieldValue("ShipmentHandlingMethod", data.shipmentHandlingMethod);
+// setDxFieldValue("ShippingAddress", data.poshipTo);
+// setDxFieldValue("BillingAddress", data.pobillTo);
 
-setDxFieldValue("preparedBy2", data.submittedBy);
-setDxFieldValue("verifiedBy2", data.verifiedBy);
-setDxFieldValue("approvedBy2", data.approvedBy);
-     setDxFieldValue("currencyexchangerate", data.CurrencyRate);
-     setDxFieldValue("ddlGoodsGroup4", data.BaseCurrencyId);
-     setDxFieldValue("ddlGoodsGroup3", data.CurrencyId);
+// setDxFieldValue("CompanyName", data.companyBranch);
+// setDxFieldValue("POCategory", data.pocategoryId);
+// setDxFieldValue("InventoryGroup", data.inventoryMasterGroupId);
 
-                            // Set item grid data
-                            const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-                                   itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
-                                            key: "PochildNo",
-                                            data: data.items || []
-                                        }));                         
-                                    // Approval logic
-                                 isApproved = data.isApproved;
-                                console.log("Is Approved:", isApproved);
+// setDxFieldValue("CurrencyExchange", data.currency);
+// setDxFieldValue("ExchangeRate", data.exchangeRate);
 
-  if (isViewMode) {
-                               const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        itemGridInstance.option({
-            editing: {
-                allowUpdating: false,
-                allowAdding: false,
-                allowDeleting: false
-            },
-            selection: { mode: "none" },
-            hoverStateEnabled: false,
-            focusedRowEnabled: false
-        });
-          hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
-          disableSpecificControls();
+// setDxFieldValue("Discount", data.discountsText);
+// setDxFieldValue("DiscountMethod", data.discountMethod);
 
-                                DevExpress.ui.notify("This Purchase Order is in view mode. Fields are read-only.", "info", 4000);
- }else if (isEditMode && isApproved) {
-    const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-    itemGridInstance.option({
-        editing: {
-            allowUpdating: false,
-            allowAdding: false,
-            allowDeleting: false
-        },
-        selection: { mode: "none" },
-        hoverStateEnabled: false,
-        focusedRowEnabled: false
-    });
+// setDxFieldValue("ShipmentHandling", data.shipmentHandling);
+// setDxFieldValue("ShipmentHandlingMethod", data.shipmentHandlingMethod);
 
-    // 🔹 Hide / disable buttons except the allowed ones
-    hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+// setDxFieldValue("preparedBy2", data.submittedBy);
+// setDxFieldValue("verifiedBy2", data.verifiedBy);
+// setDxFieldValue("approvedBy2", data.approvedBy);
+//      setDxFieldValue("currencyexchangerate", data.CurrencyRate);
+//      setDxFieldValue("ddlGoodsGroup4", data.BaseCurrencyId);
+//      setDxFieldValue("ddlGoodsGroup3", data.CurrencyId);
 
-    // 🔹 Call your central function to disable fields
-    disableSpecificControls();
+//                             // Set item grid data
+//                             const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+//                                    itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
+//                                             key: "PochildNo",
+//                                             data: data.items || []
+//                                         }));                         
+//                                     // Approval logic
+//                                  isApproved = data.isApproved;
+//                                 console.log("Is Approved:", isApproved);
 
-    DevExpress.ui.notify(
-        "This Purchase Order is approved. You are not allowed to edit it.",
-        "info",
-        4000
-    );
-}
+//  if (isEditMode && isApproved) {
+//     const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+//     itemGridInstance.option({
+//         editing: {
+//             allowUpdating: false,
+//             allowAdding: false,
+//             allowDeleting: false
+//         },
+//         selection: { mode: "none" },
+//         hoverStateEnabled: false,
+//         focusedRowEnabled: false
+//     });
+
+//     // 🔹 Hide / disable buttons except the allowed ones
+//     hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+
+//     // 🔹 Call your central function to disable fields
+//     disableSpecificControls();
+
+//     DevExpress.ui.notify(
+//         "This Purchase Order is approved. You are not allowed to edit it.",
+//         "info",
+//         4000
+//     );
+// }
 
                             
- else if (isEditMode) {
-                                // Enable grid editing
-                                itemGridInstance.option("editing", {
-                                        mode: "cell",
-                                        allowUpdating: true,
-                                    allowAdding: true,
-                                    allowDeleting: true
-                                });
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error loading delivery note:", error);
-                        alert("Failed to load delivery details.");
-                    });
-            }, 100);
-        }
+//  else if (isEditMode) {
+//                                 // Enable grid editing
+//                                 itemGridInstance.option("editing", {
+//                                         mode: "cell",
+//                                         allowUpdating: true,
+//                                     allowAdding: true,
+//                                     allowDeleting: true
+//                                 });
+//                             }
+//                         }
+//                     })
+//                     .catch(error => {
+//                         console.error("Error loading delivery note:", error);
+//                         alert("Failed to load delivery details.");
+//                     });
+//             }, 100);
+//         }
 
-        function setReadOnlyMode() {
-            const readOnlyFields = [
-                { selector: "#deliveryNoteNo", type: "dxTextBox" },
-                { selector: "#deliveryNoteDate", type: "dxDateBox" },
-                { selector: "#GetProjectDropDown", type: "dxDropDownBox" },
-                { selector: "#ddGetSalesPerson", type: "dxDropDownBox" },
-                { selector: "#clientPOnumber", type: "dxTextBox" },
-                { selector: "#ClientPODate", type: "dxDateBox" },
-                { selector: "#ClientRefName", type: "dxTextBox" },
-                { selector: "#ClientContactNo", type: "dxTextBox" },
-                { selector: "#ClientEmail", type: "dxTextBox" },
-                { selector: "#ddGetModeOfRequest", type: "dxDropDownBox" },
-                { selector: "#ddGetTypeOfRequest", type: "dxDropDownBox" },
-                { selector: "#clientProject", type: "dxTextBox" },
-                { selector: "#DeliveryNoteRemarks", type: "dxTextArea" },
-                { selector: "#Salesman", type: "dxTextBox" },
-                { selector: "#DeliveredBy", type: "dxTextBox" },
-                { selector: "#DriverName", type: "dxTextBox" },
-                { selector: "#DriverID", type: "dxTextBox" },
-                { selector: "#VehicleNo", type: "dxTextBox" },
-                { selector: "#CompanyName", type: "dxSelectBox" },
-                { selector: "#DeliveryType", type: "dxSelectBox" },
-                { selector: "#InventoryGroup", type: "dxSelectBox" },
-                { selector: "#SalesOrderNo", type: "dxTextBox" },
-                { selector: "#QuotationNo", type: "dxTextBox" },
-                { selector: "#EnquiryRequestNo", type: "dxTextBox" },
-                { selector: "#Dnsignatory", type: "dxDropDownBox" },
-                { selector: "#currencyexchangerate", type: "dxNumberBox" },
-                { selector: "#ddlGoodsGroup4", type: "dxDropDownBox" },
-                { selector: "#ddlGoodsGroup3", type: "dxDropDownBox" }
-            ];
+//         function setReadOnlyMode() {
+//             const readOnlyFields = [
+//                 { selector: "#deliveryNoteNo", type: "dxTextBox" },
+//                 { selector: "#deliveryNoteDate", type: "dxDateBox" },
+//                 { selector: "#GetProjectDropDown", type: "dxDropDownBox" },
+//                 { selector: "#ddGetSalesPerson", type: "dxDropDownBox" },
+//                 { selector: "#clientPOnumber", type: "dxTextBox" },
+//                 { selector: "#ClientPODate", type: "dxDateBox" },
+//                 { selector: "#ClientRefName", type: "dxTextBox" },
+//                 { selector: "#ClientContactNo", type: "dxTextBox" },
+//                 { selector: "#ClientEmail", type: "dxTextBox" },
+//                 { selector: "#ddGetModeOfRequest", type: "dxDropDownBox" },
+//                 { selector: "#ddGetTypeOfRequest", type: "dxDropDownBox" },
+//                 { selector: "#clientProject", type: "dxTextBox" },
+//                 { selector: "#DeliveryNoteRemarks", type: "dxTextArea" },
+//                 { selector: "#Salesman", type: "dxTextBox" },
+//                 { selector: "#DeliveredBy", type: "dxTextBox" },
+//                 { selector: "#DriverName", type: "dxTextBox" },
+//                 { selector: "#DriverID", type: "dxTextBox" },
+//                 { selector: "#VehicleNo", type: "dxTextBox" },
+//                 { selector: "#CompanyName", type: "dxSelectBox" },
+//                 { selector: "#DeliveryType", type: "dxSelectBox" },
+//                 { selector: "#InventoryGroup", type: "dxSelectBox" },
+//                 { selector: "#SalesOrderNo", type: "dxTextBox" },
+//                 { selector: "#QuotationNo", type: "dxTextBox" },
+//                 { selector: "#EnquiryRequestNo", type: "dxTextBox" },
+//                 { selector: "#Dnsignatory", type: "dxDropDownBox" },
+//                 { selector: "#currencyexchangerate", type: "dxNumberBox" },
+//                 { selector: "#ddlGoodsGroup4", type: "dxDropDownBox" },
+//                 { selector: "#ddlGoodsGroup3", type: "dxDropDownBox" }
+//             ];
 
-            readOnlyFields.forEach(field => {
-                const instance = $(field.selector)[field.type]("instance");
-                if (instance) {
-                    instance.option("readOnly", true);
-                }
-            });
+//             readOnlyFields.forEach(field => {
+//                 const instance = $(field.selector)[field.type]("instance");
+//                 if (instance) {
+//                     instance.option("readOnly", true);
+//                 }
+//             });
 
-            $("#btnSave").prop("disabled", true);
-        }
-    });
+//             $("#btnSave").prop("disabled", true);
+//         }
+//     });
+
+
     //     $(function () {
     //     const urlParams = new URLSearchParams(window.location.search);
     //     const pono = urlParams.get("Pono");
