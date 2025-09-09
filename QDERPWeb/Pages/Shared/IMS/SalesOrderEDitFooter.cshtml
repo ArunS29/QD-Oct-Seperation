@@ -202,9 +202,9 @@
             .ID("btnBack")
             .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-back" })
-                )
+            .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "dx-button-custom btn-back" })
+        )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()

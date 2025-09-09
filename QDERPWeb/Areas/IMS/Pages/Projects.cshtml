@@ -49,10 +49,6 @@
         width: 1000px;
     }
 
-    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
-        display: none !important;
-    }
-
     .container {
         display: none !important;
     }
@@ -90,9 +86,9 @@
     </div>
 </div> *@
 <div>
-<div class="dx-card" style="margin: auto; width:100%; ">
+<div class="" style="margin: auto; width:100%; ">
     <!-- Input Fields -->
-    <div class="row mb-2" style="display: flex; gap: 10px; align-items: flex-end; flex-direction: row; flex-wrap: nowrap;">
+    <div class="row" style="display: flex; gap: 10px; align-items: flex-end; flex-direction: row; flex-wrap: nowrap;">
         <div style="width: 21%;">
             @(Html.DevExtreme().TextBox()
                 .ID("txtPrjCode")
@@ -154,7 +150,7 @@
     </div>
 
 
-    <div class="row mb-3">
+    <div class="row">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("txtProjectDescription").Label(new JS("formatMessage('Project Description:')"))
                 .LabelMode(EditorLabelMode.Floating).Width("100%").ValidationRules(rules =>
@@ -206,7 +202,7 @@
                             loadUrl: "/api/ProjectGroup/GetAllCostAllocationData"
                         }),
                         height: 250,
-                        width:600,
+                        width:"100%",
                         selection: { mode: "single" },
                         hoverStateEnabled: true,
                         paging: { pageSize: 10 },
@@ -240,6 +236,7 @@
             .Icon("plus")
             .Type(ButtonType.Success)
             .OnClick("function(){addProjectToGrid();}")
+            .ElementAttr(new { @class = "custom-ui-button" })
             .Width(120))
 
     </div>
@@ -308,7 +305,7 @@
                   .OnClick("onDeleteButtonClicks");
                     });
                 })
-                .Height("57vh")
+                .Height("68vh")
                 .ColumnAutoWidth(true)
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
@@ -326,8 +323,23 @@
                 )
         </div>
     </div>
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+    <div style="display: flex;gap:10px;">
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+            .ID("btnUpdate")
+            .Text(new JS("formatMessage('Update')"))
+            .Icon("save")
+            .ElementAttr(new { @class = "update-button" })
+            )
+        </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            .ElementAttr(new { @class = "bold-button" })
+            )
+        </div>
     </div>
     @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
     {
@@ -372,19 +384,6 @@
            const title = "Project Group";
                openModal(url, title,"","90%");
        }
-    $(document).ready(function () {
-
-        $(".limited-footer .btn-container").each(function () {
-
-            if (!$(this).find("#btnUpdate,#btnBack").length) {
-
-                $(this).remove();
-
-            }
-
-        });
-
-    });
 
     $(document).on("click", "#btnBack", function () {
       window.parent.closeModal();
@@ -550,6 +549,10 @@
             success: function () {
                 DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                $("#txtPrjCode").dxTextBox("instance").option("value","");
+                $("#GetProjectDropDown").dxDropDownBox("instance").option("value","");
+                $("#txtProjectDescription").dxTextBox("instance").option("value","");
+                $("#ddCostAllocation").dxDropDownBox("instance").option("value","");
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save.", "error", 1500);
