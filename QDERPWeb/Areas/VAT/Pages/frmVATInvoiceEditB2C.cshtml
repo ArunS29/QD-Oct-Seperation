@@ -1394,7 +1394,7 @@
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup3")
 																.ShowClearButton(true)
-																.Value("Saudi Arabian Riyals")
+																.Value(1)
 																.AcceptCustomValue(true)
 																.OpenOnFieldClick(false)
 																.ValueChangeEvent("input")
@@ -6137,6 +6137,7 @@ if (popover.option("visible")) {
 				ClientGrnreferenceNo: $("#ClientGRNReference").dxTextBox("instance").option("value") || null,
 				AddedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
 				AddedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
+                Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 				InvoiceCurrencyCode: InvoiceCurrencyExchangeId || null,
 				ExchangeRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
 				AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value") || null,
@@ -8131,10 +8132,10 @@ $(function () {
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 
-
+			Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 			//Deduction&CurrencyDetails
 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
-			//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+			TaxCurrencyCode: TaxCurrencyExchangeId|| null,
 			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
@@ -8298,6 +8299,21 @@ SaveAndClosebtn.option("disabled", false);
 			  {
 					  revaccheadid="L00343"
 			  }
+			  let invoiceTypeText = $("#VATInvoiceType").dxDropDownBox("instance").option("value");
+          let invoiceSubTypeText = $("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
+          
+          let InvoiceType = null; // This should match C# short?
+		  let InvoiceSubType=null;
+          
+          if (invoiceTypeText === "Tax Invoice") {
+              InvoiceType = 01;
+          }
+          
+          if (invoiceSubTypeText === "Tax Invoice") {
+              InvoiceSubType = "01";
+          } else if (invoiceSubTypeText === "Simplified Tax Invoice") {
+              InvoiceSubType = "02";
+          }
 
 				if(clientnameValidation.isValid)
 				{
@@ -8309,7 +8325,8 @@ SaveAndClosebtn.option("disabled", false);
 					InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 					InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 					PaymentMeansTypeCode: paymentmeanstypecode,
-					  InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
+					InvoiceTypeCode: InvoiceType|| null,
+					  //InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
 					  InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
 					  InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
@@ -8361,10 +8378,10 @@ SaveAndClosebtn.option("disabled", false);
 				AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 				AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
 
-
+				Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
 				//Deduction&CurrencyDetails
-				InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| null,
-				//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+				InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
+				TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
 				ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 				AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 				AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
@@ -9134,6 +9151,7 @@ SaveAndClosebtn.option("disabled", false);
 						}
 					});
 						}
+						btnPostToLedgerdisableEditing();
 
 
 

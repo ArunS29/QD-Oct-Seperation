@@ -4330,17 +4330,18 @@ function showMainFooter() {
         menu.style.display = "none";
     }
 
-    // Build menu once (or call again if items change)
-    function renderContextMenu() {
+       function renderContextMenu() {
         const contextMenu = document.getElementById("contextMenu");
         contextMenu.innerHTML = "";
 
         menuItems.forEach((item, index) => {
+            if (item.hidden) return; // skip invisible ones
+
             const li = document.createElement("li");
             li.dataset.id = item.id;
             li.tabIndex = -1;
             li.innerHTML = `
-                <div class="custom-dropdown-item">
+                <div class="custom-dropdown-item ${item.disabled ? 'disabled' : ''}">
                     <div class="side-bar" style="background-color:${item.color};"></div>
                     <div class="item-content">
                         <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
@@ -4349,20 +4350,24 @@ function showMainFooter() {
                 </div>
             `;
 
-            li.addEventListener("click", () => {
-                if (typeof window[item.id] === "function") window[item.id]();
-                hideContextMenu();
-            });
+            if (!item.disabled) {
+                li.addEventListener("click", () => {
+                    if (typeof window[item.id] === "function") window[item.id]();
+                    hideContextMenu();
+                });
+            }
 
-            // keep mouse & keyboard highlight in sync
             li.addEventListener("mouseenter", () => {
-                currentIndex = index;
-                highlightItem(li);
+                if (!item.disabled) {
+                    currentIndex = index;
+                    highlightItem(li);
+                }
             });
 
             contextMenu.appendChild(li);
         });
     }
+
 
     // Show menu at x,y with edge-flip and focus
     function showContextMenu(x, y) {
