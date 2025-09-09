@@ -1438,6 +1438,21 @@
         });
     });
    
+   $(function() {
+    // When ShowSimpleSuppilerAcceptance is checked, uncheck ShowSignatoryPositionOnly
+    $("#ShowSimpleSuppilerAcceptance").dxCheckBox("instance").on("valueChanged", function(e) {
+        if (e.value) {
+            $("#ShowFullSupplierAcceptance").dxCheckBox("instance").option("value", false);
+        }
+    });
+
+    // When ShowSignatoryPositionOnly is checked, uncheck ShowSimpleSuppilerAcceptance
+    $("#ShowFullSupplierAcceptance").dxCheckBox("instance").on("valueChanged", function(e) {
+        if (e.value) {
+            $("#ShowSimpleSuppilerAcceptance").dxCheckBox("instance").option("value", false);
+        }
+    });
+});
     function onSelectBoxOpened(e) {
     const ds = e.component.getDataSource();
     if (ds) {

@@ -51,7 +51,7 @@ namespace QD.ERP.Web.Pages
 
         public IActionResult OnGet(string reportName, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo, string RequestNo, string quotationNo, string salesOrderNo, string deliveryNoteNo, string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false,
             bool clientAcknowledgement = false, bool printItemCodeDesc = false, bool printItemPartNoDesc = false, bool printItemPartArabicDesc = false, bool showSign1 = false, bool showSeal = false, bool showSignature = false, bool printLetterhead = false, bool ShowItemLineNo = false, bool PrintFooterAtBottom = false,
-           bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false)
+           bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false, bool ShowFullSupplierAcceptance = false, bool ShowSimpleSuppilerAcceptance = false, bool ShowSignatoryPositionOnly = false)
         {
 
             if (string.IsNullOrEmpty(reportName))
@@ -258,7 +258,7 @@ namespace QD.ERP.Web.Pages
                 {
                     case "PreviewPurchaseOrder":
 
-                        Report = new PreviewPurchaseOrder(ShowPaymentTermsShippingDetails,
+                        Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
       ShowitemPartNumberinsteadStockCode,
       ShowHSCodeinsteadStockCode,
       showSeal,
@@ -269,7 +269,6 @@ namespace QD.ERP.Web.Pages
       purchaseOrderNo,
       tenantName,
       companyName,
-      logoImage,
       companySealImage,
       companyAddress,
       companyNameAr,
@@ -279,20 +278,12 @@ namespace QD.ERP.Web.Pages
                     case "PreviewPurchaseOrderForeignCurrency":
 
                         Report = new PreviewPurchaseOrderForeignCurrency(
-                                               pageBreakAfter, pageBreakBefore,
-                                               purchaseOrderNo,
-                                               tenantName,
-                                               companyName,
-
-                                               companySealImage,
-                                               companyAddress,
-                                               companyNameAr,
-                                               companyAddressAr,
-                                               _tenantDbContextHelper
-                                           ); break;
+                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
+                        _tenantDbContextHelper
+                    ); break;
                     case "PreviewPurchaseOrderWithoutVAT":
 
-                        Report = new PreviewPurchaseOrderWithoutVAT(
+                        Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
                                                pageBreakAfter, pageBreakBefore,
                                               purchaseOrderNo,
                                               tenantName,
@@ -307,7 +298,7 @@ namespace QD.ERP.Web.Pages
                     case "WithoutVATTotalPrice":
 
 
-                        Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(
+                        Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
                                 pageBreakAfter, pageBreakBefore,
                             purchaseOrderNo,
                             tenantName,

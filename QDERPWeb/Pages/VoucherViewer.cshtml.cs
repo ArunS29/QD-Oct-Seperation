@@ -59,7 +59,8 @@ namespace QD.ERP.Web.Pages
         public string purchaseOrderNo { get; private set; }
 
         public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
-            bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false,bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false)
+            bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false,bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false,
+            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false )
         {
             // Set the properties for Razor
             ReportName = reportName;
@@ -634,7 +635,7 @@ namespace QD.ERP.Web.Pages
                 }
                 if (reportName == "PreviewPurchaseOrder")
                 {
-                    Report = new PreviewPurchaseOrder(ShowPaymentTermsShippingDetails,
+                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
     ShowitemPartNumberinsteadStockCode,
     ShowHSCodeinsteadStockCode,
     showSeal,
@@ -645,7 +646,6 @@ namespace QD.ERP.Web.Pages
     purchaseOrderNo,
     tenantName,
     companyName,
-    logoImage,          
     companySealImage,    
     companyAddress,
     companyNameAr,
@@ -656,21 +656,13 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "PreviewPurchaseOrderForeignCurrency")
                 {
                     Report = new PreviewPurchaseOrderForeignCurrency(
-                        pageBreakAfter, pageBreakBefore,
-                        purchaseOrderNo,
-                        tenantName,
-                        companyName,
-                      
-                        companySealImage,
-                        companyAddress,
-                        companyNameAr,
-                        companyAddressAr,
+                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
                         _tenantDbContextHelper
                     );
                 }
                 if (reportName == "PreviewPurchaseOrderWithoutVAT")
                 {
-                    Report = new PreviewPurchaseOrderWithoutVAT(
+                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
                          pageBreakAfter, pageBreakBefore,
                         purchaseOrderNo,
                         tenantName,
@@ -685,7 +677,7 @@ namespace QD.ERP.Web.Pages
                 }
                 if (reportName == "WithoutVATTotalPrice")
                 {
-                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(
+                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
                             pageBreakAfter, pageBreakBefore,
                         purchaseOrderNo,
                         tenantName,
