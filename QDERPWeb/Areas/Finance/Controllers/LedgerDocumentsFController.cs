@@ -260,6 +260,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5 ?? task6 ?? task7 ?? task8;
                     }
+                    
                 }
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
