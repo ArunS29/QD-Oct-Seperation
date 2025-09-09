@@ -1900,8 +1900,12 @@
                 $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {
                         salesOrderTextBox.option("value", data.SalesOrderNo);
-                        // ...populate other fields as needed...
-                         // Now bind children to grid:
+                        if (data.IsSubmitted) {
+                            $("#btnSubmit").dxButton("instance").option("disabled", true);
+                        }
+                        if (data.IsVerified) {
+                            $("#btnVerify").dxButton("instance").option("disabled", true);
+                        }
                 if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
                     var grid = $("#B2BdataGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
@@ -3337,7 +3341,7 @@ $(document).ready(function () {
 
     $("#B2BdataGrid").dxDataGrid({
     dataSource: window.B2BdataGridDataSource,
-    keyExpr: "id",   // <-- must match your unique field
+    keyExpr: "Gscode",
     selection: { mode: "multiple" },
     onContextMenuPreparing: function(e) {
         if (e.row && e.row.rowType === "data") {

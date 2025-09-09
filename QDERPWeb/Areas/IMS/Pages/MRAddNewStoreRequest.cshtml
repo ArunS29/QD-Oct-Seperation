@@ -1660,7 +1660,10 @@
 					.Columns(columns =>
 					{
 						columns.Add().Caption(new JS("formatMessage('Code')")).DataField("PurchaseTaxSlabCode").Width(80);
-						columns.Add().Caption(new JS("formatMessage('Slab')")).DataField("PurchaseTaxSlab");
+						columns.Add().Caption(new JS("formatMessage('TaxSlab')")).DataField("PurchaseTaxSlab");
+
+
+
 					})
 					)
 		}
@@ -2719,9 +2722,9 @@ function getSalesPersonByUser() {
                             placeholder: "Search..."
                         },
                         columns: [
-                            { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-                            { dataField: "GroupCode", caption: "Group Code", width: 80 },
-                            { dataField: "GroupName", caption: "Group Name", width: 590 }
+                            { dataField: "QuoteGroupItemSlNo", caption: formatMessage("ID"), width: 60 },
+                            { dataField: "GroupCode", caption: formatMessage("Group Code"), width: 80 },
+                            { dataField: "GroupName", caption: formatMessage("Group Name"), width: 590 }
                         ],
                         onSelectionChanged: function (selectedItems) {
                             let selectedItem = selectedItems.selectedRowsData[0];
@@ -2746,7 +2749,7 @@ function getSalesPersonByUser() {
                 hint: "Add new item",
                 onClick: function () {
                     let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
-                    openModal(url, "Quotation Item Sub Group");
+                    openModal(url, formatMessage("Quotation Item Sub Group"));
                 },
                 width: 60,
                 height: 30
@@ -2835,22 +2838,23 @@ function getSalesPersonByUser() {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption:formatMessage( "Arabic Description"), width: 200 },
 							
 							{
                 dataField: "IsDiscontinued",
-                caption: "Discontinued Item",
+                caption: formatMessage("Discontinued Item"),
                 width: 150,
                 dataType: "boolean",  // ✅ Show checkbox
                 allowEditing: false,  // ✅ Read-only
                
             },
-{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
-{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
-{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
+
+{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100,visible:false},
+{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100,visible:false },
+{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100,visible:false }
 						],
 						onRowPrepared: function (e) {
 			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
@@ -2890,7 +2894,7 @@ function getSalesPersonByUser() {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2908,7 +2912,7 @@ function getSalesPersonByUser() {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2944,7 +2948,8 @@ function getSalesPersonByUser() {
 							const MprchildSlNo = options.data.MprchildSlNo;
 						window.currentDescriptionCell = options;
                       let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = formatMessage("Details Description");
+
 						openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
@@ -3102,7 +3107,7 @@ function getSalesPersonByUser() {
 			if (e.target === "content") {
 				e.items = [
 						{
-			text: "Delete Line Item",
+			text: formatMessage("Delete Line Item"),
 			icon: "trash",
 			onItemClick: function () {
 				const rowIndex = e.row?.rowIndex;
@@ -3151,7 +3156,7 @@ function getSalesPersonByUser() {
 			}
 		},
 							{
-			text: "Delete Selected Rows",
+			text: formatMessage("Delete Selected Rows"),
 			icon: "trash",
 			onItemClick: function () {
 				const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3215,7 +3220,7 @@ function getSalesPersonByUser() {
 			}
 		},
 					{
-						text: "Add New Line",
+						text: formatMessage("Add New Line"),
 							icon: "plus",
 						onItemClick: function () {
 								addNewLineToB2BGrid();
@@ -3304,9 +3309,9 @@ function getSalesPersonByUser() {
                     scrolling: { mode: "virtual" },
                     searchPanel: { visible: true, width: 300, placeholder: "Search..." },
                     columns: [
-                        { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-                        { dataField: "GroupCode", caption: "Group Code", width: 110 },
-                        { dataField: "GroupName", caption: "Group Name", width: 550 }
+                        { dataField: "QuoteGroupItemSlNo", caption: formatMessage("ID"), width: 60 },
+                        { dataField: "GroupCode", caption: formatMessage("Group Code"), width: 110 },
+                        { dataField: "GroupName", caption: formatMessage("Group Name"), width: 550 }
                     ],
                     onSelectionChanged: function (selectedItems) {
                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -3325,7 +3330,7 @@ function getSalesPersonByUser() {
             hint: "Add new item",
             onClick: function () {
                 let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
-               openModal(url, "Quotation Item Sub Group");
+               openModal(url, formatMessage("Quotation Item Sub Group"));
             },
             width: 60,
             height: 30
@@ -3414,22 +3419,23 @@ function getSalesPersonByUser() {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-								{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
 						
 							{
                 dataField: "IsDiscontinued",
-                caption: "Discontinued Item",
+                caption: formatMessage("Discontinued Item"),
                 width: 150,
                 dataType: "boolean",  // ✅ Show checkbox
                 allowEditing: false,  // ✅ Read-only
                
             },
-{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
-{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
-{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
+
+{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100,visible:false},
+{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100,visible:false },
+{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100,visible:false }
 						],
 						onRowPrepared: function (e) {
 			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
@@ -3469,7 +3475,7 @@ function getSalesPersonByUser() {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3479,7 +3485,7 @@ function getSalesPersonByUser() {
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3504,7 +3510,8 @@ function getSalesPersonByUser() {
 					console.log("GSCode:", gsCode);
 					window.currentDescriptionCell = options;
 					let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
-					let title = "Details Description";
+					let title = formatMessage("Details Description");
+
 					openModal(url, title,"60%","70%");
 				}
 					}).appendTo(container);
@@ -3660,7 +3667,7 @@ function getSalesPersonByUser() {
 		if (e.target === "content") {
 			e.items = [
 					{
-		text: "Delete Line Item",
+		text: formatMessage("Delete Line Item"),
 		icon: "trash",
 		onItemClick: function () {
 			const rowIndex = e.row?.rowIndex;
@@ -3709,7 +3716,7 @@ function getSalesPersonByUser() {
 		}
 	},
 						{
-		text: "Delete Selected Rows",
+		text: formatMessage("Delete Selected Rows"),
 		icon: "trash",
 		onItemClick: function () {
 			const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3773,7 +3780,7 @@ function getSalesPersonByUser() {
 		}
 	},
 				{
-					text: "Add New Line",
+					text: formatMessage("Add New Line"),
 						icon: "plus",
 					onItemClick: function () {
 							addNewLineToB2BGrid();
@@ -3820,7 +3827,7 @@ AddlDescription: null,
 				grid.refresh(); // Ensure the UI updates with the new row
 					// ✅ Update Save button text here
 				var button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+				button.option("text", formatMessage("Update"));
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -3857,7 +3864,7 @@ AddlDescription: null,
 			.then(() => {
 				grid.refresh();
 				const button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+				button.option("text", formatMessage("Update"));
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -6408,22 +6415,22 @@ $("#btnBack").on("click", function (e) {
 	});
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "Signatories";
+		const title = formatMessage("Signatories");
 		openModal(url, title);
 	}
 	function AddReqUnit() {
 		const url = `/${tenantName}/IMS/ProjectSubUnits`;
-		const title = "Project Sub Units";
+		const title = formatMessage("Project Sub Units");
 		openModal(url, title);
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "Quotation Mode Of Request";
+		const title = formatMessage("Quotation Mode Of Request");
 		openModal(url, title);
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "Quotation Type Of Request";
+		const title = formatMessage("Quotation Type Of Request");
 		openModal(url, title);
 	}
 	$(function () {
@@ -6437,12 +6444,12 @@ $("#btnBack").on("click", function (e) {
 	});
 	 function AddContactName(){
 					const url = `/${tenantName}/IMS/ClientLeadMaster`;
-			 const title = "Client Master";
+			 const title = formatMessage("Client Master");
 				  openModal(url, title);
 		  }
 	function AddStoreEdit() {
 		const url = `/${tenantName}/IMS/StoreEdit`;
-		const title = "Store";
+		const title = formatMessage("Store");
 		openModal(url, title);
 	}
 	 $(function () {
