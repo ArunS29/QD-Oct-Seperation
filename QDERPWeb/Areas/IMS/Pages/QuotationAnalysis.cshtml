@@ -145,16 +145,16 @@
                 loadPanel: { enabled: true },
                 dataSource: {
                     fields: [
-                        { dataField: "Gsdescrpition", area: "row", caption: "Item Description" },
-                        { dataField: "QuotedQuantity", area: "row", caption: "Quantity" },
-                        { dataField: "SupplierName", area: "column", caption: "Supplier Name" },
-                        { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
-                        { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
-                        { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                        { dataField: "IsWonForPo", area: "data", caption: "IsWonForPo", summaryType: "max", dataType: "boolean" },
-                        { dataField: "Mprno", visible: false },
-                        { dataField: "Gscode", visible: false },
-                        { dataField: "RfqchildSlNo", visible: false }
+                        { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
+                        { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity")},
+                        { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
+                        { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
+                        { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
+                        { dataField: "Mprno",  caption: formatMessage("MPR No"),visible: false },
+                        { dataField: "Gscode", caption: formatMessage("GS Code"), visible: false },
+                        { dataField: "RfqchildSlNo",caption: formatMessage("RFQ child SlNo"),visible: false }
                     ],
                     store: [] // ⬅️ EMPTY INIT
                 },
@@ -183,9 +183,9 @@
                             { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
                             { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
                             { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
-                            { dataField: "Mprno", visible: false },
-                            { dataField: "Gscode", visible: false },
-                            { dataField: "RfqchildSlNo", visible: false }
+                            { dataField: "Mprno", caption: formatMessage("MPR No"), visible: false },
+                            { dataField: "Gscode",caption: formatMessage("GS Code"), visible: false },
+                            { dataField: "RfqchildSlNo",caption: formatMessage("RFQ child SlNo"), visible: false }
 
 
                         ],

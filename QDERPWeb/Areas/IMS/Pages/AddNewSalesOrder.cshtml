@@ -595,6 +595,99 @@
 
 
         </text>);
+        item.Add().Title("Approvals").Icon("detailslayout").Text("Approvals").Template(@<text>
+            <div class="row" style="padding:10px">
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Prepared By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddPreparedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)//
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                                            //.OnValueChanged("dropDownBoxValueChanged")
+                    .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add()
+                        .Name("AddPreparedBy")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
+                        .Icon("plus")
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("AddPreparedBy"));
+                        buttons.Add()
+                        .Name("dropDown");
+                    }))
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Verified By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddVerifiedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+                    )
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Approved By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddApprovedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+                    )
+                </div>
+            </div>
+            
+        </text>);
                     item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
 
             <div class="p-3" style="padding:10px;">
@@ -1047,6 +1140,102 @@
         </button>
     </div>
 </div>
+        @using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+							.ID("GetPreparedby-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("AddNewClientRequest")
+							.LoadAction("GetSignatory")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("SignatoryId")
+							)
+							.WordWrapEnabled(true)
+							.ShowBorders(true)
+							   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridSelectionChanged10")
+							.OnInitialized("dataGridInitialized10")
+							.HeaderFilter(p => p.Visible(true))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							.Paging(p => p.PageSize(15))
+							.FilterRow(f => f.Visible(false))//
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(345)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+							})
+							)
+						}
+		@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetVerifiedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged11")
+					.OnInitialized("dataGridInitialized11")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
+		@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetApprovedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged12")
+					.OnInitialized("dataGridInitialized12")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
@@ -2180,7 +2369,8 @@ function saveSalesOrder(salesOrderNo, $btn) {
         data: JSON.stringify(master),
         success: function (response) {
             DevExpress.ui.notify(response.message, "success", 3000);
-
+            isVoucherSaved = true;
+            updateWorkflowVisual(getWorkflowStatusFromFields());
             if (response.salesOrderNo) {
                 $("#SalesOrderNO").dxTextBox("instance").option("value", response.salesOrderNo);
             }
@@ -2198,151 +2388,6 @@ function saveSalesOrder(salesOrderNo, $btn) {
         }
     });
 }
-
-    //         $("#btnSave").on("click", function (e) {
-    //         e.preventDefault();
-
-    //         const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-
-    //         // ✅ Save pending cell edits before proceeding
-    //         if (gridInstance.hasEditData()) {
-    //             gridInstance.saveEditData().done(() => {
-    //                 validateAndSave();
-    //             });
-    //         } else {
-    //             validateAndSave();
-    //         }
-
-    //         function validateAndSave() {
-    //             // ✅ Validate required DropDown fields
-    //             const requiredFields = [
-    //                 { id: "#ClientNames", label: "Client Name" },
-    //                 // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-    //                 // { id: "#CompanyBranch", label: "Company Branch" },
-    //                 // Add more if needed
-    //             ];
-
-    //             let allValid = true;
-    //             let missingLabels = [];
-
-    //             requiredFields.forEach(field => {
-    //                 const $el = $(field.id);
-    //                 const inst = $el.dxDropDownBox("instance");
-
-    //                 if (inst) {
-    //                     const value = inst.option("value");
-    //                     if (!value) {
-    //                         allValid = false;
-    //                         missingLabels.push(field.label);
-    //                         $el.addClass("dx-invalid");
-    //                     } else {
-    //                         $el.removeClass("dx-invalid");
-    //                     }
-    //                 } else {
-    //                     console.warn("Instance not found:", field.id);
-    //                 }
-    //             });
-
-    //             if (!allValid) {
-    //                 DevExpress.ui.dialog.alert(
-    //                     "Please fill the required field(s): " + missingLabels.join(", "),
-    //                     "Validation Failed"
-    //                 );
-    //                 return;
-    //             }
-
-    //             // ✅ Helper to extract date in yyyy-MM-dd format
-    //                function getDateOnlyValue(dateBoxId) {
-    //     var val = $(dateBoxId).dxDateBox("instance").option("value");
-    //     if (!val) return null;
-    //     // Format as yyyy-MM-dd (local date, no time)
-    //     return val instanceof Date
-    //         ? val.getFullYear() + '-' +
-    //           String(val.getMonth() + 1).padStart(2, '0') + '-' +
-    //           String(val.getDate()).padStart(2, '0')
-    //         : val;
-    // }
-
-    //             // ✅ Collect children grid data
-    //             const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
-    //             const children = gridInstance.getDataSource().items().map(row => ({
-    //                 SalesOrderChildId: row.SalesOrderChildId ?? 0,
-    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //                 QuotedQuantity: row.QuotedQuantity ?? null,
-    //                 UnitRateMethod: row.UnitRateMethod ?? null,
-    //                 Gscode: row.Gscode ?? "",
-    //                 QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
-    //                 QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
-    //                 QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-    //                 CostPrice: (row.CostPrice * CurrencyRate) ?? null,
-    //                 AddlDescription:row.AddlDescription ?? null,
-    //                 QuoteRemarks:row.QuoteRemarks ?? null,
-    //                 DeliveryPeriod:row.DeliveryPeriod ?? null,
-    //                 PlanNo:row.PlanNo ?? null,
-    //             }));
-
-    //             // ✅ Prepare full model for submission
-    //             const model = {
-    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-    //                 SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-    //                 ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-    //                 ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
-    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //                 QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-    //                 OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-    //                 ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-    //                 Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-    //                 ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-    //                 SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-    //                 ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-    //                 TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-    //                 ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-    //                     Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-    //                     ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-    //                                 ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-    //                 QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-    //                 SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-    //                 AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-    //                 DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-    //                 QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-    //                 QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-    //                 CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-    //                 CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-    //                 InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-    //                 CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //                 BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-    //                 CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-    //                 // CurrencyId : 1,
-    //                 // BaseCurrencyId :1,
-    //                 // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //                 SalesOrderChildren: children
-    //             };
-
-    //             console.log("Saving model:", model);
-
-    //             // ✅ AJAX Save Call
-    //             $.ajax({
-    //                 url: "/api/SalesOrders/SaveSalesOrder",
-    //                 type: "POST",
-    //                 contentType: "application/json",
-    //                 data: JSON.stringify(model),
-    //                 success: function (response) {
-    //                     DevExpress.ui.notify(response.message, "success", 2000);
-    //                      location.reload();
-    //                     // ✅ Reload grid after save
-    //                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-    //                         window.B2BdataGridDataSource = data;
-    //                         gridInstance.option("dataSource", data);
-    //                     });
-    //                 },
-    //                 error: function (xhr) {
-    //                     DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
-    //                     console.error("Save error:", xhr.responseText);
-    //                 }
-    //             });
-    //         }
-    //     });
          $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
@@ -2492,6 +2537,9 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         $("#currencyexchangerate").dxNumberBox("instance").option("value", data.CurrencyRate);
                         $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId);
                         $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId);
+                        $("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
+                        $("#ddVerifiedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
+                        $("#ddApprovedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
                         // Add more fields as needed
                     })
                     .fail(function () {
@@ -2566,7 +2614,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         type: 'DELETE',
                         success: function (response) {
                             DevExpress.ui.dialog.alert("Sales Order deleted successfully.", "Deleted").done(function () {
-                                location.reload();
+                                window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
                             });
                         },
                         error: function (xhr) {
@@ -2613,9 +2661,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
-
-                
-
+                    if (response.submittedBy) {
+                        const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.submittedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     // 🛑 Disable Submit button
                     if ($("#btnSubmit").data("dxButton")) {
                         $("#btnSubmit").dxButton("instance").option("disabled", true);
@@ -2649,6 +2701,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
+                    if (response.verifiedBy) {
+                        const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.verifiedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     $("#btnVerify").dxButton("instance").option("disabled", true);
                 } else {
                     DevExpress.ui.notify(response.message, "error", 2000);
@@ -2677,6 +2736,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
+                    if (response.ApprovedBy) {
+                        const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.ApprovedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     disableAllControls(); // disable fields/buttons
                 } else {
                     DevExpress.ui.notify(response.message, "error", 2000);
@@ -3393,5 +3459,65 @@ $(document).ready(function () {
         }
     }
 });
+        function onKeyDown(e) {
+			const ddbInstance = e.component;
+			if (e.event.keyCode !== 40) return;
+			if (!ddbInstance.option("opened")) {
+				ddbInstance.open();
+			} else {
+				let focusedIndex = dataGrid.option("focusedRowIndex");
+				let visibleRows = dataGrid.getVisibleRows().length - 1;
+				if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+				dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+			}
+		}
+        function AddPreparedBy(){
+            const url = `/${tenantName}/IMS/Signatories`;
+            const title = formatMessage("Signatories");
+            openModal(url, title);
+        }
+        
+        function dataGridSelectionChanged10(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized10(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged11(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized11(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged12(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized12(e) {
+			dataGrid = e.component;
+		}
 
 </script>

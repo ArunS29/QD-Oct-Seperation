@@ -90,7 +90,7 @@
     <div class="form-row">
         <div style="flex: 1;">
             @(Html.DevExtreme().NumberBox()
-                        .Label("Discount")
+                        .Label(new JS("formatMessage('Discount')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("discount")
                         .Min(0)
@@ -101,7 +101,7 @@
         <div class="ok-button">
             @(Html.DevExtreme().Button()
                         .ID("okButton")
-                        .Text("OK")
+                        .Text(new JS("formatMessage('OK')"))
                         .OnClick("applyDiscount")
                         .Width(70)
                         )
@@ -112,7 +112,7 @@
     <div class="form-row">
         <div style="flex: 1;">
             @(Html.DevExtreme().NumberBox()
-                        .Label("Enter % of Discount")
+                        .Label(new JS("formatMessage('Enter % of Discount')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("discountPercent")
                         .Min(0)

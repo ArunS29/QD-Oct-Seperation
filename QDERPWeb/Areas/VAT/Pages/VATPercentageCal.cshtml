@@ -55,7 +55,7 @@
     <!-- Total Amount -->
     <div class="white-box">
         @(Html.DevExtreme().NumberBox()
-            .Label("Total Amount")
+            .Label(new JS("formatMessage('Total Amount')"))
             .LabelMode(EditorLabelMode.Floating)
             .ID("totalAmount")
             .Min(0)
@@ -68,7 +68,7 @@
     <div style="margin-top: 10px; display: flex; align-items: baseline;">
         <div class="white-box" style="flex: 1;">
             @(Html.DevExtreme().NumberBox()
-                .Label("Discount")
+                        .Label(new JS("formatMessage('Discount')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("discount")
                 .Min(0)
@@ -79,7 +79,7 @@
         <div class="btn ok-button">
             @(Html.DevExtreme().Button()
                 .ID("okButton")
-                .Text("OK")
+                .Text(new JS("formatMessage('OK')"))
                 .OnClick("applyDiscount")
                 .Width(70)
                 )
