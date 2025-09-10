@@ -181,18 +181,18 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note
                 sealPicture.Visible = showSeal;
 
             // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
-            foreach (string signatureBox in new[] { "xrPictureBox0", "xrPictureBox0", "xrPictureBox0" })
+            foreach (string signatureBox in new[] { "xrPictureBox4", "xrPictureBox0", "xrPictureBox0" })
             {
                 if (FindControl(signatureBox, true) is XRPictureBox sigBox)
                     sigBox.Visible = showSignature;
             }
 
             // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
-            if (FindControl("xrLabel76", true) is XRLabel lbl75)
-                lbl75.Visible = printLetterhead;
-
-            if (FindControl("xrLabel75", true) is XRLabel lbl76)
+            if (FindControl("xrLabel76", true) is XRLabel lbl76)
                 lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrLabel75", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
 
             if (FindControl("xrLabel68", true) is XRLabel lbl68)
                 lbl68.Visible = printLetterhead;

@@ -1,16 +1,27 @@
 ﻿using DevExpress.XtraPrinting;
-using DevExpress.XtraPrinting.Drawing;
 using DevExpress.XtraReports.UI;
+using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.Web.Service;
+using Svg;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.Text;
+
 
 namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 {
     public partial class PreviewQuotationWithSubGroup : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly Tenant _resolvedTenant;
+        private HashSet<string> _quoteNosWithTerms = new HashSet<string>();
+
 
         public PreviewQuotationWithSubGroup()
         {
@@ -39,6 +50,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
+
+
 
             InitializeComponent();
 
@@ -46,6 +61,9 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                 companyAddress, companyNameAr, companyAddressAr);
 
             LoadReportData(quotationNo);
+            LoadSubreport(quotationNo);
+
+            xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
 
             if (pageBreakBefore || pageBreakAfter)
                 this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
@@ -64,7 +82,57 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             }
         }
 
-      
+
+
+        private void xrSubreport1_BeforePrint(object sender, EventArgs e)
+        {
+            string quoteNo = GetCurrentColumnValue("QuoteNo")?.ToString()
+                     ?? Parameters["QuotationNo"].Value?.ToString();
+
+            var tenant = _resolvedTenant;
+            var subReport = new IMSContext();
+            if (!string.IsNullOrWhiteSpace(quoteNo) && tenant != null)
+            {
+                subReport.LoadTerms(quoteNo, tenant.ConnectionString);
+                xrSubreport1.ReportSource = subReport;
+
+                // Check if subreport has data
+                var dt = subReport.DataSource as DataTable;
+                xrSubreport1.Visible = dt != null && dt.Rows.Count > 0;
+            }
+            else
+            {
+                xrSubreport1.Visible = false;
+            }
+        }
+        private void LoadSubreport(string quotationNo)
+        {
+            if (string.IsNullOrWhiteSpace(quotationNo)) return;
+
+            var tenant = _resolvedTenant ?? throw new Exception("Tenant not resolved.");
+            DataTable dt = new DataTable();
+
+            using (var conn = new SqlConnection(tenant.ConnectionString))
+            {
+                // Adjust the query to match your subreport's data needs
+                string query = "SELECT DISTINCT QuoteNo FROM qry601_05QuotationReport WHERE QuoteNo = @QuotationNo";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@QuotationNo", quotationNo);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string quoteNo = row["QuoteNo"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(quoteNo))
+                {
+                    _quoteNosWithTerms.Add(quoteNo);
+                }
+            }
+        }
 
         private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead, bool pageBreakAfter, bool pageBreakBefore, bool printItemCodeDesc, bool printItemPartNoDesc, bool printItemPartArabicDesc, string quotationNo, string tenantName, string companyName,
             Image logoImage, Image sealImage, string companyAddress,
