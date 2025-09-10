@@ -211,10 +211,10 @@
                             allowedPageSizes: [5, 10, 20]
                         },
                         columns: [
-                            { dataField: "CostAllocationUnitId", width: 60 },
-                            { dataField: "CostAllocationUnit",  width: 200 },
-                             { dataField: "CostAllocationGroup",  width: 200 },
-                              { dataField: "CostAllocationMasterGroup",  width: 200 }
+                            { dataField: "CostAllocationUnitId",caption:formatMessage('Cost Allocation Unit ID'), width: 60 },
+                            { dataField: "CostAllocationUnit",caption:formatMessage('Cost Allocation Unit'),  width: 200 },
+                             { dataField: "CostAllocationGroup",caption:formatMessage('Cost Allocation Group'),  width: 200 },
+                              { dataField: "CostAllocationMasterGroup",caption:formatMessage('Cost Allocation Master Group'),  width: 200 }
                         ],
                         onSelectionChanged: function (e) {
                             var selected = e.selectedRowsData[0];
@@ -232,7 +232,7 @@
 
         @(Html.DevExtreme().Button()
             .ID("btnAdd")
-            .Text("Add")
+            .Text(new JS("formatMessage('Add')"))
             .Icon("plus")
             .Type(ButtonType.Success)
             .OnClick("function(){addProjectToGrid();}")
@@ -279,10 +279,10 @@
                 .OnRowUpdating("onProjectUpdating")                       // Handles saving
                 .Columns(columns =>
                 {
-                columns.Add().DataField("ProjectId").Caption("Project ID").AllowEditing(false);
-                columns.Add().DataField("ProjectDescription").Caption("Project Description");
+                columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project ID')")).AllowEditing(false);
+                columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
-                columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Width(200)
+                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Width(200)
                 .Lookup(lookup => lookup
                 .DataSource(d => d.WebApi()
                 .Controller("StoreCode")
@@ -369,8 +369,8 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Code')")).DataField("ProjectGroupCode");
-                columns.Add().DataField("ProjectGroup");
-                columns.Add().DataField("ProjectGroupId");
+                columns.Add().DataField("ProjectGroup").Caption(new JS("formatMessage('Project Group')"));
+                columns.Add().DataField("ProjectGroupId").Caption(new JS("formatMessage('Project Group ID')"));
             })
             )
     }
@@ -381,7 +381,7 @@
         //addProjectGroup
     function AddProjectgroup(){
            const url = `/${tenantName}/IMS/ProjectGroup`;
-           const title = "Project Group";
+           const title = formatMessage("Project Group");
                openModal(url, title,"","90%");
        }
 

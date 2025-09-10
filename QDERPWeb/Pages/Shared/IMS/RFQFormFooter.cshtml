@@ -452,18 +452,42 @@
             return;
         }
 
-        const reportName = RFQMap[itemText];
+         try {
+            const reportName = RFQMap[itemText];
 
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
-        }
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+        let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
 
+                const RFQ = [
+                    "Preview RFQ"
+                ];
+        if (RFQ.includes(itemText)) {
+                // Collect parameters only if true
+                const params = {
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val()
+                };
 
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
-
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                // Append only those that are "true"
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
     }
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
 
     function onIMSAttachmentButtonClick(e) {
         // Get Voucher No safely
