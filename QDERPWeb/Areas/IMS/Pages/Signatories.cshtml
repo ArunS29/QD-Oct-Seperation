@@ -343,7 +343,7 @@
                             {
                                 items.Add()
                             .Widget(w => w.Button()
-                            .Text("Delete Selected")
+                            .Text(new JS("formatMessage('Delete Selected')"))
                             .Icon("trash")
                     .Type(ButtonType.Danger)
                     .ElementAttr(new { @class = "dx-button-custom btn-delete" })// Apply custom CSS class// semantic danger

@@ -1081,7 +1081,7 @@
             // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/SupplierContactList?supplierCode=${encodeURIComponent(supplierCode)}&supplierName=${encodeURIComponent(supplierName)}`;
 
-            var title = ` ${supplierName}`;
+            var title = formatMessage("Supplier Contact List");
 
               openModal(url, title,"96%","75%");
         }
@@ -1101,7 +1101,7 @@
 
           function redirectToSupplierCategory() {
             const url = `/${tenantName}/IMS/SupplierCategory`;
-            const title = "";
+            const title = formatMessage("Supplier Category");
 
             openModal(url, title);
         }
@@ -1119,7 +1119,7 @@
 
         function redirectToSupplierContact() {
             let url = `/${tenantName}/IMS/SupplierContactList`;
-            let title = "Supplier Contact List";
+            let title = formatMessage("Supplier Contact List");
             openModal(url, title);
         }
         //Imageupload

@@ -1467,7 +1467,7 @@ function(data) {
                   //  $("#btnPreview1").dxDropDownButton("instance").option("disabled", false);
                     // Change button text to "Update" after saving
                     if (action === "SaveVoucher") {
-                        button.option("text", "Update");
+                        button.option("text",formatMessage("Update"));
                     }
                 } else {
                     DevExpress.ui.notify("Update failed: " + response.message, "error", 2000);
@@ -1794,7 +1794,7 @@ function(data) {
         // Change the button text if updating
         var button = $("#btnSave").dxButton("instance");
         if (argsledno) {
-            button.option("text", "Update");
+            button.option("text",formatMessage("Update"));
         }
         console.log("Formatted Voucher in ready block:", argsledno); // Debugging log
 
@@ -1898,7 +1898,7 @@ function(data) {
                         dataGrid.option("dataSource", response.data);
                         dataGrid.refresh(); // Refresh the grid to show new data
                         var button = $("#btnSave").dxButton("instance");
-					button.option("text", "Update");
+					button.option("text",formatMessage("Update"));
 					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
                     $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
                     } else {
@@ -3036,7 +3036,7 @@ function(data) {
                                     alert("Bills Payable Records have been successfully removed from the database");
 
                                     // Remove the selected row from the DataGrid
-                                    if (dataGridInstance2) {
+                                    if (dataGridInstance2) {editCostAllocation
                                         // Remove the row directly from the grid data source
                                         let dataSource = dataGridInstance2.option('dataSource');  // Get the current data source
 
