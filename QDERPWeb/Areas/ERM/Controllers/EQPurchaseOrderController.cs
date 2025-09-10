@@ -403,7 +403,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     {
                         Pono = model.Pono,
                         AddedBy = userName,
-                        AddedOn = DateTime.Now
+                        AddedOn = DateTime.Now,
+                        CurrencyRate = model.CurrencyRate ?? 1,
+                        BaseCurrencyId = model.BaseCurrencyId ?? 1,
+                        CurrencyId = model.CurrencyId ?? 1
                     };
                     dbContext.Tbl40126PropertyPomasters.Add(existingPo);
                 }
@@ -460,11 +463,16 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 existingPo.SubmittedBy = model.SubmittedBy;
                 existingPo.SubmittedOn = model.SubmittedOn;
                 existingPo.CancellationRemarks = model.CancellationRemarks;
+                existingPo.CurrencyRate = model.CurrencyRate ?? 1;
+                existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+                existingPo.CurrencyId = model.CurrencyId ?? 1;
 
                 // 🔹 Children handling
                 var existingChildren = await dbContext.Tbl40127PropertyPochildren
-                    .Where(c => c.PropertyPono == model.Pono)
-                    .ToListAsync();
+               .Where(c => c.PropertyPono == model.Pono)
+               .ToListAsync();
+
+                var currencyRate = model.CurrencyRate ?? 1;
 
                 // Remove all existing children to avoid duplicates
                 dbContext.Tbl40127PropertyPochildren.RemoveRange(existingChildren);
@@ -476,12 +484,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     {
                         PropertyPono = model.Pono,
                         PropertyTypeId = child.PropertyTypeId,
-                        UnitRate = child.UnitRate,
+                        UnitRate = child.UnitRate * currencyRate,  // ✅ fixed
                         QuotedQuantity = child.QuotedQuantity,
                         UnitRateMethod = child.UnitRateMethod,
-                        LineOrderNo = child.LineOrderNo
+                        LineOrderNo = child.LineOrderNo,
+                        PropertyAddlDescription = child.PropertyAddlDescription
                     };
-
 
                     await dbContext.Tbl40127PropertyPochildren.AddAsync(newChild);
                 }
@@ -551,28 +559,50 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     SupplierRefNo = po.SupplierRefNo,
                     VerifiedBy = po.VerifiedBy,
                     ApprovedBy = po.ApprovedBy,
-                  //  CurrencyRate = po.CurrencyRate,
-                  //  BaseCurrencyId = po.BaseCurrencyId,
-                 //   CurrencyId = po.CurrencyId,
+                    CurrencyRate = po.CurrencyRate,
+                    BaseCurrencyId = po.BaseCurrencyId,
+                    CurrencyId = po.CurrencyId,
                     PreparedBy = po.PreparedBy,
-                    IsApproved = po.IsApproved
-                    // add any other fields you need
+                    IsApproved = po.IsApproved,
+                    DeductionsAmount = po.DeductionsAmount,
+                    AdditionsAmount = po.AdditionsAmount,
+                    DiscountsText = po.DiscountsText,
+                    AdditionsText = po.AdditionsText,
+                    Project = po.Project,
+                    VatapplicableRate = po.VatapplicableRate
                 };
 
                 // 🔹 Fetch children separately
                 var children = await dbContext.Qry40130PropertyPochildren
-                .Where(c => c.PropertyPono == poNo)
-                .OrderBy(c => c.PropertyPochildNo)
-                .ToListAsync();
+                    .Where(c => c.PropertyPono == poNo)
+                    .OrderBy(c => c.PropertyPochildNo)
+                    .ToListAsync();
 
+                // 🔹 Get currency rate (default to 1 if null)
+                var currencyRate = await dbContext.Tbl40126PropertyPomasters
+                     .Where(x => x.Pono == poNo)
+                    .Select(x => x.CurrencyRate)
+                    .FirstOrDefaultAsync() ?? 1;
+
+                // 🔹 If you need a dictionary to hold computed values
+                var dict = new Dictionary<string, object>();
+
+                // Example: store average unit rate normalized by currency
+                if (children.Any())
+                {
+                    dict["UnitRate"] = children.Average(c => c.UnitRate) / currencyRate;
+                }
+
+                // 🔹 Map children to DTO with UnitRate adjusted
                 var childrenDto = children.Select((c, index) => new
                 {
                     SNo = index + 1,
                     c.PropertyPochildNo,
                     c.PropertyTypeId,
-                    c.UnitRate,
+                    UnitRate = currencyRate > 0 ? c.UnitRate / currencyRate : c.UnitRate, // ✅ fixed
                     c.QuotedQuantity,
                     c.UnitRateMethod,
+                    c.PropertyAddlDescription,
                     c.CalcLineTotal
                 }).ToList();
 
@@ -588,7 +618,96 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "Error fetching purchase order: " + ex.Message, success = false });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> UnlockPurchaseOrder([FromBody] Tbl40126PropertyPomaster data)
+        {
+            try
+            {
+                string pono = data?.Pono;
+                if (string.IsNullOrWhiteSpace(pono))
+                    return BadRequest(new { success = false, message = "PO number is required." });
 
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var po = await dbContext.Tbl40126PropertyPomasters.FirstOrDefaultAsync(x => x.Pono == pono);
+                if (po == null)
+                    return Ok(new { success = false, message = "Purchase Order not found." });
+
+                // If any status is true, set all to false and save
+                if (po.IsSubmitted == true || po.IsVerified == true || po.IsApproved == true)
+                {
+                    po.IsSubmitted = false;
+                    po.IsVerified = false;
+                    po.IsApproved = false;
+                    await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock Purchase Order",
+                      actionDetail: $":Unlocked Purchase Order {data.Pono}",
+                      documentNo: $"{data.Pono}"
+                    );
+                    return Ok(new { success = true, message = "Purchase Order unlocked. All statuses set to false." });
+                }
+                else
+                {
+                    return Ok(new { success = true, message = "Already unlocked. All statuses are already false." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> CancelPurchaseOrder([FromForm] string Pono)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var userName = HttpContext.Session.GetString("UserName");
+                    var userIdString = HttpContext.Session.GetString("UserId");
+
+                    if (string.IsNullOrEmpty(Pono))
+                    {
+                        return BadRequest(new { Message = "Purchase Order No is required." });
+                    }
+
+                    var voucher = dbContext.Tbl40126PropertyPomasters
+                                  .FirstOrDefault(v => v.Pono == Pono);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Purchase Order No not found." });
+                    }
+
+                    voucher.IsCancelled = true;
+                    voucher.CancelledOn = DateTime.Now;
+                   voucher.CancelledBy = userName;
+
+                    dbContext.SaveChanges();
+
+                    await _userActionLogger.LogAsync(
+                      module: "ERM > Cancel Purchase",
+                     actionDetail: $"Canceled Purchase Order: {Pono}",
+                      documentNo: $"{Pono}"
+                    );
+
+                    return Ok(new
+                    {
+                        Message = "Purchase Order Request has been Cancelled.",
+                        VoucherCancelledBy = userName
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { Message = "Invalid tenant.", Success = false });
+        }
         [HttpPost]
         public async Task<IActionResult> SubmitPurchaseOrder([FromBody] Tbl40126PropertyPomaster data)
         {

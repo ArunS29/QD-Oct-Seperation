@@ -708,75 +708,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             }
         }
 
-        //public class PropertyDetailsChildViewModel
-        //{
-        //    public string EquipmentRequestNo { get; set; }
-        //    public string PlanNo { get; set; }
-        //    public string ItemRemarks { get; set; }
-        //    public string AddlDescription { get; set; }
-        //    public string DeliveryPeriod { get; set; }
-        //    public long RequestChildSlNo { get; set; }
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> SaveOrUpdateEnquiryChild([FromBody] PropertyDetailsChildViewModel request)
-        //{
-        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //    {
-        //        return Unauthorized(new { success = false, message = "Invalid tenant context." });
-        //    }
-
-        //    if (request == null || string.IsNullOrEmpty(request.EquipmentRequestNo))
-        //    {
-        //        return BadRequest(new { success = false, message = "Request No is required." });
-        //    }
-
-        //    try
-        //    {
-        //        // Check if quotation already exists
-        //        var existing = await dbContext.Tbl40137PropertyRequestChildren
-        //            .FirstOrDefaultAsync(x => x.EquipmentRequestNo == request.EquipmentRequestNo && x.RequestChildSlNo == request.RequestChildSlNo);
-
-        //        if (existing != null)
-        //        {
-        //            // Update existing record
-        //            existing.DeliveryPeriod = request.DeliveryPeriod;
-        //            existing.AddlDescription = request.AddlDescription;
-        //            existing.ItemRemarks = request.ItemRemarks;
-        //            existing.PlanNo = request.PlanNo;
-        //            existing.EquipmentRequestNo = request.EquipmentRequestNo;
-        //        }
-        //        else
-        //        {
-        //            // Insert new record
-        //            var newChild = new Tbl40137PropertyRequestChild
-        //            {
-
-        //                PlanNo = request.PlanNo,
-        //                ItemRemarks = request.ItemRemarks,
-        //                AddlDescription = request.AddlDescription,
-        //                DeliveryPeriod = request.DeliveryPeriod,
-        //                EquipmentRequestNo = request.EquipmentRequestNo
-
-        //            };
-
-        //            await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
-        //        }
-
-        //        await dbContext.SaveChangesAsync();
-
-        //        await _userActionLogger.LogAsync(
-        //            module: "ERM > Save Quotation Child",
-        //            actionDetail: $"Saved Quotation Child: {request.EquipmentRequestNo}",
-        //            documentNo: $"{request.EquipmentRequestNo}"
-        //        );
-
-        //        return Ok(new { success = true, message = "Detail child is saved successfully." });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, new { success = false, message = ex.Message });
-        //    }
-        //}
+        
         [HttpGet]
 		public async Task<IActionResult> GetEnquiryProperty(string EqiupmentRequestNo)
 		{

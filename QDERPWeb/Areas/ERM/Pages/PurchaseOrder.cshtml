@@ -230,6 +230,7 @@
 				subColumns.AddFor(m => m.SupplierQuoteNo).Caption(new JS("formatMessage('Supplier Qoute No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.SupplierRefNo).Caption(new JS("formatMessage('Supplier Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Postatus).Caption(new JS("formatMessage('Po Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.IsCancelled).Caption(new JS("formatMessage('Cancel')")).Alignment(HorizontalAlignment.Center).Visible(false);
 			});
 				columns.Add().Caption(new JS("formatMessage('Item Details')")).Columns(subColumns =>
 			{
@@ -238,7 +239,7 @@
 			});
 			
 		})
-		.Height(680) // Fixed height for the grid
+		.Height(680)
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -352,26 +353,30 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+			// Update the date boxes with the calculated dates
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
 
-				$.ajax({
-		url: '/api/EQPurchaseOrder/GetPurchaseOrders',
-		type: 'GET',
-		data: {
-			fromDate: frmDate,
-			toDate: toDate
-		},
-		success: function (data) {
-			console.log("Returned Data: ", data); // debug
-			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		},
-		error: function (xhr) {
-			console.log("AJAX Error", xhr.responseText); // debug
-			DevExpress.ui.notify("Error while loading data", "error", 2000);
+			frmDate = frmDate.toISOString().split('T')[0];
+			toDate = toDate.toISOString().split('T')[0];
+
+			$.ajax({
+				url: '/api/EQPurchaseOrder/GetPurchaseOrders',
+				type: 'GET',
+				data: {
+					fromDate: frmDate,
+					toDate: toDate
+				},
+				success: function (data) {
+					console.log("Returned Data: ", data); // debug
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				},
+				error: function (xhr) {
+					console.log("AJAX Error", xhr.responseText); // debug
+					DevExpress.ui.notify("Error while loading data", "error", 2000);
+				}
+			});
 		}
-	});
-	}
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
 			const rowData = e.row.data; // capture once here
@@ -396,13 +401,12 @@
 					text: "Unlock Purchase Order",
 					icon: "unlock",
 					onItemClick: function () {
-								const EqiupmentRequestNo = e.row.data.EqiupmentRequestNo;
-
+								const Pono = e.row.data.Pono;
 						$.ajax({
-								url: "/api/AddNewClientRequest1/UnlockPurchaseRequest",
+								url: "/api/EQPurchaseOrder/UnlockPurchaseOrder",
 								type: "POST",
 								contentType: "application/json",
-								data: JSON.stringify({ EqiupmentRequestNo: EqiupmentRequestNo }), // ✅ sending request data
+								data: JSON.stringify({ Pono: Pono }), 
 								success: function (response) {
 								DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
 								if (response.success) {
@@ -419,22 +423,41 @@
 				},
 				{
 					text: "Cancel Purchase Order",
-					icon: "trash",
+					icon: "close",
 					onItemClick: function () {
 						DevExpress.ui.dialog.confirm(
-							"You are about to delete the Request / Enquiry.\nYou cannot revert the changes.\nAre you sure?",
-							"Confirm Delete"
+							"You are about to cancel this Purchase Order.\nThis action cannot be undone.\nDo you want to proceed?",
+							"Confirm Cancel"
 						).done(function (dialogResult) {
 							if (dialogResult) {
-										var EqiupmentRequestNo=e.row.data.EqiupmentRequestNo;
-								console.log("number",);
-									onDeleteRequest(EqiupmentRequestNo);
+								const Pono = rowData.Pono;
+
+								$.ajax({
+									url: "/api/EQPurchaseOrder/CancelPurchaseOrder",
+									type: "POST",
+									data: { Pono: Pono },
+									success: function (res) {
+										DevExpress.ui.notify(res.Message || "Purchase Order cancelled successfully", "success", 2000);
+
+										// refresh grid
+										const grid = $("#dataGrid").dxDataGrid("instance");
+										if (grid) {
+											grid.refresh();
+										}
+									},
+									error: function (xhr) {
+										let msg = xhr.responseJSON?.Message || "Failed to cancel Purchase Order.";
+										DevExpress.ui.notify(msg, "error", 3000);
+										console.error("Cancel failed:", xhr.responseJSON || xhr);
+									}
+								});
 							}
 						});
 					}
-				},
+				}
 			];
 		}
 	}
+
 
 </script>
