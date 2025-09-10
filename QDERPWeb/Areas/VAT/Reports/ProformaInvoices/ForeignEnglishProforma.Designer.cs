@@ -2343,7 +2343,7 @@
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyEmailAddress]")});
             this.xrLabel169.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel169.ForeColor = System.Drawing.Color.RoyalBlue;
-            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(363.8308F, 74.94287F);
+            this.xrLabel169.LocationFloat = new DevExpress.Utils.PointFloat(365.986F, 74.94291F);
             this.xrLabel169.Multiline = true;
             this.xrLabel169.Name = "xrLabel169";
             this.xrLabel169.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);

@@ -262,7 +262,7 @@
         
             @(Html.DevExtreme().Button()
                 .ID("btnSave")
-                .Text("Save")
+                .Text(new JS("formatMessage('Save')"))
                 .Icon("save")
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
@@ -271,7 +271,7 @@
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnSaveandClose")
-                .Text("Save & Close")
+                .Text(new JS("formatMessage('Save & Close')"))
                 .Icon("save")
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
@@ -369,9 +369,9 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("GsgroupId").Caption("ID");
-                columns.Add().DataField("GsgroupCode").Caption("Code");
-                columns.Add().DataField("GsgroupName").Caption("Name");
+                columns.Add().DataField("GsgroupId").Caption(new JS("formatMessage('ID')"));
+            columns.Add().DataField("GsgroupCode").Caption(new JS("formatMessage('Code')"));
+            columns.Add().DataField("GsgroupName").Caption(new JS("formatMessage('Name')"));
 
 
             })
@@ -407,7 +407,7 @@
             .Columns(columns =>
             {
                // columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
-                columns.Add().DataField("UnitType");
+                columns.Add().DataField("UnitType").Caption(new JS("formatMessage('Unit Type')"));
 
 
             })
@@ -820,7 +820,7 @@ function bindGoodsAndServiceData() {
         });
         function Unitofmeasure(){
                 const url = `/${tenantName}/IMS/UnitOfMeasure`;
-                const title = "Unit Of Measure";
+                const title = formatMessage("Unit Of Measure");
                         openModal(url, title ,"","75%");
         }
             function onBack(){
@@ -828,7 +828,7 @@ function bindGoodsAndServiceData() {
             }
             function StockGroup(){
                 const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
-                const title = "Stock Group";
+                const title = formatMessage("Stock Group");
                 openModal(url, title,"","70%");
           }
 </script>

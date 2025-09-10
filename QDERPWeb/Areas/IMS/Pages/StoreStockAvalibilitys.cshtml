@@ -13,20 +13,23 @@
     .dx-button-text{
         color:black;
     }
-
+    .titleCard-toggle1 {
+        display: none;
+    }
 </style>
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
 
-<div class="title">
-    <div class="header-container">
-        <div id="StoreStockAvalibility" class="no-border-title"></div>
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="StoreStockAvalibility" class="titleText no-border-title"></div>
     </div>
 </div>
 
-
-<div style=" padding: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; padding:20px;">
-    <label id="Seletthestoretoissueitem" class="no-border-input" style="font-weight:100 bold; width: 220px; "></label>
+<div style=" padding: 0px 20px;display: flex; align-items: center; gap: 10px;">
 
     @(Html.DevExtreme().DropDownBox()
         .ID("storeBox")
@@ -40,6 +43,8 @@
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("StoreId")
         )
+        .Label("Select the Store to Issue Items:")
+        .LabelMode(EditorLabelMode.Floating)
         .DropDownOptions(options => options.Width(450))
         .Value(null)
         .Width(250)
@@ -54,12 +59,12 @@
             .Type(ButtonType.Default)
             .StylingMode(ButtonStylingMode.Contained))
 </div>
-<div style="padding:20px;">
+<div style="padding:10px 20px;">
     @(Html.DevExtreme().DataGrid()
         .ID("deliveryNoteGrid")
         .ShowBorders(true)
         .ColumnAutoWidth(true)
-        .Height(350)
+        .Height(250)
         .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
         .Columns(columns =>
         {
@@ -77,7 +82,7 @@
             columns.Add().DataField("DeliveringQuantity").Caption("Delivering Quantity");
         }))
 </div>
-<div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
+<div id="pivotGridContainer" style="padding: 0 20px;"></div>
 @using (Html.DevExtreme().NamedTemplate("StoreToIssueItemDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -150,7 +155,7 @@
             showColumnGrandTotals: true,
             showRowGrandTotals: true,
             wordWrapEnabled: true,
-            height: 500,
+            height: 300,
 
             // Same fieldChooser settings
             fieldChooser: {
@@ -216,7 +221,7 @@
             text:formatMessage("Store Stock Avalibility"),
             readOnly: true,
             onContentReady: function(e) {
-                $(e.element).addClass("dx-textbox-heading");
+                $(e.element).addClass("dx-textcolor-heading");
             }
         });
     });

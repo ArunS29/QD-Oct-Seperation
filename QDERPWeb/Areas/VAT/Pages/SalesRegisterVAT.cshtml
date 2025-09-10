@@ -1078,30 +1078,31 @@
 					});
 
 						// Add hidden columns for remaining model fields
-					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
-					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-					columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-					columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-					columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By (AR)").Visible(false);
-					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-					columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-					columns.AddFor(m => m.VerifiedByAr).Caption("Verified By (AR)").Visible(false);
-					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-					columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-					columns.AddFor(m => m.ApprovedByAr).Caption("Approved By (AR)").Visible(false);
-					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-					columns.AddFor(m => m.AddedByAr).Caption("Added By (AR)").Visible(false);
-					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-					columns.AddFor(m => m.ModifiedByAr).Caption("Modified By (AR)").Visible(false);
-					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-					columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-					columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+					columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Visible(false);
+					columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
+					columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+					columns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Visible(false);
+					columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+					columns.AddFor(m => m.SubmittedByAr).Caption(new JS("formatMessage('Submitted By (AR)')")).Visible(false);
+					columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Visible(false);
+					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+					columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+					columns.AddFor(m => m.VerifiedByAr).Caption(new JS("formatMessage('Verified By (AR)')")).Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false);
+					columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+					columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+					columns.AddFor(m => m.ApprovedByAr).Caption(new JS("formatMessage('Approved By (AR)')")).Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false);
+					columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+					columns.AddFor(m => m.AddedByAr).Caption(new JS("formatMessage('Added By (AR)')")).Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+					columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+					columns.AddFor(m => m.ModifiedByAr).Caption(new JS("formatMessage('Modified By (AR)')")).Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false);
+					columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+					columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+					columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+
 
 		})
 		.Height("60vh") // <<< fixed height

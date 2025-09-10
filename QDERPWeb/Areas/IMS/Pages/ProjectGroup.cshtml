@@ -121,7 +121,7 @@
           
                 @(Html.DevExtreme().Button()
                     .ID("btnAdd")
-                    .Text("Add")
+                    .Text(new JS("formatMessage('Add')"))
                     .Icon("plus")
                     .Type(ButtonType.Success)
                     .Width(150)
@@ -166,11 +166,11 @@
             .OnRowUpdating("onProjectGroupUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("ProjectGroupCode").Caption("Code").AllowEditing(false);
-                columns.Add().DataField("ProjectGroup").Caption("Group");
-                columns.Add().DataField("ProjectGroupAr").Caption("Project Group (In Arabic)");
-                columns.Add().DataField("ProjectCategory").Caption("Category");
-                columns.Add().DataField("ProjectGroupId").Caption("ProjectGroupId").Visible(false);
+                columns.Add().DataField("ProjectGroupCode").Caption(new JS("formatMessage('Code')")).AllowEditing(false);
+                columns.Add().DataField("ProjectGroup").Caption(new JS("formatMessage('Group')"));
+                columns.Add().DataField("ProjectGroupAr").Caption(new JS("formatMessage('Project Group (In Arabic)')"));
+                columns.Add().DataField("ProjectCategory").Caption(new JS("formatMessage('Category')"));
+                columns.Add().DataField("ProjectGroupId").Caption(new JS("formatMessage('ProjectGroupId')")).Visible(false);
                 // Add delete button column
                 columns.Add()
                 .Type(GridCommandColumnType.Buttons)
@@ -236,7 +236,7 @@
         $("#CategoryComboBox").dxSelectBox({
             dataSource: items,
             acceptCustomValue: true,
-            label: "Category",              // ✅ Floating Label
+            label: formatMessage("Category"),              // ✅ Floating Label
         labelMode: "floating",
             onCustomItemCreating: function (e) {
                 const newValue = e.text;

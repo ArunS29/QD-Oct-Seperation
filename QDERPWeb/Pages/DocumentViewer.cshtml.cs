@@ -295,12 +295,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                LoadReportFromDbOrFactory(reportName, () =>
-                      new AccountStatementFormat2Report(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
-                    )
-                );
+                Report = LoadReportFromDbOrFactory(reportName, () =>
+             new AccountStatementFormat2Report(
+                AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
+            )
+        );
             }
             else if (reportName == "AccountExportFromatReport")
             {

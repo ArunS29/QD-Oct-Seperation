@@ -38,11 +38,11 @@
 </style>
 <div style="padding: 10px; border-radius: 5px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label style="font-weight: bold;">Detailed Description / Specification:</label>
+        <label style="font-weight: bold;" id="detailquotationspecification"></label>
         <div>
             @(Html.DevExtreme().Button()
                         .ID("btnUseDetailedDescription")
-                        .Text("Use Detailed Description")
+                        .Text(new JS("formatMessage('Use Detailed Description')"))
                         .Icon("info")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Contained)
@@ -50,7 +50,7 @@
                         .OnClick("getDetailedDescription") )
             @(Html.DevExtreme().Button()
                         .ID("btnUseItemDesc")
-                        .Text("Use Item Desc.")
+            .Text(new JS("formatMessage('Use Item Description')"))
                         .Icon("info")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Contained)
@@ -63,13 +63,13 @@
         @(Html.DevExtreme().TextArea()
                 .ID("DetailedDescription")
                 .Height(100)
-                .Label("Detailed Description / Specification")
+        .Label(new JS("formatMessage('Detailed Description / Specification')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("style", "width: 100%;"))
 
         @(Html.DevExtreme().TextBox()
                 .ID("ReferenceNo")
-                .Label("Client Item Reference No")
+        .Label(new JS("formatMessage('Client Item Reference No')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("style", "width: 100%;"))
     </div>
@@ -84,7 +84,7 @@
                 .ElementAttr("style", "width: 100%;"))
         @(Html.DevExtreme().NumberBox()
                 .ID("itemGroupCode")
-                .Label("Item Group Code")
+        .Label(new JS("formatMessage('Item Group Code')"))
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -136,19 +136,19 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("Size")
-                .Label("Size")
+        .Label(new JS("formatMessage('Size')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Manufacturer")
-                .Label("Manufacturer")
+        .Label(new JS("formatMessage('Manufacturer')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Brand")
-                .Label("Brand")
+        .Label(new JS("formatMessage('Brand')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
     </div>
@@ -157,18 +157,18 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("PartNo")
-                .Label("Part No")
+        .Label(new JS("formatMessage('Part No')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("DeliveryPeriod")
-                .Label("Delivery Period")
+        .Label(new JS("formatMessage('Delivery Period')"))
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("PlanNo")
-                .Label("Plan No")
+        .Label(new JS("formatMessage('Plan No')"))
                 .LabelMode(EditorLabelMode.Floating))
     </div>
 
@@ -178,7 +178,7 @@
     </div>
     @(Html.DevExtreme().Button()
         .ID("btnApplyAndClose")
-        .Text("Apply & Close")
+    .Text(new JS("formatMessage('Apply & Close')"))
         .Icon("check")
         .OnClick("applyAndClose"))
 
@@ -414,10 +414,12 @@
 
          function AddNewClient(){
                     const url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`;
-                  const title = "";
+                  const title = formatMessage("Quotation Item Sub Group");
                       openModal(url, title);
                   }
 
-
+                    $(function () {
+        $("#detailquotationspecification").text(formatMessage("Detailed Description / Specification:"));
+    });
 </script>
 
