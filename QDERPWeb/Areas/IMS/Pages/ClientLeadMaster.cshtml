@@ -564,7 +564,7 @@
                  .Columns(columns =>
                  {
                          columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId").Alignment(HorizontalAlignment.Center).Width(95);
-                     columns.Add().DataField("AccountHead");
+                         columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
 
 
                  })
@@ -598,7 +598,7 @@
                  .Columns(columns =>
                  {
                          columns.Add().Caption(new JS("formatMessage('Code')")).DataField("SalesPersonCode").Alignment(HorizontalAlignment.Center).Width(80);
-                     columns.Add().DataField("SalesPersonName");
+                         columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 
                  })
@@ -1135,7 +1135,7 @@ ContactRemarks:clientRemarks,
                 onItemClick: function () {
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientStatusUpdate?clientStatusNo=${ClientStatusNo}`;
-                    let title = `Client Status Update`;
+                    let title = formatMessage(`Client Status Update`);
                     openModal(url, title ,"65%","75%");
                 }
             },
@@ -1245,7 +1245,7 @@ ContactRemarks:clientRemarks,
 
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
-            let title = " ";
+                let title = formatMessage("Client Category");
         openModal(url, title ,"","80%");
         refreshClientCategorySelectBox()
     }
@@ -1254,7 +1254,7 @@ ContactRemarks:clientRemarks,
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
             var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
         let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
-            let title = "Client Status Update";
+            let title = formatMessage("Client Status Update");
         openModal(url, title ,"71%","75%");
 
     }
@@ -1267,7 +1267,7 @@ ContactRemarks:clientRemarks,
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
-    var title = " ";
+        var title = formatMessage("Client Contact List");
 
         openModal(url,title,"85%","75%");
 }

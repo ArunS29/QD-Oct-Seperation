@@ -616,62 +616,63 @@
 				});
 
 					// Add hidden columns for remaining model fields
-					columns.AddFor(m => m.TypeOfMpr).Caption("Type Of MPR").Visible(false);
-					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-					columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
-					columns.AddFor(m => m.ModeOfRequestId).Caption("Mode Of Request ID").Visible(false);
-					columns.AddFor(m => m.TypeOfRequestId).Caption("Type Of Request ID").Visible(false);
-					columns.AddFor(m => m.Mprremarks).Caption("MPR Remarks").Visible(false);
-					columns.AddFor(m => m.ModeOfRequest).Caption("Mode Of Request ").Visible(false);
-					columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request ").Visible(false);
-					columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
-					columns.AddFor(m => m.ClientCategory).Caption("Client Category").Visible(false);
-					columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
-					columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
-					columns.AddFor(m => m.Project).Caption("Project").Visible(false);
-					columns.AddFor(m => m.RequestedBy).Caption("Requestor Name").Visible(false);
-					columns.AddFor(m => m.RequesterContact).Caption("Requester Contact").Visible(false);
-					columns.AddFor(m => m.RequesterContactEmail).Caption("Requester Contact Email").Visible(false);
-					columns.AddFor(m => m.Department).Caption("Department").Visible(false);
-					columns.AddFor(m => m.DepartmentCode).Caption("Department Code").Visible(false);
-					columns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Visible(false);
-					columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
-					columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
-					columns.AddFor(m => m.PurposeOfRequest).Caption("Purpose Of Request").Visible(false);
-					columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
-					columns.AddFor(m => m.Priority).Caption("Priority").Visible(false);
-					columns.AddFor(m => m.TotalRequestCost).Caption("Total Request Cost").Visible(false);
+			columns.AddFor(m => m.TypeOfMpr).Caption(new JS("formatMessage('Type Of Mpr')")).Visible(false);
+			columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
+			columns.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Store Code')")).Visible(false);
+			columns.AddFor(m => m.ModeOfRequestId).Caption(new JS("formatMessage('Mode Of Request ID')")).Visible(false);
+			columns.AddFor(m => m.TypeOfRequestId).Caption(new JS("formatMessage('Type Of Request ID')")).Visible(false);
+			columns.AddFor(m => m.Mprremarks).Caption(new JS("formatMessage('Mpr Remarks')")).Visible(false);
+			columns.AddFor(m => m.ModeOfRequest).Caption(new JS("formatMessage('Mode Of Request')")).Visible(false);
+			columns.AddFor(m => m.TypeOfRequest).Caption(new JS("formatMessage('Type Of Request')")).Visible(false);
+			columns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Visible(false);
+			columns.AddFor(m => m.ClientCategory).Caption(new JS("formatMessage('Client Category')")).Visible(false);
+			columns.AddFor(m => m.StoreName).Caption(new JS("formatMessage('Store Name')")).Visible(false);
+			columns.AddFor(m => m.CompanyName).Caption(new JS("formatMessage('Company Name')")).Visible(false);
+			columns.AddFor(m => m.Project).Caption(new JS("formatMessage('Project')")).Visible(false);
+			columns.AddFor(m => m.RequestedBy).Caption(new JS("formatMessage('Requested By')")).Visible(false);
+			columns.AddFor(m => m.RequesterContact).Caption(new JS("formatMessage('Requester Contact')")).Visible(false);
+			columns.AddFor(m => m.RequesterContactEmail).Caption(new JS("formatMessage('Requester Contact Email')")).Visible(false);
+			columns.AddFor(m => m.Department).Caption(new JS("formatMessage('Department')")).Visible(false);
+			columns.AddFor(m => m.DepartmentCode).Caption(new JS("formatMessage('Department Code')")).Visible(false);
+			columns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Visible(false);
+			columns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Visible(false);
+			columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Visible(false);
+			columns.AddFor(m => m.PurposeOfRequest).Caption(new JS("formatMessage('Purpose Of Request')")).Visible(false);
+			columns.AddFor(m => m.Remarks).Caption(new JS("formatMessage('Remarks')")).Visible(false);
+			columns.AddFor(m => m.Priority).Caption(new JS("formatMessage('Priority')")).Visible(false);
+			columns.AddFor(m => m.TotalRequestCost).Caption(new JS("formatMessage('Total Request Cost')")).Visible(false);
 
-					columns.AddFor(m => m.BidClosingDate).Caption("Bid Closing Date").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.BidReminderOn).Caption("Bid Reminder On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.QuoteSubmittedOn).Caption("Quote Submitted On").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.BidClosingDate).Caption(new JS("formatMessage('Bid Closing Date')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.BidReminderOn).Caption(new JS("formatMessage('Bid Reminder On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.QuoteSubmittedOn).Caption(new JS("formatMessage('Quote Submitted On')")).Format("dd-MMM-yyyy").Visible(false);
 
-					columns.AddFor(m => m.Comments).Caption("BID Status").Visible(false);
-					columns.AddFor(m => m.ExpectedDate).Caption("Expected Date").Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.Comments).Caption(new JS("formatMessage('Bid Status')")).Visible(false);
+			columns.AddFor(m => m.ExpectedDate).Caption(new JS("formatMessage('Expected Date')")).Format("dd-MMM-yyyy").Visible(false);
 
-					columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
-					columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group ID").Visible(false);
-					columns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
-					columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
-					columns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Visible(false);
+			columns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Master Group')")).Visible(false);
+			columns.AddFor(m => m.InventoryMasterGroupId).Caption(new JS("formatMessage('Inventory Master Group Id')")).Visible(false);
+			columns.AddFor(m => m.SalesPersonCode).Caption(new JS("formatMessage('Sales Person Code')")).Visible(false);
+			columns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
+			columns.AddFor(m => m.SalesPersonUserId).Caption(new JS("formatMessage('Sales Person User Id')")).Visible(false);
 
-					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-					columns.AddFor(m => m.AddedOn).Caption("Added On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
-					columns.AddFor(m => m.PreparedOn).Caption("Prepared On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.RequesterName).Caption("Requester Name").Visible(false);
-					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Format("dd-MMM-yyyy").Visible(false);
-					columns.AddFor(m => m.ProjectSubUnitName).Caption("Requesting Project Unit").Visible(false);
-					columns.AddFor(m => m.CancelledBy).Caption("CancelledBy").Visible(false);
-					columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ExpectedVatrate).Caption("Expected VAT Rate").Visible(false);
+			columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+			columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+			columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+			columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.PreparedBy).Caption(new JS("formatMessage('Prepared By')")).Visible(false);
+			columns.AddFor(m => m.PreparedOn).Caption(new JS("formatMessage('Prepared On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.RequesterName).Caption(new JS("formatMessage('Requester Name')")).Visible(false);
+			columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+			columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+			columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.ProjectSubUnitName).Caption(new JS("formatMessage('Project Sub Unit Name')")).Visible(false);
+			columns.AddFor(m => m.CancelledBy).Caption(new JS("formatMessage('Cancelled By')")).Visible(false);
+			columns.AddFor(m => m.CancelledOn).Caption(new JS("formatMessage('Cancelled On')")).Format("dd-MMM-yyyy").Visible(false);
+			columns.AddFor(m => m.ExpectedVatrate).Caption(new JS("formatMessage('Expected Vat Rate')")).Visible(false);
+
 
 				})
 
@@ -1148,7 +1149,7 @@
 			if (e.row.data.IsCancelled) {
             e.items = [
                 {
-					text: "Clone Request / Enquiry",
+					text: formatMessage("Clone Request / Enquiry"),
 					icon: "copy",
 					onItemClick: function () {
 						const mprNo = e.row.data.Mprno; // ✅ consistent name
@@ -1184,7 +1185,7 @@
 					}
 				},
                 {
-					text: "View Revision History",
+					text: formatMessage("View Revision History"),
 					icon: "clock",
 					onItemClick: function () {
 						let Mprno = e.row.data.Mprno;
@@ -1199,7 +1200,7 @@
         } else {
 			e.items = [
 				{
-					text: "Edit Request / Enquiry",
+						text:  formatMessage("Edit Request / Enquiry"),
 					icon: "edit",
 					onItemClick: function () {
 						const rowData = e.row.data;
@@ -1237,7 +1238,7 @@
 				},
 
 							{
-		text: "Clone Request / Enquiry",
+			text:  formatMessage("Clone Request / Enquiry"),
 		icon: "copy",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno; // ✅ consistent name
@@ -1275,7 +1276,7 @@
 
 
 						{
-		text: "Revise the Request / Enquiry",
+			text:  formatMessage("Revise the Request / Enquiry"),
 		icon: "repeat",
 		onItemClick: function () {
 			const mprNo = e.row?.data?.Mprno;
@@ -1340,7 +1341,7 @@
 
 
 				{
-					text: "Delete Request / Enquiry",
+						text:  formatMessage("Delete Request / Enquiry"),
 					icon: "trash",
 					onItemClick: function () {
 						DevExpress.ui.dialog.confirm(
@@ -1356,7 +1357,7 @@
 					}
 				},
 	{
-		text: "Unlock the Request / Enquiry",
+			text:  formatMessage("Unlock the Request / Enquiry"),
 		icon: "unlock",
 		onItemClick: function () {
 			const Mprno = e.row.data.Mprno;
@@ -1381,7 +1382,7 @@
 		}
 	},
 			{
-		text: "Create a RFQ",
+			text:  formatMessage("Create a RFQ"),
 		icon: "plus",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1423,7 +1424,7 @@
 
 	
 		{
-		text: "Create a Quotation",
+			text:  formatMessage("Create a Quotation"),
 		icon: "plus",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1474,7 +1475,7 @@
 	},
 
 					{
-		text: "Create PO",
+			text:  formatMessage("Create PO"),
 		icon: "cart",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1528,7 +1529,7 @@
 
 
 					{
-			text: "Create Material Receipt",
+			text: formatMessage("Create Material Receipt"),
 			icon: "plus",
 			onItemClick: function () {
 				const mprNo = e.row.data.Mprno;
@@ -1578,14 +1579,14 @@
 			}
 		},
 				{
-					text: "Create Material Issue Note",
+						text:  formatMessage("Create Material Issue Note"),
 					icon: "export",
 					onItemClick: function () {
 						onCreateMaterialIssueNote(e.row.data);
 					}
 				},
 				{
-					text: "View Revision History",
+					text: formatMessage("View Revision History"),
 					icon: "clock",
 					onItemClick: function () {
 						let Mprno = e.row.data.Mprno;
