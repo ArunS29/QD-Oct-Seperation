@@ -276,6 +276,18 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             if (FindControl("xrLabel76", true) is XRLabel lbl76)
                 lbl76.Visible = printLetterhead;
 
+            if (FindControl("xrLabel83", true) is XRLabel lbl83)
+                lbl83.Visible = printLetterhead;
+            if (FindControl("xrLabel85", true) is XRLabel lbl85)
+                lbl85.Visible = printLetterhead;
+            if (FindControl("xrLabel86", true) is XRLabel lbl86)
+                lbl86.Visible = printLetterhead;
+            if (FindControl("xrLabel87", true) is XRLabel lbl87)
+                lbl87.Visible = printLetterhead;
+            if (FindControl("xrLabel88", true) is XRLabel lbl88)
+                lbl88.Visible = printLetterhead;
+
+
             if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
                 logoBox.Visible = printLetterhead;
 

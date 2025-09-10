@@ -449,7 +449,7 @@
          };
 
 
-       function handleQuatation(e) {
+    function handleQuatation(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
         const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
@@ -460,6 +460,18 @@
         }
 
         try {
+            // 🔹 Special case: Prepare Cost Sheet
+            if (itemText === "Prepare Cost Sheet") {
+                if (!quotationNo) {
+                    DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
+                    return;
+                }
+                const url = `/${tenantName}/IMS/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
+                window.location.href = url;
+                return; // stop further execution
+            }
+
+            // 🔹 Normal quotation reports
             const reportName = quotationReportMap[itemText];
 
             if (!reportName) {

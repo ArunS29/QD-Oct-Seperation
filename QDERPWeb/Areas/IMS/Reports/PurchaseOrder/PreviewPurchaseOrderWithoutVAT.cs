@@ -105,6 +105,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
+
+            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -255,7 +259,7 @@ bool ShowSignatoryPositionOnly
             // --- Custom logic for your requirement ---
 
             // Hide all first
-            foreach (string lbl in new[] { "xrLabel42", "xrLabel79", "xrLabel25", "xrLabel80", "xrLabel78", "xrLabel34" })
+            foreach (string lbl in new[] { "xrLabel42", "xrLabel79", "xrLabel25", "xrLabel80", "xrLabel78", "xrLabel33" })
             {
                 if (FindControl(lbl, true) is XRLabel label)
                     label.Visible = false;
