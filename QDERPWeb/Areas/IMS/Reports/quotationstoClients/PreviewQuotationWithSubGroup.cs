@@ -284,6 +284,17 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             if (FindControl("xrLabel99", true) is XRLabel lbl76)
                 lbl76.Visible = printLetterhead;
 
+            if (FindControl("xrLabel101", true) is XRLabel lbl101)
+                lbl101.Visible = printLetterhead;
+            if (FindControl("xrLabel102", true) is XRLabel lbl102)
+                lbl102.Visible = printLetterhead;
+            if (FindControl("xrLabel103", true) is XRLabel lbl103)
+                lbl103.Visible = printLetterhead;
+            if (FindControl("xrLabel104", true) is XRLabel lbl104)
+                lbl104.Visible = printLetterhead;
+            if (FindControl("xrLabel105", true) is XRLabel lbl105)
+                lbl105.Visible = printLetterhead;
+
             if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
                 logoBox.Visible = printLetterhead;
 

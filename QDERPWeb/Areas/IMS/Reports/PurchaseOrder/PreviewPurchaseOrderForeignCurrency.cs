@@ -105,6 +105,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
+
+            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
