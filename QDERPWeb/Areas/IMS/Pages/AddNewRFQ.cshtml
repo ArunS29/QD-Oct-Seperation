@@ -706,7 +706,7 @@
                     </div>
         </text>);
 
-		        item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+		        item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
         <div class="p-3">
             <table style="width:100%; font-size:14px; margin:5px;">
                 <tr>
@@ -1223,7 +1223,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SupplierName");
+						columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
 						
 
 
@@ -1257,8 +1257,8 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ProjectId").Width(150);
-						columns.Add().DataField("ProjectDescription");
+						columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project Id')")).Width(150);
+						columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
 
 
@@ -1292,8 +1292,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("SignatoryId").Caption("ID").Width(80);
-				columns.Add().DataField("SignatoryName").Caption("Name");
+				columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')"));
 			})
 			)
 }
@@ -1324,8 +1324,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("CompanyId").Caption("ID").Width(80);
-				columns.Add().DataField("CompanyName").Caption("Name");
+				columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Name')"));
 
 
 
@@ -1359,8 +1359,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("InventoryMasterGroupId").Caption("ID").Width(80);
-				columns.Add().DataField("InventoryMasterGroup").Caption("Name");
+				columns.Add().DataField("InventoryMasterGroupId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("InventoryMasterGroup").Caption(new JS("formatMessage('Name')"));
 
 			})
 			)
@@ -1393,7 +1393,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SalesPersonName");
+						columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 					})
 					)
@@ -1654,7 +1654,7 @@ function NewNoGeneration(){
 
 			  if (response) {
 
-					$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
                 // Populate DevExtreme controls with the response data
                
 					$('#RFQNo').dxTextBox("instance").option("value", response.Rfqno);
@@ -1908,13 +1908,13 @@ $(document).ready(function () {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -1953,7 +1953,7 @@ $(document).ready(function () {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -1971,7 +1971,7 @@ $(document).ready(function () {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2011,7 +2011,7 @@ $(document).ready(function () {
 							window.currentDescriptionCell = options;
 
 											let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?RfqchildSlNo=${encodeURIComponent(RfqchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
-							let title = "Details Description";
+							let title = formatMessage("Details Description");
 
 							openModal(url, title);
 						}
@@ -2089,13 +2089,13 @@ $(document).ready(function () {
 													},
 												columns: [
 
-														{ dataField: "UnitCode", caption: "Code", width: 80 },
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-													{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+													{ dataField: "UnitDesc", caption:formatMessage("Unit Rate Method"), width: 200 },
 
-													{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+													{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-													{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+													{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 												],
 
@@ -2143,7 +2143,7 @@ $(document).ready(function () {
 
 											let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-										   openModal(url, "");
+										   openModal(url, formatMessage("Unit Of Measure"));
 
 										},
 
@@ -2172,7 +2172,7 @@ $(document).ready(function () {
 				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150,visible:false },
 				{
 			type: "buttons",
-			caption: "Delete",
+			caption: formatMessage("Delete"),
 			width: 80,
 			buttons: [{
 				hint: "Delete Row",
@@ -2405,13 +2405,13 @@ $(document).ready(function () {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -2451,7 +2451,7 @@ $(document).ready(function () {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2462,7 +2462,7 @@ $(document).ready(function () {
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2491,7 +2491,7 @@ $(document).ready(function () {
 						window.currentDescriptionCell = options;
 
 							let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = formatMessage("Details Description");
 
 						openModal(url, title);
 					}
@@ -2570,13 +2570,13 @@ $(document).ready(function () {
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -2610,7 +2610,7 @@ $(document).ready(function () {
 
 									let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-									openModal(url, "");
+									openModal(url, formatMessage("Unit Of Measure"));
 
 								},
 
@@ -2645,7 +2645,7 @@ $(document).ready(function () {
 	
 		{
 			type: "buttons",
-			caption: "Delete",
+			caption: formatMessage("Delete"),
 			width: 80,
 			buttons: [{
 				hint: "Delete Row",
@@ -2756,7 +2756,7 @@ $(document).ready(function () {
 					grid.refresh(); // Ensure the UI updates with the new row
 						// ✅ Update Save button text here
 				var button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+				button.option("text", formatMessage("Update"));
 				})
 				.catch(error => {
 					DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5881,28 +5881,28 @@ $("#btnCreatePo").on("click", function () {
 
 		 function AddPreparedBy(){
 				const url = `/${tenantName}/IMS/Signatories`;
-			  const title = "Signatories";
+			  const title = formatMessage("Signatories");
 				  openModal(url, title);
 		  }
 
 		   function AddReqUnit(){
 				const url = `/${tenantName}/IMS/ProjectSubUnits`;
-			  const title = "Project";
+			  const title = formatMessage("Project");
 				  openModal(url, title);
 		  }
 			 function AddModeReq(){
 				const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-			  const title = "Quotation Mode Of Request";
+			  const title = formatMessage("Quotation Mode Of Request");
 				  openModal(url, title);
 		  }
 			 function AddTypeReq(){
 				const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-			  const title = "Quotation Type Of Request";
+			  const title = formatMessage("Quotation Type Of Request");
 				  openModal(url, title);
 		  }
 		   function AddNewSupplier(){
 				const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-               const title = "Supplier Master";
+               const title = formatMessage("Supplier Master");
 				  openModal(url, title);
             } 
 			   $(function () {
@@ -6072,7 +6072,7 @@ $("#btnCreatePo").on("click", function () {
               }
                function CurrencyClick() {
               let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-              let title = "Currency Master";
+              let title = formatMessage("Currency Master");
               openModal(url, title);
           }
             function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -6135,7 +6135,7 @@ $("#btnCreatePo").on("click", function () {
 				encodeURIComponent(supplierCode) + '&SupplierName=' +
 				encodeURIComponent(supplierName);
 
-			openModal(url, 'Supplier Contact List');
+			openModal(url, formatMessage('Supplier Contact List'));
 		});
 	}
 		function selectContact(name, email, mobile, phone) {
