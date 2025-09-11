@@ -233,19 +233,60 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Sales Orders Details").Columns(subColumns =>
+		columns.Add().Caption(new JS("formatMessage('Sales Orders Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0); 
-				subColumns.AddFor(m => m.SalesOrderDate).Caption("Sales Order Date").Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("Stock Code").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("Stock Descrpition").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitType).Caption("UnitType").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitDesc).Caption("UnitDesc").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("QuotedQuantity").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				subColumns.AddFor(m => m.SalesOrderNo)
+			.Caption(new JS("formatMessage('Sales Order No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+			.GroupIndex(0);
+
+				subColumns.AddFor(m => m.SalesOrderDate)
+			.Caption(new JS("formatMessage('Sales Order Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+			.Format("dd-MMM-yyyy");
+
+				subColumns.AddFor(m => m.ClientName)
+			.Caption(new JS("formatMessage('Client Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.ClientPono)
+			.Caption(new JS("formatMessage('Client PO No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.SalesPersonName)
+			.Caption(new JS("formatMessage('Sales Person Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.Gscode)
+			.Caption(new JS("formatMessage('Stock Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.Gsdescrpition)
+			.Caption(new JS("formatMessage('Stock Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.UnitType)
+			.Caption(new JS("formatMessage('Unit Type')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.UnitDesc)
+			.Caption(new JS("formatMessage('Unit Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuotedQuantity)
+			.Caption(new JS("formatMessage('Quoted Quantity')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+		.CellTemplate(new JS(@"
 				function(cellElement, cellInfo) {
 				if (cellInfo.value != null && cellInfo.value !== '') {
 				$('<span>')
@@ -265,9 +306,21 @@
 				// else: do nothing (no span rendered)
 				}
 				"));
-				subColumns.AddFor(m => m.DeliveryTerms).Caption("DeliveryTerms").Alignment(HorizontalAlignment.Center).Visible(true);	
-				subColumns.AddFor(m => m.QuoteRemarks).Caption("QuoteRemarks").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedUnitPrice).Caption("QuotedUnitPrice").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				subColumns.AddFor(m => m.DeliveryTerms)
+			.Caption(new JS("formatMessage('Delivery Terms')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuoteRemarks)
+			.Caption(new JS("formatMessage('Quote Remarks')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuotedUnitPrice)
+			.Caption(new JS("formatMessage('Quoted Unit Price')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+		.CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -288,7 +341,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption("LineTotalBeforeDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption(new JS("formatMessage('Line Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -309,7 +362,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.QuotedDiscount).Caption("QuotedDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+					subColumns.AddFor(m => m.QuotedDiscount).Caption(new JS("formatMessage('Quoted Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -330,7 +383,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption("LineTotalAfterDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+						subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption(new JS("formatMessage('Line Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -351,7 +404,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.LineTaxAmount).Caption("LineTaxAmount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+							subColumns.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -372,7 +425,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.LineTotalWithTax).Caption("LineTotalWithTax").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+								subColumns.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -393,7 +446,7 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.BalanceToDeliver).Caption("BalanceToDeliver").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+									subColumns.AddFor(m => m.BalanceToDeliver).Caption(new JS("formatMessage('Balance To Deliver')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 				function(cellElement, cellInfo) {
 				if (cellInfo.value != null && cellInfo.value !== '') {
 				$('<span>')
@@ -413,7 +466,7 @@
 				// else: do nothing (no span rendered)
 				}
 				"));
-				subColumns.AddFor(m => m.TotalOrderedQty).Caption("TotalOrderedQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				subColumns.AddFor(m => m.TotalOrderedQty).Caption(new JS("formatMessage('Total Ordered Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null && cellInfo.value !== '') {
 		$('<span>')
@@ -433,7 +486,7 @@
 		// else: do nothing (no span rendered)
 		}
 		"));
-				subColumns.AddFor(m => m.TotalIssdQty).Caption("TotalIssdQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+											subColumns.AddFor(m => m.TotalIssdQty).Caption(new JS("formatMessage('Total Issd Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null && cellInfo.value !== '') {
 		$('<span>')
@@ -453,8 +506,8 @@
 		// else: do nothing (no span rendered)
 		}
 		"));
-				subColumns.AddFor(m => m.DeliveryPeriod).Caption("DeliveryPeriod").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.CostPrice).Caption("CostPrice").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+			subColumns.AddFor(m => m.DeliveryPeriod).Caption(new JS("formatMessage('Delivery Period')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			subColumns.AddFor(m => m.CostPrice).Caption(new JS("formatMessage('Cost Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -475,36 +528,155 @@
 		}
 		}
 		"));
-				subColumns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.QuoteNo).Caption("Quotation No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.QuoteDate).Caption("Quotation Date").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientRefNo).Caption("Client Reference No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ProjectMasterCode).Caption("Project Code").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.CompanyName).Caption("Company Name").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.TaxSlab).Caption("Tax Slab").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.AddlDescription).Caption("Additional Description").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.PlanNo).Caption("Plan No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ItemSize).Caption("Item Size").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ItemPartNo).Caption("Item Part No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ItemBrand).Caption("Item Brand").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ItemMake).Caption("Item Make").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientCode).Caption("Client Code").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.OrderStatus).Caption("Order Status").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.InvoiceStatus).Caption("Invoice Status").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.BalanceToDeliverValue).Caption("Balance To Deliver Value").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.IssdQtyValue).Caption("Issued Qty Value").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Group ID").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Group").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Expr1).Caption("Extra Field 1").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.SalesOrderRemarks).Caption("Sales Order Remarks").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ExpectedDeliveryDate).Caption("Expected Delivery Date").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Expr2).Caption("Extra Field 2").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Expr3).Caption("Extra Field 3").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.InvoicedQty).Caption("Invoiced Quantity").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.BalanceQtyToInvoice).Caption("Balance Qty to Invoice").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientPodate)
+			.Caption(new JS("formatMessage('Client PO Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.QuoteNo)
+			.Caption(new JS("formatMessage('Quotation No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.QuoteDate)
+			.Caption(new JS("formatMessage('Quotation Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ClientRefNo)
+			.Caption(new JS("formatMessage('Client Reference No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.CompanyBranch)
+			.Caption(new JS("formatMessage('Company Branch')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ProjectMasterCode)
+			.Caption(new JS("formatMessage('Project Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.CompanyName)
+			.Caption(new JS("formatMessage('Company Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.TaxSlab)
+			.Caption(new JS("formatMessage('Tax Slab')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.AddlDescription)
+			.Caption(new JS("formatMessage('Additional Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.PlanNo)
+			.Caption(new JS("formatMessage('Plan No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemSize)
+			.Caption(new JS("formatMessage('Item Size')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemPartNo)
+			.Caption(new JS("formatMessage('Item Part No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemBrand)
+			.Caption(new JS("formatMessage('Item Brand')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemMake)
+			.Caption(new JS("formatMessage('Item Make')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ClientCode)
+			.Caption(new JS("formatMessage('Client Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.OrderStatus)
+			.Caption(new JS("formatMessage('Order Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InvoiceStatus)
+			.Caption(new JS("formatMessage('Invoice Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.BalanceToDeliverValue)
+			.Caption(new JS("formatMessage('Balance To Deliver Value')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.IssdQtyValue)
+			.Caption(new JS("formatMessage('Issued Qty Value')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InventoryMasterGroupId)
+			.Caption(new JS("formatMessage('Inventory Group Id')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InventoryMasterGroup)
+			.Caption(new JS("formatMessage('Inventory Group')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr1)
+			.Caption(new JS("formatMessage('Extra Field 1')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.TypeOfRequest)
+			.Caption(new JS("formatMessage('Type Of Request')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.SalesOrderRemarks)
+			.Caption(new JS("formatMessage('Sales Order Remarks')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ExpectedDeliveryDate)
+			.Caption(new JS("formatMessage('Expected Delivery Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr2)
+			.Caption(new JS("formatMessage('Extra Field 2')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr3)
+			.Caption(new JS("formatMessage('Extra Field 3')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.SalesPersonUserId)
+			.Caption(new JS("formatMessage('Sales Person User ID')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InvoicedQty)
+			.Caption(new JS("formatMessage('Invoiced Quantity')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.BalanceQtyToInvoice)
+			.Caption(new JS("formatMessage('Balance Qty to Invoice')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
 
 			});
 		})
