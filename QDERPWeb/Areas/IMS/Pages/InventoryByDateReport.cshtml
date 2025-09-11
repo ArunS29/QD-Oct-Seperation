@@ -156,7 +156,7 @@
 	</div>
 </div> *@
 <div class="Head">
-	<div class="footer-fixed">
+	<div class="footer-fixed1" style="margin:10px;">
 		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 	</div>
 </div>
@@ -248,55 +248,55 @@
 			{
 				// Band column for Stock Details
 				columns.Add()
-		.Caption("Stock Details")
+		.Caption(new JS("formatMessage('Stock Details')"))
 		.Columns(detail =>
 		{
 		detail.AddFor(m => m.GsgroupName)
-		.Caption("Stock Group")
+			.Caption(new JS("formatMessage('Stock Group')"))
 		.GroupIndex(0)
 		.Visible(true); // Used for grouping, hidden
 
 		detail.AddFor(m => m.Gscode)
-		.Caption("Stock Code")
+			.Caption(new JS("formatMessage('Stock Code')"))
 		.Width(150);
 
 		detail.AddFor(m => m.Gsdescrpition)
-		.Caption("Description")
+			.Caption(new JS("formatMessage('Description')"))
 		.Width(300);
 			});
 
 				// Band column for Stock Balance
 				columns.Add()
-		.Caption("Stock Balance")
+			.Caption(new JS("formatMessage('Stock Balance')"))
 		.Columns(balance =>
 		{
 				balance.AddFor(m => m.TotalOpeningBal)
-	.Caption("Opening Balance")
+			.Caption(new JS("formatMessage('Opening Balance')"))
 	.Format("#,##0.00")
 	.Alignment(HorizontalAlignment.Right);
 
 				balance.AddFor(m => m.TotalReceived)
-		.Caption("Received")
+			.Caption(new JS("formatMessage('Received')"))
 		.Format("#,##0.00")
 		.Alignment(HorizontalAlignment.Right);
 
 				balance.AddFor(m => m.TotalIssues)
-		.Caption("Issues")
+			.Caption(new JS("formatMessage('Issues')"))
 		.Format("#,##0.00")
 		.Alignment(HorizontalAlignment.Right);
 
 				balance.AddFor(m => m.TotalBalance)
-		.Caption("Closing Balance")
+			.Caption(new JS("formatMessage('Closing Balance')"))
 		.Format("#,##0.00")
 		.Alignment(HorizontalAlignment.Right);
 
 	balance.AddFor(m => m.AverageCostUnitPrice)
-	.Caption("Average Cost Unit")
+			.Caption(new JS("formatMessage('Average Cost Unit')"))
 	.Format("#,##0.0000")
 	.Alignment(HorizontalAlignment.Right);
 
 	balance.AddFor(m => m.TotalStockValueByAvgCost)
-	.Caption("Total Stock Value By Cost")
+			.Caption(new JS("formatMessage('Total Stock Value By Cost')"))
 	.Format("#,##0.0000")
 	.Alignment(HorizontalAlignment.Right);
 	});
@@ -505,6 +505,6 @@
 			];
 		}
 	}
-
+		
 
 </script>
