@@ -101,6 +101,7 @@
                                         .LabelMode(EditorLabelMode.Floating)
                                         .ID("VoucherNo")
                                         .Value("")
+                                        .ReadOnly(true)
                                         .Placeholder(new JS("formatMessage('Generating...')"))
                                         .OnValueChanged("updateTemporaryNo")
                                         .ElementAttr(new { @class = "custom-disabled-textbox" })
@@ -196,6 +197,7 @@
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddAccountHead")
                                                 .ShowClearButton(true)
+                                                .ValidationRules(rules => rules.AddRequired().Message(new JS("formatMessage('Ledger Account should be entered')")))
                                                 .AcceptCustomValue(true)
                                                 .OpenOnFieldClick(false)
                                                 .ValueChangeEvent("input")
@@ -253,6 +255,11 @@ buttons.Add()
                                                 .TabIndex(5)
                                                 .Min(0)
                                                 .Max(99999999)
+                                                .ValidationRules(rules =>
+                                                {
+                                                    rules.AddRequired().Message("Voucher Amount Cannot be Zero Or Negative");
+                                                    rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
+                                                })
                                                 .Placeholder("0.00")
                                                 .Format("#,##0.00")
                                                 .InputAttr(new
@@ -303,7 +310,7 @@ buttons.Add()
                                         })
                                         .LabelMode(EditorLabelMode.Floating)
                                         .ID("ddCurrency")
-                                        .ShowClearButton(true)
+                                        .ShowClearButton(false)
                                         .AcceptCustomValue(false)
                                         .OpenOnFieldClick(true)
                                         .Value(baseCurrencyIdnew)
@@ -549,7 +556,7 @@ function(data) {
 
 
                             columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')"));
-
+                            columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
                           
 
 
@@ -870,6 +877,7 @@ function(data) {
                     .Key("AccountId")
                     )
                     .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
                     
@@ -1213,26 +1221,18 @@ function(data) {
         $("#ddAccountHead").css("border", "");
         $("#txtVoucherAmount").css("border", "");
 
-        // Validation logic
-        var isValid = true;
+        var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+    var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
 
-        if (!accountHead) {
-            isValid = false;
-            $("#ddAccountHead").css("border", "1px solid red"); // Highlight accountHead in red
-            DevExpress.ui.notify("Account Head is required.", "error", 2000);
-        }
+    var accountHeadValidation = accountHeadValidator.validate();
+    var voucherAmtValidation = voucherAmtValidator.validate();
 
-        if (!voucherAmount || voucherAmount <= 0) {
-            isValid = false;
-            $("#txtVoucherAmount").css("border", "1px solid red"); // Highlight amount in red
-            DevExpress.ui.notify("Amount should not be 0 or less.", "error", 2000);
-        }
+    if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid)) {
+       
 
-        // Stop execution if validation fails
-        if (!isValid) {
-            return; // Exit function if validation fails
-        }
-
+        DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+        return;
+    }
         // Prepare the object to send
         var VE = {
             "VoucherNo": voucherNo,
@@ -1467,6 +1467,12 @@ function(data) {
                   //  $("#btnPreview1").dxDropDownButton("instance").option("disabled", false);
                     // Change button text to "Update" after saving
                     if (action === "SaveVoucher") {
+                        button.option("text", "Update");
+                           // ✅ Make the Remarks column visible dynamically
+                        let grid = $("#dataGrid").dxDataGrid("instance");
+                        if (grid) {
+                            grid.columnOption("SysRemarks", "visible", true);
+                        }
                         button.option("text",formatMessage("Update"));
                     }
                 } else {
@@ -1638,7 +1644,7 @@ function(data) {
 
                 if (accIsLedgerObselete == true) {
                     IsObeselete = true;
-                    DevExpress.ui.notify(
+                    DevExpress.ui.dialog.alert(
                         "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                         "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -1676,8 +1682,10 @@ function(data) {
 
 
         const text = ddbInstance.option("text");
-        if (dataGrid) {
-            dataGrid.option("searchPanel.text", text);
+        // Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+        if (grid) {
+            grid.option("searchPanel.text", text);
         }
     }
 
@@ -2140,6 +2148,11 @@ function(data) {
                     if (formattedApprovedDate) {
                         disableEditing();
                     }
+                     let grid = $("#dataGrid").dxDataGrid("instance");
+                        if (grid) {
+                            grid.columnOption("SysRemarks", "visible", true);
+                            grid.repaint(); // Optional: refresh grid layout
+                        }
                      checkVoucherDateLock(data.VoucherDate);
 
                       fetchVoucherEntries(data.VoucherNo);
@@ -2366,7 +2379,7 @@ function(data) {
     }
     function onEditorPreparing(e) {
         // Check if the data field being edited is 'EntryNarration'
-        if (e.dataField === 'EntryNarration') {
+        if (e.dataField === 'EntryNarration' || e.dataField === 'SysRemarks') {
             if (isUpdatingCell) {
                 return; // Prevent recursive triggering
             }
@@ -3839,4 +3852,15 @@ function showMainFooter() {
             e.component.option("value", null); // clear if no match found
         }
     }
+       function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
+
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
+    }
+}
 </script>

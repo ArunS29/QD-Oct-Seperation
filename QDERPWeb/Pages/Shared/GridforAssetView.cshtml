@@ -343,7 +343,7 @@
                             }
                         }
                     });
-
+                    let selectedVoucherId = null;
                     // ----------------------------
                     // Init Popup AFTER we know which menu items are allowed
                     // ----------------------------
@@ -418,7 +418,44 @@
                     function () { $(this).css("background-color", "#fff"); }
                 );
         }
+            $("#dataGrid").dxDataGrid({
+        selection: {
+            mode: "single",
+            showCheckBoxesMode: "none",
+        },
+        onSelectionChanged: function (e) {
+            const selectedRows = e.selectedRowsData;
+            if (selectedRows.length > 0) {
+                //selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                selectedVoucherId = selectedRows[0].AccountId;
+            } else {
+                selectedVoucherId = null;
+            }
+        },
+    });
+    $(document).on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault(); // Prevent default right-click menu
 
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowIndex = $(this).index(); // Get the row index from DOM
+        const rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
+
+        if (rowData) {
+            //selectedVoucherId = rowData.AssetLedgerNo; // Set selected ID manually
+            selectedVoucherId = rowData.AccountId;
+            dataGrid.selectRowsByIndexes([rowIndex]); // Visually select the row
+        }
+
+        const popup = $("#voucherPopup").dxPopup("instance");
+        popup.option("position", { my: "left top", at: "left bottom", of: e });
+        popup.show();
+    });
+
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-data-row").length) {
+                $("#voucherPopup").dxPopup("instance").hide();
+            }
+        });
         function editVoucher() {
             if (!selectedVoucherId) {
                 alert("Please select a voucher to edit.");
