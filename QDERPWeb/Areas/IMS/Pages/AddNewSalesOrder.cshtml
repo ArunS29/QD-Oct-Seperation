@@ -2937,6 +2937,7 @@ $(document).ready(function () {
         openModal(url, title);
     }
     $(document).ready(function () {
+        getDefaultCompany("CompanyBranch");
         var urlParams = new URLSearchParams(window.location.search);
         var IsEditflag = urlParams.get('IsEditflag') ?? "";
             IsCurrent=IsEditflag.toString();
