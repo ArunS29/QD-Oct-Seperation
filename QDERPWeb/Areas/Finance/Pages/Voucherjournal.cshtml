@@ -2389,10 +2389,10 @@ function(data) {
             const dataGridInstance = e.component; // Get the DataGrid instance
             const rowIndex = e.row.rowIndex; // Get the row index of the clicked cell
             const initialValue = e.row.data[e.dataField] || ""; // Get the current value of the cell
-
+             const fieldName = e.dataField;
             // Show Swal modal for editing EntryNarration
             Swal.fire({
-                title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit Entry Narration`,
+                title: `<i class="fas fa-edit" style="color:#007bff"></i> Edit ${fieldName.replace(/([A-Z])/g, ' $1')}`, // Format field name for title
                 html: `
                                                                         <textarea id="swal-field-editor"
                                                                                   style="width:100%; height:100px; font-size:16px; padding:10px; border-radius:8px; border:1px solid #ddd;"
