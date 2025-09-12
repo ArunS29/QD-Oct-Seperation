@@ -146,7 +146,7 @@
 	}
 </style>
 <div class="Head">
-	<div class="footer-fixed">
+	<div class="footer-fixed1" style="margin:10px;">
 		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 	</div>
 </div>
@@ -267,62 +267,63 @@
 		.Columns(columns =>
 		{
 			// Stock Details Band
-			columns.Add().Caption("Stock Details").Columns(detail =>
+			columns.Add().Caption(new JS("formatMessage('Stock Details')")).Columns(detail =>
 			{
-				detail.AddFor(m => m.StoreName).Caption("Store Name");
-				detail.AddFor(m => m.StoreCode).Caption("Stock Code").GroupIndex(0);
-				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
+				detail.AddFor(m => m.StoreName).Caption(new JS("formatMessage('Store Name')"));
+				detail.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Stock Code')")).GroupIndex(0);
+				detail.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Stock Description')"));
 			});
 
 			// Opening Balance Band
-			columns.Add().Caption("Opening Balance").Columns(open =>
+			columns.Add().Caption(new JS("formatMessage('Opening Balance')")).Columns(open =>
 			{
-				open.AddFor(m => m.TotalOpeningBal).Caption("Opening Bal. (Qty)");
+				open.AddFor(m => m.TotalOpeningBal).Caption(new JS("formatMessage('Opening Balance (Qty)')"));
 			});
 
 			// Inventory Stock Qty Band
-			columns.Add().Caption("Inventory Stock Qty").Columns(invQty =>
+			columns.Add().Caption(new JS("formatMessage('Inventory Stock Qty')")).Columns(invQty =>
 			{
-				invQty.Add().Caption("Stock Receipts (Qty)").Columns(receipts =>
+				invQty.Add().Caption(new JS("formatMessage('Stock Receipts (Qty)')")).Columns(receipts =>
 			{
-				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption("From Suppliers (Qty)");
-				receipts.AddFor(m => m.TotalReceivedFromStores).Caption("From Store (Qty)");
-				receipts.AddFor(m => m.TotalReceipts).Caption("Total Receipts (Qty)");
+				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption(new JS("formatMessage('From Suppliers (Qty)')"));
+				receipts.AddFor(m => m.TotalReceivedFromStores).Caption(new JS("formatMessage('From Store (Qty)')"));
+				receipts.AddFor(m => m.TotalReceipts).Caption(new JS("formatMessage('Total Receipts (Qty)')"));
 			});
 
-				invQty.Add().Caption("Stock Issues").Columns(issues =>
+				invQty.Add().Caption(new JS("formatMessage('Stock Issues')")).Columns(issues =>
 			{
-				issues.AddFor(m => m.TotalIssuedToClient).Caption("To Client (Qty)");
-				issues.AddFor(m => m.TotalConsumed).Caption("Consumed (Qty)");
-				issues.AddFor(m => m.TotalStoreTransfered).Caption("Transferred (Qty)");
-				issues.AddFor(m => m.TotalIssues).Caption("Total Issues (Qty)");
+				issues.AddFor(m => m.TotalIssuedToClient).Caption(new JS("formatMessage('To Client (Qty)')"));
+				issues.AddFor(m => m.TotalConsumed).Caption(new JS("formatMessage('Consumed (Qty)')"));
+				issues.AddFor(m => m.TotalStoreTransfered).Caption(new JS("formatMessage('Transferred (Qty)')"));
+				issues.AddFor(m => m.TotalIssues).Caption(new JS("formatMessage('Total Issues (Qty)')"));
 			});
 
-				invQty.AddFor(m => m.BalanceInStock).Caption("Closing Balance (Qty)");
+				invQty.AddFor(m => m.BalanceInStock).Caption(new JS("formatMessage('Closing Balance (Qty)')"));
 			});
 
 			// Inventory Stock Value (Amount) Band
-			columns.Add().Caption("Inventory Stock Values (Amount)").Columns(val =>
+			columns.Add().Caption(new JS("formatMessage('Inventory Stock Values (Amount)')")).Columns(val =>
 			{
-				val.AddFor(m => m.AmountOpeningBal).Caption("Opening Bal. (Amt)");
+				val.AddFor(m => m.AmountOpeningBal).Caption(new JS("formatMessage('Opening Balance (Amt)')"));
 
-				val.Add().Caption("Stock Receipts (Amount)").Columns(receiptAmt =>
+				val.Add().Caption(new JS("formatMessage('Stock Receipts (Amount)')")).Columns(receiptAmt =>
 			{
-				receiptAmt.AddFor(m => m.AmountReceived).Caption("From Suppliers (Amt)");
-				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption("From Store (Amt)");
-				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption("Total Receipts (Amt)");
+				receiptAmt.AddFor(m => m.AmountReceived).Caption(new JS("formatMessage('From Suppliers (Amt)')"));
+				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption(new JS("formatMessage('From Store (Amt)')"));
+				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption(new JS("formatMessage('Total Receipts (Amt)')"));
 			});
 
-				val.Add().Caption("Stock Issues (Amount)").Columns(issueAmt =>
+				val.Add().Caption(new JS("formatMessage('Stock Issues (Amount)')")).Columns(issueAmt =>
 			{
-				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption("To Client (Amt)");
-				issueAmt.AddFor(m => m.AmountConsumed).Caption("Consumed (Amt)");
-				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption("Transferred (Amt)");
-				issueAmt.AddFor(m => m.AmountTotalIssues).Caption("Total Issues (Amt)");
+				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption(new JS("formatMessage('To Client (Amt)')"));
+				issueAmt.AddFor(m => m.AmountConsumed).Caption(new JS("formatMessage('Consumed (Amt)')"));
+				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption(new JS("formatMessage('Transferred (Amt)')"));
+				issueAmt.AddFor(m => m.AmountTotalIssues).Caption(new JS("formatMessage('Total Issues (Amt)')"));
 			});
 
-				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
+				val.AddFor(m => m.TransactionTotal).Caption(new JS("formatMessage('Closing Balance (Amt)')"));
 			});
+
 		})
 		.Summary(summary =>
 		{

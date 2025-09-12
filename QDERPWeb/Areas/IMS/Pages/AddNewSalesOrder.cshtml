@@ -202,7 +202,7 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Sales Order Details")
+                .Title(new JS("formatMessage('Sales Order Details')"))
                 .Icon("folder")
                 .Text("Sales Order Details")
                 .Template(@<text>
@@ -224,7 +224,7 @@
                             rules.AddRequired()
                             .Message("Sales Order No is required");
                             })
-                            .Label("Sales Order NO:")
+                            .Label(new JS("formatMessage('Sales Order No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -238,7 +238,7 @@
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
                            	.DisplayFormat("dd-MMM-yyyy") // ✅ Ensure consistent format
-                            .Label("Sales Order Date")
+                            .Label(new JS("formatMessage('Sales Order Date')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -264,7 +264,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ClientCode")
                                     )
-                                    .Label("Client Name")
+                                    .Label(new JS("formatMessage('Client Name')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%")
                                       .OnOpened("onOpened")
@@ -314,7 +314,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("QuotationNo")
-                            .Label("Quotation No:")
+                            .Label(new JS("formatMessage('Quotation No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -322,7 +322,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
-                            .Label("Quotation Date:")
+                            .Label(new JS("formatMessage('Quotation Date:')"))
                             	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -333,7 +333,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientRefName")
-                                    .Label("Client Ref. Name:")
+                                    .Label(new JS("formatMessage('Client Ref. Name:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -352,7 +352,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientEmail")
-                                    .Label("Client Email:")
+                                    .Label(new JS("formatMessage('Client Email:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
@@ -362,7 +362,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
-                                    .Label("Client Contact No:")
+                                    .Label(new JS("formatMessage('Client Contact No:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
@@ -377,7 +377,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientPoNo")
-                            .Label("Client PO No:")
+                            .Label(new JS("formatMessage('Client PO No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -385,7 +385,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
-                            .Label("Client PO Date:")
+                            .Label(new JS("formatMessage('Client PO Date:')"))
                             	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -447,7 +447,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("TypeOfRequestId")
                                     )
-                                    .Label("Type of Sales Order:")
+                                    .Label(new JS("formatMessage('Type of Sales Order:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -473,7 +473,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ReferenceNo")
-                                    .Label("Reference No:")
+                                    .Label(new JS("formatMessage('Reference No:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -487,7 +487,7 @@
 
 
         </text>);
-                    item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
             <div>
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
@@ -509,7 +509,7 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
                                 )
-                                .Label("Signatories:")
+                                .Label(new JS("formatMessage('Signatories:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .ShowDropDownButton(true)
@@ -547,11 +547,11 @@
 
                         <!-- Right: Additions & Deductions -->
                         <td style="width: 50%; padding: 10px;">
-                            <div style="font-weight: bold;">Shipment & Discounts:</div>
+                            <div style="font-weight: bold;" id="shipmentsalesorder"></div>
 
                             <!-- Additions -->
                             <div style="margin-top: 10px; margin-bottom: 15px;">
-                                <div>Additions:</div>
+                                <div id="additionssalesorders"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("AdditionsText")
@@ -570,7 +570,7 @@
 
                             <!-- Deductions -->
                             <div>
-                                <div>Deductions:</div>
+                                <div id="deductionssalesorder"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("DeductionsText")
@@ -595,7 +595,7 @@
 
 
         </text>);
-        item.Add().Title("Approvals").Icon("detailslayout").Text("Approvals").Template(@<text>
+        item.Add().Title(new JS("formatMessage('Approvals')")).Icon("detailslayout").Text("Approvals").Template(@<text>
             <div class="row" style="padding:10px">
                 <div class="col-4">
                     @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -688,7 +688,7 @@
             </div>
             
         </text>);
-                    item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
+                    item.Add().Text("Branch / Divisions").Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
 
             <div class="p-3" style="padding:10px;">
                 <table style="width: 100%; vertical-align: top;">
@@ -713,14 +713,14 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("CompanyId")
                                 )                            .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Company Branch / Division")
+                                .Label(new JS("formatMessage('Company Branch / Division')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ContentTemplate(new TemplateName("CompanyBranchDropDownTemplate")))
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReferenceNo1")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Reference No")
+                                .Label(new JS("formatMessage('Reference No')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
@@ -743,7 +743,7 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SalesPersonCode")
                                 )
-                                .Label("Sales Person")
+                                .Label(new JS("formatMessage('Sales Person')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .OnOpened("onOpened")
@@ -783,7 +783,7 @@
                             .Key("InventoryMasterGroupId")
                             )
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Inventory Group Master *")
+                            .Label(new JS("formatMessage('Inventory Group Master *')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("MasterGroupDropDownTemplate")))
@@ -795,7 +795,7 @@
     .ValueExpr("CostAllocationMasterGroup") // Selecting group name as value
     .DisplayExpr("CostAllocationMasterGroup") // Display group name
     .AcceptCustomValue(false)
-    .Label("Cost Center Master *")
+    .Label(new JS("formatMessage('Cost Center Master *')"))
     .LabelMode(EditorLabelMode.Floating)
     .Value("")
     .DataSource(ds => ds
@@ -818,7 +818,7 @@
                             .ID("OrderExpiryDate")
                             .DisplayFormat("dd-MMM-yyyy")
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Order Expiry Date")
+                            .Label(new JS("formatMessage('Order Expiry Date')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
 
@@ -827,7 +827,7 @@
                             .ID("SalesOrderRemarks")
                             .MinHeight(85)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Sales Order Remarks")
+                            .Label(new JS("formatMessage('Sales Order Remarks')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
@@ -838,7 +838,7 @@
                                 .ID("ExpectedDeliveryDate")
                                 .DisplayFormat("dd-MMM-yyyy")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Expected Delivery Date")
+                                .Label(new JS("formatMessage('Expected Delivery Date')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%;"))
@@ -846,7 +846,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryPeriod")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Period")
+                                .Label(new JS("formatMessage('Delivery Period')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
@@ -854,7 +854,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryTerms")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Terms")
+                                .Label(new JS("formatMessage('Delivery Terms')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%; margin-left: 10px;"))
@@ -864,7 +864,7 @@
                 </table>
             </div>
         </text>);
-        item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+        item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
     <div class="p-3">
     <table style="width:100%; font-size:14px; margin:5px;">
 					<tr>
@@ -995,7 +995,7 @@
                 "));
             columns.Add()
             .DataField("Gscode") // ✅ this is the field stored in DB or model
-            .Caption("Description")
+            .Caption(new JS("formatMessage('Description')"))
             .Width(400)
             .EditCellTemplate(new JS("descriptionDropDownTemplate")) // ✅ editor for editing
             .CellTemplate(new JS(@"
@@ -1026,7 +1026,7 @@
                             if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
                             if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
                             const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-                            openModal(url, 'Details Description','60%','60%');
+                            openModal(url, formatMessage('Details Description'),'60%','60%');
                         }
                     }).appendTo(container);
                 }
@@ -1047,7 +1047,7 @@
                             if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
                             if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
                             const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-                            openModal(url, 'Details Description');
+                            openModal(url, formatMessage('Details Description'));
                         }
                     }).appendTo(container);
                 }
@@ -1056,19 +1056,19 @@
 
             columns.Add()
             .DataField("UnitRateMethod")
-            .Caption("Unit Rate Method")
+            .Caption(new JS("formatMessage('Unit Rate Method')"))
             .Width(400)
             .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
             .CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 
-            columns.Add().DataField("QuotedQuantity").Caption("Qty");
-            columns.Add().DataField("CostPrice").Caption("Cost Price");
-            columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
-            columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("LineTotalAfterDiscount").Caption("Amount").AllowEditing(false);
+            columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')"));
+            columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')"));
+            columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+            columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Quoted Discount')"));
+            columns.Add().DataField("LineTotalAfterDiscount").Caption(new JS("formatMessage('Amount')")).AllowEditing(false);
             columns.Add()
             .DataField("QuotedTaxSlab")
-            .Caption("VAT Desc")
+            .Caption(new JS("formatMessage('VAT Description')"))
             .Width(300)
             .EditCellTemplate(new JS("vatDescDropDownTemplate"))
             .CellTemplate(new JS(@"
@@ -1077,8 +1077,8 @@
     container.text(found ? found.TaxCodeToDisplay : options.value);
     }
     "));
-                columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
-            columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
+                columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT')")).AllowEditing(false);
+            columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).AllowEditing(false);
 
             columns.Add().DataField("AddlDescription").Visible(false);
             columns.Add().DataField("QuoteRemarks").Visible(false);
@@ -1125,18 +1125,18 @@
 </div>
 <!-- Generate Job Order Modal -->
 <div id="generateJobOrderModal" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:white; color:black; padding:20px; border-radius:8px; z-index:10000;">
-    <div style="font-weight:bold; margin-bottom:10px;">Create Job Orders for:</div>
+    <div style="font-weight:bold; margin-bottom:10px;" id="createjoborderfor"></div>
     <div>
-        <label><input type="radio" name="joType" value="Manual Valves" checked> <b>Manual Valves</b></label><br>
-        <label><input type="radio" name="joType" value="Control Valves"> <b>Control Valves</b></label><br>
-        <label><input type="radio" name="joType" value="Safety Valves"> <b>Safety Valves</b></label>
+        <label><input type="radio" name="joType" id="manualvaluessales"value="Manual Valves" checked> <b></b></label><br>
+        <label><input type="radio" name="joType" id="controlvalvessales"value="Control Valves"> <b></b></label><br>
+        <label><input type="radio" name="joType" id="safetyvaluessales" value="Safety Valves"> <b></b></label>
     </div>
     <div style="margin-top:15px;">
         <button id="btnGenerateJO" style="margin-right:10px;">
-            <span style="font-size:18px;">&#128202;</span> Generate JO
+            <span style="font-size:18px;" id="generatejosales">&#128202;</span> 
         </button>
         <button id="btnCloseJO" style="background:#c00;color:#fff;">
-            <span style="font-size:18px;">&#10060;</span> Close
+            <span style="font-size:18px;" id="salesorderclose">&#10060;</span> 
         </button>
     </div>
 </div>
@@ -1683,14 +1683,14 @@
                     keyExpr: "Gscode",
                     selection: { mode: "single" },
                     columns: [
-                        { dataField: "Gscode", caption: "Code" },
-                        { dataField: "ItemPartNo", caption: "Item Part No" },
-                        { dataField: "Gsdescrpition", caption: "Description" },
-                        { dataField: "GsdescriptionAr", caption: "Arabic Description" },
-                        { dataField: "GspackingUnit", caption: "Unit Desc" },
+                        { dataField: "Gscode", caption: formatMessage("Code")},
+                        { dataField: "ItemPartNo", caption: formatMessage("Item Part No")},
+                        { dataField: "Gsdescrpition", caption: formatMessage("Description")},
+                        { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description")},
+                        { dataField: "GspackingUnit", caption: formatMessage("Unit Desc")},
                         {
                             dataField: "IsDiscontinued",
-                            caption: "Discontinued?",
+                            caption: formatMessage("Discontinued"),
                             dataType: "boolean",
                             width: 120
                         }
@@ -1750,7 +1750,7 @@
                     return;
                 }
                 let url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(gsCode)}&modal=true`;
-                openModal(url, "Goods and Services");
+                openModal(url, formatMessage("Goods and Services"));
             },
             width: 50
         });
@@ -1762,7 +1762,7 @@
             stylingMode: "text",
             onClick: function () {
                 const url = `/${tenantName}/IMS/GoodsAndService`;
-                openModal(url, "Goods and Services");
+                openModal(url, formatMessage("Goods and Services"));
             },
             width: 50
         });
@@ -1808,10 +1808,10 @@
                         keyExpr: "UnitCode",
                         selection: { mode: "single" },
                         columns: [
-                            { dataField: "UnitCode", caption: "Code" },
-                            { dataField: "UnitDesc", caption: "Description" },
-                            { dataField: "UnitDescAr", caption: "Arabic Desc" },
-                            { dataField: "UnitType", caption: "Type" }
+                            { dataField: "UnitCode", caption: formatMessage("Code")},
+                            { dataField: "UnitDesc", caption: formatMessage("Description")},
+                            { dataField: "UnitDescAr", caption: formatMessage("Arabic Desc")},
+                            { dataField: "UnitType", caption: formatMessage("Type")}
                         ],
                         searchPanel: {
                             visible: true,
@@ -1852,7 +1852,7 @@
                 stylingMode: "text",
                 onClick: function () {
               let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
-                    openModal(url, ""); // Your modal open function here
+                    openModal(url, formatMessage("Unit Of Measure")); // Your modal open function here
                 },
                 width: 60,
                 height: 30
@@ -1908,8 +1908,8 @@
                             keyExpr: "TaxSlabCode",
                     selection: { mode: "single" },
                     columns: [
-                        { dataField: "TaxSlabCode", caption: "Code", width: 100 },
-                        { dataField: "TaxSlab", caption: "VAT Desc", width: 300 }
+                        { dataField: "TaxSlabCode", caption: formatMessage("Code"), width: 100 },
+                        { dataField: "TaxSlab", caption: formatMessage("VAT Description"), width: 300 }
                     ],
                     hoverStateEnabled: true,
                     height: 250,
@@ -1960,7 +1960,7 @@
             $(function () {
         $("#btnAddNew").on("click", function () {
             var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+            button.option("text", formatMessage("Update"));
 
             var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
@@ -2039,13 +2039,13 @@
         return;
     }
     const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${encodeURIComponent(selectedClientCode)}`;
-    const title = "Client Master";
+    const title = formatMessage("Client Master");
     openModal(url, title);
 }
         //add new client
          function AddClients(){
                 const url = `/${tenantName}/IMS/ClientLeadMaster`;
-                const title = "Client Master";
+                const title = formatMessage("Client Master");
                     openModal(url, title);
             }   
             // function EditClients(){
@@ -2056,14 +2056,14 @@
             ////AddnewProject
          function AddProject(){
                 const url = `/${tenantName}/IMS/Projects`;
-                const title = "Project";
+                const title = formatMessage("Project");
                     openModal(url, title);
             }
 
               ////Addnewsignatory
          function Signatorynew(){
                 const url = `/${tenantName}/IMS/Signatories`;
-                const title = "Signatories";
+                const title = formatMessage("Signatories");
                     openModal(url, title);
             }
 
@@ -2933,10 +2933,11 @@ $(document).ready(function () {
     }
     function CurrencyClick() {
         let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-        let title = "Currency Master";
+        let title = formatMessage("Currency Master");
         openModal(url, title);
     }
     $(document).ready(function () {
+        getDefaultCompany("CompanyBranch");
         var urlParams = new URLSearchParams(window.location.search);
         var IsEditflag = urlParams.get('IsEditflag') ?? "";
             IsCurrent=IsEditflag.toString();
@@ -3051,7 +3052,7 @@ $(document).ready(function () {
 				encodeURIComponent(clientCode) + '&clientName=' +
 				encodeURIComponent(clientName);
 
-			openModal(url, 'Client Contact List');
+			openModal(url, formatMessage('Client Contact List'));
 		});
 	}
 
@@ -3353,12 +3354,12 @@ $(document).ready(function () {
     }
     function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/IMS/SalesPersonMaster`;
-		const title = "Sales Person Master";
+		const title = formatMessage("Sales Person Master");
 		openModal(url, title);
 	}
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-        const title = "Quotation Type Of Request";
+        const title = formatMessage("Quotation Type Of Request");
         openModal(url, title);
     }
     function getDateOnlyValue(dateBoxId) {
@@ -3413,7 +3414,7 @@ $(document).ready(function () {
         if (e.row && e.row.rowType === "data") {
             e.items = [
                 {
-                    text: "Delete Line Item",
+                    text:formatMessage("Delete Line Item"),
                     icon: "trash",
                     onItemClick: function() {
                         const rowKey = e.row.key;
@@ -3425,7 +3426,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    text: "Delete Selected Items",
+                    text: formatMessage("Delete Selected Items"),
                     icon: "remove",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3442,14 +3443,14 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    text: "Add Line Item",
+                    text: formatMessage("Add Line Item"),
                     icon: "add",
                     onItemClick: function() {
                         $("#B2BdataGrid").dxDataGrid("instance").addRow();
                     }
                 },
                 {
-                    text: "Generate Job Orders",
+                    text: formatMessage("Generate Job Orders"),
                     icon: "chart",
                     onItemClick: function() {
                         $("#generateJobOrderModal").fadeIn(200);
@@ -3519,5 +3520,31 @@ $(document).ready(function () {
 		function dataGridInitialized12(e) {
 			dataGrid = e.component;
 		}
-
+        $(function () {
+				$("#shipmentsalesorder").text(formatMessage("Shipment & Discounts:"));
+		     });
+             $(function () {
+				$("#additionssalesorders").text(formatMessage("Additions:"));
+		     });
+             $(function () {
+				$("#deductionssalesorder").text(formatMessage("Deductions:"));
+		     });
+               $(function () {
+		$("#safetyvaluessales").text(formatMessage("Safety Valves"));
+	});
+               $(function () {
+		$("#controlvalvessales").text(formatMessage("Control Valves"));
+	});
+               $(function () {
+		$("#manualvaluessales").text(formatMessage("Manual Valves"));
+	});
+               $(function () {
+		$("#createjoborderfor").text(formatMessage("Create Job Orders for:"));
+	});
+               $(function () {
+		$("#salesorderclose").text(formatMessage("Close"));
+	});
+               $(function () {
+		$("#generatejosales").text(formatMessage("Generate JO"));
+	});
 </script>

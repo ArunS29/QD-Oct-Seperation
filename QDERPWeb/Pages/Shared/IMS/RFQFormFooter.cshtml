@@ -227,12 +227,12 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Custom Report Designs")
+                        .Text(new JS("formatMessage('Custom Report Designs')"))
                         .Icon("print")
                         .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview RFQ")
+                        .Text(new JS("formatMessage('Preview RFQ')"))
                         .Icon("file")
                         .Option("color", "#00ACC1"); // Cyan
                 })

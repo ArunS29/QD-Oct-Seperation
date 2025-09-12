@@ -409,19 +409,19 @@
         } else {
             let url = "";
             switch (selectedText) {
-            case "Inventory Report By date":
+            case formatMessage("Inventory Report By date"):
                 url = `/${tenantName}/IMS/InventoryByDateReport`;
                 break;
-            case "Inventory Report On Stores":
+            case formatMessage("Inventory Report On Stores"):
                 url = `/${tenantName}/IMS/StoreInventoryReport`;
                 break;
-            case "Inventory Report on Store(Pivort Report)":
+            case formatMessage("Inventory Report on Store(Pivort Report)"):
                 url = `/${tenantName}/IMS/PivotStoreInventory`;
                 break;
-            case "Inventory Report On stores (By Date)":
+            case formatMessage("Inventory Report On stores (By Date)"):
                 url = `/${tenantName}/IMS/StoreInventoryByDate`;
                 break;
-            case "Inventory - Stock Movement report":
+            case formatMessage("Inventory - Stock Movement report"):
                 url = `/${tenantName}/IMS/StockMovementReport`;
                 break;
             default:
