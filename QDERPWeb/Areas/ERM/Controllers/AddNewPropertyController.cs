@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
+using QD.ERP.Web.Areas.ERM.Pages;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
@@ -877,7 +878,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         InstallmentStartDate = VM.InstallmentStartDate,
                         InstallmentEndDate = VM.InstallmentEndDate,
                         NoOfInstallments = VM.NoOfInstallments,
-                        InitialDownPayment = VM.InitialDownPayment,
+                        InitialDownPayment = VM.InitialDownPayment, 
                         MonthlyInstallment = VM.MonthlyInstallment,
                         FinalInstallment = VM.FinalInstallment,
 
@@ -1089,6 +1090,54 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 _logger.LogError($"Error in GetProject: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetNextStockNumber(string PropertyGroupId)
+        {
+            try
+            {
+                if (!byte.TryParse(PropertyGroupId, out byte PropertyGroupIdByte))
+                {
+                    return BadRequest(new { message = "Invalid Group ID format." });
+                }
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var group = await dbContext.Tbl40108PropertyGroups
+                        .FirstOrDefaultAsync(x => x.PropertyGroupId == PropertyGroupIdByte);
+
+                    if (group == null)
+                        return NotFound(new { message = "Group not found." });
+
+                    string PropertyGroupIdCode = group.PropertyGroupCode; // base code
+
+                    
+                    var codes = await dbContext.Tbl40101PropertyMasters
+                   .Where(g => g.PropertyNo.StartsWith(PropertyGroupIdCode + "-"))
+                   .Select(g => g.PropertyNo)
+                   .ToListAsync();
+                    int maxNumber = 0;
+                    foreach (var code in codes)
+                    {
+                        var parts = code.Split('-');
+                        if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                        {
+                            if (number > maxNumber)
+                                maxNumber = number;
+                        }
+                    }
+
+                    string nextCode = $"{PropertyGroupIdCode}-{(maxNumber + 1):D3}";
+                    return Ok(nextCode);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetNextStockNumber: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
 

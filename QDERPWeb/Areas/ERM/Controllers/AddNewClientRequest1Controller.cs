@@ -795,7 +795,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					var resultWithDetails = new List<ExpandoObject>();
 
                     // Query the Tbl40137PropertyRequestChildren table for the given EquipmentRequestNo
-                    var result = dbContext.Tbl40137PropertyRequestChildren
+                    var result = dbContext.Qry40602propertyRequestChildren
                         .Where(x => x.EquipmentRequestNo == EquipmentRequestNo)
 						.ToList();
 
