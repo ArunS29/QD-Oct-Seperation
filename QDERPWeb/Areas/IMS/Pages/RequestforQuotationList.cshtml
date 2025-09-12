@@ -202,9 +202,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Request for Quotation List</h2>
+				<h2 class="title-slide" id="requestforquotationlistims"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickrfq"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -216,16 +216,16 @@
 	</div>
 
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">No of Items</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;" id="rfqnoofitems"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4>Total Before Tax</h4>
+				<h4 id="rfqtotalbefore"></h4>
 				<h1 id="Totalbeforetaxcount" style="color: white;">
 					0
 				</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4>Total After Discount</h4>
+				<h4 id="rfqtotalafter"></h4>
 				<h1 id="totalafterdiscount" style="color: white;">
 					0
 				</h1>
@@ -911,4 +911,19 @@
 					}
 				}
 			});
+			 $(function () {
+				$("#requestforquotationlistims").text(formatMessage("Request for Quotation List"));
+			 });
+			 $(function () {
+				$("#quickrfq").text(formatMessage("Quick Dice ERP Solutions"));
+			 });
+			 $(function () {
+				$("#rfqtotalbefore").text(formatMessage("Total Before Tax"));
+			 });
+			 $(function () {
+				$("#rfqtotalafter").text(formatMessage("Total After Discount"));
+			 });
+			 $(function () {
+				$("#rfqnoofitems").text(formatMessage("No of Items"));
+			 });
 </script>

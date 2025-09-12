@@ -38,14 +38,14 @@
 
 <div style="padding: 10px; border-radius: 5px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label style="font-weight: bold;">Detailed Description / Specification:</label>
+        <label style="font-weight: bold;" id="detaileddescriptionsrfq"></label>
         <div>
 
             @(Html.DevExtreme().Button()
 
                         .ID("btnUseDetailedDescription")
 
-                        .Text("Use Detailed Description")
+                        .Text(new JS("formatMessage('Use Detailed Description')"))
 
                         .Icon("info")
 
@@ -60,7 +60,7 @@
 
                         .ID("btnUseItemDesc")
 
-                        .Text("Use Item Desc.")
+                        .Text(new JS("formatMessage('Use Item Description')"))
 
                         .Icon("info")
 
@@ -79,7 +79,7 @@
 
                 .Height(100)
 
-                .Label("Detailed Description / Specification")
+                .Label(new JS("formatMessage('Detailed Description / Specification')"))
 
                 .LabelMode(EditorLabelMode.Floating)
 
@@ -94,7 +94,7 @@
 
                 .ID("Remarks")
 
-                .Label("Remarks")
+                .Label(new JS("formatMessage('Remarks')"))
 
                 .LabelMode(EditorLabelMode.Floating)
 
@@ -108,7 +108,7 @@
 
                 .ID("Size")
 
-                .Label("Size")
+                .Label(new JS("formatMessage('Size')"))
 
                 .LabelMode(EditorLabelMode.Floating))
 
@@ -116,7 +116,7 @@
 
                 .ID("Manufacturer")
 
-                .Label("Manufacturer")
+                .Label(new JS("formatMessage('Manufacturer')"))
 
                 .LabelMode(EditorLabelMode.Floating))
 
@@ -124,7 +124,7 @@
 
                 .ID("Brand")
 
-                .Label("Brand")
+                .Label(new JS("formatMessage('Brand')"))
 
                 .LabelMode(EditorLabelMode.Floating))
     </div>
@@ -136,7 +136,7 @@
 
                 .ID("PartNo")
 
-                .Label("Part No")
+                .Label(new JS("formatMessage('Part No')"))
 
                 .LabelMode(EditorLabelMode.Floating))
 
@@ -144,7 +144,7 @@
 
                 .ID("DeliveryPeriod")
 
-                .Label("Delivery Period")
+                .Label(new JS("formatMessage('Delivery Period')"))
 
                 .LabelMode(EditorLabelMode.Floating))
 
@@ -152,7 +152,7 @@
 
                 .ID("PlanNo")
 
-                .Label("Plan No")
+                .Label(new JS("formatMessage('Plan No')"))
 
                 .LabelMode(EditorLabelMode.Floating))
 
@@ -160,7 +160,7 @@
 
 @(Html.DevExtreme().Button()
         .ID("btnApplyAndClose")
-        .Text("Apply & Close")
+        .Text(new JS("formatMessage('Apply & Close')"))
         .Icon("check")
         .OnClick("applyAndClose"))
 
@@ -303,7 +303,9 @@
         }
     }
 
-
+     $(function () {
+                $("#detaileddescriptionsrfq").text(formatMessage("Detailed Description / Specification"));
+             });
 
 
 </script>

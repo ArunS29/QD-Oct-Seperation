@@ -184,7 +184,7 @@
 	<div class="client-field">
 		@(Html.DevExtreme().TextBox()
 				.ID("txtSupplierCode")
-				.Label("Client Code:")
+				.Label(new JS("formatMessage('Client Code')"))
 				.LabelMode(EditorLabelMode.Floating)
 
 				.ReadOnly(true)
@@ -195,7 +195,7 @@
 	<div class="client-field">
 		@(Html.DevExtreme().TextBox()
 				.ID("txtSupplierName")
-				.Label("Client Name:")
+				.Label(new JS("formatMessage('Client Name')"))
 				.LabelMode(EditorLabelMode.Floating)
 				.ReadOnly(true)
 				.Width("90%")
@@ -232,7 +232,7 @@
 			columns.Add().Caption(new JS("formatMessage('Phone')")).DataField("ContactPhone1");
 			columns.Add().Caption(new JS("formatMessage('Client Code')")).DataField("ClientCode").Visible(false);
 			columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo").Visible(false);
-			columns.Add().Caption("Add").Width(80).Alignment(HorizontalAlignment.Center)
+			columns.Add().Caption(new JS("formatMessage('Add')")).Width(80).Alignment(HorizontalAlignment.Center)
 			.CellTemplate(new JS("contactCellTemplate"));
 		}
 		) )

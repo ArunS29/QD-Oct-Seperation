@@ -380,7 +380,11 @@ namespace QDWEB.Areas.Finance.Controllers
                     }
                     else if (docType == "BankCashReceipt")
                     {
-                        query = query.Where(v => v.VoucherType == "Bank Receipt" || v.VoucherType == "Cash Receipt");
+                        query = query.Where(v => v.VoucherType == "Bank Receipts" || v.VoucherType == "Cash Receipts");
+                    }
+                    else if (docType == "SalesPurchase")
+                    {
+                        query = query.Where(v => v.VoucherType == "Sales" || v.VoucherType == "Purchases");
                     }
                     else
                     {
@@ -414,20 +418,10 @@ namespace QDWEB.Areas.Finance.Controllers
                     v.VoucherApprovedBy,
                     v.VoucherApprovedOn,
                     v.VoucherType,
-
-                    // Add these so DataGrid can bind
-                    ConvertedDrAmount = v.DebitAmount,
-                    ConvertedCrAmount = v.CreditAmount,
-                    DrAmount = v.DebitAmount,
-                    CrAmount = v.CreditAmount,
-                    TransactionCurrencySymbol = company.CurrencyImage,
-
-                    // If you really need audit fields
-                    AuditVerifiedBy = v.AuditVerifiedBy,
-                    IsAuditVerified = v.IsAuditVerified,
-                    AuditVerifiedOn = v.AuditVerifiedOn
+                    v.DebitAmount,
+                    v.CreditAmount,
+                    company.CurrencyImage
                 }).ToList();
-
 
                 return Json(data);
             }
