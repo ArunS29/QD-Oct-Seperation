@@ -227,15 +227,14 @@ namespace QD.ERP.Web.Controllers
             {
                 var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
 
-                // --- Summary counts ---
                 Func<List<string>, object> getCounts = (types) =>
                 {
                     var filtered = vouchers.Where(v => types.Contains(v.VoucherType));
                     return new
                     {
                         ToBeVerified = filtered.Count(v => !v.IsVerified),
-                        ToBeApproved = filtered.Count(v => v.IsVerified && !v.IsApproved),
-                        ToBeAudited = filtered.Count(v => v.IsApproved && !v.IsAuditVerified)
+                        ToBeApproved = filtered.Count(v =>  !v.IsApproved),
+                        ToBeAudited = filtered.Count(v =>  !v.IsAuditVerified)
                     };
                 };
 
@@ -243,12 +242,11 @@ namespace QD.ERP.Web.Controllers
                 {
                     Payments = getCounts(new List<string> { "Bank Payment", "Cash Payment" }),
                     Receipts = getCounts(new List<string> { "Bank Receipts", "Cash Receipts" }),
-                    SalesPurchase = getCounts(new List<string> { "Sales", "Purchase" }),
+                    SalesPurchase = getCounts(new List<string> { "Sales", "Purchases" }),
                     Journals = getCounts(new List<string> { "Journal" }),
                     ExpenseClaims = getCounts(new List<string> { "ExpenseClaim" })
                 };
 
-                // --- Detailed notifications ---
                 var notifications = vouchers.Select(v => new
                 {
                     VoucherType = v.VoucherType,
@@ -265,20 +263,17 @@ namespace QD.ERP.Web.Controllers
                     CreatedOn = v.VoucherEnteredOn ?? DateTime.Now
                 })
                 .OrderByDescending(v => v.CreatedOn)
-                .Take(20) // last 20 notifications
+                .Take(20)
                 .ToList();
 
-                return Ok(new
-                {
-                    Summary = summary,
-                    Notifications = notifications
-                });
+                return Ok(new { Summary = summary, Notifications = notifications });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error while fetching finance notifications", error = ex.Message });
             }
         }
+
 
         public IActionResult GetVatSalesNotificationSummary()
         {
