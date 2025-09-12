@@ -4169,6 +4169,7 @@
 		$("#btnSave").on("click", function (e) {
 			debugger;
 			const $btn = $(this).dxButton("instance");
+
 			// ✅ Step 1: Validate required field
 			const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
 			const clientnameValidation = clientnameValidator.validate();
@@ -4200,50 +4201,27 @@
 				TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ERverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-			    ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
 				RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-			  //  PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 			};
 
 			// ✅ Step 4: Get child records
-				const desc = $("#DetailedDescription").dxTextArea("instance");
-				if (desc) desc.option("value", firstChild.AddlDescription || "");
+			const children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
 
-				const remarks = $("#Remarks").dxTextBox("instance");
-				if (remarks) remarks.option("value", firstChild.ItemRemarks || "");
+			if (!children || children.length === 0) {
+				DevExpress.ui.notify("No child records to save.", "error", 3000);
+				$btn.option("disabled", false);
+				return;
+			}
 
-				const delivery = $("#DeliveryPeriod").dxTextBox("instance");
-				if (delivery) delivery.option("value", firstChild.DeliveryPeriod || "");
-
-				const plan = $("#PlanNo").dxTextBox("instance");
-				if (plan) plan.option("value", firstChild.PlanNo || "");
-
-
-		// ✅ Step 5: Get child records and attach extra fields
-		let children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
-
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
-
-		children = children.map(item => ({
-			...item,
-			AddlDescription: AddlDescription,
-			ItemRemarks: ItemRemarks,
-			DeliveryPeriod: DeliveryPeriod,
-			PlanNo: PlanNo
-		}));
-
-		const model = {
-			...master,
-			EquipmentPropertychild: children
-		};
+			const model = {
+				...master,
+				EquipmentPropertychild: children
+			};
 
 			// ✅ Step 5: Send data via AJAX
 			$.ajax({

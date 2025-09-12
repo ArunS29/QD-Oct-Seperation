@@ -777,6 +777,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     existing.InitialDownPayment = VM.InitialDownPayment;
                     existing.MonthlyInstallment = VM.MonthlyInstallment;
                     existing.FinalInstallment = VM.FinalInstallment;
+                    existing.PlateNo = VM.PlateNo;
 
                     existing.HiredOn = VM.HiredOn;
                     existing.SupplierCode = VM.SupplierCode;
@@ -838,6 +839,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         DoorNo = VM.DoorNo,
                         Color = VM.Color,
                         Year = VM.Year,
+                        PlateNo = VM.PlateNo,
+                        FinancedBy2 = VM.FinancedBy2,
                         KvaorKw = VM.KvaorKw,           
                         Capacity = VM.Capacity,
                         Weight = VM.Weight,

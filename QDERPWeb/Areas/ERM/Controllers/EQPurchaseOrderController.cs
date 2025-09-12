@@ -469,31 +469,46 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 // 🔹 Children handling
                 var existingChildren = await dbContext.Tbl40127PropertyPochildren
-               .Where(c => c.PropertyPono == model.Pono)
-               .ToListAsync();
+                    .Where(c => c.PropertyPono == model.Pono)
+                    .ToListAsync();
 
                 var currencyRate = model.CurrencyRate ?? 1;
 
-                // Remove all existing children to avoid duplicates
-                dbContext.Tbl40127PropertyPochildren.RemoveRange(existingChildren);
-
-                // Add all children from DTO as new entries
                 foreach (var child in children)
                 {
-                    var newChild = new Tbl40127PropertyPochild
-                    {
-                        PropertyPono = model.Pono,
-                        PropertyTypeId = child.PropertyTypeId,
-                        UnitRate = child.UnitRate * currencyRate,  // ✅ fixed
-                        QuotedQuantity = child.QuotedQuantity,
-                        UnitRateMethod = child.UnitRateMethod,
-                        LineOrderNo = child.LineOrderNo,
-                        PropertyAddlDescription = child.PropertyAddlDescription
-                    };
+                    // check if child already exists
+                    var existingChild = existingChildren
+                        .FirstOrDefault(c => c.PropertyPochildNo == child.PropertyPochildNo);
 
-                    await dbContext.Tbl40127PropertyPochildren.AddAsync(newChild);
+                    if (existingChild != null)
+                    {
+                        // ✅ Update existing child
+                        existingChild.PropertyTypeId = child.PropertyTypeId;
+                        existingChild.UnitRate = child.UnitRate * currencyRate;
+                        existingChild.QuotedQuantity = child.QuotedQuantity;
+                        existingChild.UnitRateMethod = child.UnitRateMethod;
+                        existingChild.LineOrderNo = child.LineOrderNo;
+                        existingChild.PropertyAddlDescription = child.PropertyAddlDescription;
+                    }
+                    else
+                    {
+                        // ✅ Insert new child
+                        var newChild = new Tbl40127PropertyPochild
+                        {
+                            PropertyPono = model.Pono,
+                            PropertyTypeId = child.PropertyTypeId,
+                            UnitRate = child.UnitRate * currencyRate,
+                            QuotedQuantity = child.QuotedQuantity,
+                            UnitRateMethod = child.UnitRateMethod,
+                            LineOrderNo = child.LineOrderNo,
+                            PropertyAddlDescription = child.PropertyAddlDescription
+                        };
+
+                        await dbContext.Tbl40127PropertyPochildren.AddAsync(newChild);
+                    }
                 }
 
+                // ✅ Save all changes once, outside loop
                 await dbContext.SaveChangesAsync();
 
                 return Ok(new

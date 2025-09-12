@@ -242,6 +242,10 @@
                     .TabIndex(1)
                     .Width("100%")
                     .OnKeyDown("onKeyDown")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Property No is required");
+                        })
                     .ContentTemplate(new TemplateName("GetTypeOfPropertytypeContentTemplate"))
                     .Buttons(buttons =>
                     {
@@ -850,6 +854,7 @@
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
+                        .AcceptCustomValue(true)
                                                 .ID("OurPONo")
                                                 .Label(new JS("formatMessage('Our PO No:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
@@ -857,6 +862,7 @@
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
+                                                .AcceptCustomValue(true)
                                                 .ID("SupplierRefNo")
                                                 .Label(new JS("formatMessage('Supplier Reference No:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
@@ -1066,6 +1072,23 @@
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
                 .OnInitialized("OnDocument")
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+
+                .ColumnResizingMode(ColumnResizingMode.Widget)
+                .ColumnChooser(chooser => chooser
+                .Enabled(false)
+                .Mode(GridColumnChooserMode.Select)
+                )
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto))
+                .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true)
+                .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height("40vh")
                 .DataSource(d => d.WebApi()
@@ -1115,6 +1138,23 @@
                         .ShowColumnLines(true)
                         .ColumnAutoWidth(true)
                         .OnInitialized("OnmobilzationInitialize")
+                        .GroupPanel(groupPanel => groupPanel.Visible(false))
+                        .ShowBorders(true)
+                        .ShowRowLines(true)
+                        .FilterRow(filterRow => filterRow.Visible(false))
+                        .GroupPanel(groupPanel => groupPanel.Visible(false))
+                        .ShowBorders(true)
+
+                        .ColumnResizingMode(ColumnResizingMode.Widget)
+                        .ColumnChooser(chooser => chooser
+                        .Enabled(false)
+                        .Mode(GridColumnChooserMode.Select)
+                        )
+                        .HeaderFilter(filter => filter.Visible(false))
+                        .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto))
+                        .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                        .AllowColumnReordering(true)
+                        .ColumnAutoWidth(true)
                         .OnContextMenuPreparing("onDeliveryContextMenu")
                         .RowAlternationEnabled(true)
                         .Height("40vh")
@@ -1147,6 +1187,23 @@
                 .ShowBorders(true)
                 .ShowColumnLines(true)
                 .OnInitialized("OnMaintenance")
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+
+                .ColumnResizingMode(ColumnResizingMode.Widget)
+                .ColumnChooser(chooser => chooser
+                .Enabled(false)
+                .Mode(GridColumnChooserMode.Select)
+                )
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto))
+                .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true)
+                .ColumnAutoWidth(true)
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height("40vh")
@@ -1189,6 +1246,23 @@
                 .ShowBorders(true)
                 .ShowColumnLines(true)
                 .OnInitialized("OnCostSummary")
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+
+                .ColumnResizingMode(ColumnResizingMode.Widget)
+                .ColumnChooser(chooser => chooser
+                .Enabled(false)
+                .Mode(GridColumnChooserMode.Select)
+                )
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto))
+                .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true)
+                .ColumnAutoWidth(true)
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height("40vh")
@@ -1259,6 +1333,23 @@
                 .Height("40vh")
                 .OnContextMenuPreparing("onClientsGridContextMenu1")
                 .OnInitialized("onItemReceivedGridInitialized")
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+
+                .ColumnResizingMode(ColumnResizingMode.Widget)  
+                .ColumnChooser(chooser => chooser
+                .Enabled(false)
+                .Mode(GridColumnChooserMode.Select)  
+                )
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto))
+                .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+                .AllowColumnReordering(true)
+                .ColumnAutoWidth(true)
                 .DataSource(d => d.WebApi()
                 .Controller("PropertyOperator") 
                 .LoadAction("GetByEquipmentNo")
@@ -1600,26 +1691,7 @@
               }
           });
       }
-    // function OnmobilzationInitialize(e) {
-    //     const grid = e.component;
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     const propertyNo = urlParams.get("code");
-
-    //     console.log("PropertyNo from query:", propertyNo);
-
-    //     const url = `/api/AddNewProperty/GetByMobilzation?PropertyNo=${encodeURIComponent(propertyNo)}`;
-
-    //     grid.option("dataSource", DevExpress.data.AspNet.createStore({
-    //         key: "PropertyIssueNo",
-    //         loadUrl: url
-    //     }));
-
-    //     grid.refresh();
-    // }
-
-
-
-     function onBackButtonClick(e) {
+     function onBackButtonClick() {
         window.history.back();
     }
       
@@ -1715,28 +1787,32 @@
         }
     }
      //  let PropertyImage = null; 
-    function onSaveClicked(e) {
+    function onSaveClicked() {
         var isUpdate = $("#btnSave").data("is-update");
-        // Build data object
-
-            const propertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
-     const propertyCategory = $("#PropertyCategory").dxDropDownBox("instance").option("value");
 
      // ===== Validation Start =====
-     if (!propertyNo || propertyNo.trim() === "") {
-         DevExpress.ui.notify("Property No is required!", "error", 3000);
-         $("#PropertyNo").dxTextBox("instance").focus();
-         return; // Stop function
+     function validateForm() {
+         const validators = [
+             $("#PropertyNo").dxValidator("instance"),
+             $("#PropertyDescription").dxValidator("instance"),
+             $("#PropertyCategory").dxValidator("instance")
+         ];
+
+         let isValid = true;
+         validators.forEach(v => {
+             const result = v.validate();
+             if (!result.isValid) {
+                 isValid = false;
+             }
+         });
+         return isValid;
      }
 
-     if (!propertyCategory || propertyCategory.length === 0) {
-         DevExpress.ui.notify("Property Category is required!", "error", 3000);
-         $("#PropertyCategory").dxDropDownBox("instance").focus();
-         return; // Stop function
+     if (!validateForm()) {
+         DevExpress.ui.notify("Please fix the errors!", "error", 3000);
+         return; // Stop execution
      }
      // ===== Validation End =====
-
-
         const data = {
     PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
     PropertyNo: $("#PropertyNo").dxTextBox("instance").option("value"),
@@ -1748,6 +1824,7 @@
     PropertyGroupId: $("#PropertyGroup").dxDropDownBox("instance").option("value"),
     // ================== Asset Details ==================
     Brand: $("#Brand").dxTextBox("instance").option("value"),
+    PlateNo: $("#PlateNo").dxTextBox("instance").option("value"),
     Model: $("#Model").dxTextBox("instance").option("value"),
     ModelType: $("#Type").dxTextBox("instance").option("value"),   
     ChassisNo: $("#SerialNo").dxTextBox("instance").option("value"),  
@@ -1765,12 +1842,13 @@
     LxWxH: $("#Dimension").dxTextBox("instance").option("value"),   
     Location: $("#Location").dxTextBox("instance").option("value"),
     OwnershipText: $("#Ownership").dxTextBox("instance").option("value"), 
-    PropertyCertification: $("#Certification").dxSelectBox("instance").option("value"), 
-    PropertyRemarks: $("#Remarks").dxTextBox("instance").option("value"),  
+    PropertyCertification: $("#Certification").dxSelectBox("instance").option("value"),
+    PropertyRemarks: $("#Remarks1").dxTextBox("instance").option("value"),
     PropertyPwas: $("#PWAS").dxSelectBox("instance").option("value"),    
-    PropertyAttachment: $("#Attachment").dxSelectBox("instance").option("value"), 
+    PropertyAttachment: $("#Attachment").dxSelectBox("instance").option("value"),
+   // FinancedBy2: $("#FinancedBy").dxSelectBox("instance").option("value"),
 
-    // ================== Additional Specs ==================
+     // ================== Additional Specs ==================
     AddlSpec1: $("#Specification1").dxTextBox("instance").option("value"),
     AddlField1: $("#Field1").dxTextBox("instance").option("value"),
     AddlSpec2: $("#Specification2").dxTextBox("instance").option("value"),
@@ -1785,9 +1863,9 @@
      PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
 
     // ================== Finance Info ==================
-    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
-    FinancierName: $("#FinancedBy").dxTextBox("instance").option("value"),       
-    InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
+    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"),
+      FinancedBy2: $("#FinancedBy").dxTextBox("instance").option("value"),
+     InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
     InstallmentEndDate: $("#EndDate").dxDateBox("instance").option("value"),     
     NoOfInstallments: $("#Installments").dxNumberBox("instance").option("value"), 
     InitialDownPayment: $("#DownPayment").dxNumberBox("instance").option("value"), 
@@ -1844,7 +1922,7 @@
         });
     }
 
-    function onSaveAndCloseClicked(e) {
+    function onSaveAndCloseClicked() {
         var isUpdate = $("#btnSave").data("is-update");
 
         const data = {
@@ -1894,9 +1972,9 @@
      PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
 
     // ================== Finance Info ==================
-    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
-    FinancierName: $("#FinancedBy").dxTextBox("instance").option("value"),       
-    InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
+    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"),
+     FinancedBy2: $("#FinancedBy").dxTextBox("instance").option("value"),
+     InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
     InstallmentEndDate: $("#EndDate").dxDateBox("instance").option("value"),     
     NoOfInstallments: $("#Installments").dxNumberBox("instance").option("value"), 
     InitialDownPayment: $("#DownPayment").dxNumberBox("instance").option("value"), 
@@ -1948,10 +2026,8 @@
                     $("#btnSave").data("is-update", true);
                 }
                  refreshFields();
-                // Navigate back after success
-                setTimeout(() => {
+
                     window.history.back();
-                }, 1000);
             },
             error: function () {
                 DevExpress.ui.notify("Error saving item.", "error", 3000);
@@ -1982,6 +2058,7 @@
             });
         });
     }
+  
 
           function onTabSelectionChanged(e) {
               // Hide all main tab content
@@ -2075,6 +2152,7 @@
             $("#PropertyGroup").dxDropDownBox("instance").option("value", data.PropertyGroupId);
 
             // ================== Asset Details ==================
+            $("#PlateNo").dxTextBox("instance").option("value", data.PlateNo);
             $("#Brand").dxTextBox("instance").option("value", data.Brand);
             $("#Model").dxTextBox("instance").option("value", data.Model);
             $("#Type").dxTextBox("instance").option("value", data.ModelType);
@@ -2094,7 +2172,7 @@
             $("#Location").dxTextBox("instance").option("value", data.Location);
             $("#Ownership").dxTextBox("instance").option("value", data.OwnershipText);
             $("#Certification").dxSelectBox("instance").option("value", data.PropertyCertification);
-            $("#Remarks").dxTextBox("instance").option("value", data.PropertyRemarks);
+             $("#Remarks1").dxTextBox("instance").option("value", data.PropertyRemarks);
             $("#PWAS").dxSelectBox("instance").option("value", data.PropertyPwas);
             $("#Attachment").dxSelectBox("instance").option("value", data.PropertyAttachment);
 
@@ -2114,7 +2192,7 @@
 
             // ================== Finance Info ==================
             $("#IsPropertyFinanced").dxCheckBox("instance").option("value", data.IsFinanced);
-            $("#FinancedBy").dxTextBox("instance").option("value", data.FinancierName);
+             $("#FinancedBy").dxTextBox("instance").option("value", data.FinancedBy2);
             $("#StartDate").dxDateBox("instance").option("value", data.InstallmentStartDate);
             $("#EndDate").dxDateBox("instance").option("value", data.InstallmentEndDate);
             $("#Installments").dxNumberBox("instance").option("value", data.NoOfInstallments);
@@ -2325,7 +2403,7 @@
                                                 DevExpress.ui.notify(res.message, "success", 2000);
                                                 const grid = $("#OperatorGrid").dxDataGrid("instance");
                                                 if (grid) {
-                                                    grid.refresh();
+                                                    grid.reload();
                                                 }
                                             } else {
                                                 DevExpress.ui.notify(res.message || "Delete failed", "error", 3000);
@@ -2476,4 +2554,12 @@
                      $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
                  }
              }
+                 window.addEventListener("message", function (event) {
+        if (event.data && event.data.action === "refreshOperatorGrid") {
+            const operatorGrid = $("#OperatorGrid").dxDataGrid("instance");
+            if (operatorGrid) {
+                operatorGrid.reload();
+            }
+        }
+    });
 </script>

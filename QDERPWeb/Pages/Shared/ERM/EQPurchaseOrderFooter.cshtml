@@ -284,7 +284,7 @@
 
                 )
 
-    </div>
+    </div>  
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnApprove")
@@ -307,19 +307,7 @@
                     var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
                 window.location.href = url; // Navigate to the page
             }
-
-
-
-
-        // function getDropdownData() {
-        //     return [
-        //         { id: 1, name: "Item A" },
-        //         { id: 2, name: "Item B" },
-        //         { id: 3, name: "Item C" }
-        //     ];
-        // }
-
-        // Fetch dropdown data (same API can be used if needed)
+      
      function getDropdownData() {
         return $.ajax({
             url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
@@ -1103,103 +1091,12 @@
             $('#submenuContainer7').hide();
         }
 
-        function addNewMaterialRequest(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/IMS/AddNewClientRequest`;
-                    break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
-                    break;
-                case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
-
-        function addNewMaterialReceipt(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
-         function addNewDeliveryNote(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-               case formatMessage('Add New Delivery to Client'):
-                    url = `/${tenantName}/IMS/AddNewDeliverytoClient`;
-                    break;
-                case formatMessage('Add Material Issued To Store(Consumption)'):
-                    url = `/${tenantName}/IMS/AddNewStoreRequest`;
-                    break;
-                case formatMessage('Add Material Issued To Project(Consumption)'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                case formatMessage('Add Store Transfers'):
-                    url = `/${tenantName}/IMS/AddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
+         
         // function printFun() {
         //     exportDataGridToPDF('dataGrid');
         // }
 
-         async function handleCreditReportPrinting(e) {
-
-        const itemText = e.itemData?.text;
-
-        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
-
-        if (!requestNo) {
-            alert("RequestNo  is required.");
-            return;
-        }
-
-        try {
-            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
-            const watermarkText = isApproved ? "" : "Draft Copy";
-            let reportName = "";
-
-            switch (itemText) {
-                case "Preview Request":
-                        reportName = "MaterialRequestInventory";
-                    break;
-                case "Preview Request(With Expected Unit Price)":
-                    reportName = "MaterialPurcchaseRequestion";
-                    break;
-
-                default:
-                    alert("Invalid report format selected.");
-                    return;
-            }
-
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
-
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        } catch (error) {
-            console.error("Error checking approval status:", error);
-            alert("Failed to check invoice approval status.");
-        }
-    }
-
+        
     async function checkInvoiceApprovalStatus1(requestNo) {
         try {
             const response = await $.ajax({
@@ -1217,50 +1114,7 @@
         }
     }
 
-    //     const quotationReportMap = {
-    //     "Preview Quotation": "PreviewQuotations",
-    //     "Preview Quotation(W/O Discount Column)": "wtDiscount",
-    //     "Preview Quotation(W/o VAT)":"QuotationWOvat",
-    //     "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
-    //     "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
-    //     "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
-    //     "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
-    //     "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
-    //     "Preview Quotation(With Group Code)":"GroupCode",
-    //     "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
-
-    //      };
-
-
-    // function handleQuatation(e) {
-    //     alert('History trig')
-    //     const itemText = e.itemData?.text;
-    //     const tenantName = window.tenantName || "";
-    //     const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
-
-    //     if (!quotationNo && itemText.includes("Quotation")) {
-    //         alert("Quotation number is required.");
-    //         return;
-    //     }
-
-    //     try {
-    //         const reportName = quotationReportMap[itemText];
-
-    //         if (!reportName) {
-    //             alert("Invalid report format selected.");
-    //             return;
-    //         }
-
-    //         const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
-    //         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-
-    //     } catch (error) {
-    //         console.error("Failed to open report:", error);
-    //         alert("An error occurred while trying to open the report.");
-    //     }
-    // }
-
-
+   
        const salesReportMap = {
         "Preview  Sales Order": "SalesOrderReport", // two spaces!
         "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
@@ -1325,29 +1179,7 @@
           "Preview Purchase Order(Foreign Currency)":"PreviewPurchaseOrderForeignCurrency"
     };
 
-    // function handlePurchase(e) {
-    //     const itemText = e.itemData?.text;
-    //     const tenantName = window.tenantName || "";
-    //     const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
-
-    //     if (!purchaseNo) {
-    //         alert("purchaseNo number is required.");
-    //         return;
-    //     }
-
-    //     const reportName = PurchaseMap[itemText];
-
-    //     if (!reportName) {
-    //         alert("Invalid report format selected.");
-    //         return;
-    //     }
-
-
-    // const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
-
-
-    //     window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    // }
+   
         function handlePurchase(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";

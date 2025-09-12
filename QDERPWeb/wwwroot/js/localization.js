@@ -2,6 +2,14 @@
 var dictionary = {
 
     "en": {
+        "Request Type":"Request Type",
+        "Po Status":"Po Status",
+        "Supplier Ref No":"Supplier Ref No",
+        "Supplier Qoute No":"Supplier Qoute No",
+        "Print Supplier Acceptance":"Print Supplier Acceptance",
+        "Add New Purchase Order": "Add New Purchase Order",
+        "Cancellation Remarks": "Cancellation Remarks",
+        "Cancellation": "Cancellation",
         "Purchase Request with Item":"Purchase Request with Item",
         "Terms & Conditions List:":"Terms & Conditions List:",
         "Approve All select DN": "Approve All select DN",
@@ -4980,6 +4988,14 @@ var dictionary = {
                 //Arabic Language Translations
 
     ar: {
+        "Request Type": "نوع الطلب",
+        "Po Status": "حالة أمر الشراء",
+        "Supplier Ref No": "الرقم المرجعي للمورد",
+        "Supplier Qoute No": "رقم عرض المورد",
+        "Print Supplier Acceptance": "طباعة موافقة المورد",
+        "Add New Purchase Order": "إضافة أمر شراء جديد",
+        "Cancellation Remarks": "ملاحظات الإلغاء",
+        "Cancellation": "إلغاء",
         "Property Code": "رمز العقار",
         "Expected Rate": "السعر المتوقع",
         "Units Requested": "الوحدات المطلوبة",
@@ -9132,6 +9148,14 @@ var dictionary = {
              
                 // Mandrian Chinese Languange Translations
     zh: {
+        "Request Type": "请求类型",
+        "Po Status": "采购订单状态",
+        "Supplier Ref No": "供应商参考号",
+        "Supplier Qoute No": "供应商报价号",
+        "Print Supplier Acceptance": "打印供应商确认书",
+        "Add New Purchase Order": "新增采购订单",
+        "Cancellation Remarks": "取消备注",
+        "Cancellation": "取消",
         "Property Code": "物业代码",
         "Expected Rate": "预期价格",
         "Units Requested": "请求的单位",
@@ -12977,6 +13001,14 @@ var dictionary = {
 
                      // Hindi Language Translation
     hi: {
+        "Request Type": "अनुरोध प्रकार",
+        "Po Status": "खरीद आदेश स्थिति",
+        "Supplier Ref No": "आपूर्तिकर्ता संदर्भ संख्या",
+        "Supplier Qoute No": "आपूर्तिकर्ता कोट संख्या",
+        "Print Supplier Acceptance": "आपूर्तिकर्ता स्वीकृति प्रिंट करें",
+        "Add New Purchase Order": "नया क्रय आदेश जोड़ें",
+        "Cancellation Remarks": "रद्दीकरण टिप्पणी",
+        "Cancellation": "रद्दीकरण",
         "Property Code": "संपत्ति कोड",
         "Expected Rate": "अपेक्षित दर",
         "Units Requested": "अनुरोधित इकाइयाँ",
@@ -16924,6 +16956,14 @@ var dictionary = {
 
                  // Urdu Language Translation
     ur: {
+        "Request Type": "درخواست کی قسم",
+        "Po Status": "خریداری آرڈر کی حیثیت",
+        "Supplier Ref No": "سپلائر ریفرنس نمبر",
+        "Supplier Qoute No": "سپلائر کوٹ نمبر",
+        "Print Supplier Acceptance": "سپلائر کی منظوری پرنٹ کریں",
+        "Add New Purchase Order": "نیا خریداری آرڈر شامل کریں",
+        "Cancellation Remarks": "منسوخی کی وضاحت",
+        "Cancellation": "منسوخی",
         "Property Code": "پراپرٹی کوڈ",
         "Expected Rate": "متوقع شرح",
         "Units Requested": "درخواست کی گئی یونٹس",
@@ -20933,6 +20973,14 @@ var dictionary = {
 
                // Korean Language Translation
     ko: {
+        "Request Type": "요청 유형",
+        "Po Status": "구매 주문 상태",
+        "Supplier Ref No": "공급업체 참조 번호",
+        "Supplier Qoute No": "공급업체 견적 번호",
+        "Print Supplier Acceptance": "공급업체 승인을 인쇄",
+        "Add New Purchase Order": "새 구매 주문 추가",
+        "Cancellation Remarks": "취소 비고",
+        "Cancellation": "취소",
         "Property Code": "자산 코드",
         "Expected Rate": "예상 요율",
         "Units Requested": "요청된 단위",

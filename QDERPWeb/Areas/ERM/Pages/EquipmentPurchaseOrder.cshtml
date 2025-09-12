@@ -3,7 +3,6 @@
 @{
 }
 <style>
-
     .my-description-column .dx-texteditor-input {
     height: 120px !important;
 }
@@ -238,7 +237,7 @@
        z-index: 100; 
      } 
 </style>
-<input id="formId" value="frm60107PurchaseOrderEdit" type="hidden" />
+<input id="formId" value="EQPurchaseOrderEdit" type="hidden" />
 <div class="dx-card-container">
     <div class="dx-card-header minimal-header">
         <div class="card-title-icon">
@@ -864,7 +863,7 @@
             </div>
 
         </text>);
-         item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+         item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
             <div class="p-3">
                 <table style="width:100%; font-size:14px; margin:5px;">
                     <tr>
@@ -1460,8 +1459,8 @@ $(function () {
                                         placeholder: "Search..."
                                     },
                                     columns: [
-                                        { dataField: "UnitCode", caption: "Code", width: 100 },
-                                        { dataField: "UnitType", caption: "Unit Type", width: 200 },
+                                        { dataField: "UnitCode", caption: formatMessage('Code'), width: 100 },
+                                        { dataField: "UnitType",caption: formatMessage('Unit Type'), width: 200 },
                                     ],
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -1514,41 +1513,41 @@ $(function () {
 
                 },
    
-                    onContextMenuPreparing: function(e) {
-        if (e.row && e.row.rowType === "data") {
-            e.items = [
-                {
-                    text: "Delete Line Item",
-                    icon: "remove",
-                    onItemClick: function() {
-                        deletePoChild([e.row.data.PochildNo]);
-                    }
-                },
-                {
-                    text: "Delete All Selected Line Items",
-                    icon: "remove",
-                    onItemClick: function() {
-                        const grid = $("#itemGrid").dxDataGrid("instance");
-                        const selectedRows = grid.getSelectedRowsData();
-                        const poChildNos = selectedRows.map(row => row.PochildNo);
-                        if (poChildNos.length > 0) {
-                            deletePoChild(poChildNos);
-                        } else {
-                            DevExpress.ui.notify("No rows selected.", "warning", 2000);
-                        }
-                    }
-                },
-                {
-                    text: "Add New Line Item",
-                    icon: "add",
-                    onItemClick: function() {
-                        const grid = $("#itemGrid").dxDataGrid("instance");
-                        grid.addRow();
-                    }
-                }
-            ];
-        }
-    },
+    //                 onContextMenuPreparing: function(e) {
+    //     if (e.row && e.row.rowType === "data") {
+    //         e.items = [
+    //             {
+    //                 text: "Delete Line Item",
+    //                 icon: "remove",
+    //                 onItemClick: function() {
+    //                     deletePoChild([e.row.data.PochildNo]);
+    //                 }
+    //             },
+    //             {
+    //                 text: "Delete All Selected Line Items",
+    //                 icon: "remove",
+    //                 onItemClick: function() {
+    //                     const grid = $("#itemGrid").dxDataGrid("instance");
+    //                     const selectedRows = grid.getSelectedRowsData();
+    //                     const poChildNos = selectedRows.map(row => row.PochildNo);
+    //                     if (poChildNos.length > 0) {
+    //                         deletePoChild(poChildNos);
+    //                     } else {
+    //                         DevExpress.ui.notify("No rows selected.", "warning", 2000);
+    //                     }
+    //                 }
+    //             },
+    //             {
+    //                 text: "Add New Line Item",
+    //                 icon: "add",
+    //                 onItemClick: function() {
+    //                     const grid = $("#itemGrid").dxDataGrid("instance");
+    //                     grid.addRow();
+    //                 }
+    //             }
+    //         ];
+    //     }
+    // },
 
 
                 columnAutoWidth: true,
@@ -1766,8 +1765,8 @@ $(function () {
                 },
                 selection: { mode: "single" },
                 columns: [
-                    { dataField: "PropertyTypeId", caption: "ID", width: 40 },
-                    { dataField: "PropertyType", caption: "Property Type", width: 500 }
+                    { dataField: "PropertyTypeId", caption: formatMessage('ID'), width: 40 },
+                    { dataField: "PropertyType", caption: formatMessage('Property Type'), width: 500 }
                 ],
                 onSelectionChanged: function (selectedItems) {
                     const selectedItem = selectedItems.selectedRowsData[0];
@@ -1990,15 +1989,11 @@ function disableSpecificControls() {
         });
     }
 
-
-
-
-
 $("#btnSave").on("click", function () {
     debugger;
         $("#btnSave").dxButton("instance").option("text", "Update");
 
-         const supplier = $("#SupplierName").dxSelectBox("instance")?.option("value");
+    const supplier = $("#SupplierName").dxSelectBox("instance")?.option("value");
     if (!supplier) {
         DevExpress.ui.notify("Please select a Supplier.", "error", 3000);
         $("#SupplierName").dxValidator("instance")?.validate(); // trigger built-in dxValidator if attached
@@ -2780,15 +2775,24 @@ function renderPopoverForm(rowIndex) {
     }
 
     // Function to save form data back to grid
-    function saveToGrid(form) {
-        const formData = form.option("formData");
-        grid.cellValue(rowIndex, "PropertyAddlDescription", formData.PropertyAddlDescription);
-        grid.cellValue(rowIndex, "Certification", formData.Certification);
-        grid.cellValue(rowIndex, "Capacity", formData.Capacity);
-        grid.cellValue(rowIndex, "Operator", formData.Operator);
-        grid.cellValue(rowIndex, "Attachment", formData.Attachment);
-        DevExpress.ui.notify("Description saved to grid.", "success", 2000);
-    }
+ function saveToGrid(form) {
+    const formData = form.option("formData");
+
+    // update grid row value
+    grid.cellValue(rowIndex, "PropertyAddlDescription", formData.PropertyAddlDescription);
+
+    // also update in dataSource immediately
+    const ds = grid.getDataSource();
+    const store = ds.store();
+
+    const rowKey = grid.getKeyByRowIndex(rowIndex);
+
+    store.update(rowKey, formData)
+        .then(() => {
+            ds.reload(); // refresh grid dataSource
+            DevExpress.ui.notify("Description saved to grid & datasource.", "success", 2000);
+        });
+}
 
     const formInstance = $container.dxForm({
         formData: {
@@ -2899,5 +2903,86 @@ function renderPopoverForm(rowIndex) {
         ]
     }).dxForm("instance");
 }
+
+ $(document).ready(function () {
+        console.log('Start permission handling');
+        var formId = "EQPurchaseOrderEdit";
+        // Call the API to get permissions
+        $.ajax({
+            url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("API Response:", response); // Log the API response
+
+                if (response.success && response.permissions) {
+                    // Default visibility and enable status for buttons
+                    var controlStates = {
+                        "btnSave":{ "Visible": false, "Enabled": false },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnDelete": { "Visible": false, "Enabled": false },
+                        "btnBack": { "Visible": false, "Enabled": false },
+                        "btnSubmit": { "Visible": false, "Enabled": false },
+                        "btnVerify": { "Visible": false, "Enabled": false },
+                        "btnApprove": { "Visible": false, "Enabled": false },
+                        "btnCancel": { "Visible": false, "Enabled": false },
+                        "btnAttach": { "Visible": false, "Enabled": false },
+                        "btnAddNew": { "Visible": false, "Enabled": false },
+                        "btnPrint4": { "Visible": false, "Enabled": false },
+                    };
+
+
+                    // Check for full access
+                    var fullAccess = response.permissions.find(p =>
+                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                    );
+
+                    if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                        // Grant full access: make all controls visible and enabled
+                        Object.keys(controlStates).forEach(key => {
+                            controlStates[key] = { "Visible": true, "Enabled": true };
+                        });
+                    } else {
+                        // Update states based on specific permissions for each control
+                        Object.keys(controlStates).forEach(key => {
+                            var controlPermission = response.permissions.find(p =>
+                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                            );
+                            if (controlPermission) {
+                                controlStates[key] = {
+                                    "Visible": controlPermission.ItemVisible || false,
+                                    "Enabled": controlPermission.ItemEnabled || false
+                                };
+                            }
+                        });
+                    }
+
+                        console.log("Control States:", controlStates); // Log the control states
+
+                        // Dynamically update button visibility and enabled state
+                        Object.keys(controlStates).forEach(key => {
+                            var button = document.getElementById(key);
+                            if (button) {
+                                // Handle visibility
+                                button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                                // Handle enable/disable state
+                                button.disabled = !controlStates[key].Enabled;
+                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            } else {
+                                console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                    } else {
+                        console.warn("Failed to fetch permissions or no permissions available.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching permissions:", error);
+                    alert('An error occurred while fetching permissions. Please try again.');
+                }
+            });
+            showColumnChooser();
+            console.log('End permission handling');
+        });
 
 </script>
