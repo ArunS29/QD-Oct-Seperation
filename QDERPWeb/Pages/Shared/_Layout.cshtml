@@ -1746,25 +1746,24 @@
                 <!-- Content -->
                 <div class="notification-content">
 
-                    <!-- Finance Tab Content -->
                     <div class="tab-content" id="financeContent">
                         <!-- Payments (Bank/Cash) -->
                         <div class="status-card">
                             <div class="status-card-title">Payments (Bank/Cash)</div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeVerified')">
+                                <div class="status-item" id="payments-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="payments-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeApproved')">
+                                <div class="status-item" id="payments-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="payments-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeAudited')">
+                                <div class="status-item" id="payments-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1775,21 +1774,21 @@
 
                         <!-- Receipt (Bank/Cash) -->
                         <div class="status-card">
-                            <div class="status-card-title">Receipt (Bank/Cash)</div>
+                            <div class="status-card-title">Receipts (Bank/Cash)</div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeVerified')">
+                                <div class="status-item" id="receipt-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="receipt-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeApproved')">
+                                <div class="status-item" id="receipt-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="receipt-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeAudited')">
+                                <div class="status-item" id="receipt-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1802,19 +1801,19 @@
                         <div class="status-card">
                             <div class="status-card-title">Sales/Purchase</div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeVerified')">
+                                <div class="status-item" id="salespurchase-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="salespurchase-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeApproved')">
+                                <div class="status-item" id="salespurchase-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="salespurchase-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeAudited')">
+                                <div class="status-item" id="salespurchase-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1827,19 +1826,19 @@
                         <div class="status-card">
                             <div class="status-card-title">Journals</div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeVerified')">
+                                <div class="status-item" id="journals-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="journals-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeApproved')">
+                                <div class="status-item" id="journals-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="journals-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeAudited')">
+                                <div class="status-item" id="journals-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1852,19 +1851,19 @@
                         <div class="status-card">
                             <div class="status-card-title">Expense Claims</div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeVerified')">
+                                <div class="status-item" id="expenseclaims-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="expenseclaims-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeApproved')">
+                                <div class="status-item" id="expenseclaims-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="expenseclaims-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeAudited')">
+                                <div class="status-item" id="expenseclaims-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1872,12 +1871,11 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Clear All & Individual Notifications -->
+
                         <button id="clearAllNotifications" class="text-button">Clear All</button>
-                        <div class="notification-divider" id="notificationList">
-                            <!-- Individual notifications will be dynamically injected -->
-                        </div>
+                        <div class="notification-divider" id="notificationList"></div>
                     </div>
+
 
                     <!-- VAT Tab Content -->
                     <div class="tab-content" id="vatContent" style="display:none;">
@@ -5347,7 +5345,7 @@
              }
         }
 
-                $(document).ready(function () {
+        $(document).ready(function () {
             let previousIds = new Set(); // track notifications already seen
 
             function updateNotifications() {
@@ -5477,12 +5475,15 @@
          * Payments → BankCash
          * Receipts → BankCashReceipt
          */
-        function goToVoucherApproval(module, status) {
+                function goToVoucherApproval(module, status) {
             let docType = module;
             if (module === "Payments") docType = "BankCashPayment";
             if (module === "Receipts") docType = "BankCashReceipt";
+            if (module === "SalesPurchase") docType = "SalesPurchase";
+            if (module === "Journals") docType = "Journal";
+            if (module === "ExpenseClaims") docType = "ExpenseClaim";
 
-           window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
+            window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
         }
 
               // Open sidebar when bell clicked

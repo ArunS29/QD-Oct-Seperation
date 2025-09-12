@@ -1061,7 +1061,7 @@
                                     if (result && result.success) {
                                         DevExpress.ui.notify(result.message, "success", 2000);
                                         // Redirect to edit page (adjust route as needed)
-															window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(result.purchaseVoucherNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+									window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(result.purchaseVoucherNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
                                     } else {
                                         DevExpress.ui.notify(result.message || "Failed to create VAT Purchase Bill.", "error", 3000);
                                     }
