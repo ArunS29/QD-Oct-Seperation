@@ -58,12 +58,17 @@
         width: 100%;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="DebtorsCollection" class="no-border-input"></div>
     </div>
+</div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <div id="DebtorsCollection" class="titleText no-border-title"></div>
 </div>
-
 
 <div class="container" style="display: flex; flex-direction: column;width:100%;">
 
@@ -138,16 +143,19 @@
 
 <script type="text/javascript">
     let pivotData = [];
-    $(function () {
-        $("#DebtorsCollection").dxTextBox({
-            text: formatMessage("Debtors Collection"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
-    });
+    // $(function () {
+    //     $("#DebtorsCollection").dxTextBox({
+    //         text: formatMessage("Debtors Collection"),
+    //         readOnly: true,
+    //         onContentReady: function (e) {
+    //             $(e.element).addClass("dx-textbox-heading");
+    //         }
+    //     });
+    // });
 
+        $(function () {
+        $("#DebtorsCollection").text(formatMessage("Debtors Collection"));
+    });
     $(document).ready(function () {
         loadDefaultRecords();
     });
@@ -251,10 +259,10 @@
                     data: data
                 },
                 fields: [
-                    { dataField: "AccountHead", area: "row", caption: "Client Name" },
-                    { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                    { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" }
+                       { dataField: "AccountHead", area: "row", caption: formatMessage("Client Name") },
+    { dataField: "DrAmount", area: "data", caption: formatMessage("Invoiced Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+    { dataField: "CrAmount", area: "data", caption: formatMessage("Received/Credited Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+    { dataField: "VoucherMonth", area: "column", caption: formatMessage("Transaction Month"), dataType: "date", format: "MMM-yyyy" }
 
                 ]
 
@@ -358,30 +366,33 @@
         const dataSource = pivotGrid.getDataSource();
 
         const baseFields = [
-            { dataField: "AccountHead", area: "row", caption: "Client Name" },
-            { dataField: "DrAmount", area: "data", caption: "Invoiced Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-            { dataField: "CrAmount", area: "data", caption: "Received/ Credited Amount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-            { dataField: "VoucherMonth", area: "column", caption: "Transaction Month", dataType: "date", format: "MMM-yyyy" },
-        ];
+               
+        { dataField: "AccountHead", area: "row", caption: formatMessage("Client Name") },
+        { dataField: "DrAmount", area: "data", caption: formatMessage("Invoiced Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "CrAmount", area: "data", caption: formatMessage("Received/ Credited Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "VoucherMonth", area: "column", caption: formatMessage("Transaction Month"), dataType: "date", format: "MMM-yyyy" }
+    ];
 
-        const extraFields = [
-            { dataField: "ReferenceNo", area: "filter", caption: "Reference No" },
-            { dataField: "AccountNo", area: "filter", caption: "Ledger No" },
-            { dataField: "Amount", area: "filter", caption: "Amount" },
-            { dataField: "DrCr", area: "filter", caption: "Dr Cr" },
-            { dataField: "VoucherAmountFormatted", area: "filter", caption: "Voucher Amount Formatted", format: { type: "fixedPoint", precision: 2 } },
-            { dataField: "AccountGroup", area: "filter", caption: "Account Group" },
-            { dataField: "MasterGroup", area: "filter", caption: "Master Group" },
-            { dataField: "AccountHeadNo", area: "filter", caption: "Account Head No" },
-            { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
-            { dataField: "SysRemarks", area: "filter", caption: "Sys Remarks" },
-            { dataField: "VoucherDate", area: "filter", caption: "Voucher Date", dataType: "date" },
-            { dataField: "VoucherEffectiveDate", area: "filter", caption: "Effective Date", dataType: "date" },
-            { dataField: "EffectiveMonth", area: "filter", caption: "Effective Month" },
-            { dataField: "InvoiceSalesPersonCode", area: "filter", caption: "Invoice Sales Person Code" },
-            { dataField: "InvoiceSalesPersonName", area: "filter", caption: "Invoice Sales Person Name" },
-            { dataField: "VoucherNo", area: "filter", caption: "Voucher No" }
-        ];
+
+           const extraFields = [
+        { dataField: "ReferenceNo", area: "filter", caption: formatMessage("Reference No") },
+        { dataField: "AccountNo", area: "filter", caption: formatMessage("Ledger No") },
+        { dataField: "Amount", area: "filter", caption: formatMessage("Amount") },
+        { dataField: "DrCr", area: "filter", caption: formatMessage("DrCr") },
+        { dataField: "VoucherAmountFormatted", area: "filter", caption: formatMessage("Voucher Amount Formatted"), format: { type: "fixedPoint", precision: 2 } },
+        { dataField: "AccountGroup", area: "filter", caption: formatMessage("Account Group") },
+        { dataField: "MasterGroup", area: "filter", caption: formatMessage("Master Group") },
+        { dataField: "AccountHeadNo", area: "filter", caption: formatMessage("Account Head No") },
+        { dataField: "EntryNarration", area: "filter", caption: formatMessage("Entry Narration") },
+        { dataField: "SysRemarks", area: "filter", caption: formatMessage("Sys Remarks") },
+        { dataField: "VoucherDate", area: "filter", caption: formatMessage("Voucher Date"), dataType: "date" },
+        { dataField: "VoucherEffectiveDate", area: "filter", caption: formatMessage("Effective Date"), dataType: "date" },
+        { dataField: "EffectiveMonth", area: "filter", caption: formatMessage("Effective Month") },
+        { dataField: "InvoiceSalesPersonCode", area: "filter", caption: formatMessage("Invoice Sales Person Code") },
+        { dataField: "InvoiceSalesPersonName", area: "filter", caption: formatMessage("Invoice Sales Person Name") },
+        { dataField: "VoucherNo", area: "filter", caption: formatMessage("Voucher No") }
+    ];
+
 
         // Toggle logic
         if (!extraFieldsVisible) {
@@ -438,8 +449,8 @@
         // Refresh PivotGrid with updated data
         pivotGrid.option("dataSource", {
             fields: [
-                { dataField: "AccountHead", area: "row", caption: "Client Name" },
-                { dataField: "DrAmount", area: "data", summaryType: "sum", caption: "Invoiced Amount" }
+                { dataField: "AccountHead", area: "row", caption: formatMessage("Client Name") },
+                { dataField: "DrAmount", area: "data", summaryType: "sum", caption: formatMessage("Invoiced Amount") }
             ],
             store: updatedData
         });

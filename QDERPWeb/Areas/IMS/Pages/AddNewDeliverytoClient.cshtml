@@ -133,7 +133,6 @@
     }
 
     .layout-container {
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -218,7 +217,7 @@
     display: flex;
     }
     .important-height {
-        height: 115px !important;
+        height: 135px !important;
     }
 
 </style>
@@ -235,7 +234,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(220)
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(200)
                     .Items(item =>
                     {
                         item.Add()
@@ -243,11 +242,11 @@
                     .Icon("folder")
                     .Text("Delivery Note Details")
                     .Template(@<text>
-            <div class="p-3">
-                <div class="row g-2">
+            <div class="p-2">
+                <div class="row">
 
                     <!-- Row 1 -->
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("deliveryNoteNo")
                         .Value("") // leave it blank initially
@@ -268,7 +267,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-6" style="display:flex; align-items:end;">
+                    <div class="col-md-4" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .ID("GetProjectDropDown")
                         .DataSource(d => d.WebApi()
@@ -285,30 +284,55 @@
                         .ValueChangeEvent("change")
                         .OnValueChanged("onClientSelected")
                         .Width("100%")
-                        )
+                        .ValidationRules(rules =>
+							{
+								rules.AddRequired()
+									.Message(new JS("formatMessage('Client Name should be entered')"));
+							})
+                        .Buttons(buttons => {
+                            // Clear Button
+                            buttons.Add()
+                                .Name("clear");
 
+                            // Add Client Button
+                            buttons.Add()
+                                .Name("AddDebits")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttoClientLeadmaster1")
+                                );
 
-                        @(Html.DevExtreme().Button()
-                        .ID("editClient")
-                        .Icon("edit")
-                        .Hint("Add Client")
-                        .Width(18)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster")
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddClient")
-                        .Icon("plus")
-                        .Hint("Add Client")
-                        .Width(18)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster1")
+                            // Edit Client Button
+                            buttons.Add()
+                                .Name("btnEditClient")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("edit")
+                                    .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+                                    .OnClick("redirecttoClientLeadmaster")
+                                );
+                                    buttons.Add()
+                                    .Name("dropDown");
+                        })
                         )
 
                     </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientContactNo")
+                        .Label("Client Contact No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        .Width("100%")
+                        )
+                    </div>
 
                     <!-- Row 2 -->
-                    <div class="col-md-2" style="display:flex; align-items:end;">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .Label("Sales Person / Store Incharge :")
                         .DataSource(d => d.WebApi()
@@ -331,14 +355,22 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("btnAddSalesperson")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttosalespersonmaster")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddSalesperson")
-                        .Icon("plus")
-                        .ElementAttr("class", "button-alignment-down button-group")
-                        .OnClick("redirecttosalespersonmaster")
-                        )
-
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
@@ -348,7 +380,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
                         .Label("Client PO Date:")
@@ -374,18 +406,10 @@
 						.OnClick("onClientContactClick"));
 					   }))
                     </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("ClientContactNo")
-                        .Label("Client Contact No:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
-                        .Width("100%")
-                        )
-                    </div>
+                    
 
                     <!-- Row 3 -->
-                    <div class="col-md-2" style="display:flex; align-items:end;">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .Label("Stock Delivery From Store:")
                         .DataSource(d => d.WebApi()
@@ -409,14 +433,21 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddModeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddModeReq")
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("AddModeReq")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddModeReq")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
@@ -444,15 +475,21 @@
                         .Disabled(true)
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddTypeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddTypeReq")
-                        .Disabled(true)
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("AddTypeReq")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddTypeReq")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
@@ -480,22 +517,22 @@
         </text>);
 
             item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
-            <div class="layout-container" style="padding: 10px;">
+            <div class="layout-container">
                 <div class="form-row" style="display: flex; gap: 20px;">
                     <!-- Left Column: Delivery Note Remarks -->
                     <div style="flex: 1;">
-                        <label >Delivery Note Remarks:</label>
                         @(Html.DevExtreme().TextArea()
                         .ID("DeliveryNoteRemarks")
                         .ElementAttr("class", "important-height")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .Label("Delivery Note Remarks:")
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
 
                     <!-- Right Column: Other Fields -->
                     <div style="flex: 1;">
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("Salesman")
@@ -514,7 +551,7 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DriverName")
@@ -533,7 +570,7 @@
                             </div>
                         </div>
 
-                        <div style="margin-bottom: 10px;">
+                        <div>
                             @(Html.DevExtreme().TextBox()
                             .ID("DriverID")
                             .Label("Driver's ID:")
@@ -549,7 +586,7 @@
 
                         item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
             <div class="form-container">
-                <div class="p-3">
+                <div class="p-2">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
@@ -577,15 +614,21 @@
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("PreparedByTemplate"))
                                     .Width("100%")
-                                    )
-
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddPreparedBy")
-                                    .Icon("plus")
-                                    .Hint("Add Sales Person")
-                                    .Width(40)
-                                    .ElementAttr("style", "margin-top:25px;")
-                                    .OnClick("AddPreparedBy")
+                                    .Buttons(buttons => {
+                                        buttons.Add()
+                                            .Name("clear");
+                                        buttons.Add()
+                                            .Name("AddPreparedBy")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                                .Type(ButtonType.Default)
+                                                .Icon("plus")
+                                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                .OnClick("AddPreparedBy")
+                                            );
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    })
                                     )
                                 </td>
                             </tr>
@@ -602,20 +645,19 @@
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text("Show Item Line No instead of Sl.No"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text("Print Item Code with Description"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text("Print Item Part No with Description"))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text("Print Item Part No with Arabic Desc"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(true).Text("Print Footer At Bottom"))
+
                                 </td>
                             </tr>
                         </tbody>
@@ -625,7 +667,7 @@
 
         </text>);
                         item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
-            <div class="p-3">
+            <div class="p-2">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
                     <div class="col-md-4">
@@ -639,7 +681,7 @@
                         .DisplayExpr("CompanyName")
                         .ValueExpr("CompanyId")
                         .LabelMode(EditorLabelMode.Floating)
-                        .Width("95%")
+                        .Width("100%")
                         )
                     </div>
 
@@ -715,7 +757,7 @@
 
         </text>);
                     item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
-                                                                                                                                                                <div class="p-3">
+                                                                                                                                                                <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
                                                                                                                                                                             <td style="width: 30%;">
@@ -751,7 +793,7 @@
                                                             .Location(TextEditorButtonLocation.After)
                                                             .Widget(w => w.Button()
                                                             .Type(ButtonType.Default)
-                                                            .Icon("edit")
+                                                            .Icon("plus")
                                                             .Disabled(true) // Button is also disabled
                                                             .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                                             .OnClick("CurrencyClick"));
@@ -791,7 +833,7 @@
                                                             .Location(TextEditorButtonLocation.After)
                                                             .Widget(w => w.Button()
                                                             .Type(ButtonType.Default)
-                                                            .Icon("edit") // Use "plus" or any other if needed
+                                                            .Icon("plus") // Use "plus" or any other if needed
                                                             .Hint("Edit Description")
                                                             .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                                             .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -822,9 +864,12 @@
                 )
 
     </div>
+    <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
     @(Html.DevExtreme().DataGrid()
-            .ID("itemGrid")
-            .Height("40vh")
+            .ID("B2BdataGrid")
+            .Height("38vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("SNo")
             .Selection(s => s
@@ -1189,7 +1234,7 @@
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
 </div>
 <script>
-   
+     window.edits = false;
     $(function () {
     $("#addNewDeliverytoClient").dxTextBox({
     text: formatMessage("Add New Delivery to Client"),
@@ -1244,7 +1289,7 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-        const title = "";
+        const title = "Quotation Mode of Request";
         openModal(url, title);
     }
     function dataGridInitialized2(e) {
@@ -1268,27 +1313,30 @@
     }
     function AddQuoteStatus(){
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "";
+        const title = "Purchase Order Categories";
             openModal(url, title);
     }
     function redirecttosalespersonmaster(){
         const url = `/${tenantName}/VAT/SalesPersonMaster`;
-        const title = "";
+        const title = "Sales Person Master";
             openModal(url, title);
     }
     function redirecttoClientLeadmaster1(){
         const url = `/${tenantName}/IMS/ClientLeadMaster`;
-        const title = "";
+        const title = "Client Master";
             openModal(url, title);
     }
         function redirecttoClientLeadmaster() {
         // Get the selected client code from the DropDownBox
         var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
 
-        if (!clientCode) {
-            alert("Please select a client to edit.");
-            return;
-        }
+        const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+		const clientnameValidation = clientnameValidator.validate();
+
+		if (!clientnameValidation.isValid) {
+            DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "error", 2000);
+			return;
+		}
 
         // Assuming tenantName is defined globally or you can set it here
         const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
@@ -1433,8 +1481,9 @@
 
                 }
 
-            }
+            }  
                 $(function () {
+                    
         $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumber", function (res) {
             if (res.success) {
                 $("#deliveryNoteNo").dxTextBox("instance").option("value", res.deliveryNoteNo);
@@ -1473,7 +1522,7 @@
 
         $(function () {
 
-            dataGridInstance = $("#itemGrid").dxDataGrid({
+            dataGridInstance = $("#B2BdataGrid").dxDataGrid({
                     focusedRowEnabled: true,
                 dataSource: rowData,
 
@@ -1651,7 +1700,7 @@
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-                      const grid = $("#itemGrid").dxDataGrid("instance");
+                      const grid = $("#B2BdataGrid").dxDataGrid("instance");
 					const visibleRows = grid.getVisibleRows();
 					const rowIndex = cellInfo.rowIndex;
 					const rowData = grid.cellValue(rowIndex, "GSCode");
@@ -1850,7 +1899,7 @@
         width: 200,
         dataType: "number",
         editCellTemplate: function (cellElement, cellInfo) {
-            let dataGrid = $("#itemGrid").dxDataGrid("instance");
+            let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
             console.log("Editing rowIndex:", rowIndex);
@@ -1942,133 +1991,342 @@
                         width: 200
 
                     },
-        {
+                              {
 
-               dataField: "EmployeeNo",
-        caption: formatMessage('Employee Name'),
-        width: 200,
-            cellTemplate: function (container, options) {
-                                      getEmployeeDropdownData().done(function (dropdownData) {
-                                        const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
-                                      $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
-                                });
-                            },
-        editCellTemplate: function (cellElement, cellInfo) {
-            getEmployeeDropdownData().done(function (dropdownData) {
-                let $container = $("<div>").css({
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    width: "100%"
-                }).appendTo(cellElement);
+    dataField: "EmployeeNo",
 
-                $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-                    dataSource: dropdownData,
-                    valueExpr: "EmployeeID",
-                    displayExpr: "EmployeeName",
-                    value: cellInfo.value,
-                    dropDownOptions: { width: 800 },
-                    contentTemplate: function (e) {
-                        return $("<div>").dxDataGrid({
-                            dataSource: dropdownData,
-                            selection: { mode: "single" },
-                            keyExpr: "EmployeeID",
-                            height: 300,
-                            scrolling: { mode: "virtual" },
-                            columns: [
-                                { dataField: "EmployeeID", caption: "ID", width: 80 },
-                                { dataField: "EmployeeName", caption: "Name", width: 200 }
-                            ],
-                            onSelectionChanged: function (selectedItems) {
-                                const selectedData = selectedItems.selectedRowsData[0];
-                                if (selectedData) {
-                                    e.component.option("value", selectedData.EmployeeID);
-                                    cellInfo.setValue(selectedData.EmployeeID);
-                                }
+    caption: formatMessage('Employee Name'),
+
+    width: 200,
+    cellTemplate: function (container, options) {
+                           getEmployeeDropdownData().done(function (dropdownData) {
+                             const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
+                           $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
+                     });
+                 },
+    editCellTemplate: function (cellElement, cellInfo) {
+
+          getEmployeeDropdownData().done(function (dropdownData) {
+
+            // Create container for dropdown + button
+
+            let $container = $("<div>").css({
+
+                display: "flex",
+
+                alignItems: "center",
+
+                gap: "5px",
+
+                width: "100%"
+
+            }).appendTo(cellElement);
+
+            // DropDownBox inside container
+
+            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+
+                dataSource: dropdownData,
+
+                valueExpr: "EmployeeID",
+
+                displayExpr: "EmployeeName",
+
+                value: cellInfo.value || null,
+
+                placeholder: "Select Employee",
+
+                dropDownOptions: { width: 200 },
+
+                contentTemplate: function (e) {
+
+                    return $("<div>").dxDataGrid({
+
+                        dataSource: dropdownData,
+
+                        keyExpr: "EmployeeID",
+
+                        selection: { mode: "single" },
+
+                        height: 300,
+
+                        scrolling: { mode: "virtual" },
+
+                            searchPanel: {
+                                visible: true,
+                                highlightCaseSensitive: true,
+                                width: 130,
+                                placeholder: "Search..."
+                                },
+
+                        columns: [
+
+
+                                 { dataField: "EmployeeID", caption: "ID", width: 80 },
+                                 { dataField: "EmployeeName", caption: "Name", width: 200 }
+
+
+                        ],
+
+                        onSelectionChanged: function (selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                // Set the value of the DropDownBox
+                                e.component.option("value", selectedItem.EmployeeID);
+                                // Update the cell value in the grid
+                                cellInfo.setValue(selectedItem.EmployeeID);
+                                // Close the DropDownBox
+                                e.component.close();
                             }
+                        }
+
+                    });
+
+                }
+
+            });
+
+          
+
+        });
+
+    }
+
+},  
+           {
+
+    dataField: "PropertyNo",
+
+    caption: formatMessage('PropertyOrEquipment'),
+
+    width: 200,
+     cellTemplate: function (container, options) {
+                                getPropertyDropdownData().done(function (dropdownData) {
+                                    const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
+                                $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
                         });
                     },
-                    onValueChanged: function (e) {
-                        cellInfo.setValue(e.value);
-                    }
-                });
+    editCellTemplate: function (cellElement, cellInfo) {
+
+          getPropertyDropdownData().done(function (dropdownData) {
+
+            // Create container for dropdown + button
+
+            let $container = $("<div>").css({
+
+                display: "flex",
+
+                alignItems: "center",
+
+                gap: "5px",
+
+                width: "100%"
+
+            }).appendTo(cellElement);
+
+            // DropDownBox inside container
+
+            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+
+                dataSource: dropdownData,
+
+                valueExpr: "PropertyNo",
+
+                displayExpr: "PropertyDescription",
+
+                value: cellInfo.value || null,
+
+                placeholder: "Select Property",
+
+                dropDownOptions: { width: 200 },
+
+                contentTemplate: function (e) {
+
+                    return $("<div>").dxDataGrid({
+
+                        dataSource: dropdownData,
+
+                        keyExpr: "PropertyNo",
+
+                        selection: { mode: "single" },
+
+                        height: 300,
+
+                        scrolling: { mode: "virtual" },
+
+                            searchPanel: {
+                                visible: true,
+                                highlightCaseSensitive: true,
+                                width: 130,
+                                placeholder: "Search..."
+                                },
+
+                        columns: [
+
+
+                                  { dataField: "PropertyNo", caption: "Property No", width: 150 },
+                                  { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
+
+
+                        ],
+
+                        onSelectionChanged: function (selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                // Set the value of the DropDownBox
+                                e.component.option("value", selectedItem.PropertyNo);
+                                // Update the cell value in the grid
+                                cellInfo.setValue(selectedItem.PropertyNo);
+                                // Close the DropDownBox
+                                e.component.close();
+                            }
+                        }
+
+                    });
+
+                }
+
             });
-        }
 
-    },
-             {
-        dataField: "PropertyNo",
-        caption: formatMessage('PropertyOrEquipment'),
-        width: 200,
-           cellTemplate: function (container, options) {
-                                          getPropertyDropdownData().done(function (dropdownData) {
-                                              const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
-                                          $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
-                                  });
-                              },
-        editCellTemplate: function (cellElement, cellInfo) {
-            getPropertyDropdownData().done(function (dropdownData) {
-                let $container = $("<div>").css({
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    width: "100%"
-                }).appendTo(cellElement);
+           
 
-                $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-                    dataSource: dropdownData,
-                          valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
-                      displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
-                    value: cellInfo.value,   // Set initial value
+        });
 
-                    dropDownOptions: { width: 600 },
+    }
 
-                    contentTemplate: function (e) {
-                        return $("<div>").dxDataGrid({
-                            dataSource: dropdownData,
-                            selection: { mode: "single" },
-                              keyExpr: "PropertyNo",
-                            height: 300,
-                            scrolling: { mode: "virtual" },
-                            columns: [
-                                    { dataField: "PropertyNo", caption: "Property No", width: 150 },
-                                    { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
-                            ],
-                                onSelectionChanged: function (selectedItems) {
-                                  const selectedData = selectedItems.selectedRowsData[0];
-                                  if (selectedData) {
-                                        e.component.option("value", selectedData.PropertyNo);
-                                        cellInfo.setValue(selectedData.PropertyNo);
-                                  }
-                              }
-                            // onSelectionChanged: function (selectedItems) {
-                            //     let selectedItem = selectedItems.selectedRowsData[0];
+},
 
-                            //     if (selectedItem) {
-                            //         // 1️⃣ Set the selected value in PropertyOrEquipment   
-                            //             cellInfo.setValue(selectedItem.PropertyNo);
-                            //                   e.component.option("value", selectedItem.PropertyNo);
-                            //           cellInfo.setValue(selectedData.EmployeeID);
+    //     {
 
+    //            dataField: "EmployeeNo",
+    //     caption: formatMessage('Employee Name'),
+    //     width: 200,
+    //         cellTemplate: function (container, options) {
+    //                                   getEmployeeDropdownData().done(function (dropdownData) {
+    //                                     const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
+    //                                   $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
+    //                             });
+    //                         },
+    //     editCellTemplate: function (cellElement, cellInfo) {
+    //         getEmployeeDropdownData().done(function (dropdownData) {
+    //             let $container = $("<div>").css({
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 gap: "5px",
+    //                 width: "100%"
+    //             }).appendTo(cellElement);
                             //         // 2️⃣ Get the parent DataGrid instance and row index
-                            //         let dataGrid = $("#itemGrid").dxDataGrid("instance");
+                            //         let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
                             //         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
-                            //         // 3️⃣ Set UnitRateMethod column in the same row
-                            //         // if (rowIndex !== -1) {
-                            //         //           dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
-                            //         // }
-                            //     }
-                            // }
-                        });
-                    }
-                });
-            });
-        }
-    },
+    //             $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+    //                 dataSource: dropdownData,
+    //                 valueExpr: "EmployeeID",
+    //                 displayExpr: "EmployeeName",
+    //                 value: cellInfo.value,
+    //                 dropDownOptions: { width: 800 },
+    //                 contentTemplate: function (e) {
+    //                     return $("<div>").dxDataGrid({
+    //                         dataSource: dropdownData,
+    //                         selection: { mode: "single" },
+    //                         keyExpr: "EmployeeID",
+    //                         height: 300,
+    //                         scrolling: { mode: "virtual" },
+    //                         columns: [
+    //                             { dataField: "EmployeeID", caption: "ID", width: 80 },
+    //                             { dataField: "EmployeeName", caption: "Name", width: 200 }
+    //                         ],
+    //                         onSelectionChanged: function (selectedItems) {
+    //                             const selectedData = selectedItems.selectedRowsData[0];
+    //                             if (selectedData) {
+    //                                 e.component.option("value", selectedData.EmployeeID);
+    //                                 cellInfo.setValue(selectedData.EmployeeID);
+    //                             }
+    //                         }
+    //                     });
+    //                 },
+    //                 onValueChanged: function (e) {
+    //                     cellInfo.setValue(e.value);
+    //                 }
+    //             });
+    //         });
+    //     }
+
+    // },
+    //          {
+    //     dataField: "PropertyNo",
+    //     caption: formatMessage('PropertyOrEquipment'),
+    //     width: 200,
+    //        cellTemplate: function (container, options) {
+    //                                       getPropertyDropdownData().done(function (dropdownData) {
+    //                                           const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
+    //                                       $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
+    //                               });
+    //                           },
+    //     editCellTemplate: function (cellElement, cellInfo) {
+    //         getPropertyDropdownData().done(function (dropdownData) {
+    //             let $container = $("<div>").css({
+    //                 display: "flex",
+    //                 alignItems: "center",
+    //                 gap: "5px",
+    //                 width: "100%"
+    //             }).appendTo(cellElement);
+
+    //             $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+    //                 dataSource: dropdownData,
+    //                       valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
+    //                   displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
+    //                 value: cellInfo.value,   // Set initial value
+
+    //                 dropDownOptions: { width: 600 },
+
+    //                 contentTemplate: function (e) {
+    //                     return $("<div>").dxDataGrid({
+    //                         dataSource: dropdownData,
+    //                         selection: { mode: "single" },
+    //                           keyExpr: "PropertyNo",
+    //                         height: 300,
+    //                         scrolling: { mode: "virtual" },
+    //                         columns: [
+    //                                 { dataField: "PropertyNo", caption: "Property No", width: 150 },
+    //                                 { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
+    //                         ],
+    //                             onSelectionChanged: function (selectedItems) {
+    //                               const selectedData = selectedItems.selectedRowsData[0];
+    //                               if (selectedData) {
+    //                                     e.component.option("value", selectedData.PropertyNo);
+    //                                     cellInfo.setValue(selectedData.PropertyNo);
+    //                               }
+    //                           }
+    //                         // onSelectionChanged: function (selectedItems) {
+    //                         //     let selectedItem = selectedItems.selectedRowsData[0];
+
+    //                         //     if (selectedItem) {
+    //                         //         // 1️⃣ Set the selected value in PropertyOrEquipment   
+    //                         //             cellInfo.setValue(selectedItem.PropertyNo);
+    //                         //                   e.component.option("value", selectedItem.PropertyNo);
+    //                         //           cellInfo.setValue(selectedData.EmployeeID);
+
+    //                         //         // 2️⃣ Get the parent DataGrid instance and row index
+    //                         //         let dataGrid = $("#itemGrid").dxDataGrid("instance");
+    //                         //         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+    //                         //         // 3️⃣ Set UnitRateMethod column in the same row
+    //                         //         // if (rowIndex !== -1) {
+    //                         //         //           dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
+    //                         //         // }
+    //                         //     }
+    //                         // }
+    //                     });
+    //                 }
+    //             });
+    //         });
+    //     }
+    // },
       { dataField: "AddlDescription", visible: false },
             { dataField: "DeliveryRemarks", visible: false },
               { dataField: "DeliveryNoteSlNo", visible: true },
+
             // { dataField: "EmployeeNo", visible: false },
             //  { dataField: "PropertyNo", visible: false }
          
@@ -2124,7 +2382,7 @@
       //         const $btn = $("#btnSave");
       //     $btn.dxButton("instance").option("disabled", false);
 
-      //     const grid = $("#itemGrid").dxDataGrid("instance");
+      //     const grid = $("#B2BdataGrid").dxDataGrid("instance");
       //     const store = grid.getDataSource().store();
       //     const currentData = grid.getDataSource().items();
 
@@ -2297,7 +2555,7 @@
           function receiveModalFieldData(modalData) {
         console.log("📥 Received from modal:", modalData);
 
-        const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+        const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance"); // ✅ add this line
 
         if (!dataGridInstance) {
             console.error("❌ dataGridInstance is not initialized.");
@@ -2442,7 +2700,7 @@
       let selectedSNo = null;
 
       $(document).ready(function () {
-          const grid = $("#itemGrid").dxDataGrid("instance");
+          const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
           // Track selected row
           grid.on("selectionChanged", function (e) {
@@ -2471,7 +2729,7 @@
       });
 
       function moveRow(direction) {
-          const grid = $("#itemGrid").dxDataGrid("instance");
+          const grid = $("#B2BdataGrid").dxDataGrid("instance");
           let data = grid.getDataSource().items(); // get flat data
 
           if (!selectedSNo) {

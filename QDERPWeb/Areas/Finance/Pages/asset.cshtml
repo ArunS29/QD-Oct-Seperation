@@ -193,7 +193,7 @@ bottom: -13px !important;
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Asset Register</h3>
+    <h3 class="card-title-text" id="assetregisterview"></h3>
 </div>
 <div class="form-container1">
 
@@ -651,7 +651,7 @@ bottom: -13px !important;
                         <div class="form-group">
                             @(Html.DevExtreme().Button()
                             .ID("btnpaymentshedule")
-                            .Text("Payment Shedule")
+                            .Text(new JS("formatMessage('Payment Schedule')"))
                             .Height(100)
                             .Width(238)
                             .Icon("plus")
@@ -748,7 +748,7 @@ bottom: -13px !important;
                     <div class="form-group" style="margin-left: auto;">
                         @(Html.DevExtreme().Button()
                         .ID("btnAttach")
-                        .Text("Schedule")
+                        .Text(new JS("formatMessage('Schedule')"))
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
@@ -848,7 +848,7 @@ bottom: -13px !important;
                 <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%; margin-top:10px; padding:10px;">
                     @(Html.DevExtreme().Button()
                     .ID("docbtnAttach")
-                    .Text("Add & Attach Files")
+                    .Text(new JS("formatMessage('Add & Attach Files')"))
                     .Type(ButtonType.Normal)
                     .StylingMode(ButtonStylingMode.Outlined)
                     .Icon("save")
@@ -864,7 +864,7 @@ bottom: -13px !important;
                         .Columns(columns =>
                         {
                         @*   columns.AddFor(m => m.).Caption(""); *@
-                        columns.AddFor(m => m.DocumentNo).Caption("Doc No");
+                        columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('Doc No')"));
 
 
                     columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).Visible(true);;
@@ -889,7 +889,7 @@ bottom: -13px !important;
                  </div>
             </div>
         </text>);
-                    item.Add().Title(new JS("formatMessage('Maintenance')")).Text("Maintenance").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Maintenance')")).Text(new JS("formatMessage('Maintenance')")).Template(@<text>
             <div class="form-container">
                 <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
                     <!-- Depreciation Method    style="display: flex; align-items: flex-end; gap: 10px; width: 100%;"-->
@@ -926,7 +926,7 @@ bottom: -13px !important;
                     <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                         @(Html.DevExtreme().Button()
                         .ID("btnMaintenance")
-                        .Text("Add Maintenance Types")
+                        .Text(new JS("formatMessage('Add Maintenance Types')"))
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("save")
@@ -937,7 +937,7 @@ bottom: -13px !important;
                     <div class="form-group">
                         @(Html.DevExtreme().Button()
                         .ID("btnAddScheduledTypes")
-                        .Text("Add Scheduled Maintainance")
+                        .Text(new JS("formatMessage('Add Scheduled Maintainance')"))
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
                         .Icon("plus")
@@ -957,7 +957,7 @@ bottom: -13px !important;
                          columns.AddFor(m => m.MaintenanceRefNo).Visible(false);
                     columns.AddFor(m => m.MaintenanceTypeId)
                     .DataField("MaintenanceTypeId")
-                    .Caption("Maintenance Type")
+                    .Caption(new JS("formatMessage('Maintenance Type')"))
                     .Lookup(lookup => lookup
                     .DataSource(ds => ds.Mvc().Controller("AssetView").LoadAction("GetEditMaintenance"))
                     .ValueExpr("AssetMaintenanceTypeId")
@@ -1062,7 +1062,7 @@ bottom: -13px !important;
                 <div class="col-md-1">
                     @(Html.DevExtreme().Button()
                         .ID("btnUpdate")
-                        .Text("Update")
+                        .Text(new JS("formatMessage('Update')"))
                         .Icon("refresh")
                         .StylingMode(ButtonStylingMode.Contained)
                         .Type(ButtonType.Default) // Use .Success, .Danger, .Normal etc.
@@ -1072,7 +1072,7 @@ bottom: -13px !important;
                 <div class="col-md-1"style="width:160px;">
                     @(Html.DevExtreme().Button()
                         .ID("btDelete")
-                        .Text("Save & Close")
+                        .Text(new JS("formatMessage('Save & Close')"))
                         .Icon("save")
                         .StylingMode(ButtonStylingMode.Contained)
                         .Type(ButtonType.Success)
@@ -1082,7 +1082,7 @@ bottom: -13px !important;
                 <div class="col-md-1"style="width:160px;">
                     @(Html.DevExtreme().Button()
                         .ID("btnBack")
-                        .Text("Back")
+                        .Text(new JS("formatMessage('Back')"))
                         .Icon("arrowleft")
                         .StylingMode(ButtonStylingMode.Contained)
                         .Type(ButtonType.Normal) // or .Back if you have custom behavior
@@ -1122,12 +1122,12 @@ bottom: -13px !important;
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("PropertyNo");
-                    columns.Add().DataField("PropertyDescription");
-                    columns.Add().DataField("PlateNo");
-                    columns.Add().DataField("Brand");
-                    columns.Add().DataField("Capacity");
-                    columns.Add().DataField("Model");
+                    columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
+                    columns.Add().DataField("PropertyDescription").Caption(new JS("formatMessage('Property Description')"));
+                    columns.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')"));
+                    columns.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
+                    columns.Add().DataField("Capacity").Caption(new JS("formatMessage('Capacity')"));
+                    columns.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
 
                     @*          columns.Add().DataField("DoorNo");
             columns.Add().DataField("ChassisNo");
@@ -1999,7 +1999,7 @@ bottom: -13px !important;
 
 function redirectToAssetCategoryView() {
     let url = `/${tenantName}/Finance/AssetCategoryView`;
-    let title = "";
+    let title = formatMessage("Asset Category Management");
     let modalOptions = {
         width: "500px",
         height: "90%"
@@ -2011,7 +2011,7 @@ function redirectToAssetCategoryView() {
 
     function redirectToAssetLocationMaster() {
         let url = `/${tenantName}/Finance/AssetLocation`;
-        let title = "";
+        let title = formatMessage("Asset Location Management");
         openModal(url, title);
         refreshAssetLocationSelectBox();
     }
@@ -2026,7 +2026,7 @@ function redirectToAssetCategoryView() {
     }
      function redirectassetmaintanence() {
          let url = `/${tenantName}/Finance/AssetMaintanenceMaster`;
-        let title = "Asset Maintenance Master";
+        let title = formatMessage("Asset Maintenance Master");
         openModal(url, title);
         refreshAssetMaintanenceSelectBox(); 
     }
@@ -2248,5 +2248,7 @@ function reminderDateCellTemplate(container, options) {
         });
         container.text(text);
     }
-
+     $(function () {
+        $("#assetregisterview").text(formatMessage("Asset Register"));
+    });
 </script>

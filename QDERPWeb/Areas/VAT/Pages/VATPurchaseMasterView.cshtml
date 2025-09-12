@@ -394,17 +394,17 @@
 </div>
 <div class="context-menu" id="contextMenu" style="width: max-content;">
 	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-edit"></i> Edit Invoice
+		<i class="dx-icon-edit" id="purchaseeditinvoice"></i>
 	</div>
 	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel VAT Purchase (Issue Debit Note)
+		<i class="dx-icon-close" id="purchasecancelvat"></i>
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlock"></i> Unlock The Bill
+		<i class="dx-icon-unlock" id="purchaseunlock"></i>
 	</div>
 
 	<div class="context-menu-item" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
+		<i class="dx-icon-copy" id="purchaseclone"></i>
 	</div>
 </div>
 
@@ -450,7 +450,7 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-		        	items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+		        	items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -2313,10 +2313,10 @@
 				offset: "8 0"
 			},
 			items: [
-				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
-				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
-				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
-				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+				{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+				{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
 			],
 			onItemClick: function(e) {
 				const quarter = e.itemData.value;
@@ -2402,6 +2402,18 @@
 		});
 	}
 
+		$(function () {
+		$("#purchaseeditinvoice").text(formatMessage("Edit Invoice"));
+	});
+		$(function () {
+		$("#purchasecancelvat").text(formatMessage("Cancel VAT Purchase (Issue Debit Note)"));
+	});
+		$(function () {
+		$("#purchaseclone").text(formatMessage("Clone e-Invoice"));
+	});
+		$(function () {
+		$("#purchaseunlock").text(formatMessage("Unlock The Bill"));
+	});
 		$(function () {
 		$("#vatpurchaseregister").text(formatMessage("VAT Purchase Register"));
 	});

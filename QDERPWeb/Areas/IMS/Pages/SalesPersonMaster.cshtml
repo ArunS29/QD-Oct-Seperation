@@ -96,12 +96,12 @@
         }
     }
  </style>
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Sales Person Master</h3>
-</div>
+</div> *@
 <div class="container-fluid">
 
 
@@ -204,13 +204,20 @@
         <!-- Row 2: Contact No, Code, Add Button -->
         <div class="col-md-4">
             <div class="form-group">
-                @(
-                                Html.DevExtreme().TextBox()
-                                .Label(new JS("formatMessage('Contact Number')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .ID("txtSalesPersonContactNo")
-                                .Value(null)
-                                )
+               @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Contact Number')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtSalesPersonContactNo")
+                    .Width("100%")
+                    .Value(null)
+                    .OnChange("validateContactNumber")
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                            .Message("Contact number is required");
+                    })
+                )
+
             </div>
         </div>
 
@@ -246,15 +253,14 @@
         </div>
         <div class="col-2">
             <div class="form-group">
-                @(
-                                Html.DevExtreme().Button()
+                @(Html.DevExtreme().Button()
                                 .ID("btnAddSalesPerson")
                                 .Text(new JS("formatMessage('ADD')"))
                                 .Height(50)
 
                                 .Icon("plus")
                                 .OnClick("function() { addSalesPerson(); }")
-                                .ElementAttr(new { @class = "dx-button-add" })
+                                .ElementAttr(new { @class = "custom-ui-button" })
                                 )
             </div>
         </div>
@@ -371,7 +377,7 @@
             columns: [
                 { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true },
                 { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: true },
-                { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true },
+                { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true, },
                 { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },
                 { dataField: "TargetPerMonth", caption: formatMessage("Sales Target"), allowFiltering: true },
                 {
@@ -392,29 +398,14 @@
                                     url: "/api/Master/DeleteSalesPerson/" + salesPersonCode,
                                     success: function (response) {
                                         if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage('Sales person deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
+                                            dataGrid.refresh();
+                                            DevExpress.ui.notify("Sales person deleted successfully.", "success", 2000);
                                         } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
+                                            DevExpress.ui.notify(response.message, "error", 2000);
                                         }
                                     },
                                     error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
-                                        });
+                                        DevExpress.ui.notify(xhr.responseText, "error", 2000);
                                     }
                                 });
                             }
@@ -497,23 +488,7 @@
                 cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
                 dataGrid.option("toolbar.items", toolbarItems);
              },
-            // onRowUpdated: function (e) {
-            //     Swal.fire({
-            //         icon: 'success',
-            //         title: formatMessage('Row Updated'),
-            //         text: formatMessage('The row data was successfully updated.'),
-            //         confirmButtonText: 'OK'
-            //     });
-            // },
-            // onRowRemoved: function (e) {
-            //     Swal.fire({
-            //         icon: 'info',
-            //         title: formatMessage('Row Removed'),
-            //         text: formatMessage('The row has been removed from the grid.'),
-            //         confirmButtonText: 'OK'
-            //     });
-            // },
-            height: "60%",
+            height: "68vh",
             width: "100%"
         });
     });
@@ -540,6 +515,12 @@
         if (!emailAddress) {
             missingFields.push("Email Address");
         }
+        // Check if Email Address is empty
+        const ContactNo = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+        if (!ContactNo) {
+            missingFields.push("Contact No");
+        }
+
 
         // Check if Sales Person Code is empty
         const salesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
@@ -584,7 +565,8 @@
 
                var SalesPersonCodevalidator = $("#txtSalesPersonCode").dxValidator("instance");
             var SalesPersonCodevalidation = SalesPersonCodevalidator.validate();
-
+             var SalesPersonContactNovalidator = $("#txtSalesPersonContactNo").dxValidator("instance");
+            var SalesPersonContactNovalidation = SalesPersonContactNovalidator.validate();
         
             if (Salespersonuservalidation.isValid && emailAddressvalidation.isValid && SalesPersonCodevalidation.isValid) {
 
@@ -606,7 +588,7 @@
                     contentType: "application/json",
                     success: function (response) {
                         DevExpress.ui.notify("Sales Person Added Successfully", "success", 2000);
-                        
+                        $("#gridContainer").dxDataGrid("instance").refresh();
                     },
                     error: function (xhr) {
                         var errorMessage = xhr.status === 500
@@ -631,12 +613,7 @@
 
         // Validate if all required fields are filled
         if (!salesPersonName || !userCode || !emailAddress || !salesPersonContactNo || !SalesPersonCode ||!TargetPerMonth) {
-            Swal.fire({
-                icon: 'warning',
-                title: formatMessage('Incomplete Form'),
-                text: formatMessage('Please fill in all fields before submitting.'),
-                confirmButtonText: 'OK'
-            });
+            DevExpress.ui.notify("Please fill in all fields before submitting.", "warning", 2000);
             return; // Stop further processing if fields are not filled
         }
 
@@ -666,12 +643,7 @@
                     ? "Server error: Please try again later."
                     : "Validation error: " + xhr.responseText;
 
-                Swal.fire({
-                    icon: formatMessage('error'),
-                    title: 'Error',
-                    text: errorMessage,
-                    confirmButtonText: 'OK'
-                });
+                DevExpress.ui.notify(errorMessage, "error", 2000);
             }
         });
     }
@@ -775,7 +747,7 @@
             const contactNumber = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
 
             // Regular expression for validating a 10-digit contact number
-            const regex = /^[0-9]{10}$/;
+            const regex = /^\d*$/;
 
             // Check if the contact number is valid
             if (!regex.test(contactNumber)) {

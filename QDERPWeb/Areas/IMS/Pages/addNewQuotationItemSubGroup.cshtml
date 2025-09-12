@@ -104,7 +104,6 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
         width: 100%;
     }
 
@@ -199,7 +198,7 @@
 
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4" style="display: flex;align-items: center;">
             <td>
                 <div id="LedgerActive" class="no-border-input"></div>
             </td>
@@ -231,6 +230,7 @@
                 .Icon("plus")
                 .Height(40)
                 .Width(120)
+                .ElementAttr(new { @class = "custom-ui-button" })
                 .OnClick("adddivmaster")
                 )
         </div>
@@ -276,7 +276,7 @@
     $(function () {
         // Initialize the TextBox with default text
         $("#LedgerActive").dxTextBox({
-            value: "Show Price Details:",
+            value: formatMessage("Show Price Details:"),
             readOnly: true
         });
 
@@ -289,11 +289,11 @@
 
             if (e.value) {
                 // When switched ON, update text and apply red color
-                textBoxInstance.option("value", "Hide Price Details:");
+                textBoxInstance.option("value", formatMessage("Hide Price Details:"));
                 $("#LedgerActive .dx-texteditor-input").css("color", "black");
             } else {
                 // When switched OFF, update text and reset color
-                textBoxInstance.option("value", "Show Price Details:");
+                textBoxInstance.option("value", formatMessage("Show Price Details:"));
                 $("#LedgerActive .dx-texteditor-input").css("color", "black");
             }
         });
@@ -511,7 +511,7 @@
                         widget: "dxButton", // Add the Back button
                         options: {
                             icon: "arrowleft", // You can choose another icon if you'd like
-                            text: "Back",
+                            text: formatMessage("Back"),
                             onClick: function () {
                                 window.parent.closeModal(); // This closes the current window/tab
                             }

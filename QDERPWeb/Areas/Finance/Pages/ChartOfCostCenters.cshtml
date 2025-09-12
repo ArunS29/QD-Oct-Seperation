@@ -592,7 +592,7 @@
                 // Row was right-clicked
                 e.items = [
                     {
-                        text: "Edit Cost Center",
+                        text: formatMessage("Edit Cost Center"),
                         onItemClick: function () {
                             selectedRowData = e.row.data; // Get the row data
                             //   alert(selectedRowData.IsDisabled);
@@ -627,7 +627,7 @@
                         }
                     },
                     {
-                        text: "Delete Cost Center",
+                        text: formatMessage("Delete Cost Center"),
                         onItemClick: function () {
                             selectedRowData = e.row.data; // Get the row data
                             // alert(selectedRowData.CostAllocationUnitId);

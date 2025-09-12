@@ -156,7 +156,7 @@
 	</div>
 </div> *@
 <div class="Head">
-	<div class="footer-fixed">
+	<div class="footer-fixed1" style="margin:10px;">
 		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 	</div>
 </div>
@@ -198,6 +198,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -230,7 +231,7 @@
 		{
 				columns.Add().Caption(new JS("formatMessage('Stock Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.IsServicesGroup).Caption("Is Services Group").Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
+				subColumns.AddFor(m => m.IsServicesGroup).Caption(new JS("formatMessage('Is Services Group')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
 		<div class="dx-icon">
 			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
@@ -238,21 +239,39 @@
 				subColumns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TransactionDate).Caption(new JS("formatMessage('Transaction Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.Transactions).Caption(new JS("formatMessage('Transaction Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("Item code").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('Item code')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Stock Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.StockReceivedQty).Caption(new JS("formatMessage('Quantity')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TransactionTotal).Caption("Transaction Total").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.GsgroupName).Caption("GS Group Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TransactionTotal).Caption(new JS("formatMessage('Transaction Total')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('GS Group Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 				// Unused fields (hidden but available in data model)
-				subColumns.AddFor(m => m.QtyReceived).Caption("Qty Received").Visible(false);
-				subColumns.AddFor(m => m.UnitCodeOfConversion).Caption("Unit Code of Conversion").Visible(false);
-				subColumns.AddFor(m => m.UnitsConverted).Caption("Units Converted").Visible(false);
-				subColumns.AddFor(m => m.StockReceivedUnitPrice).Caption("Stock Received Unit Price").Visible(false);
-				subColumns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
-				subColumns.AddFor(m => m.UnitDesc).Caption("Unit Description").Visible(false);
+				subColumns.AddFor(m => m.QtyReceived)
+			.Caption(new JS("formatMessage('Qty Received')"))
+			.Visible(false);
+
+				subColumns.AddFor(m => m.UnitCodeOfConversion)
+			.Caption(new JS("formatMessage('Unit Code of Conversion')"))
+			.Visible(false);
+
+				subColumns.AddFor(m => m.UnitsConverted)
+			.Caption(new JS("formatMessage('Units Converted')"))
+			.Visible(false);
+
+				subColumns.AddFor(m => m.StockReceivedUnitPrice)
+			.Caption(new JS("formatMessage('Stock Received Unit Price')"))
+			.Visible(false);
+
+				subColumns.AddFor(m => m.StoreCode)
+			.Caption(new JS("formatMessage('Store Code')"))
+			.Visible(false);
+
+				subColumns.AddFor(m => m.UnitDesc)
+			.Caption(new JS("formatMessage('Unit Description')"))
+			.Visible(false);
+
 
 			});
 		})
@@ -369,10 +388,31 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
-			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
 
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
+			}
+			hidequarterSubmenus();
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
+				frmDate = frmDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 				$.ajax({
 		url: '/api/StockInventory/GetStockMomentReport',
 		type: 'GET',

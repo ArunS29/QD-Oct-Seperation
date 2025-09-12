@@ -14,7 +14,6 @@
     }
     /* Button Styling */
     .dx-button {
-        background-color: #909ead00 !important;
         border: 1px solid #d6e4f0 !important;
         border-radius: 4px !important;
         padding: 6px 12px !important; /* Reduced button padding */
@@ -45,9 +44,7 @@
         padding: 0 !important;
     }
 
-    .modalTitle {
-        display: none;
-    }
+
 
     .horizontal-container {
         display: flex;
@@ -200,27 +197,50 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Text("Layout")
-            .Icon("smalliconslayout")
-            .Width(180)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text("Set Row Height").Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text("Set as Default Layout").Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text("Reset Layout").Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text("Open Layout").Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text("Save Layout").Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(true)
-            )
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width(50)
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                         <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                                                                                                         <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                                         <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                                     </svg>Set as Default Layout
+
+            </text>).OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                                                                                                <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                                                                                            </svg>Reset Layout
+                                                                                        </text>).OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                                                                                               <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                               <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                           </svg>Open Layout
+                                                                                       </text>).OnClick("openLayoutClick");
+
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                                                                                               <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                                                                                           </svg>Save Layout
+                                                                                       </text>).OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
     </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
-            .Text("Print")
+            .Text(new JS("formatMessage('Print')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("print")
@@ -232,7 +252,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnToggleSearch")
-            .Text("Search")
+            .Text(new JS("formatMessage('Search')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("search")
@@ -244,7 +264,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
-            .Text("Group")
+            .Text(new JS("formatMessage('Group')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("hierarchy")
@@ -255,19 +275,19 @@
     <div>
         @(Html.DevExtreme().DropDownButton()
             .ID("btnReport")
-            .Text("Report")
+            .Text(new JS("formatMessage('Report')"))
             .Icon("report")
             .Width(180)
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
                 items.Add()
-                    .Text(new JS("formatMessage('ShowAllCreditors')"))
+                    .Text(new JS("formatMessage('Show All Creditors')"))
                     .Option("color", "#4285F4") // Blue
                     .Icon("search");
 
                 items.Add()
-                    .Text(new JS("formatMessage('ShowAllDebtors')"))
+                    .Text(new JS("formatMessage('Show All Debtors')"))
                     .Option("color", "#34A853") // Green
                     .Icon("search");
             })

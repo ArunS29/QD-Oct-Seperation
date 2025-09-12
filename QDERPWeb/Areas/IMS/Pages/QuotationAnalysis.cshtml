@@ -145,16 +145,18 @@
                 loadPanel: { enabled: true },
                 dataSource: {
                     fields: [
-                        { dataField: "Gsdescrpition", area: "row", caption: "Item Description" },
-                        { dataField: "QuotedQuantity", area: "row", caption: "Quantity" },
-                        { dataField: "SupplierName", area: "column", caption: "Supplier Name" },
-                        { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
-                        { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
-                        { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
-                        { dataField: "IsWonForPo", area: "data", caption: "IsWonForPo", summaryType: "max", dataType: "boolean" },
-                        { dataField: "Mprno", visible: false },
-                        { dataField: "Gscode", visible: false },
-                        { dataField: "RfqchildSlNo", visible: false }
+                        { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
+                        { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity")},
+                        { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
+                        { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
+                        { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
+                        { dataField: "Mprno",  caption: formatMessage("MPR No"),visible: false },
+                        { dataField: "Gscode", caption: formatMessage("GS Code"), visible: false },
+                        { dataField: "LineTotalAfterDisc",  caption: formatMessage("Line Total After Description"),visible: false },
+                        { dataField: "UnitDesc",  caption: formatMessage("Unit Description"),visible: false },
+                        { dataField: "RfqchildSlNo",caption: formatMessage("RFQ child SlNo"),visible: false }
                     ],
                     store: [] // ⬅️ EMPTY INIT
                 },
@@ -183,9 +185,11 @@
                             { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
                             { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
                             { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
-                            { dataField: "Mprno", visible: false },
-                            { dataField: "Gscode", visible: false },
-                            { dataField: "RfqchildSlNo", visible: false }
+                            { dataField: "Mprno", caption: formatMessage("MPR No"), visible: false },
+                            { dataField: "Gscode",caption: formatMessage("GS Code"), visible: false },
+                            { dataField: "LineTotalAfterDisc",  caption: formatMessage("Line Total After Description"),visible: false },
+                        { dataField: "UnitDesc",  caption: formatMessage("Unit Description"),visible: false },
+                            { dataField: "RfqchildSlNo",caption: formatMessage("RFQ child SlNo"), visible: false }
 
 
                         ],
@@ -532,38 +536,24 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
     }
 
 
-$("#btnCreateQuotations").dxButton({
-    text: formatMessage('Create New Quotations'),
-    type: "success",
-    onClick: function () {
-
+    function CreateQuotation(){
+        debugger;
         const tenantName = window.tenantName || "defaultTenant";
-
-        // 1️⃣ Safely get pivot grid data from the raw array you saved
         if (!currentPivotRawData || currentPivotRawData.length === 0) {
             DevExpress.ui.notify("No data loaded in PivotGrid.", "error", 3000);
             return;
         }
-
-        // 2️⃣ Instead of ds.items(), use the raw array
-        // Filter the ones that are actually 'selected' if you have a flag for that
-        const mprNos = currentPivotRawData
-            .map(row => row.Mprno) // field name must match backend data
-            .filter(Boolean);
+        const mprNos = currentPivotRawData.map(row => row.Mprno).filter(Boolean);
 
         if (!mprNos.length) {
             DevExpress.ui.notify("No MPR numbers selected.", "error", 3000);
             return;
         }
-
-        // 3️⃣ Confirmation dialog
         DevExpress.ui.dialog.confirm(
             "You are about to create new Quotation. Are you sure you want to continue?",
             "Confirm"
         ).done(function (confirmed) {
             if (!confirmed) return;
-
-            // 4️⃣ Call backend API
             $.ajax({
                 url: "/api/QuotationAnalysis/CreateQuotationsFromMprList",
                 method: "POST",
@@ -583,7 +573,5 @@ $("#btnCreateQuotations").dxButton({
             });
         });
     }
-});
-
 
 </script>

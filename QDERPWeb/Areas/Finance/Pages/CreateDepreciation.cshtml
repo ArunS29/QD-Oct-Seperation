@@ -96,15 +96,15 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2>Depreciation Master</h2>
-                <h6>Quick Dice ERP Solutions</h6>
+                <h2 id="depreciationmastercreate"></h2>
+                <h6 id="quickdiceerpsolutionsmastercreate"></h6>
 
             </div>
         </div>
 
         <!-- BALANCE -->
         <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header">Balance</div>
+            <div class="header" id="createmasterbalance"></div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -123,7 +123,7 @@
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header">Total Debit</div>
+            <div class="header" id="createmastertotaldebit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -138,7 +138,7 @@
 
         <!-- CREDIT -->
         <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header">Total Credit</div>
+            <div class="header" id="createmastertotalcredit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -189,7 +189,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btndepreciationreportshow")
-        .Text("Show Data")
+        .Text(new JS("formatMessage('Show Data')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
     
@@ -198,7 +198,7 @@
         )
     @(Html.DevExtreme().Button()
         .ID("btnGenaeratedepreciation")
-        .Text("Generate Depreciation")
+        .Text(new JS("formatMessage('Generate Depreciation')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Outlined)
         
@@ -218,34 +218,34 @@
             .Columns(columns =>
             {
 
-                columns.Add().DataField("DepreciationDocItemSlNo").Visible(false).Width(200);
-                columns.Add().Caption("Asset Details").Columns(band =>
+            columns.Add().DataField("DepreciationDocItemSlNo").Caption(new JS("formatMessage('Depreciation Doc Item Sl No')")).Visible(false).Width(200);
+                columns.Add().Caption(new JS("formatMessage('Asset Details')")).Columns(band =>
             {
 
 
 
                 band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200).Visible(false);
-                band.Add().DataField("AssetCategory").Caption("Asset Category").Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
-                band.Add().DataField("AssetLedgerNo").Caption("Ledger No").Width(200);
-                band.Add().DataField("PlateNo").Caption("Plate No").Width(200);
-                band.Add().DataField("AssetDescription").Caption("Asset Description").Width(200);
-                band.Add().DataField("AssetLocation").Caption("Asset Location").Width(200);
+                band.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')")).Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
+        band.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('Ledger No')")).Width(200);
+        band.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')")).Width(200);
+        band.Add().DataField("AssetDescription").Caption(new JS("formatMessage('Asset Description')")).Width(200);
+        band.Add().DataField("AssetLocation").Caption(new JS("formatMessage('Asset Location')")).Width(200);
                 band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
                 band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
                 band.Add().DataField("OpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("DebitTransaction").Caption("Asset Additions").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("CreditTransaction").Caption("Asset Removal").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("DebitTransaction").Caption(new JS("formatMessage('Asset Additions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("CreditTransaction").Caption(new JS("formatMessage('Asset Removal')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
                 band.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
             });
-                
-                columns.Add().Caption("Accumulated Depreciation Details").Columns(band =>
+
+        columns.Add().Caption(new JS("formatMessage('Accumulated Depreciation Details')")).Columns(band =>
     {
-                band.Add().DataField("DepreciatedPercentage").Caption("Depreciation %").Width(100);
-                band.Add().DataField("AccDeprOpeningBalance").Caption("Accumulated Dep.Op.Balance").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AccumulatedAdjusted").Caption("Accumulated Adjusted").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("DepreciationAmount").Caption("Depreciation Amount").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("AccDeprTotalAmount").Caption("Total Accumulated").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
-                band.Add().DataField("BookValueAsOnDate").Caption("Book Value").DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("DepreciatedPercentage").Caption(new JS("formatMessage('Depreciation %')")).Width(100);
+        band.Add().DataField("AccDeprOpeningBalance").Caption(new JS("formatMessage('Accumulated Dep.Op.Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("AccumulatedAdjusted").Caption(new JS("formatMessage('Accumulated Adjusted')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("DepreciationAmount").Caption(new JS("formatMessage('Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("AccDeprTotalAmount").Caption(new JS("formatMessage('Total Accumulated')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("BookValueAsOnDate").Caption(new JS("formatMessage('Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
                
             });
             })
@@ -538,5 +538,19 @@
             year: 'numeric'
         }).replace(/ /g, '-');
     }
-
+      $(function () {
+        $("#createmastertotalcredit").text(formatMessage("Total Credit"));
+    });
+     $(function () {
+        $("#createmastertotaldebit").text(formatMessage("Total Debit"));
+    });
+     $(function () {
+        $("#createmasterbalance").text(formatMessage("Balance"));
+    });
+    $(function () {
+        $("#depreciationmastercreate").text(formatMessage("Depreciation Master"));
+    });
+    $(function () {
+        $("#quickdiceerpsolutionsmastercreate").text(formatMessage("Quick Dice ERP Solutions"));
+    });
 </script>

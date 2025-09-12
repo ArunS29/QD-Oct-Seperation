@@ -1,4 +1,177 @@
-﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+﻿<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+<style type="text/css">
+
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 9px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #9ca3af;
+        opacity: 1;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+
+    .footer-fixed {
+        bottom: 35px !important;
+    }
+</style>
+<div class="WorkFlow">
+    <div class="workflow-container">
+        <div class="workflow-line"></div>
+
+        <div class="workflow-step" id="step-update">
+            <div class="step-circle"><i class="fas fa-user"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg"> - In Progress</div>
+            </div>
+        </div>
+        <div class="workflow-step" id="step-submit">
+            <div class="step-circle" id="circle-submit"><i class="fas fa-paper-plane"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Submitted</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-verify">
+            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg"> - Waiting</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
+        <div id="approvePopover" class="popover-box">Approved by: <span id="approvedByName"></span><br>On: <span id="approvedOn"></span></div>
+
+    </div>
+</div>
+<div class="horizontal-container1">
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -87,6 +260,31 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("btnCreatePo")
+                .Text(new JS("formatMessage('Create PO')"))
+                .Icon("arrowright")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+                .Icon("plus")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Submit')"))
+                .Icon("check")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
                 .ID("btnVerify")
                 .Text(new JS("formatMessage('Verify')"))
                 .Icon("check")
@@ -104,128 +302,7 @@
                 )
 
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnSubmit")
-                .Text(new JS("formatMessage('Submit')"))
-                .Icon("check")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnCreatePo")
-                .Text(new JS("formatMessage('Create PO')"))
-                .Icon("arrowright")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveUp")
-                .Text(new JS("formatMessage('Move Up')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spinup") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveDown")
-                .Text(new JS("formatMessage('Move Down')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spindown") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width("100%")
-            .Text(new JS("formatMessage('Layout')"))
-            
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().DropDownButton()
-            .ID("rowHeightProperties")
-            .Icon("") // fallback to standard icon if "rowproperties" not working
-            .Width(50)
-            .Text(new JS("formatMessage('Set Row Height')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add()
-                .Text("Short (1 Line)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Short
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('30'); }");
-
-                items.Add()
-                .Text("Medium (2 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Medium
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('60'); }");
-
-                items.Add()
-                .Text("Tall (4 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Tall
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('90'); }");
-
-                items.Add()
-                .Text("Extra Tall (8 Lines)")
-                .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                @for (var i = 1; i <= 8; i++)
-                        {
-                            var y = 1 + (i - 1) * 2;
-                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                        }
-            </svg> Extra Tall
-        </text>)
-                .OnClick("function() { ChangeRowHeight('130'); }");
-            })
-            .ShowArrowIcon(false)
-    )
-</div>
+    
 </div>
 
 <script>
@@ -375,18 +452,42 @@
             return;
         }
 
-        const reportName = RFQMap[itemText];
+         try {
+            const reportName = RFQMap[itemText];
 
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
-        }
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+        let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
 
+                const RFQ = [
+                    "Preview RFQ"
+                ];
+        if (RFQ.includes(itemText)) {
+                // Collect parameters only if true
+                const params = {
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val()
+                };
 
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
-
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                // Append only those that are "true"
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
     }
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open report:", error);
+            alert("An error occurred while trying to open the report.");
+        }
+    }
+
 
     function onIMSAttachmentButtonClick(e) {
         // Get Voucher No safely

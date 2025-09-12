@@ -3,8 +3,7 @@
 <script src="https://unpkg.com/tippy.js@6"></script>
 
 <style type="text/css">
-
-    .workflow-container {
+   .workflow-container {
         position: relative;
         display: flex;
         justify-content: space-between;
@@ -12,12 +11,10 @@
         /* padding: 16px 0; */
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
         gap: 10px;
         height: 48px;
     }
-
-    /* FIXED: Single full connector line behind steps */
+   /* FIXED: Single full connector line behind steps */
     .workflow-line {
         position: absolute;
         top: 19px;
@@ -30,18 +27,16 @@
         pointer-events: none;
         transition: background 0.3s ease;
     }
-
-    .workflow-step {
+   .workflow-step {
         padding-right: 20px;
         padding-left: 20px;
-        /* flex: 1; */
+        display: flex;
         text-align: center;
         position: relative;
         transition: all 0.3s ease;
         z-index: 1;
     }
-
-    .step-circle {
+   .step-circle {
         width: 36px;
         height: 36px;
         margin: 0 auto;
@@ -56,65 +51,53 @@
         transition: background 0.3s ease;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
-
-    .step-label {
+   .step-label {
         /* margin-top: 6px; */
         font-weight: 500;
         font-size: 12px;
         color: #4b5563;
         transition: color 0.3s ease;
     }
-
-    .step-status-msg {
-        margin-top: 4px;
+   .step-status-msg {
+        margin-top: 9px;
         font-size: 11px;
-        font-weight: 500;
+        font-weight: 600;
         color: #9ca3af;
-        opacity: 0;
+        opacity: 1;
         transform: translateY(-4px);
         transition: all 0.3s ease;
     }
-
-    /* Status-based Colors */
+   /* Status-based Colors */
     .workflow-step.completed .step-circle {
         background: #10b981;
     }
-
-    .workflow-step.completed .step-label,
+   .workflow-step.completed .step-label,
     .workflow-step.completed .step-status-msg {
         color: #10b981;
     }
-
-    .workflow-step.current .step-circle {
+   .workflow-step.current .step-circle {
         background: #3b82f6;
     }
-
-    .workflow-step.current .step-label {
+   .workflow-step.current .step-label {
         color: #3b82f6;
     }
-
-    .workflow-step.current .step-status-msg {
+   .workflow-step.current .step-status-msg {
         color: #3b82f6;
         opacity: 1;
-        transform: translateY(0);
     }
-
-    .workflow-step.upcoming .step-circle {
+   .workflow-step.upcoming .step-circle {
         background: #d1d5db;
     }
-
-    .workflow-step.upcoming .step-label,
+   .workflow-step.upcoming .step-label,
     .workflow-step.upcoming .step-status-msg {
         color: #9ca3af;
     }
-
-    /* Optional: Hover Animation */
+   /* Optional: Hover Animation */
     .workflow-step:hover .step-circle {
         transform: scale(1.05);
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
     }
-
-    .popover-box {
+   .popover-box {
         position: absolute;
         background-color: #fff;
         border: 1px solid #ccc;
@@ -136,25 +119,33 @@
 
         <div class="workflow-step" id="step-update">
             <div class="step-circle"><i class="fas fa-user"></i></div>
-            <div class="step-label">Updated</div>
-            <div class="step-status-msg">In Progress</div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg">In Progress</div>
+            </div>
         </div>
         <div class="workflow-step" id="step-submit">
             <div class="step-circle" id="circle-submit"><i class="fas fa-paper-plane"></i></div>
-            <div class="step-label">Submitted</div>
-            <div class="step-status-msg">Pending</div>
+            <div class="workflowText">
+                <div class="step-label">Submitted</div>
+                <div class="step-status-msg">Pending</div>
+            </div>
         </div>
 
         <div class="workflow-step" id="step-verify">
             <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
-            <div class="step-label">Verified</div>
-            <div class="step-status-msg">Waiting</div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg">Waiting</div>
+            </div>
         </div>
 
         <div class="workflow-step" id="step-approve">
             <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Approved</div>
-            <div class="step-status-msg">Pending</div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg">Pending</div>
+            </div>
         </div>
 
         <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
@@ -162,9 +153,8 @@
 
     </div>
 </div>
-<div class="dx-fieldset horizontal-container mt-2">
-
-    <div class="btn-container">
+<div class="horizontal-container1">
+   <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnSave")
                 .Text(new JS("formatMessage('Save')"))
@@ -173,11 +163,9 @@
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })// Apply custom CSS class
                 )
-
-    </div>
+   </div>
     <div class="btn-container">
-
-        @(Html.DevExtreme().Button()
+       @(Html.DevExtreme().Button()
                 .ID("btnSaveAndClose")
                 .Text(new JS("formatMessage('Save and Close')"))
                 .Type(ButtonType.Normal)
@@ -187,8 +175,7 @@
                 )
     </div>
     <div class="btn-container">
-
-        @(Html.DevExtreme().Button()
+       @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text(new JS("formatMessage('Back')"))
                 .Icon("arrowleft")
@@ -205,8 +192,7 @@
                 )
     </div>
     <div class="btn-container">
-
-        @(Html.DevExtreme().DropDownButton()
+       @(Html.DevExtreme().DropDownButton()
                 .ID("btnPrint1")
                 .Width(90)
                 .Text(new JS("formatMessage('Print')"))
@@ -216,9 +202,9 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Custom request Designs").Icon("print").Option("color", "#FF7043");
-                    items.Add().Text("Preview Request").Icon("file").Option("color", "#00ACC1");
-                    items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Custom request Designs')")).Icon("print").Option("color", "#FF7043");
+                    items.Add().Text(new JS("formatMessage('Preview Request')")).Icon("file").Option("color", "#00ACC1");
+                    items.Add().Text(new JS("formatMessage('Preview Request(With Expected Unit Price)')")).Icon("folder").Option("color", "#AB47BC");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -244,22 +230,20 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnVerify")
-                .Text(new JS("formatMessage('Verify')"))
-                .Icon("check")
-                .ElementAttr(new { @class = "dx-button-custom btn-verify" }) 
+                .ID("btnCancel")
+                .Text(new JS("formatMessage('Cancel')"))
+                .Icon("close")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
                 )
-
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnApprove")
-                .Text(new JS("formatMessage('Approve')"))
-                .Icon("exportselected")
-                .ElementAttr(new { @class = "dx-button-custom btn-approve" }) 
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+                .Icon("plus")
+                .ElementAttr(new { @class = "bold-button" })  
                 )
-
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -271,22 +255,21 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" })  
-                )
-    </div>
-
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .Icon("check")
+                .ElementAttr(new { @class = "dx-button-custom btn-verify" }) 
+               )
+   </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnCancel")
-                .Text(new JS("formatMessage('Cancel')"))
-                .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Approve')"))
+                .Icon("exportselected")
+                .ElementAttr(new { @class = "dx-button-custom btn-approve" }) 
                 )
-    </div>
+   </div>
+    
   
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -297,103 +280,6 @@
                 .OnClick("onUploadButtonClick")
               )
     </div>
-    
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width("100%")
-            .Text(new JS("formatMessage('Layout')"))
-            
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-    <div class="btn-container">
-    @(Html.DevExtreme().DropDownButton()
-            .ID("rowHeightProperties")
-            .Icon("")  
-            .Width(50)
-            .Text(new JS("formatMessage('Set Row Height')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add()
-                .Text("Short (1 Line)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Short
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('30'); }");
-
-                items.Add()
-                .Text("Medium (2 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Medium
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('60'); }");
-
-                items.Add()
-                .Text("Tall (4 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Tall
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('90'); }");
-
-                items.Add()
-                .Text("Extra Tall (8 Lines)")
-                .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                @for (var i = 1; i <= 8; i++)
-                        {
-                            var y = 1 + (i - 1) * 2;
-                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                        }
-            </svg> Extra Tall
-        </text>)
-                .OnClick("function() { ChangeRowHeight('130'); }");
-            })
-            .ShowArrowIcon(false)
-    )
-</div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveUp")
-                .Text(new JS("formatMessage('Move Up')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spinup") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveDown")
-                .Text(new JS("formatMessage('Move Down')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("spindown") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-
-
 </div>
 
 <script>
@@ -406,8 +292,7 @@
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
             var elementWidth = $target.outerWidth();
-
-            // Position submenu with a slight margin (e.g., 5px)
+           // Position submenu with a slight margin (e.g., 5px)
             $submenu.css({
                 'width': 180,
                 'position': 'absolute',
@@ -416,8 +301,7 @@
                 'display': 'block'
             });
         }
-
-        function closeSubmenu() {
+       function closeSubmenu() {
             $("#submenuContainer").hide();
         }
              function addNewMaterialRequest(e) {
@@ -436,94 +320,77 @@
                     console.log("Clicked item: ", e.itemData.text);
                     return;
             }
-
-            window.location.href = url;
+           window.location.href = url;
         }
-                 async function handleCreditReportPrinting(e) {
-
-           
-
+      async function handleCreditReportPrinting(e) {
         const itemText = e.itemData?.text;
-
         let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
-
         if (!requestNo) {
-
-            alert("RequestNo  is required.");
-
+            alert("RequestNo is required.");
             return;
-
         }
-
         try {
-
             const isApproved = await checkInvoiceApprovalStatus1(requestNo);
-
             const watermarkText = isApproved ? "" : "Draft Copy";
-
             let reportName = "";
 
             switch (itemText) {
-
                 case "Preview Request":
-
-                        reportName = "MaterialRequestInventory";
-
+                    reportName = "MaterialRequestInventory";
                     break;
-
                 case "Preview Request(With Expected Unit Price)":
-
                     reportName = "MaterialPurcchaseRequestion";
-
                     break;
-
                 default:
-
                     alert("Invalid report format selected.");
-
                     return;
-
             }
 
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
+            // ✅ collect checkbox hidden field values
+            const params = {
+                showSign1: $("#hdntxtShowSign1").val(),
+                showSeal: $("#hdnshowSeal").val(),
+                showSignature: $("#hdnshowSignature").val(),
+                printLetterhead: $("#hdnprintLetterhead").val()
+            };
 
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            // ✅ base url
+            let url = `/${tenantName}/VoucherViewer`
+                + `?reportName=${encodeURIComponent(reportName)}`
+                + `&RequestNo=${encodeURIComponent(requestNo)}`
+                + `&skipPreview=true`
+                + `&watermark=${encodeURIComponent(watermarkText)}`
+                + `&isApproved=${isApproved}`;
 
-        } catch (error) {
-
-            console.error("Error checking approval status:", error);
-
-            alert("Failed to check invoice approval status.");
-
-        }
-
-    }
-
-    async function checkInvoiceApprovalStatus1(requestNo) {
-
-        try {
-
-            const response = await $.ajax({
-
-
-                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
-
-                method: 'GET',
-
-                dataType: 'json',
-
+            // ✅ append only true values
+            Object.keys(params).forEach(key => {
+                if (params[key] === "true") {
+                    url += `&${key}=true`;
+                }
             });
 
-            return response?.isApproved ?? false;
-
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         } catch (error) {
-
-            console.error("Error fetching approval status:", error);
-
-            return false;
-
+            console.error("Error checking approval status:", error);
+            alert("Failed to check invoice approval status.");
         }
-
     }
+
+
+
+       async function checkInvoiceApprovalStatus1(requestNo) {
+       try {
+           const response = await $.ajax({
+
+               url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+               method: 'GET',
+               dataType: 'json',
+           });
+           return response?.isApproved ?? false;
+       } catch (error) {
+           console.error("Error fetching approval status:", error);
+           return false;
+       }
+   }
 
 </script>

@@ -223,7 +223,7 @@
                 .AllowColumnResizing(true)
                 .Paging(p => p.Enabled(false))
                 .HeaderFilter(filter => filter.Visible(false))
-                .Height(400)
+                .Height("75vh")
                 .FilterRow(filterRow => filterRow.Visible(false))
                 .GroupPanel(groupPanel => groupPanel.Visible(false))
                 .ShowBorders(true)
@@ -253,13 +253,11 @@
             }
 
         });
-
-        // Handle Back button click
-        $(document).on('click', '#btnBack', function () {
-            window.history.back();
-        });
-
     });
+
+        $(document).on('click', '#btnBack', function () {
+            window.parent.closeModal();
+        });
 
 
         async function convertToArabic() {

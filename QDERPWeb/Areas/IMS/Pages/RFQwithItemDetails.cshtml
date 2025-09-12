@@ -146,10 +146,18 @@
 </style>
 
 <input id="formId" value="frm60140RFQItemDetails" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="RequestforQuotationList" class="no-border-input"></div>
 	</div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="RequestforQuotationList" class="titleText no-border-title"></div>
+    </div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
@@ -190,6 +198,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -339,7 +348,7 @@
 				subColumns.AddFor(m => m.IsWonForPo).Caption(new JS("formatMessage('Is Won For Po')")).Alignment(HorizontalAlignment.Center);
 			});
 		})
-		.Height("60vh") // Fixed height for the grid
+		.Height("70vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -386,7 +395,7 @@
 	text: formatMessage("RFQ with Item Details"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+		$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});
@@ -446,10 +455,31 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
-			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
 
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
+			}
+			hidequarterSubmenus();
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
+				frmDate = frmDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 				$.ajax({
 			url: '/api/RequestforQuotationList/GetRFQwithItemDetails',
 		type: 'GET',
