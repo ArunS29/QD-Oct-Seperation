@@ -868,7 +868,7 @@
                     const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
                     if (!voucherNo) {
-                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                       history.back();
                         return;
                     }
 
@@ -978,6 +978,8 @@
                     ).done(() => {
                         $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
                         $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                         $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+
                     });
                     initWorkflowTippyPopovers();
                 }
