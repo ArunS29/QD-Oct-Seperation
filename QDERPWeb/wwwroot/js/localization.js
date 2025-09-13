@@ -4831,7 +4831,15 @@ var dictionary = {
         "Accounts Payables": "Accounts Payables",
         "Accounts Receivables": "Accounts Receivables",
         "Fund Requests": "Fund Requests",
-        "Manpower Requests":"Manpower Requests"
+        "Manpower Requests": "Manpower Requests",
+        "XML": "XML",
+        "Validations": "Validations",
+        "Item Details": "Item Details",
+        "Payment Details": "Payment Details", 
+        "Seller & Buyer Details": "Seller & Buyer Details",
+        "Invoice Master": " Invoice Master", 
+        "Main": "Main",
+        "Other Buyer ID":"Other Buyer ID"
     },
                 //Arabic Language Translations
 
@@ -8793,7 +8801,14 @@ var dictionary = {
         "Is Balance Sheet Account": "هل هو حساب الميزانية العمومية",
         "Is Salary Payable": "هل الراتب مستحق الدفع",
         "Is Use In Reconciliation": "هل يستخدم في التسوية",
-        "Total Purchase Amount": "إجمالي مبلغ الشراء"
+        "Total Purchase Amount": "إجمالي مبلغ الشراء",
+        "Validations": "التحققات",
+        "Item Details": "تفاصيل الصنف",
+        "Payment Details": "تفاصيل الدفع",
+        "Seller & Buyer Details": "تفاصيل البائع والمشتري",
+        "Invoice Master": "رئيس الفاتورة",
+        "Main": "الرئيسي",
+        "Other Buyer ID": "معرّف المشتري الآخر",
     },
              
                 // Mandrian Chinese Languange Translations
@@ -12452,9 +12467,16 @@ var dictionary = {
         "RCM @5% VAT": "RCM @5% 增值税",
         "RCM @10% VAT": "RCM @10% 增值税",
         "RCM @15% VAT": "RCM @15% 增值税",
-
+        "Validations": "验证",
+        "Item Details": "项目明细",
+        "Payment Details": "付款明细",
+        "Seller & Buyer Details": "卖方和买方明细",
+        "Invoice Master": "发票主档",
+        "Main": "主页面",
+        "Other Buyer ID": "其他买方编号"
 
     },
+
 
                      // Hindi Language Translation
     hi: {
@@ -16214,7 +16236,14 @@ var dictionary = {
         "Positions": "पद",
         "Manpower Rentals": "मानव बल किराया",
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स",
-        "Receipts": "रसीदें"
+        "Receipts": "रसीदें",
+        "Validations": "मान्यकरण",
+        "Item Details": "वस्तु विवरण",
+        "Payment Details": "भुगतान विवरण",
+        "Seller & Buyer Details": "विक्रेता और खरीदार विवरण",
+        "Invoice Master": "चालान मास्टर",
+        "Main": "मुख्य",
+        "Other Buyer ID": "अन्य खरीदार आईडी"
     },
 
                  // Urdu Language Translation
@@ -20037,7 +20066,14 @@ var dictionary = {
         "Preview Credit Note (Foreign Currency)": "کریڈٹ نوٹ کا پیش منظر (غیر ملکی کرنسی)",
         "VAT Purchase Register": "وی اے ٹی خریداری رجسٹر",
         "Supplier Province Ar": "سپلائر صوبہ",
-        "Purchase Due Date": "خریداری کی مقررہ تاریخ"
+        "Purchase Due Date": "خریداری کی مقررہ تاریخ",
+        "Validations": "تصدیق",
+        "Item Details": "آئٹم کی تفصیلات",
+        "Payment Details": "ادائیگی کی تفصیلات",
+        "Seller & Buyer Details": "فروخت کنندہ اور خریدار کی تفصیلات",
+        "Invoice Master": "انوائس ماسٹر",
+        "Main": "مین",
+        "Other Buyer ID": "دیگر خریدار کی شناخت"
     },
 
                // Korean Language Translation
@@ -23660,7 +23696,14 @@ var dictionary = {
         "Domestic 10 % Purchase": "국내 10% 구매",
         "Postal Amount": "우편 금액",
         "Total Purchase Amount": "총 구매 금액",
-        "Tax Summary Report – Debit Notes": "세금 요약 보고서 - 차변 노트"
+        "Tax Summary Report – Debit Notes": "세금 요약 보고서 - 차변 노트",
+        "Validations": "검증",
+        "Item Details": "항목 세부사항",
+        "Payment Details": "결제 세부사항",
+        "Seller & Buyer Details": "판매자 및 구매자 세부사항",
+        "Invoice Master": "송장 마스터",
+        "Main": "메인",
+        "Other Buyer ID": "기타 구매자 ID"
 
         
     }

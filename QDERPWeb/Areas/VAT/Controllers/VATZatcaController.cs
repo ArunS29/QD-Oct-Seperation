@@ -1,4 +1,4 @@
-﻿using Chilkat;
+﻿//using Chilkat;
 using DevExpress.Entity.Model;
 using DevExpress.Pdf.Native.BouncyCastle.Utilities;
 using DevExpress.XtraEditors;
@@ -7,6 +7,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
@@ -15,6 +16,7 @@ using SkiaSharp;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection.Emit;
@@ -27,7 +29,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-using Task = Chilkat.Task;
+//using Task = Chilkat.Task;
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
 {
@@ -44,7 +46,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         public VATZatcaController(ILogger<VATZatcaController> logger, TenantDbContextHelper tenantDbContextHelper, HttpClient httpClient)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
-         
+
             _logger = logger;
             _httpClient = httpClient;
         }
@@ -75,19 +77,18 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         InvoiceData aInvoiceData = new InvoiceData();
 
         [HttpPost]
-        public IActionResult ConnectToPortal([FromBody]ZatcaRequestDto aZatcaRequestDto)
+        public IActionResult ConnectToPortal([FromBody] ZatcaRequestDto aZatcaRequestDto)
         {
             bool bTls = true;
             int port = 443;
             bool bAutoReconnect = true;
             string invoiceNo = aZatcaRequestDto.InvNo;
-            string ConnectionStatus = aZatcaRequestDto.ConnectionStatus;
-            
-            // Developer Portal (for testing)
-            // bool success = rest.Connect("gw-apic-gov.gazt.gov.sa", port, bTls, bAutoReconnect);
+            string connectionStatus = aZatcaRequestDto.ConnectionStatus;
 
-            // With the following code:
-            var rest = new Rest();
+            // Create REST client
+            //var rest = new Rest();
+
+            // Connect to ZATCA Production (or Developer if testing)
             bool success = rest.Connect("gw-fatoora.zatca.gov.sa", port, bTls, bAutoReconnect);
 
             if (!success)
@@ -104,31 +105,38 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 return BadRequest(errorResponse);
             }
 
-            // Example business logic (replace with your actual methods)
-            if (InvoiceSubTypeCode == "01")
-            {
-                //FillData(invoiceNo);
-                InvoiceData aInvoiceData = FillData(invoiceNo);
-                SubmitInvoiceToZatca(invoiceNo, ConnectionStatus, aInvoiceData);
+            // If connection successful
+            InvoiceData aInvoiceData = FillData(invoiceNo);
 
-            }
-            else if (InvoiceSubTypeCode == "02")
+            if (connectionStatus == "Connected")
             {
-                FillData(invoiceNo);
-               // PrepareSimplifiedTaxInvoice();
+                SubmitInvoiceToZatca(invoiceNo, connectionStatus, aInvoiceData);
             }
 
-            // If connected successfully
+            // Example: if you want subtype-specific behavior
+            if (!string.IsNullOrEmpty(InvoiceSubTypeCode))
+            {
+                if (InvoiceSubTypeCode == "01")
+                {
+                    string txtFinalQRCode = "";
+                    string txtQRCodeValue = "";
+                    // TODO: add logic for subtype 01
+                }
+                else if (InvoiceSubTypeCode == "02")
+                {
+                    PrepareSimplifiedTaxInvoice(invoiceNo, aInvoiceData);
+                }
+            }
+
             var response = new
             {
                 Success = true,
                 Message = "Connected to ZATCA Fatoora Portal successfully",
-                XMLResponse = _signedXmlGlobal,
-        
+                XMLResponse = _signedXmlGlobal
             };
+
             return Ok(response);
         }
-
 
 
 
@@ -338,14 +346,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
         }
 
-
-
-
-
-
-
-
-
         private void GenerateUBLFile(InvoiceData aInvoiceData)
         {
             bool success = true;
@@ -361,15 +361,16 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             string UniqueInvoiceID = aInvoiceData.Master.InvoiceUuid;
             string InvoiceIssueDate = invoiceDateTime.ToString("yyyy-MM-dd"); // 2025-09-04
             string InvoiceIssueTime = invoiceDateTime.ToString("HH:mm:ss");   // 11:18:02
-           // short InvoiceTypeCode = aInvoiceData.Master.InvoiceTypeCode;
+                                                                              // short InvoiceTypeCode = aInvoiceData.Master.InvoiceTypeCode;
             string InvoiceTransactionCode = aInvoiceData.Master.InvoiceTransactionCode;
             string InvoiceNote = aInvoiceData.Master.RemarksInEn;
             short InvoiceTypeCode = aInvoiceData.Master.InvoiceTypeCode ?? 0;
             //string InvoiceCurrencyCode = aInvoiceData.Master.InvoiceCurrencyCode;
             string InvoiceCurrencyCode = "SAR";
-            string TaxCurrencyCode = aInvoiceData.Master.TaxCurrencyCode; 
+            string TaxCurrencyCode = aInvoiceData.Master.TaxCurrencyCode;
             string InvoiceCounterValue = aInvoiceData.Master.InvoiceCounterValue.ToString();
-            string PreviousInvoiceHash = aInvoiceData.SubmissionStatus.PreviousHashFile;
+            //string PreviousInvoiceHash = aInvoiceData.SubmissionStatus.PreviousHashFile;
+            string PreviousInvoiceHash = gLastSuccessfulSubmittedHashfile;
 
 
             xml.Tag = "Invoice";
@@ -388,10 +389,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             xml.UpdateChildContent("cbc:UUID", UniqueInvoiceID);
             xml.UpdateChildContent("cbc:IssueDate", InvoiceIssueDate);
             xml.UpdateChildContent("cbc:IssueTime", InvoiceIssueTime);
+            ///Check InvoiceTypeCode
             xml.UpdateAttrAt("cbc:InvoiceTypeCode", true, "name", InvoiceTransactionCode);
-       
             xml.UpdateChildContent("cbc:InvoiceTypeCode", InvoiceTypeCode.ToString());
-           
+
             xml.UpdateChildContent("cbc:DocumentCurrencyCode", InvoiceCurrencyCode);
             xml.UpdateChildContent("cbc:TaxCurrencyCode", TaxCurrencyCode);
 
@@ -408,8 +409,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
             else
             {
-                string InvDtl = ((char)148).ToString() + "" + ((char)148).ToString();
-                xml.UpdateChildContent("cac:BillingReference|cac:InvoiceDocumentReference|cbc:ID", InvDtl);
+                //string InvDtl = char.ConvertFromUtf32(8221) + char.ConvertFromUtf32(8221);
+                //xml.UpdateChildContent("cac:BillingReference|cac:InvoiceDocumentReference|cbc:ID", InvDtl);
+
+                // string InvDtl = ((char)148).ToString() + "" + ((char)148).ToString();
+                // xml.UpdateChildContent("cac:BillingReference|cac:InvoiceDocumentReference|cbc:ID", InvDtl);
             }
 
 
@@ -423,7 +427,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             // Previous Invoice Hash
             xml.UpdateChildContent("cac:AdditionalDocumentReference[1]|cbc:ID", "PIH");
             xml.UpdateAttrAt("cac:AdditionalDocumentReference[1]|cac:Attachment|cbc:EmbeddedDocumentBinaryObject", true, "mimeCode", "text/plain");
-           //// xml.UpdateChildContent("cac:AdditionalDocumentReference[1]|cac:Attachment|cbc:EmbeddedDocumentBinaryObject", PreviousInvoiceHash);
+            xml.UpdateChildContent("cac:AdditionalDocumentReference[1]|cac:Attachment|cbc:EmbeddedDocumentBinaryObject", PreviousInvoiceHash);
             xml.UpdateChildContent("cac:Signature|cbc:ID", "urn:oasis:names:specification:ubl:signature:Invoice");
             xml.UpdateChildContent("cac:Signature|cbc:SignatureMethod", "urn:oasis:names:specification:ubl:dsig:enveloped:xades");
 
@@ -492,10 +496,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             string BuyerBuildingNumber = aInvoiceData.Master.BuyerBuildingNumber;
             string BuyerAddlNumber = aInvoiceData.Master.BuyerAdditionalNumber;
             string BuyerCity = aInvoiceData.Master.BuyerCity;
-            string BuyerPostalCode = aInvoiceData.Master.BuyerCityAr;
+            string BuyerPostalCode = aInvoiceData.Master.BuyerPostalCode;
             string BuyerProvince = aInvoiceData.Master.BuyerProvince;
             string BuyerDistrict = aInvoiceData.Master.BuyerNeighborhood;
-            string BuyerCountryCode = aInvoiceData.Master.BuyerNeighborhoodAr;
+            string BuyerCountryCode = aInvoiceData.Master.BuyerCountryCode;
             string BuyerVATNumber = aInvoiceData.Master.BuyerVatnumber;
             string BuyerName = aInvoiceData.Master.BuyerName;
 
@@ -536,8 +540,10 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             ////// Payment Details & Supply Details
             ////// --------------------------------------------------------------------------------------------------------------
 
+            string SupplyDate = aInvoiceData.Master.SupplyDate.HasValue
+                ? aInvoiceData.Master.SupplyDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)
+                : string.Empty; // or null if you prefer
 
-            string SupplyDate = aInvoiceData.Master.SupplyDate.ToString();
             string SupplyEndDate = aInvoiceData.Master.SupplyEndDate.ToString();
             string PaymentMeansTypeCode = aInvoiceData.Master.PaymentMeansTypeCode.ToString();
             string PaymentTerms = aInvoiceData.Master.PaymentTerms;
@@ -546,6 +552,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             xml.UpdateChildContent("cac:Delivery|cbc:ActualDeliveryDate", SupplyDate);
             // xml.UpdateChildContent("cac:Delivery|cbc:LatestDeliveryDate", SupplyEndDate)
+            PaymentMeansTypeCode = "30";//Testing static data
             xml.UpdateChildContent("cac:PaymentMeans|cbc:PaymentMeansCode", PaymentMeansTypeCode);
             // xml.UpdateChildContent("cac:PaymentMeans|cac:PayeeFinancialAccount|cbc:PaymentNote", PaymentTerms)
             // xml.UpdateChildContent("cac:PaymentMeans|cac:PayeeFinancialAccount|cbc:ID", PaymentAccountID)
@@ -563,7 +570,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
             else
             {
-                string RetItem = ((char)147).ToString() + CreditNoteReason + ((char)148).ToString();
+                // string RetItem = char.ConvertFromUtf32(8221) + char.ConvertFromUtf32(8221);
+                string RetItem = "Bank Transfer";
+                //string RetItem = ((char)147).ToString() + CreditNoteReason + ((char)148).ToString();
                 xml.UpdateChildContent("cac:PaymentMeans|cbc:InstructionNote", RetItem);
             }
 
@@ -573,12 +582,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             // --------------------------------------------------------------------------------------------------------------
 
 
-            xml.UpdateChildContent("cac:AllowanceCharge|cbc:ChargeIndicator", "false");
-            xml.UpdateAttrAt("cac:AllowanceCharge|cbc:Amount", true, "currencyID", InvoiceCurrencyCode);
-            xml.UpdateChildContent("cac:AllowanceCharge|cbc:Amount", "0.00");
-            xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:ID", "S");
-            xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:Percent", "15");
-            xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+            //xml.UpdateChildContent("cac:AllowanceCharge|cbc:ChargeIndicator", "false");
+            //xml.UpdateAttrAt("cac:AllowanceCharge|cbc:Amount", true, "currencyID", InvoiceCurrencyCode);
+            //xml.UpdateChildContent("cac:AllowanceCharge|cbc:Amount", "0.00");
+            //xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:ID", "S");
+            //xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:Percent", "15");
+            //xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
 
             for (int i = 0; i <= aInvoiceData.AllowanceCharges.Count - 1; i++)
             {
@@ -616,24 +625,24 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             // --------------------------------------------------------------------------------------------------------------
 
 
-            xml.UpdateAttrAt("cac:TaxTotal|cbc:TaxAmount", true, "currencyID", "SAR");
-            xml.UpdateChildContent("cac:TaxTotal|cbc:TaxAmount", "3900.00");
+            //xml.UpdateAttrAt("cac:TaxTotal|cbc:TaxAmount", true, "currencyID", "SAR");
+            //xml.UpdateChildContent("cac:TaxTotal|cbc:TaxAmount", "3900.00");
 
-            //'Taxable Amount By VAT Category -  Sum of all taxable amounts subject to a specific VAT category code and VAT category rate (if the VAT category rate is applicable). The sum of Invoice line net amount minus allowances on document level which are subject to a specific VAT category code And VAT category rate (if the VAT category rate Is applicable).
-            xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", true, "currencyID", "SAR");
-            xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", "26000.00");
+            ////'Taxable Amount By VAT Category -  Sum of all taxable amounts subject to a specific VAT category code and VAT category rate (if the VAT category rate is applicable). The sum of Invoice line net amount minus allowances on document level which are subject to a specific VAT category code And VAT category rate (if the VAT category rate Is applicable).
+            //xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", true, "currencyID", "SAR");
+            //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", "26000.00");
 
-            //'Tax Amount By VAT Category - Calculated by multiplying the VAT category taxable amount with the VAT category rate for the relevant VAT category.
-            xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", true, "currencyID", "SAR");
-            xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", "3900.00");
+            ////'Tax Amount By VAT Category - Calculated by multiplying the VAT category taxable amount with the VAT category rate for the relevant VAT category.
+            //xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", true, "currencyID", "SAR");
+            //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", "3900.00");
 
-            xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:ID", "S");
-            xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:Percent", "15");
-            xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+            //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:ID", "S");
+            //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:Percent", "15");
+            //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
 
-            //'''-???
-            xml.UpdateAttrAt("cac:TaxTotal[100]|cbc:TaxAmount", true, "currencyID", "SAR");
-            xml.UpdateChildContent("cac:TaxTotal[100]|cbc:TaxAmount", "3900.00");
+            ////'''-???
+            //xml.UpdateAttrAt("cac:TaxTotal[100]|cbc:TaxAmount", true, "currencyID", "SAR");
+            //xml.UpdateChildContent("cac:TaxTotal[100]|cbc:TaxAmount", "3900.00");
 
             for (int i = 0; i <= aInvoiceData.Totals.Count - 1; i++)
             {
@@ -646,53 +655,77 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 }
             }
 
-         
 
-            for (int i = 0; i <= aInvoiceData.VatBreakdowns.Count - 1; i++)
+
+            for (int i = 0; i < aInvoiceData.VatBreakdowns.Count; i++)
             {
-
-                // xml.UpdateAttrAt("cac:TaxTotal[" & i & "]|cbc:TaxAmount", True, "currencyID", "SAR")
-                // xml.UpdateChildContent("cac:TaxTotal[" & i & "]|cbc:TaxAmount", gvVATBreakdown.GetRowCellValue(i, "TotalTaxAmount"))
-
-                // Taxable Amount By VAT Category -  Sum of all taxable amounts subject to a specific VAT category code and VAT category rate (if the VAT category rate is applicable). The sum of Invoice line net amount minus allowances on document level which are subject to a specific VAT category code And VAT category rate (if the VAT category rate Is applicable).
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cbc:TaxableAmount", true, "currencyID", "SAR");
-                var VatBreakDown = aInvoiceData.VatBreakdowns[i];
-                xml.UpdateChildContent("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", VatBreakDown.TotalExclusiveAmount?.ToString("0.00") ?? "0.00");
-                //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cbc:TaxableAmount", gvVATBreakdown.GetRowCellValue(i, "TotalExclusiveAmount"));
-
-                // Tax Amount By VAT Category - Calculated by multiplying the VAT category taxable amount with the VAT category rate for the relevant VAT category.
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cbc:TaxAmount", true, "currencyID", "SAR");
-                xml.UpdateChildContent("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", VatBreakDown.TaxAmountByTaxRate?.ToString("0.00") ?? "0.00");
-               // xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cbc:TaxAmount", gvVATBreakdown.GetRowCellValue(i, "TaxAmountByTaxRate"));
-
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:ID", true, "schemeID", "UN/ECE 5305");
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:ID", true, "schemeAgencyID", "6");
-
-                //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:ID", gvVATBreakdown.GetRowCellValue(i, "TaxCodeInZatca"));
-               //xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:Percent", gvVATBreakdown.GetRowCellValue(i, "TaxRateIn100"));
-
-                xml.UpdateChildContent("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", VatBreakDown.TaxCodeInZatca);
-
-                xml.UpdateChildContent("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", VatBreakDown.TaxRateIn100?.ToString("0.00") ?? "0.00");
-                
                 var vatBreakdown = aInvoiceData.VatBreakdowns[i];
+
+                // Example testing values (replace with your real values)
+                vatBreakdown.TotalExclusiveAmount = 1.00m; // taxable base
+                vatBreakdown.TaxRateIn100 = 15.00m;        // 15% VAT
+                decimal taxable = vatBreakdown.TotalExclusiveAmount ?? 0m;
+                decimal vatRate = (vatBreakdown.TaxRateIn100 ?? 0m) / 100m;
+                decimal taxAmount = Math.Round(taxable * vatRate, 2);
+
+                // --- Taxable Amount ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxableAmount", true, "currencyID", "SAR");
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxableAmount",
+                    taxable.ToString("0.00", CultureInfo.InvariantCulture)
+                );
+
+                // --- Tax Amount ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxAmount", true, "currencyID", "SAR");
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxAmount",
+                    taxAmount.ToString("0.00", CultureInfo.InvariantCulture)
+                );
+
+                // --- Tax Category ID (UNCL5305: S=Standard, Z=Zero, E=Exempt, O=Out of scope) ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID", true, "schemeID", "UN/ECE 5305");
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID", true, "schemeAgencyID", "6");
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID",
+                    vatBreakdown.TaxCodeInZatca
+                );
+
+                // --- Tax Rate Percent ---
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:Percent",
+                    vatBreakdown.TaxRateIn100?.ToString("0.00", CultureInfo.InvariantCulture) ?? "0.00"
+                );
+
+                // --- Tax Scheme ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeID", "UN/ECE 5153");
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeAgencyID", "6");
+                xml.UpdateChildContent($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+                // --- Tax Exemption Handling ---
                 if (vatBreakdown.TaxCodeInZatca == "Z" || vatBreakdown.TaxCodeInZatca == "E")
                 {
-                    xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:TaxExemptionReasonCode", vatBreakdown.TaxExemptionReasonCode);
-                    xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:TaxExemptionReason", vatBreakdown.TaxExemptionReason);
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReasonCode",
+                        vatBreakdown.TaxExemptionReasonCode
+                    );
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReason",
+                        vatBreakdown.TaxExemptionReason
+                    );
                 }
-
-                if (vatBreakdown.TaxCodeInZatca == "O")
+                else if (vatBreakdown.TaxCodeInZatca == "O")
                 {
-                    xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:TaxExemptionReasonCode", "VATEX-SA-OOS");
-                    xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cbc:TaxExemptionReason", "VATEX-SA");
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReasonCode",
+                        "VATEX-SA-OOS"
+                    );
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReason",
+                        "VATEX-SA"
+                    );
                 }
-
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeID", "UN/ECE 5153");
-                xml.UpdateAttrAt("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeAgencyID", "6");
-
-                xml.UpdateChildContent("cac:TaxTotal|cac:TaxSubtotal[" + i + "]|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
             }
+
 
             // ' The Last Line of the Tax Category + Final attribute with total tax amount
             for (int i = 0; i <= aInvoiceData.Totals.Count - 1; i++)
@@ -717,7 +750,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", true, "currencyID", "SAR");
                 xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", total.TotalExclusiveAmount?.ToString("0.00") ?? "0.00");
 
-              //  xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalExclusiveAmount"));
+                //  xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalExclusiveAmount"));
 
                 xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:TaxInclusiveAmount", true, "currencyID", "SAR");
                 xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxInclusiveAmount", total.TaxInclusiveAmount?.ToString("0.00") ?? "0.00");
@@ -727,7 +760,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", true, "currencyID", "SAR");
                 xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", total.TotalAllowanceCharges?.ToString("0.00") ?? "0.00");
 
-               // xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalAllowanceCharges"));
+                // xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalAllowanceCharges"));
 
                 decimal PrepaidAmount = GetInvoicePrepaidAdjustmentAmount(aInvoiceData.Master.InvoiceNo);
                 decimal TaxInclusiveAmount = total.TaxInclusiveAmount ?? 0;
@@ -735,11 +768,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 PayableAmount = TaxInclusiveAmount - PrepaidAmount;
 
                 xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:PrepaidAmount", true, "currencyID", "SAR");
-              
+
                 xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:PrepaidAmount", PrepaidAmount.ToString("0.00"));
 
                 xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:PayableAmount", true, "currencyID", "SAR");
-                
+
                 xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:PayableAmount", PayableAmount.ToString("0.00"));
 
                 xml.UpdateAttrAt("cac:TaxTotal|cbc:TaxAmount", true, "currencyID", "SAR");
@@ -795,7 +828,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:AllowanceChargeReasonCode", "95");
                 xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:AllowanceChargeReason", "Discount");
                 xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:Amount", true, "currencyID", "SAR");
-                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:Amount", line.Discount.ToString("0.00"));
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:Amount", line.Discount.ToString("0.0000"));
 
                 xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:TaxAmount", true, "currencyID", "SAR");
                 xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:TaxAmount", line.LineTaxAmount?.ToString("0.00"));
@@ -923,7 +956,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                 // Price Amount
                 xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:Price|cbc:PriceAmount", true, "currencyID", currencyCode);
-                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Price|cbc:PriceAmount", "0.00");
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Price|cbc:PriceAmount", "0.0000");
             }
             // '--------------------------------------------------------------------------------------------------------------
             // 'UBL Extension Codes 
@@ -1020,8 +1053,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             if ((success != true))
             {
-               // MessageBox.Show(cert.LastErrorText);
-               // return;
+                // MessageBox.Show(cert.LastErrorText);
+                // return;
             }
 
             // Debug.WriteLine(cert.SubjectCN)
@@ -1032,16 +1065,16 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             if ((success != true))
             {
-               // MessageBox.Show(privKey.LastErrorText);
-               // return;
+                // MessageBox.Show(privKey.LastErrorText);
+                // return;
             }
 
             // Associate the private key with the certificate.
             success = cert.SetPrivateKey(privKey);
             if ((success != true))
             {
-               // MessageBox.Show(cert.LastErrorText);
-               // return;
+                // MessageBox.Show(cert.LastErrorText);
+                // return;
             }
             // =====================================================================================
             gen.SetX509Cert(cert, true);
@@ -1049,7 +1082,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             if ((success != true))
             {
                 Debug.WriteLine(gen.LastErrorText);
-               // return;
+                // return;
             }
 
 
@@ -1073,7 +1106,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 //MessageBox.Show("Failed to Sign XML UBL 2.1", "Error XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //MessageBox.Show(gen.LastErrorText);
-               // return;
+                // return;
             }
 
             // Save the signed XML to a file.
@@ -1117,7 +1150,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 if ((verified != true))
                 {
                     Debug.WriteLine(verifier.LastErrorText);
-                   // return;
+                    // return;
                 }
 
                 verifyIdx = verifyIdx + 1;
@@ -1125,11 +1158,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             // Debug.WriteLine("All signatures were successfully verified.")
 
 
-            
-              //  MessageBox.Show("Failed to Create XML UBL 2.1", "Error XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            //  MessageBox.Show("Failed to Create XML UBL 2.1", "Error XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
             Debug.WriteLine("Signed XML file generated at: " + appPath + @"\SignedXML\signedXmlResult1.xml");
-            
+
             try
             {
                 Process.Start(new ProcessStartInfo
@@ -1142,222 +1175,673 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 Debug.WriteLine("Failed to open XML file: " + ex.Message);
             }
-       
+
             //this.WebBrowser1.Navigate(appPath + @"\SignedXML\signedXmlResult1.xml");
         }
 
 
 
-        public string GenerateUBLFileForeignCurrency(InvoiceRequest request)
+        private void GenerateUBLFile_ForeignCurrency(InvoiceData aInvoiceData)
         {
+            bool success = true;
+            Chilkat.Xml xml = new Chilkat.Xml();
 
-            // -------------------------------
-            // Root Invoice XML
-            // -------------------------------
-            XNamespace ns = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2";
-            XNamespace cac = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
-            XNamespace cbc = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
-            XNamespace ext = "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2";
+            // --------------------------------------------------------------------------------------------------------------
+            // Invoice Master Details
+            // --------------------------------------------------------------------------------------------------------------
 
-            var invoice = new XElement(ns + "Invoice",
-                new XAttribute(XNamespace.Xmlns + "cac", cac),
-                new XAttribute(XNamespace.Xmlns + "cbc", cbc),
-                new XAttribute(XNamespace.Xmlns + "ext", ext)
-            );
+            DateTime invoiceDateTime = aInvoiceData.Master.InvoiceDateWtTime ?? DateTime.MinValue;
 
-            // -------------------------------
-            // Invoice Master
-            // -------------------------------
-            invoice.Add(
-                new XElement(cbc + "ID", request.InvoiceNo),
-                new XElement(cbc + "UUID", request.UniqueInvoiceID),
-                new XElement(cbc + "IssueDate", request.InvoiceIssueDate),
-                new XElement(cbc + "IssueTime", request.InvoiceIssueTime),
-                new XElement(cbc + "InvoiceTypeCode",
-                    new XAttribute("name", request.InvoiceTransactionCode ?? "Standard"),
-                    request.InvoiceTypeCode
-                ),
-                new XElement(cbc + "DocumentCurrencyCode", request.InvoiceCurrencyCode),
-                new XElement(cbc + "TaxCurrencyCode", request.TaxCurrencyCode)
-            );
+            string InvoiceNo = aInvoiceData.Master.InvoiceNo;
+            short InvoiceTypeCode = aInvoiceData.Master.InvoiceTypeCode ?? 0;
+            // string InvoiceCurrencyCode = aInvoiceData.Master.InvoiceCurrencyCode;
+            string TaxCurrencyCode = aInvoiceData.Master.TaxCurrencyCode;
+            string SupplierName = aInvoiceData.Master.SellerName;
+            string SupplierNameAr = aInvoiceData.Master.SellerNameAr;
+            string BuyerName = aInvoiceData.Master.BuyerName;
+            string BuyerNameAr = aInvoiceData.Master.BuyerNameAr;
+            string UniqueInvoiceID = aInvoiceData.Master.InvoiceUuid;
+            string InvoiceIssueDate = invoiceDateTime.ToString("yyyy-MM-dd"); // 2025-09-04
+            string InvoiceIssueTime = invoiceDateTime.ToString("HH:mm:ss");   // 11:18:02
+                                                                              // short InvoiceTypeCode = aInvoiceData.Master.InvoiceTypeCode;
+            string InvoiceTransactionCode = aInvoiceData.Master.InvoiceTransactionCode;
+            string InvoiceNote = aInvoiceData.Master.RemarksInEn;
+            //string InvoiceCurrencyCode = aInvoiceData.Master.InvoiceCurrencyCode;
+            string InvoiceCurrencyCode = "USD";
+            string InvoiceCounterValue = aInvoiceData.Master.InvoiceCounterValue.ToString();
+            //string PreviousInvoiceHash = aInvoiceData.SubmissionStatus.PreviousHashFile;
+            string PreviousInvoiceHash = gLastSuccessfulSubmittedHashfile;
 
-            // Previous Invoice Hash
-            invoice.Add(
-                new XElement(cac + "AdditionalDocumentReference",
-                    new XElement(cbc + "ID", "PIH"),
-                    new XElement(cac + "Attachment",
-                        new XElement(cbc + "EmbeddedDocumentBinaryObject",
-                            new XAttribute("mimeCode", "text/plain"),
-                            request.PreviousInvoiceHash ?? ""
-                        )
-                    )
-                )
-            );
+            xml.Tag = "Invoice";
+            xml.AddAttribute("xmlns", "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2");
+            xml.AddAttribute("xmlns:cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+            xml.AddAttribute("xmlns:cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+            xml.AddAttribute("xmlns:ext", "urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2");
+            xml.UpdateChildContent("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionURI", "urn:oasis:names:specification:ubl:dsig:enveloped:xades");
+            xml.UpdateAttrAt("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures", true, "xmlns:sac", "urn:oasis:names:specification:ubl:schema:xsd:SignatureAggregateComponents-2");
+            xml.UpdateAttrAt("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures", true, "xmlns:sbc", "urn:oasis:names:specification:ubl:schema:xsd:SignatureBasicComponents-2");
+            xml.UpdateAttrAt("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures", true, "xmlns:sig", "urn:oasis:names:specification:ubl:schema:xsd:CommonSignatureComponents-2");
+            xml.UpdateChildContent("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|cbc:ID", "urn:oasis:names:specification:ubl:signature:1");
+            xml.UpdateChildContent("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|sbc:ReferencedSignatureID", "urn:oasis:names:specification:ubl:signature:Invoice");
+            xml.UpdateChildContent("cbc:ProfileID", "reporting:1.0");
+            xml.UpdateChildContent("cbc:ID", InvoiceNo);
+            xml.UpdateChildContent("cbc:UUID", UniqueInvoiceID);
+            xml.UpdateChildContent("cbc:IssueDate", InvoiceIssueDate);
+            xml.UpdateChildContent("cbc:IssueTime", InvoiceIssueTime);
+            xml.UpdateAttrAt("cbc:InvoiceTypeCode", true, "name", InvoiceTransactionCode);
+            xml.UpdateChildContent("cbc:InvoiceTypeCode", InvoiceTypeCode.ToString());
+            xml.UpdateChildContent("cbc:DocumentCurrencyCode", InvoiceCurrencyCode);
+            xml.UpdateChildContent("cbc:TaxCurrencyCode", TaxCurrencyCode);
+            // xml.UpdateChildContent("cbc:LineCountNumeric", varcnt_items)
 
-            // -------------------------------
-            // Seller
-            // -------------------------------
-            var seller = new XElement(cac + "AccountingSupplierParty",
-                new XElement(cac + "Party",
-                    new XElement(cac + "PartyIdentification",
-                        new XElement(cbc + "ID",
-                            new XAttribute("schemeID", request.Seller?.AdditionalID ?? ""),
-                            request.Seller?.CRN ?? "")
-                    ),
-                    new XElement(cac + "PostalAddress",
-                        new XElement(cbc + "StreetName", request.Seller?.Address ?? ""),
-                        new XElement(cbc + "CityName", request.Seller?.Address ?? ""),
-                        new XElement(cbc + "PostalZone", "00000"),
-                        new XElement(cac + "Country",
-                            new XElement(cbc + "IdentificationCode", "SA")
-                        )
-                    ),
-                    new XElement(cac + "PartyTaxScheme",
-                        new XElement(cbc + "CompanyID", request.Seller?.VATNumber ?? ""),
-                        new XElement(cac + "TaxScheme",
-                            new XElement(cbc + "ID", "VAT")
-                        )
-                    ),
-                    new XElement(cac + "PartyLegalEntity",
-                        new XElement(cbc + "RegistrationName", request.Seller?.Name ?? "")
-                    )
-                )
-            );
-            invoice.Add(seller);
-
-            // -------------------------------
-            // Buyer
-            // -------------------------------
-            var buyer = new XElement(cac + "AccountingCustomerParty",
-                new XElement(cac + "Party",
-                    new XElement(cac + "PartyIdentification",
-                        new XElement(cbc + "ID",
-                            new XAttribute("schemeID", request.Buyer?.AdditionalID ?? ""),
-                            request.Buyer?.CRN ?? "")
-                    ),
-                    new XElement(cac + "PostalAddress",
-                        new XElement(cbc + "StreetName", request.Buyer?.Address ?? ""),
-                        new XElement(cbc + "CityName", request.Buyer?.Address ?? ""),
-                        new XElement(cbc + "PostalZone", "00000"),
-                        new XElement(cac + "Country",
-                            new XElement(cbc + "IdentificationCode", "SA")
-                        )
-                    ),
-                    new XElement(cac + "PartyTaxScheme",
-                        new XElement(cbc + "CompanyID", request.Buyer?.VATNumber ?? ""),
-                        new XElement(cac + "TaxScheme",
-                            new XElement(cbc + "ID", "VAT")
-                        )
-                    ),
-                    new XElement(cac + "PartyLegalEntity",
-                        new XElement(cbc + "RegistrationName", request.Buyer?.Name ?? "")
-                    )
-                )
-            );
-            invoice.Add(buyer);
-
-            // -------------------------------
-            // Line Items
-            // -------------------------------
-            foreach (var line in request.Items)
+            // if the invoice type is Credit Note then add this...
+            if (InvoiceTypeCode == 381)
             {
-                var lineXml = new XElement(cac + "InvoiceLine",
-                    new XElement(cbc + "ID", line.LineNo),
-                    new XElement(cbc + "InvoicedQuantity",
-                        new XAttribute("unitCode", "PCE"),
-                        line.Quantity),
-                    new XElement(cbc + "LineExtensionAmount",
-                        new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                        line.LineTotal),
-                    new XElement(cac + "TaxTotal",
-                        new XElement(cbc + "TaxAmount",
-                            new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                            line.VATAmount)
-                    ),
-                    new XElement(cac + "Item",
-                        new XElement(cbc + "Name", line.Description),
-                        new XElement(cac + "ClassifiedTaxCategory",
-                            new XElement(cbc + "ID", "S"),
-                            new XElement(cbc + "Percent", line.VATRate * 100),
-                            new XElement(cac + "TaxScheme",
-                                new XElement(cbc + "ID", "VAT")
-                            )
-                        )
-                    ),
-                    new XElement(cac + "Price",
-                        new XElement(cbc + "PriceAmount",
-                            new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                            line.UnitPrice),
-                        new XElement(cbc + "BaseQuantity", 1)
-                    )
-                );
-                invoice.Add(lineXml);
+
+                string InvDtl = ((char)148).ToString() + "" + ((char)148).ToString();
+                xml.UpdateChildContent("cac:BillingReference|cac:InvoiceDocumentReference|cbc:ID", InvDtl);
+            }
+            else
+            {
+
+                string InvDtl = ((char)148).ToString() + "" + ((char)148).ToString();
+                xml.UpdateChildContent("cac:BillingReference|cac:InvoiceDocumentReference|cbc:ID", InvDtl);
+
             }
 
-            // -------------------------------
-            // Totals
-            // -------------------------------
-            var totals = new XElement(cac + "LegalMonetaryTotal",
-                new XElement(cbc + "LineExtensionAmount",
-                    new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                    request.Items.Sum(i => i.LineTotal - i.VATAmount)
-                ),
-                new XElement(cbc + "TaxExclusiveAmount",
-                    new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                    request.Items.Sum(i => i.LineTotal - i.VATAmount)
-                ),
-                new XElement(cbc + "TaxInclusiveAmount",
-                    new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                    request.Items.Sum(i => i.LineTotal)
-                ),
-                new XElement(cbc + "PayableAmount",
-                    new XAttribute("currencyID", request.InvoiceCurrencyCode),
-                    request.Items.Sum(i => i.LineTotal) - (request.PrepaidAdjustments.Sum(p => p.Amount))
-                )
-            );
-            invoice.Add(totals);
 
-            // -------------------------------
-            // Build XDocument
-            // -------------------------------
-            var doc = new XDocument(
-                new XDeclaration("1.0", "utf-8", null),
-                invoice
-            );
+            // Need to add optional fields - PO Number & Contract No.
+            // xml.UpdateChildContent("cac:OrderReference|cbc:ID", PurchaseOrderNo)
+            // xml.UpdateChildContent("cac:ContractDocumentReference|cbc:ID", ContractNo)
 
-            string signedFile = Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml");
-            Directory.CreateDirectory(Path.GetDirectoryName(signedFile)!);
+            xml.UpdateChildContent("cac:AdditionalDocumentReference|cbc:ID", "ICV");
+            xml.UpdateChildContent("cac:AdditionalDocumentReference|cbc:UUID", InvoiceCounterValue);
 
-            // -------------------------------
-            // Digital Signature (XMLDSIG)
-            // -------------------------------
-            var xmlDoc = new XmlDocument();
-            xmlDoc.PreserveWhitespace = true;
-            xmlDoc.LoadXml(doc.ToString());
+            // Previous Invoice Hash
+            xml.UpdateChildContent("cac:AdditionalDocumentReference[1]|cbc:ID", "PIH");
+            xml.UpdateAttrAt("cac:AdditionalDocumentReference[1]|cac:Attachment|cbc:EmbeddedDocumentBinaryObject", true, "mimeCode", "text/plain");
+            xml.UpdateChildContent("cac:AdditionalDocumentReference[1]|cac:Attachment|cbc:EmbeddedDocumentBinaryObject", PreviousInvoiceHash);
+            xml.UpdateChildContent("cac:Signature|cbc:ID", "urn:oasis:names:specification:ubl:signature:Invoice");
+            xml.UpdateChildContent("cac:Signature|cbc:SignatureMethod", "urn:oasis:names:specification:ubl:dsig:enveloped:xades");
 
-            var signedXml = new SignedXml(xmlDoc);
-            signedXml.SigningKey = _certificate.GetRSAPrivateKey();
 
-            Reference reference = new Reference();
-            reference.Uri = "";
-            reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
-            signedXml.AddReference(reference);
+            // --------------------------------------------------------------------------------------------------------------
+            // Seller Address Details
+            // --------------------------------------------------------------------------------------------------------------
 
-            KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new KeyInfoX509Data(_certificate));
-            signedXml.KeyInfo = keyInfo;
 
-            signedXml.ComputeSignature();
-            XmlElement xmlDigitalSignature = signedXml.GetXml();
-            xmlDoc.DocumentElement?.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
 
-            // -------------------------------
-            // Save Signed XML
-            // -------------------------------
-            xmlDoc.Save(signedFile);
+            string SellerOtherIDType = aInvoiceData.Master.SellerOtherIdtype;
+            string SellerOtherSellerID = aInvoiceData.Master.SellerOtherSellerId;
+            string SellerAddressStreet = aInvoiceData.Master.SellerAddressStreet;
+            string SellerAddlStreet = aInvoiceData.Master.SellerAdditionalStreet;
+            string SellerBuildingNumber = aInvoiceData.Master.SellerBuildingNumber;
+            string SellerAddlNumber = aInvoiceData.Master.SellerAdditionalNumber;
+            string SellerCity = aInvoiceData.Master.SellerCity;
+            string SellerPostalCode = aInvoiceData.Master.SellerPostalCode;
+            string SellerProvince = aInvoiceData.Master.SellerProvince;
+            string SellerDistrict = aInvoiceData.Master.SellerNeighborhood;
+            string SellerCountryCode = aInvoiceData.Master.SellerCountryCode;
+            string SellerVATNumber = aInvoiceData.Master.SellerVatnumber;
+            string SellerName = aInvoiceData.Master.SellerName;
+            string SellerNameInArabic = aInvoiceData.Master.SellerNameAr;
+            string SellerAddressStreetInArabic = aInvoiceData.Master.SellerAddressStreetAr;
+            string SellerCityInArabic = aInvoiceData.Master.SellerCityAr;
+            string SellerDistrictInArabic = aInvoiceData.Master.SellerNeighborhoodAr;
 
-            return signedFile;
+            string SellerNameInBoth = "";
+            SellerNameInBoth = SellerName;
+
+
+            string SellerAddressStreetInBoth = "";
+            SellerAddressStreetInBoth = SellerAddressStreet + " | " + SellerAddressStreetInArabic;
+
+            string SellerCityInBoth = "";
+            SellerCityInBoth = SellerCity + " | " + SellerCityInArabic;
+
+            string SellerDistrictInBoth = "";
+            SellerDistrictInBoth = SellerDistrict + " | " + SellerDistrictInArabic;
+
+
+            xml.UpdateAttrAt("cac:AccountingSupplierParty|cac:Party|cac:PartyIdentification|cbc:ID", true, "schemeID", SellerOtherIDType);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PartyIdentification|cbc:ID", SellerOtherSellerID);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:StreetName", SellerAddressStreetInBoth);
+            // xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:AdditionalStreetName", SellerAddlStreet)
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:BuildingNumber", SellerBuildingNumber);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:PlotIdentification", SellerAddlNumber);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:CitySubdivisionName", SellerDistrictInBoth);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:CityName", SellerCityInBoth);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:PostalZone", SellerPostalCode);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cbc:CountrySubentity", SellerProvince);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PostalAddress|cac:Country|cbc:IdentificationCode", SellerCountryCode);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PartyTaxScheme|cbc:CompanyID", SellerVATNumber);
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PartyTaxScheme|cac:TaxScheme|cbc:ID", "VAT");
+            xml.UpdateChildContent("cac:AccountingSupplierParty|cac:Party|cac:PartyLegalEntity|cbc:RegistrationName", SellerNameInBoth);
+
+
+            // --------------------------------------------------------------------------------------------------------------
+            // Buyer Address Details
+            // --------------------------------------------------------------------------------------------------------------
+
+
+            string BuyerOtherIDType = aInvoiceData.Master.BuyerOtherIdtype;
+            string BuyerOtherBuyerID = aInvoiceData.Master.BuyerOtherId;
+            string BuyerAddressStreet = aInvoiceData.Master.BuyerAddressStreet;
+            string BuyerAddlStreet = aInvoiceData.Master.BuyerAdditionalStreet;
+            string BuyerBuildingNumber = aInvoiceData.Master.BuyerBuildingNumber;
+            string BuyerAddlNumber = aInvoiceData.Master.BuyerAdditionalNumber;
+            string BuyerCity = aInvoiceData.Master.BuyerCity;
+            string BuyerPostalCode = aInvoiceData.Master.BuyerPostalCode;
+            string BuyerProvince = aInvoiceData.Master.BuyerProvince;
+            string BuyerDistrict = aInvoiceData.Master.BuyerNeighborhood;
+            string BuyerCountryCode = aInvoiceData.Master.BuyerCountryCode;
+            string BuyerVATNumber = aInvoiceData.Master.BuyerVatnumber;
+
+
+            string BuyerNameInArabic = aInvoiceData.Master.BuyerNameAr;
+            string BuyerAddressStreetInArabic = aInvoiceData.Master.BuyerAddressStreetAr;
+            string BuyerCityInArabic = aInvoiceData.Master.BuyerCityAr;
+            string BuyerDistrictInArabic = aInvoiceData.Master.BuyerNeighborhoodAr;
+
+            string BuyerNameInBoth = "";
+            BuyerNameInBoth = BuyerName + " | " + BuyerNameInArabic;
+
+            string BuyerAddressStreetInBoth = "";
+            BuyerAddressStreetInBoth = BuyerAddressStreet + " | " + BuyerAddressStreetInArabic;
+
+            string BuyerCityInBoth = "";
+            BuyerCityInBoth = BuyerCity + " | " + BuyerCityInArabic;
+
+            string BuyerDistrictInBoth = "";
+            BuyerDistrictInBoth = BuyerDistrict + " | " + BuyerDistrictInArabic;
+
+            xml.UpdateAttrAt("cac:AccountingCustomerParty|cac:Party|cac:PartyIdentification|cbc:ID", true, "schemeID", BuyerOtherIDType);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PartyIdentification|cbc:ID", BuyerOtherBuyerID);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:StreetName", BuyerAddressStreetInBoth);
+            // xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:AdditionalStreetName", BuyerAddlStreet)
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:BuildingNumber", BuyerBuildingNumber);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:PlotIdentification", BuyerAddlNumber);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:CitySubdivisionName", BuyerDistrictInBoth);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:CityName", BuyerCityInBoth);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:PostalZone", BuyerPostalCode);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cbc:CountrySubentity", BuyerProvince);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PostalAddress|cac:Country|cbc:IdentificationCode", BuyerCountryCode);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PartyTaxScheme|cbc:CompanyID", BuyerVATNumber);
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PartyTaxScheme|cac:TaxScheme|cbc:ID", "VAT");
+            xml.UpdateChildContent("cac:AccountingCustomerParty|cac:Party|cac:PartyLegalEntity|cbc:RegistrationName", BuyerNameInBoth);
+
+
+            // --------------------------------------------------------------------------------------------------------------
+            // Payment Details & Supply Details
+            // --------------------------------------------------------------------------------------------------------------
+
+            string SupplyDate = aInvoiceData.Master.SupplyDate.HasValue
+                            ? aInvoiceData.Master.SupplyDate.Value.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)
+                            : string.Empty; // or null if you prefer
+
+            string SupplyEndDate = aInvoiceData.Master.SupplyEndDate.ToString();
+            string PaymentMeansTypeCode = aInvoiceData.Master.PaymentMeansTypeCode.ToString();
+            string PaymentTerms = aInvoiceData.Master.PaymentTerms;
+            string PaymentAccountID = aInvoiceData.Master.ContractId;
+            string CreditNoteReason = aInvoiceData.Master.CreditNoteReason;
+
+            xml.UpdateChildContent("cac:Delivery|cbc:ActualDeliveryDate", SupplyDate);
+            // xml.UpdateChildContent("cac:Delivery|cbc:LatestDeliveryDate", SupplyEndDate)
+            xml.UpdateChildContent("cac:PaymentMeans|cbc:PaymentMeansCode", PaymentMeansTypeCode);
+            // xml.UpdateChildContent("cac:PaymentMeans|cac:PayeeFinancialAccount|cbc:PaymentNote", PaymentTerms)
+            // xml.UpdateChildContent("cac:PaymentMeans|cac:PayeeFinancialAccount|cbc:ID", PaymentAccountID)
+
+            string RetItem = ((char)147).ToString() + CreditNoteReason + ((char)148).ToString();
+            xml.UpdateChildContent("cac:PaymentMeans|cbc:InstructionNote", RetItem);
+
+
+            // --------------------------------------------------------------------------------------------------------------
+            // Allowance Charges -  Allowance (discount) at document level
+            // --------------------------------------------------------------------------------------------------------------
+
+
+            // xml.UpdateChildContent("cac:AllowanceCharge|cbc:ChargeIndicator", "false")
+            // xml.UpdateAttrAt("cac:AllowanceCharge|cbc:Amount", True, "currencyID", InvoiceCurrencyCode)
+            // xml.UpdateChildContent("cac:AllowanceCharge|cbc:Amount", "0.00")
+            // xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:ID", "S")
+            // xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cbc:Percent", "15")
+            // xml.UpdateChildContent("cac:AllowanceCharge|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT")
+
+            for (int i = 0; i <= aInvoiceData.AllowanceCharges.Count - 1; i++)
+            {
+
+                xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cbc:ChargeIndicator", "false");
+                xml.UpdateAttrAt("cac:AllowanceCharge[" + i + "]|cbc:Amount", true, "currencyID", InvoiceCurrencyCode);
+                // xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cbc:Amount", aInvoiceData.AllowanceCharges.GetRowCellValue(i, "LineAllowanceCharges"));
+                if (aInvoiceData.AllowanceCharges != null && i < aInvoiceData.AllowanceCharges.Count)
+                {
+                    var allowanceCharge = aInvoiceData.AllowanceCharges[i];
+                    xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cbc:Amount", allowanceCharge.LineAllowanceChargesOc?.ToString("0.00") ?? "0.00");
+                }
+                xml.UpdateAttrAt("cac:AllowanceCharge|cac:TaxCategory|cbc:ID", true, "schemeID", "UN/ECE 5305");
+                xml.UpdateAttrAt("cac:AllowanceCharge|cac:TaxCategory|cbc:ID", true, "schemeAgencyID", "6");
+
+                //xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cac:TaxCategory|cbc:ID", gvInvoiceAllowanceCharges.GetRowCellValue(i, "TaxCodeInZatca"));
+                if (aInvoiceData.AllowanceCharges != null && i < aInvoiceData.AllowanceCharges.Count)
+                {
+                    var allowanceCharge = aInvoiceData.AllowanceCharges[i];
+                    xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cbc:Amount", allowanceCharge.TaxCodeInZatca);
+
+                    var allowanceCharge1 = aInvoiceData.AllowanceCharges[i];
+                    xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cbc:Amount", allowanceCharge1.TaxRateIn100.ToString());
+                }
+                //xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cac:TaxCategory|cbc:Percent", gvInvoiceAllowanceCharges.GetRowCellValue(i, "TaxRateIn100"));
+
+                xml.UpdateAttrAt("cac:AllowanceCharge|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeID", "UN/ECE 5153");
+                xml.UpdateAttrAt("cac:AllowanceCharge|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeAgencyID", "6");
+
+                xml.UpdateChildContent("cac:AllowanceCharge[" + i + "]|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+
+            }
+
+
+            // --------------------------------------------------------------------------------------------------------------
+            // VAT Breakdown - 
+            // --------------------------------------------------------------------------------------------------------------
+
+
+            for (int i = 0; i <= aInvoiceData.Totals.Count - 1; i++)
+            {
+                if (aInvoiceData.Totals != null && i < aInvoiceData.Totals.Count)
+                {
+                    xml.UpdateAttrAt("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", true, "currencyID", InvoiceCurrencyCode);
+
+                    var total = aInvoiceData.Totals[i];
+                    xml.UpdateChildContent("cac:TaxTotal[" + aInvoiceData.VatBreakdowns.Count + "]|cbc:TaxAmount", total.TaxAmountByTaxRate?.ToString("0.00") ?? "0.00");
+                }
+            }
+
+
+
+            for (int i = 0; i < aInvoiceData.VatBreakdowns.Count; i++)
+            {
+                var vatBreakdown = aInvoiceData.VatBreakdowns[i];
+
+                // Example testing values (replace with your real values)
+                vatBreakdown.TotalExclusiveAmountOc = 1.00m; // taxable base
+                vatBreakdown.TaxRateIn100 = 15.00m;        // 15% VAT
+                decimal taxable = vatBreakdown.TotalExclusiveAmountOc ?? 0m;
+                decimal vatRate = (vatBreakdown.TaxRateIn100 ?? 0m) / 100m;
+                decimal taxAmount = Math.Round(taxable * vatRate, 2);
+
+                // --- Taxable Amount ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxableAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxableAmount",
+                    taxable.ToString("0.00", CultureInfo.InvariantCulture)
+                );
+
+                // --- Tax Amount ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxAmount",
+                    taxAmount.ToString("0.00", CultureInfo.InvariantCulture)
+                );
+
+                // Ensure i starts from 1 when looping over Subtotals
+                xml.UpdateAttrAt(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cbc:TaxAmount",
+                    true,
+                    "currencyID",
+                    InvoiceCurrencyCode
+                );
+                var VatBreakdowns = aInvoiceData.VatBreakdowns[i];
+                xml.UpdateChildContent(
+      $"cac:TaxTotal|cac:TaxSubtotal[{i + 1}]|cbc:TaxAmount",
+      VatBreakdowns.TaxAmountByTaxRateOc.GetValueOrDefault().ToString("0.00", CultureInfo.InvariantCulture)
+  );
+
+
+                // --- Tax Category ID (UNCL5305: S=Standard, Z=Zero, E=Exempt, O=Out of scope) ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID", true, "schemeID", "UN/ECE 5305");
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID", true, "schemeAgencyID", "6");
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:ID",
+                    vatBreakdown.TaxCodeInZatca
+                );
+
+                // --- Tax Rate Percent ---
+                xml.UpdateChildContent(
+                    $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:Percent",
+                    vatBreakdown.TaxRateIn100?.ToString("0.00", CultureInfo.InvariantCulture) ?? "0.00"
+                );
+
+                // --- Tax Scheme ---
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeID", "UN/ECE 5153");
+                xml.UpdateAttrAt($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", true, "schemeAgencyID", "6");
+                xml.UpdateChildContent($"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+                // --- Tax Exemption Handling ---
+                if (vatBreakdown.TaxCodeInZatca == "Z" || vatBreakdown.TaxCodeInZatca == "E" || vatBreakdown.TaxCodeInZatca == "O")
+                {
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReasonCode",
+                        vatBreakdown.TaxExemptionReasonCode
+                    );
+                    xml.UpdateChildContent(
+                        $"cac:TaxTotal|cac:TaxSubtotal[{i}]|cac:TaxCategory|cbc:TaxExemptionReason",
+                        vatBreakdown.TaxExemptionReason
+                    );
+                }
+
+            }
+
+
+            // --------------------------------------------------------------------------------------------------------------
+            // Invoice Level Totals - Invoice total amounts 
+            // --------------------------------------------------------------------------------------------------------------
+
+            for (int i = 0; i <= aInvoiceData.Totals.Count - 1; i++)
+            {
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:LineExtensionAmount", true, "currencyID", InvoiceCurrencyCode);
+                var total = aInvoiceData.Totals[i];
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:LineExtensionAmount", total.TotalExtentionAmountOc?.ToString("0.00") ?? "0.00");
+
+                // FIXED LINE:
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", total.TotalExclusiveAmountOc?.ToString("0.00") ?? "0.00");
+
+                //  xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxExclusiveAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalExclusiveAmount"));
+
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:TaxInclusiveAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxInclusiveAmount", total.TaxInclusiveAmountOc?.ToString("0.00") ?? "0.00");
+
+                //xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:TaxInclusiveAmount", gvInvoiceTotals.GetRowCellValue(i, "TaxInclusiveAmount"));
+
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", total.TotalAllowanceChargesOc?.ToString("0.00") ?? "0.00");
+
+                // xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:AllowanceTotalAmount", gvInvoiceTotals.GetRowCellValue(i, "TotalAllowanceCharges"));
+
+                decimal PrepaidAmount = GetInvoicePrepaidAdjustmentAmount(aInvoiceData.Master.InvoiceNo);
+                decimal TaxInclusiveAmount = total.TaxInclusiveAmountOc ?? 0;
+                decimal PayableAmount;
+                PayableAmount = TaxInclusiveAmount - PrepaidAmount;
+
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:PrepaidAmount", true, "currencyID", InvoiceCurrencyCode);
+
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:PrepaidAmount", PrepaidAmount.ToString("0.00"));
+
+                xml.UpdateAttrAt("cac:LegalMonetaryTotal|cbc:PayableAmount", true, "currencyID", InvoiceCurrencyCode);
+
+                xml.UpdateChildContent("cac:LegalMonetaryTotal|cbc:PayableAmount", PayableAmount.ToString("0.00"));
+
+                xml.UpdateAttrAt("cac:TaxTotal|cbc:TaxAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:TaxTotal|cbc:TaxAmount", total.TaxAmountByTaxRateOc?.ToString("0.00") ?? "0.00");
+            }
+
+
+
+
+            // '--------------------------------------------------------------------------------------------------------------
+            // 'Invoice Line Items  
+            // '--------------------------------------------------------------------------------------------------------------
+
+            for (int i = 0; i <= aInvoiceData.Lines.Count - 1; i++)
+            {
+                var line = aInvoiceData.Lines[i];
+
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cbc:ID", line.InvoiceChildSlNo?.ToString());
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cbc:InvoicedQuantity", true, "unitCode", line.UnitDesc);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cbc:InvoicedQuantity", line.QuantityInvoiced?.ToString());
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cbc:LineExtensionAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cbc:LineExtensionAmount", line.LineTaxExclusiveAmountOc?.ToString("0.00"));
+
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:ChargeIndicator", "false");
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:AllowanceChargeReasonCode", "95");
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:AllowanceChargeReason", "Discount");
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:Amount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:AllowanceCharge|cbc:Amount", line.DiscountOc.ToString("0.0000"));
+
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:TaxAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:TaxAmount", line.LineTaxAmountOc?.ToString("0.00"));
+
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:RoundingAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:TaxTotal|cbc:RoundingAmount", line.InvoiceLineRoundingAmountOc?.ToString("0.00"));
+
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Item|cbc:Name", line.ItemDescriptionInBoth);
+
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Item|cac:ClassifiedTaxCategory|cbc:ID", line.TaxCodeInZatca);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Item|cac:ClassifiedTaxCategory|cbc:Percent", line.TaxRateIn100?.ToString("0.00"));
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Item|cac:ClassifiedTaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+                xml.UpdateAttrAt("cac:InvoiceLine[" + i + "]|cac:Price|cbc:PriceAmount", true, "currencyID", InvoiceCurrencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Price|cbc:PriceAmount", line.UnitRateOc.ToString("0.00"));
+                xml.UpdateChildContent("cac:InvoiceLine[" + i + "]|cac:Price|cbc:BaseQuantity", "1");
+            }
+
+
+            int lastNoToAdd = aInvoiceData.Lines.Count - 1;
+
+            for (int i = 0; i <= aInvoiceData.PrepaidAdjustments.Count - 1; i++)
+            {
+                int j = i + lastNoToAdd + 1;
+
+                // Retrieve values directly from PrepaidAdjustments
+                var prepaidAdjustment = aInvoiceData.PrepaidAdjustments[i];
+                var sequence = prepaidAdjustment.Sequence?.ToString();
+                var currencyCode = prepaidAdjustment.CurrencyMasterCode;
+                var prepaidInvoiceNo = prepaidAdjustment.PrepaidInvoiceNo;
+                var submittedInvoiceUUID = prepaidAdjustment.SubmittedInvoiceUuid;
+                var prepaidInvoiceDate = prepaidAdjustment.PrepaidInvoiceDate;
+                var prepaidInvoiceTime = prepaidAdjustment.PrepaidInvoiceTime;
+                var adjustedAmount = prepaidAdjustment.AdjustedAmountInFc?.ToString("0.00");
+                var adjustedTaxAmount = prepaidAdjustment.AdjustedTaxAmountInFc?.ToString("0.00");
+                var taxCode = prepaidAdjustment.TaxCodeInZatca;
+                var taxRate = prepaidAdjustment.TaxRateIn100?.ToString("0.00");
+
+                // Check if necessary fields are empty
+                if (string.IsNullOrEmpty(sequence) || string.IsNullOrEmpty(currencyCode) || string.IsNullOrEmpty(prepaidInvoiceNo) || string.IsNullOrEmpty(prepaidInvoiceDate) || string.IsNullOrEmpty(prepaidInvoiceTime))
+                    continue;
+
+                // Start the InvoiceLine element
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]", "");
+
+                // ID
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cbc:ID", sequence);
+
+                // Invoiced Quantity
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cbc:InvoicedQuantity", true, "unitCode", "PCE");
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cbc:InvoicedQuantity", "0.000000");
+
+                // Line Extension Amount
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cbc:LineExtensionAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cbc:LineExtensionAmount", "0.00");
+
+                // Document Reference
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:DocumentReference|cbc:ID", prepaidInvoiceNo);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:DocumentReference|cbc:UUID", submittedInvoiceUUID);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:DocumentReference|cbc:IssueDate", prepaidInvoiceDate);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:DocumentReference|cbc:IssueTime", prepaidInvoiceTime);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:DocumentReference|cbc:DocumentTypeCode", "386");
+
+                // Tax Total
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cbc:TaxAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cbc:TaxAmount", "0");
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cbc:RoundingAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cbc:RoundingAmount", "0");
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cbc:TaxableAmount", adjustedAmount);
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cbc:TaxAmount", adjustedTaxAmount);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:ID", taxCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cbc:Percent", taxRate);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:TaxTotal|cac:TaxSubtotal|cac:TaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+                // Item Details
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Item|cbc:Name", "Prepaid Advance Amount | المبلغ المدفوع مقدمًا");
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Item|cac:ClassifiedTaxCategory|cbc:ID", taxCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Item|cac:ClassifiedTaxCategory|cbc:Percent", taxRate);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Item|cac:ClassifiedTaxCategory|cac:TaxScheme|cbc:ID", "VAT");
+
+                // Price Amount
+                xml.UpdateAttrAt("cac:InvoiceLine[" + j + "]|cac:Price|cbc:PriceAmount", true, "currencyID", currencyCode);
+                xml.UpdateChildContent("cac:InvoiceLine[" + j + "]|cac:Price|cbc:PriceAmount", "0.0000");
+            }
+
+            // '--------------------------------------------------------------------------------------------------------------
+            // 'UBL Extension Codes 
+            // '--------------------------------------------------------------------------------------------------------------
+
+            Chilkat.XmlDSigGen gen = new Chilkat.XmlDSigGen();
+
+            gen.SigLocation = "Invoice|ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation";
+            gen.SigLocationMod = 0;
+            gen.SigId = "signature";
+            gen.SigNamespacePrefix = "ds";
+            gen.SigNamespaceUri = "http://www.w3.org/2000/09/xmldsig#";
+            gen.SignedInfoCanonAlg = "C14N_11";
+            gen.SignedInfoDigestMethod = "sha256";
+
+            // Create an Object to be added to the Signature.
+
+            // Commented by Saju
+            // -<xadesQualifyingProperties Target = "signature" xmlns: xades = "http://uri.etsi.org/01903/v1.3.2#" >
+            // -<xadesSignedProperties Id = "xadesSignedProperties" >
+            // -<xadesSignedSignatureProperties>
+            // <xades:SigningTime> 2022 - 11 - 16T05:20:37Z</xades:SigningTime>
+            // -<xadesSigningCertificate>
+            // -<xadescert>
+            // -<xadesCertDigest>
+            // <ds:DigestMethod Algorithm = "http://www.w3.org/2001/04/xmlenc#sha256" />
+            // (Added by Chilkat)               <ds:DigestValue> lZUwCVs9AAVwENypLvUYTO1MVlyfOe1Ba2C0fglq2So =</ds:DigestValue>
+            // </xadesCertDigest>
+            // -<xadesIssuerSerial>
+            // <ds:X509IssuerName> CN = TSZEINVOICE - SubCA - 1, DC = extgazt, DC = gov, DC = local</ds: X509IssuerName>
+            // <ds:X509SerialNumber> 2475382876776561391517206651645660279462721580</ds:X509SerialNumber>
+            // </xadesIssuerSerial>
+            // </xadescert>
+            // </xadesSigningCertificate>
+            // </xadesSignedSignatureProperties>
+            // </xadesSignedProperties>
+            // </xadesQualifyingProperties>
+
+            Chilkat.Xml object1 = new Chilkat.Xml();
+            object1.Tag = "xades:QualifyingProperties";
+            object1.AddAttribute("xmlns:xades", "http://uri.etsi.org/01903/v1.3.2#");
+            object1.AddAttribute("Target", "signature");
+            object1.UpdateAttrAt("xades:SignedProperties", true, "Id", "xadesSignedProperties");
+            object1.UpdateChildContent("xades:SignedProperties|xades:SignedSignatureProperties|xades:SigningTime", "TO BE GENERATED BY CHILKAT");
+            object1.UpdateAttrAt("xades:SignedProperties|xades:SignedSignatureProperties|xades:SigningCertificate|xades:Cert|xades:CertDigest|ds:DigestMethod", true, "Algorithm", "http://www.w3.org/2001/04/xmlenc#sha256");
+            object1.UpdateChildContent("xades:SignedProperties|xades:SignedSignatureProperties|xades:SigningCertificate|xades:Cert|xades:CertDigest|ds:DigestValue", "TO BE GENERATED BY CHILKAT");
+
+            object1.UpdateChildContent("xades:SignedProperties|xades:SignedSignatureProperties|xades:SigningCertificate|xades:Cert|xades:IssuerSerial|ds:X509IssuerName", "TO BE GENERATED BY CHILKAT"); // "CN=TSZEINVOICE-SubCA-1, DC=extgazt, DC=gov, DC=local")
+            object1.UpdateChildContent("xades:SignedProperties|xades:SignedSignatureProperties|xades:SigningCertificate|xades:Cert|xades:IssuerSerial|ds:X509SerialNumber", "TO BE GENERATED BY CHILKAT"); // "2475382886904809774818644480820936050208702411")
+
+            gen.AddObject("", object1.GetXml(), "", "");
+
+
+            // -------- Reference 1 --------
+            Chilkat.Xml xml1 = new Chilkat.Xml();
+            xml1.Tag = "ds:Transforms";
+            xml1.UpdateAttrAt("ds:Transform", true, "Algorithm", "http://www.w3.org/TR/1999/REC-xpath-19991116");
+            xml1.UpdateChildContent("ds:Transform|ds:XPath", "not(//ancestor-or-self::ext:UBLExtensions)");
+            xml1.UpdateAttrAt("ds:Transform[1]", true, "Algorithm", "http://www.w3.org/TR/1999/REC-xpath-19991116");
+            xml1.UpdateChildContent("ds:Transform[1]|ds:XPath", "not(//ancestor-or-self::cac:Signature)");
+            xml1.UpdateAttrAt("ds:Transform[2]", true, "Algorithm", "http://www.w3.org/TR/1999/REC-xpath-19991116");
+            xml1.UpdateChildContent("ds:Transform[2]|ds:XPath", "not(//ancestor-or-self::cac:AdditionalDocumentReference[cbc:ID='QR'])");
+            xml1.UpdateAttrAt("ds:Transform[3]", true, "Algorithm", "http://www.w3.org/2006/12/xml-c14n11");
+
+            gen.AddSameDocRef2("", "sha256", xml1, "");
+            gen.SetRefIdAttr("", "invoiceSignedData");
+
+            // -------- Reference 2 --------
+            gen.AddObjectRef("xadesSignedProperties", "sha256", "", "", "http://www.w3.org/2000/09/xmldsig#SignatureProperties");
+
+            // ============================================================================================
+            // New Update
+            // ============================================================================================
+            // Alternatively, if your certificate and private key are in separate PEM files, do this:
+            Chilkat.Cert cert = new Chilkat.Cert();
+
+            GetEGSUnitDetails(1);
+            success = cert.LoadFromBase64(gProductionPEM);
+
+            if ((success != true))
+            {
+                //MessageBox.Show(cert.LastErrorText);
+                //return;
+            }
+
+
+            // Load the private key.
+            Chilkat.PrivateKey privKey = new Chilkat.PrivateKey();
+
+            success = privKey.LoadPem(gPrivateKey);
+
+            if ((success != true))
+            {
+                //MessageBox.Show(privKey.LastErrorText);
+                //return;
+            }
+
+            // Associate the private key with the certificate.
+            success = cert.SetPrivateKey(privKey);
+            if ((success != true))
+            {
+                //MessageBox.Show(cert.LastErrorText);
+                //return;
+            }
+            // =====================================================================================
+            gen.SetX509Cert(cert, true);
+
+            gen.KeyInfoType = "X509Data";
+            gen.X509Type = "Certificate";
+
+            // Load XML to be signed...
+            Chilkat.StringBuilder sbXml = new Chilkat.StringBuilder();
+            xml.GetXmlSb(sbXml);
+            gen.Behaviors = "IndentedSignature,TransformSignatureXPath,ZATCA";
+
+            // Sign the XML...
+            success = gen.CreateXmlDSigSb(sbXml);
+            if ((success != true))
+            {
+                //MessageBox.Show("Failed to Sign XML UBL 2.1", "Error XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(gen.LastErrorText);
+                //return;
+            }
+
+            // Save the signed XML to a file.
+            success = sbXml.WriteFile(appPath + @"\SignedXML\signedXmlResult1.xml", "utf-8", false);
+
+            string folderPath = Path.Combine(appPath, "SignedXML");
+
+            // Ensure the folder exists
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            // Now write the file safely
+            string filePath = Path.Combine(folderPath, "signedXmlResult1.xml");
+            success = sbXml.WriteFile(filePath, "utf-8", false);
+
+            //MessageBox.Show("Failed to Create XML UBL 2.1", "Error XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            Debug.WriteLine("Signed XML file generated at: " + appPath + @"\SignedXML\signedXmlResult1.xml");
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = appPath + @"\SignedXML\signedXmlResult1.xml",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
+
 
         private string XMLFileNameAsPerZatca;
         [HttpPost]
@@ -3075,6 +3559,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         {
             try
             {
+                strLogonUser = HttpContext.Session.GetString("UserName");
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     _logger.LogError("Tenant/DB Context not available");
@@ -3082,12 +3567,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 }
 
                 // Unlock Chilkat bundle
-                ////bool success = chilkatGlob.UnlockBundle("WwMfDn.CBX1127_2ThZtySnD3DV");
-                ////if (!success)
-                ////{
-                ////    _logger.LogError("Failed to load license");
-                ////    return;
-                ////}
+                bool success = chilkatGlob.UnlockBundle("WwMfDn.CBX1127_2ThZtySnD3DV");
+                if (!success)
+                {
+                    _logger.LogError("Failed to load license");
+                    return;
+                }
 
                 // Check connection
                 if (ConnectionStatus != "Connected")
@@ -3146,18 +3631,33 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     _logger.LogError("Request Failed: {Error}", rest.LastErrorText);
                     return;
                 }
+                string SimulationJsonResponse = sbResponseBody.GetAsString();
+
+                // Now parse JSON
+                var obj = JObject.Parse(SimulationJsonResponse);
+
+                // Select required fields
+                var simulationresult = new
+                {
+                    ClearanceStatus = (string)obj["clearanceStatus"],
+                    ClearedInvoice = (string)obj["clearedInvoice"]
+                };
+
 
                 int respStatusCode = rest.ResponseStatusCode;
-                string responseBody = sbResponseBody.GetAsString();
+
 
                 // Extract status & cleared invoice
-                string responseText = sbResponseBody.GetBetween("clearanceStatus" + "\"\":\"", "\",");
-                string responseClearedInvoice = sbResponseBody.GetBetween("clearedInvoice" + "\"\":\"", "\"}");
+                string responseText = simulationresult.ClearanceStatus;
+                string responseClearedInvoice = simulationresult.ClearedInvoice;
+                //  string responseText = sbResponseBody.GetBetween("clearanceStatus" + "\"\":\"", "\",");
+                //string responseClearedInvoice = sbResponseBody.GetBetween("clearedInvoice" + "\"\":\"", "\"");
 
                 string txtQRCodevalue = "", txtFinalQRCode = "", txtUniqueInvoiceID = "", txtPreviousInvoiceHASH = "";
                 short txtInvoiceTypeCode = 0;
                 DateTime txtInvoiceDateAndTime = DateTime.UtcNow;
                 string qrCodeBase64 = "", XMLFileNameAsPerZatca = "";
+                txtPreviousInvoiceHASH = gLastSuccessfulSubmittedHashfile;
 
                 if (!string.IsNullOrEmpty(responseClearedInvoice))
                 {
@@ -3193,7 +3693,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         txtInvoiceDateAndTime = result.InvoiceDateWtTime ?? DateTime.Now;
 
                         txtUniqueInvoiceID = result.InvoiceUuid;
-                        txtPreviousInvoiceHASH = gLastSuccessfulSubmittedHashfile;
+
                     }
                     else
                     {
@@ -3215,7 +3715,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         txtFinalQRCode,
                         strLogonUser,
                         DateTime.Now,
-                        responseBody,
+                        SimulationJsonResponse,
                         txtFinalQRCode,
                         XMLFileNameAsPerZatca,
                         txtUniqueInvoiceID,
@@ -3235,7 +3735,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 }
                 else
                 {
-                    _logger.LogWarning("Invoice {InvoiceNo} NOT CLEARED. Response: {Response}", invoiceNo, responseBody);
+                    _logger.LogWarning("Invoice {InvoiceNo} NOT CLEARED. Response: {Response}", invoiceNo, SimulationJsonResponse);
                 }
             }
             catch (Exception ex)
@@ -3304,7 +3804,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return 0; // no dbContext available
         }
 
-        
+
 
         public string GetPreviousHashFile()
         {
@@ -3424,19 +3924,27 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             var doc = new XmlDocument { PreserveWhitespace = true };
             doc.Load(xmlFilePath);
 
+            // Setup namespace manager
+            var nsmgr = new XmlNamespaceManager(doc.NameTable);
+            nsmgr.AddNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+            nsmgr.AddNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+
             // Find <cac:AdditionalDocumentReference> (2nd occurrence)
             var nodes = doc.GetElementsByTagName("cac:AdditionalDocumentReference");
             if (nodes.Count < 2)
                 throw new Exception("The required AdditionalDocumentReference[2] element was not found.");
 
             var additionalDocRef = nodes[1]; // zero-based index → 2nd element
-            var embeddedNode = additionalDocRef.SelectSingleNode("cac:Attachment/cbc:EmbeddedDocumentBinaryObject");
+
+            // Use SelectSingleNode with namespace manager
+            var embeddedNode = additionalDocRef.SelectSingleNode("cac:Attachment/cbc:EmbeddedDocumentBinaryObject", nsmgr);
 
             if (embeddedNode == null)
                 throw new Exception("EmbeddedDocumentBinaryObject not found in AdditionalDocumentReference[2].");
 
             return embeddedNode.InnerText.Trim();
         }
+
 
         // Global variables (replace with properties or DTO if preferred)
         private string gPrivateKey;
@@ -3570,20 +4078,21 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     string signedFile;
                     string currentHash;
 
-                    if (aInvoiceData.Master.InvoiceTypeCode == 01) // Standard Tax Invoice
+                    if (InvoiceSubTypeCode == "01") // Standard Tax Invoice
                     {
+                        GetPreviousHashFile();
                         if (aInvoiceData.Master.InvoiceCurrencyCode == "1")
                         {
-                             GenerateUBLFile(aInvoiceData);
+                            GenerateUBLFile(aInvoiceData);
                         }
                         else
                         {
-                          //  signedFile = GenerateUBLFileForeignCurrency(request);
+                            GenerateUBLFile_ForeignCurrency(aInvoiceData);
                         }
 
                         // Save or set signed file path
                         string outputPath = Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml");
-                       // System.IO.File.WriteAllText(outputPath, signedFile);  // assuming signedFile is XML string
+                        // System.IO.File.WriteAllText(outputPath, signedFile);  // assuming signedFile is XML string
 
                         currentHash = ENInvoiceHASH(outputPath);
                         CurrentHashOfXMLInvoice = currentHash;
@@ -3592,29 +4101,26 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         return Ok(new
                         {
                             Message = "Standard Invoice prepared successfully",
-                          //  InvoiceNo = request.InvoiceNo,
+                            //  InvoiceNo = request.InvoiceNo,
                             CurrentHash = currentHash,
                             SignedFile = outputPath
                         });
                     }
 
-                    else if (aInvoiceData.Master.InvoiceTypeCode == 02) // Simplified
+                    else if (InvoiceSubTypeCode == "02") // Simplified
                     {
-                        // Fix for CS0029: Cannot implicitly convert type 'void' to 'string'
-                        // Change this line:
-                        // signedFile = GenerateUBLFile(request);
-                        // To this:
+
                         GenerateUBLFile(aInvoiceData);
                         signedFile = Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml");
                         SignXML(aInvoiceData);
                         currentHash = ENInvoiceHASH(signedFile);
 
-                        ReportSimplifiedTaxInvoice(invoiceNo);
+                        ReportSimplifiedTaxInvoice(invoiceNo, connectionStatus);
 
                         return Ok(new
                         {
                             Message = "Simplified Invoice prepared successfully",
-                           // InvoiceNo = request.InvoiceNo,
+                            // InvoiceNo = request.InvoiceNo,
                             CurrentHash = currentHash,
                             SignedFile = signedFile
                         });
@@ -3646,36 +4152,229 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
-        private void ReportSimplifiedTaxInvoice(string invoiceNo)
+        // Background worker method
+        private async void ReportSimplifiedTaxInvoice(string invoiceNo,string connectionStatus)
         {
-            // TODO: Log or call reporting service for simplified invoices
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    _logger.LogError("Unable to resolve tenant context");
+                    return;
+                }
+
+                // Unlock license
+                bool success = chilkatGlob.UnlockBundle("WwMfDn.CBX1127_2ThZtySnD3DV");
+                if (!success)
+                {
+                    _logger.LogError("Chilkat license unlock failed: {Error}", chilkatGlob.LastErrorText);
+                    return;
+                }
+
+                if (connectionStatus != "Connected")
+                {
+                    _logger.LogWarning("Portal not connected for invoice {InvoiceNo}", invoiceNo);
+                    return;
+                }
+
+                // Load XML
+                var xml = new Chilkat.Xml();
+                if (!xml.LoadXmlFile(Path.Combine(appPath, "SignedXML", "signedXmlResult1V.xml")))
+                {
+                    _logger.LogError("Failed to load XML: {Error}", xml.LastErrorText);
+                    return;
+                }
+
+                var binInvoice = new Chilkat.BinData();
+                if (!binInvoice.LoadFile(Path.Combine(appPath, "SignedXML", "signedXmlResult1V.xml")))
+                {
+                    _logger.LogError("Failed to load signed XML invoice: {Error}", xml.LastErrorText);
+                    return;
+                }
+
+                string uuid = xml.GetChildContent("cbc:UUID");
+                string digestValue = xml.GetChildContent(
+                    "ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|" +
+                    "sac:SignatureInformation|ds:Signature|ds:SignedInfo|ds:Reference[0]|ds:DigestValue"
+                );
+                string base64Invoice = binInvoice.GetEncoded("base64");
+
+                // Prepare request JSON
+                var json = new Chilkat.JsonObject();
+                json.UpdateString("invoiceHash", digestValue);
+                json.UpdateString("uuid", uuid);
+                json.UpdateString("invoice", base64Invoice);
+
+                rest.AddHeader("accept", "application/json");
+                rest.AddHeader("Content-Type", "application/json");
+                rest.AddHeader("Accept-Language", "en");
+                rest.AddHeader("Accept-Version", "V2");
+                rest.AddHeader("Authorization", "Basic " + GetAuthorizeKey());
+
+                var sbRequestBody = new Chilkat.StringBuilder();
+                json.EmitSb(sbRequestBody);
+                var sbResponseBody = new Chilkat.StringBuilder();
+
+                // TODO: Uncomment for real submission
+                // success = rest.FullRequestSb("POST", "/e-invoicing/simulation/invoices/reporting/single", sbRequestBody, sbResponseBody);
+
+                if (!success)
+                {
+                    _logger.LogError("REST request failed: {Error}", rest.LastErrorText);
+                    return;
+                }
+
+                string responseText = sbResponseBody.GetBetween(
+                    "reportingStatus" + (char)34 + ":" + (char)34,
+                    (char)34 + "}"
+                );
+
+                string currentInvoiceHashFile = CurrentHashOfXMLInvoice;
+
+                // Fetch invoice master details
+                var result = await dbContext.Tbl20161VatinvoiceMasters
+                    .Where(x => x.InvoiceNo == invoiceNo)
+                    .Select(x => new
+                    {
+                        x.SellerVatnumber,
+                        x.InvoiceDateWtTime,
+                        x.InvoiceUuid,
+                        x.InvoiceTypeCode
+                    })
+                    .FirstOrDefaultAsync();
+
+                string xmlFileNameAsPerZatca = "";
+                string qrCodeBase64 = "";
+                DateTime invoiceDate = DateTime.UtcNow;
+                string uniqueInvoiceId = "";
+                short invoiceTypeCode = 0;
+                string txtPreviousInvoiceHASH = gLastSuccessfulSubmittedHashfile;
+
+                if (result != null)
+                {
+                    string safeDate = result.InvoiceDateWtTime?.ToString("yyyyMMddHHmmss") ?? "00000000000000";
+                    xmlFileNameAsPerZatca = Path.Combine("SignedXML", $"{result.SellerVatnumber}_{safeDate}_{invoiceNo}.xml");
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(appPath, xmlFileNameAsPerZatca)) ?? appPath);
+
+                    string xmlFullPath = Path.Combine(appPath, xmlFileNameAsPerZatca);
+                    qrCodeBase64 = GetQRCodeBase64(xmlFullPath);
+
+                    invoiceDate = result.InvoiceDateWtTime ?? DateTime.Now;
+                    invoiceTypeCode = result.InvoiceTypeCode ?? 0;
+                    uniqueInvoiceId = result.InvoiceUuid;
+                }
+
+                // Insert log
+                try
+                {
+                    await InserteInvoiceLog(
+                        GetNextICVNumber(),
+                        invoiceNo,
+                        invoiceDate,
+                        invoiceTypeCode,
+                        InvoiceSubTypeCode,
+                        txtPreviousInvoiceHASH,
+                        responseText,
+                        currentInvoiceHashFile,
+                        qrCodeBase64,
+                        strLogonUser,
+                        DateTime.Now,
+                        sbResponseBody.GetAsString(),
+                        qrCodeBase64,
+                        xmlFileNameAsPerZatca,
+                        uniqueInvoiceId,
+                        digestValue,
+                        uuid,
+                        base64Invoice
+                    );
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error while logging eInvoice details");
+                }
+
+                // Update invoice status
+                if (responseText == "REPORTED")
+                {
+                    var userName = HttpContext.Session.GetString("UserName");
+
+                    var invoice = dbContext.Tbl20161VatinvoiceMasters.FirstOrDefault(v => v.InvoiceNo == invoiceNo);
+                    if (invoice != null)
+                    {
+                        invoice.IsApproved = true;
+                        invoice.ApprovedOn = DateTime.Now;
+                        invoice.ApprovedBy = userName;
+
+                        await dbContext.SaveChangesAsync();
+                    }
+
+                    _logger.LogInformation("Invoice {InvoiceNo} successfully reported to ZATCA", invoiceNo);
+                }
+                else
+                {
+                    _logger.LogWarning("Invoice {InvoiceNo} NOT reported to ZATCA", invoiceNo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error in ReportSimplifiedTaxInvoiceInternal");
+            }
         }
 
+
+
+
+
         ///B2C
-        ////public void PrepareSimplifiedTaxInvoice()
-        ////{
-        ////    this.txtInvoiceCounterValue.Text = GetNextICVNumber();
-        ////    this.txtUniqueInvoiceID.Text = System.Guid.NewGuid().ToString();
-        ////    GetPreviousHashFile();
-        ////    this.txtPreviousInvoiceHASH.Text = gLastSuccessfulSubmittedHashfile;
-        ////    GenerateUBLFile();
-        ////    SignXML();
-        ////    GetAuthorizeKey();
+        [HttpPost]
+        public void PrepareSimplifiedTaxInvoice(string invoiceNo, InvoiceData aInvoiceData)
+        {
 
-        ////    if (this.IsExecutedFrom_frm00102eInvSalesInvoiceEdit == true)
-        ////    {
-        ////        if (frm00102eInvSalesInvoiceEdit.UpdateApproved(true, this.strLogonUser, this.txtInvoiceNo.EditValue) == true)
-        ////        {
-        ////            // Disable all controls
-        ////            this.DisableAllControls();
-        ////            this.Qry90132InvoiceSubmissionStatusTableAdapter.FillByInvoiceNo(this.DseInvoiceDataset1.qry90132InvoiceSubmissionStatus, this.txtInvoiceNo.EditValue);
-        ////            // Lock All controls in the Invoice Master
-        ////            RefreshMainScreen();
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return; // Exit if DB context cannot be resolved
+            }
 
-        ////            this.Activate();
-        ////        }
-        ////    }
-        ////}
+            // Assign values
+            var counterValue = GetNextICVNumber();
+            var uniqueInvoiceId = Guid.NewGuid().ToString();
+
+            GetPreviousHashFile();
+            var previousHash = gLastSuccessfulSubmittedHashfile;
+
+            // Generate UBL, sign, authorize
+            GenerateUBLFile(aInvoiceData);
+            SignXML(aInvoiceData);
+            GetAuthorizeKey();
+
+            var userName = HttpContext.Session.GetString("UserName");
+
+            var invoice = dbContext.Tbl20161VatinvoiceMasters.FirstOrDefault(v => v.InvoiceNo == invoiceNo);
+            if (invoice == null)
+            {
+                return; // Exit if voucher not found
+            }
+
+            // Update voucher approval info
+            invoice.IsApproved = true;
+            invoice.ApprovedOn = DateTime.Now;
+            invoice.ApprovedBy = userName;
+
+            dbContext.SaveChanges();
+
+            // Get submission status using LINQ (optional, no return)
+            var submissionStatus = dbContext.Qry90132InvoiceSubmissionStatuses
+                .Where(x => x.InvoiceNo == invoiceNo)
+                .FirstOrDefault();
+                //Me.DisableAllControls()
+                // RefreshMainScreen()
+
+                //Me.Activate()
+            // You can still log or process submissionStatus internally if needed
+        }
+
+
+
 
         ////private void btnExportPDFA3001_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         ////{
