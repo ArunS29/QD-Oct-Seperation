@@ -426,59 +426,62 @@
 
 
 <div class="horizontal-container">
-	@(Html.DevExtreme().DateBox()
-		.ID("frmdateBox")
-		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
-		.ShowClearButton(true) // shows clear (X) button
-		.ElementAttr("class", "dynamicFormatDateBox")
-		.TabIndex(2)
-		)
+	@(
+		Html.DevExtreme().DateBox()
+						.ID("frmdateBox")
+						.Label(new JS("formatMessage('Start Date')"))
+						.LabelMode(EditorLabelMode.Floating)
+						.InputAttr("aria-label", "Date")
+						.Type(DateBoxType.Date)
+						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+						.DisplayFormat("dd-MMM-yyyy")
+						.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+						.ShowClearButton(true) // shows clear (X) button
+						.ElementAttr("class", "dynamicFormatDateBox")
+						.TabIndex(2)
+						)
 
-	@(Html.DevExtreme().DateBox()
-		.ID("todateBox")
-		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
-		.ShowClearButton(true) // shows clear (X) button
-		.ElementAttr("class", "dynamicFormatDateBox")
-		.TabIndex(3)
-		)
+	@(
+		Html.DevExtreme().DateBox()
+						.ID("todateBox")
+						.Label(new JS("formatMessage('End Date')"))
+						.LabelMode(EditorLabelMode.Floating)
+						.InputAttr("aria-label", "Date")
+						.Type(DateBoxType.Date)
+						.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+						.DisplayFormat("dd-MMM-yyyy")
+						.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+						.ShowClearButton(true) // shows clear (X) button
+						.ElementAttr("class", "dynamicFormatDateBox")
+						.TabIndex(3)
+						)
 
 
-	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecords")
-		.Text(new JS("formatMessage('Show Records')"))
-		.Icon("smalliconslayout")
-		.Width(180)
-		.TabIndex(4)
-		.SplitButton(true)
-		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
-		.DropDownOptions(options => options.Width(230))
-		.Items(items =>
-		{
-			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-			items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
-			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-		})
-		.ItemTemplate(@<text>
+	@(
+		Html.DevExtreme().DropDownButton()
+						.ID("ddBtnShowRecords")
+						.Text(new JS("formatMessage('Show Records')"))
+						.Icon("smalliconslayout")
+						.Width(180)
+						.TabIndex(4)
+						.SplitButton(true)
+						.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+						.DropDownOptions(options => options.Width(230))
+						.Items(items =>
+						{
+							items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+							items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+							items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+							items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+							items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+							items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+							items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+							items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+							items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+							items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+							items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+						})
+						.ItemTemplate(@<text>
 				   		<div class="custom-dropdown-item">
 				   			<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
 				   			<div class="item-content">
@@ -488,273 +491,289 @@
 				   				</div>
 				   			</div>
 				   		</div>
-				   	</text>)
+				   	</text>
 		)
+						)
 	<div id="quarterMenu"></div>
-	@(Html.DevExtreme().CheckBox()
-		.ID("chkUseEffectiveDate")
-		.Text(new JS("formatMessage('Use Effective Date')"))
-		.Value(false)
-		)
+	@(
+		Html.DevExtreme().CheckBox()
+						.ID("chkUseEffectiveDate")
+						.Text(new JS("formatMessage('Use Effective Date')"))
+						.Value(false)
+						)
 </div>
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
-		.ID("dataGrid")
-		.RemoteOperations(false)
-		.OnContentReady("onGridContentReady")
-		.DataSource(new JS("[]"))
-		.Columns(columns =>
-		{
-			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
+						.ID("dataGrid")
+						.RemoteOperations(false)
+						.OnContentReady("onGridContentReady")
+						.DataSource(new JS("[]"))
+						.Columns(columns =>
+						{
+						columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ProformaInvoiceNo)
-			.Caption(new JS("formatMessage('Proforma Invoice No')"))
-			.Alignment(HorizontalAlignment.Center)
-			.Width(135).MinWidth(23);
+						.Caption(new JS("formatMessage('Proforma Invoice No')"))
+						.Alignment(HorizontalAlignment.Center)
+						.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.ProformaInvoiceDate)
-			.Caption(new JS("formatMessage('Proforma Invoice Date')"))
-			.Alignment(HorizontalAlignment.Center)
-			.Width(135).MinWidth(23);
+						.Caption(new JS("formatMessage('Proforma Invoice Date')"))
+						.Alignment(HorizontalAlignment.Center)
+						.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.InvoiceEffectiveDate)
-			.Caption(new JS("formatMessage('Invoice Effective Date')"))
-			.Alignment(HorizontalAlignment.Center)
-			.Width(135).MinWidth(23);
+						.Caption(new JS("formatMessage('Invoice Effective Date')"))
+						.Alignment(HorizontalAlignment.Center)
+						.Width(135).MinWidth(23);
 
 				subColumns.AddFor(m => m.AccountHead)
-			.Caption(new JS("formatMessage('Account Head')"))
-			.Alignment(HorizontalAlignment.Center)
-			.Width(341).MinWidth(23);
+						.Caption(new JS("formatMessage('Account Head')"))
+						.Alignment(HorizontalAlignment.Center)
+						.Width(341).MinWidth(23);
 
 				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption(new JS("formatMessage('Invoice Status')"))
-			.CellTemplate(new JS("invoiceStatusCellTemplate"))
-			.Alignment(HorizontalAlignment.Center)
-			.Width(135).MinWidth(23);
+						.Caption(new JS("formatMessage('Invoice Status')"))
+						.CellTemplate(new JS("invoiceStatusCellTemplate"))
+						.Alignment(HorizontalAlignment.Center)
+						.Width(135).MinWidth(23);
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
+						columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount)
-			.Caption(new JS("formatMessage('Amount Before Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						.Caption(new JS("formatMessage('Amount Before Tax')"))
+						.Alignment(HorizontalAlignment.Right)
+						.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+						.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header1" style="font-weight: bold;">
 							 			<%= column.caption %>
 							 		</div>
-							 	</text>);
+							 	</text>
+	);
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption(new JS("formatMessage('Total VAT Amount')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						.Caption(new JS("formatMessage('Total VAT Amount')"))
+						.Alignment(HorizontalAlignment.Right)
+						.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+						.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header2" style="font-weight: bold;">
 							 			<%= column.caption %>
 							 		</div>
-							 	</text>);
+							 	</text>
+	);
 
 
-			subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption(new JS("formatMessage('Invoiced Amount')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+				subColumns.AddFor(m => m.TotalInvoiceAmount)
+				.Caption(new JS("formatMessage('Invoiced Amount')"))
+				.Alignment(HorizontalAlignment.Right)
+				.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+				.HeaderCellTemplate(@<text>
 		<div class="Currency-header3" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+	);
 
 			});
 
-			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
+						columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
 			{
 				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
+							.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header4" style="font-weight: bold;">
 							 			<%= column.caption %>
 							 		</div>
-							 	</text>);
+							 	</text>
+		);
 
 
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-		.HeaderCellTemplate(@<text>
+								subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
+							.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+						.HeaderCellTemplate(@<text>
 						 		<div class="Currency-header5" style="font-weight: bold;">
 						 			<%= column.caption %>
 						 		</div>
-						 	</text>);
+						 	</text>
+		);
 
-				subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-		.HeaderCellTemplate(@<text>
+								subColumns.AddFor(m => m.DomesticExemptedRevenue)
+							.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+						.HeaderCellTemplate(@<text>
 						 		<div class="Currency-header6" style="font-weight: bold;">
 						 			<%= column.caption %>
 						 		</div>
-						 	</text>);
-			});
+						 	</text>
+		);
+							});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccexpemptedRevenue)
-			.Caption(new JS("formatMessage('GCC Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.GccexpemptedRevenue)
+							.Caption(new JS("formatMessage('GCC Revenue')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 		<div class="Currency-header7" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+		);
 
-			});
+							});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('Others Countries')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption(new JS("formatMessage('Exports Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.ExportsRevenue)
+							.Caption(new JS("formatMessage('Exports Revenue')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 		<div class="Currency-header8" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+		);
 
-			});
+							});
 			});
 
-			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
+						columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
 			{
 				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.DomesticStandartRatedTax)
+							.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header9" style="font-weight: bold;">
 							 			<%= column.caption %>
 							 		</div>
-							 	</text>);
+							 	</text>
+		);
 
 
-				subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+								subColumns.AddFor(m => m.DomesticZeroRatedTax)
+							.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header10" style="font-weight: bold;">
 							 			<%= column.caption %>
 							 		</div>
-							 	</text>);
+							 	</text>
+		);
 
 
-				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+								subColumns.AddFor(m => m.DomesticExemptedTax)
+							.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 		<div class="Currency-header11" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+		);
 
-			});
+							});
 
 				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption(new JS("formatMessage('GCC Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.GccstandardRatedRevenue)
+							.Caption(new JS("formatMessage('GCC Tax')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 		<div class="Currency-header12" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+		);
 
-			});
+							});
 
 				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption(new JS("formatMessage('Exports Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
-			.HeaderCellTemplate(@<text>
+						{
+								subColumns.AddFor(m => m.GccstandardRatedTax)
+							.Caption(new JS("formatMessage('Exports Tax')"))
+							.Alignment(HorizontalAlignment.Right)
+							.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+							.HeaderCellTemplate(@<text>
 		<div class="Currency-header13" style="font-weight: bold;">
 			<%= column.caption %>
 		</div>
-	</text>);
+	</text>
+		);
 
+							});
 			});
-			});
-    columns.AddFor(m => m.InvoiceDateAr).Caption("Invoice Date Ar").Visible(false);
-    columns.AddFor(m => m.InvoiceDeliveryDate).Caption("Invoice Delivery Date").Visible(false);
-    columns.AddFor(m => m.InvoiceDeliveryDateAr).Caption("Invoice Delivery Date Ar").Visible(false);
-    columns.AddFor(m => m.QuotationNo).Caption("Quotation No").Visible(false);
-    columns.AddFor(m => m.DeliveryNoteNos).Caption("Delivery Note Nos").Visible(false);
-    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-  //  columns.AddFor(m => m.SOSReferenceNo).Caption("SOS Reference No").Visible(false);
-  //  columns.AddFor(m => m.PONo).Caption("PO No").Visible(false);
-  //  columns.AddFor(m => m.PODate).Caption("PO Date").Visible(false);
-  //  columns.AddFor(m => m.PODateAr).Caption("PO Date Ar").Visible(false);
-    columns.AddFor(m => m.ClientReferenceName).Caption("Client Reference Name").Visible(false);
-    columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
-    columns.AddFor(m => m.ClientEmail).Caption("Client Email").Visible(false);
-    columns.AddFor(m => m.RemarksInEn).Caption("Remarks In En").Visible(false);
-    columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
-    columns.AddFor(m => m.RemarksInAr).Caption("Remarks In Ar").Visible(false);
-    columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-    columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-    columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
-    columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-    columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-    columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-    columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
-    columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-    columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-    columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-    columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
-    columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-    columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
-    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-    columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-    columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
-    columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-   // columns.AddFor(m => m.TaxCategoryID).Caption("Tax Category ID").Visible(false);
-   // columns.AddFor(m => m.AccountID).Caption("Account ID").Visible(false);
-    columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
-    columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
-    columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
-    columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
-    columns.AddFor(m => m.BillingNameAr).Caption("Billing Name Ar").Visible(false);
-    columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-    columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-    columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
-    columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
-    columns.AddFor(m => m.TotalDiscount).Caption("Total Discount").Visible(false);
-    columns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount).Caption("Total Invoice Amount Before Discount").Visible(false);
-   // columns.AddFor(m => m.VATRegistrationNo).Caption("VAT Registration No").Visible(false);
-    columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
-    columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
-    columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
-    columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
- //   columns.AddFor(m => m.CRNo).Caption("CR No").Visible(false);
-    columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
-})
+						columns.AddFor(m => m.InvoiceDateAr).Caption(new JS("formatMessage('Invoice Date Ar')")).Visible(false);
+						columns.AddFor(m => m.InvoiceDeliveryDate).Caption(new JS("formatMessage('Invoice Delivery Date')")).Visible(false);
+						columns.AddFor(m => m.InvoiceDeliveryDateAr).Caption(new JS("formatMessage('Invoice Delivery Date Ar')")).Visible(false);
+						columns.AddFor(m => m.QuotationNo).Caption(new JS("formatMessage('Quotation No')")).Visible(false);
+						columns.AddFor(m => m.DeliveryNoteNos).Caption(new JS("formatMessage('Delivery Note Nos')")).Visible(false);
+						columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+						// columns.AddFor(m => m.SOSReferenceNo).Caption(new JS("formatMessage('SOS Reference No')")).Visible(false);
+						// columns.AddFor(m => m.PONo).Caption(new JS("formatMessage('PO No')")).Visible(false);
+						// columns.AddFor(m => m.PODate).Caption(new JS("formatMessage('PO Date')")).Visible(false);
+						// columns.AddFor(m => m.PODateAr).Caption(new JS("formatMessage('PO Date Ar')")).Visible(false);
+						columns.AddFor(m => m.ClientReferenceName).Caption(new JS("formatMessage('Client Reference Name')")).Visible(false);
+						columns.AddFor(m => m.ClientContactNo).Caption(new JS("formatMessage('Client Contact No')")).Visible(false);
+						columns.AddFor(m => m.ClientEmail).Caption(new JS("formatMessage('Client Email')")).Visible(false);
+						columns.AddFor(m => m.RemarksInEn).Caption(new JS("formatMessage('Remarks In En')")).Visible(false);
+						columns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Visible(false);
+						columns.AddFor(m => m.RemarksInAr).Caption(new JS("formatMessage('Remarks In Ar')")).Visible(false);
+						columns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Visible(false);
+						columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+						columns.AddFor(m => m.SubmittedByAr).Caption(new JS("formatMessage('Submitted By Ar')")).Visible(false);
+						columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Visible(false);
+						columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+						columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+						columns.AddFor(m => m.VerifiedByAr).Caption(new JS("formatMessage('Verified By Ar')")).Visible(false);
+						columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false);
+						columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+						columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+						columns.AddFor(m => m.ApprovedByAr).Caption(new JS("formatMessage('Approved By Ar')")).Visible(false);
+						columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false);
+						columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+						columns.AddFor(m => m.AddedByAr).Caption(new JS("formatMessage('Added By Ar')")).Visible(false);
+						columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+						columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+						columns.AddFor(m => m.ModifiedByAr).Caption(new JS("formatMessage('Modified By Ar')")).Visible(false);
+						columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false);
+						// columns.AddFor(m => m.TaxCategoryID).Caption(new JS("formatMessage('Tax Category ID')")).Visible(false);
+						// columns.AddFor(m => m.AccountID).Caption(new JS("formatMessage('Account ID')")).Visible(false);
+						columns.AddFor(m => m.AdvanceAmount).Caption(new JS("formatMessage('Advance Amount')")).Visible(false);
+						columns.AddFor(m => m.BillingAddress).Caption(new JS("formatMessage('Billing Address')")).Visible(false);
+						columns.AddFor(m => m.BillingAddressAr).Caption(new JS("formatMessage('Billing Address Ar')")).Visible(false);
+						columns.AddFor(m => m.BillingName).Caption(new JS("formatMessage('Billing Name')")).Visible(false);
+						columns.AddFor(m => m.BillingNameAr).Caption(new JS("formatMessage('Billing Name Ar')")).Visible(false);
+						columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+						columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+						columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+						columns.AddFor(m => m.RetentionAmount).Caption(new JS("formatMessage('Retention Amount')")).Visible(false);
+						columns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Visible(false);
+						columns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount).Caption(new JS("formatMessage('Total Invoice Amount Before Discount')")).Visible(false);
+						// columns.AddFor(m => m.VATRegistrationNo).Caption(new JS("formatMessage('VAT Registration No')")).Visible(false);
+						columns.AddFor(m => m.CompanyBranch).Caption(new JS("formatMessage('Company Branch')")).Visible(false);
+						columns.AddFor(m => m.CostAllocationGroup).Caption(new JS("formatMessage('Cost Allocation Group')")).Visible(false);
+						columns.AddFor(m => m.CostAllocationMasterGroup).Caption(new JS("formatMessage('Cost Allocation Master Group')")).Visible(false);
+						columns.AddFor(m => m.CostAllocationUnit).Caption(new JS("formatMessage('Cost Allocation Unit')")).Visible(false);
+						// columns.AddFor(m => m.CRNo).Caption(new JS("formatMessage('CR No')")).Visible(false);
+						columns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
+				})
 
 	   	@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
@@ -1864,10 +1883,10 @@
 				offset: "8 0"
 			},
 			items: [
-				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
-				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
-				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
-				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+				{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+				{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
 			],
 			onItemClick: function(e) {
 				const quarter = e.itemData.value;

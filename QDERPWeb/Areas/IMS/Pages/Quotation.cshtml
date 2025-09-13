@@ -273,9 +273,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Quotation to Clients</h2>
+				<h2 class="title-slide" id="quotationtoclients"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickdicequotation"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -287,22 +287,22 @@
 	</div>
 
 	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; overflow: hidden;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation Details</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;" id="quotationdetailss"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4 style="text-align:left">New Quotation</h4>
+				<h4 style="text-align:left" id="newquotationss"></h4>
 				<h1 id="newquotationtotals" style="color: white;text-align:left;">
 					0
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4 style="text-align:left">Pending of Approvals</h4>
+				<h4 style="text-align:left" id="pendingofapprovals"></h4>
 				<h1 id="pendingofapproval" style="color: white;text-align:left;">
 					0
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4 style="text-align:left">Waiting for sale order</h4>
+				<h4 style="text-align:left" id="waitingforordersales"></h4>
 				<h1 id="waitingsaleorder" style="color: white;text-align:left;">
 					0
 				</h1>
@@ -322,16 +322,16 @@
 
 	<!-- QUOTATION AMOUNT CARD -->
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Quotation Invoices</h4>
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;" id="quotationinvoicess"></h4>
 		<div class="voucher-slider">
 		<div class="voucher-slide1 active">
-			<h4 style="color: white;text-align:left;">No of quotation raised today</h4>
+			<h4 style="color: white;text-align:left;" id="noofquotationtotay"></h4>
 				<h1 id="quotationraisetoday" style="color: white; font-weight: bold;text-align:left;">
 				0
 			</h1>
 		</div>
 			<div class="voucher-slide1">
-				<h4 style="color: white;text-align:left;">Total no of quotation</h4>
+				<h4 style="color: white;text-align:left;" id="totalnoofquotations"></h4>
 				<h1 id="totalnoofquotation" style="color: white; font-weight: bold;text-align:left;">
 					0
 				</h1>
@@ -933,6 +933,7 @@
 			ddBtnShowRecords_click('range');
 	});
 	function ddBtnShowRecords_click(duration) {
+		hidequarterSubmenus();
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
 			var frmDate = new Date(frmDateBox.option("value"));
@@ -987,7 +988,7 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
-						case 'q1': // Jan - Mar
+				case 'q1': // Jan - Mar
 					frmDate = new Date(new Date().getFullYear(), 0, 1);
 					toDate = new Date(new Date().getFullYear(), 2, 31);
 					break;
@@ -1007,13 +1008,13 @@
 					toDate = new Date(new Date().getFullYear(), 11, 31);
 					break;
 			}
-						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		FromDate = frmDate;
-		ToDate = toDate;
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
+			frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			FromDate = frmDate;
+			ToDate = toDate;
 
-		frmDateBox.option("value", frmDate);
-		toDateBox.option("value", toDate);
 
 				$.ajax({
 		url: '/api/Quotation/GetQuotation',
@@ -1055,7 +1056,7 @@
 
 			e.items = [
 				{
-					text: "Edit Quotation",
+					text: formatMessage("Edit Quotation"),
 					icon: "edit",
 					onItemClick: function () {
 						const url = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${QuoteNo}`;
@@ -1063,7 +1064,7 @@
 					}
 				},
 					{
-		text: "Duplicate Quotation",
+		text: formatMessage("Duplicate Quotation"),
 		icon: "copy",
 		onItemClick: function () {
 			const quoteNo = e.row.data.QuoteNo;
@@ -1099,7 +1100,7 @@
 	},
 
 				{
-					text: "Delete Quotation",
+					text: formatMessage("Delete Quotation"),
 					icon: "trash",
 					onItemClick: function () {
 						DevExpress.ui.dialog.confirm(
@@ -1115,7 +1116,7 @@
 					}
 				},
 				{
-		text: "Unlock the Quotation", 
+		text: formatMessage("Unlock the Quotation"), 
 		icon: "unlock",
 		onItemClick: function () {
 			const QuoteNo = e.row.data.QuoteNo;
@@ -1140,7 +1141,7 @@
 		}
 	},
 					{
-		text: "Revise Quotation",
+		text: formatMessage("Revise Quotation"),
 		icon: "repeat",
 		onItemClick: function () {
 			const quoteNo = e.row?.data?.QuoteNo;
@@ -1180,7 +1181,7 @@
 	},
 
 					{
-		text: "Create Sales Order",
+		text: formatMessage("Create Sales Order"),
 		icon: "add",
 		onItemClick: function () {
 			const quotationNo = e.row.data.QuoteNo;
@@ -1362,5 +1363,32 @@ $(document).ready(function () {
 						}
 					}
 				});
-			
+
+			 $(function () {
+				$("#quotationtoclients").text(formatMessage("Quotation to Clients"));
+		     });
+			 $(function () {
+				$("#quickdicequotation").text(formatMessage("Quick Dice ERP Solutions"));
+		     });
+			 $(function () {
+				$("#quotationdetailss").text(formatMessage("Quotation Details"));
+		     });
+			 $(function () {
+				$("#newquotationss").text(formatMessage("New Quotation"));
+		     });
+			 $(function () {
+				$("#pendingofapprovals").text(formatMessage("Pending of Approvals"));
+		     });
+			 $(function () {
+				$("#waitingforordersales").text(formatMessage("Waiting for sale order"));
+		     });
+			 $(function () {
+						$("#totalnoofquotations").text(formatMessage("Total no of quotation"));
+		     });
+			 $(function () {
+						$("#noofquotationtotay").text(formatMessage("No of quotation raised today"));
+		     });
+			 $(function () {
+						$("#quotationinvoicess").text(formatMessage("Quotation Invoices"));
+		     });
 </script>

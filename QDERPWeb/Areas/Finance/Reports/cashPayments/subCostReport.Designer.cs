@@ -138,7 +138,7 @@
             this.tableCell4.Name = "tableCell4";
             this.tableCell4.StyleName = "DetailData1";
             this.tableCell4.StylePriority.UseBorders = false;
-            this.tableCell4.Weight = 0.36530498798076921D;
+            this.tableCell4.Weight = 0.11383654209310584D;
             // 
             // tableCell5
             // 
@@ -147,7 +147,7 @@
             this.tableCell5.Name = "tableCell5";
             this.tableCell5.StyleName = "DetailData1";
             this.tableCell5.TextFormatString = "{0:N2}";
-            this.tableCell5.Weight = 0.30324718768780046D;
+            this.tableCell5.Weight = 0.32710917834897396D;
             // 
             // tableCell6
             // 
@@ -158,7 +158,7 @@
             this.tableCell6.StylePriority.UseTextAlignment = false;
             this.tableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell6.TextFormatString = "{0:C2}";
-            this.tableCell6.Weight = 0.33144784780649039D;
+            this.tableCell6.Weight = 0.5590543030329802D;
             // 
             // sqlDataSource1
             // 

@@ -1493,7 +1493,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(claim);
         }
         [HttpPost]
-        public IActionResult DeleteClaim(string voucherNo)
+        public IActionResult DeleteClaim([FromForm] string voucherNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -1503,38 +1503,130 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (string.IsNullOrWhiteSpace(voucherNo))
                 return Json(new { success = false, message = "Voucher number is required." });
 
-            using var transaction = dbContext.Database.BeginTransaction();
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+
             try
             {
-                var master = dbContext.Tbl20102ExpenseClaimMasters
-                    .FirstOrDefault(c => c.ClaimRefNo == voucherNo);
+                strategy.Execute(() =>
+                {
+                    using var transaction = dbContext.Database.BeginTransaction();
 
-                if (master == null)
-                    return Json(new { success = false, message = "Claim not found." });
+                    var master = dbContext.Tbl20102ExpenseClaimMasters
+                        .FirstOrDefault(c => c.ClaimRefNo == voucherNo);
 
-               
+                    if (master == null)
+                        throw new Exception("Claim not found.");
 
-                // Delete children
-                var children = dbContext.Tbl20103ExpenseClaimChildren
-                    .Where(c => c.ClaimRefNo == voucherNo)
-                    .ToList();
-                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(children);
+                    var children = dbContext.Tbl20103ExpenseClaimChildren
+                        .Where(c => c.ClaimRefNo == voucherNo)
+                        .ToList();
 
-                // Delete master
-                dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
+                    dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(children);
+                    dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
 
-                dbContext.SaveChanges();
-                transaction.Commit();
+                    dbContext.SaveChanges();
+                    transaction.Commit();
+                });
 
                 return Json(new { success = true });
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetJournalStatus(string claimRefNo)
+        {
+            if (string.IsNullOrEmpty(claimRefNo))
+                return BadRequest("Invalid JournalRefNo.");
 
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var journal = dbContext.Tbl20102ExpenseClaimMasters
+                    .Where(j => j.ClaimRefNo == claimRefNo)
+                    .Select(j => new
+                    {
+                        isSubmitted = j.IsSubmittedToFinance,
+                        isApproved = j.IsApproved,
+                        isPaid = j.IsPaid
+                    })
+                    .FirstOrDefault();
+
+                if (journal == null)
+                    return NotFound();
+
+                return Json(journal);
+            }
+
+            return StatusCode(500, "Tenant context could not be loaded.");
+        }
+
+        // POST: /Finance/DeleteJournalEntry
+        [HttpPost]
+        public IActionResult DeleteJournalEntry(string claimRefNo)
+        {
+            if (string.IsNullOrEmpty(claimRefNo))
+                return BadRequest("Invalid JournalRefNo.");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var master = dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefault(j => j.ClaimRefNo == claimRefNo);
+
+                if (master == null)
+                    return NotFound();
+
+                var childList = dbContext.Tbl20103ExpenseClaimChildren
+                    .Where(c => c.ClaimRefNo == claimRefNo)
+                    .ToList();
+                
+
+
+                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(childList);
+                dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
+                
+                dbContext.SaveChanges();
+
+                return Json(new { success = true });
+            }
+
+            return StatusCode(500, "Tenant context could not be loaded.");
+        }
+        [HttpPost]
+        public IActionResult UnlockJournalEntry(string claimRefNo)
+        {
+            if (string.IsNullOrEmpty(claimRefNo))
+                return BadRequest(new { success = false, message = "JournalRefNo is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var entry = dbContext.Tbl20102ExpenseClaimMasters
+                .FirstOrDefault(j => j.ClaimRefNo == claimRefNo);
+
+            if (entry == null)
+                return NotFound(new { success = false, message = "Journal entry not found." });
+
+
+
+            // Reset fields
+            entry.IsSubmittedToFinance = false;
+            entry.SubmittedBy = null;
+            entry.SubmittedOn = null;
+            entry.IsVerified = false;
+            entry.VerifiedBy = null;
+            entry.VerifiedOn = null;
+            entry.IsApproved = false;
+            entry.ApprovedBy = null;
+            entry.ApprovedOn = null;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
     }
 }
 

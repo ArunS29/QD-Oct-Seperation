@@ -177,9 +177,9 @@
     <div class="card blue shine compact with-sidebar">
         <div class="tile-content">
             <div class="title-text">
-                <h2 class="title-slide">Stock Inventory</h2>
+                <h2 class="title-slide" id="stockinventory"></h2>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+                <h6 class="fade-in" id="qucikdiceerpsoltionsstock"></h6>
             </div>
             <div class="tile-icon">
                 <!-- Icon as SVG -->
@@ -192,10 +192,10 @@
     </div>
 
     <div class="card today-bg with-sidebar">
-        <h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;">Balance</h4>
+        <h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;" id="stockgroupbalance"></h4>
             <div class="voucher-slider">
             <div class="voucher-slide active">
-                <h5 style="margin: 0;text-align: left;">Opening Balance</h5>
+                <h5 style="margin: 0;text-align: left;" id="openingbalancestock"></h5>
                 <h4 style="color: white; margin: 0; display: flex; text-align: left; gap: 5px;">
                    
                     <span id="openingbalanceCount">0</span>
@@ -204,7 +204,7 @@
 
 
                 <div class="voucher-slide">
-                <h5 style="margin: 0;text-align: left;">Closing Balance</h5>
+                <h5 style="margin: 0;text-align: left;" id="closingbalancestock"></h5>
                 <h4 style="color: white; margin: 0; display: flex; text-align: left; gap: 5px;">
                     
                     <span id="closingbalanceCount">0</span>
@@ -221,10 +221,10 @@
         </div>
         </div>
     <div class="card green shine with-sidebar">
-        <h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;">Amount</h4>
+        <h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;" id="stockgroupamount"></h4>
             <div class="voucher-slider">
             <div class="voucher-slide1 active">
-                <h5 style="margin: 0;text-align: left;">No of Received Amount</h5>
+                <h5 style="margin: 0;text-align: left;" id="noofreceivedamountstock"></h5>
                 <h4 style="color: white; margin: 0; display: flex; text-align: left; gap: 5px;">
                     <span id="receivedamount">0</span>
                 </h4>
@@ -232,7 +232,7 @@
 
 
                 <div class="voucher-slide1">
-                <h5 style="margin: 0;text-align: left;">Issuse</h5>
+                <h5 style="margin: 0;text-align: left;" id="stockgroupissuse"></h5>
                 <h4 style="color: white; margin: 0; display: flex; text-align: left; gap: 5px;">
                     <span id="issuseCount">0</span>
                         </h4>
@@ -266,13 +266,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu">
     <div class="context-menu-itemInvoice" onclick="viewRecord()">
-        <i class="dx-icon-search"></i> View Stock Item Details
+        <i class="dx-icon-search" id="stockeditview"></i> 
     </div>
     <div class="context-menu-itemInvoice" onclick="editRecord()">
-        <i class="dx-icon-edit"></i> Edit Stock Item
+        <i class="dx-icon-edit" id="stockitemedit"></i> 
     </div>
     <div class="context-menu-itemInvoice" onclick="deleteRecord()">
-        <i class="dx-icon-trash"></i> Delete Stock Item
+        <i class="dx-icon-trash" id="stockdeleteitem"></i> 
     </div>
 </div>
 
@@ -814,7 +814,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("GsgroupName").Caption("Group Name").Width(400);    
+                                columns.Add().DataField("GsgroupName").Caption(new JS("formatMessage('Group Name')")).Width(400);    
                         })
                         )
 				}
@@ -1127,6 +1127,39 @@
             }
         });
     }
+      $(function () {
+        $("#stockeditview").text(formatMessage("View Stock Item Details"));
+    });
+      $(function () {
+        $("#stockitemedit").text(formatMessage("Edit Stock Item"));
+    });
+      $(function () {
+        $("#stockdeleteitem").text(formatMessage("Delete Stock Item"));
+    });
+      $(function () {
+        $("#stockgroupissuse").text(formatMessage("Issues"));
+    });
+      $(function () {
+        $("#noofreceivedamountstock").text(formatMessage("No of Received Amount"));
+    });
+      $(function () {
+        $("#stockgroupamount").text(formatMessage("Amount"));
+    });
+      $(function () {
+        $("#stockgroupbalance").text(formatMessage("Balance"));
+    });
+      $(function () {
+        $("#stockinventory").text(formatMessage("Stock Inventory"));
+    });
+      $(function () {
+        $("#qucikdiceerpsoltionsstock").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+      $(function () {
+        $("#openingbalancestock").text(formatMessage("Opening Balance"));
+    });
+      $(function () {
+        $("#closingbalancestock").text(formatMessage("Closing Balance"));
+    });
 </script>
 
 

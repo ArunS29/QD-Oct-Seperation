@@ -231,15 +231,23 @@
 		margin-top: 10px;
 	}
 
+    .titleCard-toggle1 {
+        display: none;
+    }
     </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="VATSalesReportCOGSPosting" class="no-border-input"></div>
     </div>
+</div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <div id="VATSalesReportCOGSPosting" class="titleText no-border-title"></div>
 </div>
-
 <div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -316,30 +324,30 @@ Html.DevExtreme().DataGrid()
         .Alignment(HorizontalAlignment.Center); *@
 
     columns.Add().DataField("InvoiceNo")
-        .Caption("Invoice No")
+        .Caption(new JS("formatMessage('Invoice No')"))
         .Width(150)
         .Alignment(HorizontalAlignment.Center);
 
     columns.Add().DataField("InvoiceDate")
-        .Caption("Invoice Date")
+        .Caption(new JS("formatMessage('Invoice Date')"))
         .DataType(GridColumnDataType.Date)
         .Format("dd-MMM-yyyy")
         .Alignment(HorizontalAlignment.Center);
 
     columns.Add().DataField("ClientName")
-        .Caption("Client Name")
+        .Caption(new JS("formatMessage('Client Name')"))
         .Alignment(HorizontalAlignment.Center);
 
     columns.Add().DataField("StatusForPosting")
-        .Caption("Status For Posting")
+        .Caption(new JS("formatMessage('Status For Posting')"))
         .Alignment(HorizontalAlignment.Center);
 
     columns.Add().DataField("IsPosted")
-        .Caption("Is Posted")
+        .Caption(new JS("formatMessage('Is Posted')"))
         .Alignment(HorizontalAlignment.Center);
 
     columns.Add().DataField("IsCogsPosted")
-        .Caption("Is Cogs Posted")
+        .Caption(new JS("formatMessage('Is Cogs Posted')"))
         .Alignment(HorizontalAlignment.Center);
 
    
@@ -376,18 +384,20 @@ Html.DevExtreme().DataGrid()
         }
 
 
-    $(function () {
-                    $("#VATSalesReportCOGSPosting").dxTextBox({
-                        text: formatMessage("Average Cost Posting"),
-                        width:480,
-                        readOnly: true,
-                                    onContentReady: function(e) {
-                                    $(e.element).addClass("dx-textbox-heading");
-                            }
+    // $(function () {
+    //                 $("#VATSalesReportCOGSPosting").dxTextBox({
+    //                     text: formatMessage("Average Cost Posting"),
+    //                     width:480,
+    //                     readOnly: true,
+    //                                 onContentReady: function(e) {
+    //                                 $(e.element).addClass("dx-textbox-heading");
+    //                         }
 
-                    });
-                });
-
+    //                 });
+    //             });
+                  $(function () {
+        $("#VATSalesReportCOGSPosting").text(formatMessage("Average Cost Posting"));
+    });
                 function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
                     var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;

@@ -154,7 +154,7 @@
         <div style="flex: 1;">
             @(Html.DevExtreme().SelectBox()
                     .ID("txtStockCode")
-                    .Label("Stock Code")
+                    .Label(new JS("formatMessage('Stock Code')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -165,7 +165,7 @@
         <div style="flex: 2;">
             @(Html.DevExtreme().TextBox()
                     .ID("txtStockDescription")
-                    .Label("Stock Item Description")
+                    .Label(new JS("formatMessage('Stock Item Description')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
@@ -176,7 +176,7 @@
             @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningBalance")
                     .Format("#,##0.00")
-                    .Label("Opening Balance")
+                    .Label(new JS("formatMessage('Opening Balance')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
@@ -210,8 +210,8 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("ReceiptChildSlNo").AllowEditing(false).Visible(false);
-                columns.Add().DataField("Gscode").Caption("Stock Code").AllowEditing(false);
-                columns.Add().DataField("Unit").Caption("Unit")
+            columns.Add().DataField("Gscode").Caption(new JS("formatMessage('Stock Code')")).AllowEditing(false);
+            columns.Add().DataField("Unit").Caption(new JS("formatMessage('Unit')"))
                     .Lookup(lookup => lookup
                     .DataSource(d => d.WebApi()
                     .Controller("StockInventory")
@@ -221,12 +221,12 @@
                     .ValueExpr("UnitCode")       // The value from your grid's data
                     .DisplayExpr("UnitType"))
                     .AllowEditing(false);
-                    
-                columns.Add().DataField("UnitPrice").Caption("Unit Price").AllowEditing(false); 
-                columns.Add().DataField("Quantity").Caption("Quantity").AllowEditing(false); 
-                columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date).AllowEditing(true); 
-                columns.Add().DataField("BatchNo").Caption("Batch No").AllowEditing(true); 
-                })
+
+            columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).AllowEditing(false);
+            columns.Add().DataField("Quantity").Caption(new JS("formatMessage('Quantity')")).AllowEditing(false);
+            columns.Add().DataField("ExpiryDate").Caption(new JS("formatMessage('Expiry Date')")).DataType(GridColumnDataType.Date).AllowEditing(true);
+            columns.Add().DataField("BatchNo").Caption(new JS("formatMessage('Batch No')")).AllowEditing(true);
+        })
                 .Editing(editing =>
                 {
                     editing.Mode(GridEditMode.Cell); // or Row, depending on your preference
@@ -241,7 +241,7 @@
                 .ShowRowLines(true)
                 .RowAlternationEnabled(true)
                 .ColumnAutoWidth(true)
-                .Height(450)
+                .Height("65vh")
                 .Width("100%")
                 .OnCellPrepared("onOpeningBalanceCellPrepared")
             )
@@ -249,10 +249,10 @@
 
     <!-- BUTTON FOOTER -->
     <div class="footer-fixed" style="display:flex; gap:10px;">
-    @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
-    @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
-    @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
-    @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
+    @(Html.DevExtreme().Button().ID("btnUpdate").Text(new JS("formatMessage('Save & Close')")).Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
+    @(Html.DevExtreme().Button().ID("btnPrint").Text(new JS("formatMessage('Print')")).Icon("print"))
+    @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
+    @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
     </div>
 
  <script>

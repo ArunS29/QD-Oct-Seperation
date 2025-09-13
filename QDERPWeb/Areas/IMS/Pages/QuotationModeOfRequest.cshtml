@@ -89,10 +89,6 @@
         background-color: var(--background-color);
     }
 
-    .mainContainer {
-        margin-top: 1em;
-    }
-
     .playIcon {
         display: none;
     }
@@ -103,12 +99,12 @@
         <div id="QuotationModeofRequest" class="no-border-input"></div>
     </div>
 </div> *@
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Quotation Mode of Request</h3>
-</div>
+</div> *@
 <div class="signatory-form-container">
     <div class="form-row">
         <div class="col-md-6">
@@ -132,7 +128,7 @@
                 .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addSignatoryToGrid(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
+                .ElementAttr(new { @class = "custom-ui-button" })
                 )
         </div>
     </div>

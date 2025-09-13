@@ -148,11 +148,15 @@
 </style>
 
 <input id="formId" value="frm60016StockPivotReportByStores" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="stockReportByStore" class="no-border-input"></div>
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="stockReportByStore" class="titleText no-border-title"></div>
 	</div>
 </div>
+
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().PivotGrid()
 		.ID("stockPivotGrid")
@@ -171,36 +175,61 @@
 		{
 			// Row fields
 			fields.Add()
+			.DataField("CostPrice")
+			.Area(PivotGridArea.Row)
+			.Caption(new JS("formatMessage('Cost Price')"));
+
+			fields.Add()
+			.DataField("GsdetailedDesc")
+			.Area(PivotGridArea.Row)
+			.Caption(new JS("formatMessage('Gs detailed Description')"));
+
+			fields.Add()
+			.DataField("IsServicesGroup")
+			.Area(PivotGridArea.Row)
+			.Caption(new JS("formatMessage('Is Services Group')"));
+
+			fields.Add()
+			.DataField("IsDiscontinued")
+			.Area(PivotGridArea.Row)
+			.Caption(new JS("formatMessage('Is Discontinued')"));
+
+			fields.Add()
+			.DataField("Hscode")
+			.Area(PivotGridArea.Row)
+			.Caption(new JS("formatMessage('Hs code')"));
+
+			fields.Add()
 			.DataField("GsgroupName")
 			.Area(PivotGridArea.Row)
-			.Caption("Stock Group");
+			.Caption(new JS("formatMessage('Stock Group')"));
 
 			fields.Add()
 			.DataField("Gscode")
 			.Area(PivotGridArea.Row)
-			.Caption("GS Code");
+			.Caption(new JS("formatMessage('GS Code')"));
 
 			fields.Add()
 			.DataField("Gsdescrpition")
 			.Area(PivotGridArea.Row)
-			.Caption("GS Description");
+		.Caption(new JS("formatMessage('GS Description')"));
 
 			fields.Add()
 			.DataField("UnitDesc")
 			.Area(PivotGridArea.Row)
-			.Caption("Unit Desc");
+		.Caption(new JS("formatMessage('Unit Description')"));
 			
 			// Column fields
 			fields.Add()
 			.DataField("StoreCode")
 			.Area(PivotGridArea.Column)
-			.Caption("Store");
+		.Caption(new JS("formatMessage('Store')"));
 
 			// Data field
 			fields.Add()
 			.DataField("CurrentyQty")
 			.Area(PivotGridArea.Data)
-			.Caption("Qty")
+			.Caption(new JS("formatMessage('Qty')"))
 			.SummaryType(SummaryType.Sum);
 		})
 		)
@@ -210,16 +239,18 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-	$("#stockReportByStore").dxTextBox({
-	text: formatMessage("Stock Report By Store"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
-
+	// 	 $(function () {
+	// $("#stockReportByStore").dxTextBox({
+	// text: formatMessage("Stock Report By Store"),
+	// 	readOnly: true,
+	// 	onContentReady: function (e) {
+	// 	$(e.element).addClass("dx-textbox-heading");
+	// 	}
+	// 	});
+	// });
+	 $(function () {
+				$("#stockReportByStore").text(formatMessage("Stock Report By Store"));
+			 });
 		// Save as default layout
 	function setDefaultLayoutClick() {
 		const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");

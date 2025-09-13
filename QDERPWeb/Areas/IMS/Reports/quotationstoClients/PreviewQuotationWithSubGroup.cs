@@ -1,16 +1,27 @@
 ﻿using DevExpress.XtraPrinting;
-using DevExpress.XtraPrinting.Drawing;
 using DevExpress.XtraReports.UI;
+using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.Web.Service;
+using Svg;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.Text;
+
 
 namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 {
     public partial class PreviewQuotationWithSubGroup : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly Tenant _resolvedTenant;
+        private HashSet<string> _quoteNosWithTerms = new HashSet<string>();
+
 
         public PreviewQuotationWithSubGroup()
         {
@@ -18,6 +29,15 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
         }
 
         public PreviewQuotationWithSubGroup(
+               bool showSeal,
+               bool showSignature,
+               bool printLetterhead,
+            bool pageBreakBefore,
+             bool pageBreakAfter,
+            bool clientAcknowledgement,
+            bool printItemCodeDesc,
+            bool printItemPartNoDesc,
+            bool printItemPartArabicDesc,
             string quotationNo,
             string tenantName,
             string companyName,
@@ -30,16 +50,91 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
+
+
 
             InitializeComponent();
 
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage,
+            SetReportParameters(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, sealImage,
                 companyAddress, companyNameAr, companyAddressAr);
 
             LoadReportData(quotationNo);
+            LoadSubreport(quotationNo);
+
+            xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
+
+            if (pageBreakBefore || pageBreakAfter)
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
+            else
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
+            // Hide labels if clientAcknowledgement is true
+            int[] labelNumbers = { 78, 80, 81, 83, 84, 85, 86, 87, 88, 90, 93, 94, 96, 97, 74 };
+            foreach (int num in labelNumbers)
+            {
+                var label = FindControl($"xrLabel{num}", true) as XRLabel;
+                if (label != null)
+                    label.Visible = clientAcknowledgement;
+            }
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName,
+
+
+        private void xrSubreport1_BeforePrint(object sender, EventArgs e)
+        {
+            string quoteNo = GetCurrentColumnValue("QuoteNo")?.ToString()
+                     ?? Parameters["QuotationNo"].Value?.ToString();
+
+            var tenant = _resolvedTenant;
+            var subReport = new IMSContext();
+            if (!string.IsNullOrWhiteSpace(quoteNo) && tenant != null)
+            {
+                subReport.LoadTerms(quoteNo, tenant.ConnectionString);
+                xrSubreport1.ReportSource = subReport;
+
+                // Check if subreport has data
+                var dt = subReport.DataSource as DataTable;
+                xrSubreport1.Visible = dt != null && dt.Rows.Count > 0;
+            }
+            else
+            {
+                xrSubreport1.Visible = false;
+            }
+        }
+        private void LoadSubreport(string quotationNo)
+        {
+            if (string.IsNullOrWhiteSpace(quotationNo)) return;
+
+            var tenant = _resolvedTenant ?? throw new Exception("Tenant not resolved.");
+            DataTable dt = new DataTable();
+
+            using (var conn = new SqlConnection(tenant.ConnectionString))
+            {
+                // Adjust the query to match your subreport's data needs
+                string query = "SELECT DISTINCT QuoteNo FROM qry601_05QuotationReport WHERE QuoteNo = @QuotationNo";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@QuotationNo", quotationNo);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+            }
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string quoteNo = row["QuoteNo"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(quoteNo))
+                {
+                    _quoteNosWithTerms.Add(quoteNo);
+                }
+            }
+        }
+
+        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead, bool pageBreakAfter, bool pageBreakBefore, bool printItemCodeDesc, bool printItemPartNoDesc, bool printItemPartArabicDesc, string quotationNo, string tenantName, string companyName,
             Image logoImage, Image sealImage, string companyAddress,
                 string companyNameAr, string companyAddressAr)
         {
@@ -69,6 +164,9 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
          
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("printItemCodeDesc", printItemCodeDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartNoDesc", printItemPartNoDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartArabicDesc", printItemPartArabicDesc, typeof(bool), false);
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -85,10 +183,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox0", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
 
 
@@ -164,6 +262,44 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
                     }
                 }
             }
+        }
+
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox0", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox5", "xrPictureBox3", "xrPictureBox0" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel98", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel99", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrLabel101", true) is XRLabel lbl101)
+                lbl101.Visible = printLetterhead;
+            if (FindControl("xrLabel102", true) is XRLabel lbl102)
+                lbl102.Visible = printLetterhead;
+            if (FindControl("xrLabel103", true) is XRLabel lbl103)
+                lbl103.Visible = printLetterhead;
+            if (FindControl("xrLabel104", true) is XRLabel lbl104)
+                lbl104.Visible = printLetterhead;
+            if (FindControl("xrLabel105", true) is XRLabel lbl105)
+                lbl105.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine4", true) is XRLine line3)
+                line3.Visible = printLetterhead;
         }
         private DataTable GetReportData(string quotationNo)
         {

@@ -264,60 +264,61 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Preview Invoice")
-                        .Icon("print")
-                        .Option("color", "#FF7043"); // Orange
+                    .Text(new JS("formatMessage('Preview Invoice')"))
+                    .Icon("print")
+                    .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview Proforma Invoice(NewFormat)")
-                        .Icon("file")
-                        .Option("color", "#00ACC1"); // Cyan
+                    .Text(new JS("formatMessage('Preview Proforma Invoice(NewFormat)')"))
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
 
                     items.Add()
-                        .Text("Preview Invoice(English)")
-                        .Icon("folder")
-                        .Option("color", "#AB47BC"); // Purple
+                    .Text(new JS("formatMessage('Preview Invoice(English)')"))
+                    .Icon("folder")
+                    .Option("color", "#AB47BC"); // Purple
 
                     items.Add()
-                        .Text("Preview Invoices in Foreign Currency(English)")
-                        .Icon("edit")
-                        .Option("color", "#FBBC05"); // Yellow
+                    .Text(new JS("formatMessage('Preview Invoices in Foreign Currency(English)')"))
+                    .Icon("edit")
+                    .Option("color", "#FBBC05"); // Yellow
 
                     items.Add()
-                        .Text("Preview Invoices in (Foreign Currency)")
-                        .Icon("upload")
-                        .Option("color", "#EA4335"); // Red
+                    .Text(new JS("formatMessage('Preview Invoices in (Foreign Currency)')"))
+                    .Icon("upload")
+                    .Option("color", "#EA4335"); // Red
+
+                    @* items.Add()
+                    .Text(new JS("formatMessage('Preview Invoices in -with discount')"))
+                    .Icon("upload")
+                    .Option("color", "#34A853"); // Green
 
                     items.Add()
-                        .Text("Preview Invoices in -with discount")
-                        .Icon("upload")
-                        .Option("color", "#34A853"); // Green
+                    .Text(new JS("formatMessage('Preview Invoices in -withOut discount')"))
+                    .Icon("upload")
+                    .Option("color", "#4285F4"); // Blue *@
 
                     items.Add()
-                        .Text("Preview Invoices in -withOut discount")
-                        .Icon("upload")
-                        .Option("color", "#4285F4"); // Blue
-
-                    items.Add()
-                        .Text("Upload Items From Excel")
-                        .Icon("chart")
-                        .Option("color", "#FF7043")
-                        .OnClick("ProformaUpload");
+                    .Text(new JS("formatMessage('Upload Items From Excel')"))
+                    .Icon("chart")
+                    .Option("color", "#FF7043")
+                    .OnClick("ProformaUpload");
                 })
                 .ItemTemplate(@<text>
-                    <div class="custom-dropdown-item">
-                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                        <div class="item-content">
-                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                            <div>
-                                <div class="item-title"><%- text %></div>
-                            </div>
-                        </div>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
                     </div>
-                </text>)
+                </div>
+            </div>
+        </text>)
                 .OnItemClick("addPrintButton_click")
                 )
     </div>
+
 
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
@@ -1420,9 +1421,9 @@
                         // case "Preview Invoices in -with discount":
                         //     reportName = "Wtdiscountpreviewinvoice";
                         //     break;
-                        case "Preview Invoices in -withOut discount":
-                            reportName = "WithoutDiscountInvoice";
-                            break;
+                        // case "Preview Invoices in -withOut discount":
+                        //     reportName = "WithoutDiscountInvoice";
+                        //     break;
 
                     case "Preview VAT Purchase Bill":
                             reportName = "BillsPurchases";
@@ -1461,7 +1462,7 @@
         async function checkInvoiceApprovalStatus(invoiceNo) {
             try {
                 const response = await $.ajax({
-                    url: `/api/VATModule/GetInvoiceApprovalStatus/${encodeURIComponent(invoiceNo)}`,
+                    url: `/api/VATModule/GetInvoiceApprovalStatusProforma/${encodeURIComponent(invoiceNo)}`,
                     method: 'GET',
                     dataType: 'json',
                 });

@@ -427,7 +427,11 @@
                         if (result.propertyOperatorTypeId) {
                             $("#PropertyOperatorTypeId").dxTextBox("instance").option("value", result.propertyOperatorTypeId);
                         }
-
+                        setTimeout(() => {
+								if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+									window.parent.refreshTypeOfRequestDropDown('OperatorGrid');
+								}
+							}, 300);
                     } else {
                         DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
                     }
@@ -515,10 +519,6 @@
                             console.warn("No operator data found.");
                         }
                     },
-                error: function (xhr) {
-                    console.error("API error:", xhr);
-                    DevExpress.ui.notify("Failed to load operator details", "error", 3000);
-                }
             });
         }
     });

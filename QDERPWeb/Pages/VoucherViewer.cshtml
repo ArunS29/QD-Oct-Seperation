@@ -132,6 +132,24 @@
     .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report))
 
+
+<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
+   onclick="openReportDesigner(
+   '@Model.ReportName',
+   '@Model.quotationNo',
+   '@Model.purchaseOrderNo',
+   '@Model.rfqNo',
+   '@Model.deliveryNoteNo',
+   '@Model.salesOrderNo',
+   '@Model.RequestNo',
+   '@Model.CreditNoteNo',
+   '@Model.debitNoteNo',
+   '@Model.invoiceNo'
+)">
+    <span class="btn-text">Open Designer</span>
+    <i class="fa fa-pencil-alt"></i>
+</a>
+
 <!-- Email Popup -->
 <div id="emailPopup" class="popup-overlay">
     <div class="popup-content">
@@ -186,6 +204,33 @@
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
         overflow: hidden;
         transition: transform 0.3s ease-in-out;
+    }
+
+    .btn-edit-report {
+        position: fixed;
+        top: 14px; /* Positioning from the top */
+
+        right: 4px; /* Positioning from the right */
+
+        background-color: transparent;
+        border: 1px solid #007bff; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding for rectangular shape */
+
+        font-size: 14px;
+        color: #007bff; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px; /* Height set between 10-15px */
     }
 
     .popup-header {
@@ -341,4 +386,108 @@
         height: 35px;
     }
 
+    .btn-edit-report .btn-text {
+        margin-right: 10px; /* Space between the text and the icon */
+
+        font-weight: bold;
+    }
+
+    .btn-edit-report i {
+        font-size: 16px;
+    }
+
+    /* Change on Hover */
+
+    .btn-edit-report:hover {
+        background-color: rgba(0, 123, 255, 0.1); /* Light blue background on hover */
+
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
+
+        color: #0056b3; /* Darker color on hover */
+    }
+
 </style>
+<script>
+
+       function getTenantNameFromUrl() {
+        const pathParts = window.location.pathname.split('/');
+        return pathParts[1] || '';
+    }
+      function openReportDesigner(
+    reportName,
+    quotationNo,
+    purchaseOrderNo,
+    rfqNo,
+    deliveryNoteNo,
+    salesOrderNo,
+    requestNo,
+    creditNoteNo,
+    debitNoteNo,
+    invoiceNo
+) {
+    const tenantName = getTenantNameFromUrl();
+
+    if (!tenantName || !reportName) {
+        alert("Missing required parameters.");
+        return;
+    }
+
+    let reportDesignerUrl = `/${tenantName}/InvoiceDesigner?reportName=${encodeURIComponent(reportName)}`;
+
+    // Only add the relevant parameter for the selected report
+    switch (reportName) {
+        case "PreviewQuotations":
+        case "PreviewQuotationwithadditionalDetails":
+        case "PreviewQuotationwithoutPrice":
+        case "QuotationWOvat":
+        case "vatTotalPricewithout":
+        case "withoutvatDiscount":
+        case "GroupCode":
+        case "wtDiscount":
+        case "PreviewQuotationWithImage":
+        case "PreviewQuotationWithSubGroup":
+            if (quotationNo && quotationNo !== "null" && quotationNo !== "undefined") {
+                reportDesignerUrl += `&quotationNo=${encodeURIComponent(quotationNo)}`;
+            }
+            break;
+        case "MaterialRequestInventory":
+        case "MaterialPurcchaseRequestion":
+            if (requestNo && requestNo !== "null" && requestNo !== "undefined") {
+                reportDesignerUrl += `&RequestNo=${encodeURIComponent(requestNo)}`;
+            }
+            break;
+        case "SalesOrderReport":
+        case "SalesOrderReportWithoutPrice":
+            if (salesOrderNo && salesOrderNo !== "null" && salesOrderNo !== "undefined") {
+                reportDesignerUrl += `&salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+            }
+            break;
+        case "PreviewDeliveryNote":
+        case "ReportforMaterialIssueNote":
+        case "PreviewDeliveryNotewithPrice":
+        case "DotMatrics":
+        case "DeliveryNoteWithCostPrice":
+            if (deliveryNoteNo && deliveryNoteNo !== "null" && deliveryNoteNo !== "undefined") {
+                reportDesignerUrl += `&deliveryNoteNo=${encodeURIComponent(deliveryNoteNo)}`;
+            }
+            break;
+        case "RFQEdit":
+            if (rfqNo && rfqNo !== "null" && rfqNo !== "undefined") {
+                reportDesignerUrl += `&rfqNo=${encodeURIComponent(rfqNo)}`;
+            }
+            break;
+        // Add other cases as needed
+        default:
+            // Optionally handle other report types
+            break;
+    }
+
+    window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
+}
+
+     document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" || event.keyCode === 27) {
+            window.close();
+        }
+    });
+</script>

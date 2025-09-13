@@ -110,14 +110,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			{
 				try
 				{
-					var StoreName = dbContext.Qry70002projectsViewMasters.Select(i => new
+					var ProjectName = dbContext.Qry70002projectsViewMasters.Select(i => new
 					{
 						i.ProjectId,
 						i.ProjectDescription
 
 					});
 
-					return Json(await DataSourceLoader.LoadAsync(StoreName, loadOptions));
+					return Json(await DataSourceLoader.LoadAsync(ProjectName, loadOptions));
 				}
 				catch (Exception ex)
 				{
@@ -554,13 +554,19 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl60502materialReceiptChildren.RemoveRange(toDelete);
                 }
 
-                // ✅ Add or Update current children
+				// ✅ Add or Update current children
                 foreach (var child in VM.MaterialReceiptDetailses)
                 {
                     child.ReceiptNo = VM.ReceiptNo;
                     child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
                     child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
-
+                        if (string.IsNullOrEmpty(child.AddlDescription))
+                        {
+                            child.AddlDescription = dbContext.Tbl20164GoodsAndServicesMasters
+                                .Where(x => x.Gscode == child.Gscode)
+                                .Select(x => x.Gsdescrpition)
+                                .FirstOrDefault() ?? "";
+                        }
                     if (child.ReceiptChildSlNo == 0)
                     {
                         await dbContext.Tbl60502materialReceiptChildren.AddAsync(child);
@@ -614,7 +620,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 				if (masterRecord == null)
 				{
-					return NotFound(new { success = false, message = "Quotation not found." });
+					return NotFound(new { success = false, message = "MaterialReceipt not found." });
 				}
 
 				// Retrieve and remove child records
@@ -681,16 +687,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				master.SubmittedOn = DateTime.Now;
 				master.ModifiedBy = userName;
 				master.ModifiedOn = DateTime.Now;
-
-					// Save changes
-				await dbContext.SaveChangesAsync();
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                // Save changes
+                await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Submit Material Receipt",
                    actionDetail: $"Submited Material Receipt  {ReceiptNo}",
                    documentNo: $"{ReceiptNo}"
                 );
 
-                return Ok(new { success = true, message = "Material Receipt submitted successfully." });
+                return Ok(new { success = true, message = "Material Receipt submitted successfully.",
+                    VoucherApprovedBy = signatoryId
+                });
 			}
 			catch (Exception ex)
 			{
@@ -745,8 +753,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.IsVerified = true;
             voucher.VerifiedOn = DateTime.Now;
             voucher.VerifiedBy = userName;
+            var signatoryId = await GetSignatoryIDfromUserID(userId);
 
-             await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify Material Receipt",
               actionDetail: $"Verified Material Receipt  {ReceiptNo}",
@@ -755,7 +764,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Ok(new
             {
-                message = "Material Receipt has been Verified and processed for approval."
+                message = "Material Receipt has been Verified and processed for approval.",
+                VoucherApprovedBy = signatoryId
             });
         }
 

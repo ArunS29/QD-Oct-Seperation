@@ -314,15 +314,15 @@
 
 <div class="context-menu" id="DebitcontextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
-		<i class="dx-icon-edit"></i> Edit Debit Note
+		<i class="dx-icon-edit" id="debiteditnoteinvoice"></i> 
 	</div>
 
 	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlock"></i> Unlock the Debit Note
+		<i class="dx-icon-unlock" id="debitunlock"></i> 
 	</div>
 
 	<div class="context-menu-item" onclick="DeleteEInvoice()">
-		<i class="dx-icon-copy"></i> Delete Debit Note
+		<i class="dx-icon-copy" id="deletedebitnote"></i> 
 	</div>
 </div>
 
@@ -367,7 +367,7 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-		        	items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+		        	items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -853,57 +853,53 @@
 
 			});
 			});
-		
-    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-    columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-    columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-    columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-    columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-    columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-    columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-    columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-    columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-    columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
-    columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
-   // columns.AddFor(m => m.AccountGroupID).Caption("Account Group ID").Visible(false);
-   // columns.AddFor(m => m.CompanyID).Caption("Company ID").Visible(false);
-    columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
-    columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
-    columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
-    columns.AddFor(m => m.CostCenterCode).Caption("Cost Center Code").Visible(false);
-    columns.AddFor(m => m.DebitEndDate).Caption("Debit End Date").Visible(false);
-    columns.AddFor(m => m.DebitNoteEffectiveDate).Caption("Debit Note Effective Date").Visible(false);
-    columns.AddFor(m => m.DebitNoteRemarks).Caption("Debit Note Remarks").Visible(false);
-    columns.AddFor(m => m.DebitNoteRemarksAr).Caption("Debit Note Remarks Ar").Visible(false);
-    columns.AddFor(m => m.DebitStartDate).Caption("Debit Start Date").Visible(false);
-    columns.AddFor(m => m.ExpensesAccountHead).Caption("Expenses Account Head").Visible(false);
-    columns.AddFor(m => m.InvoicePeriod).Caption("Invoice Period").Visible(false);
-    columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-    columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-    columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
-    columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-    columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
-    columns.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Visible(false);
-    columns.AddFor(m => m.RevenueAccount).Caption("Revenue Account").Visible(false);
-    columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-    columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
-    columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-    columns.AddFor(m => m.SupplierAddress).Caption("Supplier Address").Visible(false);
-    columns.AddFor(m => m.SupplierAddressAr).Caption("Supplier Address Ar").Visible(false);
-    columns.AddFor(m => m.SupplierBillDate).Caption("Supplier Bill Date").Visible(false);
-    columns.AddFor(m => m.SupplierBillNo).Caption("Supplier Bill No").Visible(false);
-    columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Visible(false);
- //   columns.AddFor(m => m.SupplierVATNo).Caption("Supplier VATNo").Visible(false);
-    columns.AddFor(m => m.SupplierNameAr).Caption("Supplier Name Ar").Visible(false);
-    columns.AddFor(m => m.SupplierName).Caption("Supplier Name").Visible(false);
-   // columns.AddFor(m => m.SupplierVATNumber).Caption("Supplier VAT Number").Visible(false);
-  //  columns.AddFor(m => m.VATLedgerAccount).Caption("VAT Ledger Account").Visible(false);
-    columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
-    columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
-    columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
-    columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
+
+			columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+			columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+			columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+			columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false);
+			columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+			columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+			columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false);
+			columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+			columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+			columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+			columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false);
+			columns.AddFor(m => m.AddedByAr).Caption(new JS("formatMessage('Added By Ar')")).Visible(false);
+			columns.AddFor(m => m.ApprovedByAr).Caption(new JS("formatMessage('Approved By Ar')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationGroup).Caption(new JS("formatMessage('Cost Allocation Group')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationMasterGroup).Caption(new JS("formatMessage('Cost Allocation Master Group')")).Visible(false);
+			columns.AddFor(m => m.CostAllocationUnit).Caption(new JS("formatMessage('Cost Allocation Unit')")).Visible(false);
+			columns.AddFor(m => m.CostCenterCode).Caption(new JS("formatMessage('Cost Center Code')")).Visible(false);
+			columns.AddFor(m => m.DebitEndDate).Caption(new JS("formatMessage('Debit End Date')")).Visible(false);
+			columns.AddFor(m => m.DebitNoteEffectiveDate).Caption(new JS("formatMessage('Debit Note Effective Date')")).Visible(false);
+			columns.AddFor(m => m.DebitNoteRemarks).Caption(new JS("formatMessage('Debit Note Remarks')")).Visible(false);
+			columns.AddFor(m => m.DebitNoteRemarksAr).Caption(new JS("formatMessage('Debit Note Remarks Ar')")).Visible(false);
+			columns.AddFor(m => m.DebitStartDate).Caption(new JS("formatMessage('Debit Start Date')")).Visible(false);
+			columns.AddFor(m => m.ExpensesAccountHead).Caption(new JS("formatMessage('Expenses Account Head')")).Visible(false);
+			columns.AddFor(m => m.InvoicePeriod).Caption(new JS("formatMessage('Invoice Period')")).Visible(false);
+			columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+			columns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Visible(false);
+			columns.AddFor(m => m.ModifiedByAr).Caption(new JS("formatMessage('Modified By Ar')")).Visible(false);
+			columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+			columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+			columns.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')")).Visible(false);
+			columns.AddFor(m => m.RevenueAccount).Caption(new JS("formatMessage('Revenue Account')")).Visible(false);
+			columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+			columns.AddFor(m => m.SubmittedByAr).Caption(new JS("formatMessage('Submitted By Ar')")).Visible(false);
+			columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddress).Caption(new JS("formatMessage('Supplier Address')")).Visible(false);
+			columns.AddFor(m => m.SupplierAddressAr).Caption(new JS("formatMessage('Supplier Address Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierBillDate).Caption(new JS("formatMessage('Supplier Bill Date')")).Visible(false);
+			columns.AddFor(m => m.SupplierBillNo).Caption(new JS("formatMessage('Supplier Bill No')")).Visible(false);
+			columns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Visible(false);
+			columns.AddFor(m => m.SupplierNameAr).Caption(new JS("formatMessage('Supplier Name Ar')")).Visible(false);
+			columns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Visible(false);
+			columns.AddFor(m => m.VerifiedByAr).Caption(new JS("formatMessage('Verified By Ar')")).Visible(false);
+			columns.AddFor(m => m.BranchCode).Caption(new JS("formatMessage('Branch Code')")).Visible(false);
+			columns.AddFor(m => m.BranchName).Caption(new JS("formatMessage('Branch Name')")).Visible(false);
+			columns.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Store Code')")).Visible(false);
+
 
 		})
 		.Editing(editing => editing
@@ -2016,10 +2012,10 @@
 				offset: "8 0"
 			},
 			items: [
-				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
-				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
-				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
-				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+					{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+					{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+					{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+					{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
 			],
 			onItemClick: function(e) {
 				const quarter = e.itemData.value;
@@ -2110,24 +2106,33 @@
 			$("#QuickDiceERPSolutions11").text(formatMessage("Quick Dice ERP Solutions"));
 		});
 		$(function () {
-				$("#debitnotevoucher").text(formatMessage("Voucher Count"));
+			$("#debitnotevoucher").text(formatMessage("Voucher Count"));
 		});
 		$(function () {
-				$("#debitnotetoday").text(formatMessage("Today"));
+			$("#debitnotetoday").text(formatMessage("Today"));
 		});
 		$(function () {
-				$("#noofinvoiceverifieddebit").text(formatMessage("No of Invoices Verified"));
+			$("#noofinvoiceverifieddebit").text(formatMessage("No of Invoices Verified"));
 		});
 		$(function () {
-				$("#noofinvoiceapproveddebit").text(formatMessage("No of Invoices Approved"));
+			$("#noofinvoiceapproveddebit").text(formatMessage("No of Invoices Approved"));
 		});
 		$(function () {
-				$("#noofinvoiceposteddebit").text(formatMessage("No of Invoices Posted"));
+			$("#noofinvoiceposteddebit").text(formatMessage("No of Invoices Posted"));
 		});
 		$(function () {
-					$("#debitnoteraisedtoday").text(formatMessage("Debit Notes Raised Today"));
+			$("#debitnoteraisedtoday").text(formatMessage("Debit Notes Raised Today"));
 		});
 		$(function () {
-						$("#debitnotestotalamount").text(formatMessage("Debit Notes Total Amount"));
+			$("#debitnotestotalamount").text(formatMessage("Debit Notes Total Amount"));
 		});
+		 $(function () {
+			$("#debiteditnoteinvoice").text(formatMessage("Edit Debit Note"));
+	  });
+	$(function () {
+			   $("#debitunlock").text(formatMessage("Unlock the Debit Note"));
+	  });
+	$(function () {
+			   $("#deletedebitnote").text(formatMessage("Delete Debit Note"));
+	  });
 </script>

@@ -1,0 +1,1503 @@
+﻿
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+
+<style type="text/css">
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        /* flex: 1; */
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #9ca3af;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+
+    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+    }
+
+    .horizontal-container {
+        display: flex;
+        flex-wrap: inherit; /* Allow buttons to wrap */
+        gap: 12px;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 15px;
+    }
+
+    .dx-dropdownbutton-popup-wrapper {
+        z-index: 1050 !important; /* Higher than Bootstrap modals (1040) if used */
+        transform: translate(0px, -91px) !important;
+    }
+
+
+    /* Base button customization */
+    .dx-button-custom .dx-button-content {
+        border-radius: 6px;
+        font-weight: 600;
+        min-width: 120px; /* Reduced min-width for small screens */
+        max-width: 100%; /* Avoid overflow */
+        padding: 8px 14px;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center;
+    }
+
+
+    /* Back */
+    .dx-button-custom.btn-back .dx-button-content {
+        background-color: #f5f5f5;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+
+    .dx-button-custom.btn-back:hover .dx-button-content {
+        background-color: #e4e4e4;
+    }
+
+    /* Delete */
+    .dx-button-custom.btn-delete .dx-button-content {
+        background-color: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #d9534f;
+    }
+
+    .dx-button-custom.btn-delete:hover .dx-button-content {
+        background-color: #f8d7da;
+        color: #a94442;
+    }
+
+    /* Attach */
+    .dx-button-custom.btn-attach .dx-button-content {
+        background-color: #ffffff;
+        color: #000;
+        border: 1px solid #444;
+    }
+
+    .dx-button-custom.btn-attach:hover .dx-button-content {
+        background-color: #eee;
+    }
+
+    /* Preview */
+    .dx-button-custom.btn-preview .dx-button-content {
+        background-color: #e0faff;
+        color: #17a2b8;
+        border: 1px solid #17a2b8;
+    }
+
+    .dx-button-custom.btn-preview:hover .dx-button-content {
+        background-color: #c2f1fa;
+    }
+
+    /* Save */
+    .dx-button-custom.btn-save .dx-button-content {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+    .dx-button-custom.btn-save:hover .dx-button-content {
+        background-color: #0069d9;
+    }
+
+    /* Save & Close */
+    .dx-button-custom.btn-save-close .dx-button-content {
+        background-color: #28a745;
+        color: #fff;
+        border: 1px solid #28a745;
+    }
+
+    .dx-button-custom.btn-save-close:hover .dx-button-content {
+        background-color: #218838;
+    }
+
+    /* Verify */
+    .dx-button-custom.btn-verify .dx-button-content {
+        background-color: #ffc107;
+        color: #fff;
+        border: 1px solid #ffc107;
+    }
+
+    .dx-button-custom.btn-verify:hover .dx-button-content {
+        background-color: #e0a800;
+    }
+
+    /* Approve */
+    .dx-button-custom.btn-approve .dx-button-content {
+        background-color: #17c1e8;
+        color: #fff;
+        border: 1px solid #17c1e8;
+    }
+
+    .dx-button-custom.btn-approve:hover .dx-button-content {
+        background-color: #12a5ca;
+    }
+
+    @@media (max-width: 768px) {
+        .horizontal-container {
+            flex-direction: column; /* Stack vertically on small screens */
+            align-items: stretch;
+        }
+
+        .dx-button-custom {
+            width: 100% !important; /* Full width buttons */
+        }
+    }
+
+    .workflow-step.completed .step-circle {
+        background-color: #4caf50;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .workflow-step.current .step-circle {
+        background-color: #ffc107;
+        color: black;
+        animation: pulse 1s infinite;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background-color: #e0e0e0;
+        color: #888;
+    }
+
+    .workflow-step.done .step-circle {
+        background-color: #2196f3;
+        color: white;
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(255,193,7, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0);
+        }
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+
+    .dx-fieldset {
+        margin: 0px !important;
+    }
+
+    .dx-button {
+        height: 35px !important;
+    }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
+</style>
+
+
+<div class="workflow-wrapper">
+    <!-- First row: Workflow -->
+    <div class="workflow-row">
+        <div class="WorkFlow">
+            <div class="workflow-container">
+                <div class="workflow-line"></div>
+
+                <div class="workflow-step" id="step-update">
+                    <div class="step-circle"><i class="fas fa-user"></i></div>
+                    <div class="step-label">Updated</div>
+                    <div class="step-status-msg">In Progress</div>
+                </div>
+                <div class="workflow-step" id="step-verify">
+                    <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+                    <div class="step-label">Verified</div>
+                    <div class="step-status-msg">Waiting</div>
+                </div>
+                <div class="workflow-step" id="step-approve">
+                    <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+                    <div class="step-label">Approved</div>
+                    <div class="step-status-msg">Pending</div>
+                </div>
+
+                <div id="verifyPopover" class="popover-box">
+                    Verified by: <span id="verifiedByName"></span><br>
+                    On: <span id="verifiedOn"></span>
+                </div>
+                <div id="approvePopover" class="popover-box">
+                    Approved by: <span id="approvedByName"></span><br>
+                    On: <span id="approvedOn"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second row: Footer with Buttons -->
+    <div class="footer-row">
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().Button()
+                        .ID("btnSave")
+                        .Text(new JS("formatMessage('Save')"))
+                        .Icon("save")
+                        .Width(180)
+                        .Hint("Click to save")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save  white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnSaveAndClose")
+                        .Text(new JS("formatMessage('Save & Close')"))
+                        .Icon("save")
+                        .Width(180)
+                        .Hint("Click to save and close")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save-close  white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("back")
+                        .Width(180)
+                        .Hint("Click to back")
+                        .OnClick("onBackButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back  white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnAttach")
+                        .Text(new JS("formatMessage('Attach')"))
+                        .Icon("attach")
+                        .Hint("Click to attach")
+                        .Width(180)
+                        .OnClick("onAttachmentButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach  white-icon" }))
+
+            @(Html.DevExtreme().DropDownButton()
+                        .ID("btnPreview1")
+                        .Text(new JS("formatMessage('Preview')"))
+                        .Icon("eyeopen")
+                        .Hint("Click to Preview")
+                        .ElementAttr(new { @class = "dx-button-custom btn-preview  white-icon" })
+                        .Width(180)
+                        .DropDownOptions(o => o.Width(220))
+                        .Items(items =>
+                        {
+                            items.Add()
+                            .Text(new JS("formatMessage('Preview Format 1')"))
+                            .Option("color", "#EA4335") // Red
+                            .Icon("textdocument");
+
+                            items.Add()
+                            .Text(new JS("formatMessage('Preview Format 2')"))
+                            .Option("color", "#34A853") // Green
+                            .Icon("textdocument");
+                        })
+                        .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
+
+                        .OnItemClick("handlePreviewClick"))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnDelete")
+                        .Text(new JS("formatMessage('Delete')"))
+                        .Icon("trash")
+                        .Width(180)
+                        .Hint("Click to delete")
+                        .OnClick("onDeleteButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-delete white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnVerify")
+                        .Text(new JS("formatMessage('Verify')"))
+                        .Icon("check")
+                        .Hint("Click to Verify")
+                        .Width(180)
+                        .OnClick("onVerifyButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-verify white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnApprove")
+                        .Text(new JS("formatMessage('Approve')"))
+                        .Icon("exportselected")
+                        .Hint("Click to Approve")
+                        .Width(180)
+                        .OnClick("onApproveButtonClickWithAnimation")
+                        .ElementAttr(new { @class = "dx-button-custom btn-approve white-icon" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnVoucherColumnChooser")
+                        .Text(new JS("formatMessage('Column Chooser')"))
+                        .Icon("columnchooser")
+                        .Hint("Click to column chooser")
+                        .Width(210)
+                        .OnClick("showColumnChooser")
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach white-icon" }))
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+        function showColumnChooser() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+            if (isColumnChooserVisible) {
+                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+            } else {
+                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+                dataGrid.showColumnChooser(); // Show the column chooser
+            }
+        }
+
+
+
+
+
+        $(document).ready(function () {
+            console.log('Start permission handling');
+            // Form ID
+            var formId = "frm201VoucherReceipts";
+
+            // Call the API to get permissions
+            $.ajax({
+                url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log("API Response:", response); // Log the API response
+
+                    if (response.success && response.permissions) {
+                        // Default visibility and enable status for buttons
+                        var controlStates = {
+                            "btnSave": { "Visible": true, "Enabled": true },
+                            "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                            "btnPreview1": { "Visible": true, "Enabled": true },
+                            "btnPrint": { "Visible": true, "Enabled": true },
+                            "btnDelete": { "Visible": false, "Enabled": false },
+                            "btnBack": { "Visible": false, "Enabled": false },
+                            "btnVerify": { "Visible": true, "Enabled": true },
+                            "btnApprove": { "Visible": false, "Enabled": false },
+                            "btnAttach": { "Visible": false, "Enabled": false }
+                        };
+
+
+                        // Check for full access
+                        var fullAccess = response.permissions.find(p =>
+                            p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                        );
+
+                        if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                            // Grant full access: make all controls visible and enabled
+                            Object.keys(controlStates).forEach(key => {
+                                controlStates[key] = { "Visible": true, "Enabled": true };
+                            });
+                        } else {
+                            // Update states based on specific permissions for each control
+                            Object.keys(controlStates).forEach(key => {
+                                var controlPermission = response.permissions.find(p =>
+                                    p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                );
+                                if (controlPermission) {
+                                    controlStates[key] = {
+                                        "Visible": controlPermission.ItemVisible || false,
+                                        "Enabled": controlPermission.ItemEnabled || false
+                                    };
+                                }
+                            });
+                        }
+
+                        console.log("Control States:", controlStates); // Log the control states
+
+                        // Dynamically update button visibility and enabled state
+                        Object.keys(controlStates).forEach(key => {
+                            var button = document.getElementById(key);
+                            if (button) {
+                                // Handle visibility
+                                button.style.display = controlStates[key].Visible ? "" : "none";
+                                // Handle enable/disable state
+                                button.disabled = !controlStates[key].Enabled;
+                                // Ensure button text is visible
+                                button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
+                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            } else {
+                                console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                              var restrictedMenuItems = [
+                            { id: "editCostAllocation", permissionSuffix: "CostAllocation" },
+                            { id: "editBillsReceivable", permissionSuffix: "BillsReceivable" },
+                            { id: "editEmployeeAllocation", permissionSuffix: "EmployeeAllocation" },
+                            { id: "editPropertyAllocation", permissionSuffix: "PropertyAllocation" },
+                            { id: "onAllRowRemoving", permissionSuffix: "DeleteAllLineEntries" }
+                        ];
+
+                            // ✅ Mutate menuItems safely
+                        menuItems.forEach(item => {
+                            const mapping = restrictedMenuItems.find(r => r.id === item.id);
+                            if (mapping) {
+                                const perm = response.permissions.find(p =>
+                                    p.ItemName &&
+                                    p.ItemName.trim().toLowerCase() === (formId + "_" + mapping.permissionSuffix).trim().toLowerCase()
+                                );
+
+                                if (!perm || !perm.ItemVisible) {
+                                    item.hidden = true;   // hide
+                                } else if (!perm.ItemEnabled) {
+                                    item.disabled = true; // disable
+                                }
+                            }
+                        });
+
+                        console.log("Updated Context Menu Items:", menuItems);
+
+                        // Re-render after applying permissions
+                        renderContextMenu();
+                    } else {
+                        console.warn("Failed to fetch permissions or no permissions available.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching permissions:", error);
+                    alert('An error occurred while fetching permissions. Please try again.');
+                }
+            });
+            // showColumnChooser();
+            console.log('End permission handling');
+
+        });
+
+
+        let IsDirect = true;
+        // Hide context menu on click outside
+        $(document).on("click", function () {
+            var contextMenu = $("#contextMenu");
+            contextMenu.hide();
+            var $submenu = $('#submenuContainer');
+            $submenu.hide(); // Hide the submenu popup
+        });
+
+        // Handle the file selection
+        $("#loadLayoutInput").on("change", function (event) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    try {
+                        // Parse the JSON string from the file
+                        const layout = JSON.parse(e.target.result);
+
+                        // Restore the grid state
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the file is valid JSON.");
+                    }
+                };
+
+                // Read the file as text
+                reader.readAsText(file);
+            }
+        });
+        // function saveLayoutClick(e) {
+        //     var grid = $("#dataGrid").dxDataGrid("instance");
+        //     var layout = grid.state();
+        //     const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+        //     //console.log(layoutJson);
+        //     // Create a Blob from the JSON string
+        //     const blob = new Blob([layoutJson], { type: "application/json" });
+        //     // Create a URL for the Blob
+        //     const url = URL.createObjectURL(blob);
+        //     // Create a link element
+        //     const a = document.createElement("a");
+        //     a.href = url;
+        //     a.download = "grid-layout.json"; // Set the file name for download
+        //     // Append the link to the body (needed for Firefox)
+        //     document.body.appendChild(a);
+        //     // Programmatically click the link to trigger the download
+        //     a.click();
+        //     // Clean up by removing the link and revoking the Object URL
+        //     document.body.removeChild(a);
+        //     URL.revokeObjectURL(url);
+        //     //DevExpress.ui.notify("Layout", "success", 600);
+        // }
+        // function openLayoutClick(e) {
+        //     $("#loadLayoutInput").click();
+        // }
+
+        // function loadGridState() {
+        //     var form = $('#formId').val();
+        //     // Call the API to get the grid state
+        //     $.ajax({
+        //         url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+        //         method: 'GET',
+        //         data: {
+        //             form: form
+        //         },
+        //         success: function (response) {
+        //             // Get the DataGrid instance
+        //             var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        //             // Load the state into the DataGrid
+        //             if (response) {
+        //                 try {
+        //                     // Parse the JSON string from the file
+        //                     const layout = JSON.parse(response);
+
+        //                     // Restore the grid state
+        //                     dataGrid.state(layout);
+        //                 } catch (error) {
+        //                     console.error("Error parsing JSON:", error);
+        //                     alert("Failed to load layout. Please ensure the JSON is valid.");
+        //                 }
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error("Error loading grid state:", error);
+        //         }
+        //     });
+        // }
+        // function setDefaultLayoutClick(e) {
+        //     var grid = $("#dataGrid").dxDataGrid("instance");
+        //     var form = $('#formId').val();
+        //     var layout = grid.state();
+        //     const layoutJson = JSON.stringify(layout, null, 2);
+        //     console.log(layoutJson);
+
+        //     $.ajax({
+        //         url: '/api/Utility/SaveLayout',  // API endpoint
+        //         type: 'POST',
+        //         data: {
+        //             layout: layoutJson,
+        //             form: form
+        //         },
+        //         success: function (data) {
+        //             DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+        //         },
+        //         error: function () {
+        //             DevExpress.ui.notify("Error while saving data", "error", 2000);
+        //         }
+        //     });
+        // }
+        // function resetLayoutClick(e) {
+        //     var grid = $("#dataGrid").dxDataGrid("instance");
+        //     var form = $('#formId').val();
+        //     $.ajax({
+        //         url: '/api/Utility/SaveLayout',  // API endpoint
+        //         type: 'POST',
+        //         data: {
+        //             layout: null,
+        //             form: form
+        //         },
+        //         success: function (data) {
+        //             DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+        //             grid.state({});
+        //         },
+        //         error: function () {
+        //             DevExpress.ui.notify("Error while saving data", "error", 2000);
+        //         }
+        //     });
+        // }
+        // Footer Group Pannel button click event
+        function toggleGroupPanel() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isVisible = dataGrid.option("groupPanel.visible");
+            dataGrid.option("groupPanel.visible", !isVisible);
+        }
+        // Footer Filter row button click event
+        function toggleFilterRow() {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var currentVisibility = grid.option("filterRow.visible");
+
+            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+        }
+        // Footer Recipits button event
+        function addRecipitsButton_click(e) {
+            DevExpress.ui.notify(e.itemData, "success", 600);
+        }
+        function ChangeRowHeight(newHeight) {
+            // Update the row height
+            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+            closeSubmenu();
+        }
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+            var elementHeight = $target.outerHeight();
+
+            // Position the submenu to the right of the dropdown item
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth, // Position to the right of the item
+                'display': 'block' // Show the submenu
+            });
+        }
+        function closeSubmenu() {
+            var $submenu = $('#submenuContainer');
+            $submenu.hide(); // Hide the submenu popup
+        }
+        // // Handle the file selection
+        // $("#loadLayoutInput").on("change", function (event) {
+        //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        //     const file = event.target.files[0];
+
+        //     if (file) {
+        //         const reader = new FileReader();
+
+        //         reader.onload = function (e) {
+        //             try {
+        //                 // Parse the JSON string from the file
+        //                 const layout = JSON.parse(e.target.result);
+
+        //                 // Restore the grid state
+        //                 dataGrid.state(layout);
+        //             } catch (error) {
+        //                 console.error("Error parsing JSON:", error);
+        //                 alert("Failed to load layout. Please ensure the file is valid JSON.");
+        //             }
+        //         };
+
+        //         // Read the file as text
+        //         reader.readAsText(file);
+        //     }
+        // });
+
+
+        function onDeleteButtonClick() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var rowCount = dataGrid.getVisibleRows().length;
+            var dataSource = dataGrid.option("dataSource");
+
+            if (rowCount === 0 || rowCount === null) {
+                DevExpress.ui.dialog.alert(
+                    "No records available to delete. Please enter some transactions.",
+                    "Data Not Found"
+                ).done(function () {
+
+                });
+            } else {
+                // Retrieve the unique identifier for the row
+                var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                // **Ask for confirmation before proceeding**
+                confirmToDeleteAllVoucher(function () {
+                    // User clicked "Yes", proceed with deletion
+                    $.ajax({
+                        url: `/api/VoucherMaster/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}`,
+                        type: "POST",
+                        success: function (response) {
+                            if (response.data) {
+                                $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                                DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
+                                    "Data Deleted Successfully").done(function () {
+                                        history.back(); // Execute only when "OK" is clicked
+                                    });
+
+                            } else {
+                                DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+                        }
+                    });
+                });
+            }
+        }
+
+
+        function confirmToDeleteAllVoucher(onConfirm) {
+            DevExpress.ui.dialog.confirm(
+                "You are about to delete the Voucher Entries from the database. You cannot revert the changes. Are you sure you want to delete?",
+                "Delete Confirm."
+            ).done(function (dialogResult) {
+                if (dialogResult) {
+                    onConfirm(); // Proceed only if the user clicks "Yes"
+                    // DevExpress.ui.dialog.alert(
+                    //     "All Entries has been successfully removed from the database.",
+                    //     "Data Deleted Successfully"
+                    // );
+                }
+            });
+        }
+
+        function onBackButtonClick() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const rowCount = dataGrid.getVisibleRows().length;
+
+            if (rowCount === 0) {
+                DevExpress.ui.dialog.confirm(
+                    "No entries in the voucher, do you want to clear the voucher completely?",
+                    "No line items"
+                ).done(function (dialogResult) {
+                    if (dialogResult) {
+                        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                        if (!voucherNo) {
+                            DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                            return;
+                        }
+
+                        // Call API to check and delete if exists
+                        $.ajax({
+                            url: `/api/VoucherMaster/DeleteVoucherIfExists?voucherNo=${encodeURIComponent(voucherNo)}`,
+                            type: "POST",
+                            success: function (response) {
+                                if (response.success) {
+                                    DevExpress.ui.dialog.alert(
+                                        "Voucher has been successfully removed from the database.",
+                                        "Data Deleted Successfully"
+                                    ).done(function () {
+                                        history.back();
+                                    });
+                                } else {
+                                    DevExpress.ui.notify("Voucher not found in the database.", "warning", 2000);
+                                    history.back();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                DevExpress.ui.notify("Error checking voucher in database.", "error", 2000);
+                            }
+                        });
+                    }
+                });
+            } else {
+                history.back(); // Go back directly if there are rows
+            }
+        }
+
+
+
+        function onVerifyButtonClick() {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            IsDirect = false;
+            // Ensure dataGrid exists
+            if (!dataGrid) {
+                console.error("DataGrid instance not found.");
+                return;
+            }
+
+            const rowCount = dataGrid.getVisibleRows().length;
+
+            // Check if DataGrid contains rows
+            if (rowCount === 0) {
+                DevExpress.ui.dialog.custom({
+                    title: "Voucher verification has failed.",
+                    message: "Voucher has not been Verified. Please enter transactions to proceed with verification.",
+                    buttons: [{ text: "Ok", onClick: () => false }],
+                    showTitle: true
+                }).show();
+            } else {
+                DevExpress.ui.dialog.custom({
+                    title: "Confirm Verification",
+                    // message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
+                    message: "Are you sure want to verify this voucher?",
+                    buttons: [
+                        { text: "Yes", onClick: () => true },
+                        { text: "No", onClick: () => false }
+                    ],
+                    showTitle: true
+                }).show().done(function (dialogResult) {
+                    if (dialogResult) {
+                        proceedWithVerification(); // Proceed if user clicks Yes
+                    }
+                });
+            }
+        }
+
+
+
+
+        function proceedWithVerification() {
+            // Set VerifiedBy checkbox to true
+            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
+            const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            if (!vno) {
+                DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+                return;
+            }
+
+            const currentDate = new Date();
+
+            const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+                day: "2-digit",
+
+                month: "short",
+
+                year: "numeric"
+
+            }).replace(/ /g, '-');
+
+            $.ajax({
+                type: "POST",
+                url: "/api/VoucherMaster/VerifyVoucher",
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+                success: function (response) {
+                    if (response && response.Message) {
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has been Verified.",
+                            "Verified"
+                            ).done(() => {
+                    $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+                    $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                      $("#btnVerify").dxButton("instance").option("disabled", true);
+                          // ✅ Re-initialize popovers to reflect latest Verified info
+                         initWorkflowTippyPopovers();
+
+                    // ✅ Show hidden verified sections
+                    // $("#verifiedBySection").css("display", "flex");
+                    // $("#verifiedOnSection").css("display", "flex");
+
+                    // Add visual confirmation
+                    const btn = document.getElementById("btnVerify");
+                    btn.classList.add("verified");
+
+                    setTimeout(() => {
+                        btn.classList.remove("verified");
+                    }, 2000);
+                });
+                    }
+                    else {
+                        DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
+                        ? xhr.responseJSON.Message
+                        : "An error occurred.";
+                }
+            });
+        }
+
+
+
+        function disableEditing() {
+            // Disable all input fields and buttons except for specific ones
+            $('input, select, textarea').prop('disabled', true);
+
+            $('.dx-button').each(function () {
+                const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnAttachment','btnEditAHead','btnAddAHead','btncostBack'];
+                if (!allowedButtons.includes($(this).attr('id'))) {
+                    $(this).dxButton('option', 'disabled', true);
+                }
+            });
+            // Enable the DropDownButton explicitly
+            const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+
+            if (previewButton) {
+                previewButton.option("disabled", false);
+                previewButton.repaint();  // Force UI refresh
+            } else {
+                console.error("btnPreview1 instance not found");
+            }
+            // Modify context menu items
+        $("#EditCostAllocation").text("View Cost Allocation");
+        $("#EditBillReceivable").text("View Bill Receivable");
+        $("#EditSalaryPayable").text("View Salary Payable");
+        $("#EditEmployeeAllocation").text("View Employee Allocation");
+        $("#EditPropertyAllocation").text("View Property Allocation");
+
+        // Completely disable DeleteAllLineEntries
+        $("#DeleteAllLineEntries").parent().css({
+            "pointer-events": "none",  // Disables interaction
+            "opacity": "0.5",  // Makes it look disabled
+            "cursor": "default"  // Prevents pointer cursor
+        }).attr("aria-disabled", "true");
+
+        // Disable DevExtreme DateBox components
+        $("#VoucherDate").dxDateBox("instance").option("disabled", true);
+        $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
+
+
+        // Disable DevExtreme DropDownBox component
+        $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+
+        // Disable DataGrid Editing and Deleting
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        if (dataGrid) {
+            dataGrid.option("editing.allowUpdating", false);
+            dataGrid.option("editing.allowDeleting", false);
+        }
+
+        }
+
+
+       function onApproveButtonClick() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        if (!dataGrid) {
+            console.error("DataGrid instance not found.");
+            return;
+        }
+
+        const rowCount = dataGrid.getVisibleRows().length;
+
+        if (rowCount === 0) {
+            DevExpress.ui.dialog.custom({
+                title: "Voucher approval has failed.",
+                message: "Voucher has not been Approved. Please enter transactions to proceed with approval.",
+                buttons: [{ text: "Ok", onClick: () => false }],
+                showTitle: true
+            }).show();
+            return;
+        }
+
+        // Assume verification status is fetched from a field or variable, update accordingly
+        const isVerified = $("#VerifiedBy").dxCheckBox("instance").option("value"); // or fetch it based on your model
+
+        if (!isVerified) {
+            DevExpress.ui.dialog.custom({
+                title: "Voucher Not Verified",
+                message: "Voucher has not been verified. Click Yes if you want to verify and approve this voucher.",
+                buttons: [
+                    { text: "Yes", onClick: () => true },
+                    { text: "No", onClick: () => false }
+                ],
+                showTitle: true
+            }).show().done(function (dialogResult) {
+                if (dialogResult) {
+                    // Mark as verified
+                    $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                    // Now proceed with approval
+                    proceedWithApproval();
+                }
+            });
+        } else {
+            DevExpress.ui.dialog.custom({
+                title: "Confirm Approval",
+                message: "Are you sure you want to approve this voucher?",
+                buttons: [
+                    { text: "Yes", onClick: () => true },
+                    { text: "No", onClick: () => false }
+                ],
+                showTitle: true
+            }).show().done(function (dialogResult) {
+                if (dialogResult) {
+                    proceedWithApproval();
+                }
+            });
+        }
+    }
+
+
+        //          function proceedWithApproval() {
+        //     // Set VerifiedBy checkbox to true
+        //     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+        //     const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        //     if (!vno) {
+        //         DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+        //         return;
+        //     }
+
+        //             const currentDate = new Date();
+
+        //             const formattedDate = currentDate.toLocaleDateString("en-GB", {
+
+        //                 day: "2-digit",
+
+        //                 month: "short",
+
+        //                 year: "numeric"
+
+        //             }).replace(/ /g, '-');
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(voucherNo)}&IsDirect=${encodeURIComponent(IsDirect)}`,
+        //         contentType: "application/json",
+        //         dataType: "json",
+        //        // data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
+        //         success: function (response) {
+        //             if (response && response.Message) {
+        //     DevExpress.ui.dialog.alert(
+        //         "Voucher has been Approved.",
+        //         "Approved"
+        //     ).done(() => {
+        //         disableEditing()
+        //         $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+        //         $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");IsDirect
+        //         if(IsDirect==true)
+        //         {
+        //                 $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
+        //               $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+        //               $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+        //         }
+
+        //     });
+        // }
+        //  else {
+        //                 DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
+        //                 ? xhr.responseJSON.Message
+        //                 : "An error occurred.";
+        //         }
+        //     });
+        // }
+
+        function proceedWithApproval() {
+            // Set ApprovedBy checkbox to true
+            $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+
+            const vno = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            if (!vno) {
+                DevExpress.ui.notify("Voucher number is required!", "error", 2000);
+                return;
+            }
+
+            // Define IsDirect if not already defined (adjust as needed)
+            const IsDirect = true; // or false, depending on your logic
+
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }).replace(/ /g, '-');
+
+            $.ajax({
+                type: "POST",
+                url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(vno)}&IsDirect=${encodeURIComponent(IsDirect)}`,
+                contentType: "application/json",
+                dataType: "json",
+                // Uncomment the following line if the API expects data in the request body:
+                // data: JSON.stringify({ voucherNo: vno }),
+                success: function (response) {
+                    if (response && response.Message) {
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has been Approved.",
+                            "Approved"
+                            ).done(() => {
+            disableEditing();
+
+            // Set Approved values
+            $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+            $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+                // ✅ Re-initialize popovers to reflect latest Approved (and maybe Verified) info
+        initWorkflowTippyPopovers();
+            // ✅ Show Approved fields
+            // $("#approvedBySection").css("display", "flex");
+            // $("#approvedOnSection").css("display", "flex");
+
+            if (IsDirect === true) {
+                // Set Verified values as well
+                $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+
+                // ✅ Show Verified fields
+                // $("#verifiedBySection").css("display", "flex");
+                // $("#verifiedOnSection").css("display", "flex");
+            }
+        });
+                    } else {
+                        DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+                        ? xhr.responseJSON.Message
+                        : "An error occurred.";
+                    DevExpress.ui.notify(errorMessage, "error", 2000);
+                }
+            });
+        }
+
+        function onAttachButtonClick() {
+            const dialog = DevExpress.ui.dialog.custom({
+                title: "Select Attachment Option", // Title must be plain text
+                messageHtml: "<p>How would you like to attach files?</p>",
+                buttons: [
+                    { text: "Single File", onClick: () => handleFileSelection(false) },
+                    { text: "Multiple Files", onClick: () => handleFileSelection(true) }
+                ]
+            });
+
+            let dialogContainer = dialog.show(); // Show the dialog
+
+            setTimeout(() => {
+                // Find the dialog title and append a close button
+                let titleElement = document.querySelector(".dx-dialog .dx-popup-title");
+                if (titleElement) {
+                    let closeButton = document.createElement("span");
+                    closeButton.innerHTML = "&times;";
+                    closeButton.classList.add("dx-dialog-custom-close");
+                    closeButton.style.cursor = "pointer";
+                    closeButton.style.fontSize = "20px";
+                    closeButton.style.fontWeight = "bold";
+                    closeButton.style.position = "absolute";
+                    closeButton.style.right = "15px";
+                    closeButton.style.top = "10px";
+
+                    titleElement.style.position = "relative"; // Ensure positioning works
+                    titleElement.appendChild(closeButton);
+
+                    // Close the dialog without triggering button events
+                    closeButton.addEventListener("click", () => {
+                        let dialogElement = document.querySelector(".dx-dialog");
+                        if (dialogElement) {
+                            dialogElement.remove(); // Removes the dialog from the DOM
+                        }
+                    });
+                }
+
+                // **Disable Dragging (Correct Method)**
+                let dialogPopup = document.querySelector(".dx-dialog");
+                if (dialogPopup) {
+                    dialogPopup.classList.remove("dx-draggable"); // Prevent dragging without affecting clicks
+                }
+            }, 0);
+        }
+
+
+
+
+        function handleFileSelection(isMultiple) {
+
+            // Configure the file input
+
+            const fileInput = document.getElementById("fileInput");
+
+            fileInput.multiple = isMultiple; // Allow multiple files if selected
+
+            fileInput.click(); // Trigger file input click
+
+        }
+
+        // File Input Change Handler (Optional: Log or Process Files)
+
+        document.getElementById("fileInput").addEventListener("change", function () {
+
+            const files = this.files;
+
+            console.log("Selected files:", files);
+
+            // Handle file upload logic here
+
+        });
+
+
+        function openPrint() {
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
+
+            if (!voucherNo) {
+                alert("Voucher No is required.");
+                return;
+            }
+
+            var reportName = "cashPayments"; // Modify as needed
+
+            // **Use the new API URL**
+            var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;
+
+            // **Trigger file download**
+            window.location.href = url;
+        }
+
+
+
+
+
+        function handlePreviewClick(e) {
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
+
+            // Ensure Voucher No is available
+            if (!voucherNo) {
+                alert("Voucher No is required.");
+                return;
+            }
+
+            // Get the selected item text
+            var selectedText = e.itemData.text;
+            console.log("Selected Report:", selectedText);
+
+            // Determine the report name based on the selected text
+            var reportName = "";
+            if (selectedText === formatMessage('Preview Format 1')) {
+                reportName = "cashPayments";
+            } else if (selectedText === formatMessage('Preview Format 2')) {
+                reportName = "cashPaymentformat2";
+            }
+
+            // Ensure a valid report is selected
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+
+            // Open the XtraReport with Voucher No as a parameter
+             const screenWidth = window.screen.availWidth;
+             const screenHeight = window.screen.availHeight;
+
+            window.open(
+                `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+                '_blank',
+                `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+            );
+        }
+
+        function onApproveButtonClickWithAnimation(e) {
+            const btn = document.getElementById("btnApprove");
+
+            // Optional: Call your actual approve logic
+            onApproveButtonClick(); // original handler
+
+            // Add animation class
+            btn.classList.add("approved");
+
+            // Optionally reset after a delay (or leave it as success state)
+            setTimeout(() => {
+                btn.classList.remove("approved");
+            }, 2000);
+        }
+
+            async function onAttachmentButtonClick() {
+
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                var rowCount = dataGrid.getVisibleRows().length;
+                var dataSource = dataGrid.option("dataSource");
+
+                if (rowCount === 0 || rowCount === null) {
+                    DevExpress.ui.dialog.alert(
+                        "Not allow to Add Attachments. Please enter some transactions.",
+                        "Data Not Found"
+                    ).done(function () {
+
+                    });
+                } else {
+                    // Retrieve the unique identifier for the row
+                    var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                    var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+                    var voucherType = voucherTypeBox.option("value");
+                    var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
+                    var folderNo2 = await response.text();
+                    console.log(folderNo2);
+                    var menuType = "finance";
+                    const isMaster = false;
+                    console.log(voucherType)
+                    const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
+                    const title = ""; //"Transaction Documents";
+                    openModal(url, title);
+                }
+            }
+
+            // Attachment Count
+            //1. Button Modify in btn-attach
+            //2. Get Update the count of button for Attachment
+
+            function updateAttachButtonCount(buttonSelector, count) {
+                var btn = $(buttonSelector);
+                var btnInstance = btn.dxButton("instance");
+                if (!btnInstance) return;
+
+                var originalText = btnInstance.option("text");
+                var color = count > 0 ? "green" : "red";
+
+                btnInstance.option({
+                    template: function() {
+                        // Icon element
+                        var iconElement = $("<span>")
+                        .addClass("dx-icon dx-icon-attach")
+                        .addClass(count > 0 ? "icon-green" : "icon-red")
+                        .css({
+                            "font-size": "15px",
+                            "vertical-align": "middle",
+                            "margin-right": "4px"
+                        })[0];
+
+                        // Create fragment
+                        var fragment = document.createDocumentFragment();
+                        fragment.appendChild(iconElement);
+
+                        // Append count only if > 0
+                        if (count > 0) {
+                            var countSpan = document.createElement("span");
+                            countSpan.style.color = color;
+                            countSpan.style.fontWeight = "bold";
+                            countSpan.style.fontSize = "15px";
+                            countSpan.style.marginRight = "2px";
+                            countSpan.textContent = count;
+                            fragment.appendChild(countSpan);
+                        }
+
+                        // Append original text
+                        fragment.appendChild(document.createTextNode(originalText));
+
+                        return fragment;
+                    }
+                });
+            }
+                //1. Get Document Count from Grid Load in Ledger Documents
+                function setAttachCount(count) {
+                    updateAttachButtonCount("#btnAttach", count);
+                }
+                //2. Get Document Count
+                async function getDocumentCount() {
+                    var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                    var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+                    var voucherType = voucherTypeBox.option("value");
+                    var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
+                    var folderNo2 = await response.text(); // <-- parse as text
+
+                    var menuType = "finance";
+
+                    const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+                    const docs = await res.json();
+                    const count = docs.length;
+
+                    updateAttachButtonCount("#btnAttach", count);
+
+                    // No need to return anything if you don't want to
+                }
+</script>

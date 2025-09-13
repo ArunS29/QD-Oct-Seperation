@@ -180,11 +180,10 @@
 	}
     /* Container styling */
    
-
+	.titleCard-toggle1{
+        display:none;
+    }
 </style>
-<div class="Head" style="margin-top: 10px">
-	@await Html.PartialAsync("/Pages/Shared/VAT/CreditInventorycostFooter.cshtml")
-</div>
 <div class="horizontal-container" style="margin-top:10px;">
 	
 
@@ -216,21 +215,21 @@
         .ColumnFixing(cf => cf.Enabled(true))
         .Columns(columns => {
             // Group: Invoice Details
-            columns.Add().Caption("Invoice Details").Alignment(HorizontalAlignment.Center).Columns(group => {
-                group.Add().DataField("CreditNoteNo").Alignment(HorizontalAlignment.Center).Caption("Credit Note No");
-                group.Add().DataField("InvoiceNo").Alignment(HorizontalAlignment.Center).Caption("Invoice No");
-                group.Add().DataField("ItemCode").Alignment(HorizontalAlignment.Center).Caption("Item Code");
-                group.Add().DataField("QuantityCredited").Alignment(HorizontalAlignment.Center).Caption("Quantity Credited");
-                group.Add().DataField("UnitsToCredited").Alignment(HorizontalAlignment.Center).Caption("Units To Credited");
-                group.Add().DataField("UnitRate").Alignment(HorizontalAlignment.Center).Caption("Unit Rate");
+            columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Alignment(HorizontalAlignment.Center).Columns(group => {
+                group.Add().DataField("CreditNoteNo").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Credit Note No')"));
+                group.Add().DataField("InvoiceNo").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Invoice No')"));
+                group.Add().DataField("ItemCode").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Item Code')"));
+                group.Add().DataField("QuantityCredited").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Quantity Credited')"));
+                group.Add().DataField("UnitsToCredited").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Units To Credited')"));
+                group.Add().DataField("UnitRate").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Unit Rate')"));
             });
 
             // Group: Items Cost Based on Average Costing
-            columns.Add().Caption("Items Cost Based on Average Costing").Alignment(HorizontalAlignment.Center).Columns(group => {
-                group.Add().DataField("UnitDesc").Alignment(HorizontalAlignment.Center).Caption("Unit Desc");
-                group.Add().DataField("CalcLineAmount").Alignment(HorizontalAlignment.Center).Caption("Calc Line Amount");
-                group.Add().DataField("CreditNoteCostPrice").Alignment(HorizontalAlignment.Center).Caption("Credit Note Cost Price");
-                group.Add().DataField("InvoiceCostPrice").Alignment(HorizontalAlignment.Center).Caption("Invoice Cost Price");
+            columns.Add().Caption(new JS("formatMessage('Items Cost Based on Average Costing')")).Alignment(HorizontalAlignment.Center).Columns(group => {
+                group.Add().DataField("UnitDesc").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Unit Desc')"));
+                group.Add().DataField("CalcLineAmount").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Calc Line Amount')"));
+                group.Add().DataField("CreditNoteCostPrice").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Credit Note Cost Price')"));
+                group.Add().DataField("InvoiceCostPrice").Alignment(HorizontalAlignment.Center).Caption(new JS("formatMessage('Invoice Cost Price')"));
             });
         })
         .Editing(editing => editing.Mode(GridEditMode.Row))
@@ -254,4 +253,8 @@
         .OnCellClick("function(e) {handleCellClick(e);}")
     )
 </div>
+<div class="Head" style="margin-top: 10px">
+	@await Html.PartialAsync("/Pages/Shared/VAT/CreditInventorycostFooter.cshtml")
+</div>
+
 

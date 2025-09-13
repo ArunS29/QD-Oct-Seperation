@@ -17,6 +17,9 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
         }
 
         public RFQEdit(
+             bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             string rfqNo,
             string tenantName,
             string companyName,
@@ -31,11 +34,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(rfqNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
+            SetReportParameters(showSeal, showSignature, printLetterhead, rfqNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
             LoadReportData(rfqNo);
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
         }
 
-        private void SetReportParameters(
+        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead,
             string rfqNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr, string username)
         {
@@ -84,10 +89,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
             if (FindControl("UserName", true) is XRLabel usernameLabel)
                 usernameLabel.Text = username;
 
-            if (FindControl("xrPictureBoxLogo", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBoxSeal1", true) is XRPictureBox sealPictureBox)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
 
@@ -106,6 +111,42 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
             }
         }
 
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox2", "xrPictureBox0", "xrPictureBox0" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel53", true) is XRLabel lbl53)
+                lbl53.Visible = printLetterhead;
+
+            if (FindControl("xrLabel47", true) is XRLabel lbl47)
+                lbl47.Visible = printLetterhead;
+            if (FindControl("xrLabel88", true) is XRLabel lbl88)
+                lbl88.Visible = printLetterhead;
+            if (FindControl("xrLabel68", true) is XRLabel lbl68)
+                lbl68.Visible = printLetterhead;
+            if (FindControl("xrLabel69", true) is XRLabel lbl69)
+                lbl69.Visible = printLetterhead;
+            if (FindControl("xrLabel70", true) is XRLabel lbl70)
+                lbl70.Visible = printLetterhead;
+            if (FindControl("xrLabel87", true) is XRLabel lbl87)
+                lbl87.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
         private DataTable GetReportData(string rfqNo)
         {
             DataTable dt = new DataTable();

@@ -6,13 +6,13 @@
 
 
 
-<h2>Cost Allocation Details for Ledger Account</h2>
+<h2 id="costallocationdetailsledger"></h2>
 
 <div class="toolbar custom-toolbar">
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
 				.LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Start Date")
             .Type(DateBoxType.Date)
@@ -25,7 +25,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
 				.LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "End Date")
             .Type(DateBoxType.Date)
@@ -38,7 +38,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().TextBox()
             .ID("accountIdLabel")
-            .Label("Ledger No")
+            .Label(new JS("formatMessage('Ledger No')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Ledger No")
             .ReadOnly(true)
@@ -160,23 +160,23 @@
             paging: { pageSize: 100 },
             pager: { visible: false },
             columns: [
-                { dataField: "CostAllocationMasterGroup", caption: "Cost Allocation Master Group", groupIndex: 0 },
-                { dataField: "CostAllocationGroup", caption: "Cost Allocation Group", groupIndex: 1 },
-                { dataField: "CostAllocationMasterGroup", caption: "Cost Allocation Master Group" },
-                { dataField: "CostAllocationGroup", caption: "Cost Allocation Group"},
-                { dataField: "CostAllocationUnit", caption: "Cost Allocation Unit" },
-                { dataField: "CostAllocationUnitId", caption: "Unit ID" },
+                { dataField: "CostAllocationMasterGroup", caption: formatMessage("Cost Allocation Master Group"), groupIndex: 0 },
+                { dataField: "CostAllocationGroup", caption: formatMessage("Cost Allocation Group"), groupIndex: 1 },
+                { dataField: "CostAllocationMasterGroup", caption: formatMessage("Cost Allocation Master Group") },
+                { dataField: "CostAllocationGroup", caption: formatMessage("Cost Allocation Group")},
+                { dataField: "CostAllocationUnit", caption: formatMessage("Cost Allocation Unit") },
+                { dataField: "CostAllocationUnitId", caption: formatMessage("Unit ID") },
                 {
-                    dataField: "VoucherNo", caption: "Voucher No", cellTemplate: function (container, options) {
+                    dataField: "VoucherNo", caption: formatMessage("Voucher No"), cellTemplate: function (container, options) {
                         $('<a>')
                             .attr('href', `/voucher/details/${options.value}`)
                             .text(options.value)
                             .appendTo(container);
                     }
                 },
-                { dataField: "DrCr", caption: "Dr/Cr" },
-                { dataField: "VoucherDate", caption: "Voucher Date", dataType: "date" },
-                { dataField: "Remarks", caption: "Remarks" }
+                { dataField: "DrCr", caption: formatMessage("Dr/Cr") },
+                { dataField: "VoucherDate", caption: formatMessage("Voucher Date"), dataType: "date" },
+                { dataField: "Remarks", caption: formatMessage("Remarks") }
             ]
         }).dxDataGrid("instance");
 
@@ -223,6 +223,9 @@
     document.getElementById("btnBack").addEventListener("click", function () {
         window.history.back();
     });
+     $(function () {
+           $("#costallocationdetailsledger").text(formatMessage("Cost Allocation Details for Ledger Account"));
+      });
 </script>
 
 
@@ -330,4 +333,6 @@
             padding: 10px;
         }
     }
+
+   
 </style>

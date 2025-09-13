@@ -112,6 +112,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+                    bool isDuplicate = dbContext.Tbl30103ClientStatusCodes
+                .Any(c => c.Status.ToLower() == vm.Status.ToLower());
+
+                    if (isDuplicate)
+                    {
+                        return BadRequest(new
+                        {
+                            success = false,
+                            message = "This client status is already in the database. Please check again."
+                        });
+                    }
+
                     // Step 1: Get the last ClientCategoryCode
                     short lastCode = dbContext.Tbl30103ClientStatusCodes
                                          .OrderByDescending(c => c.StatusCode)
@@ -154,8 +166,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in CreateClientCategory: {ex.Message}");
-                return StatusCode(500, $"Error: {ex.Message}");
+                
+                _logger.LogError($"Error in SaveOrUpdateMode: {ex}");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving Client Status." });
+
+
             }
         }
 
@@ -196,7 +211,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpDelete]
+        public IActionResult Delete(byte key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl30103ClientStatusCodes.FirstOrDefault(x => x.StatusCode == key);
+                    if (record == null)
+                        return NotFound();
 
+                    dbContext.Tbl30103ClientStatusCodes.Remove(record);
+                    dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete ",
+                        actionDetail: $"Deleted  {key}",
+                        documentNo: $"{key}"
+                       );
+
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
 
     }
 }
