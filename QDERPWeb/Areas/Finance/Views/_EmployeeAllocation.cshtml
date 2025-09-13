@@ -211,6 +211,7 @@
 										.LabelMode(EditorLabelMode.Floating)
 										.Placeholder("Type")
 										.Width("100%")
+										.ReadOnly(true)
 										)
 				</div>
 
@@ -235,6 +236,7 @@
 										.Label(new JS("formatMessage('Amount')"))
 										.LabelMode(EditorLabelMode.Floating)
 										.Width("100%") 
+										.ReadOnly(true)
 										)
 				</div>
 
@@ -1233,7 +1235,7 @@
 					let btnInstance = $("#AEbtnDelete").dxButton("instance");
 					if (btnInstance) {
 						btnInstance.on("click", function () {
-							DevExpress.ui.dialog.confirm("You are about to reset Employee allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+							DevExpress.ui.dialog.confirm("You are about to reset Employee allocation details for the voucher entry. Are you sure you want to reset the Employee Allocation?", "Are you sure?")
 								.done(function (result) {
 									if (result) {
 									   confirmDelete();

@@ -847,7 +847,7 @@
                     const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
                     if (!voucherNo) {
-                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                        history.back();
                         return;
                     }
 

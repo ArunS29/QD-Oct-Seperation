@@ -358,10 +358,82 @@ namespace QDWEB.Areas.Finance.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult UpdateVoucherEntry([FromBody] Tbl201VoucherEntry model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+
+                if (model == null || string.IsNullOrEmpty(model.AccountHead))
+                {
+                    return BadRequest("Invalid data: AccountHead is missing or null.");
+                }
+
+                var existingEntry = dbContext.Tbl201VoucherEntries
+                    .FirstOrDefault(v => v.VoucherEntryNo == model.VoucherEntryNo);
+
+                var accountID = dbContext.Tbl201ChartOfAccounts
+                    .Where(a => a.AccountHead == model.AccountHead)
+                    .Select(a => a.AccountId)
+                    .FirstOrDefault();
+
+                if (existingEntry != null)
+                {
+                    existingEntry.DrCr = model.DrCr;
+                    existingEntry.AccountHead = accountID; // Assign single account ID
+                    existingEntry.EntryNarration = model.EntryNarration;
+                    existingEntry.SysRemarks = model.SysRemarks; // Ensure SysRemarks is updated
 
 
 
+                    dbContext.SaveChanges();
+                    return Ok(new { message = "" });
+                }
 
+                return NotFound("Voucher Entry not found.");
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdateVoucherEntryTemp([FromBody] Tbl201VoucherEntryTemp model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+
+                if (model == null || string.IsNullOrEmpty(model.AccountHead))
+                {
+                    return BadRequest("Invalid data: AccountHead is missing or null.");
+                }
+
+                var existingEntry = dbContext.Tbl201VoucherEntryTemps
+                    .FirstOrDefault(v => v.VoucherEntryNo == model.VoucherEntryNo);
+
+                var accountID = dbContext.Tbl201ChartOfAccounts
+                    .Where(a => a.AccountHead == model.AccountHead)
+                    .Select(a => a.AccountId)
+                    .FirstOrDefault();
+
+                if (existingEntry != null)
+                {
+                    existingEntry.DrCr = model.DrCr;
+                    existingEntry.AccountHead = accountID; // Assign single account ID
+                    existingEntry.EntryNarration = model.EntryNarration;
+                    existingEntry.SysRemarks = model.SysRemarks; // Ensure SysRemarks is updated
+
+
+
+                    dbContext.SaveChanges();
+                    return Ok(new { message = "" });
+                }
+
+                return NotFound("Voucher Entry not found.");
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
 
         [HttpPost]
         public async Task<ActionResult> UpdateVoucher([FromBody] VoucherViewModel VM)
@@ -423,7 +495,8 @@ namespace QDWEB.Areas.Finance.Controllers
                                     DrCr = entry.DrCr,
                                     VoucherAmount = entry.VoucherAmount,
                                     EntryNarration = entry.EntryNarration,
-                                    AccountHead = accountId
+                                    AccountHead = accountId,
+                                    SysRemarks = entry.SysRemarks
                                 });
                             }
 
