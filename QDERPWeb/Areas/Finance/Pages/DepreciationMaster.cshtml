@@ -486,35 +486,21 @@
             $("#voucherPopup").dxPopup("instance").hide();
         }
     });
-         function onDepreciationContextMenuPreparing(e) {
+              function onDepreciationContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") {
-            // Default menu items
+            // Build context menu items correctly
             let items = [
                 {
                     text: formatMessage("Edit Depreciation"),
                     icon: "edit", // DevExtreme built-in icon
-                    onItemClick: () => {
-                        
-                        editDepreciation(e.row.data);
-                    },
-                    cssClass: "context-menu-edit"
-                },
-                    text: "Edit Depreciation",
-                    icon: "edit",
-                    onItemClick: () => { editDepreciation(e.row.data); },
+                    onItemClick: () => editDepreciation(e.row.data),
                     cssClass: "context-menu-edit",
                     permissionSuffix: "EditDepreciation"
                 },
                 {
                     text: formatMessage("Delete Depreciation"),
                     icon: "trash", // DevExtreme built-in icon
-                    onItemClick: () => {
-                        deleteDepreciation(e.row.data);
-                    },
-                    cssClass: "context-menu-delete"
-                    text: "Delete Depreciation",
-                    icon: "trash",
-                    onItemClick: () => { deleteDepreciation(e.row.data); },
+                    onItemClick: () => deleteDepreciation(e.row.data),
                     cssClass: "context-menu-delete",
                     permissionSuffix: "DeleteDepreciation"
                 }
@@ -529,6 +515,7 @@
                     );
 
                     if (!permission || !permission.ItemVisible) {
+                        // hide item if permission not found or not visible
                         return { ...item, visible: false, disabled: true };
                     }
                     return item;
@@ -538,6 +525,7 @@
             e.items = items;
         }
     }
+
      function editDepreciation(rowData) {
       
         const depreciationDocNo = rowData.DepreciationDocNo;

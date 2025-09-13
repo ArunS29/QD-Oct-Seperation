@@ -298,7 +298,7 @@ buttons.Add()
                                                 {
                                                     rules.AddRequired()
                                                     .Message("Voucher Amount Cannot be Zero Or Negative");
-                                                    rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                                                    rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
                                                 })
                                                 .TabIndex(7)
                                                 .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
@@ -347,7 +347,7 @@ buttons.Add()
                                                 })
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddCurrency")
-                                                .ShowClearButton(true)
+                                                .ShowClearButton(false)
                                                 .AcceptCustomValue(false)
                                                 .OpenOnFieldClick(true)
                                                 .Value(baseCurrencyIdnew)
@@ -942,6 +942,8 @@ buttons.Add()
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("AccountId")
                     )
+                    .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
                     .SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1039,6 +1041,7 @@ columns.Add().DataField("IsLedgerObselete")
                     .Key("AccountId")
                     )
                     .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
                     .SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1289,7 +1292,19 @@ columns.Add().DataField("IsLedgerObselete")
             icon: "spinner", // built-in spinner icon
             text: "Loading..."
         });
+        var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
+    var voucherAmtValidator = $("#Amount").dxValidator("instance");
+    var paymentHeadValidator = $("#accountDropDownBox").dxValidator("instance");
+    var accountHeadValidation = accountHeadValidator.validate();
+    var voucherAmtValidation = voucherAmtValidator.validate();
+    var PaymentHeadValidation = paymentHeadValidator.validate();
+    if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid && PaymentHeadValidation.isValid )) {
+        // ❌ Validation failed → stop, re-enable button
+        resetVoucherButton();
 
+        DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+        return;
+    }
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var griddatacount = rowCount;
@@ -1849,8 +1864,10 @@ columns.Add().DataField("IsLedgerObselete")
 
 
             const text = ddbInstance.option("text");
-            if (dataGrid) {
-                dataGrid.option("searchPanel.text", text);
+            // Use the stored grid instance
+           const grid = e.component.__contentGridInstance;
+            if (grid) {
+                grid.option("searchPanel.text", text);
             }
         }
         function onDropDownBoxClosed(e) {
@@ -1920,7 +1937,7 @@ columns.Add().DataField("IsLedgerObselete")
 
                      if(paymentIsLedgerObselete==true){
          IsObeselete=true;
-           DevExpress.ui.notify(
+           DevExpress.ui.dialog.alert(
     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
     "LEDGER IS OBSELETE(NOT IN USE)"
     );
@@ -1984,7 +2001,7 @@ if (dropDownBox) {
 
                      if(paymentIsLedgerObselete==true){
          IsObeselete=true;
-           DevExpress.ui.notify(
+           DevExpress.ui.dialog.alert(
     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
     "LEDGER IS OBSELETE(NOT IN USE)"
     );
@@ -2076,7 +2093,7 @@ if (dropDownBox) {
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.notify(
+                                      DevExpress.ui.dialog.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -2390,40 +2407,40 @@ if (dropDownBox) {
         });
 
 
-        $(function () {
-            var voucherDate = $("#VoucherDate").dxDateBox("instance");
-            var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+        // $(function () {
+        //     var voucherDate = $("#VoucherDate").dxDateBox("instance");
+        //     var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-            voucherDate.option("onValueChanged", function (e) {
-                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+        //     voucherDate.option("onValueChanged", function (e) {
+        //         let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-                // Check if voucherDateval is valid
-                if (!voucherDateval) return;
+        //         // Check if voucherDateval is valid
+        //         if (!voucherDateval) return;
 
-                // Set effectiveDate to the same value as voucherDate
-                effectiveDate.option("value", voucherDateval);
+        //         // Set effectiveDate to the same value as voucherDate
+        //         effectiveDate.option("value", voucherDateval);
 
-                // Convert to 'yyyy-MM-dd' format
-                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+        //         // Convert to 'yyyy-MM-dd' format
+        //         let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-                // Define the cutoff date (2021-12-31)
-                let cutoffDate = new Date("2021-12-31");
+        //         // Define the cutoff date (2021-12-31)
+        //         let cutoffDate = new Date("2021-12-31");
 
-                // Get the current date to set if the voucher date is blocked
-                let currentdate = new Date();
-                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+        //         // Get the current date to set if the voucher date is blocked
+        //         let currentdate = new Date();
+        //         let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
 
-                // Check if the formatted voucher date is before the cutoff date
-                if (new Date(formattedDate) < cutoffDate) {
-                    // Show alert for blocked entry
-                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+        //         // Check if the formatted voucher date is before the cutoff date
+        //         if (new Date(formattedDate) < cutoffDate) {
+        //             // Show alert for blocked entry
+        //             DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
-                    // Set both voucherDate and effectiveDate to the current date
-                    voucherDate.option("value", formattedCurrentDate);
-                    effectiveDate.option("value", formattedCurrentDate);
-                }
-            });
-        });
+        //             // Set both voucherDate and effectiveDate to the current date
+        //             voucherDate.option("value", formattedCurrentDate);
+        //             effectiveDate.option("value", formattedCurrentDate);
+        //         }
+        //     });
+        // });
 
 
 
@@ -3353,6 +3370,7 @@ if (dropDownBox) {
                 
 
                   function onRowUpdating(e) {
+                      debugger;
         const updatedData = e.newData;
         const key = e.key; // Get primary key value if needed
 
@@ -3657,7 +3675,7 @@ function onBaseCurrencyInit(e) {
 
                              if(IsObeselete==true)
                              {
-                                   DevExpress.ui.notify(
+                                   DevExpress.ui.dialog.alert(
                     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                     "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -4185,6 +4203,17 @@ function resetVoucherButton() {
         grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
     } else {
         e.component.option("value", null); // clear if no match found
+    }
+}
+   function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
+
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
     }
 }
 </script>
