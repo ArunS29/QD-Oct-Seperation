@@ -123,26 +123,26 @@
 //                         data: filteredData
 //                     },
 //                     fields: [
-//                         { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 250,  allowSorting: true,
+//                         { dataField: "VoucherNo", area: "row", caption:formatMessage("Voucher No", expanded: true, width: 250,  allowSorting: true,
 //                 allowFiltering: true },
-//                         { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250 },
-//                         { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 250 },
-//                         { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-//                         { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-//                         { dataField: "VoucherDate", area: "data", caption: "Voucher Date", expanded: false },
-//                         { dataField: "VoucherRefNo", area: "data", caption: "Voucher Ref No", expanded: false },
-//                         { dataField: "VoucherNarration", area: "data", caption: "Voucher Narration", expanded: false },
-//                         { dataField: "VoucherEnteredBy", area: "data", caption: "Voucher Entered By", expanded: false },
-//                         { dataField: "VoucherEnteredOn", area: "data", caption: "Voucher Entered On", expanded: false },
-//                         { dataField: "VoucherVerifiedBy", area: "data", caption: "Voucher Verified By", expanded: false },
-//                         { dataField: "VoucherVerifiedOn", area: "data", caption: "Voucher Verified On", expanded: false },
-//                         { dataField: "VoucherApprovedBy", area: "data", caption: "Voucher Approved By", expanded: false },
-//                         { dataField: "VoucherApprovedOn", area: "data", caption: "Voucher Approved On", expanded: false },
-//                         { dataField: "VoucherEntryNo", area: "data", caption: "Voucher Entry No", expanded: false },
-//                         { dataField: "AccountHead", area: "data", caption: "Account Head", expanded: false },
-//                         { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount Formatted", expanded: false },
-//                         { dataField: "EntryNarration", area: "data", caption: "Entry Narration", expanded: false },
-//                         { dataField: "AccountGroup", area: "data", caption: "Account Group", expanded: false }
+//                         { dataField: "AccountHeadName", area: "row", caption:formatMessage( "AccountHead Name", expanded: true, width: 250 },
+//                         { dataField: "DrCr", area: "row", caption:formatMessage( "DrCr", expanded: true, width: 250 },
+//                         { dataField: "CrAmount", area: "data", caption:formatMessage( "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+//                         { dataField: "DrAmount", area: "data", caption:formatMessage( "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+//                         { dataField: "VoucherDate", area: "data", caption:formatMessage( "Voucher Date", expanded: false },
+//                         { dataField: "VoucherRefNo", area: "data", caption:formatMessage( "Voucher Ref No", expanded: false },
+//                         { dataField: "VoucherNarration", area: "data", caption:formatMessage( "Voucher Narration", expanded: false },
+//                         { dataField: "VoucherEnteredBy", area: "data", caption:formatMessage( "Voucher Entered By", expanded: false },
+//                         { dataField: "VoucherEnteredOn", area: "data", caption:formatMessage( "Voucher Entered On", expanded: false },
+//                         { dataField: "VoucherVerifiedBy", area: "data", caption:formatMessage( "Voucher Verified By", expanded: false },
+//                         { dataField: "VoucherVerifiedOn", area: "data", caption:formatMessage( "Voucher Verified On", expanded: false },
+//                         { dataField: "VoucherApprovedBy", area: "data", caption:formatMessage( "Voucher Approved By", expanded: false },
+//                         { dataField: "VoucherApprovedOn", area: "data", caption:formatMessage( "Voucher Approved On", expanded: false },
+//                         { dataField: "VoucherEntryNo", area: "data", caption:formatMessage( "Voucher Entry No", expanded: false },
+//                         { dataField: "AccountHead", area: "data", caption:formatMessage( "Account Head", expanded: false },
+//                         { dataField: "VoucherAmountFormatted", area: "data", caption:formatMessage( "Voucher Amount Formatted", expanded: false },
+//                         { dataField: "EntryNarration", area: "data", caption:formatMessage( "Entry Narration", expanded: false },
+//                         { dataField: "AccountGroup", area: "data", caption:formatMessage( "Account Group", expanded: false }
 //                     ]
 //                 },
 //                 allowSortingBySummary: true,
@@ -188,11 +188,11 @@ function loadPivotGridData() {
                     },
                     fields: [
                         // Your fields here (as before)
-                        { dataField: "VoucherNo", area: "row", caption:"Voucher No", expanded: true, width: 150, allowSorting: true, allowFiltering: true },
-                        { dataField: "AccountHeadName", area: "row", caption: "AccountHead Name", expanded: true, width: 250, allowSorting: true, allowFiltering: true },
-                        { dataField: "DrCr", area: "row", caption: "DrCr", expanded: true, width: 100, allowSorting: true, allowFiltering: true },
-                        { dataField: "CrAmount", area: "data", caption: "CrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
-                        { dataField: "DrAmount", area: "data", caption: "DrAmount", summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 }
+                        { dataField: "VoucherNo", area: "row", caption:formatMessage("Voucher No"), expanded: true, width: 150, allowSorting: true, allowFiltering: true },
+                        { dataField: "AccountHeadName", area: "row", caption:formatMessage("Account Head Name"), expanded: true, width: 250, allowSorting: true, allowFiltering: true },
+                        { dataField: "DrCr", area: "row", caption:formatMessage("DrCr"), expanded: true, width: 100, allowSorting: true, allowFiltering: true },
+                        { dataField: "CrAmount", area: "data", caption:formatMessage("CrAmount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 },
+                        { dataField: "DrAmount", area: "data", caption:formatMessage("DrAmount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 }, width: 180 }
                     ]
                 },
                 // ... Other pivotGrid options ...
@@ -263,20 +263,20 @@ function loadPivotGridData() {
 
             const allFields = [
                 
-                { dataField: "VoucherDate", caption: "Voucher Date" },
-                { dataField: "VoucherRefNo", caption: "Voucher Ref No" },
-                { dataField: "VoucherNarration", caption: "Voucher Narration" },
-                { dataField: "VoucherEnteredBy", caption: "Voucher Entered By" },
-                { dataField: "VoucherEnteredOn", caption: "Voucher Entered On" },
-                { dataField: "VoucherVerifiedBy", caption: "Voucher Verified By" },
-                { dataField: "VoucherVerifiedOn", caption: "Voucher Verified On" },
-                { dataField: "VoucherApprovedBy", caption: "Voucher Approved By" },
-                { dataField: "VoucherApprovedOn", caption: "Voucher Approved On" },
-                { dataField: "VoucherEntryNo", caption: "Voucher Entry No" },
-                { dataField: "AccountHead", caption: "Account Head" },
-                { dataField: "VoucherAmountFormatted", caption: "Voucher Amount Formatted" },
-                { dataField: "EntryNarration", caption: "Entry Narration" },
-                { dataField: "AccountGroup", caption: "Account Group" }
+                { dataField: "VoucherDate", caption:formatMessage("Voucher Date") },
+                { dataField: "VoucherRefNo", caption:formatMessage("Voucher Ref No") },
+                { dataField: "VoucherNarration", caption:formatMessage("Voucher Narration") },
+                { dataField: "VoucherEnteredBy", caption:formatMessage("Voucher Entered By") },
+                { dataField: "VoucherEnteredOn", caption:formatMessage("Voucher Entered On") },
+                { dataField: "VoucherVerifiedBy", caption:formatMessage("Voucher Verified By")},
+                { dataField: "VoucherVerifiedOn", caption:formatMessage("Voucher Verified On") },
+                { dataField: "VoucherApprovedBy", caption:formatMessage("Voucher Approved By") },
+                { dataField: "VoucherApprovedOn", caption:formatMessage("Voucher Approved On") },
+                { dataField: "VoucherEntryNo", caption:formatMessage("Voucher Entry No") },
+                { dataField: "AccountHead", caption:formatMessage("Account Head") },
+                { dataField: "VoucherAmountFormatted", caption:formatMessage("Voucher Amount Formatted") },
+                { dataField: "EntryNarration", caption:formatMessage("Entry Narration") },
+                { dataField: "AccountGroup", caption:formatMessage("Account Group") }
             ];
 
             // Check if all fields are already in the "filter" area

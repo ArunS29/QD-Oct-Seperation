@@ -1912,8 +1912,8 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 				if (rowIndex !== -1) {
-				grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-				grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+				grid.cellValue(rowIndex, `${formatMessage('DescriptionDetails')}`, selectedItem.UnitCode);
+				grid.cellValue(rowIndex, `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 				}
 
 				component.close();
@@ -2172,7 +2172,7 @@
 													.Columns(columns =>
 													{
 														columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')"));
-														columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')"));
+														columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
 														columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')"));
 														columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')"));
 														columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')"));
@@ -2290,7 +2290,7 @@
 
 																columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('SalesPersonCode')"));
 
-																columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')"));
+																columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 																columns.Add().DataField("UserCode").Caption(new JS("formatMessage('UserCode')"));
 
@@ -3238,7 +3238,7 @@
 	                                        }
 
 											 var button = $("#btnSave").dxButton("instance");
-											 button.option("text", "Update");
+											 button.option("text", formatMessagr("Update"));
 											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -3467,12 +3467,12 @@
 						const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 						if (rowIndex !== -1) {
-							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
-							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+									dataGrid.cellValue(rowIndex,`${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+									dataGrid.cellValue(rowIndex, `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+									dataGrid.cellValue(rowIndex, `${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+									dataGrid.cellValue(rowIndex,`${formatMessage('Qty')}`, 1);
+									dataGrid.cellValue(rowIndex,`${formatMessage('VAT%')}`, "15%");
+									dataGrid.cellValue(rowIndex,`${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 							UnitCode=selectedItem.UnitCode;
 
 	                        ItemNo = selectedItem.GSCode;
@@ -3660,7 +3660,7 @@
 												let grid = $("#B2BdataGrid").dxDataGrid("instance");
 												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 												if (rowIndex !== -1) {
-														grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
+																grid.cellValue(rowIndex, `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDesc);
 														UnitCode=selectedItem.UnitCode;
 												}
 												e.component.close();
@@ -3730,9 +3730,9 @@
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
 
-			let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-		let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-		let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+					let qty = grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
+				let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+				let discountPercentage = grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0; // Get discount %
 
 		let amount = qty * unitPrice;
 		let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -3742,12 +3742,12 @@
 		let vatAmount = amountAfterDiscount * vatRate;
 		let total = amountAfterDiscount + vatAmount;
 
-		grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-		grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-		grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
-		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
+				grid.cellValue(rowIndex,`${formatMessage('CalcLineAmount')}` , formatAmount(amountAfterDiscount));
+				grid.cellValue(rowIndex, `${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+				grid.cellValue(rowIndex,`${formatMessage('LineTotal')}` , formatAmount(total));
+				grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}` , qty);
 	//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
-		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+				grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
 
 							}
 						}
@@ -3774,9 +3774,9 @@
 									let grid = $("#B2BdataGrid").dxDataGrid("instance");
 									let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 									if (rowIndex !== -1) {
-		let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-		let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-		let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+				let qty = grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
+				let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}` ) || 0;
+				let discountPercentage = grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0; // Get discount %
 
 		let amount = qty * unitPrice;
 		let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -3786,13 +3786,13 @@
 		let vatAmount = amountAfterDiscount * vatRate;
 		let total = amountAfterDiscount + vatAmount;
 
-		
-	    grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-	    grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-	    grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
-		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
+
+				grid.cellValue(rowIndex, `${formatMessage('CalcLineAmount')}`, formatAmount(amountAfterDiscount));
+				grid.cellValue(rowIndex, `${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+				grid.cellValue(rowIndex, `${formatMessage('LineTotal')}`, formatAmount(total));
+				grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`, qty);
 	//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
-		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+				grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
 
 									}
 
@@ -3826,7 +3826,7 @@
 						rowIx=rowIndex;
 
 						let newValue = args.value;
-						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+								let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
 
 						if (qty <= 0) {
 
@@ -3837,11 +3837,11 @@
 						}
 						else
 						{
-								let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-							let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+										let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+									let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0;
 
 							// VAT rate handling
-							let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT Description") || "15%";
+									let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT Description')}`) || "15%";
 							let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 							// Calculate amount
@@ -3854,14 +3854,14 @@
 							let vatValue = discountedAmount * vatRate;
 							let totalValue = discountedAmount + vatValue;
 
-							grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+									grid.cellValue(rowIndex, `${formatMessage('VAT')}` , formatAmount(vatValue));
+							   grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+							   grid.cellValue(rowIndex,  `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
 					  // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+							   grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
+							   grid.cellValue(rowIndex, `${formatMessage('Discount')}` , formatAmount(discount));
+							   grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+							   grid.cellValue(rowIndex, `${formatMessage('VAT Description')}`, vatRateStr);
 
 								applyDiscount(formatAmount(amount));
 
@@ -4023,12 +4023,12 @@
 						const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 						if (rowIndex !== -1) {
-							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
-							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+									dataGrid.cellValue(rowIndex, `${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+									dataGrid.cellValue(rowIndex, `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+									dataGrid.cellValue(rowIndex, `${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+									dataGrid.cellValue(rowIndex, `${formatMessage('Qty')}`, 1);
+									dataGrid.cellValue(rowIndex, `${formatMessage('VAT%')}`, "15%");
+									dataGrid.cellValue(rowIndex,  `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 							UnitCode=selectedItem.UnitCode;
 
 							ItemNo = selectedItem.GSCode;
@@ -4364,7 +4364,7 @@
 
 												if (rowIndex !== -1) {
 
-													grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
+															grid.cellValue(rowIndex, `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
 													//grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
 												}
@@ -7092,7 +7092,7 @@
 								// }
 
 								rowData.AccountHead = e.value; // Update the row data
-								grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+								grid.cellValue(rowIndex, `${formatMessage('AccountHead')}`, e.value); // Ensure it reflects in the grid
 
 							}
 							// Close the dropdown after selection
@@ -7115,12 +7115,12 @@
 				let newValue = args.value;
 
 				// Get existing values or updated ones
-					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('QuantityInvoiced')}`) || 0;
+					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('Discount')}`) || 0;
 
 				// VAT rate handling
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT Description") || "15%";
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('VAT Description')}`) || "15%";
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 				// Calculate amount
@@ -7134,14 +7134,14 @@
 				let totalValue = discountedAmount + vatValue;
 
 				// Update grid cells
-				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+				grid.cellValue(rowIndex,  `${formatMessage('VAT')}`, formatAmount(vatValue));
+					   grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+					   grid.cellValue(rowIndex,  `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
 					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+					   grid.cellValue(rowIndex, `${formatMessage('Amount')}` formatAmount(amount));
+					   grid.cellValue(rowIndex,  `${formatMessage('Discount')}`, formatAmount(discount));
+					   grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+					   grid.cellValue(rowIndex,  `${formatMessage('VAT Description')}`, vatRateStr);
 
 				  // Store value for use in popover
 				 window.currentAmount = amount.toFixed(2);
@@ -7524,9 +7524,9 @@
 
 
 						// Get existing values or updated ones
-						let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-							let unitPrice =  grid.cellValue(rowIndex, "UnitRate") || 0;
-						let discount = grid.cellValue(rowIndex, "Discount") || 0;
+						let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`) || 0;
+							let unitPrice =  grid.cellValue(rowIndex, `${formatMessage('UnitRate')}` ) || 0;
+						let discount = grid.cellValue(rowIndex, `${formatMessage('Discount')}` ) || 0;
 
 						// VAT rate handling
 						let vatRateStr = newValue || "0%";
@@ -7543,15 +7543,15 @@
 						let totalValue = discountedAmount + vatValue;
 
 						// Update grid cells
-						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+						grid.cellValue(rowIndex,`${formatMessage('VAT')}`, formatAmount(vatValue));
+					   grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+					   grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
 					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
-						grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
+					   grid.cellValue(rowIndex,`${formatMessage('Amount')}`, formatAmount(amount));
+					   grid.cellValue(rowIndex,`${formatMessage('Discount')}`, formatAmount(discount));
+					   grid.cellValue(rowIndex,`${formatMessage('Qty')}` , formatAmount(qty));
+					   grid.cellValue(rowIndex, `${formatMessage('VAT Description')}`, vatRateStr);
+						grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, TaxSlabCode);
 	}
 
 
@@ -7559,10 +7559,10 @@
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 					// Get current row values
-						let qty = grid.cellValue(rowIndex, "UnitsToBill") || 0;
+						let qty = grid.cellValue(rowIndex,`${formatMessage('UnitsToBill')}`) || 0;
 
 
-					let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+					let unitPrice = grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
 					let vatRateStr = newValue || "0%";
 
 
@@ -7576,12 +7576,12 @@
 					let totalValue = amount + vatValue;
 					//alert(vatValue)
 								// Update values in the grid
-							grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-							grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-							grid.cellValue(rowIndex, "Unit Price",amount);
-							grid.cellValue(rowIndex, "Qty",qty);
-							grid.cellValue(rowIndex, "VAT%",vatRateStr);
-							 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+							grid.cellValue(rowIndex,`${formatMessage('VAT')}`, vatValue.toFixed(2));
+							grid.cellValue(rowIndex,`${formatMessage('Total')}`, totalValue.toFixed(2));
+							grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`,amount);
+							grid.cellValue(rowIndex,`${formatMessage('Qty')}`,qty);
+							grid.cellValue(rowIndex,`${formatMessage('VAT%')}` ,vatRateStr);
+							 grid.cellValue(rowIndex,`${formatMessage('TaxSlabCode')}` ,TaxSlabCode);
 
 				}
 
@@ -8286,7 +8286,7 @@
 
 			$(document).ready(function () {
 			var button = $("#btnSave").dxButton("instance");
-			button.option("text", "Save");
+			button.option("text", formatMessage("Save"));
 		});
 
 
@@ -8957,8 +8957,8 @@
 		function showCalcPopover(rowIndex, targetElement) {
 			debugger;
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
-		const qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-		const unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+		const qty = grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`) || 0;
+		const unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
 		const amount = qty * unitPrice;
 		debugger;
 

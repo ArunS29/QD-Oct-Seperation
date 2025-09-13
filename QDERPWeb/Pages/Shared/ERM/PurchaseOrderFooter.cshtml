@@ -120,7 +120,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnNewPurchaseOrder")
             .Icon("plus")
-            .Text(new JS("formatMessage('Add Purchase Order')"))
+            .Text(new JS("formatMessage('Add New Purchase Order')"))
             .OnClick("AddPurchaseOrder")
             )
 
@@ -151,28 +151,8 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-             function addNewMaterialRequest(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/ERM/AddNewClientRequest`;
-                    break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/ERM/MRAddNewStoreRequest`;
-                    break;
-                case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/ERM/MRAddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
-  
         function AddPurchaseOrder(){
-            window.location.href = `/${tenantName}/ERM/AddNewPurchaseOrder`;
+            window.location.href = `/${tenantName}/ERM/EquipmentPurchaseOrder`;
         }
     function btnPurchaseOrderDetails1(){
             window.location.href = `/${tenantName}/ERM/PurchaseRequestItemDetails`;

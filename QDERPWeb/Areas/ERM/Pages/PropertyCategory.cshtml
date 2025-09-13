@@ -298,6 +298,12 @@
 							$("#PropertyCategoryInput").dxTextBox("instance").option("value", "");
 							// Optionally reload any grid or list showing the data
 							 $("#storeGrid").dxDataGrid("instance").refresh();
+							// Refresh parent dropdown
+							setTimeout(() => {
+								if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+									window.parent.refreshTypeOfRequestDropDown('PropertyCategory');
+								}
+							}, 300);
 						},
 						error: function (err) {
 							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);
@@ -329,6 +335,11 @@
 						success: function () {
 							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);
 							$("#storeGrid").dxDataGrid("instance").refresh();
+							setTimeout(() => {
+								if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+									window.parent.refreshTypeOfRequestDropDown('PropertyCategory');
+								}
+							}, 300);
 						},
 						error: function () {
 							DevExpress.ui.notify("Failed to delete Stock Classification.", "error", 2000);

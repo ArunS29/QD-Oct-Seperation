@@ -277,7 +277,7 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode").Alignment(HorizontalAlignment.Center).Width(80);
-                columns.Add().DataField("Status");
+                    columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')"));
 
 
             })
@@ -311,7 +311,7 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode");
-                columns.Add().DataField("Status");
+                    columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')"));
 
 
             })
@@ -323,7 +323,7 @@
 <script>
     function redirectToClientStatusCode() {
         let url = `/${tenantName}/IMS/ClientStatusCode`;
-          let title = "Client Status";
+          let title = formatMessage("Client Status");
         openModal(url, title);
         refreshClientCategorySelectBox()
     }
@@ -333,7 +333,7 @@
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
                $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
-        getReportedBy();
+    
            if (clientStatusNo) {
               bindClientStatusById(clientStatusNo);
               $("#btnSave").dxButton("instance").option("text", "Update");
@@ -342,13 +342,11 @@
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
     }
-       
-
-
-       
-
-
+  
     });
+       $(document).ready(function () {
+                 getReportedBy();
+                 });
     function bindClientStatusById(clientStatusNo) {
      
         $.ajax({

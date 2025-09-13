@@ -803,7 +803,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				return Ok(new
                 {
                     success = true,
-                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully."
+                    message = isUpdate ? "Sales order updated successfully." : "Sales order created successfully.",
+                    salesOrderNo = model.SalesOrderNo
                 });
             }
             catch (Exception ex)
@@ -1036,6 +1037,9 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.CurrencyId,
                 order.CurrencyRate,
                 order.BaseCurrencyId,
+                order.SubmittedBy,
+                order.VerifiedBy,
+                order.ApprovedBy,
                 SalesOrderChildren = children
             });
         }
@@ -1294,70 +1298,6 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetStoreStockAvailabilityGrid()
-        //{
-        //	try
-        //	{
-        //		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //		{
-        //			var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
-        //				.Select(i => new
-        //				{
-        //					i.StoreId,
-        //					i.StoreName,
-        //					i.LedgerNo,
-        //					i.CostAllocationUnitId,
-
-        //				})
-        //				.ToListAsync();
-
-        //			return Json(data); // return raw data, paging/sorting done on client-side
-        //		}
-
-        //		return Unauthorized(new { message = "Invalid tenant.", success = false });
-        //	}
-        //	catch (Exception ex)
-        //	{
-        //		_logger.LogError($"Error in GetProject: {ex.Message}");
-        //		return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-        //	}
-        //}
-
-        [HttpPost]
-        public async Task<IActionResult> SubmitSalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                if (string.IsNullOrWhiteSpace(salesOrderNo))
-                    return BadRequest(new { success = false, message = "Invalid Sales Order No." });
-
-                var existingEntity = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (existingEntity == null)
-                    return NotFound(new { success = false, message = "Sales Order not found. Please save it first." });
-
-                existingEntity.IsSubmitted = true;
-                dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                   module: "IMS > Submit Sales Order1",
-                   actionDetail: $"Saved SalesOrder1 {salesOrderNo}",
-                   documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales Order submitted successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while submitting Sales Order.");
-                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
-            }
-        }
 
            [HttpPost]
 
@@ -1368,10 +1308,16 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
        try
 
        {
-
+            var userName = HttpContext.Session.GetString("UserName");
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdString, out int userId))
+            {
+                return Unauthorized(new { message = "Invalid or missing UserId in session." });
+            }
+            
            if (string.IsNullOrWhiteSpace(salesOrderNo))
 
-               return BadRequest(new { success = false, message = "Sales Order number is required." });
+                    return BadRequest(new { success = false, message = "Sales Order number is required." });
  
            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
 
@@ -1401,8 +1347,8 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                    actionDetail: $"Saved Sales Order {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
-
-                return Ok(new { success = true, message = "Sales order submitted successfully." });
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                return Ok(new { success = true, message = "Sales order submitted successfully.",submittedBy = signatoryId });
 
        }
 
@@ -1418,50 +1364,17 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
 
    }
 
- 
-        [HttpPost]
-        public async Task<IActionResult> VerifySalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                var order = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (order == null)
-                    return NotFound(new { success = false, message = "Sales order not found." });
-
-                if (order.IsSubmitted != true)
-                    return BadRequest(new { success = false, message = "Please submit before verifying." });
-
-                order.IsVerified = true;
-
-                // ✅ Add this line to mark entity as modified
-                dbContext.Tbl60201salesOrderMasters.Update(order);
-
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                 module: "IMS > Verify Sales Order1",
-                  actionDetail: $"Verified Sales Order1 {salesOrderNo}",
-                 documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales order verified successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "VerifySalesOrder error");
-                return StatusCode(500, new { success = false, message = "Internal error." });
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
         {
             try
             {
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                }
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Sales Order number is required." });
 
@@ -1483,15 +1396,15 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 order.IsVerified = true;
                 order.VerifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
                 order.VerifiedOn = DateTime.Now;
-
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order",
                   actionDetail: $"Verified Sales Order {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
 
-                return Ok(new { success = true, message = "Sales order verified successfully." });
+                return Ok(new { success = true, message = "Sales order verified successfully.",verifiedBy = signatoryId });
             }
             catch (Exception ex)
             {
@@ -1499,48 +1412,18 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
             }
         }
-        [HttpPost]
-        public async Task<IActionResult> ApproveSalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                if (string.IsNullOrWhiteSpace(salesOrderNo))
-                    return BadRequest(new { success = false, message = "Sales Order No is required." });
-
-                var order = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (order == null)
-                    return NotFound(new { success = false, message = "Sales Order not found." });
-
-                if (order.IsVerified != true)
-                    return BadRequest(new { success = false, message = "Sales Order must be verified before approval." });
-
-                order.IsApproved = true;
-                dbContext.Tbl60201salesOrderMasters.Update(order);
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                  module: "IMS > Approve Sales Order1",
-                  actionDetail: $": Approved Sales Order1 {salesOrderNo}",
-                   documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales Order approved successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error approving Sales Order");
-                return StatusCode(500, new { success = false, message = "Internal server error." });
-            }
-        }
+        
         [HttpPost]
         public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
         {
             try
             {
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                }
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Sales Order No is required." });
 
@@ -1569,8 +1452,8 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                   actionDetail: $"Approved Sales Order {salesOrderNo}",
                   documentNo: $"{salesOrderNo}"
                 );
-
-                return Ok(new { success = true, message = "Sales order approved successfully." });
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                return Ok(new { success = true, message = "Sales order approved successfully.",ApprovedBy = signatoryId });
             }
             catch (Exception ex)
             {
@@ -1578,7 +1461,22 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
             }
         }
+    private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+		{
+			if (userId == null)
+				return null;
 
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return await dbContext.Tbl90104DocumentSignatories
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.SignatoryId)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Tenant context is invalid; return null
+            return null;
+        }
         [HttpGet]
         public async Task<IActionResult> GetSalesOrderStatus(string salesOrderNo)
         {
@@ -1630,16 +1528,22 @@ public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel
         if (existingEntity.IsApproved == true)
         {
             existingEntity.IsApproved = false;
+            existingEntity.ApprovedBy = "";
+            existingEntity.ApprovedOn = null;
             wasChanged = true;
         }
         if (existingEntity.IsVerified == true)
         {
             existingEntity.IsVerified = false;
+            existingEntity.VerifiedBy = "";
+            existingEntity.VerifiedOn = null;
             wasChanged = true;
         }
         if (existingEntity.IsSubmitted == true)
         {
             existingEntity.IsSubmitted = false;
+            existingEntity.SubmittedBy = "";
+            existingEntity.SubmittedOn= null;
             wasChanged = true;
         }
 

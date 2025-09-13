@@ -213,7 +213,7 @@
                             .Text(new JS("formatMessage('ADD')"))
                             .Icon("plus")
                             .OnClick("function() { addStoreToGrid(); }")
-                            .ElementAttr(new { @class = "dx-button-add" })
+                            .ElementAttr(new { @class = "custom-ui-button" })
                         )
                     </div>
                 </div>
@@ -313,7 +313,7 @@
       });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        window.parent.closeModal();
     });
 
       $(function () {

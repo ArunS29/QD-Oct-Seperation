@@ -1,4 +1,4 @@
-@page
+﻿@page
 @using QD.ERP.Web.DAL.Entities
 @{
 
@@ -355,84 +355,91 @@
                                 )
         }
         @using (Html.DevExtreme().NamedTemplate("EmployeeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("accountpaymentamount-datagrid")
+        .DataSource(d => d.WebApi()
+            .Controller("LedgerAccountMaster")
+            .LoadAction("GetEmployeeDetails")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("EmployeeNo")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .SearchPanel(sp => sp.HighlightSearchText(true))
+        .Selection(sl => sl.Mode(SelectionMode.Single)) // Single selection
+        .OnSelectionChanged("dataGridEmployeeSelectionChanged")
+        .OnInitialized("dataGridInitialized")
+        .HeaderFilter(p => p.Visible(true))
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .FilterRow(f => f.Visible(true))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(345)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
         {
-            @(Html.DevExtreme().DataGrid()
+            columns.Add().DataField("EmployeeNo")
+                .Caption(new JS("formatMessage('Employee No')"));   // ✅ localized
 
-                                        .ID("accountpaymentamount-datagrid")
-                                        .DataSource(d => d.WebApi()
-                                        .Controller("LedgerAccountMaster")
-                                        .LoadAction("GetEmployeeDetails")
-                                        .LoadMode(DataSourceLoadMode.Raw)
-                                            .Key("EmployeeNo")
+            columns.Add().DataField("EmployeeName")
+                .Caption(new JS("formatMessage('Employee Name')")); // ✅ localized
 
-                                        )
-                                        .WordWrapEnabled(true)
-                                        .ShowBorders(true)
-                                        .SearchPanel(sp => sp.HighlightSearchText(true))
-                                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                                .OnSelectionChanged("dataGridEmployeeSelectionChanged")
-                                        .OnInitialized("dataGridInitialized")
-                                        .HeaderFilter(p => p.Visible(true))
-                                        .ShowBorders(true)
-                                        .HoverStateEnabled(true)
-                                        .Paging(p => p.PageSize(15))
-                                        .FilterRow(f => f.Visible(true))
-                                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                        .Height(345)
-                                        .Selection(s => s.Mode(SelectionMode.Single))
-                                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                         .Columns(columns =>
-                            {
-                                columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
-                                columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
-                                columns.Add().DataField("NationalID").Caption(new JS("formatMessage('National ID')"));
+            columns.Add().DataField("NationalID")
+                .Caption(new JS("formatMessage('National ID')"));   // ✅ localized
+        })
+    )
+}
 
-
-                            })
-                                    )
-        }
-
-        @using (Html.DevExtreme().NamedTemplate("AgainstPayableContentTemplate"))
+@using (Html.DevExtreme().NamedTemplate("AgainstPayableContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("accountpayable-datagrid")
+        .DataSource(d => d.WebApi()
+            .Controller("LedgerAccountMaster")
+            .LoadAction("GetAgainstPayable")
+            .LoadParams(new { inputParameter = new JS("employeeval") })
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("ReferenceNo")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        .SearchPanel(sp => sp.HighlightSearchText(true))
+        .Selection(sl => sl.Mode(SelectionMode.Single))
+        .OnSelectionChanged("dataGridAgainstPayableSelectionChanged")
+        .OnInitialized("dataGridInitialized")
+        .HeaderFilter(p => p.Visible(true))
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        .FilterRow(f => f.Visible(true))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(345)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
         {
-            @(Html.DevExtreme().DataGrid()
+            columns.Add().DataField("EmployeeNo")
+                .Caption(new JS("formatMessage('Employee No')"));
 
-                                            .ID("accountpayable-datagrid")
-                                            .DataSource(d => d.WebApi()
-                                            .Controller("LedgerAccountMaster")
-                                            .LoadAction("GetAgainstPayable")
-                                                 .LoadParams(new { inputParameter = new JS("employeeval") })
-                                            .LoadMode(DataSourceLoadMode.Raw)
-                                                .Key("ReferenceNo")
+            columns.Add().DataField("EmployeeName")
+                .Caption(new JS("formatMessage('Employee Name')"));
 
-                                            )
-                                            .WordWrapEnabled(true)
-                                            .ShowBorders(true)
-                                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                                    .OnSelectionChanged("dataGridAgainstPayableSelectionChanged")
-                                            .OnInitialized("dataGridInitialized")
-                                            .HeaderFilter(p => p.Visible(true))
-                                            .ShowBorders(true)
-                                            .HoverStateEnabled(true)
-                                            .Paging(p => p.PageSize(15))
-                                            .FilterRow(f => f.Visible(true))
-                                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                            .Height(345)
-                                            .Selection(s => s.Mode(SelectionMode.Single))
-                                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                             .Columns(columns =>
-                                {
-                                    columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
-                                    columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
-                                    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('ReferenceNo')"));
-                                    columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')"));
-                                    columns.Add().DataField("Paid").Caption(new JS("formatMessage('Paid')"));
-                                    columns.Add().DataField("Balance").Caption(new JS("formatMessage('Balance')"));
+            columns.Add().DataField("ReferenceNo")
+                .Caption(new JS("formatMessage('Reference No')"));  // 🔹 added space for consistency
 
+            columns.Add().DataField("PayableAmount")
+                .Caption(new JS("formatMessage('Payable Amount')"));
 
-                                })
-                                        )
-        }
+            columns.Add().DataField("Paid")
+                .Caption(new JS("formatMessage('Paid')"));
+
+            columns.Add().DataField("Balance")
+                .Caption(new JS("formatMessage('Balance')"));
+        })
+    )
+}
+
     </div>
 </div>
 

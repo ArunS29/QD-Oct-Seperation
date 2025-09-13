@@ -49,59 +49,79 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdatePropertyGroup([FromBody] Tbl40108PropertyGroup model)
+public async Task<IActionResult> SaveOrUpdatePropertyGroup([FromBody] Tbl40108PropertyGroup model)
+{
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Unauthorized(new { success = false, message = "Invalid tenant" });
+
+    try
+    {
+        var now = DateTime.Now;
+
+                // 🔎 Required fields validation
+                if (string.IsNullOrWhiteSpace(model.PropertyGroup))
+                {
+                    return BadRequest(new { success = false, message = "Property Group is required!" });
+                }
+
+                if (string.IsNullOrWhiteSpace(model.PropertyGroupCode))
+                {
+                    return BadRequest(new { success = false, message = "Property Group Code is required!" });
+                }
+
+                // 🔎 Duplicate check before insert/update
+                var duplicate = await dbContext.Tbl40108PropertyGroups
+            .Where(x => x.PropertyGroupCode == model.PropertyGroupCode 
+                        && x.PropertyGroupId != model.PropertyGroupId) // exclude self on update
+            .FirstOrDefaultAsync();
+
+
+        if (duplicate != null)
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            return BadRequest(new { success = false, message = "Duplicate Property Group Code is not allowed!" });
+        }
 
-            try
+        if (model.PropertyGroupId > 0)
+        {
+            var existing = await dbContext.Tbl40108PropertyGroups
+                .FirstOrDefaultAsync(x => x.PropertyGroupId == model.PropertyGroupId);
+
+            if (existing != null)
             {
-                var now = DateTime.Now;
-
-                if (model.PropertyGroupId > 0)
-                {
-                    var existing = await dbContext.Tbl40108PropertyGroups
-                        .FirstOrDefaultAsync(x => x.PropertyGroupId == model.PropertyGroupId);
-
-                    if (existing != null)
-                    {
-                        // Update only the necessary fields
-                        existing.PropertyGroup = model.PropertyGroup;
-                        existing.PropertyGroupCode = model.PropertyGroupCode;
-
-                        // Optional: existing.ModifiedDate = now;
-                    }
-                    else
-                    {
-                        return NotFound(new { success = false, message = "Record not found for update" });
-                    }
-                }
-                else
-                {
-                    // Do not set PropertyGroupId manually if it's an identity column.
-                    var newEntity = new Tbl40108PropertyGroup
-                    {
-                        PropertyGroup = model.PropertyGroup,
-                        PropertyGroupCode = model.PropertyGroupCode,
-                        // Set any additional fields like CreatedDate = now
-                    };
-
-                    dbContext.Tbl40108PropertyGroups.Add(newEntity);
-                    await dbContext.SaveChangesAsync(); // Save first to get generated ID
-
-                    model.PropertyGroupId = newEntity.PropertyGroupId; // return back new ID
-                }
-
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Saved successfully", id = model.PropertyGroupId });
+                existing.PropertyGroup = model.PropertyGroup;
+                existing.PropertyGroupCode = model.PropertyGroupCode;
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error in SaveOrUpdatePropertyGroup");
-                return StatusCode(500, new { success = false, message = "An error occurred", error = ex.Message });
+                return NotFound(new { success = false, message = "Record not found for update" });
             }
         }
+        else
+        {
+            // Insert new
+            var newEntity = new Tbl40108PropertyGroup
+            {
+                PropertyGroup = model.PropertyGroup,
+                PropertyGroupCode = model.PropertyGroupCode,
+                // CreatedDate = now;
+            };
+
+            dbContext.Tbl40108PropertyGroups.Add(newEntity);
+            await dbContext.SaveChangesAsync(); // save once to get ID
+
+            model.PropertyGroupId = newEntity.PropertyGroupId;
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return Ok(new { success = true, message = "Saved successfully", id = model.PropertyGroupId });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error in SaveOrUpdatePropertyGroup");
+        return StatusCode(500, new { success = false, message = "An error occurred", error = ex.Message });
+    }
+}
 
         [HttpDelete]
 

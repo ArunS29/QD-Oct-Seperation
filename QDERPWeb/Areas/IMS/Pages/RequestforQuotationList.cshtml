@@ -202,9 +202,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Request for Quotation List</h2>
+				<h2 class="title-slide" id="requestforquotationlistims"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickrfq"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -216,16 +216,16 @@
 	</div>
 
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">No of Items</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;" id="rfqnoofitems"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4>Total Before Tax</h4>
+				<h4 id="rfqtotalbefore"></h4>
 				<h1 id="Totalbeforetaxcount" style="color: white;">
 					0
 				</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4>Total After Discount</h4>
+				<h4 id="rfqtotalafter"></h4>
 				<h1 id="totalafterdiscount" style="color: white;">
 					0
 				</h1>
@@ -285,6 +285,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -561,7 +562,29 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
+
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
 			}
+			hidequarterSubmenus();
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
 				frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
 				toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
 				frmDate = frmDate.toISOString().split('T')[0];
@@ -888,4 +911,19 @@
 					}
 				}
 			});
+			 $(function () {
+				$("#requestforquotationlistims").text(formatMessage("Request for Quotation List"));
+			 });
+			 $(function () {
+				$("#quickrfq").text(formatMessage("Quick Dice ERP Solutions"));
+			 });
+			 $(function () {
+				$("#rfqtotalbefore").text(formatMessage("Total Before Tax"));
+			 });
+			 $(function () {
+				$("#rfqtotalafter").text(formatMessage("Total After Discount"));
+			 });
+			 $(function () {
+				$("#rfqnoofitems").text(formatMessage("No of Items"));
+			 });
 </script>

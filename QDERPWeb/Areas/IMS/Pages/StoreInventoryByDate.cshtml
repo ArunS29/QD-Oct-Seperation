@@ -154,7 +154,7 @@
 	</div>
 </div> *@
 <div class="Head">
-	<div class="footer-fixed">
+	<div class="footer-fixed1" style="margin:10px;">
 		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 	</div>
 </div>
@@ -197,6 +197,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -242,62 +243,64 @@
 		})
 		.Columns(columns =>
 		{
-			// Stock Details Band
-			columns.Add().Caption("Stock Details").Columns(detail =>
+	  	// Stock Details Band
+			columns.Add().Caption(new JS("formatMessage('Stock Details')")).Columns(detail =>
 			{
-				detail.AddFor(m => m.StoreName).Caption("Store Name");
-				detail.AddFor(m => m.StoreCode).Caption("Stock Code");
-				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
+				detail.AddFor(m => m.StoreName).Caption(new JS("formatMessage('Store Name')"));
+				detail.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Stock Code')"));
+				detail.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Stock Description')"));
 			});
 
 			// Opening Balance Band
-			columns.Add().Caption("Opening Balance").Columns(open =>
+			columns.Add().Caption(new JS("formatMessage('Opening Balance')")).Columns(open =>
 			{
-				open.AddFor(m => m.TotalOpeningBal).Caption("Opening Bal. (Qty)");
+				open.AddFor(m => m.TotalOpeningBal).Caption(new JS("formatMessage('Opening Balance (Qty)')"));
 			});
 
 			// Inventory Stock Qty Band
-			columns.Add().Caption("Inventory Stock Qty").Columns(invQty =>
+			columns.Add().Caption(new JS("formatMessage('Inventory Stock Qty')")).Columns(invQty =>
 			{
-				invQty.Add().Caption("Stock Receipts (Qty)").Columns(receipts =>
+				invQty.Add().Caption(new JS("formatMessage('Stock Receipts (Qty)')")).Columns(receipts =>
 			{
-				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption("From Suppliers (Qty)");
-				receipts.AddFor(m => m.TotalReceivedFromStores).Caption("From Store (Qty)");
-				receipts.AddFor(m => m.TotalReceipts).Caption("Total Receipts (Qty)");
+				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption(new JS("formatMessage('From Suppliers (Qty)')"));
+				receipts.AddFor(m => m.TotalReceivedFromStores).Caption(new JS("formatMessage('From Store (Qty)')"));
+				receipts.AddFor(m => m.TotalReceipts).Caption(new JS("formatMessage('Total Receipts (Qty)')"));
 			});
 
-				invQty.Add().Caption("Stock Issues").Columns(issues =>
+				invQty.Add().Caption(new JS("formatMessage('Stock Issues')")).Columns(issues =>
 			{
-				issues.AddFor(m => m.TotalIssuedToClient).Caption("To Client (Qty)");
-				issues.AddFor(m => m.TotalConsumed).Caption("Consumed (Qty)");
-				issues.AddFor(m => m.TotalStoreTransfered).Caption("Transferred (Qty)");
-				issues.AddFor(m => m.TotalIssues).Caption("Total Issues (Qty)");
+				issues.AddFor(m => m.TotalIssuedToClient).Caption(new JS("formatMessage('To Client (Qty)')"));
+				issues.AddFor(m => m.TotalConsumed).Caption(new JS("formatMessage('Consumed (Qty)')"));
+				issues.AddFor(m => m.TotalStoreTransfered).Caption(new JS("formatMessage('Transferred (Qty)')"));
+				issues.AddFor(m => m.TotalIssues).Caption(new JS("formatMessage('Total Issues (Qty)')"));
 			});
 
-				invQty.AddFor(m => m.BalanceInStock).Caption("Closing Balance (Qty)");
+				invQty.AddFor(m => m.BalanceInStock).Caption(new JS("formatMessage('Closing Balance (Qty)')"));
 			});
 
 			// Inventory Stock Value (Amount) Band
-			columns.Add().Caption("Inventory Stock Values (Amount)").Columns(val =>
+			columns.Add().Caption(new JS("formatMessage('Inventory Stock Values (Amount)')")).Columns(val =>
 			{
-				val.AddFor(m => m.AmountOpeningBal).Caption("Opening Bal. (Amt)");
+				val.AddFor(m => m.AmountOpeningBal).Caption(new JS("formatMessage('Opening Balance (Amt)')"));
 
-				val.Add().Caption("Stock Receipts (Amount)").Columns(receiptAmt =>
+				val.Add().Caption(new JS("formatMessage('Stock Receipts (Amount)')")).Columns(receiptAmt =>
 			{
-				receiptAmt.AddFor(m => m.AmountReceived).Caption("From Suppliers (Amt)");
-				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption("From Store (Amt)");
-				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption("Total Receipts (Amt)");
+				receiptAmt.AddFor(m => m.AmountReceived).Caption(new JS("formatMessage('From Suppliers (Amt)')"));
+				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption(new JS("formatMessage('From Store (Amt)')"));
+				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption(new JS("formatMessage('Total Receipts (Amt)')"));
 			});
 
-				val.Add().Caption("Stock Issues (Amount)").Columns(issueAmt =>
-			{	
-				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption("To Client (Amt)");
-				issueAmt.AddFor(m => m.AmountConsumed).Caption("Consumed (Amt)");
-				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption("Transferred (Amt)");
-				issueAmt.AddFor(m => m.AmountTotalIssues).Caption("Total Issues (Amt)");
+				val.Add().Caption(new JS("formatMessage('Stock Issues (Amount)')")).Columns(issueAmt =>
+			{
+				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption(new JS("formatMessage('To Client (Amt)')"));
+				issueAmt.AddFor(m => m.AmountConsumed).Caption(new JS("formatMessage('Consumed (Amt)')"));
+				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption(new JS("formatMessage('Transferred (Amt)')"));
+				issueAmt.AddFor(m => m.AmountTotalIssues).Caption(new JS("formatMessage('Total Issues (Amt)')"));
 			});
 
-				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
+				val.AddFor(m => m.TransactionTotal).Caption(new JS("formatMessage('Closing Balance (Amt)')"));
+			
+
 			});
 		})
 		)
@@ -382,10 +385,31 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
-			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
 
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
+			}
+			hidequarterSubmenus();
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
+				frmDate = frmDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 				$.ajax({
 		url: '/api/StockInventory/GetStockDataByDate',
 		type: 'GET',

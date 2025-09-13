@@ -104,9 +104,9 @@
     <div class="card blue shine compact with-sidebar">
         <div class="tile-content">
             <div class="title-text">
-                <h2 class="title-slide">Client Leads</h2>
+                <h2 class="title-slide" id="clientleadsims"></h2>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+                <h6 class="fade-in" id="quickdiceclient"></h6>
             </div>
             <div class="tile-icon">
                 <!-- Icon as SVG -->
@@ -119,16 +119,16 @@
     </div>
 
     <div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-        <h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Total clients</h4>
+        <h4 style="margin-bottom: 10px; color: white;font-weight:bold;" id="totalclientsims"></h4>
         <div class="voucher-slider">
             <div class="voucher-slide1 active">
-                <h4 style="text-align:left;">Clients Entry Today</h4>
+                <h4 style="text-align:left;" id="cliententrytodayleads"></h4>
                 <h1 id="cliententryToday" style="color: white;text-align:left;">
                     0
                 </h1>
             </div>
             <div class="voucher-slide1">
-                <h4 style="text-align:left;">Client Entry Total</h4>
+                <h4 style="text-align:left;" id="cliententrytotalleads"></h4>
                 <h1 id="cliententryTotal" style="color: white;text-align:left;">
                    0
                 </h1>
@@ -214,7 +214,7 @@
             columns.Add().DataField("ReportedBy").Caption(new JS("formatMessage('Reported By')")).Visible(false);
             columns.Add().DataField("ReportedOn").Caption(new JS("formatMessage('Reported On')")).Visible(false);
             columns.Add().DataField("StatusRemarks").Caption(new JS("formatMessage('Status Remarks')")).Visible(false);
-            columns.Add().DataField("FollowupOn").Caption(new JS("formatMessage('Follow upOn')")).Visible(false);
+            columns.Add().DataField("FollowupOn").Caption(new JS("formatMessage('Follow up On')")).Visible(false);
             columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")).Visible(false);
             columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
             columns.Add().DataField("UserCode").Caption(new JS("formatMessage('User Code')")).Visible(false);
@@ -350,7 +350,7 @@
                     let clientCode = e.row.data.ClientCode;
                     let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
                     let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-                    let title = ` `;
+                    let title = formatMessage("Client Edit");
                     openModal(url, title ,"","75%");
                 }
             }];
@@ -465,5 +465,19 @@
             })
             .appendTo(cellElement);
     }
-
+     $(function () {
+        $("#quickdiceclient").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+     $(function () {
+        $("#clientleadsims").text(formatMessage("Client Leads"));
+    });
+     $(function () {
+        $("#totalclientsims").text(formatMessage("Total clients"));
+    });
+     $(function () {
+        $("#cliententrytodayleads").text(formatMessage("Clients Entry Today"));
+    });
+     $(function () {
+        $("#cliententrytotalleads").text(formatMessage("Client Entry Total"));
+    });
 </script>

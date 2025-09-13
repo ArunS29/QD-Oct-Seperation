@@ -26,7 +26,6 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
         width: 100%;
     }
 
@@ -54,11 +53,11 @@
 
 <div style="padding: 10px; border-radius: 5px;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label style="font-weight: bold;">Detailed Description / Specification:</label>
+        <label style="font-weight: bold;" id="detailmr"></label>
         <div>
             @(Html.DevExtreme().Button()
                         .ID("btnUseDetailedDescription")
-                        .Text("Use Detailed Description")
+                        .Text(new JS("formatMessage('Use Detailed Description')"))
                         .Icon("info")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Contained)
@@ -67,7 +66,7 @@
                         )
             @(Html.DevExtreme().Button()
                         .ID("btnUseItemDesc")
-                        .Text("Use Item Desc.")
+                        .Text(new JS("formatMessage('Use Item Description')"))
                         .Icon("info")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Contained)
@@ -80,7 +79,7 @@
         @(Html.DevExtreme().TextArea()
                 .ID("DetailedDescription")
                 .Height(100)
-                .Label("Detailed Description / Specification")
+                .Label(new JS("formatMessage('Detailed Description / Specification')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("style", "width: 100%;"))
     </div>
@@ -89,19 +88,19 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("PurposeOfRequest")
-                .Label("Purpose of Request")
+                .Label(new JS("formatMessage('Purpose of Request')"))
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().SelectBox()
                 .ID("PriorityOfRequest")
                 .Items(new[] { "Low", "Medium", "High" })
-                .Label("Priority of Request")
+                .Label(new JS("formatMessage('Priority of Request')"))
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().DateBox()
                 .ID("ExpectedDate")
                 .Type(DateBoxType.Date)
-                .Label("Expected Date")
+                .Label(new JS("formatMessage('Expected Date')"))
                 .LabelMode(EditorLabelMode.Floating))
     </div>
 
@@ -109,7 +108,7 @@
     <div style="margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("Remarks")
-                .Label("Remarks")
+                .Label(new JS("formatMessage('Remarks')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("style", "width: 100%;"))
     </div>
@@ -118,19 +117,19 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("Size")
-                .Label("Size")
+                .Label(new JS("formatMessage('Size')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Manufacturer")
-                .Label("Manufacturer")
+                .Label(new JS("formatMessage('Manufacturer')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("Brand")
-                .Label("Brand")
+                .Label(new JS("formatMessage('Brand')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
     </div>
@@ -139,23 +138,23 @@
     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("PartNo")
-                .Label("Part No")
+                .Label(new JS("formatMessage('Part No')"))
                 .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("DeliveryPeriod")
-                .Label("Delivery Period")
+                .Label(new JS("formatMessage('Delivery Period')"))
                 .LabelMode(EditorLabelMode.Floating))
 
         @(Html.DevExtreme().TextBox()
                 .ID("PlanNo")
-                .Label("Plan No")
+                .Label(new JS("formatMessage('Plan No')"))
                 .LabelMode(EditorLabelMode.Floating))
     </div>
     @(Html.DevExtreme().Button()
         .ID("btnApplyAndClose")
-        .Text("Apply & Close")
+        .Text(new JS("formatMessage('Apply & Close')"))
         .Icon("check")
         .OnClick("applyAndClose"))
 
@@ -308,6 +307,8 @@
     }
 
 
-
+    $(function () {
+        $("#detailmr").text(formatMessage("Detailed Description / Specification:"));
+    });
 
 </script>

@@ -492,7 +492,7 @@
                                                         .LoadMode(DataSourceLoadMode.Raw)
                                                         .Key("OpeningBalanceDrCr"))
                                                         .ID("ddlCreditDebit")
-                                                        .Label("Dr/Cr")
+                                                        .Label(new JS("formatMessage('Dr/Cr')"))
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ShowClearButton(true)
                                                         .AcceptCustomValue(false)
@@ -1016,7 +1016,7 @@
                                         .ID("txtClientBillingAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
-                                            .Label(new JS("formatMessage('Client Billing Name(Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Billing Name(Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
 
                                         )
@@ -1094,7 +1094,7 @@
                                     .OnKeyDown("ddlOtherTypeonKeyDown")
                                     .OnValueChanged("ddlOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
-                                        .Label(new JS("formatMessage('Other ID Type: *')"))
+                                        .Label(new JS("formatMessage('Other ID Type:')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
@@ -1144,7 +1144,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Address")
                                         .ValidationRules(rules => rules.AddRequired())
-                                            .Label(new JS("formatMessage('Client Address - Street Name (Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Address - Street Name (Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
@@ -1160,7 +1160,7 @@
                                     .ID("txtClientAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
-                                        .Label(new JS("formatMessage('Client Address - Additional Address:')"))
+                                        .Label(new JS("formatMessage('Client Address - Additional Address')"))
                                         .LabelMode(EditorLabelMode.Floating)
 
                                     )
@@ -1180,7 +1180,7 @@
                                         .ID("txtClientAdditionalAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
-                                            .Label(new JS("formatMessage('Client Address - Additional Address (Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Address - Additional Address (Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
@@ -1276,7 +1276,7 @@
                                     .ID("txtState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
-                                        .Label(new JS("formatMessage('Province/State:')"))
+                                        .Label(new JS("formatMessage('Province/State')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                         )
                                     
@@ -1458,7 +1458,7 @@
                                     .ID("txtSupBillingAr")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Supplier Billing Name(Arabic):')"))
+                                    .Label(new JS("formatMessage('Supplier Billing Name(Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1539,7 +1539,7 @@
                                     .OnKeyDown("ddlSupOtherTypeonKeyDown")
                                     .OnValueChanged("ddlSupOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("SupOtherTypeContentTemplate"))
-                                    .Label(new JS("formatMessage('Other ID Type: *')"))
+                                    .Label(new JS("formatMessage('Other ID Type:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1595,7 +1595,7 @@
                                     .ID("txtSupAddressAr1")
                                     .Value("")
                                     .Width("200%")
-                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic):')"))
+                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1630,7 +1630,7 @@
                                     .ID("txtSupAdditionalAddressAr1")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic):')"))
+                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1722,7 +1722,7 @@
                                     .ID("txtSupState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupState")
-                                    .Label(new JS("formatMessage('Province/State:')"))
+                                    .Label(new JS("formatMessage('Province/State')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1800,7 +1800,7 @@
                                     .ID("txtSupDistrictAr1")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Neighborhood (Arabic):')"))
+                                    .Label(new JS("formatMessage('Neighborhood (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
@@ -2318,7 +2318,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountGroup");
+                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
             })
             )
     }
@@ -2382,7 +2382,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BranchName");
+                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')"));
             })
             )
     }
@@ -2414,7 +2414,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SubGroupName");
+                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')"));
             })
             )
     }
@@ -2446,7 +2446,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SalesPersonName");
+                columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
             })
             )
     }
@@ -2537,7 +2537,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountHead");
+                columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
             })
             )
     }
@@ -2564,7 +2564,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("CountryName");
+                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
             })
             )
     }
@@ -2590,7 +2590,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("CountryName");
+                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
             })
             )
     }
@@ -2832,14 +2832,14 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#ClientBilling").dxTextBox({
-            text: formatMessage("Client Billing Name: *"),
+            text: formatMessage("Client Billing Name:"),
             readOnly: true
 
         });
     });
     $(function () {
         $("#ClientBillingAr").dxTextBox({
-            text: formatMessage("Client Billing Name(Arabic):"),
+            text: formatMessage("Client Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -2997,7 +2997,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#SupBillingAr").dxTextBox({
-            text: formatMessage("Supplier Billing Name(Arabic):"),
+            text: formatMessage("Supplier Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -3109,7 +3109,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#ClientBillingNameArabic").dxTextBox({
-            text: formatMessage("Client Billing Name(Arabic):"),
+            text: formatMessage("Client Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -3137,7 +3137,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#BillingVATRegNoArabic").dxTextBox({
-            text: formatMessage("Client VAT Registration Number(Arabic):"),
+            text: formatMessage("Client VAT Registration Number (Arabic):"),
             readOnly: true
 
         });

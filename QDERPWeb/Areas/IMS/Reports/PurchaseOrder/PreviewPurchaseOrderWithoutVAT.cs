@@ -1,16 +1,25 @@
-﻿using DevExpress.XtraPrinting;
-using DevExpress.XtraPrinting.Drawing;
-using DevExpress.XtraReports.UI;
-using System;
+﻿using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Printing;
+using System.Text;
+using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using Microsoft.Extensions.Configuration;
+using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Web.Service;
+using Svg;
 
 namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 {
     public partial class PreviewPurchaseOrderWithoutVAT : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly Tenant _resolvedTenant;
+        private HashSet<string> _quoteNosWithTerms = new HashSet<string>();
+
 
         public PreviewPurchaseOrderWithoutVAT()
         {
@@ -18,6 +27,21 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
         }
 
         public PreviewPurchaseOrderWithoutVAT(
+             string companyPhone,
+            string companyEmail,
+            string companyWebsite,
+            Image logoImage,
+            bool ShowFullSupplierAcceptance,
+            bool ShowSimpleSuppilerAcceptance,
+            bool ShowSignatoryPositionOnly,
+            bool ShowPaymentTermsShippingDetails,
+            bool ShowitemPartNumberinsteadStockCode,
+            bool ShowHSCodeinsteadStockCode,
+            bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
+             bool pageBreakBefore,
+            bool pageBreakAfter,
             string purchaseNo,
             string tenantName,
             string companyName,
@@ -30,12 +54,30 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
         {
             _tenantDbContextHelper = tenantDbContextHelper;
 
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
+
             InitializeComponent();
-            SetReportParameters(purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters(companyPhone, companyEmail, companyWebsite, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseNo, tenantName, companyName,  sealImage, companyAddress, companyNameAr, companyAddressAr);
             LoadReportData(purchaseNo);
+
+            LoadSubreport(purchaseNo);
+            xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
+
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly);
+
+            // Show/hide GroupFooter3 based on ShowPaymentTermsShippingDetails
+            if (Bands["GroupFooter3"] != null)
+                Bands["GroupFooter3"].Visible = ShowPaymentTermsShippingDetails;
+
+            if (pageBreakBefore || pageBreakAfter)
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
+            else
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
         }
 
-        private void SetReportParameters(string purchaseNo, string tenantName, string companyName,  Image sealImage,
+        private void SetReportParameters(string companyPhone, string companyEmail, string companyWebsite, Image logoImage, bool ShowFullSupplierAcceptance, bool ShowSimpleSuppilerAcceptance, bool ShowSignatoryPositionOnly, bool ShowPaymentTermsShippingDetails, bool ShowitemPartNumberinsteadStockCode, bool ShowHSCodeinsteadStockCode, bool showSeal, bool showSignature, bool printLetterhead, bool pageBreakAfter, bool pageBreakBefore, string purchaseNo, string tenantName, string companyName,  Image sealImage,
             string companyAddress, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
@@ -63,6 +105,10 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
+            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
+
+            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
@@ -78,8 +124,17 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+            if (FindControl("xrPictureBox15", true) is XRPictureBox logoPictureBox)
+                logoPictureBox.Image = logoImage;
+            if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
+                companyphoneLabel.Text = companyPhone;
 
-          
+            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
+                emailLabel.Text = companyEmail;
+
+            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
+                websiteLabel.Text = companyWebsite;
+
 
             if (FindControl("xrPictureBox4", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
@@ -153,6 +208,156 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
                             }
                         }
                     }
+                }
+            }
+        }
+        private void ApplyConditionalVisibility(
+bool showSeal,
+bool showSignature,
+bool printLetterhead,
+bool ShowitemPartNumberinsteadStockCode,
+bool ShowHSCodeinsteadStockCode,
+bool ShowFullSupplierAcceptance,
+bool ShowSimpleSuppilerAcceptance,
+bool ShowSignatoryPositionOnly
+)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox4", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel72", true) is XRLabel lbl72)
+                lbl72.Visible = printLetterhead;
+
+            if (FindControl("xrLabel77", true) is XRLabel lbl77)
+                lbl77.Visible = printLetterhead;
+            if (FindControl("xrLabel70", true) is XRLabel lbl70)
+                lbl70.Visible = printLetterhead;
+            if (FindControl("xrLabel71", true) is XRLabel lbl71)
+                lbl71.Visible = printLetterhead;
+            if (FindControl("xrLabel67", true) is XRLabel lbl67)
+                lbl67.Visible = printLetterhead;
+            if (FindControl("xrLabel68", true) is XRLabel lbl68)
+                lbl68.Visible = printLetterhead;
+            if (FindControl("xrLabel69", true) is XRLabel lbl69)
+                lbl69.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox15", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine4", true) is XRLine line4)
+                line4.Visible = printLetterhead;
+
+            // --- Custom logic for your requirement ---
+
+            // Hide all first
+            foreach (string lbl in new[] { "xrLabel42", "xrLabel79", "xrLabel25", "xrLabel80", "xrLabel78", "xrLabel33" })
+            {
+                if (FindControl(lbl, true) is XRLabel label)
+                    label.Visible = false;
+            }
+
+            if (ShowitemPartNumberinsteadStockCode && ShowHSCodeinsteadStockCode)
+            {
+                // Both true: show 50 and 51
+                if (FindControl("xrLabel33", true) is XRLabel l33) l33.Visible = true;
+                if (FindControl("xrLabel79", true) is XRLabel l79) l79.Visible = true;
+            }
+            else if (ShowitemPartNumberinsteadStockCode)
+            {
+                // Only item part number: show 52 and 76
+                if (FindControl("xrLabel42", true) is XRLabel l42) l42.Visible = true;
+                if (FindControl("xrLabel80", true) is XRLabel l80) l80.Visible = true;
+            }
+            else if (ShowHSCodeinsteadStockCode)
+            {
+                // Only HS code: show 50 and 50
+                if (FindControl("xrLabel33", true) is XRLabel l33) l33.Visible = true;
+                if (FindControl("xrLabel79", true) is XRLabel l79) l79.Visible = true;
+            }
+            else
+            {
+                // Both false: show 24 and 34
+                if (FindControl("xrLabel25", true) is XRLabel l25) l25.Visible = true;
+                if (FindControl("xrLabel78", true) is XRLabel l78) l78.Visible = true;
+            }
+
+            // Show/hide xrPanel1 based on ShowFullSupplierAcceptance
+            if (FindControl("xrPanel1", true) is XRPanel panel1)
+                panel1.Visible = ShowFullSupplierAcceptance;
+
+            // Show/hide panelAcceptance02 based on ShowSimpleSuppilerAcceptance
+            if (FindControl("panelAcceptance02", true) is XRPanel panel2)
+                panel2.Visible = ShowSimpleSuppilerAcceptance;
+
+            // Hide or show xrPanel2, xrPanel3, xrPanel4 based on ShowSignatoryPositionOnly
+            foreach (string panelName in new[] { "xrPanel2", "xrPanel3", "xrPanel4" })
+            {
+                if (FindControl(panelName, true) is XRPanel panel)
+                    panel.Visible = !ShowSignatoryPositionOnly;
+            }
+        }
+
+        private void xrSubreport1_BeforePrint(object sender, EventArgs e)
+        {
+            // Get SupplierQuoteNo from the current row/group
+            string supplierQuoteNo = GetCurrentColumnValue("SupplierQuoteNo")?.ToString();
+
+            var tenant = _resolvedTenant;
+            var subReport = new quotationstoClients.IMSContext();
+            if (!string.IsNullOrWhiteSpace(supplierQuoteNo) && tenant != null)
+            {
+                // Pass SupplierQuoteNo as QuoteNo to the subreport
+                subReport.LoadTerms(supplierQuoteNo.Trim(), tenant.ConnectionString);
+                xrSubreport1.ReportSource = subReport;
+
+                // Show subreport only if data exists
+                var dt = subReport.DataSource as DataTable;
+                xrSubreport1.Visible = dt != null && dt.Rows.Count > 0;
+            }
+            else
+            {
+                xrSubreport1.Visible = false;
+            }
+        }
+        private void LoadSubreport(string purchaseOrderNo)
+        {
+            if (string.IsNullOrWhiteSpace(purchaseOrderNo))
+                return;
+
+            var tenant = _resolvedTenant ?? throw new Exception("Tenant not resolved.");
+            DataTable dt = new DataTable();
+
+            using (var conn = new SqlConnection(tenant.ConnectionString))
+            {
+                // Get all distinct SupplierQuoteNo for this purchase order
+                string query = @"
+                    SELECT DISTINCT LTRIM(RTRIM(SupplierQuoteNo)) AS SupplierQuoteNo
+                    FROM qry604_05PurchaseOrderReport
+                    WHERE PONo = @PurchaseOrderNo AND SupplierQuoteNo IS NOT NULL";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PurchaseOrderNo", purchaseOrderNo);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    adapter.Fill(dt);
+                }
+            }
+
+            _quoteNosWithTerms.Clear();
+            foreach (DataRow row in dt.Rows)
+            {
+                string supplierQuoteNo = row["SupplierQuoteNo"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(supplierQuoteNo))
+                {
+                    _quoteNosWithTerms.Add(supplierQuoteNo.Trim());
                 }
             }
         }

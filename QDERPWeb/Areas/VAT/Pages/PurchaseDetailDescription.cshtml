@@ -112,11 +112,11 @@
 </style>
 
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="DetailsDescription2" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="form-wrapper">
 
     <!-- Row 1: Detailed Description + 2 Buttons -->
@@ -124,13 +124,13 @@
         <div class="top-buttons">
             @(Html.DevExtreme().Button()
                         .ID("btnUseDetailedDesc")
-                        .Text("Use Detailed Description")
+                        .Text(new JS("formatMessage('Use Detailed Description')"))
                         .Type(ButtonType.Default)
                         .OnClick("onUseDetailedDescriptionClick") // 🔹 JS handler
                         )
             @(Html.DevExtreme().Button()
                         .ID("btnUseItemDesc")
-                        .Text("Use Item Description")
+                        .Text(new JS("formatMessage('Use Item Description')"))
                         .Type(ButtonType.Default)
                         .OnClick("onUseItemDescriptionClick") // 🔹 JS handler
                         )
@@ -156,7 +156,7 @@
                 @(Html.DevExtreme().SelectBox()
                                 .ID("CostAllocationEmployees")
                                 .Placeholder("Select Employees")
-                                .Label("Cost Allocation for Employees:")
+                                .Label(new JS("formatMessage('Cost Allocation for Employees:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -165,7 +165,7 @@
                 @(Html.DevExtreme().SelectBox()
                                 .ID("CostAllocationProperty")
                                 .Placeholder("Select Property/Equipments")
-                                .Label("Cost Allocation for Property/Equipments:")
+                                .Label(new JS("formatMessage('Cost Allocation for Property/Equipments:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -179,7 +179,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("DiscountText")
-                                .Label("Discount Text:")
+                                .Label(new JS("formatMessage('Discount Text:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -188,7 +188,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("Remarks")
-                                .Label("Remarks:")
+                                .Label(new JS("formatMessage('Remarks:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 )
             </td>
@@ -199,7 +199,7 @@
             <td colspan="3">
                 @(Html.DevExtreme().CheckBox()
                                 .ID("IsGoodsInTransit")
-                                .Text("Choose this Item as Goods in Transit - Cost (Additional Cost on Inventory)")
+                                .Text(new JS("formatMessage('Choose this Item as Goods in Transit - Cost (Additional Cost on Inventory)')"))
                                 .ElementAttr("style", "margin-top:10px; margin-bottom:10px; font-weight:normal;")
                                 .Width("100%")
                                 )
@@ -209,21 +209,48 @@
         <!-- Goods in Transit Account & Purchase Voucher No -->
         <tr>
             <td>
-                @(Html.DevExtreme().SelectBox()
+
+                @(Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('Select Goods in Transit Account:')"))
                                 .ID("GoodsInTransitAccount")
-                                .Placeholder("Select Account")
-                                .Label("Select Goods in Transit Account:")
+                                .DataSource(d => d.WebApi()
+                                .Controller("VATModule")
+                                .LoadAction("GetvatpurchaseGoodsInTransitLedgers")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("AccountId")
+                                )
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("AccountId")
+                                .DisplayExpr("AccountHead")
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
+                                .DropDownOptions(o => o.Width(900)
+                                )
+                                .ContentTemplate(new TemplateName("PurchaseGoodsInTransitLedgersTemplate"))
                                 )
             </td>
             <td>
-                @(Html.DevExtreme().SelectBox()
-                                .ID("PurchaseVoucherNo")
-                                .Placeholder("Select Voucher")
-                                .Label("Purchase Voucher No:")
+                @(Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('Purchase Voucher No:')"))
+                                .ID("VATPurchaseVoucherNo")
+                                .DataSource(d => d.WebApi()
+                                .Controller("VATModule")
+                                .LoadAction("GetPurchaseVoucher")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("PurchaseVoucherNo")
+                                )
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("PurchaseVoucherNo")
+                                .DisplayExpr("PurchaseVoucherNo")
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
+                                .DropDownOptions(o => o.Width(900)
+                                )
+                                .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
                                 )
             </td>
         </tr>
@@ -232,6 +259,108 @@
 
 
     </table>
+
+    @using (Html.DevExtreme().NamedTemplate("PurchaseGoodsInTransitLedgersTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+
+            .ID("purchasegoodsintrans-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetvatpurchaseGoodsInTransitLedgers")
+            .LoadMode(DataSourceLoadMode.Raw)
+            ///   .Key("AccountHead") //salary paid entry
+            .Key("AccountId")
+
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridGoodsInTransitAccountSelectionChanged")
+            .OnInitialized("dataGridGoodsInTransitAccountInitialized")
+                                                                // .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .ColumnChooser(c => c
+            .Enabled(true)
+            .Mode(GridColumnChooserMode.DragAndDrop)
+            )
+            .Pager(pager => pager
+            .Visible(true)                            // show pager UI (page numbers etc)
+            .ShowPageSizeSelector(true)              // allow user to change page size
+            .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+            .ShowInfo(true)                          // show info like "Page 1 of 10"
+            )
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+                columns.Add().DataField("AccounHead").Caption(new JS("formatMessage('Goods In Transit Ledger')")).Alignment(HorizontalAlignment.Center);
+               
+
+            })
+
+            )
+
+        }
+
+    @using (Html.DevExtreme().NamedTemplate("PurchaseVoucherNoTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+
+            .ID("purchase-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetvatpurchaseCostPostingForPurchaseVoucher")
+            .LoadMode(DataSourceLoadMode.Raw)
+            ///   .Key("AccountHead") //salary paid entry
+            .Key("PurchaseVoucherNo")
+
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true))
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridPurchaseVoucherSelectionChanged")
+            .OnInitialized("dataGridPurchaseVoucherInitialized")
+                                                                // .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .ColumnChooser(c => c
+            .Enabled(true)
+            .Mode(GridColumnChooserMode.DragAndDrop)
+            )
+            .Pager(pager => pager
+            .Visible(true)                            // show pager UI (page numbers etc)
+            .ShowPageSizeSelector(true)              // allow user to change page size
+            .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+            .ShowInfo(true)                          // show info like "Page 1 of 10"
+            )
+            .FilterRow(f => f.Visible(true))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("PurchaseVoucherNo").Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
+                columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Center);
+                columns.Add().DataField("PurchaseVoucherDate").Caption(new JS("formatMessage('Purchase Voucher Date')")).Alignment(HorizontalAlignment.Center);
+
+
+            })
+
+            )
+
+        }
+
 
 </div>
 
@@ -255,17 +384,6 @@
             });
     });
 
-    
-    $(function () {
-        // Sample data for dropdowns
-        $("#GoodsInTransitAccount").dxSelectBox("instance").option("items", [
-            "GIT Account 001", "GIT Account 002", "GIT Account 003"
-        ]);
-
-        $("#PurchaseVoucherNo").dxSelectBox("instance").option("items", [
-            "Voucher-1001", "Voucher-1002", "Voucher-1003"
-        ]);
-    });
         // ✅ Fetch Detailed Description from Item Description
     function onUseDetailedDescriptionClick() {
         const descValue = $("#DetailedDescription").dxTextBox("instance").option("value");
@@ -292,6 +410,66 @@
             }
         });
     }
+
+
+            function dataGridGoodsInTransitAccountInitialized(e) {
+
+                dataGrid = e.component;
+
+            }
+
+        function dataGridGoodsInTransitAccountSelectionChanged(e) {
+
+            const selectedKey = e.selectedRowKeys[0];
+
+            const ddbInstance = $("#GoodsInTransitAccount").dxDropDownBox("instance");
+
+            acchead = selectedKey;
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+
+                if (ddbInstance.option("opened")) {
+
+                    ddbInstance.close();
+
+                }
+              
+                    var selectedRowData = $("#purchase-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+            }
+        }
+
+
+            function dataGridPurchaseVoucherInitialized(e) {
+
+                dataGrid = e.component;
+
+            }
+
+        function dataGridPurchaseVoucherSelectionChanged(e) {
+
+            const selectedKey = e.selectedRowKeys[0];
+
+            const ddbInstance = $("#VATPurchaseVoucherNo").dxDropDownBox("instance");
+
+            acchead = selectedKey;
+
+            if (selectedKey) {
+
+                ddbInstance.option("value", selectedKey);
+
+                if (ddbInstance.option("opened")) {
+
+                    ddbInstance.close();
+
+                }
+
+                    var selectedRowData = $("#purchase-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+            }
+        }
 
     // ✅ Fetch Item Description from Detailed Description
     function onUseItemDescriptionClick() {

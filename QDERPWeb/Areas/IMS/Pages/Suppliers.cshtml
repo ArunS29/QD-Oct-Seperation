@@ -90,16 +90,16 @@
             border-bottom-right-radius: 12px;
         }
 </style>
-<div class="title" id="kpiCarousel">
+<div class="title" id="kpiCarousel" style="width: 23% !important;">
     <input id="formId" value="frm30110SupplierMaster" type="hidden" />
 
     <div class="card blue shine compact with-sidebar">
         <div class="tile-content">
 
             <div class="title-text">
-                <h2 class="title-slide">Supplier</h2>
+                <h2 class="title-slide" id="suppliersims"></h2>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+                <h6 class="fade-in" id="quicksupplier"></h6>
             </div>
             <div class="tile-icon">
                 <!-- Icon as SVG -->
@@ -110,7 +110,7 @@
             </div>
         </div>
     </div>
-    <div id="mainCard" class="card today-bg with-sidebar">
+    @* <div id="mainCard" class="card today-bg with-sidebar">
         <div class="tabs">
             <div class="tab-text active" onclick="switchTab(0)">Today</div>
             <div class="tab-text" onclick="switchTab(1)">Week</div>
@@ -122,30 +122,30 @@
             <div class="count" id="count0">0</div>
             @* <div class="trend">🔺 12% more than yesterday</div> *@
             @* <div class="message">You're getting things moving!</div> *@
-        </div>
+        @* </div> *@
 
-        <div class="tab-content">
+        @* <div class="tab-content">
             <h4> Vouchers Verified</h4>
-            <div class="count" id="count1">0</div>
+            <div class="count" id="count1">0</div> *@
             @* <div class="trend">🔼 25% higher than last week</div> *@
             @* <div class="message">Awesome pace — keep it up!</div> *@
-        </div>
+        @* </div> *@
 
-        <div class="tab-content">
+        @* <div class="tab-content">
             <h4> New Vouchers</h4>
-            <div class="count" id="count2">0</div>
+            <div class="count" id="count2">0</div> *@
             @* <div class="trend">🔽 10% drop this month</div> *@
             @* <div class="message">Fewer vouchers — time to catch up?</div> *@
-        </div>
-        <div class="tile-icon">
+        @* </div>
+        <div class="tile-icon"> *@
             <!-- Icon as SVG -->
-            <svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+            @* <svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.5 0C7.8506 0 0 7.8506 0 17.5C0 27.1494 7.8506 35 17.5 35C27.1494 35 35 27.1494 35 17.5C35 7.8506 27.1494 0 17.5 0ZM26.6075 11.635L15.2998 25.0965C15.1744 25.2459 15.0235 25.3626 14.8473 25.4465C14.6711 25.5303 14.4854 25.5738 14.2902 25.5769H14.2675C14.0767 25.5768 13.8942 25.538 13.72 25.4603C13.5457 25.3826 13.3948 25.2729 13.2672 25.131L8.42104 19.7464C8.16183 19.4715 8.03998 19.1453 8.05547 18.7677C8.07096 18.3902 8.21914 18.0751 8.50001 17.8223C8.78087 17.5696 9.10987 17.4553 9.48689 17.4795C9.86399 17.5038 10.1756 17.6593 10.4217 17.9459L14.2323 22.1796L24.5463 9.90347C24.787 9.62518 25.0907 9.47145 25.4575 9.44219C25.8243 9.41303 26.1485 9.51668 26.4303 9.75333C26.712 9.98999 26.8701 10.2915 26.9047 10.6579C26.9391 11.0241 26.8402 11.3499 26.6075 11.635Z" fill="white" fill-opacity="0.5" />
-            </svg>
+            </svg> *@
 
-        </div>
-    </div>
-    <div class="card purple sparkle with-sidebar">
+    @*     </div>
+    </div> *@ 
+    @* <div class="card purple sparkle with-sidebar">
        
         <h4>No of Items</h4>
         <h1 id="turnover">0</h1>
@@ -157,7 +157,7 @@
             </svg>
 
         </div>
-    </div>
+    </div> *@
 
 
 </div>
@@ -281,12 +281,12 @@
            function onSuppliersGridContextMenu(e) {
             if (e.target === "content" && e.row) {
                 e.items = [{
-                    text: "Supplier Edit",
+                    text: formatMessage("Supplier Edit"),
                     onItemClick: function () {
                         let supplierCode = e.row.data.SupplierCode;
                         let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
                             let url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
-                            let title = `Edit Supplier  ${supplierCode}`;
+                            let title = formatMessage("Edit Supplier");
                         openModal(url, title,"","75%");
                     }
                 }];
@@ -382,87 +382,7 @@
 
 		console.log('End permission handling');
 	});
-        function countUpTurnover(targetStr) {
-      const el = document.getElementById("turnover");
-      const target = parseFloat(targetStr);
-      let current = 0.0;
-
-      const interval = setInterval(() => {
-        current += 0.5;
-        if (current >= target) {
-          el.textContent = targetStr + " K";
-          clearInterval(interval);
-        } else {
-          el.textContent = current.toFixed(1) + " K";
-        }
-      }, 30);
-    }
-
-    // Animate to 46.2 K
-    countUpTurnover("46.2");
-
-      const card = document.getElementById('mainCard');
-    const counts = [8, 15, 5];
-    const countEls = [
-      document.getElementById("count0"),
-      document.getElementById("count1"),
-      document.getElementById("count2"),
-    ];
-    const tabs = document.querySelectorAll(".tab-text");
-    const contents = document.querySelectorAll(".tab-content");
-
-    function animateCount(el, target) {
-      let i = 0;
-      el.innerText = i;
-      el.classList.remove('bounce');
-      const interval = setInterval(() => {
-        if (i >= target) {
-          el.innerText = target;
-          el.classList.add('bounce');
-          clearInterval(interval);
-        } else {
-          el.innerText = i++;
-        }
-      }, 30);
-    }
-
-    function switchTab(index) {
-      tabs.forEach((tab, i) => {
-        tab.classList.toggle('active', i === index);
-        contents[i].classList.toggle('active', i === index);
-      });
-
-      // Change background class
-      card.className = "card";
-      if (index === 0) card.classList.add("today-bg");
-      if (index === 1) card.classList.add("week-bg");
-      if (index === 2) card.classList.add("month-bg");
-
-      // Animate count
-      animateCount(countEls[index], counts[index]);
-    }
-
-    // Start "Today" count immediately
-    animateCount(countEls[0], counts[0]);
-
-    function switchTab(index) {
-      tabs.forEach((tab, i) => {
-        tab.classList.toggle('active', i === index);
-        contents[i].classList.toggle('active', i === index);
-      });
-
-      // Change background class
-      card.className = "card";
-      if (index === 0) card.classList.add("today-bg");
-      if (index === 1) card.classList.add("week-bg");
-      if (index === 2) card.classList.add("month-bg");
-
-      // Animate count
-      animateCount(countEls[index], counts[index]);
-    }
-
-    // Auto-start animation for "Today"
-    animateCount(countEls[0], counts[0]);
+        
 
     function addImageTooltip(cellElement, imageUrl) {
         if (!imageUrl) return;
@@ -488,7 +408,12 @@
             })
             .appendTo(cellElement);
     }
-
+     $(function () {
+        $("#quicksupplier").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+     $(function () {
+        $("#suppliersims").text(formatMessage("Supplier"));
+    });
 </script>
 
 

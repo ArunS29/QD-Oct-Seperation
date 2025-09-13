@@ -184,6 +184,12 @@
 						$("#propertytype").dxTextBox("instance").option("value", "");
 						// Refresh the grid
 						$("#storeGrid").dxDataGrid("instance").refresh();
+						// Refresh parent dropdown
+						setTimeout(() => {
+							if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+								window.parent.refreshTypeOfRequestDropDown('PropertyType');
+							}
+						}, 300);
 					},
 					error: function () {
 						DevExpress.ui.notify("Failed to add Property Type.", "error", 3000);
@@ -217,6 +223,11 @@
 						success: function () {
 							DevExpress.ui.notify("Property Type deleted successfully!", "success", 2000);
 							$("#storeGrid").dxDataGrid("instance").refresh();
+							 setTimeout(() => {
+                    if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+                        window.parent.refreshTypeOfRequestDropDown('PropertyType');
+                    }
+                }, 300);
 						},
 						error: function () {
 							DevExpress.ui.notify("Failed to delete Property Type.", "error", 2000);

@@ -1,0 +1,125 @@
+﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .Text(new JS("formatMessage('Layout')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
+   
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .OnClick("printFun")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleSearch")
+                .Icon("search")
+                .Text(new JS("formatMessage('Search')"))
+                .OnClick("toggleFilterRow")
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btntoggleGroupPanel")
+                .Icon("hierarchy")
+                .Text(new JS("formatMessage('Group')"))
+                .OnClick("toggleGroupPanel")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleHeaderFilter")
+
+                .Text(new JS("formatMessage(' Filter')"))
+                .ElementAttr(new { style = "display: none;" })
+        @* .Icon("filter") *@
+                .OnClick("toggleHeaderFilter")
+                .Template(@<text>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="none">
+                    <!-- Circle background -->
+                    <circle cx="12" cy="12" r="12" fill="var(--title-background-color)" />
+                    <!-- Filter funnel icon in white -->
+                    <polygon points="6 8 18 8 13 13 13 17 11 17 11 13 6 8" fill="#ffffff" />
+                </svg>
+            </div>
+        </text>)
+                )
+
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnColumnChooser")
+                .Icon("columnchooser")
+                .Text(new JS("formatMessage('Column Chooser')"))
+                .OnClick("showColumnChooser")
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPostAvgCost")
+                 .Text(new JS("formatMessage('Post Average Cost')"))
+             
+                )
+    </div>
+
+
+</div>
+
+<script>
+
+
+    function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+
+        function AddNewQuotation(){
+            window.location.href = `/${tenantName}/IMS/AddNewQuotation`;
+        }
+        function QuotationDetails() {
+            window.location.href = `/${tenantName}/IMS/QuotationDetails`;
+        }
+
+   
+</script>

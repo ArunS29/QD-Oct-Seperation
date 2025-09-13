@@ -1027,7 +1027,7 @@
 						columns.Add()
 										.DataField("QtyRequested")
 										.Caption(new JS("formatMessage('Qty')"))
-
+										.DataType(GridColumnDataType.Number) // ensures numeric
 										.Width(150)
 										.EditorOptions(new {
 											maxLength = 8
@@ -1036,7 +1036,7 @@
 
 									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("LineOrderNo").Caption(new JS("formatMessage('Line Total')"));
+									columns.Add().DataField("LineTotal").Caption(new JS("formatMessage('Line Total')")).AllowEditing(false);
 					})
 					.ColumnAutoWidth(true)
 					.Width("100%")
@@ -2163,30 +2163,29 @@
 				}
 			}
 			function deleteChild(requestChildSlNo) {
-				if (confirm("Are you sure you want to delete this child record?")) {
-					$.ajax({
-						url: `/api/AddNewClientRequest1/DeletePurchaseRequestChild/${encodeURIComponent(requestChildSlNo)}`,
-						type: "DELETE",
-						success: function (response) {
-							DevExpress.ui.notify(response.message, "success", 2000);
-
-							// ✅ reload grid after a short delay so toast shows first
-							setTimeout(function () {
+				DevExpress.ui.dialog.confirm(
+					"Do you want to delete this child record?",
+					"Confirmation"
+				).done(function (dialogResult) {
+					if (dialogResult) {
+						$.ajax({
+							url: `/api/AddNewClientRequest1/DeletePurchaseRequestChild/${encodeURIComponent(requestChildSlNo)}`,
+							type: "DELETE",
+							success: function (response) {
+								DevExpress.ui.notify(response.message, "success", 2000);
 								$("#itemGrid").dxDataGrid("instance").refresh();
-							}, 500);
-						},
-						error: function (xhr) {
-							DevExpress.ui.notify(
-								"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
-								"error",
-								3000
-							);
-						}
-					});
-				}
+							},
+							error: function (xhr) {
+								DevExpress.ui.notify(
+									"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
+									"error",
+									3000
+								);
+							}
+						});
+					}
+				});
 			}
-
-
 				//description DropDownTemplate DropDown
 					 //description DropDownTemplate DropDown
 		let descriptionList = [];
@@ -2370,9 +2369,9 @@
 					    $("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
 						// Optional (if you decide to use later)
-						 $("#ddPreparedby").dxDropDownBox("instance").option("value", response.RequestSignatory);
-						 $("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ERverifiedSign);
-						 $("#ddApprovedby").dxDropDownBox("instance").option("value", response.ERapprovedSign);
+						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.PreparedBy);
+						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
+						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
 						 $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
 						 $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 						 $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
@@ -4153,9 +4152,6 @@
 								var selectedTabIndex = 0;
 								$("#tab-content-" + (selectedTabIndex + 1)).show();
 							});
-
-
-
 							function onTabSelectionChanged(e) {
 								// Hide all tab content
 								$(".tab-content").hide();
@@ -4169,6 +4165,7 @@
 		$("#btnSave").on("click", function (e) {
 			debugger;
 			const $btn = $(this).dxButton("instance");
+
 			// ✅ Step 1: Validate required field
 			const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
 			const clientnameValidation = clientnameValidator.validate();
@@ -4180,9 +4177,6 @@
 				);
 				return;
 			}
-
-			// ✅ Step 2: Disable the button after validation passes
-			$btn.option("disabled", true);
 
 			// ✅ Step 3: Build master object
 			const master = {
@@ -4200,50 +4194,27 @@
 				TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ERverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-			    ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
 				RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-			  //  PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 			};
 
 			// ✅ Step 4: Get child records
-				const desc = $("#DetailedDescription").dxTextArea("instance");
-				if (desc) desc.option("value", firstChild.AddlDescription || "");
+			const children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
 
-				const remarks = $("#Remarks").dxTextBox("instance");
-				if (remarks) remarks.option("value", firstChild.ItemRemarks || "");
+			if (!children || children.length === 0) {
+				DevExpress.ui.notify("No child records to save.", "error", 3000);
+				$btn.option("disabled", false);
+				return;
+			}
 
-				const delivery = $("#DeliveryPeriod").dxTextBox("instance");
-				if (delivery) delivery.option("value", firstChild.DeliveryPeriod || "");
-
-				const plan = $("#PlanNo").dxTextBox("instance");
-				if (plan) plan.option("value", firstChild.PlanNo || "");
-
-
-		// ✅ Step 5: Get child records and attach extra fields
-		let children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
-
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
-
-		children = children.map(item => ({
-			...item,
-			AddlDescription: AddlDescription,
-			ItemRemarks: ItemRemarks,
-			DeliveryPeriod: DeliveryPeriod,
-			PlanNo: PlanNo
-		}));
-
-		const model = {
-			...master,
-			EquipmentPropertychild: children
-		};
+			const model = {
+				...master,
+				EquipmentPropertychild: children
+			};
 
 			// ✅ Step 5: Send data via AJAX
 			$.ajax({
@@ -4267,7 +4238,6 @@
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-					$btn.option("disabled", false); // Re-enable on error
 				}
 			});
 		});
@@ -4384,12 +4354,7 @@
                 QtyRequested: item.QtyRequested,
                 ExpectedUnitRate: item.ExpectedUnitRate,
                 UnitsRequested: item.UnitsRequested,
-                LineOrderNo: item.LineOrderNo,
-                // Add your extra fields
-                DeliveryPeriod: item.DeliveryPeriod || null,
-                PlanNo: item.PlanNo || null,
-                ItemRemarks: item.ItemRemarks || null,
-                AddlDescription: item.AddlDescription || null
+                LineTotal: item.LineTotal,
             }));
 
             // ✅ Bind into grid
@@ -4397,15 +4362,6 @@
             if (gridInstance) {
                 gridInstance.option("dataSource", rowData);
                 gridInstance.refresh();
-            }
-
-            // ✅ Bind the first child’s values back into your editors
-            const firstChild = rowData[0];
-            if (firstChild) {
-                $("#DetailedDescription").dxTextArea("instance").option("value", firstChild.AddlDescription || null);
-                $("#Remarks").dxTextBox("instance").option("value", firstChild.ItemRemarks || null);
-                $("#DeliveryPeriod").dxTextBox("instance").option("value", firstChild.DeliveryPeriod || null);
-                $("#PlanNo").dxTextBox("instance").option("value", firstChild.PlanNo || null);
             }
         },
         error: function (xhr, status, error) {
@@ -4433,10 +4389,6 @@
 				);
 				return;
 			}
-
-			// ✅ Step 2: Disable the button after validation passes
-			$btn.option("disabled", true);
-
 			// ✅ Step 3: Build master object
 			const master = {
 				EqiupmentRequestNo: $('#txtRequestNo').dxTextBox("instance").option("value") || null,

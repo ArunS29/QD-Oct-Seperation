@@ -427,25 +427,25 @@
             .Items(items =>
             {
                 items.Add()
-                    .Text("Preview Voucher")
+                    .Text(new JS("formatMessage('Preview Voucher')"))
                     .Icon("print")
                     .Option("color", "#FF7043") // Orange
                     .OnClick("addPreviewVoucher");
 
                 items.Add()
-                    .Text("Preview VAT Purchase Bill")
+                    .Text(new JS("formatMessage('Preview VAT Purchase Bill')"))
                     .Icon("file")
                     .Option("color", "#00ACC1"); // Cyan
 
                 items.Add()
-                    .Text("Edit Voucher")
+                    .Text(new JS("formatMessage('Edit Voucher')"))
                     .Icon("folder")
                     .Option("color", "#AB47BC") // Purple
                     .OnClick("showPurchaseVoucherEditPopup");
 
 
                 items.Add()
-                    .Text("UploadItems Form Excel")
+                    .Text(new JS("formatMessage('UploadItems Form Excel')"))
                     .Icon("edit")
                     .Option("color", "#FBBC05")
                     .OnClick("PurchaseUpload");

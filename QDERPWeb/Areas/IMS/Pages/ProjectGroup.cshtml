@@ -48,11 +48,7 @@
     .dx-card {
         width: 1000px;
     }
-
-    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
-        display: none !important;
-    }
-
+  
     .container {
         display: none !important;
     }
@@ -80,38 +76,35 @@
     </div>
 </div> *@
 <div>
-<div class="dx-card" style="width:100%;">
+<div class="" style="width:100%;">
     <!-- Input Fields -->
-    <div class="row mb-2">
-        <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
             @(Html.DevExtreme().TextBox().ID("txtGroup").Label(new JS("formatMessage('Type a New Projects Group & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Floating).Width("50%").ValidationRules(rules =>
+                .LabelMode(EditorLabelMode.Floating).Width("100%").ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Group is required");
                 }))
         </div>
-    </div>
-
-    <div class="row mb-3">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("txtGroupArabic").Label(new JS("formatMessage('Projects Group (In Arabic):')"))
                 .LabelMode(EditorLabelMode.Floating).Width("100%")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("convertToArabic3")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("fas fa-language")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                    .OnClick("convertToArabic"));
-                                }))
+                .Buttons(buttons =>
+                {
+                    buttons.Add()
+                    .Name("convertToArabic3")
+                    .Location(TextEditorButtonLocation.After)
+                    .Widget(w => w.Button()
+                    .Type(ButtonType.Default)
+                    .Icon("fas fa-language")
+                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                    .OnClick("convertToArabic"));
+                }))
           
         </div>
     </div>
 
-    <div style="display:flex; align-items:end;" >
+    <div style="display:flex; align-items:end;gap:10px;" >
             @(Html.DevExtreme().TextBox().ID("txtGroupCode").Label(new JS("formatMessage('Group Code:')"))
             .LabelMode(EditorLabelMode.Floating).Width("30%").ValidationRules(rules =>
             {
@@ -128,10 +121,11 @@
           
                 @(Html.DevExtreme().Button()
                     .ID("btnAdd")
-                    .Text("Add")
+                    .Text(new JS("formatMessage('Add')"))
                     .Icon("plus")
                     .Type(ButtonType.Success)
                     .Width(150)
+                    .ElementAttr(new { @class = "custom-ui-button" })
                     .OnClick("function(){addProjectGroupToGrid();}")
                     )
         
@@ -172,11 +166,11 @@
             .OnRowUpdating("onProjectGroupUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("ProjectGroupCode").Caption("Code").AllowEditing(false);
-                columns.Add().DataField("ProjectGroup").Caption("Group");
-                columns.Add().DataField("ProjectGroupAr").Caption("Project Group (In Arabic)");
-                columns.Add().DataField("ProjectCategory").Caption("Category");
-                columns.Add().DataField("ProjectGroupId").Caption("ProjectGroupId").Visible(false);
+                columns.Add().DataField("ProjectGroupCode").Caption(new JS("formatMessage('Code')")).AllowEditing(false);
+                columns.Add().DataField("ProjectGroup").Caption(new JS("formatMessage('Group')"));
+                columns.Add().DataField("ProjectGroupAr").Caption(new JS("formatMessage('Project Group (In Arabic)')"));
+                columns.Add().DataField("ProjectCategory").Caption(new JS("formatMessage('Category')"));
+                columns.Add().DataField("ProjectGroupId").Caption(new JS("formatMessage('ProjectGroupId')")).Visible(false);
                 // Add delete button column
                 columns.Add()
                 .Type(GridCommandColumnType.Buttons)
@@ -190,7 +184,7 @@
                 });
 
             })
-            .Height("55vh")
+            .Height("70vh")
             .ColumnAutoWidth(true)
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
@@ -210,36 +204,39 @@
 
     </div>
 
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+    <div style="display: flex;gap:10px;">
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+            .ID("btnUpdate")
+            .Text(new JS("formatMessage('Update')"))
+            .Icon("save")
+            .ElementAttr(new { @class = "update-button" })
+            )
+        </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            .OnClick("onBackButtonClick")
+            .ElementAttr(new { @class = "bold-button" })
+            )
+        </div>
     </div>
 </div>
 </div>
 <script>
-    $(document).ready(function () {
-
-        $(".limited-footer .btn-container").each(function () {
-
-            if (!$(this).find("#btnUpdate,#btnBack").length) {
-
-                $(this).remove();
-
-            }
-
-        });
-
-    });
-
-    $(document).on("click", "#btnBack", function () {
-        closeModal();
-    });
+    function onBackButtonClick() {
+        window.parent.closeModal();
+    }
+    
     $(function () {
         const items = [];
 
         $("#CategoryComboBox").dxSelectBox({
             dataSource: items,
             acceptCustomValue: true,
-            label: "Category",              // ✅ Floating Label
+            label: formatMessage("Category"),              // ✅ Floating Label
         labelMode: "floating",
             onCustomItemCreating: function (e) {
                 const newValue = e.text;
@@ -334,6 +331,10 @@
             success: function () {
                 DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                $("#txtGroup").dxTextBox("instance").option("value","");
+                $("#txtGroupArabic").dxTextBox("instance").option("value","");
+                $("#txtGroupCode").dxTextBox("instance").option("value","");
+                $("#CategoryComboBox").dxSelectBox("instance").option("value","");
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save.", "error", 1500);

@@ -287,9 +287,12 @@
                 DevExpress.ui.notify("Property Group saved successfully!", "success", 2000);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
             },
-            error: function () {
-                DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
-            }
+              error: function (xhr, status, error) {
+                    let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+                        ? xhr.responseJSON.Message
+                        : "An error occurred.";
+                    DevExpress.ui.notify(errorMessage, "error", 2000);
+                }
         });
     }
 
@@ -317,35 +320,53 @@
             success: function () {
                 DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
+                // Refresh parent dropdown
+                   if (window.parent && typeof window.parent.propergroupgridupdate === "function") {
+                    window.parent.propergroupgridupdate();
+                }
             },
-            error: function () {
-                DevExpress.ui.notify("Failed to save.", "error", 1500);
-            }
+               error: function (xhr, status, error) {
+                    let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+                        ? xhr.responseJSON.Message
+                        : "An error occurred.";
+                    DevExpress.ui.notify(errorMessage, "error", 2000);
+                }
         });
     }
 
-    function onDeleteButtonClick(e) {
-        e.event.preventDefault(); // prevent default delete
+       function onDeleteButtonClick(e) {
+        e.event.preventDefault(); // prevent default delete behavior
 
         var grid = $("#TypeOfRequestGrid").dxDataGrid("instance");
-        var key = e.row.data.PropertyGroupId; // get the ID of the row
+        var key = e.row.data.PropertyGroupId; // row's primary key
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                   url: '/api/PropertyGroup/Delete?key=' + key,
-               // url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    // Refresh the grid after delete
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property Group?", "Confirm Deletion")
+            .done(function (dialogResult) {
+                if (dialogResult) { // only proceed if user clicked "Yes"
+                    $.ajax({
+                        url: '/api/PropertyGroup/Delete?key=' + key,
+                        type: 'DELETE',
+                        success: function () {
+                            // refresh the grid
+                            grid.refresh();
+                            DevExpress.ui.notify("Deleted successfully", "success", 2000);
+
+                            // refresh parent dropdown if it exists
+                            if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+                                setTimeout(() => {
+                                    window.parent.refreshTypeOfRequestDropDown('PropertyGroup');
+                                }, 300);
+                            }
+                        },
+                        error: function (xhr) {
+                            let msg = xhr.responseJSON?.message || "Delete failed";
+                            DevExpress.ui.notify(msg, "error", 3000);
+                        }
+                    });
                 }
             });
         }
-    }
+
 
 
 

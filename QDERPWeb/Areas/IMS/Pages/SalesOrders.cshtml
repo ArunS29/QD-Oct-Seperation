@@ -209,9 +209,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Sales Order</h2>
+				<h2 class="title-slide" id="salesorderims"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quicksalesorder"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -224,21 +224,21 @@
 	</div>
 
 	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; overflow: hidden;">
-		<h4 style="margin-bottom: 10px; color: white;">Sales Orders Details</h4>
+		<h4 style="margin-bottom: 10px; color: white;" id="salesorderdetails"></h4>
 
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4>New Sales Order</h4>
+				<h4 id="newsalesorderss"></h4>
 				<h3 id="fullydeliveredCount">0</h3>
 			</div>
 
 			<div class="voucher-slide">
-				<h4>Pending for Approvals</h4>
+				<h4 id="pendingforapprovalssales"></h4>
 				<h3 id="partiallydeliveredCount">0</h3>
 			</div>
 
 			<div class="voucher-slide">
-				<h4>Total Sales Order</h4>
+				<h4 id="totalsalesordersims"></h4>
 				<h3 id="notdeliveredCount">0</h3>
 			</div>
 		</div>
@@ -251,16 +251,16 @@
 		</div>
 	</div>
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Sales Orders Value</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;" id="salesordervalues"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4>Total Number of Sales Orders Value</h4>
+				<h4 id="totalnumbersalesvalue"></h4>
 				<h1 id="fullyinvoicedToday" style="color: white;">
 					0
 				</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4>New Sales Orders Value</h4>
+				<h4 id="neworderssalesvalue"></h4>
 				<h1 id="notinvoicedcount" style="color: white;">
 					0
 				</h1>
@@ -324,6 +324,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -826,7 +827,27 @@ subColumns.Add().DataField("cost")
 						frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 						toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 						break;
+					case 'q1': // Jan - Mar
+						frmDate = new Date(new Date().getFullYear(), 0, 1);
+						toDate = new Date(new Date().getFullYear(), 2, 31);
+						break;
+
+					case 'q2': // Apr - Jun
+						frmDate = new Date(new Date().getFullYear(), 3, 1);
+						toDate = new Date(new Date().getFullYear(), 5, 30);
+						break;
+
+					case 'q3': // Jul - Sep
+						frmDate = new Date(new Date().getFullYear(), 6, 1);
+						toDate = new Date(new Date().getFullYear(), 8, 30);
+						break;
+
+					case 'q4': // Oct - Dec
+						frmDate = new Date(new Date().getFullYear(), 9, 1);
+						toDate = new Date(new Date().getFullYear(), 11, 31);
+						break;
 				}
+			hidequarterSubmenus();
 				 // ✅ Update DateBoxes to reflect selection
 			frmDateBox.option("value", frmDate);
 			toDateBox.option("value", toDate);
@@ -861,7 +882,7 @@ subColumns.Add().DataField("cost")
 				if (e.target === "content" && e.row) {
 					e.items = [
 						{
-							text: "Edit Sales Order",
+							text: formatMessage("Edit Sales Order"),
 							icon: "edit",
 								onItemClick: function () {
 			let salesOrderNo = e.row.data.SalesOrderNo; // Use the correct field from your data
@@ -874,7 +895,7 @@ subColumns.Add().DataField("cost")
 						},
 
 						{
-    text: "Delete Sales Order",
+    text: formatMessage("Delete Sales Order"),
     icon: "trash",
     onItemClick: function () {
         const salesOrderNo = e.row.data.SalesOrderNo;
@@ -911,7 +932,7 @@ subColumns.Add().DataField("cost")
     }
 },
 							{
-		text: "Unlock the Order",
+		text: formatMessage("Unlock the Order"),
 		icon: "unlock",
 		onItemClick: function () {
 			const salesOrderNo = e.row.data.SalesOrderNo;
@@ -936,7 +957,7 @@ subColumns.Add().DataField("cost")
 	},
 						
 						{
-							text: "Create Proforma Invoice",
+							text: formatMessage("Create Proforma Invoice"),
 							icon: "plus",
 							onItemClick: function () {
 					const salesOrderNo = e.row.data.SalesOrderNo;
@@ -946,7 +967,7 @@ subColumns.Add().DataField("cost")
 				}
 						},
 							{
-		text: "Create Partial Delivery for this Sales Order",
+		text: formatMessage("Create Partial Delivery for this Sales Order"),
 		icon: "plus",
 		onItemClick: function () {
 			const salesOrderNo = e.row.data.SalesOrderNo;
@@ -1003,7 +1024,7 @@ subColumns.Add().DataField("cost")
 	},
 
 				{
-    text: "Create full Delivery for this sales order",
+    text: formatMessage("Create full Delivery for this sales order"),
     icon: "cart",
     onItemClick: function () {
         const salesOrderNo = e.row.data.SalesOrderNo;
@@ -1070,7 +1091,7 @@ subColumns.Add().DataField("cost")
     }
 },
 								{
-			text: "create invoice for this sales order",
+			text: formatMessage("Create invoice for this sales order"),
 			icon: "box",
 			onItemClick: function () {
 				const salesOrderNo = e.row.data.SalesOrderNo;
@@ -1227,5 +1248,31 @@ $(document).ready(function () {
 						}
 					}
 				});
-
+					$(function () {
+						$("#salesorderims").text(formatMessage("Sales Order"));
+				 });
+					$(function () {
+						$("#quicksalesorder").text(formatMessage("Quick Dice ERP Solutions"));
+				 });
+					$(function () {
+						$("#newsalesorderss").text(formatMessage("New Sales Order"));
+				 });
+					$(function () {
+						$("#salesorderdetails").text(formatMessage("Sales Orders Details"));
+				 });
+					$(function () {
+						$("#totalsalesordersims").text(formatMessage("Total Sales Order"));
+				 });
+					$(function () {
+						$("#pendingforapprovalssales").text(formatMessage("Pending for Approvals"));
+				 });
+					$(function () {
+						$("#neworderssalesvalue").text(formatMessage("New Sales Orders Value"));
+				 });
+					$(function () {
+						$("#totalnumbersalesvalue").text(formatMessage("Total Number of Sales Orders Value"));
+				 });
+					$(function () {
+						$("#salesordervalues").text(formatMessage("Sales Orders Value"));
+				 });
 </script>

@@ -123,11 +123,6 @@
         border-bottom: 2px;
     }
 
-    .mainContainer {
-        margin-top: 1em;
-        width: 100%;
-    }
-
     .playIcon {
         display: none;
     }
@@ -235,7 +230,6 @@
                         )
                         .LabelMode(EditorLabelMode.Floating)
                          .ID("InventoryMasterGroups")
-                        .Width(400)
                         .OpenOnFieldClick(false)//
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
@@ -405,15 +399,31 @@
                               .OnRowUpdating("onProjectUpdating")                   
                                 .Columns(columns =>
                                 {
-                                    columns.Add().DataField("GsgroupId").Caption("Code").Visible(false).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+                                    columns.Add().DataField("GsgroupId")
+                                    .Caption(new JS("formatMessage('Group ID')"))
+                                    .Visible(false)
+                                    .Alignment(HorizontalAlignment.Center)
+                                    .AllowEditing(false);
 
-                                    columns.Add().DataField("GsgroupCode").Caption("Code").Alignment(HorizontalAlignment.Center);
-                                    columns.Add().DataField("GsgroupName").Caption("GS Group").Alignment(HorizontalAlignment.Center);
-                                    columns.Add().DataField("GsgroupNameAr").Caption("GS Group (In Arabic)").Alignment(HorizontalAlignment.Center);
-                                    columns.Add().DataField("Gscategory").Caption("Category").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("GsgroupCode")
+                                    .Caption(new JS("formatMessage('Group Code')"))
+                                    .Alignment(HorizontalAlignment.Center);
+
+                                    columns.Add().DataField("GsgroupName")
+                                    .Caption(new JS("formatMessage('GS Group')"))
+                                    .Alignment(HorizontalAlignment.Center);
+
+                                    columns.Add().DataField("GsgroupNameAr")
+                                    .Caption(new JS("formatMessage('GS Group (Arabic)')"))
+                                    .Alignment(HorizontalAlignment.Center);
+
+                                    columns.Add().DataField("Gscategory")
+                                    .Caption(new JS("formatMessage('Category')"))
+                                    .Alignment(HorizontalAlignment.Center);
 
 
-                                    columns.Add().DataField("InventoryMasterGroupId").Caption("Inventory Master Groups").Width(200)
+
+                                    columns.Add().DataField("InventoryMasterGroupId").Caption(new JS("formatMessage('Inventory Master Groups')")).Width(200)
                                     .Lookup(lookup => lookup
                                     .DataSource(d => d.WebApi()
                                     .Controller("StockInventory")
@@ -425,7 +435,7 @@
                                     .DisplayExpr("InventoryMasterGroup")
                                     );
                                    
-                                columns.Add().DataField("IsServicesGroup").Caption("Is Services?")
+                                columns.Add().DataField("IsServicesGroup").Caption(new JS("formatMessage('Is Services?')"))
                                     .Alignment(HorizontalAlignment.Center)
                                     .DataType(GridColumnDataType.Boolean)
                                     .CellTemplate(new JS(
@@ -458,7 +468,7 @@
                                     });
 
                                 })
-                                .Height("40vh")
+                                .Height("45vh")
                                 .ColumnAutoWidth(true)
                                 .AllowColumnReordering(true)
                                 .AllowColumnResizing(true)
@@ -480,7 +490,7 @@
     </table>
 
 
-    <div class="footer-fixed" style="display:flex; justify-content: space-between;">
+    <div class="footer-fixed1" style="display:flex; gap:10px;margin:10px">
         <div class="btn-container">
             @(Html.DevExtreme().Button()
                 .ID("btnUpdate")

@@ -380,7 +380,7 @@
             .Columns(columns =>
             {
              
-                columns.Add().DataField("UnitType").Caption("Type");
+                columns.Add().DataField("UnitType").Caption(new JS("formatMessage('Type')"));
              
             })
             .WordWrapEnabled(true)
