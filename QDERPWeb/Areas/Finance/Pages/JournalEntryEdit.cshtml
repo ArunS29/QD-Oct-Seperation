@@ -12,6 +12,59 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
+/* --- Default icon colors --- */
+.menu-icon-costallocation::before {
+    color: #007bff !important;
+}
+.menu-icon-propertyallocation::before {
+    color: #28a745 !important;
+}
+.menu-icon-employeeallocation::before {
+    color: #ffc107 !important;
+}
+.menu-icon-deleteallselectedlineitems::before {
+    color: #dc3545 !important;
+}
+
+/* --- Hover Effect --- */
+.custom-menu-item:hover {
+    background-color: var(--title-background-color) !important;  /* Blue background */
+    color: white !important;               /* Text color white */
+}
+
+.custom-menu-item:hover .dx-icon::before {
+    color: white !important; /* Icon turns white */
+}
+
+
+/* Align side-by-side with spacing */
+.journal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* space between textbox and button */
+}
+
+/* Ensure button is tall enough */
+.btn-post-journal.dx-button {
+    height: 80px !important; /* override default */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-post-journal .dx-button-content {
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Optional: Make button wrapper fixed width */
+.journal-button-wrapper {
+    flex-shrink: 0; /* prevent button from shrinking */
+}
+
+
     #dataGrid .dx-data-row {
         border-bottom: 1px solid lightgrey;
     }
@@ -209,15 +262,41 @@
                             )
                         }
         </div>
-        <div class="form-group flex-grow-1">
-            @* <label for="VoucherNarration" class="form-label">Voucher Narration</label> *@
-            @(Html.DevExtreme().TextArea()
-                        .ID("VoucherNarration")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Label(new JS("formatMessage('Voucher Narration')"))
-                        .Width(1390)
-                        )
-        </div>
+       <div class="form-group d-flex" style="gap: 10px; align-items: flex-start;">
+    <div style="flex: 1 1 auto;">
+        @(Html.DevExtreme().TextArea()
+            .ID("VoucherNarration")
+            .LabelMode(EditorLabelMode.Floating)
+            .Label(new JS("formatMessage('Voucher Narration')"))
+            .Height(80)
+            .Width(1050) 
+        )
+    </div>
+
+    <div style="flex: 0 0 300px;">
+        @(Html.DevExtreme().DropDownBox()
+            .ID("ddlBaseCurrency")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetCurrencyList")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CurrencyExchangeId")
+            )
+            .ValueExpr("CurrencyExchangeId")
+            .DisplayExpr("CurrencyName")
+            .Value(baseCurrencyIdnew)
+            .Label(new JS("formatMessage('Base Currency')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+            .ShowClearButton(true)
+            .AcceptCustomValue(false)
+            .DropDownOptions(o => o.Width(300))
+            .ReadOnly(true)
+            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+        )
+    </div>
+</div>
+
     </div>
 
 
@@ -394,28 +473,36 @@
             .OnRowRemoving("onjournalrowremoving")
             )
     </div>
-    <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center" style="height:100px!important;">
+  <div class="col-md-2 col-sm-6 d-flex align-items-center journal-container">
+    <div class="flex-grow-1">
         @(Html.DevExtreme().TextBox()
-                .ID("journalvoucher")
-                .Value(null)
-                .ReadOnly(true))
-        @(Html.DevExtreme().Button()
-                .ID("btnPostJournal")
-                .Template(@<text>
-            <div class="text-center" style="line-height: 1;">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
-                        <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
-                    </svg>
-                    <div style="font-size: 13px; margin-top: 4px;" id="postthejournal"></div>
-                </div>
-            </div>
-        </text>)
-                .Height(80)
-                .Width("100%")
-                .OnClick("onPostJournalClick")
-                )
+            .ID("journalvoucher")
+            .Value(null)
+            .ReadOnly(true)
+            .ElementAttr("style", "width: 200px;"))
     </div>
+
+    <div class="journal-button-wrapper">
+        @(Html.DevExtreme().Button()
+            .ID("btnPostJournal")
+            .ElementAttr("class", "btn-post-journal")
+            .Template(@<text>
+                <div class="text-center" style="line-height: 1;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
+                            <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
+                        </svg>
+                        <div style="font-size: 13px; margin-top: 4px;" id="postthejournal"></div>
+                    </div>
+                </div>
+            </text>)
+            .Width(90) 
+            .OnClick("onPostJournalClick")
+        )
+    </div>
+</div>
+
+
 
 
     <div class="row g-3 align-items-end" style="display:none;">
@@ -1055,25 +1142,17 @@
         dataGrid.option("onContextMenuPreparing", function (e) {
             if (e.row && e.row.rowType === "data") {
                 e.event.preventDefault();
-                
-                // Get selected row data
+
                 let rowData = e.row.data;
                 let selectedAccountHead = rowData.AccountHead;
                 let selectedAccountId = rowData.AccountId;
                 let selectedDrCr = rowData.DrCr;
                 let SelectedEntryNo = rowData.JournalChildNo;
                 let selectedAmount = selectedDrCr === "Dr" ? rowData.DrAmount : rowData.CrAmount;
-                selectedAmount = parseFloat(selectedAmount).toFixed(2); // Ensuring numeric format
-                var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
-                if (effectiveDate) {
-                    var formattedDate = new Date(effectiveDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric"
-                    }).replace(",", ""); // Remove comma if present
+                selectedAmount = parseFloat(selectedAmount).toFixed(2);
 
+               
 
-                } // Fetch from input field
                 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                 const params = {
                     VoucherNo: voucherNo,
@@ -1083,17 +1162,19 @@
                     VoucherAmount: selectedAmount,
                     DrCr: selectedDrCr
                 };
-                // Define context menu options
+
+                // ✅ Define context menu options WITH ICONS & COLORS
                 let menuItems = [
                     {
                         text: "Cost Allocation",
+                        icon: "money",              // dx icon
+                        color: "#007bff",           // Blue
                         onItemClick: function () {
                             $.ajax({
                                 type: "GET",
                                 url: `/api/JournalEntryEdit/IsPLItemLedger?accountId=${encodeURIComponent(selectedAccountId)}`,
                                 success: function (isPLItem) {
-                                    
-                                    if (isPLItem== true) {
+                                    if (isPLItem === true) {
                                         openAllocationPopup("Cost", params);
                                     } else {
                                         DevExpress.ui.dialog.alert(
@@ -1111,36 +1192,68 @@
                     },
                     {
                         text: "Property Allocation",
+                        icon: "home",
+                        color: "#28a745",           // Green
                         onItemClick: function () {
                             openAllocationPopup("Property", params);
                         }
                     },
                     {
                         text: "Employee Allocation",
+                        icon: "user",
+                        color: "#ffc107",           // Yellow
                         onItemClick: function () {
                             openAllocationPopup("Employee", params);
                         }
                     },
                     {
                         text: "Delete All Selected Line Items",
+                        icon: "trash",
+                        color: "#dc3545",           // Red
                         onItemClick: function () {
                             Deleteallrecords();
                         }
                     }
                 ];
 
-                // Create context menu and attach it to the clicked cell
+                // ✅ Create context menu with custom template for colors
                 let contextMenu = $("<div>").appendTo("body").dxContextMenu({
                     dataSource: menuItems,
                     target: e.cellElement,
                     showEvent: "dxcontextmenu",
+                   itemTemplate: function (itemData, itemIndex, itemElement) {
+                        // Add a wrapper so we can style hover effect
+                        let $container = $("<div>")
+                            .addClass("custom-menu-item") // ✅ custom class for hover
+                            .css({
+                                display: "flex",
+                                alignItems: "center",
+                                padding: "6px 10px",
+                                cursor: "pointer"
+                            });
+
+                        // Icon
+                        if (itemData.icon) {
+                            $("<i>")
+                                .addClass("dx-icon dx-icon-" + itemData.icon)
+                                .addClass("menu-icon-" + itemData.text.replace(/\s+/g, '').toLowerCase())
+                                .css({ marginRight: "8px", fontSize: "16px" })
+                                .appendTo($container);
+                        }
+
+                        // Text
+                        $("<span>")
+                            .text(itemData.text)
+                            .appendTo($container);
+
+                        itemElement.append($container);
+                   },
                     onItemClick: function (itemData) {
                         itemData.itemData.onItemClick();
                     },
                     onHidden: function () {
                         if (contextMenu) {
-                            contextMenu.dispose();  // Properly dispose of the instance
-                            // contextMenuElement.remove();  // Remove the element from the DOM
+                            contextMenu.dispose();
                         }
                     }
                 }).dxContextMenu("instance");
@@ -1148,6 +1261,7 @@
                 contextMenu.show();
             }
         });
+
     });
 
     // Function to open modal and load the URL with passed data
@@ -1511,6 +1625,10 @@
     const popupInstances = {}; // Global object to store popups by voucherEntryNo
 
     function openAllocationPopup(allocationType, params) {
+         if (!params.AccountId) {
+        DevExpress.ui.notify("Please select the ledger account.", "warning", 2000);
+        return;
+    }
         const queryString = Object.keys(params)
             .map(key => `${key}=${encodeURIComponent(params[key])}`)
             .join('&');

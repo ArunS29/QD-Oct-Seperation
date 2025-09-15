@@ -114,17 +114,17 @@
         .LoadAction("GetAccountGroupsOrdering") // Specify the action that returns data
         )
         .RemoteOperations(true)// Enable remote data operations
-
+        .Selection(s => s.Mode(SelectionMode.Single))
         .Columns(columns =>
         {
-            columns.AddFor(m => m.ChartOfAccountsOrder).Caption(new JS("formatMessage('Chart Of Accounts Order')")).Alignment(HorizontalAlignment.Center);
+            columns.AddFor(m => m.ChartOfAccountsOrder).Caption(new JS("formatMessage('Chart Of Accounts Order')")).Alignment(HorizontalAlignment.Center).AllowEditing(false);
             columns.AddFor(m => m.ChartOfAccountsOrder).Caption(new JS("formatMessage('Chart Of Accounts Order')")).Alignment(HorizontalAlignment.Center)
-            .GroupIndex(0);
-            columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Center);
+            .GroupIndex(0).AllowEditing(false);
+            columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Center).AllowEditing(false);
             columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Center)
-            .GroupIndex(1);
-            columns.AddFor(m => m.AccountGroupId).Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Left);
-            columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left);
+            .GroupIndex(1).AllowEditing(false);
+            columns.AddFor(m => m.AccountGroupId).Caption(new JS("formatMessage('Account Group Id')")).Alignment(HorizontalAlignment.Left).AllowEditing(false);
+            columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).AllowEditing(false);
             columns.AddFor(m => m.AccountGroupOrderNo).Caption(new JS("formatMessage('Account Group Order No')")).Alignment(HorizontalAlignment.Left)
            // .SortOrder(SortOrder.Asc)
             .Alignment(HorizontalAlignment.Center)
@@ -148,7 +148,7 @@
         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Hide group panel
         .Grouping(grouping => grouping.AutoExpandAll(true))
         .ShowBorders(true)
-            .RemoteOperations(true)
+        .OnSelectionChanged("onRowSelected")
         .Width("100%")
 
         )
@@ -261,57 +261,57 @@ $(function () {
         // Binding 'moveRowUp' function to the 'btnMoveUp' button
         $("#btnMoveUp").dxButton({
             onClick: function () {
-                moveRowUp();
+                 moveWithinGroup("up");
             }
         });
 
         // Binding 'moveRowDown' function to the 'btnMoveDown' button
         $("#btnMoveDown").dxButton({
             onClick: function () {
-                moveRowDown();
+                moveWithinGroup("down");
             }
         });
     });
 
 
+        function moveWithinGroup(direction) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const selectedRow = grid.getSelectedRowsData()[0];
 
-    //MoveupDown functionality
-
-    function moveRowUp() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var dataSource = dataGrid.getDataSource();
-        var data = getFlatData(dataSource.items()); // Flatten the grouped data
-        //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
-
-        console.log("Flattened Data:", data); // Log flattened data for debugging
-        //   console.log("Selected Row Key:", selectedRowKeys[0]); // Log the selected row key
-
-        // if (selectedRowKeys.length === 0) {
-        //     DevExpress.ui.notify("Please select a row to move", "warning", 1000);
-        //     return;
-        // }
-
-        // Extract the AccountGroupId from the selected row key
-        //var selectedRowKey = selectedRowKeys[0].AccountGroupId;  // Use the AccountGroupId
-        // alert(selectedRowKey)
-
-        // Find the row index based on the selected row key (AccountGroupId)
-        var rowIndex = data.findIndex(item => item.AccountGroupId === selectedAccountGroupId);
-
-        console.log("Row Index:", rowIndex); // Log row index for debugging
-
-        // Proceed only if a valid row is selected and it's not the first row
-        if (rowIndex > 0) {
-            swapRows(data, rowIndex, rowIndex - 1); // Swap rows in the data
-
-            // Update the data source with the new data order
-            dataSource.store().update(data[rowIndex].AccountGroupId, data[rowIndex]);
-            dataSource.store().update(data[rowIndex - 1].AccountGroupId, data[rowIndex - 1]);
-
-            // After swap, select the moved row
-            dataGrid.selectRows([data[rowIndex - 1].AccountGroupId]);
+        if (!selectedRow) {
+            DevExpress.ui.notify("Please select a row first", "warning", 2000);
+            return;
         }
+
+        const payload = {
+            accountGroupId: selectedRow.AccountGroupId,
+            direction: direction
+        };
+
+        $.ajax({
+            url: "/api/AccountGroupsOrdering/SwapWithinGroup",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload), // send proper JSON
+            success: function (response) {
+                if (response.success) {
+                    grid.refresh().done(() => {
+                        grid.selectRows([selectedRow.AccountGroupId], false);
+                        grid.editCell(selectedRow.AccountGroupId, "AccountGroupOrderNo");
+                    });
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 2000);
+                }
+            },
+            error: function (xhr) {
+                console.error("Error:", xhr.responseText);
+                DevExpress.ui.notify("Error occurred while moving row", "error", 2000);
+            }
+        });
     }
+
+
+
 
     // Utility function to flatten grouped data
     function getFlatData(items) {
@@ -332,29 +332,31 @@ $(function () {
         return flatData;
     }
     function moveRowDown() {
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var dataSource = dataGrid.getDataSource();
-        var data = getFlatData(dataSource.items()); // Get flattened data
-        // var selectedRowKeys = dataGrid.option("selectedRowKeys");
+             var grid = $("#dataGrid").dxDataGrid("instance");
+            var index = grid.getRowIndexByKey(grid.getSelectedRowKeys()[0]);
+            var totalRows = grid.totalCount();
+            if (index >= totalRows - 1) return;
 
-        // console.log("Selected Row Key:", selectedRowKeys);
-        // // alert(selectedRowKeys)
-        // if (selectedRowKeys.length === 0) {
-        //     DevExpress.ui.notify("Please select a row to move", "warning", 1000);
-        //     return;
-        // }
+            let dataSource = grid.getDataSource();
+            let store = dataSource.store();
 
-        var rowIndex = data.findIndex(item => item.AccountGroupId === selectedAccountGroupId);
+            dataSource.load().done(function(data) {
+                let currentRow = data[index];
+                let nextRow = data[index + 1];
 
-        console.log("Row Index:", rowIndex);
+                // Swap order numbers
+                let temp = currentRow.AccountGroupOrderNo;
+                currentRow.AccountGroupOrderNo = nextRow.AccountGroupOrderNo;
+                nextRow.AccountGroupOrderNo = temp;
 
-        if (rowIndex < data.length - 1) {
-            swapRows(data, rowIndex, rowIndex + 1);
-            dataGrid.refresh();
-            dataGrid.selectRows([data[rowIndex + 1].AccountGroupId]);
-        } else {
-            console.log("Cannot move row down: Row is already at the bottom.");
-        }
+                // Update both rows in store
+                store.update(currentRow.AccountGroupId, currentRow);
+                store.update(nextRow.AccountGroupId, nextRow);
+
+                dataSource.reload().done(function() {
+                    grid.selectRows([currentRow.AccountGroupId], false);
+                });
+            });
     }
 
 
@@ -391,22 +393,36 @@ $(function () {
 });
 
 
-    // $(document).ready(function () {
-    //     // Retrieve the DataGrid instance
-    //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+             function getSelectedKey(grid) {
+            const keys = grid.getSelectedRowKeys();
+            return keys.length > 0 ? keys[0] : null;
+        }
 
-    //     // Get selected row keys (it returns an array)
-    //     var selectedRowKeys = dataGrid.option("selectedRowKeys");
-    //     console.log("selectedRowKeys:", selectedAccountGroupId);
-    //     // If there's at least one selected row
-    //     if (selectedRowKeys.length > 0) {
-    //         // Retrieve the selected AccountGroupId
-    //         selectedAccountGroupId = selectedRowKeys[0]; // Since KeyExpr is "AccountGroupId"
-    //         console.log("Selected AccountGroupId:", selectedAccountGroupId);
-    //     } else {
-    //         console.log("No row selected");
-    //     }
-    // });
+        function onRowSelected(e) {
+            const grid = e.component;
+            const key = getSelectedKey(grid);
+            if (!key) return;
+            const rowIndex = grid.getRowIndexByKey(key);
+            const orderColIndex = grid.getVisibleColumns().findIndex(c => c.dataField === "AccountGroupOrderNo");
+            if (rowIndex >= 0 && orderColIndex >= 0) {
+                setTimeout(() => grid.editCell(rowIndex, orderColIndex), 10);
+            }
+        }
+
+        // Also ensure when focused row changes programmatically or via keyboard, we open the last column editor
+        function onFocusedRowChanged(e) {
+            const grid = e.component;
+            const key = e.row && e.row.key;
+            if (!key) return;
+
+            const rowIndex = grid.getRowIndexByKey(key);
+            const colIndex = getOrderColumnIndex(grid);
+            if (rowIndex >= 0 && colIndex >= 0) {
+                setTimeout(function () {
+                    grid.editCell(rowIndex, colIndex);
+                }, 10);
+            }
+        }
         $(function () {
                     $("#accountgroupsorderings").text(formatMessage("Account Groups Ordering"));
         });
