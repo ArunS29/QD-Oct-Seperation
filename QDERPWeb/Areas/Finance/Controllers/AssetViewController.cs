@@ -1,4 +1,7 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -6,12 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
-using System;
-
-
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -19,13 +18,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     [ApiController]
     public class AssetViewController : Controller
     {
+        private readonly IUserActionLogger _userActionLogger;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AssetViewController> _logger;
 
-        public AssetViewController(ILogger<AssetViewController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public AssetViewController(ILogger<AssetViewController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
         [HttpGet]
         public async Task<ActionResult> GetAssetView(DataSourceLoadOptions loadOptions)
@@ -277,7 +278,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingAsset.ModifiedOn = now;
 
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Asset Register",
+                    actionDetail: $"Updated: {existingAsset.AssetLedgerNo}",
+                    documentNo: existingAsset.AssetLedgerNo
+                    );
                     return Ok(new { message = "Asset updated successfully." });
                 }
                 catch (Exception ex)
@@ -291,7 +296,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult Delete(string assetLedgerNo)
+        public async Task<IActionResult> DeleteAsync(string assetLedgerNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -300,7 +305,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var param = new SqlParameter("@AssetLedgerNo", assetLedgerNo);
 
                     var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo", param);
-
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Asset Register",
+                    actionDetail: $"Deleted: {assetLedgerNo}",
+                    documentNo: assetLedgerNo
+                    );
                     if (result == 0)
                     {
                         return Ok(new { message = "No records were deleted. The provided AssetLedgerNo may not exist." });

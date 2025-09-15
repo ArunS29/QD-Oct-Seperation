@@ -316,17 +316,17 @@
             .Items(items =>
             {
                 items.Add()
-                    .Text("Tax Summary Report -Purchases")
+                    .Text(new JS("formatMessage('Tax Summary Report -Purchases')"))
                     .Icon("file")
                     .Option("color", "#FF7043"); // Orange
 
                 items.Add()
-                    .Text("Tax Summary Report-Purchases(in Arabic)")
+                    .Text(new JS("formatMessage('Tax Summary Report-Purchases(in Arabic)')"))
                     .Icon("file")
                     .Option("color", "#00ACC1"); // Cyan
 
                 items.Add()
-                    .Text("VATPurchase & Expenses Report")
+                    .Text(new JS("formatMessage('VAT Purchase & Expenses Report')"))
                     .Icon("file")
                     .Option("color", "#AB47BC") // Purple
                     .OnClick("navigateToPurchase");

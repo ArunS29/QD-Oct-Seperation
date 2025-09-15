@@ -1,6 +1,11 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -8,11 +13,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 using QDERPWeb.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -23,11 +24,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ExpenseClaimController> _logger;
-
+        private readonly IUserActionLogger _userActionLogger;
         private readonly FcmService _fcmService;
 
-        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
+        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
@@ -449,7 +451,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                                    var notifyRequest = new NotificationRequest
+                await _userActionLogger.LogAsync(
+      module: "Finance > Expense Claim",
+      actionDetail: $"Saved Voucher: {model.ClaimRefNo}",
+      documentNo: model.ClaimRefNo
+  );
+
+                var notifyRequest = new NotificationRequest
              {
                  UserId = userIdStr, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
@@ -502,7 +510,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.SubmittedOn = submittedOn;
 
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Expense Claim",
+                    actionDetail: $"Submitted: {claim.ClaimRefNo}",
+                    documentNo: claim.ClaimRefNo
+                    );
                     var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
@@ -550,6 +562,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
 
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Verified Claim: {model.ClaimRefNo}",
+          documentNo: model.ClaimRefNo
+      );
+
                     var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
@@ -594,8 +612,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.ApprovedOn = approveOn;
 
                     await dbContext.SaveChangesAsync();
-
-                        var notifyRequest = new NotificationRequest
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Approved Claim: {model.ClaimRefNo}",
+          documentNo: model.ClaimRefNo
+      );
+                    var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
@@ -1507,7 +1529,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                strategy.Execute(() =>
+                strategy.Execute(async () =>
                 {
                     using var transaction = dbContext.Database.BeginTransaction();
 
@@ -1525,6 +1547,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
 
                     dbContext.SaveChanges();
+
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Deleted Claim: {master.ClaimRefNo}",
+          documentNo: master.ClaimRefNo
+      );
                     transaction.Commit();
                 });
 
