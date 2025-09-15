@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Globalization;
+using Azure.Storage.Blobs;
 using DevExpress.CodeParser;
 using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
@@ -10,8 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
-using System.Globalization;
+using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -22,12 +24,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<LedgerDocumentsFController> _logger;
         private readonly IConfiguration _configuration; // ✅ Add this
-
-        public LedgerDocumentsFController(ILogger<LedgerDocumentsFController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
+        private readonly IUserActionLogger _userActionLogger;
+        public LedgerDocumentsFController(ILogger<LedgerDocumentsFController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _configuration = configuration;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -321,10 +324,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     dbContext.Tbl20116LedgerDocuments.Add(document);
                     uploadedDocs.Add(document);
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Attachments",
+                    actionDetail: $"Added: {docNo}",
+                    documentNo: docNo
+                    );
                 }
 
                 await dbContext.SaveChangesAsync();
-
+               
                 return Ok(new
                 {
                     success = true,
@@ -495,7 +503,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existing.ModifiedOn = DateTime.UtcNow;
 
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                   module: "Finance > Attachments",
+                   actionDetail: $"Updated: {doc.DocumentNo}",
+                   documentNo: doc.DocumentNo
+                   );
                 // ✅ Optional: Return file URL from AzurePath
                 var blobHelper = new AzureBlobHelper(
                     _configuration.GetConnectionString("AzureBlobStorage"),
@@ -557,7 +569,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok(result);
         }
 
-       
         [HttpDelete]
         public async Task<IActionResult> DeleteDocumentEntry([FromBody] DocumentDeleteRequest request)
         {
@@ -581,7 +592,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             dbContext.Tbl20116LedgerDocuments.Remove(doc);
             await dbContext.SaveChangesAsync();
-
+            await _userActionLogger.LogAsync(
+            module: "Finance > Attachments",
+            actionDetail: $"Deleted: {doc.DocumentNo}",
+            documentNo: doc.DocumentNo
+            );
             return Ok();
         }
 

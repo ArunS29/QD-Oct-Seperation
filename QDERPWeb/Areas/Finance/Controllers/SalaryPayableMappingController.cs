@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -20,11 +21,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SalaryPayableMappingController> _logger;
-
-        public SalaryPayableMappingController(ILogger<SalaryPayableMappingController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public SalaryPayableMappingController(ILogger<SalaryPayableMappingController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -273,7 +275,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateBankClearedOn(string VoucherEntryNo, DateTime? BankClearedOn, string PaymentStatus)
+        public async Task<IActionResult> UpdateBankClearedOnAsync(string VoucherEntryNo, DateTime? BankClearedOn, string PaymentStatus)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -306,6 +308,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Bank Reconcialiation",
+                    actionDetail: $"Updated: {voucher.VoucherNo}",
+                    documentNo: voucher.VoucherNo
+                    );
 
                     return Ok("Voucher entry updated successfully.");
                 }
