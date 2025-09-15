@@ -62,7 +62,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
 
             var tenant = _resolvedTenant; // ✅ Use cached tenant instead of HttpContext
-            if (_drCrWithEmpAllocations.Contains(drCr) && tenant != null)
+            if (_drCrWithPropAllocations.Contains(drCr) && tenant != null)
             {
                 var subReport = new rpt201Property();
                 subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);

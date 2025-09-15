@@ -23,8 +23,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = @"SELECT * FROM [qry20124SubLedgerForVouchers]
-                                     WHERE VoucherNo = @VoucherNo AND DrCr = @DrCr";
+                    string query = @"SELECT * FROM [tbl20122PropertyAllocationMaster]
+                                     WHERE VoucherNo = @VoucherNo AND PropertyAllocDrCr = @DrCr";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
