@@ -1,5 +1,6 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using DnsClient.Protocol;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,9 +11,9 @@ using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
-using SkiaSharp;
 //using QD.ERP.Web.DAL.Entities;
 using QDERPWeb.Models;
+using SkiaSharp;
 
 namespace Form.Areas.Finance.Controllers
 {
@@ -1687,7 +1688,11 @@ namespace Form.Areas.Finance.Controllers
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                  module: "Finance > Voucher",
+                  actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                  documentNo: voucherEntries[0].VoucherNo
+              );
                     //SaveVoucher(voucherEntries);
 
 
@@ -1893,6 +1898,11 @@ namespace Form.Areas.Finance.Controllers
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                  module: "Finance > Cash Payment",
+                  actionDetail: $"AddBr voucher: {voucherEntries}, Entries: {voucherEntries}, AccountHead: {PaymentAccoutHeadName}",
+                  documentNo: voucherEntries[0].VoucherNo
+              );
 
                     //SaveVoucher(voucherEntries);
 
@@ -2161,7 +2171,11 @@ namespace Form.Areas.Finance.Controllers
 
                         //  dbContext.Tbl201VoucherMasters.Remove(masterrecord);
                         await dbContext.SaveChangesAsync();
-
+                        await _userActionLogger.LogAsync(
+            module: "Finance > Cash Receipts",
+            actionDetail: $"Delete voucher: {VoucherNo}, Entries: {voucherEntryNo}, AccountHead: {PaymentAccoutHeadName}",
+            documentNo: VoucherNo
+        );
                     }
 
                     //SaveVoucher(voucherEntries);
@@ -2418,8 +2432,8 @@ namespace Form.Areas.Finance.Controllers
                 dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
-              module: "Finance > Cash Receipts",
-              actionDetail: $"Saved voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+              module: "Finance > Sales",
+              actionDetail: $"Sales Add voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
               documentNo: voucherEntries[0].VoucherNo
           );
 
@@ -2676,8 +2690,13 @@ namespace Form.Areas.Finance.Controllers
 
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
-                    await dbContext.SaveChangesAsync();
 
+                    await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                   module: "Finance > Sales",
+                   actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                   documentNo: voucherEntries[0].VoucherNo
+               );
                     //SaveVoucher(voucherEntries);
 
 
@@ -2761,6 +2780,7 @@ namespace Form.Areas.Finance.Controllers
                             dbContext.Tbl201SubLedgerMasters.UpdateRange(existingSubLedger);
                         }
                         await dbContext.SaveChangesAsync();
+
                     }
 
                     foreach (var entry in resultList)
@@ -2798,7 +2818,7 @@ namespace Form.Areas.Finance.Controllers
 
                                 dbContext.Tbl201VoucherEntries.Update(existingEntry);
                                 dbContext.SaveChanges();
-
+   
                             }
                             else if (IsMatchingEntry == true && hasCrEntries != true)//Dr - Cr
                             {
@@ -2915,6 +2935,11 @@ namespace Form.Areas.Finance.Controllers
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                  module: "Finance > Purchase",
+                  actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                  documentNo: voucherEntries[0].VoucherNo
+              );
 
                     //SaveVoucher(voucherEntries);
 
@@ -3173,7 +3198,11 @@ namespace Form.Areas.Finance.Controllers
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                  module: "Finance > Purchase",
+                  actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                  documentNo: voucherEntries[0].VoucherNo
+              );
                     //SaveVoucher(voucherEntries);
 
 

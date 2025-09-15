@@ -544,6 +544,24 @@
 		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+		gap: 10px;
+	}
+
+	.form-grid-4 {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 15px;
+		align-items: center;
+	}
+
+	.card {
+		background: #fff;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	}
 	
 </style>
 
@@ -629,6 +647,7 @@
 							@(
 														Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl90121eInvoiceLogTable>()
 														.ID("B2BdataGrid")
+														.DataSource(new JS("[]"))
 														.RemoteOperations(false)
 														.Columns(columns =>
 														{
@@ -646,7 +665,19 @@
 
 															columns.AddFor(m => m.SubmissionStatusText)
 															.Caption(new JS("formatMessage('Submission Status')"))
-															.Visible(true);
+															.Visible(true)
+															.EditCellTemplate(@<text>
+												   								function(cellElement, cellInfo) {
+												   								$("<textarea></textarea>")
+												   								.css({ width: "100%", height: "100px" })
+												   								.val(cellInfo.value)
+												   								.on("change", function() {
+												   								cellInfo.setValue($(this).val());
+												   								})
+												   								.appendTo(cellElement);
+												   								}
+												   							</text>);
+
 
 															columns.AddFor(m => m.SubmittedBy)
 															.Caption(new JS("formatMessage('Submitted By')"))
@@ -658,7 +689,18 @@
 
 															columns.AddFor(m => m.ZatcaResponse)
 															.Caption(new JS("formatMessage('Zatca Response')"))
-															.Visible(true);
+															.Visible(true)
+															.EditCellTemplate(@<text>
+												   								function(cellElement, cellInfo) {
+												   								$("<textarea></textarea>")
+												   								.css({ width: "100%", height: "100px" })
+												   								.val(cellInfo.value)
+												   								.on("change", function() {
+												   								cellInfo.setValue($(this).val());
+												   								})
+												   								.appendTo(cellElement);
+												   								}
+												   							</text>);
 														})
 														.Selection(selection => selection.Mode(SelectionMode.Single))
 														.AllowColumnReordering(true)
@@ -802,67 +844,78 @@
 
 
 		<div id="tab-content-4" class="tab-content">
-			<div class="card-container" style="display: flex; gap: 20px;">
+			<div class="card-container" style="display: flex; gap: 20px; align-items: flex-start;">
 				<!-- Payment & Supply Details -->
-				<div style="flex: 1;">
+				<div class="card" style="flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
 					<h3>Payment & Supply Details</h3>
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
-						</tr>
-					</table>
+					<div class="form-grid">
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Floating))
+					</div>
 				</div>
 
 				<!-- Print Settings -->
-				<div style="flex: 1;">
+				<div class="card" style="flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
 					<h3>Print Settings</h3>
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')")).ID("cbxShowCompanySeal").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')")).ID("cbxShowSignature").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')")).ID("cbxPrintInvoice").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (YYYY-MM-DD)')")).ID("cbxUseDateFormat1").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (DD-MM-YYYY)')")).ID("cbxUseDateFormat2").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signature At Bottom')")).ID("cbxSignature").Value(null))</td>
-							<td>@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Item')")).ID("cbxUseTotalBeforeTax").Value(null))</td>
-						</tr>
-					</table>
+					<div class="form-grid">
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')")).ID("cbxShowCompanySeal"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')")).ID("cbxShowSignature"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')")).ID("cbxPrintInvoice"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (YYYY-MM-DD)')")).ID("cbxUseDateFormat1"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (DD-MM-YYYY)')")).ID("cbxUseDateFormat2"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signature At Bottom')")).ID("cbxSignature"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Item')")).ID("cbxUseTotalBeforeTax"))
+					</div>
 				</div>
 			</div>
 
 			<!-- Advance & Retention Section -->
-			<div class="card-container">
+			<div class="card" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
 				<h3>Advance & Retention</h3>
-				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-					<!-- Row 1 -->
-					<tr>
-						<td>@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance").Width("90%"))</td>
-						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate3").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
-						<td>@(Html.DevExtreme().Button().ID("convertToArabic1").Height(0).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { AdvanceconvertToArabic(); }"))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))</td>
-					</tr>
+				<div class="form-grid-4">
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate3").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic1").Icon("fas fa-language").OnClick("function() { AdvanceconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))
+					</div>
 
-					<!-- Row 2 -->
-					<tr>
-						<td>@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions").Width("90%"))</td>
-						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate4").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
-						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic2").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { OtherDeductionsconvertToArabic(); }"))</span></td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))</td>
-					</tr>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate4").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic2").Icon("fas fa-language").OnClick("function() { OtherDeductionsconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))
+					</div>
 
-					<!-- Row 3 -->
-					<tr>
-						<td>@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention").Width("90%"))</td>
-						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate5").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
-						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic3").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { RetentionconvertToArabic(); }"))</span></td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))</td>
-					</tr>
-				</table>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate5").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic3").Icon("fas fa-language").OnClick("function() { RetentionconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -1174,19 +1227,24 @@
 		});
 	}
 
-		 function getInvoiceLog(invNo,XMLResponse) {
+			 function getInvoiceLog(invNo, XMLResponse) {
 		$.ajax({
-			url: "/api/VATZatca/GetInvoiceLog/" + invNo,
+			url: "/api/VATZatca/GetInvoiceLog",
 			type: "GET",
+			data: { invoiceNo: invNo },  // pass as query string parameter
 			success: function (res) {
-				if (res.Success) {
+				if (res) {
 					DevExpress.ui.notify("Invoice log fetched successfully", "success", 2000);
-					console.log("Invoice Log:", res.Data);
+					console.log("Invoice Log:", res);
 
-					// Example: show status in console
-					console.log("Invoice Status:", res.Data.InvoiceStatus);
+					// Bind response data to B2BdataGrid
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					grid.option("dataSource", [res]); // wrap in array if single record
+
+					// Show status
+					console.log("Invoice Status:", res.InvoiceStatus);
 				} else {
-					DevExpress.ui.notify(res.Message || "No log found", "warning", 3000);
+					DevExpress.ui.notify("No log found", "warning", 3000);
 				}
 			},
 			error: function (xhr) {
@@ -1195,6 +1253,7 @@
 			}
 		});
 	}
+
 
 		function getInvoiceMaster(invoiceNo) {
 		if (!invoiceNo) {
