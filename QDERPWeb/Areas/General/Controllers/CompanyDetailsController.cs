@@ -538,8 +538,47 @@ namespace QD.ERP.Web.Areas.General.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> SetAllVoucherDates([FromBody] DateTime? lockedDate)
+        {
+if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
 
+            if (lockedDate == null)
+                return BadRequest("Date is required.");
 
+            var allRows = dbContext.Tbl90117VoucherDateLockings.ToList();
+            foreach (var row in allRows)
+            {
+                row.VoucherDateLocked = lockedDate;
+            }
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucherDateLockedRow([FromBody] Tbl90117VoucherDateLocking model)
+        {
+if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            if (model == null || string.IsNullOrEmpty(model.VoucherTypeCode))
+                return BadRequest("Invalid data.");
+
+            var row = await dbContext.Tbl90117VoucherDateLockings
+                .FirstOrDefaultAsync(x => x.VoucherTypeCode == model.VoucherTypeCode);
+
+            if (row == null)
+                return NotFound();
+
+            row.VoucherDateLocked = model.VoucherDateLocked;
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
+      
     }
 
 
