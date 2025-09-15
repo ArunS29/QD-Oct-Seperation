@@ -260,6 +260,7 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
             this.xrSubreport1 = new DevExpress.XtraReports.UI.XRSubreport();
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPanel1 = new DevExpress.XtraReports.UI.XRPanel();
@@ -327,7 +328,7 @@
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
             this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
-            this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
+            this.xrSubreport3 = new DevExpress.XtraReports.UI.XRSubreport();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -541,6 +542,7 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrSubreport3,
             this.xrSubreport2,
             this.xrSubreport1,
             this.xrLabel5,
@@ -548,15 +550,22 @@
             this.xrLabel14,
             this.xrLabel15,
             this.xrLabel16});
-            this.Detail.HeightF = 80.33311F;
+            this.Detail.HeightF = 79.83312F;
             this.Detail.Name = "Detail";
+            // 
+            // xrSubreport2
+            // 
+            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(71.73178F, 44.9998F);
+            this.xrSubreport2.Name = "xrSubreport2";
+            this.xrSubreport2.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201empReport();
+            this.xrSubreport2.SizeF = new System.Drawing.SizeF(418.0106F, 13F);
             // 
             // xrSubreport1
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(72.73177F, 28.62528F);
             this.xrSubreport1.Name = "xrSubreport1";
             this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.Register.subGroup();
-            this.xrSubreport1.SizeF = new System.Drawing.SizeF(417.0107F, 28.70783F);
+            this.xrSubreport1.SizeF = new System.Drawing.SizeF(417.0107F, 15.3745F);
             // 
             // xrLabel5
             // 
@@ -571,7 +580,7 @@
             this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(12.49999F, 0.1667277F);
             this.xrLabel5.Name = "xrLabel5";
             this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel5.SizeF = new System.Drawing.SizeF(60.23179F, 80.16637F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(60.23179F, 79.66639F);
             this.xrLabel5.StyleName = "DetailData1";
             this.xrLabel5.StylePriority.UseBackColor = false;
             this.xrLabel5.StylePriority.UseBorderColor = false;
@@ -640,7 +649,7 @@
             this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(490.0535F, 0F);
             this.xrLabel14.Name = "xrLabel14";
             this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(131.7028F, 80.3331F);
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(131.7028F, 79.83312F);
             this.xrLabel14.StyleName = "DetailData1";
             this.xrLabel14.StylePriority.UseBackColor = false;
             this.xrLabel14.StylePriority.UseBorderColor = false;
@@ -667,7 +676,7 @@
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(619.3893F, 0.1667277F);
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(130.8661F, 80.16637F);
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(130.8661F, 79.66639F);
             this.xrLabel15.StyleName = "DetailData1";
             this.xrLabel15.StylePriority.UseBackColor = false;
             this.xrLabel15.StylePriority.UseBorderColor = false;
@@ -695,7 +704,7 @@
             this.xrLabel16.Multiline = true;
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel16.SizeF = new System.Drawing.SizeF(302.7446F, 80.3331F);
+            this.xrLabel16.SizeF = new System.Drawing.SizeF(302.7446F, 79.83312F);
             this.xrLabel16.StyleName = "DetailData1";
             this.xrLabel16.StylePriority.UseBackColor = false;
             this.xrLabel16.StylePriority.UseBorderColor = false;
@@ -2163,12 +2172,12 @@
             selectQuery2});
             this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
             // 
-            // xrSubreport2
+            // xrSubreport3
             // 
-            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(71.73178F, 57.33312F);
-            this.xrSubreport2.Name = "xrSubreport2";
-            this.xrSubreport2.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201empReport();
-            this.xrSubreport2.SizeF = new System.Drawing.SizeF(418.0106F, 23F);
+            this.xrSubreport3.LocationFloat = new DevExpress.Utils.PointFloat(72.73178F, 58.99977F);
+            this.xrSubreport3.Name = "xrSubreport3";
+            this.xrSubreport3.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201Property();
+            this.xrSubreport3.SizeF = new System.Drawing.SizeF(417.0106F, 16.20842F);
             // 
             // cashPaymentformat2
             // 
@@ -2286,5 +2295,6 @@
         private DevExpress.XtraReports.UI.XRSubreport xrSubreport1;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
         private DevExpress.XtraReports.UI.XRSubreport xrSubreport2;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport3;
     }
 }

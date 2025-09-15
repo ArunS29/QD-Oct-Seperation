@@ -87,11 +87,8 @@
         display: none;
     }
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="BankReconciliation" class="no-border-title"></div>
-    </div>
-</div>
+
+
 <div>
     @await Html.PartialAsync("BankReconcialiationFooter")
 </div>
@@ -458,7 +455,8 @@ $(document).ready(function () {
                         text: "Clear All Selected Voucher",
                         onItemClick: function () {
                             if (selectedVoucherEntryNo.length === 0 || selectedVoucherDate.length === 0) {
-                                alert("Please select at least one row.");
+                               DevExpress.ui.notify("Please select at least one row.", "warning", 3000);
+
                                 return;
                             }
 
@@ -475,10 +473,8 @@ $(document).ready(function () {
                                 url: url,
                                 type: "POST",
                                 success: function (response) {
-                                    alert("All selected vouchers hss been set as reconciled.");
-                                    alert("Bank Reconciliation updated Successfully!");
-                                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
-                                    dataGrid.refresh();
+                                     DevExpress.ui.notify("All selected vouchers hss been set as reconciled.", "success", 3000);
+                                         Reloadgriddata();
                                 },
                                 error: function (xhr) {
                                     alert("Error updating BankClearedOn: " + xhr.responseText);
@@ -607,7 +603,7 @@ $(document).ready(function () {
     function onUpdateClick() {
     // Validate the inputs
     if (!voucherEntryNo || !bankclearedOn) {
-        alert("Please provide both Voucher Entry No. and Bank Cleared On date.");
+             DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
         return;
     }
 
@@ -626,10 +622,7 @@ $(document).ready(function () {
         url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
         type: "POST",
         success: function (response) {
-                DevExpress.ui.dialog.alert(
-                                "Bank Reconciliation updated Successfully.",
-                            "Update Successful"
-                );
+                    DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
             Reloadgriddata();
         },
         error: function (xhr) {
@@ -637,7 +630,38 @@ $(document).ready(function () {
         }
     });
 }
+    function onUpdatecloseClick() {
+        // Validate the inputs
+        if (!voucherEntryNo || !bankclearedOn) {
+            DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
+                    window.parent.closeModal();
+            return;
+        }
 
+        // Convert the bankclearedOn value to a Date object if it's a string
+        let bankClearedDate = new Date(bankclearedOn);
+        if (isNaN(bankClearedDate.getTime())) {
+            alert("Invalid BankClearedOn date.");
+            return;
+        }
+
+        // Convert to ISO 8601 format
+        let formattedDate = bankClearedDate.toISOString(); // e.g., "2024-10-30T18:30:00.000Z"
+
+        // Send AJAX request to update the BankClearedOn field
+        $.ajax({
+            url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
+            type: "POST",
+            success: function (response) {
+                        DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
+                Reloadgriddata();
+                       window.parent.closeModal();
+            },
+            error: function (xhr) {
+                alert("Error updating BankClearedOn: " + xhr.responseText);
+            }
+        });
+    }
 
     function onEditorPreparing(e) {
 

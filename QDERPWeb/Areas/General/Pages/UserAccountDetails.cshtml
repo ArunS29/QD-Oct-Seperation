@@ -1,4 +1,4 @@
-﻿ @page
+﻿@page
 @using DevExtreme.AspNet.Mvc
 
 @{
@@ -58,6 +58,7 @@
     <div id="tabPanelContainer">
         @(Html.DevExtreme().TabPanel()
                 .ID("accessTabPanel")
+                .OnSelectionChanged("onOuterTabSelectionChanged")
                 .Items(items =>
                 {
                     items.Add()
@@ -455,6 +456,7 @@
                         <div class="tab-menu">
                             @(
                             Html.DevExtreme().Tabs()
+                             .ID("userAccessTabs") 
                             .Items(items =>
                             {
                             items.Add().Icon("preferences").Text("Master Module");
@@ -915,8 +917,7 @@
              let InventoryMpraccessID=null,IsInventoryMpraccessflag=false;
              let PettyCashAccountID=null,IsPettyCashAccountflag=false;
         $(document).ready(function () {
-
-            // Hide all tabs and show the first one
+            // Hide all tab containers and show the first one
             $('.tab-container').hide();
             $('.tab-container').eq(0).show();
 
@@ -954,6 +955,38 @@
                 });
             }
         });
+
+
+	function toggleFilterRow() {
+    // Find the selected vertical tab index
+   var tabsInstance = $("#userAccessTabs").dxTabs("instance");
+    var selectedIndex = tabsInstance ? tabsInstance.option("selectedIndex") : 0;
+
+    // Map tab index to grid IDs
+    var gridIds = [
+        "gridContainer1",      // Master Module
+        "gridContainer",       // Finance
+        "VATgridContainer",    // VAT
+        null,                  // Human Resources (no grid)
+        null,                  // Equipment Rental (no grid)
+        "IMSgridContainer",    // Inventory Management
+        null,                  // Camp Management (no grid)
+        null,                  // Project Control (no grid)
+        null,                  // Scaffolding Rental Solution (no grid)
+        null,                  // Alert Notification (no grid)
+        null                   // Finance Ledger Access (no grid)
+    ];
+
+    var gridId = gridIds[selectedIndex];
+    if (gridId) {
+        var grid = $("#" + gridId).dxDataGrid("instance");
+        if (grid) {
+            var isVisible = grid.option("filterRow.visible");
+            grid.option("filterRow.visible", !isVisible);
+        }
+    }
+}
+	
 
           // Get User ID from URL or TextBox
     function getUserId() {
@@ -1129,6 +1162,7 @@
             });
         }
 
+
         function onDepartmentSelectionChanged(e) {
             const selectedKey = e.selectedRowKeys[0];
             const ddbInstance = $("#ddDepartment").dxDropDownBox("instance");
@@ -1168,7 +1202,16 @@
                 }
             }
         }
+function onOuterTabSelectionChanged(e) {
+    var selectedIndex = e.component.option('selectedIndex');
+    var selectedText = e.component.option('items')[selectedIndex].title || e.component.option('items')[selectedIndex].text;
 
+    if (selectedText === "User Access Details") {
+        $('.tab-container').hide();
+        $('.tab-container').eq(0).show();
+        loadMasterModuleData("Master Module");
+    }
+}
         function onBranchSelectionChanged(e) {
 
             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
@@ -1490,30 +1533,31 @@
             return date.toLocaleString();
         }
 
-        function onTabSelectionChanged(e) {
-            var selectedIndex = e.component.option('selectedIndex');
-            var selectedText = e.component.option('items')[selectedIndex].text;
+       function onTabSelectionChanged(e) {
+    var selectedIndex = e.component.option('selectedIndex');
+    var selectedText = e.component.option('items')[selectedIndex].text;
 
-            // Hide all containers
-            $('.tab-container').hide();
+    // Hide all containers
+    $('.tab-container').hide();
 
-            // Show the correct container
-            $('.tab-container').eq(selectedIndex).show();
+    // Show the correct container
+    $('.tab-container').eq(selectedIndex).show();
 
-            if (selectedText === "Finance") {
-                loadFinanceData(selectedText);
-            }
+    // Always load the correct grid for the selected tab
+    if (selectedText === "Master Module") {
+        loadMasterModuleData(selectedText);
+    } else if (selectedText === "Finance") {
+        loadFinanceData(selectedText);
+    } else if (selectedText === "VAT") {
+        loadVATData(selectedText);
+    } else if (selectedText === "Inventory Management") {
+        loadIMSData(selectedText);
+    }
+    // Add more else-if blocks if you want to load grids for other tabs
+}
 
-            if (selectedText === "Master Module") {
-                loadMasterModuleData(selectedText);
-            }
-            if (selectedText === "VAT") {
-                loadVATData(selectedText);
-            }
-            if (selectedText === "Inventory Management") {
-                loadIMSData(selectedText);
-            }
-        }
+
+
 
         function loadFinanceData(selectedText) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1539,9 +1583,12 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: "Item Name" },                // new column
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
@@ -1598,9 +1645,13 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+               
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: "Item Name" },                // new column
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
@@ -1656,9 +1707,13 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+               
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: "Item Name" },                // new column
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
@@ -1714,10 +1769,13 @@
                 scrolling: {
                     mode: "virtual",
                     showScrollbar: "always"
-                },
+                }, 
+                grouping: { autoExpandAll: true },        
+                groupPanel: { visible: true },      
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: "Item Name" },     
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
