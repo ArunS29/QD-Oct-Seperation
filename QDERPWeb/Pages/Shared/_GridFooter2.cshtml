@@ -216,10 +216,10 @@
             .DropDownOptions(options => options.Width(320))
             .Items(items =>
             {
-                    items.Add().Text(new JS("formatMessage('Bills Payable')")).Option("color", "#4285F4").Icon("search");
-                    items.Add().Text(new JS("formatMessage('Payable Summary')")).Option("color", "#34A853").Icon("search");
+                    items.Add().Text(new JS("formatMessage('Bills Payable')")).Option("reportName", "BIllsPayable").Option("color", "#4285F4").Icon("search");
+                    items.Add().Text(new JS("formatMessage('Payable Summary')")) .Option("reportName", "Summary").Option("color", "#34A853").Icon("search");
                     items.Add().Text(new JS("formatMessage('Report by Supplier')")).Option("color", "#EA4335").Icon("search").OnClick("ReportsByClient");
-                    items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Option("color", "#FBBC05").Icon("smalliconslayout").OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
+                    items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Option("reportName", "BillsPayableUnmapped").Option("color", "#FBBC05").Icon("smalliconslayout").Visible(false).OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
             })
             .OnItemClick("handleReportClick")
                 .ItemTemplate(@<text>
@@ -374,7 +374,7 @@
     }
 
     function ReportsByClient() {
-        alert("hi")
+       
         let url = `/${tenantName}/Finance/ReportsByClients`;
 
 
@@ -392,25 +392,22 @@
         "Bills Payable with Unmapped Vouchers": "BillsPayableUnmapped"
     };
 
-    function handleReportClick(e) {
-        const selectedText = e.itemData.text;
-        const reportName = reportMappings[selectedText];
-
-        if (reportName) {
-            console.log(`Opening report: ${reportName}`);
-
-            // Ensure tenantName is defined before using
-            if (typeof tenantName === "undefined") {
-                console.error("tenantName is not defined.");
-                return;
-            }
-
-            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        } else {
-            console.warn('No report mapping found for:', selectedText);
+function handleReportClick(e) {
+    const reportName = e.itemData.reportName;
+    if (reportName) {
+        if (typeof tenantName === "undefined") {
+            console.error("tenantName is not defined.");
+            return;
         }
+        window.open(
+            `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    } else {
+        console.warn('No reportName found for selected item:', e.itemData.text);
     }
-
+}
 
 
     $(function () {
@@ -443,7 +440,7 @@
     })
 
     function Mapping(reportKey) {
-        alert('hi');
+      
         if (reportKey === "Bills Payable with Unmapped Vouchers") {
             window.location.href = `/${tenantName}/Finance/PayableReport`;
         } else {
