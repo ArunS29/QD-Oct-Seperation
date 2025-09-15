@@ -7498,6 +7498,33 @@ documentNo: InvChildSlNo
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetStoreMaster(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+
+                    var aGetStoreMaster = dbContext.Tbl60001storeMasters
+                         .Select(i => new
+                         {
+                             i.StoreId,
+                             i.StoreName
+                            
+                         });
+
+                    return Json(await DataSourceLoader.LoadAsync(aGetStoreMaster, loadOptions));
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
     }
 }
 

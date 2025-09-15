@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -14,13 +15,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 		private ERPMasterWtDataContext _context;
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<EmployeeAllocationController> _logger;
-
-		public EmployeeAllocationController(ILogger<EmployeeAllocationController> logger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
+        private readonly IUserActionLogger _userActionLogger;
+        public EmployeeAllocationController(ILogger<EmployeeAllocationController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
 		{
 			_tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 			_context = context;
-		}
+            _userActionLogger = userActionLogger;
+        }
 
 		public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string effectiveDate)
         {
@@ -61,6 +63,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 _context.Tbl20129JournalRegisterEmployeeAllocations.Add(EM);
                 await _context.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                module: "Finance > Employee Allocation",
+                actionDetail: $"Saveded Employee Allocation: {EM.VoucherNo}",
+                documentNo: EM.VoucherNo
+                );
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
                 return Ok(new { success = true, message = "Data inserted successfully!" });
             }

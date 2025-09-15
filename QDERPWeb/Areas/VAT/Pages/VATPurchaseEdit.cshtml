@@ -7354,21 +7354,11 @@ if(clientnameValidation.isValid)
 		if (!newDate) return;
 		debugger;
 		const formattedNewDate = newDate.toISOString().split("T")[0];
-		// const cutoffDate = new Date("2021-12-31");
-		// const currentDate = new Date();
-		// const formattedCurrentDate = currentDate.toISOString().split("T")[0];
+	
 
 		const oldDateString = $("#InvoiceDate").val();
 		const oldDate = new Date(oldDateString);
-		// debugger;
-		// // Step 1: Check cutoff date
-		// if (newDate < cutoffDate) {
-		// 	DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-		// 	// Reset to current date
-		// 	$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
-		// 	return;
-		// }
+		
 
 		// Step 2: Check if year has changed
 		if (newDate.getFullYear() !== oldDate.getFullYear()) {

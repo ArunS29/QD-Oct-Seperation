@@ -1166,7 +1166,7 @@
             </div>
 
         </text>);
-         item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+         item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
                                                                                                                                                                 <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
@@ -1875,7 +1875,7 @@ function dataGridInitialized6(e) {
 
         const tenantName = window.tenantName || "defaultTenant";
         const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${encodeURIComponent(selectedSupplierCode)}`;
-        const title = "Supplier Master";
+        const title = formatMessage("Supplier Master");
 
         openModal(url, title);
     }
@@ -1885,7 +1885,7 @@ function dataGridInitialized6(e) {
             selectBox.close();
 
             const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-        const title = "Supplier Master";
+        const title = formatMessage("Supplier Master");
             openModal(url, title);
     }
        function isDxInitialized($el, widgetName) {
@@ -2638,7 +2638,7 @@ function dataGridInitialized6(e) {
             $(function () {
         $("#btnAddNew").on("click", function () {
             var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+            button.option("text", formatMessage("Update"));
 
             var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
@@ -3869,7 +3869,7 @@ let isApproved=null;
 rvNo = urlParams.get("RevNo") ?? "";
 $('#RevNo').dxTextBox("instance").option("value", RevisionNo);
 
-           $("#btnSave").dxButton("instance").option("text", "Update");
+           $("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
         if (Pono) {
             edit=true;
             const isEditMode = mode === "edit";
@@ -4314,7 +4314,7 @@ function getDefaultCompany() {
         encodeURIComponent(supplierCode) + '&SupplierName=' +
         encodeURIComponent(supplierName);
 
-    openModal(url, 'Supplier Contact List');
+    openModal(url, formatMessage('Supplier Contact List'));
 }
 function selectContact(name, email, mobile, phone) {
 			$("#AttentionTo").dxTextBox("instance").option("value", name);
@@ -4333,7 +4333,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/Projects`;
-        const title = "Project";
+        const title = formatMessage("Project");
             openModal(url, title);
     }
      function AddSignatory(){
@@ -4341,7 +4341,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/Signatories`;
-        const title = "Signatories";
+        const title = formatMessage("Signatories");
             openModal(url, title);
     }
     function AddPOCategory(){
@@ -4349,7 +4349,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "Purchase Order Categories";
+        const title = formatMessage("Purchase Order Categories");
             openModal(url, title);
     }
       // Grid moveup and movedown
