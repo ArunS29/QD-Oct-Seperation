@@ -100,23 +100,21 @@
     }
 
 </style>
+
 <div class="form-row" style="padding:20px;">
     <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
-            .ID("txtPropertyGroup")
-            .Label(new JS("formatMessage('Type a New Property Group & Add to the Existing List:')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired().Message("Property Group is required");
-            })
-            )
+                .ID("txtPropertyGroup")
+                .Label(new JS("formatMessage('Type a New Property Group & Add to the Existing List:')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired().Message("Property Group is required");
+                })
+                )
 
     </div>
-</div>
-
-<div class="form-row" style="padding:20px;">
-    <div class="col-md-6">
+    <div class="col-md-4">
         @(Html.DevExtreme().TextBox()
             .ID("txtProGroupCode")
             .Label(new JS("formatMessage('Property Group Code')"))
@@ -137,10 +135,6 @@
             )
     </div>
 </div>
-
-
-
-
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid()
         .ID("TypeOfRequestGrid")
@@ -158,7 +152,7 @@
         )
         .Toolbar(toolbar =>
         {
-            toolbar.Items(items => { }); // hide default toolbar
+            toolbar.Items(items => { }); 
         })
         .OnRowUpdating("onPropertyGroupUpdating")
         .Columns(columns =>
@@ -173,8 +167,8 @@
             {
                 buttons.Add()
             .Name(GridColumnButtonName.Delete)
-            .Icon("trash") // Use a trash icon
-            .Hint("Delete Row") // Tooltip
+            .Icon("trash") 
+            .Hint("Delete Row") 
             .OnClick("onDeleteButtonClick");
             });
         })
@@ -287,12 +281,18 @@
                 DevExpress.ui.notify("Property Group saved successfully!", "success", 2000);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
             },
-              error: function (xhr, status, error) {
-                    let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-                        ? xhr.responseJSON.Message
-                        : "An error occurred.";
-                    DevExpress.ui.notify(errorMessage, "error", 2000);
+                  error: function (xhr, status, error) {
+                let errorMessage = "";
+                if (xhr.responseJSON && xhr.responseJSON.Message) {
+                    errorMessage = xhr.responseJSON.Message;
+                } else if (xhr.responseText) {
+                    errorMessage = xhr.responseText;
+                } else {
+                    errorMessage = error || status;
                 }
+
+                DevExpress.ui.notify(errorMessage, "error", 3000);
+            }
         });
     }
 
@@ -325,11 +325,17 @@
                     window.parent.propergroupgridupdate();
                 }
             },
-               error: function (xhr, status, error) {
-                    let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-                        ? xhr.responseJSON.Message
-                        : "An error occurred.";
-                    DevExpress.ui.notify(errorMessage, "error", 2000);
+                  error: function (xhr, status, error) {
+                    let errorMessage = "";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {   // lowercase
+                        errorMessage = xhr.responseJSON.message;
+                    } else if (xhr.responseText) {
+                        errorMessage = xhr.responseText;
+                    } else {
+                        errorMessage = error || status;
+                    }
+
+                    DevExpress.ui.notify(errorMessage, "error", 3000);
                 }
         });
     }
