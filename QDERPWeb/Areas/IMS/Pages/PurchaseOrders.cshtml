@@ -276,9 +276,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Purchase Orders</h2>
+				<h2 class="title-slide" id="purchaseorders"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickpurchase"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -292,23 +292,23 @@
 	<!-- VOUCHER STATUS CARD -->
 	<div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text active" onclick="switchTab(0)" id="purchaseverified"></div>
+			<div class="tab-text" onclick="switchTab(1)" id="purchaseapproved"></div>
+			<div class="tab-text" onclick="switchTab(2)" id="purchasesubmitted"></div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>Total Verified</h4>
+			@* <h4>Total Verified</h4> *@
 			<div class="count" id="verifiedtotalcount">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>Total Approved</h4>
+			@* <h4>Total Approved</h4> *@
 			<div class="count" id="approvedtotalcount">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>Total Submitted</h4>
+			@* <h4>Total Submitted</h4> *@
 			<div class="count" id="submittedtotalcount">0</div>
 		</div>
 		<div class="tile-icon">
@@ -323,10 +323,10 @@
 
 	<!-- QUOTATION AMOUNT CARD -->
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Purchase Amount</h4>
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;" id="purchaseorderedamount"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4 style="color: white;text-align:left;">Total Tax Amount</h4>
+				<h4 style="color: white;text-align:left;" id="totaltaxamountpurchased"></h4>
 				<h1 id="purchasetaxsamounts" style="color: white; font-weight: bold;text-align:left;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -335,7 +335,7 @@
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4 style="color: white;text-align:left;">Total with Tax</h4>
+				<h4 style="color: white;text-align:left;" id="totalwithtaxpurchased"></h4>
 				<h1 id="purchasetotalwithtaxs" style="color: white; font-weight: bold;text-align:left;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -368,29 +368,29 @@
 		<i class="dx-icon-search"></i> View
 	</div> *@
 	<div class="context-menu-itemInvoice" onclick="editRecord()">
-		<i class="dx-icon-edit"></i> Edit
+		<i class="dx-icon-edit" id="editpurchaseorder"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
-		<i class="dx-icon-trash"></i> Delete
+		<i class="dx-icon-trash" id="deletepurchaseorder"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" onclick="unlockRecord()">
-		<i class="dx-icon-unlock"></i> Unlock the Purchase Order
+		<i class="dx-icon-unlock" id="unlockpurchaseorder"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" onclick="reviseRecord()">
-		<i class="dx-icon-repeat"></i> Revise The Purchase Order
+		<i class="dx-icon-repeat" id="revsepurchaseorder"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" onclick="receiveItemPartially()">	
-		<i class="dx-icon-cart"></i>Receice Item Partially for  this PO
+		<i class="dx-icon-cart" id="receivepurchaseorder"></i>
 	</div>
 	<div class="context-menu-itemInvoice" onclick="receiveItemFully()">
-		<i class="dx-icon-cart"></i>Receice Item Fully for  this PO
+		<i class="dx-icon-cart" id="receiveitempurchases"></i>
 	</div>
 	<div class="context-menu-itemInvoice" onclick="createVatPurchaseForPO()">
-		<i class="dx-icon-money"></i>Create VAT Purchase for this PO
+		<i class="dx-icon-money" id="createvatpurchaseorders"></i>
 	</div>
 	<div class="context-menu-itemInvoice" onclick="Revision()">
 
-		<i class="dx-icon-clock"></i>View Revision History
+		<i class="dx-icon-clock" id="viewrevisionpurchaseprder"></i>
 	</div>
 </div>
 <div class="dx-fieldset horizontal-container">
@@ -558,9 +558,9 @@
 				subColumns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Group')")).Alignment(HorizontalAlignment.Center).Visible(false);
 				subColumns.AddFor(m => m.PorevisedBy).Caption(new JS("formatMessage('PO Revised By')")).Alignment(HorizontalAlignment.Center).Visible(false);
 				subColumns.AddFor(m => m.PorevisedOn).Caption(new JS("formatMessage('PO Revised On')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
-				subColumns.AddFor(m => m.SalesPersonCode).Caption(new JS("formatMessage('SalesPerson Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('SalesPerson Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.SalesPersonUserId).Caption(new JS("formatMessage('SalesPerson UserId')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonCode).Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonUserId).Caption(new JS("formatMessage('Sales Person UserId')")).Alignment(HorizontalAlignment.Center).Visible(false);
 				subColumns.AddFor(m => m.ProjectSubUnitCode).Caption(new JS("formatMessage('Project SubUnit Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
 				subColumns.AddFor(m => m.ProjectSubUnitName).Caption(new JS("formatMessage('Project SubUnit Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
 
@@ -1466,5 +1466,54 @@ function createVatPurchaseForPO() {
 				let title = `PO Revised History`;
 							openModal(url, title);
 	
-	}	
+	}
+		$(function () {
+				$("#purchaseorders").text(formatMessage("Purchase Orders"));
+				 });
+		$(function () {
+				$("#quickpurchase").text(formatMessage("Quick Dice ERP Solutions"));
+				 });
+		$(function () {
+				$("#purchasesubmitted").text(formatMessage("Submitted"));
+				 });
+		$(function () {
+				$("#purchaseapproved").text(formatMessage("Approved"));
+				 });
+		$(function () {
+				$("#purchaseverified").text(formatMessage("Verified"));
+				 });
+		$(function () {
+				$("#unlockpurchaseorder").text(formatMessage("Unlock the Purchase Order"));
+				 });
+		$(function () {
+				$("#deletepurchaseorder").text(formatMessage("Delete"));
+				 });
+		$(function () {
+				$("#editpurchaseorder").text(formatMessage("Edit"));
+				 });
+		$(function () {
+						$("#viewrevisionpurchaseprder").text(formatMessage("View Revision History"));
+				 });
+		$(function () {
+						$("#createvatpurchaseorders").text(formatMessage("Create VAT Purchase for this PO"));
+				 });
+		$(function () {
+						$("#receiveitempurchases").text(formatMessage("Receice Item Fully for  this PO"));
+				 });
+		$(function () {
+						$("#receivepurchaseorder").text(formatMessage("Receice Item Partially for  this PO"));
+				 });
+		$(function () {
+						$("#revsepurchaseorder").text(formatMessage("Revise The Purchase Order"));
+				 });
+		$(function () {
+				$("#totalwithtaxpurchased").text(formatMessage("Total with Tax"));
+				 });
+		$(function () {
+				$("#totaltaxamountpurchased").text(formatMessage("Total Tax Amount"));
+				 });
+		$(function () {
+				$("#purchaseorderedamount").text(formatMessage("Purchase Amount"));
+				 });
+		
 </script>
