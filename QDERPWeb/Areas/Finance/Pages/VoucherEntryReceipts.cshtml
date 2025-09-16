@@ -168,6 +168,9 @@
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
+                        .ValidationRules(rules => rules
+                        .AddRequired()
+                        .Message(new JS("formatMessage('Receiving Account should be entered')")))
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
@@ -286,7 +289,7 @@ buttons.Add()
                                                 {
                                                     rules.AddRequired()
                                                     .Message("Voucher Amount Cannot be Zero Or Negative");
-                                                    rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                                                    rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
                                                 })
                                                
                                                 .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
@@ -335,7 +338,7 @@ buttons.Add()
                                                 })
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddCurrency")
-                                                .ShowClearButton(true)
+                                                .ShowClearButton(false)
                                                 .AcceptCustomValue(false)
                                                 .OpenOnFieldClick(true)
                                                 .Value(baseCurrencyIdnew)
@@ -930,6 +933,8 @@ buttons.Add()
                         /// .Key("AccountHead") //salary paid entry
                         .Key("AccountId")
                         )
+                        .FocusedRowEnabled(true)
+                        .OnFocusedRowChanged("onGridFocusedRowChanged")
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
                         .SearchPanel(sp => sp.Visible(true))
@@ -998,6 +1003,8 @@ buttons.Add()
                     )
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
+                    .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .SearchPanel(sp => sp.HighlightSearchText(true))
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
@@ -1195,7 +1202,19 @@ buttons.Add()
             icon: "spinner", // built-in spinner icon
             text: "Loading..."
         });
+        var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
+    var voucherAmtValidator = $("#Amount").dxValidator("instance");
+    var paymentHeadValidator = $("#accountDropDownBox").dxValidator("instance");
+    var accountHeadValidation = accountHeadValidator.validate();
+    var voucherAmtValidation = voucherAmtValidator.validate();
+    var PaymentHeadValidation = paymentHeadValidator.validate();
+    if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid && PaymentHeadValidation.isValid)) {
+        // ❌ Validation failed → stop, re-enable button
+        resetVoucherButton();
 
+        DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+        return;
+    }
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var griddatacount = rowCount;
@@ -1761,8 +1780,10 @@ buttons.Add()
 
 
         const text = ddbInstance.option("text");
-        if (dataGrid) {
-            dataGrid.option("searchPanel.text", text);
+        // Use the stored grid instance
+       const grid = e.component.__contentGridInstance;
+        if (grid) {
+            grid.option("searchPanel.text", text);
         }
     }
     function onDropDownBoxClosed(e) {
@@ -1832,7 +1853,7 @@ buttons.Add()
 
                  if(paymentIsLedgerObselete==true){
      IsObeselete=true;
-       DevExpress.ui.notify(
+       DevExpress.ui.dialog.alert(
 "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
 "LEDGER IS OBSELETE(NOT IN USE)"
 );
@@ -1873,7 +1894,7 @@ buttons.Add()
 
                  if(paymentIsLedgerObselete==true){
      IsObeselete=true;
-       DevExpress.ui.notify(
+       DevExpress.ui.dialog.alert(
 "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
 "LEDGER IS OBSELETE(NOT IN USE)"
 );
@@ -1962,7 +1983,7 @@ buttons.Add()
 
                             if(IsObeselete==true)
                             {
-                                  DevExpress.ui.alert(
+                                  DevExpress.ui.dialog.alert(
                    "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                    "LEDGER IS OBSELETE(NOT IN USE)"
                    );
@@ -2296,40 +2317,40 @@ buttons.Add()
     });
 
 
-    $(function () {
-        var voucherDate = $("#VoucherDate").dxDateBox("instance");
-        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+    // $(function () {
+    //     var voucherDate = $("#VoucherDate").dxDateBox("instance");
+    //     var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-        voucherDate.option("onValueChanged", function (e) {
-            let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+    //     voucherDate.option("onValueChanged", function (e) {
+    //         let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-            // Check if voucherDateval is valid
-            if (!voucherDateval) return;
+    //         // Check if voucherDateval is valid
+    //         if (!voucherDateval) return;
 
-            // Set effectiveDate to the same value as voucherDate
-            effectiveDate.option("value", voucherDateval);
+    //         // Set effectiveDate to the same value as voucherDate
+    //         effectiveDate.option("value", voucherDateval);
 
-            // Convert to 'yyyy-MM-dd' format
-            let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+    //         // Convert to 'yyyy-MM-dd' format
+    //         let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-            // Define the cutoff date (2021-12-31)
-            let cutoffDate = new Date("2021-12-31");
+    //         // Define the cutoff date (2021-12-31)
+    //         let cutoffDate = new Date("2021-12-31");
 
-            // Get the current date to set if the voucher date is blocked
-            let currentdate = new Date();
-            let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+    //         // Get the current date to set if the voucher date is blocked
+    //         let currentdate = new Date();
+    //         let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
 
-            // Check if the formatted voucher date is before the cutoff date
-            if (new Date(formattedDate) < cutoffDate) {
-                // Show alert for blocked entry
-                DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+    //         // Check if the formatted voucher date is before the cutoff date
+    //         if (new Date(formattedDate) < cutoffDate) {
+    //             // Show alert for blocked entry
+    //             DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
-                // Set both voucherDate and effectiveDate to the current date
-                voucherDate.option("value", formattedCurrentDate);
-                effectiveDate.option("value", formattedCurrentDate);
-            }
-        });
-    });
+    //             // Set both voucherDate and effectiveDate to the current date
+    //             voucherDate.option("value", formattedCurrentDate);
+    //             effectiveDate.option("value", formattedCurrentDate);
+    //         }
+    //     });
+    // });
 
    
 
@@ -3193,152 +3214,138 @@ if (dropDownBox) {
 
             
 
-              function onRowUpdating(e) { 
-    const updatedData = e.newData;
-    const key = e.key; // Get primary key value if needed
+              function onRowUpdating(e) {
+                      debugger;
+        const updatedData = e.newData;
+        const key = e.key; // Get primary key value if needed
 
-    let dataGrid = $("#dataGrid").dxDataGrid("instance");
-    let allData = dataGrid.option("dataSource");
+        let dataGrid = $("#dataGrid").dxDataGrid("instance");
+        let allData = dataGrid.option("dataSource");
 
-    // Find the row being updated
-    let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
-    let oldRowData = allData[rowIndex];
+        // Find the row being updated
+        let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
+        let oldRowData = allData[rowIndex];
 
-    if (!oldRowData) return; // Exit if row not found
+        if (!oldRowData) return; // Exit if row not found
 
-    let oldAccountHead = oldRowData.AccountHead;
-    let newAccountHead = updatedData.AccountHead !== undefined 
-        ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead) 
-        : oldRowData.AccountHead;
+        let oldAccountHead = oldRowData.AccountHead;
+        let newAccountHead = updatedData.AccountHead !== undefined
+            ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead)
+            : oldRowData.AccountHead;
 
-    let requestData = {
-        VoucherEntryNo: oldRowData.VoucherEntryNo,
-        DrCr: updatedData.DrCr || oldRowData.DrCr,
-        AccountHead: newAccountHead,
-        DrAmount: (updatedData.DrCr === "Dr") 
-            ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.CrAmount) 
-            : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.DrAmount),
-        CrAmount: (updatedData.DrCr === "Cr") 
-            ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.DrAmount) 
-            : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.CrAmount),
-        EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
-        SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
-    };
+        let requestData = {
+            VoucherEntryNo: oldRowData.VoucherEntryNo,
+            DrCr: updatedData.DrCr || oldRowData.DrCr,
+            AccountHead: newAccountHead,
+            DrAmount: (updatedData.DrCr === "Dr")
+                ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.CrAmount)
+                : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.DrAmount),
+            CrAmount: (updatedData.DrCr === "Cr")
+                ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.DrAmount)
+                : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.CrAmount),
+            EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
+            SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
+        };
 
-   
 
-    if (oldRowData.DrCr === "Cr") {
-    
-    // Find all corresponding "Cr" rows
-    let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
-    if (drRows.length > 0) {
-        drRows.forEach(drRow => {
-            // Replace "Received by : oldAccountHead" with newAccountHead
-            drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+        if (oldRowData.DrCr === "Cr") {
 
-            // Send update to backend for each "Cr" row
-            $.ajax({
-                url: "/api/VoucherMaster/UpdateVoucherEntry",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(drRow),
-                success: function(response) {
-    console.log("Cr row updated successfully");
-    $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
+        // Find all corresponding "Cr" rows
+        let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
-    // Update allData directly
-    allData.forEach(row => {
-        if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
-            row.SysRemarks = drRow.SysRemarks;
-        }
-    });
-     dataGrid.option("dataSource", allData);
-    // Refresh the specific row instead of reloading the entire data source
-    dataGrid.refresh();
-},
-                error: function(xhr) {
-                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
-                    console.error("Error Response:", xhr.responseText);
-                }
+        if (drRows.length > 0) {
+            drRows.forEach(drRow => {
+                // Replace "Received by : oldAccountHead" with newAccountHead
+                drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+
+                // Send update to backend for each "Cr" row
+                $.ajax({
+                    url: "/api/VoucherMaster/UpdateVoucherEntry",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(drRow),
+                    success: function(response) {
+        console.log("Cr row updated successfully");
+
+        // Update allData directly
+        allData.forEach(row => {
+            if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
+                row.SysRemarks = drRow.SysRemarks;
+            }
+        });
+         dataGrid.option("dataSource", allData);
+        // Refresh the specific row instead of reloading the entire data source
+        dataGrid.refresh();
+    },
+                    error: function(xhr) {
+                        DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                        console.error("Error Response:", xhr.responseText);
+                    }
+                });
             });
+        }
+    }
+
+
+
+
+        if (oldRowData.DrCr === "Dr") {
+
+        // Find all corresponding "Cr" rows
+        let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
+
+        if (crRows.length > 0) {
+            crRows.forEach(crRow => {
+                // Replace "Received by : oldAccountHead" with newAccountHead
+                crRow.SysRemarks = crRow.SysRemarks.replace(`Received by : ${oldAccountHead}`, `Received by : ${newAccountHead}`);
+
+                // Send update to backend for each "Cr" row
+                $.ajax({
+                    url: "/api/VoucherMaster/UpdateVoucherEntry",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(crRow),
+                    success: function(response) {
+        console.log("Cr row updated successfully");
+
+        // Update allData directly
+        allData.forEach(row => {
+            if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
+                row.SysRemarks = crRow.SysRemarks;
+            }
+        });
+         dataGrid.option("dataSource", allData);
+        // Refresh the specific row instead of reloading the entire data source
+        dataGrid.refresh();
+    },
+                    error: function(xhr) {
+                        DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                        console.error("Error Response:", xhr.responseText);
+                    }
+                });
+            });
+        }
+    }
+
+
+        console.log("Request Payload:", requestData);
+
+        // Update the "Cr" row in backend
+        $.ajax({
+            url: "/api/VoucherMaster/UpdateVoucherEntry",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            success: function(response) {
+                fetchUpdatedData(requestData.VoucherEntryNo);
+            },
+            error: function(xhr) {
+                DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
+                console.error("Error Response:", xhr.responseText);
+            }
         });
     }
-}
-
-
-    
-
-    if (oldRowData.DrCr === "Dr") {
-    
-    // Find all corresponding "Cr" rows
-    let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
-
-    if (crRows.length > 0) {
-        crRows.forEach(crRow => {
-            // Replace "Received by : oldAccountHead" with newAccountHead
-            crRow.SysRemarks = crRow.SysRemarks.replace(`Received by : ${oldAccountHead}`, `Received by : ${newAccountHead}`);
-
-            // Send update to backend for each "Cr" row
-            $.ajax({
-                url: "/api/VoucherMaster/UpdateVoucherEntry",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(crRow),
-                success: function(response) {
-    console.log("Cr row updated successfully");
-    $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
-    // Update allData directly
-    allData.forEach(row => {
-        if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
-            row.SysRemarks = crRow.SysRemarks;
-        }
-    });
-     dataGrid.option("dataSource", allData);
-    // Refresh the specific row instead of reloading the entire data source
-    dataGrid.refresh();
-},
-                error: function(xhr) {
-                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
-                    console.error("Error Response:", xhr.responseText);
-                }
-            });
-        });
-    }
-}
-
-
-    console.log("Request Payload:", requestData);
-
-    // Update the "Cr" row in backend
-    $.ajax({
-        url: "/api/VoucherMaster/UpdateVoucherEntry",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(requestData),
-        success: function(response) {
-            fetchUpdatedData(requestData.VoucherEntryNo);
-            $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
-        },
-        error: function(xhr) {
-            DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
-            console.error("Error Response:", xhr.responseText);
-        }
-    });
-}
-
     // Function to fetch updated data from Qry201VoucherEntryScreenDisplay
 function fetchUpdatedData(voucherEntryNo) {
     $.ajax({
@@ -3555,7 +3562,7 @@ function onBaseCurrencyInit(e) {
 
                              if(IsObeselete==true)
                              {
-                                   DevExpress.ui.notify(
+                                  DevExpress.ui.dialog.alert(
                     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                     "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -4010,5 +4017,15 @@ tippy('#circle-approve', {
                 e.component.option("value", null); // clear if no match found
             }
         }
+           function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
 
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
+    }
+}
 </script>
