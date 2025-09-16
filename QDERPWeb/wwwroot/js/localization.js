@@ -2,7 +2,21 @@
 var dictionary = {
 
     "en": {
-        
+        "Item Description:":"Item Description:",
+        "Receipt No": "Receipt No",
+        "Description": "Description",
+        "Qty Received": "Qty Received",
+        "UOM": "UOM",
+        "Unit Price": "Unit Price",
+        "Total Amount":"Total Amount",
+        "Cost Item:": "Cost Item:",
+        "UOM:": "UOM:",
+        "Quantity": "Quantity",
+        "Unit Price": "Unit Price",
+        "Amount": "Amount",
+        "Delivery Note No:": "Delivery Note No:",
+        "Date:": "Date:",
+        "Received From:":"Received From:",
   "Added On": "Added On",
   "Additional Description": "Additional Description",
   "Attention": "Attention",

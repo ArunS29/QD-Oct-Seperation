@@ -1017,7 +1017,9 @@
                 )
 
     </div>
-
+     <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
 
     @(Html.DevExtreme().DataGrid()
             .ID("B2BdataGrid")
@@ -1484,7 +1486,9 @@
 		}
 <div class="footer-fixed">
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
+
 </div>
+
 <script>
       $(function() {
         $("#PrintFooterAtBottom").dxCheckBox({

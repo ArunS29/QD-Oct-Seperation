@@ -2503,7 +2503,7 @@ function dataGridInitialized6(e) {
 
 
                         { dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } ,visible: false },
-                        { dataField: "LineTaxAmount",  caption: formatMessage('VAT'), width: 150 },
+                        { dataField: "LineTaxAmount",  caption: formatMessage('VAT'), width: 150,format: { type: "fixedPoint", precision: 2 }},
 
                         { dataField: "LineTotalWithTax",  caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
@@ -3560,8 +3560,8 @@ const children = grid.getDataSource().items().map(item => {
                       updateWorkflowVisual(getWorkflowStatusFromFields());
             DevExpress.ui.notify("Saved successfully", "success", 3000);
            const Pono=response.pono;
-
-            window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=edit`;
+             history.back();
+           
              isSaved = true; 
             // Reload grid from server if needed
             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
@@ -3573,9 +3573,7 @@ const children = grid.getDataSource().items().map(item => {
         data: data.items || []
     }));
     B2BdataGridInstance.refresh();
-      setTimeout(() => {
-                    history.back();
-                }, 1000);
+    
             });
         },
         error: function (xhr) {
