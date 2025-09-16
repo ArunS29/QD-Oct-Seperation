@@ -3412,7 +3412,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
     public DbSet<TotalDepreciationResult> TotalDepreciationResults { get; set; }
-
+    public virtual DbSet<AccountBalanceResult> AccountBalanceResults { get; set; }
+    public virtual DbSet<BankClearedBalanceResult> BankClearedBalanceResults { get; set; }
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
     //public virtual DbSet<ClientCategoryDisplayDTO> ClientCategoryDisplayDTOs { get; set; }
@@ -3467,7 +3468,8 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
-
+        modelBuilder.Entity<AccountBalanceResult>().HasNoKey();
+        modelBuilder.Entity<BankClearedBalanceResult>().HasNoKey();
         modelBuilder.Entity<FinancialSummaryReport>(entity =>
         {
             entity.HasNoKey(); // required for views or tables without PK
