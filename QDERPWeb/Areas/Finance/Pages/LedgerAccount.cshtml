@@ -817,8 +817,10 @@
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ID("txtPersonMobile")
                                                         .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
-                                                        
-                                                        .Width("100%"))
+                                                        .Width("100%")
+                                                        .MaxLength(15)
+                                                        )
+)
                         </div>
 
                         <div class="col-md-8">
@@ -940,6 +942,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(25)
                             )
                         </div>
                     </div>
@@ -952,6 +955,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(30)
                             )
                         </div>
                         <div class="col-md-3">
@@ -961,6 +965,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(50)
                             )
                         </div>
                     </div>
@@ -1029,39 +1034,41 @@
                             @*     <div id="ClientVATNo" class="no-border-input"></div> *@
                             @* </td> *@
                             <td colspan="2">
-                                    @(Html.DevExtreme().NumberBox()
-                                        .ID("txtClientVATNo") // Keep the same ID
-                                        .Width("100%") // Set the width to 50%
-                                        .InputAttr("aria-label", "txtClientVATNo")
-                                        .Min(0) // No negative numbers allowed
-                                        .Max(999999999999999) // Max limit of 15 digits
-                                        .InputAttr("maxlength", "15") // Set the max length attribute to 15
-                                        .Format("###########") // Ensures only integers (up to 15 digits)
-                                        .OnValueChanged("syncVATNumbers")
-                                        .Label(new JS("formatMessage('Client VAT No')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                                       // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-                                        )
+                             @(Html.DevExtreme().TextBox()
+                             .ID("txtClientVATNo")
+                             .Label(new JS("formatMessage('Client VAT No')"))
+                             .LabelMode(EditorLabelMode.Floating)
+                             .Width("100%") // Set the width to 50%
+                             .InputAttr("aria-label", "txtClientVATNo")
+                             .MaxLength(15)
+                             .Mask("000000000000000")
+                             .MaskChar(" ")
+                             .OnValueChanged("syncVATNumbers")
+                             .OnValueChanged("validateClientVATNo")
+                            // .OnValueChanged("validateClientVATNo")
+                              )
+
 
                             </td>
                            @*  <td>
                                 <div id="GrouptVATNo" class="no-border-input"></div>
                             </td> *@
                             <td colspan="2">
-                                    @(Html.DevExtreme().NumberBox()
-                                        .ID("txtGrouptVATNo") // Keep the same ID
-                                        .Width("100%") // Set width to 100%
-                                        .InputAttr("aria-label", "txtGrouptVATNo")
-                                        .Min(0) // No negative numbers allowed
-                                        .Max(999999999999999) // Max limit of 15 digits
-                                        .InputAttr("maxlength", "15") // Set max length to 15
-                                        .Format("###########") // Format for numeric input (max 15 digits)
-                                        .Label(new JS("formatMessage('Group VAT Number:')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                        
-                                        //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-                                        )
 
+                              @(Html.DevExtreme().TextBox()
+                             .ID("txtGrouptVATNo")
+                             .Label(new JS("formatMessage('Group VAT Number:')"))
+                             .LabelMode(EditorLabelMode.Floating)
+                             .Width("100%") // Set the width to 50%
+                             .InputAttr("aria-label", "txtGrouptVATNo")
+                             .MaxLength(15)
+                             .Mask("000000000000000")
+                             .MaskChar(" ")
+                             .OnValueChanged("syncVATNumbers")
+                             .OnValueChanged("validateClientVATNo")
+                            // .OnValueChanged("validateClientVATNo")
+                              )
+                                  
                             </td>
                         </tr>
 
@@ -1611,7 +1618,7 @@
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
-                                    .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
+                                    .Label(new JS("formatMessage('Address - Additional Address: *')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -2071,6 +2078,8 @@
                                     .ID("txtBillingContactNumber")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingContactNumber")
+                                    .MaxLength(15)
+
                                     )
                             </td>
                         </tr>
@@ -2093,6 +2102,7 @@
                                     .ID("txtBillingVendorNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVendorNo")
+                                    .MaxLength(20)
                                     )
                             </td>
                         </tr>
@@ -3187,7 +3197,8 @@ function syncSupVATNumbers(e) {
     $(function () {
         $("#BillingPayment").dxTextBox({
             text: formatMessage("Bank Account for Receiving Payment:"),
-            readOnly: true
+            readOnly: true,
+            width: "100%" 
 
         });
     });
@@ -5448,7 +5459,7 @@ if (dropDownInstance.option("opened")) {
                 SupplierNeighborhood: supDistrict,
                 SupplierNeighborhoodAr: supDistrictAr,
                 SupplierCountryCode: cntSupCountryCode,
-                BillingName: bClientBillingName,
+              //  BillingName: bClientBillingName,
                 BillingAddress: bBillingAddress,
                 BillingAddressAr: bBillingAddressAr,
                 VATRegistrationNo: String(bVATNO),
@@ -6506,5 +6517,18 @@ if (dropDownInstance.option("opened")) {
                 $("#ModifiedOn1").text(
                          formatMessage("Modified On:"));
             });
+
+      function validateClientVATNo(e) {
+    if (e.value.length !== 15) {
+        DevExpress.ui.notify("", "error", 3000);
+    }
+}
+
+function validateGroupVATNo(e) {
+    if (e.value.length !== 15) {
+        DevExpress.ui.notify("Group VAT No must be exactly 15 digits", "error", 3000);
+    }
+}
+
 </script>
 
