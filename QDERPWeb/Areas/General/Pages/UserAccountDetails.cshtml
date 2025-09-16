@@ -45,11 +45,20 @@
 
 </style>
 <form id="userForm">
-    <div class="title">
+    @* <div class="title">
         <div class="header-container">
             <h2 id="useraccountdetailssh"></h2>
         </div>
+    </div> *@
+    <div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="useraccountdetailssh" class="titleText no-border-title"></div>
     </div>
+</div>
+
     <div class="Head">
     <div class="limited-footer">
         <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
@@ -944,6 +953,7 @@
              let InventoryMpraccessID=null,IsInventoryMpraccessflag=false;
              let PettyCashAccountID=null,IsPettyCashAccountflag=false;
         $(document).ready(function () {
+
             // Hide all tab containers and show the first one
             $('.tab-container').hide();
             $('.tab-container').eq(0).show();
@@ -1614,13 +1624,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1677,13 +1687,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1739,13 +1749,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1801,13 +1811,13 @@ function onOuterTabSelectionChanged(e) {
                 grouping: { autoExpandAll: true },        
                 groupPanel: { visible: true },      
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },     
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },     
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1942,7 +1952,7 @@ function onOuterTabSelectionChanged(e) {
             contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
                 items: [
                     {
-                        text: "Add or Remove Buttons",
+                        text: formatMessage("Add or Remove Buttons"),
                         items: [
                             {
                                 text: "User Access",
@@ -1997,7 +2007,7 @@ function onOuterTabSelectionChanged(e) {
 
         function ReplicateAccess() {
             const url = `/${tenantName}/Finance/ReplicateUserAccount`;
-            const title = "";
+            const title = formatMessage("Replicate User Account");
             openModal(url, title);
         }
 

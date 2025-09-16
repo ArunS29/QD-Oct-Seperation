@@ -265,7 +265,7 @@
                     .Items(item =>
                     {
                         item.Add()
-                    .Title("Job Order Details")
+                    .Title(new JS("formatMessage('Job Order Details')"))
                     .Icon("folder")
                 .Text("Job Order Details")
                     .Template(@<text>
@@ -277,7 +277,7 @@
                         @(Html.DevExtreme().TextBox()
                          .ID("txtJoborederNo")
                         
-                        .Label("Job Order No:")
+                        .Label(new JS("formatMessage('Job Order No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         
                         .Width("100%")
@@ -289,7 +289,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("txtJobOrderDate")
                         .Value(DateTime.Now)
-                        .Label("Job Order Date:")
+                        .Label(new JS("formatMessage('Job Order Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -343,7 +343,7 @@
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("txtSalesNo")
-                        .Label("Work Order/Sales Order No:")
+                        .Label(new JS("formatMessage('Work Order/Sales Order No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -384,7 +384,7 @@
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
                         .ID("txtJobDescription")
-                         .Label("Job Description:")
+                         .Label(new JS("formatMessage('Job Description:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -399,7 +399,7 @@
                 </div>
             </div>
         </text>);
-             item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+            item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Division')")).Template(@<text>
             <div class="p-3">
                 <div class="row g-3">
                                                                                                                        <!-- Row 1: Branch / Delivery Type / Inventory Group -->  
@@ -430,14 +430,15 @@
                                                     )
                         @(Html.DevExtreme().CheckBox()
                         .ID("Printinhead")
-                        .Text("Print In Letter Head")
+                         .Text(new JS("formatMessage('Print In Letter Head')"))
                         .Width("100%")
                         )
                     </div>
                     <div>
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
-                        .Label("Sales Order No:")
+                          .Label(new JS("formatMessage('Sales Order No:')"))
+
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("40%")
                         )   
@@ -506,13 +507,13 @@
             <div class="joborder-tabs">
                 @(Html.DevExtreme().List()
                     .ID("jobOrderTabs")
-                    .DataSource(new[] {
-                new { id = 1, text = "Job Order Attributes", icon = "folder" },
-                new { id = 2, text = "Initial Observation", icon = "search" },
-                new { id = 3, text = "Visual Inspection", icon = "find" },
-                new { id = 4, text = "Repair Report", icon = "preferences" },
-                new { id = 5, text = "Dispatch Report", icon = "car" }
-                })
+                                .DataSource(new object[] {
+                                new { id = 1, text = new JS("formatMessage('Job Order Attributes')"), icon = "folder" },
+                                new { id = 2, text = new JS("formatMessage('Initial Observation')"), icon = "search" },
+                                new { id = 3, text = new JS("formatMessage('Visual Inspection')"), icon = "find" },
+                                new { id = 4, text = new JS("formatMessage('Repair Report')"), icon = "preferences" },
+                                new { id = 5, text = new JS("formatMessage('Dispatch Report')"), icon = "car" }
+                                })
                     .DisplayExpr("text")
                     .KeyExpr("id")
                     .SelectionMode(ListSelectionMode.Single)
@@ -728,12 +729,12 @@
 
                     <div class="toolbar">
                         @(Html.DevExtreme().Button()
-                            .Text("Initial Observation Images")
+                            .Text(new JS("formatMessage('Initial Observation Images')"))
                             .Icon("image")
                             .Type(ButtonType.Default))
 
                         @(Html.DevExtreme().Button()
-                            .Text("Print")
+                            .Text(new JS("formatMessage('Print')"))
                             .Icon("print")
                             .Type(ButtonType.Default))
                     </div>
@@ -796,7 +797,7 @@
 
                     <div class="bottom-button">
                         @(Html.DevExtreme().Button()
-                            .Text("Approve Initial Observation")
+                            .Text(new JS("formatMessage('Approve Initial Observation')"))
                             .Icon("check")
                             .Type(ButtonType.Success)
                             .Width(250))
@@ -841,17 +842,17 @@
                     </style>
                     <div class="toolbar">
                         @(Html.DevExtreme().Button()
-                            .Text("Inspection Report")
+                            .Text(new JS("formatMessage('Inspection Report')"))
                             .Icon("doc")
                             .Type(ButtonType.Default))
 
                         @(Html.DevExtreme().Button()
-                            .Text("Inspection Images")
+                        .Text(new JS("formatMessage('Inspection Images')"))
                             .Icon("image")
                             .Type(ButtonType.Default))
 
                         @(Html.DevExtreme().Button()
-                            .Text("Print")
+                        .Text(new JS("formatMessage('Print')"))
                             .Icon("print")
                             .Type(ButtonType.Default))
                     </div>
@@ -929,7 +930,7 @@
 
                     <div class="bottom-button">
                         @(Html.DevExtreme().Button()
-                            .Text("Approve Visual Inspection")
+                        .Text(new JS("formatMessage('Approve Visual Inspection')"))
                             .Icon("check")
                             .Type(ButtonType.Default)
                             .Disabled(true)
@@ -982,12 +983,12 @@
 
                     <div class="toolbar">
                         @(Html.DevExtreme().Button()
-                            .Text("Repair Report")
+                        .Text(new JS("formatMessage('Repair Report')"))
                             .Icon("doc")
                             .Type(ButtonType.Default))
 
                         @(Html.DevExtreme().Button()
-                            .Text("Print")
+                        .Text(new JS("formatMessage('Print')"))
                             .Icon("print")
                             .Type(ButtonType.Default))
                     </div>
@@ -1202,7 +1203,7 @@
 
                     <div class="bottom-button" style="padding:10px;">
                         @(Html.DevExtreme().Button()
-                            .Text("Approve Repair Report")
+                        .Text(new JS("formatMessage('Approve Repair Report')"))
                             .Icon("check")
                             .Disabled(true)
                             .Type(ButtonType.Default)
@@ -1252,12 +1253,12 @@
                     <!-- Toolbar -->
                     <div class="toolbar">
                         @(Html.DevExtreme().Button()
-                            .Text("Dispatch Images")
+                        .Text(new JS("formatMessage('Dispatch Images')"))
                             .Icon("image")
                             .Type(ButtonType.Default))
 
                         @(Html.DevExtreme().Button()
-                            .Text("Print")
+                        .Text(new JS("formatMessage('Print')"))
                             .Icon("print")
                             .Type(ButtonType.Default))
                     </div>
@@ -1311,7 +1312,7 @@
                     <!-- Bottom Approve Button -->
                     <div class="bottom-button">
                         @(Html.DevExtreme().Button()
-                            .Text("Approve Dispatch Report")
+                        .Text(new JS("formatMessage('Approve Dispatch Report')"))
                             .Icon("check")
                             .Disabled(true)
                             .Type(ButtonType.Default)
@@ -1809,28 +1810,28 @@
    
                    function AddModeReq(){
                 const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-                const title = "Quotation Mode Of Request";
+                const title = formatMessage("Quotation Mode Of Request");
                 openModal(url, title);
             }
 
             function AddTypeReq(){
                 const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-                const title = "Quotation Type Of Request";
+                const title = formatMessage("Quotation Type Of Request");
                     openModal(url, title);
             }
             function AddQuoteStatus(){
                 const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-                const title = "";
+                            const title = formatMessage("Purchase Order Categories");
                     openModal(url, title);
             }
             function redirecttosalespersonmaster(){
                         const url = `/${tenantName}/IMS/JobOrderStatus`;
-                const title = "";
+                            const title = formatMessage("Cost Item");
                     openModal(url, title);
             }
             function redirecttoClientLeadmaster1(){
                 const url = `/${tenantName}/IMS/ClientLeadMaster`;
-                const title = "Client Master";
+                const title = formatMessage("Client Master");
                     openModal(url, title);
             }
             //     function redirecttoClientLeadmaster() {
