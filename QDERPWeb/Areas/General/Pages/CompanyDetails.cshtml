@@ -236,7 +236,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Company Details</h3>
+    <h3 class="card-title-text" id="companydetailshome"></h3>
 </div>
 
 <meta charset="UTF-8">
@@ -250,9 +250,9 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Company Details//تفاصيل الشركة")
+                .Title(new JS("formatMessage('Company Details')"))
                 .Icon("folder")
-                .Text("Company Details//تفاصيل الشركة")
+                .Text("Company Details")
                 .Template(@<text>
             <div style="display: flex; gap: 30px; justify-content: space-between; width:100%; padding: 20px; ">
 
@@ -260,7 +260,7 @@
                 <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID")
-                    .Label("Company ID:")
+                    .Label(new JS("formatMessage('Company ID:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -268,7 +268,7 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName")
-                    .Label("Company Name:")
+                     .Label(new JS("formatMessage('Company Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%")
@@ -276,14 +276,14 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName")
-                    .Label("Our Address - Street Name: *")
+                     .Label(new JS("formatMessage('Our Address - Street Name: *')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress")
-                    .Label("Our Address - Additional Address:")
+                    .Label(new JS("formatMessage('Our Address - Additional Address:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -295,7 +295,7 @@
                             .MaxLength(4)
                             .Mask("0000") // Accept only 4 digits
                          @* .InputAttr("pattern", "[0-9]{4}") // HTML5 pattern for client-side validation *@
-                            .Label("Building Number:")
+                             .Label(new JS("formatMessage('Building Number:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -303,7 +303,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("City")
-                            .Label("City: *")
+                             .Label(new JS("formatMessage('City: *')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ValidationRules(rules =>
                             {
@@ -321,7 +321,7 @@
                             .ID("AdditionalNumber")
                             .MaxLength(4)
                             .Mask("0000")
-                            .Label("Additional Number:")
+                            .Label(new JS("formatMessage('Additional Number:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -329,7 +329,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("Province")
-                            .Label("Province / State:")
+                            .Label(new JS("formatMessage('Province / State:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -342,7 +342,7 @@
                             .ID("PostalCode")
                             .MaxLength(5)
                             .Mask("00000")
-                            .Label("Postal Code:")
+                            .Label(new JS("formatMessage('Postal Code:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -350,7 +350,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("District")
-                            .Label("District/Neighborhood: *")
+                            .Label(new JS("formatMessage('District/Neighborhood: *')"))
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
@@ -366,7 +366,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().DropDownBox()
                             .ID("CountryCode")
-                            .Label("Country Code: *")
+                                                        .Label(new JS("formatMessage('Country Code: *')"))
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
@@ -397,7 +397,7 @@
                             rules.AddRequired()
                             .Message("Company Short Name is required");
                             })
-                            .Label("Company Short Name:")
+                                                        .Label(new JS("formatMessage('Company Short Name:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -556,7 +556,7 @@
 
         </text>);
 
-                    item.Add().Title("ID Details").Icon("detailslayout").Text("ID Details").Template(@<text>
+                item.Add().Title(new JS("formatMessage('ID Details')")).Icon("detailslayout").Text("ID Details").Template(@<text>
 
             <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 20px;">
                 <!-- Left Section -->
@@ -566,7 +566,7 @@
                             <!-- Full Address -->
                             @(Html.DevExtreme().TextBox()
                             .ID("FullAddress")
-                            .Label("Full Address")
+                            .Label(new JS("formatMessage('Full Address')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .Height(80))
@@ -576,7 +576,7 @@
                                 <div style="direction: rtl; display:flex; align-items:end;">
                                     @(Html.DevExtreme().TextBox()
                                       .ID("FullAddressArabic")
-                                      .Label("Full Address (Arabic)")
+                                      .Label(new JS("formatMessage('Full Address (Arabic)')"))
                                       .LabelMode(EditorLabelMode.Floating)
                                       .ReadOnly(true)
                                       .StylingMode(EditorStylingMode.Outlined)
@@ -595,12 +595,12 @@
 
                         </div>
                         <div id="CompanyLogoPreview" class="preview-box" oncontextmenu="triggerUpload('CompanyLogoInput'); return false;">
-                            <span>No image data for logo</span>
+                            <span id="noimagedatalogo"></span>
                         </div>
                         <input type="file" id="CompanyLogoInput" style="display:none" accept="image/*" onchange="uploadImage('logo')">
 
                         <div id="CompanySealPreview" class="preview-box" oncontextmenu="triggerUpload('CompanySealInput'); return false;">
-                            <span>No image data for seal</span>
+                            <span id="noimageforseal"></span>
                         </div>
                         <input type="file" id="CompanySealInput" style="display:none" accept="image/*" onchange="uploadImage('seal')">
 
@@ -612,13 +612,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("ProductName")
-                        .Label("Product Name")
+                        .Label(new JS("formatMessage('Product Name')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanySlogan")
-                        .Label("Company Slogan")
+                                                .Label(new JS("formatMessage('Company Slogan')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -627,13 +627,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("Phone")
-                        .Label("Company Phone")
+                                                .Label(new JS("formatMessage('Company Phone')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Fax")
-                        .Label("Company Fax")
+                                                .Label(new JS("formatMessage('Company Fax')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -642,13 +642,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("Email")
-                        .Label("Email Address")
+                                                .Label(new JS("formatMessage('Email Address')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Website")
-                        .Label("Website")
+                                                .Label(new JS("formatMessage('Website')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -657,7 +657,7 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("VAT")
-                        .Label("VAT Registration No *")
+                                                .Label(new JS("formatMessage('VAT Registration No *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -668,7 +668,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("GroupVAT")
-                        .Label("Group VAT No")
+                        .Label(new JS("formatMessage('Group VAT No')"))
                         .MaxLength(15)
                         .Mask("000000000000000")
                         .LabelMode(EditorLabelMode.Floating)
@@ -676,7 +676,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("TIN")
-                        .Label("TIN")
+                                                .Label(new JS("formatMessage('TIN')"))
                         .MaxLength(10)
                         .Mask("0000000000")
                         .LabelMode(EditorLabelMode.Floating)
@@ -687,7 +687,7 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().DropDownBox()
                         .ID("IDType")
-                        .Label("ID Type *")
+                                                .Label(new JS("formatMessage('ID Type *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -709,7 +709,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("IDNumber")
-                        .Label("ID Number *")
+                                                .Label(new JS("formatMessage('ID Number *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -720,7 +720,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CRNumber")
-                        .Label("Commercial Registration No")
+                                                .Label(new JS("formatMessage('Commercial Registration No')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -728,7 +728,7 @@
                     <!-- Print Button -->
                     <div style="text-align: right; margin-top: 10px;">
                         @(Html.DevExtreme().Button()
-                        .Text("Print Company Info")
+                                                .Text(new JS("formatMessage('Print Company Info')"))
                         .Icon("print")
                         .Option("reportName", "CompanyDetail1")
                         .Type(ButtonType.Normal)
@@ -744,47 +744,48 @@
             </div>
 
         </text>);
-                    item.Add().Text("Other//آخر").Icon("home").Title("Other//آخر").Template(@<text>
+                    item.Add().Text("Other").Icon("home").Title(new JS("formatMessage('Other')")).Template(@<text>
 
             <div style=" padding: 20px; width:100%">
 
                 <!-- Auditor Section -->
                 <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorName")
-                        .Label("Auditor's Name:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorFax")
-                        .Label("Auditor's Fax Number:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 100%;">
-                        @(Html.DevExtreme().TextArea()
-                        .ID("AuditorAddress")
-                        .Label("Auditor's Address:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Height(70)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorEmail")
-                        .Label("Auditor's Email:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorName")
+                                                    .Label(new JS("formatMessage(\"Auditor's Name:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorFax")
+                                                    .Label(new JS("formatMessage(\"Auditor's Fax Number:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 100%;">
+                            @(Html.DevExtreme().TextArea()
+                                                    .ID("AuditorAddress")
+                                                    .Label(new JS("formatMessage(\"Auditor's Address:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Height(70)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorEmail")
+                                                    .Label(new JS("formatMessage(\"Auditor's Email:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
 
+                </div>
+                    
                 <!-- Backup Info Section -->
                 <div style="display: flex; flex-wrap: wrap; gap: 15px;">
                     <div style="flex: 3 1 65%;">
@@ -792,7 +793,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ERPDBLocation")
-                                .Label("ERP Database Location")
+                                                                .Label(new JS("formatMessage('ERP Database Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -800,7 +801,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DMSLocation")
-                                .Label("ERP DMS Location")
+                                                                .Label(new JS("formatMessage('ERP DMS Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -811,7 +812,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("AutoBackupLocation")
-                                .Label("ERP Auto Backup Location")
+                                                                .Label(new JS("formatMessage('ERP Auto Backup Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -819,7 +820,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReceivableLocation")
-                                .Label("Bills Receivable Location")
+                                                                .Label(new JS("formatMessage('Bills Receivable Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -831,7 +832,7 @@
                             <div style="margin-bottom: 10px; display: flex;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("BackupEmail")
-                                .Label("Backup Operator Email")
+                                                                .Label(new JS("formatMessage('Backup Operator Email')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -841,7 +842,7 @@
                             <div style="margin-bottom: 10px; display: flex; ">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("OnlineBackup")
-                                .Label("Online Backup Location")
+                                                                .Label(new JS("formatMessage('Online Backup Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -855,14 +856,14 @@
                     <div style="flex: 1 1 25%; display: flex; flex-direction: column; gap: 33px; margin-top: 25px; margin-right: 20px;">
                         @(Html.DevExtreme().Button()
                         .ID("btnBackupDB")
-                        .Text("Backup Database")
+                                                .Text(new JS("formatMessage('Backup Database')"))
                         .Icon("save")
                         .Type(ButtonType.Default)
                         .Width("100%")
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnBackupDMS")
-                        .Text("Backup DMS")
+                                                .Text(new JS("formatMessage('Backup DMS')"))
                         .Icon("save")
                         .Type(ButtonType.Default)
                         .Width("100%")
@@ -870,13 +871,13 @@
                         <div style="display: flex; gap: 10px; margin-top: 6px; margin-right: 4px;">
                             @(Html.DevExtreme().CheckBox()
                             .ID("SendSuccess")
-                            .Text("Send Success Email")
+                                                        .Text(new JS("formatMessage('Send Success Email')"))
                             .Value(true)
                             .Width(200)
                             )
                             @(Html.DevExtreme().CheckBox()
                             .ID("SendFailed")
-                            .Text("Send Failed Email")
+                                                        .Text(new JS("formatMessage('Send Failed Email')"))
                             .Value(true)
                             .Width(250)
                             )
@@ -884,13 +885,13 @@
                         <div style="display: flex; gap: 10px; margin-top: 8px; margin-right: 4px;">
                             @(Html.DevExtreme().CheckBox()
                             .ID("CloudBackup")
-                            .Text("Backup in Cloud")
+                                                        .Text(new JS("formatMessage('Backup in Cloud')"))
                             .Value(true)
                             .Width(200)
                             )
                             @(Html.DevExtreme().CheckBox()
                             .ID("OnlyDB")
-                            .Text("Backup Only the Database (No Need to Backup DMS Folder)")
+                            .Text(new JS("formatMessage('Backup Only the Database (No Need to Backup DMS Folder)')"))
                             .Value(false)
                             .Width(250)
                             )
@@ -901,7 +902,7 @@
             </div>
 
         </text>);
-                    item.Add().Text("Letter Head (Full)").Icon("user").Title("Letter Head (Full)").Template(@<text>
+                    item.Add().Text("Letter Head (Full)").Icon("user").Title(new JS("formatMessage('Letter Head (Full)')")).Template(@<text>
     <div class="form-group">
         <div class="dx-fieldset">
             <div class="imagecontainer" id="imgBox1" style="height: 450px; background-color: var(--background-color); cursor: pointer; border-radius: 10px; position: relative;">
@@ -912,12 +913,13 @@
         </div>
     </div>
 </text>);
-                    item.Add().Text("Company Documents").Icon("user").Title("Company Documents").Template(@<text>
+                    item.Add().Text("Company Documents").Icon("user").Title(new JS("formatMessage('Company Documents')")).Template(@<text>
             <div style="display: flex; justify-content: center, gap: 15px, padding: 10px; width: fit-content;">
+                    
                 <!-- Layout Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnLayout")
-                .Text("Layout")
+                                .Text(new JS("formatMessage('Layout')"))
                 .Icon("smalliconslayout")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -927,7 +929,7 @@
                 <!-- Add & Attach Files Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnAttach")
-                .Text("Add & Attach Files")
+                                .Text(new JS("formatMessage('Add & Attach Files')"))
                 .Icon("attach") // use a clip icon or custom one
                 .OnClick("onAttachmentButton")
                 .Type(ButtonType.Default)
@@ -938,7 +940,7 @@
                 <!-- Merge PDF Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnMergePDF")
-                .Text("Merge Selected Files")
+                                .Text(new JS("formatMessage('Merge Selected Files')"))
                 .Icon("file") // Replace with pdf icon if available
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -948,7 +950,7 @@
                 <!-- Save Separate PDF Files Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnSavePDF")
-                .Text("Save Separated PDF Files")
+                                .Text(new JS("formatMessage('Save Separated PDF Files')"))
                 .Icon("save") // Replace with appropriate icon
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -958,7 +960,7 @@
                 <!-- Print Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnPrint")
-                .Text("Print")
+                                .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -977,10 +979,10 @@
                 .Columns(columns =>
                 {
                 columns.Add().Caption("#").Width(100);
-                columns.Add().DataField("DocumentType").Caption("DocumentType");
-                columns.Add().DataField("DocumentRefNumber").Caption("Document Ref Number");
-                columns.Add().DataField("ExpiryOn").Caption("Expiry On");
-                columns.Add().DataField("NotifyOn").Caption("Notify On");
+                                    columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('DocumentType')"));
+                                    columns.Add().DataField("DocumentRefNumber").Caption(new JS("formatMessage('Document Ref Number')"));
+                columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')"));
+                columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')"));
                 })
                 .ColumnAutoWidth(true)
                 .Width("100%")
@@ -1001,7 +1003,7 @@
                 )
             </div>
         </text>);
-                    item.Add().Text("Data Locking").Icon("user").Title("Data Locking").Template(@<text>
+                    item.Add().Text("Data Locking").Icon("user").Title(new JS("formatMessage('Data Locking')")).Template(@<text>
             <div>
                 <div style="display: flex; justify-content: center; gap: 15px; padding: 10px; width: fit-content;">
                     <!-- Date Picker -->
@@ -1017,7 +1019,7 @@
                     <!-- Set All Dates Button -->
                     @(Html.DevExtreme().Button()
                     .ID("btnSetAllDates")
-                    .Text("Set All Dates")
+                                        .Text(new JS("formatMessage('Set All Dates')"))
                     .Icon("event")
                     .Type(ButtonType.Default)
                     .StylingMode(ButtonStylingMode.Contained)
@@ -1028,7 +1030,7 @@
                     <!-- Update Date Locked Button -->
                     @(Html.DevExtreme().Button()
                     .ID("btnUpdateDateLocked")
-                    .Text("Update Date Locked")
+                                        .Text(new JS("formatMessage('Update Date Locked')"))
                     .Icon("save")
                     .Type(ButtonType.Default)
                     .StylingMode(ButtonStylingMode.Contained)
@@ -1071,13 +1073,13 @@
                                             .Columns(columns =>
                                             {
                                                 columns.Add().DataField("VoucherModule")
-                                            .Caption("Module")
+                                            .Caption(new JS("formatMessage('Module')"))
                                             .GroupIndex(0)    // 👈 default group by VoucherModule
                                             .Visible(false);
-                                                columns.Add().DataField("VoucherTypeCode").Caption("Code").AllowEditing(false);
-                                                columns.Add().DataField("VoucherType").Caption("Voucher // Entry Type").AllowEditing(false);
+                                                columns.Add().DataField("VoucherTypeCode").Caption(new JS("formatMessage('Code')"));
+                                                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher // Entry Type')"));
                                                 columns.Add().DataField("VoucherDateLocked")
-                                            .Caption("Voucher Date Locked")
+                                            .Caption(new JS("formatMessage('Voucher Date Locked')"))
                                             .DataType(GridColumnDataType.Date)
                                             .Format("dd-MMM-yyyy")
                                             .EditorOptions(new { displayFormat = "dd-MMM-yyyy" });
@@ -1086,7 +1088,7 @@
                 </div>
             </div>
         </text>);
-                    item.Add().Text("Obselete").Icon("user").Title("Obselete").Template(@<text>
+                    item.Add().Text("Obselete").Icon("user").Title(new JS("formatMessage('Obselete')")).Template(@<text>
 
 
             <div class="form-container3" style="width:50%; padding: 10px; width:100%;">
@@ -1094,7 +1096,7 @@
                 <div class="column4">
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID1")
-                    .Label("Company ID:")
+                                        .Label(new JS("formatMessage('Company ID:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -1102,35 +1104,35 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName1")
-                    .Label("Company Name:")
+                                        .Label(new JS("formatMessage('Company Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName1")
-                    .Label("Our Address - Street Name:")
+                                        .Label(new JS("formatMessage('Our Address - Street Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress1")
-                    .Label("Our Address - Additional Address:")
+                                        .Label(new JS("formatMessage('Our Address - Additional Address:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("ShortName1")
-                    .Label("Company Name Short:")
+                                        .Label(new JS("formatMessage('Company Name Short:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyCity")
-                    .Label("Company City:")
+                                        .Label(new JS("formatMessage('Company City:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -1209,13 +1211,13 @@
 
         @(Html.DevExtreme().Button()
             .ID("btnSave1")
-            .Text("Save")
+                .Text(new JS("formatMessage('Save')"))
             .Icon("check")
             .OnClick("onSaveCompanyClick"))
 
         @(Html.DevExtreme().Button()
             .ID("btnBack")
-            .Text("Back")
+                .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
             .OnClick("onBackClick"))
 
@@ -1241,8 +1243,8 @@
                         .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CountryCodeAlpha2").Caption("Country Code");
-                            columns.Add().DataField("CountryName").Caption("Country Name");
+                                columns.Add().DataField("CountryCodeAlpha2").Caption(new JS("formatMessage('Country Code')"));
+                                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
                         })
                         .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
                     )
@@ -1267,8 +1269,8 @@
         .Selection(s => s.Mode(SelectionMode.Single))
         .Columns(columns =>
         {
-            columns.Add().DataField("SellerOtherIdtype").Caption("Code");
-            columns.Add().DataField("SellerIdtypeName").Caption("Company ID Type");
+                columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('Code')"));
+                columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('Company ID Type')"));
         })
         .OnSelectionChanged("onIDSelected")
     )
@@ -1638,7 +1640,7 @@ $(function () {
             }
             if (!selectedTabText) return;
 
-            if (["ID Details", "Other//آخر"].includes(selectedTabText)) {
+            if (["ID Details", "Other"].includes(selectedTabText)) {
                 if (companyIds.length > 0) {
                     loadCompanyDetail(companyIds[currentCompanyIndex]);
                 } else {
@@ -1915,6 +1917,17 @@ function safeDxTextArea(id) {
         const title = "Master Documents";
 
         openModal(url, title);
-    } 
-
+    }
+        $(function () {
+                            $("#companydetailshome").text(formatMessage("Company Details"));
+                     });
+        $(function () {
+                                    $("#noimageforseal").text(formatMessage("No image data for seal"));
+                     });
+        $(function () {
+                                    $("#noimagedatalogo").text(formatMessage("No image data for logo"));
+                     });
+                           $(function () {
+                $("#clearAllNotifications").text(formatMessage("Clear All"));
+            });
 </script>
