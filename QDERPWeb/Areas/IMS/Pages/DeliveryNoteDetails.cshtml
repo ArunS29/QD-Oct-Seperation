@@ -227,7 +227,7 @@
 				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Gscode).Caption("Gs Code").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Gsdescrpition).Caption("Gs Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitType).Caption("Unti Type").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitType).Caption("Unit Type").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 				function(cellElement, cellInfo) {
 				if (cellInfo.value != null && cellInfo.value !== '') {

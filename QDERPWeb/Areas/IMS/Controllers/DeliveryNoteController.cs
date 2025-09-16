@@ -752,7 +752,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         EmployeeNo = x.EmployeeNo,
                         PropertyNo = x.PropertyNo,
                         AddlDescription = x.AddlDescription,
-                        DeliveryRemarks = x.DeliveryRemarks
+                        DeliveryRemarks = x.DeliveryRemarks,
+                        QuoteTotalBeforeDiscount=x.QuoteTotalBeforeDiscount,
                     })
                 });
             }
@@ -1387,7 +1388,80 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         //    return DateTime.Now.AddDays(creditDays);
         //}
 
+        //Receive button form
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryAmount(string deliveryNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
 
+                try
+                {
+
+                var amount = await dbContext.Qry60303deliveryNoteItemsWithTotals
+                .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                .Select(x => x.TotalAfterDiscount ?? 0)
+                .FirstOrDefaultAsync();
+
+            return Ok(new { DeliveryNoteNo = deliveryNoteNo, TotalAfterDiscount = amount });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetDeliveryAmount: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDescription(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl20164GoodsAndServicesMasters.Select(i => new
+                    {
+                      i.Gscode,
+                      i.Gsdescrpition
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDescriptionDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUOM(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl40111PropertyUnitCodes.Select(i => new
+                    {
+                       i.UnitCode,
+                       i.UnitType
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUOMDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
 
     }
 

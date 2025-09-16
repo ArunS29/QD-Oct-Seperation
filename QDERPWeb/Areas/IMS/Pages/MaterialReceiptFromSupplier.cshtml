@@ -5185,7 +5185,7 @@
 	}
 
 	$("#btnSave").on("click", function (e) {
-//const $btn = $(this).dxButton("instance");
+const $btn = $(this).dxButton("instance");
 
 			// ✅ Step 1: Validate required field
 			var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -5199,7 +5199,7 @@
 			}
 
 			// ✅ Step 2: Disable the button after validation passes
-			//$btn.option("disabled", true);
+			$btn.option("disabled", true);
 
 
     if (edit === false) {
@@ -5208,19 +5208,19 @@
             var receiptNoNew = data;
             $("#txtMaterialReceiptNo").dxTextBox("instance").option("value", receiptNoNew);
 
-            saveQuotation(receiptNoNew);
+            saveQuotation(receiptNoNew,$btn);
         }).fail(function () {
-          //  $btn.option("disabled", false);
+          $btn.option("disabled", false);
             DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
         });
     } else {
         // 🔹 Edit → no need to regenerate
         var receiptNoNew = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null;
-        saveQuotation(receiptNoNew);
+        saveQuotation(receiptNoNew,$btn);
     }
 });
 
-function saveQuotation(receiptNoNew) {
+function saveQuotation(receiptNoNew,$btn) {
 
 			const master = {
 				ReceiptNo:receiptNoNew ,
@@ -5263,13 +5263,13 @@ function saveQuotation(receiptNoNew) {
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
 			};
 
-			//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+			
+					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+          if (!children || children.length === 0) {
+	DevExpress.ui.notify("No child records to save.", "error", 3000);
+	$btn.option("disabled", false); // Re-enable the button
+	return;
+}
 
 			const model = {
 				...master,
@@ -5309,7 +5309,7 @@ function saveQuotation(receiptNoNew) {
 
 	
 	$("#btnSaveAndClose").on("click", function (e) {
-		//const $btn = $(this).dxButton("instance");
+		const $btn = $(this).dxButton("instance");
 
 			// ✅ Step 1: Validate required field
 			var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -5322,26 +5322,26 @@ function saveQuotation(receiptNoNew) {
 				return;
 			}
 			
-				//$btn.option("disabled", true);
+				$btn.option("disabled", true);
     if (edit === false) {
         // 🔹 New entry → check again before saving
         NewNoGeneration1().done(function (data) {
             var receiptNoNew = data;
             $("#txtMaterialReceiptNo").dxTextBox("instance").option("value", receiptNoNew);
 
-            saveAndCloseQuotation(receiptNoNew);
+            saveAndCloseQuotation(receiptNoNew,$btn);
         }).fail(function () {
-           // $btn.option("disabled", false);
+            $btn.option("disabled", false);
             DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
         });
     } else {
         // 🔹 Edit → no need to regenerate
         var receiptNoNew = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null;
-        saveAndCloseQuotation(receiptNoNew);
+        saveAndCloseQuotation(receiptNoNew,$btn);
     }
 });
 
-function saveAndCloseQuotation(receiptNoNew) {
+function saveAndCloseQuotation(receiptNoNew,$btn) {
  
 			const master = {
 				ReceiptNo:receiptNoNew ,
@@ -5385,12 +5385,12 @@ function saveAndCloseQuotation(receiptNoNew) {
 			};
 
 			//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+if (!children || children.length === 0) {
+	DevExpress.ui.notify("No child records to save.", "error", 3000);
+	$btn.option("disabled", false); // Re-enable the button
+	return;
+}
 
 			const model = {
 				...master,
