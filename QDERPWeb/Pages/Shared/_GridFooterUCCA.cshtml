@@ -237,44 +237,44 @@
 
 
     <div class="btn-container menuBtn">
-        @(Html.DevExtreme().Menu()
-                .ID("menuReports")
-                .DataSource(new[] {
+      @(Html.DevExtreme().Menu()
+    .ID("menuReports")
+    .DataSource(new[] {
+        new {
+            text = new JS("formatMessage('Report')"),
+            icon = "doc",
+            items = new[] {
                 new {
-                text = new JS("formatMessage('Report')"),
-                icon = "doc",
-                items = new[] {
-                new {
-                text = new JS("formatMessage('Cost Center Summary Reports')"),
-                icon = "search",
-                items = new[] {
-                new { text = new JS("formatMessage('Summary Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Summary Report (By Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Report (By Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Group Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Group Report (By Date)')"), icon = "chart-line" }
-                }
+                    text = new JS("formatMessage('Cost Center Summary Reports')"),
+                    icon = "search",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Summary Report')"), icon = "chart-line", reportName = "SummaryReport" },
+                        new { text = new JS("formatMessage('Summary Report (By Date)')"), icon = "chart-line", reportName = "SummaryReportByDate" },
+                        new { text = new JS("formatMessage('Cost Center Report')"), icon = "chart-line", reportName = "CostCenterReport" },
+                        new { text = new JS("formatMessage('Cost Center Report (By Date)')"), icon = "chart-line", reportName = "CostCenterReportByDate" },
+                        new { text = new JS("formatMessage('Cost Center Group Report')"), icon = "chart-line", reportName = "CostCenterGroupReport" },
+                        new { text = new JS("formatMessage('Cost Center Group Report (By Date)')"), icon = "chart-line", reportName = "CostCenterGroupReportByDate" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Cost Center Detailed Reports')"),
-                icon = "search",
-                items = new[] {
-                new { text = new JS("formatMessage('Detailed Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Detailed Report (By Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Detailed Group Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Detailed Group Report (By Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Master Report')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Cost Center Master Report (By Date)')"), icon = "chart-line" }
+                    text = new JS("formatMessage('Cost Center Detailed Reports')"),
+                    icon = "search",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Detailed Report')"), icon = "chart-line", reportName = "DetailReport" },
+                        new { text = new JS("formatMessage('Detailed Report (By Date)')"), icon = "chart-line", reportName = "DetailedBydate" },
+                        new { text = new JS("formatMessage('Detailed Group Report')"), icon = "chart-line", reportName = "DetailedGroup" },
+                        new { text = new JS("formatMessage('Detailed Group Report (By Date)')"), icon = "chart-line", reportName = "detailGroupBydate" },
+                        new { text = new JS("formatMessage('Cost Center Master Report')"), icon = "chart-line", reportName = "CostCenterMasterGroup" },
+                        new { text = new JS("formatMessage('Cost Center Master Report (By Date)')"), icon = "chart-line", reportName = "detailedMasterByDate" }
+                    }
                 }
-                }
-                }
-                }
-                })
-                .DisplayExpr("text")
-                .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-                .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
-                )
+            }
+        }
+    })
+    .DisplayExpr("text")
+    .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+    .OnItemClick("handleReportsClick")
+)
     </div>
 
 
@@ -794,8 +794,9 @@
 
 
 
-            function handleReportsClick(e) {
-        const selectedText = e.itemData.text;
+    function handleReportsClick(e) {
+        // Use reportName property from itemData instead of reportMappings
+        const reportName = e.itemData.reportName;
 
         // Get instances of SelectBox and DateBox components
         var dropDownBox = $("#requestedBy").dxDropDownBox("instance");
@@ -826,9 +827,7 @@
         var frmDateStr = formatDate(frmDate);
         var toDateStr = formatDate(toDate);
 
-        if (reportMappings[selectedText]) {
-            const reportName = reportMappings[selectedText];
-
+        if (reportName) {
             // Construct the URL with frmDate and toDate (always required)
             let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
 
@@ -845,10 +844,9 @@
                 `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
             );
         } else {
-            console.warn('No report mapping found for:', selectedText);
+            console.warn('No report mapping found for:', e.itemData.text);
         }
     }
-
 
 
 

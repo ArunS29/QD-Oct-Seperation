@@ -93,6 +93,7 @@
             // 
             // xrLabel1
             // 
+            this.xrLabel1.CanGrow = false;
             this.xrLabel1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calNamewithId]")});
             this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F, DevExpress.Drawing.DXFontStyle.Italic);

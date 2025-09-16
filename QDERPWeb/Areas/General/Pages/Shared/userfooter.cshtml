@@ -176,7 +176,7 @@
     <div class="btn-container">
 
 
-        @(Html.DevExtreme().Button()
+        @* @(Html.DevExtreme().Button()
 
             .ID("btnCreateNew")
 
@@ -190,7 +190,7 @@
 
             .OnClick("function() { onCreateNewClick(); }") // your JS function
 
-            )
+            ) *@
 
     </div>
 @*     <div class="btn-container">
@@ -239,14 +239,14 @@
     </div>
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
+        @* @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
             .Width(50)
             .Text(new JS("formatMessage('Column Chooser')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("showColumnChooser")
-            )
+            ) *@
    
     
     
@@ -596,12 +596,12 @@
 
 
     // Footer Filter row button click event
-    function toggleFilterRow() {
-            var grid = $("#DataGrid").dxDataGrid("instance");
-        var currentVisibility = grid.option("filterRow.visible");
+    // function toggleFilterRow() {
+    //         var grid = $("#DataGrid").dxDataGrid("instance");
+    //     var currentVisibility = grid.option("filterRow.visible");
 
-        grid.option("filterRow.visible", !currentVisibility); 
-    }
+    //     grid.option("filterRow.visible", !currentVisibility); 
+    // }
 
     // Footer Recipits button event
     function addRecipitsButton_click(e) {
