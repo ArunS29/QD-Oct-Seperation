@@ -1872,10 +1872,8 @@
                             </div>
                         </div>
 
-                        @* <button id="clearAllNotifications" class="text-button"></button> *@
-                        <button id="clearAllNotifications" class="text-button">
-                            <script>document.write(formatMessage("Clear All"));</script>
-                        </button>
+                         <button id="clearAllNotifications" class="text-button"></button>
+                        
 
                         <div class="notification-divider" id="notificationList"></div>
                     </div>
@@ -1990,11 +1988,11 @@
                             </div>
                         </div>
                         <!-- Clear All & Individual Notifications -->
-                        @* <button id="clearAllNotifications" class="text-button">Clear All</button> *@
-                        <button id="clearAllNotifications" class="text-button">
+                         <button id="clearAllNotifications" class="text-button"></button> 
+                      @*   <button id="clearAllNotifications" class="text-button">
                             <script>document.write(formatMessage("Clear All"));</script>
                         </button>
-
+ *@
                         <div class="notification-divider" id="notificationVATList">
                             <!-- Individual notifications will be dynamically injected -->
                         </div>
@@ -2136,7 +2134,7 @@
                     <div class="tab-content" id="othersContent" style="display:none;">
                         <!-- Clear All & Individual Notifications -->
                         <button id="clearAllOthers" class="text-button">
-                            <script>document.write(formatMessage("Clear All"));</script>
+                           
                         </button>
 
                         <div class="notification-divider" id="othersNotificationList">
@@ -2976,7 +2974,7 @@
                 <div id="changePasswordPopupContainer">
                     @(Html.DevExtreme().Popup()
                                         .ID("changePasswordPopup")
-                                        .Title("Change Your Password")
+                                        .Title(new JS("formatMessage('Change Your Password')"))
                                         .Width("50%")
                                         .Height(430)
                                         .Visible(false)
@@ -5434,6 +5432,7 @@
                 const $items = $("#notificationList .notification-item");
                 if ($items.length === 0) return;
 
+
                 $items.slideUp(300, function () { $(this).remove(); });
 
                 // Reset badges
@@ -6156,7 +6155,7 @@
             $("#tobepostedpurchase").text(formatMessage("To Be Posted"));
         });
                
-
+      
     </script>
 </body>
 </html>

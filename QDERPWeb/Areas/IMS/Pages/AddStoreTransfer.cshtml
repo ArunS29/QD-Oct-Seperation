@@ -285,6 +285,8 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("deliveryNoteDate")
                         .Value(DateTime.Now)
+                         .Type(DateBoxType.Date)
+                         .DisplayFormat("dd-MMM-yyyy")
                         .Label(new JS("formatMessage('Delivery Note Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
@@ -410,6 +412,9 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
+                         .Value(DateTime.Now)
+                         .Type(DateBoxType.Date)
+                         .DisplayFormat("dd-MMM-yyyy")
                         .Label(new JS("formatMessage('Client PO Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
@@ -817,56 +822,101 @@
             <div class="p-2">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
-                    <div class="col-md-4">
-                        @(Html.DevExtreme().SelectBox()
-                        .ID("CompanyName")
-                        .Label(new JS("formatMessage('Company Branch')"))
-                        .DataSource(d => d.Mvc()
-                        .Controller("DeliveryNote")
-                        .LoadAction("GetCompanyBranch")
-                        )
-                        .DisplayExpr("CompanyName")
-                        .ValueExpr("CompanyId")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
+                          <div class="col-md-4">
+
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                                    .Label(new JS("formatMessage('Company Branch/Division:')"))
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("AddNewClientRequest")
+                                                    .LoadAction("GetCompany")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CompanyId")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .ID("ddGetCompany")
+                                                    .Width(900)
+                                                                @*  .ShowClearButton(true)
+				.AcceptCustomValue(true) *@
+                                                    .OpenOnFieldClick(false)//
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .ValueExpr("CompanyId")
+                                                    .DisplayExpr("CompanyName")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                                            //.OnValueChanged("dropDownBoxValueChanged")
+                                                    .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
+                                                    )
+                        </div>
 
 
 
 
-                    <div class="col-md-4">
-                        @(Html.DevExtreme().SelectBox()
-                        .ID("DeliveryType")
-                        .DataSource(new[] {
-                        new { Id = 4, Name = "Store Transfers" } 
-                        })
-                        .ValueExpr("Id")             
-                        .DisplayExpr("Name")         
-                        .Value(4)                   
-                        .Label(new JS("formatMessage('Delivery Type:')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                       .Disabled(true)              
-                        )
-                        <!-- Make sure value is posted -->
-                        <input type="hidden" name="DeliveryType" value="2" />
-                    </div>
 
-                    <div class="col-md-4">
-                      @(Html.DevExtreme().SelectBox()
-                        .ID("InventoryGroup")
-                        .DataSource(d => d.Mvc()
-                        .Controller("DeliveryNote")
-                        .LoadAction("GetInventoryGroups")
-                        )
-                        .DisplayExpr("Name")
-                        .ValueExpr("Id")
-                        .Label(new JS("formatMessage('Inventory Group Master: *')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        ) 
-                    </div>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().DropDownBox()
+                                                    .Label(new JS("formatMessage('Delivery Type:')"))
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("DeliveryNote")
+                                                    .LoadAction("GetDeliveryType")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("DeliveryTypeCode")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .ID("DeliveryType")
+                                                    .Width(900)
+                                                                @*  .ShowClearButton(true)
+.AcceptCustomValue(true) *@
+                                                    .OpenOnFieldClick(false)//
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .Value(1)
+                                                    .ValueExpr("DeliveryTypeCode")
+                                                    .DisplayExpr("DeliveryType")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                    .Disabled(true)
+                                                                    //.OnValueChanged("dropDownBoxValueChanged")
+                                                    .ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
+                                                    )
+                        </div>
+
+
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                                    .Label(new JS("formatMessage('Inventory Group Master:')"))
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("AddNewClientRequest")
+                                                    .LoadAction("GetInventoryGroup")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("InventoryMasterGroupId")
+                                                    )
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .ID("ddGetInventoryGroup")
+                                                    .Width(900)
+                                                                @*  .ShowClearButton(true)
+				.AcceptCustomValue(true) *@
+                                                    .OpenOnFieldClick(false)
+                                                    .Value(1)
+                                                    .ValueChangeEvent("input")
+                                                    .HoverStateEnabled(true)
+                                                    .ValueExpr("InventoryMasterGroupId")
+                                                    .DisplayExpr("InventoryMasterGroup")
+                                                    .OnInput("dropDownBoxOnInput")
+                                                    .OnOpened("onOpened")
+                                                    .TabIndex(1)
+                                                    .Width("100%")
+                                                    .OnKeyDown("onKeyDown")
+                                                                            //.OnValueChanged("dropDownBoxValueChanged")
+                                                    .ContentTemplate(new TemplateName("GetInventoryGroupContentTemplate"))
+                                                    )
+                        </div>
 
                     <!-- Row 2: Sales Order No / Quotation No / Enquiry No -->
                     <div class="col-md-4">
@@ -1386,6 +1436,103 @@
 
 
 }
+@using (Html.DevExtreme().NamedTemplate("GetCompanyContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+			.ID("GetCompany-datagrid")
+			.DataSource(d => d.WebApi()
+			.Controller("AddNewClientRequest")
+			.LoadAction("GetCompany")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("CompanyId")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+					   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+			.OnSelectionChanged("dataGridSelectionChanged6")
+			.OnInitialized("dataGridInitialized6")
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(false))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+			.Columns(columns =>
+			{
+				columns.Add().Caption(new JS("formatMessage('Code')")).DataField("CompanyId").Width(80);
+				columns.Add().Caption(new JS("formatMessage('Name')")).DataField("CompanyName");
+			})
+			)
+}
+@using (Html.DevExtreme().NamedTemplate("GetMPRRequesterByContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+			.ID("GetMPRRequesterBy-datagrid")
+			.DataSource(d => d.WebApi()
+			.Controller("DeliveryNote")
+			.LoadAction("GetDeliveryType")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("DeliveryTypeCode")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+					   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+			.OnSelectionChanged("dataGridSelectionChanged14")
+			.OnInitialized("dataGridInitialized14")
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(false))//
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+			.Columns(columns =>
+			{
+				columns.Add().Caption(new JS("formatMessage('DeliveryTypeCode')")).DataField("Code");
+				columns.Add().Caption(new JS("formatMessage('DeliveryType')")).DataField("Delivery Type");
+			})
+			)
+		}
+
+@using (Html.DevExtreme().NamedTemplate("GetInventoryGroupContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+			.ID("GetInventoryGroup-datagrid")
+			.DataSource(d => d.WebApi()
+			.Controller("AddNewClientRequest")
+			.LoadAction("GetInventoryGroup")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("InventoryMasterGroupId")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+					   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+			.OnSelectionChanged("dataGridSelectionChanged8")
+			.OnInitialized("dataGridInitialized8")
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(false))//
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+			.Columns(columns =>
+			{
+				columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId").Width(80);
+				columns.Add().Caption(new JS("formatMessage('Inventory Master Group')")).DataField("InventoryMasterGroup");
+			})
+			)
+		}
 <div class="footer-fixed">
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
 </div>
@@ -1463,6 +1610,45 @@
             }
         }
     }
+     function dataGridSelectionChanged6(e) {
+	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	const ddbInstance = $("#ddGetCompany").dxDropDownBox("instance");
+	if (selectedKey) {
+		ddbInstance.option("value", selectedKey);
+		if (ddbInstance.option("opened")) {
+			ddbInstance.close();
+		}
+	}
+}
+    function dataGridInitialized6(e) {
+	dataGrid = e.component;
+}
+function dataGridSelectionChanged14(e) {
+	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	const ddbInstance = $("#DeliveryType").dxDropDownBox("instance");
+	if (selectedKey) {
+		ddbInstance.option("value", selectedKey);
+		if (ddbInstance.option("opened")) {
+			ddbInstance.close();
+		}
+	}
+}
+function dataGridInitialized14(e) {
+	dataGrid = e.component;
+}
+function dataGridSelectionChanged8(e) {
+	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+	const ddbInstance = $("#ddGetInventoryGroup").dxDropDownBox("instance");
+	if (selectedKey) {
+		ddbInstance.option("value", selectedKey);
+		if (ddbInstance.option("opened")) {
+			ddbInstance.close();
+		}
+	}
+}
+function dataGridInitialized8(e) {
+	dataGrid = e.component;
+}
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
         const title = "Quotation Type Of Request";
@@ -1474,8 +1660,11 @@
             openModal(url, title);
     }
     function redirecttosalespersonmaster(){
-        const url = `/${tenantName}/VAT/SalesPersonMaster`;
+        const url = `/${tenantName}/IMS/SalesPersonMaster`;
         const title = "Sales Person Master";
+
+
+
             openModal(url, title);
     }
     function redirecttoClientLeadmaster1(){
@@ -2098,7 +2287,8 @@
 
                caption: formatMessage('Issued Unit Price'),
 
-         width: 200
+         width: 200,
+         format: { type: "fixedPoint", precision: 2 }
 
        },{
 
@@ -2106,7 +2296,8 @@
 
                  caption: formatMessage('Issued Quote Unit Price'),
 
-           width: 200
+           width: 200,
+           format: { type: "fixedPoint", precision: 2 }
 
        },
                                      {
@@ -2181,7 +2372,7 @@
 
 
                                  { dataField: "EmployeeID", caption: "ID", width: 80 },
-                                 { dataField: "EmployeeName", caption: "Name", width: 200 }
+                                 { dataField: "EmployeeName", caption: "Name"}
 
 
                         ],
@@ -2281,8 +2472,8 @@
                         columns: [
 
 
-                                  { dataField: "PropertyNo", caption: "Property No", width: 150 },
-                                  { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
+                                  { dataField: "PropertyNo", caption: "ID", width: 80 },
+                                  { dataField: "PropertyDescription", caption: "Name" }
 
 
                         ],
@@ -2332,6 +2523,28 @@
                     e.data.SNo = rowData.length + 1; // Auto-generate SNo
 
                 },
+                                			 summary: {
+    totalItems: [
+        {
+            column: "Qty",
+            summaryType: "sum",
+            displayFormat: "{0}",
+			
+        },
+        {
+            column: "IssuedUnitPrice",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "IssuedQuoteUnitPrice",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        }
+    ]
+},
 
                 columnAutoWidth: true,
 
@@ -2645,4 +2858,33 @@ $(function () {
             grid.selectRows([data[targetIndex].SNo]);
             grid.option("focusedRowIndex", targetIndex);
         }
+                         $(function () {
+      const dateBox = $("#deliveryNoteDate").dxDateBox("instance");
+
+    // When focus/typing starts, change to dd-MM-yyyy
+      $("#deliveryNoteDate").on("focusin", function () {
+        dateBox.option("displayFormat", "dd-MM-yyyy");
+    });
+
+    // When focus/typing ends, change back to dd-MMM-yyyy
+      $("#deliveryNoteDate").on("focusout", function () {
+        dateBox.option("displayFormat", "dd-MMM-yyyy");
+    });
+});
+ $(function () {
+      const dateBox = $("#ClientPODate").dxDateBox("instance");
+
+    // When focus/typing starts, change to dd-MM-yyyy
+      $("#ClientPODate").on("focusin", function () {
+        dateBox.option("displayFormat", "dd-MM-yyyy");
+    });
+
+    // When focus/typing ends, change back to dd-MMM-yyyy
+      $("#ClientPODate").on("focusout", function () {
+        dateBox.option("displayFormat", "dd-MMM-yyyy");
+    });
+});
+ $(document).ready(function () {
+            getDefaultCompany("ddGetCompany");
+        });
    </script>
