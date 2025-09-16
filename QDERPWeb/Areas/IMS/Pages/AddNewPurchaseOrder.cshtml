@@ -2081,13 +2081,13 @@ function dataGridInitialized6(e) {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -2134,7 +2134,7 @@ function dataGridInitialized6(e) {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2152,7 +2152,7 @@ function dataGridInitialized6(e) {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2199,7 +2199,7 @@ function dataGridInitialized6(e) {
                 }
 
                 let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
-                let title = "Details Description";
+                let title = formatMessage("Details Description");
 
                 openModal(url, title);
             }
@@ -2230,7 +2230,7 @@ function dataGridInitialized6(e) {
                 }
 
                 let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
-                let title = "Details Description";
+                let title = formatMessage("Details Description");
 
                 openModal(url, title);
             }
@@ -2311,13 +2311,13 @@ function dataGridInitialized6(e) {
 
                                             columns: [
 
-                                                { dataField: "UnitCode", caption: "Code", width: 80 },
+                                                { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-                                                { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+                                                { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-                                                { dataField: "UnitType", caption: "Unit Type", width: 150 },
+                                                { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-                                                { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+                                                { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
                                             ],
 
@@ -2356,7 +2356,7 @@ function dataGridInitialized6(e) {
                                     onClick: function () {
 
                                         let url = `/${tenantName}/IMS/UnitOfMeasure`; 
-                                         let title = "Unit of Measure";
+                                         let title = formatMessage("Unit of Measure");
                                           openModal(url, title,"70%","70%");
 
                                     },
@@ -2535,14 +2535,14 @@ function dataGridInitialized6(e) {
         if (e.row && e.row.rowType === "data") {
             e.items = [
                 {
-                    text: "Delete Line Item",
+                    text: formatMessage("Delete Line Item"),
                     icon: "remove",
                     onItemClick: function() {
                         deletePoChild([e.row.data.PochildNo]);
                     }
                 },
                 {
-                    text: "Delete All Selected Line Items",
+                    text: formatMessage("Delete All Selected Line Items"),
                     icon: "remove",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2556,7 +2556,7 @@ function dataGridInitialized6(e) {
                     }
                 },
                 {
-                    text: "Add New Line Item",
+                    text: formatMessage("Add New Line Item"),
                     icon: "add",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -4210,7 +4210,7 @@ function getDefaultCompany() {
           }
            function CurrencyClick() {
           let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-          let title = "Currency Master";
+          let title = formatMessage("Currency Master");
           openModal(url, title);
       }
         function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -4475,7 +4475,7 @@ function selectContact(name, email, mobile, phone) {
         }
    function AddPreparedBy(){
 					const url = `/${tenantName}/IMS/Signatories`;
-				  const title = "Signatories";
+				  const title = formatMessage("Signatories");
 					  openModal(url, title);
 			  }
 

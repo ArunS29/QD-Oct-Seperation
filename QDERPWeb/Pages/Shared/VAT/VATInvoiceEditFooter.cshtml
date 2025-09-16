@@ -618,10 +618,106 @@
         }
 
         function navigateInventoryListtoUpload() {
+            const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+            const totalCount = gridInstance.totalCount();
+            console.log("Total Count from DataSource:", totalCount);
             var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-            var url = `/${tenantName}/VAT/InvoiceUpload?invoiceNo=${invoiceNo}`;
-            window.location.href = url; // Navigate to the page
+            if (!invoiceNo) {
+                DevExpress.ui.notify("Request No is required.", "error", 2000);
+                return;
+            }
+            if(totalCount > 0){
+                handleUploadConfirm(invoiceNo);
+            }else{
+                window.location.href = `/${tenantName}/VAT/InvoiceUpload?invoiceNo=${invoiceNo}`;
+            }
         }
+
+        (function(){
+        const dialog = document.getElementById('confirmDialog');
+        const form = document.getElementById('confirmForm');
+        const titleEl = document.getElementById('confirmTitle');
+        const messageEl = document.getElementById('confirmMessage');
+        const stepChoice = document.getElementById('stepChoice');
+        const stepType = document.getElementById('stepType');
+        const phraseInput = document.getElementById('confirmPhrase');
+        const phraseBadge = document.getElementById('phraseBadge');
+        const phraseError = document.getElementById('phraseError');
+        const btnConfirm = document.getElementById('btnConfirm');
+        const chooseYes = document.getElementById('chooseYes');
+        const chooseNo = document.getElementById('chooseNo');
+        
+        let REQUIRED_PHRASE = 'Replace by user';
+        
+        function resetSteps(){
+            stepChoice.classList.add('active');
+            stepType.classList.remove('active');
+            phraseInput.value = '';
+            phraseError.classList.remove('show');
+            btnConfirm.disabled = true;
+        }
+        function openDialog(opts){
+            const { title, message, phrase } = opts || {};
+            if(title) titleEl.textContent = title;
+            if(message) messageEl.textContent = message;
+            REQUIRED_PHRASE = phrase || 'Replace by user';
+            phraseBadge.textContent = REQUIRED_PHRASE;
+            resetSteps();
+            if(typeof dialog.showModal === 'function'){
+            dialog.showModal();
+            } else {
+            dialog.setAttribute('open','');
+            }
+        }
+        function closeDialog(){
+            if(dialog.open) dialog.close();
+            dialog.removeAttribute('open');
+        }
+        function validate() {
+            const ok = (phraseInput.value || '').trim() === REQUIRED_PHRASE;
+            btnConfirm.disabled = !ok;
+            phraseError.classList.toggle('show', !ok && phraseInput.value.length > 0);
+            return ok;
+        }
+        phraseInput.addEventListener('input', validate);
+        form.addEventListener('submit', e => e.preventDefault());
+        chooseYes.addEventListener('click', (e)=>{
+            e.preventDefault();
+            stepChoice.classList.remove('active');
+            stepType.classList.add('active');
+            setTimeout(()=>phraseInput.focus(), 0);
+        });
+        chooseNo.addEventListener('click', (e)=>{
+            e.preventDefault();
+            closeDialog();
+            if(currentResolver) { currentResolver(false); currentResolver=null; }
+        });
+        btnConfirm.addEventListener('click', (e)=>{
+            e.preventDefault();
+            if(validate()){
+            closeDialog();
+            if(currentResolver) { currentResolver(true); currentResolver=null; }
+            }
+        });
+        let currentResolver = null;
+        window.confirmDeleteWithPhrase = function(options){
+            debugger;
+            openDialog(options || {});
+            return new Promise(resolve => { currentResolver = resolve; });
+        }
+        window.handleUploadConfirm = async function (requestNo) {
+            const ok = await window.confirmDeleteWithPhrase({
+                title: 'Upload via Excel?',
+                message: 'This cannot be undone. Related data may also be removed.',
+                phrase: 'Replace by user'
+            });
+            if (ok) {
+                window.location.href = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}`;
+            } else {
+                window.location.href = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}&exist=true`;
+            }
+        }
+        })();
 
         function navigateToInvoiceCostPosting() {
             var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");

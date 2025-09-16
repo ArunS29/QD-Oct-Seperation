@@ -45,11 +45,20 @@
 
 </style>
 <form id="userForm">
-    <div class="title">
+    @* <div class="title">
         <div class="header-container">
             <h2 id="useraccountdetailssh"></h2>
         </div>
+    </div> *@
+    <div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="useraccountdetailssh" class="titleText no-border-title"></div>
     </div>
+</div>
+
     <div class="Head">
     <div class="limited-footer">
         <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
@@ -944,12 +953,13 @@
              let InventoryMpraccessID=null,IsInventoryMpraccessflag=false;
              let PettyCashAccountID=null,IsPettyCashAccountflag=false;
         $(document).ready(function () {
+
             // Hide all tab containers and show the first one
             $('.tab-container').hide();
             $('.tab-container').eq(0).show();
 
             // Load Master Module data by default
-            loadMasterModuleData("Master Module");
+            loadMasterModuleData();
 
             
 
@@ -1233,10 +1243,11 @@ function onOuterTabSelectionChanged(e) {
     var selectedIndex = e.component.option('selectedIndex');
     var selectedText = e.component.option('items')[selectedIndex].title || e.component.option('items')[selectedIndex].text;
 
-    if (selectedText === "User Access Details") {
+    if (selectedText === `${formatMessage("User Access Details")}`) {
+        
         $('.tab-container').hide();
         $('.tab-container').eq(0).show();
-        loadMasterModuleData("Master Module");
+        loadMasterModuleData();
     }
 }
         function onBranchSelectionChanged(e) {
@@ -1571,14 +1582,14 @@ function onOuterTabSelectionChanged(e) {
     $('.tab-container').eq(selectedIndex).show();
 
     // Always load the correct grid for the selected tab
-    if (selectedText === "Master Module") {
-        loadMasterModuleData(selectedText);
-    } else if (selectedText === "Finance") {
-        loadFinanceData(selectedText);
-    } else if (selectedText === "VAT") {
-        loadVATData(selectedText);
-    } else if (selectedText === "Inventory Management") {
-        loadIMSData(selectedText);
+    if (selectedText === `${formatMessage("Master Module")}`) {
+        loadMasterModuleData();
+    } else if (selectedText === `${formatMessage("Finance")}`) {
+        loadFinanceData();
+    } else if (selectedText === `${formatMessage("VAT")}`) {
+        loadVATData();
+    } else if (selectedText === `${formatMessage("Inventory Management")}`) {
+        loadIMSData();
     }
     // Add more else-if blocks if you want to load grids for other tabs
 }
@@ -1586,7 +1597,7 @@ function onOuterTabSelectionChanged(e) {
 
 
 
-        function loadFinanceData(selectedText) {
+        function loadFinanceData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
 
@@ -1594,7 +1605,7 @@ function onOuterTabSelectionChanged(e) {
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Finance`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1613,13 +1624,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1649,14 +1660,14 @@ function onOuterTabSelectionChanged(e) {
         }
 
 
-           function loadVATData(selectedText) {
+           function loadVATData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#VATgridContainer").dxDataGrid({
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=VAT`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1676,13 +1687,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1711,7 +1722,7 @@ function onOuterTabSelectionChanged(e) {
             });
         }
 
-        function loadIMSData(selectedText) {
+        function loadIMSData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#IMSgridContainer").dxDataGrid({
@@ -1738,13 +1749,13 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },                // new column
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1773,7 +1784,7 @@ function onOuterTabSelectionChanged(e) {
             });
         }
 
-        function loadMasterModuleData(selectedText) {
+        function loadMasterModuleData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             
@@ -1781,7 +1792,7 @@ function onOuterTabSelectionChanged(e) {
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Master Module`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1800,13 +1811,13 @@ function onOuterTabSelectionChanged(e) {
                 grouping: { autoExpandAll: true },        
                 groupPanel: { visible: true },      
                 columns: [
-                    { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: "Item Name" },     
-                    { dataField: "ItemDescription", caption: "Action Name" },
+                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
+                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
+                    { dataField: "ItemName", caption: formatMessage("Item Name") },     
+                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1857,23 +1868,6 @@ function onOuterTabSelectionChanged(e) {
                     }
                 });
             }
-
-
-         
-         
-
-
-     
-
-        // function loadFinanceData() {
-        //     console.log("Loading Finance data...");
-        //     // Add your logic here
-        // }
-
-        // function loadVATData() {
-        //     console.log("Loading VAT data...");
-        //     // Add your logic here
-        // }
 
         function loadHRData() {
             console.log("Loading Human Resources data...");
@@ -1958,7 +1952,7 @@ function onOuterTabSelectionChanged(e) {
             contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
                 items: [
                     {
-                        text: "Add or Remove Buttons",
+                        text: formatMessage("Add or Remove Buttons"),
                         items: [
                             {
                                 text: "User Access",
@@ -2013,7 +2007,7 @@ function onOuterTabSelectionChanged(e) {
 
         function ReplicateAccess() {
             const url = `/${tenantName}/Finance/ReplicateUserAccount`;
-            const title = "";
+            const title = formatMessage("Replicate User Account");
             openModal(url, title);
         }
 
