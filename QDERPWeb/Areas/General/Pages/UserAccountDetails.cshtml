@@ -949,7 +949,7 @@
             $('.tab-container').eq(0).show();
 
             // Load Master Module data by default
-            loadMasterModuleData("Master Module");
+            loadMasterModuleData();
 
             
 
@@ -1233,10 +1233,11 @@ function onOuterTabSelectionChanged(e) {
     var selectedIndex = e.component.option('selectedIndex');
     var selectedText = e.component.option('items')[selectedIndex].title || e.component.option('items')[selectedIndex].text;
 
-    if (selectedText === "User Access Details") {
+    if (selectedText === `${formatMessage("User Access Details")}`) {
+        
         $('.tab-container').hide();
         $('.tab-container').eq(0).show();
-        loadMasterModuleData("Master Module");
+        loadMasterModuleData();
     }
 }
         function onBranchSelectionChanged(e) {
@@ -1571,14 +1572,14 @@ function onOuterTabSelectionChanged(e) {
     $('.tab-container').eq(selectedIndex).show();
 
     // Always load the correct grid for the selected tab
-    if (selectedText === "Master Module") {
-        loadMasterModuleData(selectedText);
-    } else if (selectedText === "Finance") {
-        loadFinanceData(selectedText);
-    } else if (selectedText === "VAT") {
-        loadVATData(selectedText);
-    } else if (selectedText === "Inventory Management") {
-        loadIMSData(selectedText);
+    if (selectedText === `${formatMessage("Master Module")}`) {
+        loadMasterModuleData();
+    } else if (selectedText === `${formatMessage("Finance")}`) {
+        loadFinanceData();
+    } else if (selectedText === `${formatMessage("VAT")}`) {
+        loadVATData();
+    } else if (selectedText === `${formatMessage("Inventory Management")}`) {
+        loadIMSData();
     }
     // Add more else-if blocks if you want to load grids for other tabs
 }
@@ -1586,7 +1587,7 @@ function onOuterTabSelectionChanged(e) {
 
 
 
-        function loadFinanceData(selectedText) {
+        function loadFinanceData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
 
@@ -1594,7 +1595,7 @@ function onOuterTabSelectionChanged(e) {
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Finance`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1649,14 +1650,14 @@ function onOuterTabSelectionChanged(e) {
         }
 
 
-           function loadVATData(selectedText) {
+           function loadVATData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#VATgridContainer").dxDataGrid({
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=VAT`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1711,7 +1712,7 @@ function onOuterTabSelectionChanged(e) {
             });
         }
 
-        function loadIMSData(selectedText) {
+        function loadIMSData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#IMSgridContainer").dxDataGrid({
@@ -1773,7 +1774,7 @@ function onOuterTabSelectionChanged(e) {
             });
         }
 
-        function loadMasterModuleData(selectedText) {
+        function loadMasterModuleData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             
@@ -1781,7 +1782,7 @@ function onOuterTabSelectionChanged(e) {
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Master Module`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1857,23 +1858,6 @@ function onOuterTabSelectionChanged(e) {
                     }
                 });
             }
-
-
-         
-         
-
-
-     
-
-        // function loadFinanceData() {
-        //     console.log("Loading Finance data...");
-        //     // Add your logic here
-        // }
-
-        // function loadVATData() {
-        //     console.log("Loading VAT data...");
-        //     // Add your logic here
-        // }
 
         function loadHRData() {
             console.log("Loading Human Resources data...");
