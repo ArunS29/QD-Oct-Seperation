@@ -760,6 +760,19 @@
 
         history.back();
     }
+    function printPaymentAdvice(e) {
+    var tenantName = window.tenantName || "";
+    var voucherNo = $("#VoucherNo").dxTextBox("instance")?.option("value") || "";
+    if (!voucherNo) {
+        alert("Voucher No is required.");
+        return;
+    }
+    window.open(
+        `/${tenantName}/VoucherViewer?reportName=PaymentsAdviceSupplierPayments&voucherNo=${encodeURIComponent(voucherNo)}`,
+        '_blank',
+        'width=1200,height=800,scrollbars=yes,resizable=yes'
+    );
+}
     function handlePreviewClick(e) {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         var voucherNo = voucherNoBox.option("value");

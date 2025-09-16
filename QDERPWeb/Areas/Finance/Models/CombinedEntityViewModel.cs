@@ -1361,7 +1361,11 @@ public class InvoiceRequest
     }
 
 
-
+    public class SwapRequest
+    {
+        public string AccountGroupId { get; set; }
+        public string Direction { get; set; }
+    }
 
 
 

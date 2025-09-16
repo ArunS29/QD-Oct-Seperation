@@ -1,6 +1,12 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.ExpensesClaimRequestModel
 @{
+    // pull your session value (“2”) into baseCurrencyIdnew
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
+
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -317,6 +323,29 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
                         .Value(null)
+                        )
+        </div>
+        <div class="form-group col-md-2 col-sm-6">
+            @(Html.DevExtreme().DropDownBox()
+                        .ID("ddlBaseCurrency")
+                        .DataSource(d => d.WebApi()
+                        .Controller("Utility")
+                        .LoadAction("GetCurrencyList")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CurrencyExchangeId")
+                        )
+                        .ValueExpr("CurrencyExchangeId")
+                        .DisplayExpr("CurrencyName")
+                                                     // now use your renamed variable
+                        .Value(baseCurrencyIdnew)
+                        .Label(new JS("formatMessage('Base Currency')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(false)
+                        .DropDownOptions(o => o.Width(300))
+                        .ReadOnly(true)
+                        .ElementAttr(new { @class = "custom-disabled-selectbox" })
                         )
         </div>
     </div>
@@ -1551,6 +1580,7 @@
                             if (formattedPostedDate) {
                                 disableclaim();
                                 btnPreview.option("disabled", false);
+                                btnPreview.repaint();
                             }
 
                             // ✅ Sync fields
@@ -2251,7 +2281,14 @@
                     }
                 });
             }, 100);
+                  const previewButton = $("#btnPrintnew").dxDropDownButton("instance");
 
+                        if (previewButton) {
+                            previewButton.option("disabled", false);
+                            previewButton.repaint();  // Force UI refresh
+                        } else {
+                            console.error("btnPreview1 instance not found");
+                        }
         }
 
         function onTaxBoxClosed(e) {

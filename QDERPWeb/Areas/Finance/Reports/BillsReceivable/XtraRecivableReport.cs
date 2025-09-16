@@ -18,7 +18,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
         public XtraRecivableReport(
+             string username,
             object[] selectedValues,
+            string selectionType, // <-- Add this
             string tenantName,
             string companyName,
             string companyAddress,
@@ -29,17 +31,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(selectedValues, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters( username,selectedValues, selectionType, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
             LoadCurrencySymbolAndImage();
         }
 
         public XtraRecivableReport()
         {
             InitializeComponent();
-            SetReportParameters(null, "", "", "", null, "", "");
+            SetReportParameters("",null, "", "", "", "", null, "", "");
         }
 
-        private void SetReportParameters(object[] selectedValues, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+        private void SetReportParameters( string username,object[] selectedValues, string selectionType, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -66,12 +68,16 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
             AddOrUpdateParameter("SelectedValues", selectedValues ?? new object[0], typeof(object[]));
+            AddOrUpdateParameter("SelectionType", selectionType ?? "", typeof(string)); 
 
             SetLabelText("xrLabelTenantName", tenantName);
             SetLabelText("xrLabelCompanyName", companyName);
             SetLabelText("xrLabelCompanyAddress", companyAddress);
             SetLabelText("xrLabelCompanyNameAr", companyNameAr);
             SetLabelText("xrLabelCompanyAddressArb", companyAddressArb);
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
             {
@@ -80,7 +86,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             }
 
             // Multitenant-aware data loading
-            LoadReportData(selectedValues);
+            LoadReportData(selectedValues, selectionType); // Pass selectionType
         }
 
         private void SetLabelText(string controlName, string text)
@@ -89,7 +95,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 label.Text = text ?? "";
         }
 
-        private void LoadReportData(object[] selectedValues)
+        private void LoadReportData(object[] selectedValues, string selectionType)
         {
             if (selectedValues == null || selectedValues.Length == 0)
             {
@@ -108,20 +114,26 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
             CustomSqlQuery selectQuery = new CustomSqlQuery();
 
-            if (firstValue.StartsWith("L"))
+            if (selectionType == "AccountHead")
             {
+                // Only for AccountHead, check for 'L'
+                if (!firstValue.StartsWith("L"))
+                {
+                    Console.WriteLine("Invalid AccountHeadNo format.");
+                    return;
+                }
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE AccountHeadNo IN ({FormatSelectedFilter(selectedValues)})";
+                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE AccountHeadNo IN ({selectedFilter})";
             }
-            else if (IsSalesPersonCode(firstValue))
+            else if (selectionType == "SalesPerson")
             {
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE SalesPersonCode IN ({selectedFilter})";
+                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE SalesPersonName IN ({selectedFilter})";
             }
-            else if (IsBranchCode(firstValue))
+            else if (selectionType == "Branch")
             {
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE BranchCode IN ({selectedFilter})";
+                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE DivisionName IN ({selectedFilter})";
             }
             else
             {
@@ -176,6 +188,16 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         {
             return int.TryParse(value, out int num) && (num >= 1 && num <= 99);
         }
+        private bool IsSalesPersonName(List<string> values)
+{
+    
+    return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
+}
+
+private bool IsBranchName(List<string> values)
+{
+    return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
+}
 
         protected override void OnDataSourceDemanded(EventArgs e)
         {
