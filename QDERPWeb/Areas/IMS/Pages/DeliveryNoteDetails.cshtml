@@ -221,6 +221,7 @@
 		{
 			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
 			{
+				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
@@ -266,7 +267,79 @@
 				}
 				// else: do nothing (no span rendered)
 				}
-				"));
+		")); columns.AddFor(m => m.IssuedUnitPrice).Caption(new JS("formatMessage('Issued Unit Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				columns.AddFor(m => m.UnitTotalPrice).Caption(new JS("formatMessage('Unit Total Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				
+				subColumns.AddFor(m => m.AddedOn).Caption("Added On").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.AddlDescription).Caption("Additional Description").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Attention).Caption("Attention").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.BatchNo).Caption("Batch No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientAddress).Caption("Client Address").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.ClientPono).Caption("Client PO No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactEmail).Caption("Contact Email").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactMobile1).Caption("Contact Mobile 1").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactMobile2).Caption("Contact Mobile 2").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPhone1).Caption("Contact Phone 1").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPhone2).Caption("Contact Phone 2").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPerson).Caption("Contact Person").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPersonTitle).Caption("Contact Person Title").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryNoteRemarks).Caption("Delivery Note Remarks").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryRemarks).Caption("Delivery Remarks").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryTypeName).Caption("Delivery Type Name").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryType).Caption("Delivery Type").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DriversName).Caption("Driver's Name").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DriversId).Caption("Driver's ID").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.EmployeeName).Caption("Employee Name").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.EmployeeNo).Caption("Employee No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ExpiryDate).Caption("Expiry Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.GsgroupName).Caption("GS Group Name").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Hscode).Caption("HS Code").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Identification).Caption("Identification").Alignment(HorizontalAlignment.Center).Visible(false);
+
 
 					});
 			
@@ -303,6 +376,95 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("DeliveryIssuedTo")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+
+			.DisplayFormat(new JS("formatMessage('{0}')"));
+
+
+				items.Add().Column("IssuedQty")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return  e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("UnitTotalPrice")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
+
+			summary.TotalItems(items =>
+			{
+				items.Add().Column("DeliveryNoteNo")
+			.SummaryType(SummaryType.Count)
+			.DisplayFormat("{0}");
+
+				items.Add().Column("IssuedQty")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("IssuedUnitPrice")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return  e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("UnitTotalPrice")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return  e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
+
+		})
 		)
 
 
@@ -311,7 +473,32 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		
+			 $(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
 	
 		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
