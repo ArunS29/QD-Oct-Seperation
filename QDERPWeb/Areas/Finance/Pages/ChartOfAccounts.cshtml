@@ -301,6 +301,9 @@
             <div class="value-block">
 
                 <h2 id="ChartOfAccountfinance"></h2>
+                <h2 id="accoungroupsssfin"></h2>
+                <h2 id="Topaccountmastercharof"></h2>
+                <h2 id="topaccoungroupchartof"></h2>
                 <h6 id="QuickDiceERPSolutions1s"></h6>
 
             </div>
@@ -398,7 +401,7 @@
             columns.AddFor(m => m.AccountId)
             .Caption(new JS("formatMessage('Account ID')"))
             .Alignment(HorizontalAlignment.Center)
-            .Visible(true)
+            .Visible(false)
             .CellTemplate(@<text>
                                <a href="javascript:void(0);" onclick="openPopup('<%-data.AccountId%>')" style="color: #0398fc; text-decoration: underline;">
                                    <%-data.AccountId%>
@@ -629,7 +632,7 @@
             .Caption(new JS("formatMessage('Record Created On')"))
 
             .Alignment(HorizontalAlignment.Center)
-
+            .Format("dd-MMM-yyyy") 
             .Visible(false);
 
             columns.AddFor(m => m.RecordModifiedBy)
@@ -645,7 +648,7 @@
             .Caption(new JS("formatMessage('Record Modified On')"))
 
             .Alignment(HorizontalAlignment.Center)
-
+            .Format("dd-MMM-yyyy") 
             .Visible(false);
 
             columns.AddFor(m => m.NoOfDaysCreditPeriod)
@@ -939,13 +942,15 @@
             .Visible(false);
 
         })
-        .Editing(editing => editing
-        .Mode(GridEditMode.Batch)        // ✅ Ensure inline cell editing is enabled
-        .AllowUpdating(true) // ✅ Enable editing
-        )
+        .Editing(editing =>
+        {
+            editing.Mode(GridEditMode.Batch); // or .Row / .Cell
+            editing.AllowUpdating(true);
+            editing.UseIcons(true);
+        })
         .ColumnResizingMode(ColumnResizingMode.Widget)
         .Height("68vh")
-                     // .Paging(p => p.PageSize(10))
+                     // .Paging(p => p.PageSize(10))f
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -964,6 +969,7 @@
         .ScrollByContent(true) // Enables scrolling by content (no need to have pagination)
         )
         )
+
 </div>
 <!-- Context Menu (hidden initially) -->
 <div id="contextMenu" class="context-menu">
@@ -978,6 +984,22 @@
         <i class="fa fa-trash" style="margin-top:13px;"></i><div id="DeleteLedgerAccount" class="no-border-input"></div>
     </div>
 </div>
+
+@(Html.DevExtreme().Popup()
+                .ID("ledgerEditAccountPopup")
+                .Width("80%")
+                .Height("85%")
+                .Title(new JS("formatMessage('Edit Ledger Account')"))
+                .ShowTitle(true)
+                .CloseOnOutsideClick(true)
+                .Visible(false)  // Hidden by default
+                .ResizeEnabled(true)
+                .ContentTemplate(@<text>
+                                      <div id="popupContent" style="width:100%; height:100%;">
+                                          <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+                                      </div>
+                                  </text>)
+                )
 
 <script type="text/javascript">
         // Initialize the Ledger Account Popup
@@ -1054,9 +1076,30 @@
 
         //     });
         // });
-
-
         let IsCharOfAccounts = true; // Global variable origin Flag
+
+          
+
+        function showLedgerAccountEditPopup(accountId) {
+         
+            debugger;
+            const tenantName = window.location.pathname.split('/')[1];
+            const url = `/${tenantName}/Finance/LedgerAccount?AccountId=${encodeURIComponent(accountId)}&IsCharOfAccounts=${encodeURIComponent(IsCharOfAccounts)}`;
+
+            const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+            popup.show();
+
+            setTimeout(() => {
+                const iframe = document.getElementById("ledgerEditAccountFrame");
+                if (!iframe) {
+                    console.error("Edit iframe not found!");
+                    return;
+                }
+                iframe.src = url;
+            }, 300);
+        }
+
+        
 
         function openPopup(accountId) {
             $("#popupContainer").dxPopup({
@@ -1119,7 +1162,8 @@
             var rowData = window.selectedRowData;
             if (rowData && rowData.AccountId) {
                 // Open the popup with the selected AccountId
-                openPopup(rowData.AccountId);
+                showLedgerAccountEditPopup(rowData.AccountId);
+               // openPopup(rowData.AccountId);
                 //window.location.href = `/Finance/LedgerAccount?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
             } else {
                 alert("No valid row selected for editing.");
@@ -1130,8 +1174,9 @@
         function viewTransactions() {
             var rowData = window.selectedRowData;
             if (rowData && rowData.AccountId) {
+                let IsChartOfAccounts="true";
                 // Navigate to frm201LedgerAccount with View Transactions mode
-                window.location.href = `/${tenantName}/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}`;
+                window.location.href = `/${tenantName}/Finance/AccountingLedgers?AccountId=${selectedRowData.AccountId}&IsDisabled=${encodeURIComponent(selectedRowData.IsDisabled)}&IsChartOfAccounts=${encodeURIComponent(IsChartOfAccounts)}`;
 
                 // window.location.href = `/frm201LedgerAccount?mode=view&accountId=${rowData.AccountId}`;
             } else {
