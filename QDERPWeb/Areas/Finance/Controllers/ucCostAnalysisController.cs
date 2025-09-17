@@ -284,6 +284,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLedgerName(string accountId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
+
+            if (string.IsNullOrWhiteSpace(accountId))
+                return BadRequest("Invalid AccountId");
+
+            var ledger = await dbContext.Tbl201ChartOfAccounts
+                .Where(a => a.AccountId == accountId)
+                .Select(a => a.AccountHead)
+                .FirstOrDefaultAsync();
+
+            if (ledger == null)
+                return NotFound("Ledger not found");
+
+            return Ok(new { ledgerName = ledger });
+        }
 
         [HttpPost]
         public async Task<ActionResult> DeleteWronglyAllocatedEntries()
