@@ -464,16 +464,10 @@
 </div>
 <script type="text/javascript">
 
-    
-
-
-
-
-
     $(document).ready(function () {
         console.log('Start permission handling');
         // Form ID
-        var formId = "PurchaseVoucher";
+        var formId = "frm201PurchaseVoucher";
 
         // Call the API to get permissions
         $.ajax({
@@ -484,11 +478,12 @@
                 console.log("API Response:", response); // Log the API response
 
                 if (response.success && response.permissions) {
+                    debugger;
                     // Default visibility and enable status for buttons
                     var controlStates = {
                         "btnSave": { "Visible": true, "Enabled": true },
                         "btnSaveAndClose": { "Visible": false, "Enabled": false },
-                        "btnPreview1": { "Visible": true, "Enabled": true },
+                        "btnPreview2": { "Visible": true, "Enabled": true },
                         "btnPrintp": { "Visible": true, "Enabled": true },
                         "btnDelete": { "Visible": false, "Enabled": false },
                         "btnBack": { "Visible": false, "Enabled": false },
@@ -496,7 +491,6 @@
                         "btnApprove": { "Visible": false, "Enabled": false },
                         "btnAttach": { "Visible": false, "Enabled": false }
                     };
-
 
                     // Check for full access
                     var fullAccess = response.permissions.find(p =>
@@ -541,6 +535,34 @@
                         }
                     });
 
+                    var restrictedMenuItems = [
+                        { id: "editCostAllocation", permissionSuffix: "CostAllocation" },
+                        { id: "editBillsReceivable", permissionSuffix: "BillsReceivable" },
+                        { id: "editPropertyAllocation", permissionSuffix: "PropertyAllocation" },
+                        { id: "onAllRowRemoving", permissionSuffix: "DeleteAllLineEntries" }
+                    ];
+
+                    // ✅ Mutate menuItems safely
+                    menuItems.forEach(item => {
+                        const mapping = restrictedMenuItems.find(r => r.id === item.id);
+                        if (mapping) {
+                            const perm = response.permissions.find(p =>
+                                p.ItemName &&
+                                p.ItemName.trim().toLowerCase() === (formId + "_" + mapping.permissionSuffix).trim().toLowerCase()
+                            );
+
+                            if (!perm || !perm.ItemVisible) {
+                                item.hidden = true;   // hide
+                            } else if (!perm.ItemEnabled) {
+                                item.disabled = true; // disable
+                            }
+                        }
+                    });
+
+                    console.log("Updated Context Menu Items:", menuItems);
+
+                    // Re-render after applying permissions
+                    renderContextMenu();
                 } else {
                     console.warn("Failed to fetch permissions or no permissions available.");
                 }
@@ -552,8 +574,8 @@
         });
         // showColumnChooser();
         console.log('End permission handling');
-    });
 
+    });
 
     let IsDirect = true;
     // Hide context menu on click outside
@@ -589,6 +611,7 @@
             reader.readAsText(file);
         }
     });
+
     function saveLayoutClick(e) {
         var grid = $("#dataGrid").dxDataGrid("instance");
         var layout = grid.state();
@@ -807,10 +830,6 @@
         ).done(function (dialogResult) {
             if (dialogResult) {
                 onConfirm(); // Proceed only if the user clicks "Yes"
-                // DevExpress.ui.dialog.alert(
-                //     "All Entries has been successfully removed from the database.",
-                //     "Data Deleted Successfully"
-                // );
             }
         });
     }
@@ -828,7 +847,7 @@
                     const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
                     if (!voucherNo) {
-                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                        history.back();
                         return;
                     }
 
@@ -887,7 +906,6 @@
         } else {
             DevExpress.ui.dialog.custom({
                 title: "Confirm Verification",
-                // message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
                 message: "Are you sure want to verify this voucher?",
                 buttons: [
                     { text: "Yes", onClick: () => true },
@@ -902,10 +920,7 @@
         }
     }
 
-
-
-
-     function proceedWithVerification() {
+    function proceedWithVerification() {
         // Set VerifiedBy checkbox to true
         $("#VerifiedBy").dxCheckBox("instance").option("value", true);
 
@@ -919,13 +934,9 @@
         const currentDate = new Date();
 
         const formattedDate = currentDate.toLocaleDateString("en-GB", {
-
             day: "2-digit",
-
             month: "short",
-
             year: "numeric"
-
         }).replace(/ /g, '-');
 
         $.ajax({
@@ -939,23 +950,23 @@
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Verified.",
                         "Verified"
-                        ).done(() => {
-                $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
-                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-                  $("#btnVerify").dxButton("instance").option("disabled", true);
+                    ).done(() => {
+                        $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
+                        $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                        $("#btnVerify").dxButton("instance").option("disabled", true);
 
-                // ✅ Show hidden verified sections
-                $("#verifiedBySection").css("display", "flex");
-                $("#verifiedOnSection").css("display", "flex");
+                        // ✅ Show hidden verified sections
+                        $("#verifiedBySection").css("display", "flex");
+                        $("#verifiedOnSection").css("display", "flex");
 
-                // Add visual confirmation
-                const btn = document.getElementById("btnVerify");
-                btn.classList.add("verified");
+                        // Add visual confirmation
+                        const btn = document.getElementById("btnVerify");
+                        btn.classList.add("verified");
 
-                setTimeout(() => {
-                    btn.classList.remove("verified");
-                }, 2000);
-            });
+                        setTimeout(() => {
+                            btn.classList.remove("verified");
+                        }, 2000);
+                    });
                 }
                 else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -969,14 +980,12 @@
         });
     }
 
-
-
     function disableEditing() {
         // Disable all input fields and buttons except for specific ones
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach',  'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
@@ -1008,7 +1017,6 @@
         $("#VoucherDate").dxDateBox("instance").option("disabled", true);
         $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
 
-
         // Disable DevExtreme DropDownBox component
         $("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
 
@@ -1020,7 +1028,6 @@
         }
 
     }
-
 
     function onApproveButtonClick() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1079,68 +1086,6 @@
         }
     }
 
-
-    //          function proceedWithApproval() {
-    //     // Set VerifiedBy checkbox to true
-    //     $("#ApprovedBy").dxCheckBox("instance").option("value", true);
-
-    //     const vno = $("#VoucherNo").dxTextBox("instance").option("value");
-
-    //     if (!vno) {
-    //         DevExpress.ui.notify("Voucher number is required!", "error", 2000);
-    //         return;
-    //     }
-
-    //             const currentDate = new Date();
-
-    //             const formattedDate = currentDate.toLocaleDateString("en-GB", {
-
-    //                 day: "2-digit",
-
-    //                 month: "short",
-
-    //                 year: "numeric"
-
-    //             }).replace(/ /g, '-');
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(voucherNo)}&IsDirect=${encodeURIComponent(IsDirect)}`,
-    //         contentType: "application/json",
-    //         dataType: "json",
-    //        // data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
-    //         success: function (response) {
-    //             if (response && response.Message) {
-    //     DevExpress.ui.dialog.alert(
-    //         "Voucher has been Approved.",
-    //         "Approved"
-    //     ).done(() => {
-    //         disableEditing()
-    //         $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-    //         $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");IsDirect
-    //         if(IsDirect==true)
-    //         {
-    //                 $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-
-    //               $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-    //               $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-
-    //         }
-
-    //     });
-    // }
-    //  else {
-    //                 DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
-    //                 ? xhr.responseJSON.Message
-    //                 : "An error occurred.";
-    //         }
-    //     });
-    // }
-
     function proceedWithApproval() {
         // Set ApprovedBy checkbox to true
         $("#ApprovedBy").dxCheckBox("instance").option("value", true);
@@ -1167,35 +1112,33 @@
             url: `/api/VoucherMaster/ApproveVoucher?VoucherNo=${encodeURIComponent(vno)}&IsDirect=${encodeURIComponent(IsDirect)}`,
             contentType: "application/json",
             dataType: "json",
-            // Uncomment the following line if the API expects data in the request body:
-            // data: JSON.stringify({ voucherNo: vno }),
             success: function (response) {
                 if (response && response.Message) {
                     DevExpress.ui.dialog.alert(
                         "Voucher has been Approved.",
                         "Approved"
-                        ).done(() => {
-        disableEditing();
+                    ).done(() => {
+                        disableEditing();
 
-        // Set Approved values
-        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+                        // Set Approved values
+                        $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                        $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 
-        // ✅ Show Approved fields
-        $("#approvedBySection").css("display", "flex");
-        $("#approvedOnSection").css("display", "flex");
+                        // ✅ Show Approved fields
+                        $("#approvedBySection").css("display", "flex");
+                        $("#approvedOnSection").css("display", "flex");
 
-        if (IsDirect === true) {
-            // Set Verified values as well
-            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
-            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+                        if (IsDirect === true) {
+                            // Set Verified values as well
+                            $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+                            $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 
-            // ✅ Show Verified fields
-            $("#verifiedBySection").css("display", "flex");
-            $("#verifiedOnSection").css("display", "flex");
-        }
-    });
+                            // ✅ Show Verified fields
+                            $("#verifiedBySection").css("display", "flex");
+                            $("#verifiedOnSection").css("display", "flex");
+                        }
+                    });
                 } else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
                 }
@@ -1255,25 +1198,21 @@
         }, 0);
     }
 
-
-
-
     function handleFileSelection(isMultiple) {
 
-            // Configure the file input for true value
-            if (isMultiple) {
-               openModal(`/${tenantName}/Finance/LedgerDocuments`, "")
+        // Configure the file input for true value
+        if (isMultiple) {
+            openModal(`/${tenantName}/Finance/LedgerDocuments`, ""); // <-- added semicolon
+            const fileInput = document.getElementById("fileInput");
 
-        const fileInput = document.getElementById("fileInput");
+            fileInput.multiple = isMultiple; // Allow multiple files if selected
 
-        fileInput.multiple = isMultiple; // Allow multiple files if selected
+            fileInput.click(); // Trigger file input click
+        }
 
-        fileInput.click(); // Trigger file input click
-
-    }
+    } // <-- added: closes function handleFileSelection
 
     // File Input Change Handler (Optional: Log or Process Files)
-
     document.getElementById("fileInput").addEventListener("change", function () {
 
         const files = this.files;
@@ -1283,7 +1222,6 @@
         // Handle file upload logic here
 
     });
-
 
     function openPrint() {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
@@ -1302,9 +1240,6 @@
         // **Trigger file download**
         window.location.href = url;
     }
-
-
-
 
     function handlePreviewClick1(e) {
         var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
@@ -1329,10 +1264,10 @@
         }
 
         // Ensure a valid report is selected
-           if (!reportName) {
-        alert("Invalid report format selected.");
-        return;
-    }
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
 
         // Get full screen dimensions
         const screenWidth = window.screen.availWidth;
@@ -1347,19 +1282,17 @@
 
     }
 
-        function showColumnChooser() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+    function showColumnChooser() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
-            if (isColumnChooserVisible) {
-                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-            } else {
-                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-                dataGrid.showColumnChooser(); // Show the column chooser
-            }
+        if (isColumnChooserVisible) {
+            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+        } else {
+            dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+            dataGrid.showColumnChooser(); // Show the column chooser
         }
-
-    
-
+    }
 
 </script>
+

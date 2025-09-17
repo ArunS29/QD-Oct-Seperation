@@ -377,14 +377,18 @@
  *@
 		@await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNoteFooter.cshtml")
 <div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice" onclick="viewRecord()">
-		<i class="dx-icon-search"></i> View
-	</div>
+	
 	<div class="context-menu-itemInvoice" onclick="editRecord()">
 		<i class="dx-icon-edit"></i> Edit
 	</div>
 	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
 		<i class="dx-icon-trash"></i> Delete
+	</div>
+	<div class="context-menu-itemInvoice" onclick="unlockRecord()">
+		<i class="dx-icon-search"></i> Unlock the Delivery Note
+	</div>
+	<div class="context-menu-itemInvoice" onclick="createInvoiceRecord()">
+		<i class="dx-icon-search"></i> Create Invoice for this Delivery Note
 	</div>
 </div>
 <div class="dx-fieldset horizontal-container">
@@ -425,6 +429,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -462,6 +467,53 @@
 				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
+
+				//Unused fields
+				// 👉 Unused fields (hidden but with caption & alignment)
+				subColumns.AddFor(m => m.QuotationNo).Caption("Quotation No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.MaterialRequestNo).Caption("Material Request No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.NoteOfItems).Caption("Note Of Items").Alignment(HorizontalAlignment.Right).Visible(false);
+				subColumns.AddFor(m => m.StoreCode).Caption("Store Code").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IsVerified).Caption("Is Verified").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IsApproved).Caption("Is Approved").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PreparedBy).Caption("Prepared By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.PreparedOn).Caption("Prepared On").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ApprovedBy).Caption("Approved By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ApprovedOn).Caption("Approved On").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.AddedBy).Caption("Added By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.AddedOn).Caption("Added On").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ModifiedBy).Caption("Modified By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ModifiedOn).Caption("Modified On").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Attention).Caption("Attention").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DeliveryNoteRemarks).Caption("Delivery Note Remarks").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.Salesman).Caption("Salesman").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.TransportedBy).Caption("Transported By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DriversName).Caption("Driver's Name").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DriversId).Caption("Driver's ID").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.VehicleNo).Caption("Vehicle No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.CompanyName).Caption("Company Name").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.IssuedFromStoreCode).Caption("Issued From Store Code").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IssuedFromStoreName).Caption("Issued From Store Name").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.IsPosted).Caption("Is Posted").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.VoucherNo).Caption("Voucher No").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PostedOn).Caption("Posted On").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PostedBy).Caption("Posted By").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectDescription).Caption("Project Description").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ProjectDuration).Caption("Project Duration").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectLocation).Caption("Project Location").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group Id").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.TotalIssuedQty).Caption("Total Issued Qty").Alignment(HorizontalAlignment.Right).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.SaesPersonUserId).Caption("Sales Person User Id").Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.QuoteTotalBeforeDiscount).Caption("Quote Total Before Discount").Alignment(HorizontalAlignment.Right).Visible(false);
+
 			});
 			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
 			{
@@ -518,6 +570,32 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+		 $(function () {
+				const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#frmdateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#frmdateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+			 $(function () {
+				const dateBox = $("#todateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#todateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#todateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
 		 $(function () {
 	$("#DeliveryNote").dxTextBox({
 	text: formatMessage("Delivery Note"),
@@ -591,12 +669,33 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
+
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
 			}
+			hidequarterSubmenus();
 				// frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
 				// toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
 				frmDate = frmDate.toISOString().split('T')[0];
 				toDate = toDate.toISOString().split('T')[0];
-
 				$.ajax({
 		url: '/api/DeliveryNote/GetDeliveryNotes',
 		type: 'GET',
@@ -650,14 +749,85 @@
 			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
 		}
 	}
+		function unlockRecord() {
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+			return;
+		}
+
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+
+		DevExpress.ui.dialog.confirm(
+			`Are you sure you want to unlock Delivery Note`,
+			"Confirm Unlock"
+		).done(function (dialogResult) {
+			if (dialogResult) {
+				$.ajax({
+							url: "/api/DeliveryNote/UnlockDeliveryNote",
+					method: "POST",
+					contentType: "application/json",
+							data: JSON.stringify({ DeliveryNoteNo: DeliveryNoteNo }),
+					success: function (result) {
+						if (result.success) {
+							DevExpress.ui.notify(result.message, "success", 2000);
+								ddBtnShowRecords_click('range');
+						} else {
+							DevExpress.ui.notify(result.message, "warning", 2000);
+						}
+					},
+						error: function (xhr) {
+		let msg = xhr.responseJSON?.message || "Error unlocking Delivery Note";
+		DevExpress.ui.notify(msg, "error", 2000);
+		console.error(xhr);
+	}
+
+				});
+			}
+		});
+	}
+		
+function createInvoiceRecord() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+        return;
+    }
+
+    const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+		 const tenantName = window.tenantName || "defaultTenant";
+
+		DevExpress.ui.dialog.confirm("You are about to create a new VAT Invoice. Proceed?", "Confirm")
+        .done(function (dialogResult) {
+            if (!dialogResult) return;
+
+            $.ajax({
+                url: "/api/DeliveryNote/CreateInvoiceFromDeliveryNote",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(DeliveryNoteNo),
+                success: function (result) {
+                    if (result.success) {
+                        DevExpress.ui.notify(result.message, "success", 2000);
+							var IsEdit = true;
+                        window.location.href =`/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(result.invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+                    } else {
+                        DevExpress.ui.notify(result.message, "warning", 3000);
+                    }
+                },
+					error: function () {frm20161VATInvoiceEdit
+                    DevExpress.ui.notify("Error while creating Invoice.", "error", 3000);
+                }
+            });
+        });
+}
 
 
+				
 		function deleteRecord() {
 		if (selectedRowData) {
 			const code = selectedRowData.DeliveryNoteNo;
 
 			DevExpress.ui.dialog.confirm(
-				`Are you sure you want to delete stock item: <b>${code}</b>?`,
+				`Are you sure you want to delete delivery note: <b>${code}</b>?`,
 				"Confirm Deletion"
 			).done(function (dialogResult) {
 				if (dialogResult) {

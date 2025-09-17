@@ -1,13 +1,14 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -17,11 +18,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ChartOfCostCentersController> _logger;
-
-        public ChartOfCostCentersController(ILogger<ChartOfCostCentersController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public ChartOfCostCentersController(ILogger<ChartOfCostCentersController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -89,7 +91,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteCostCenter(string id)
+        public async Task<IActionResult> DeleteCostCenterAsync(string id)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -114,6 +116,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     dbContext.Tbl201CostAllocationUnits.Remove(costCenter);
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Chart of Cost Center",
+                    actionDetail: $"Deleted: {costCenter.CostAllocationUnitId}",
+                    documentNo: costCenter.CostAllocationUnitId
+                    );
 
                     return Json(new { success = true });
                 }

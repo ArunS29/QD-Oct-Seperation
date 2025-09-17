@@ -168,6 +168,9 @@
                         .AcceptCustomValue(true)
                         .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
+                        .ValidationRules(rules => rules
+                        .AddRequired()
+                        .Message(new JS("formatMessage('Receiving Account should be entered')")))
                         .HoverStateEnabled(true)
                         .ValueExpr("AccountId")
                         .DisplayExpr("AccountHead")
@@ -286,7 +289,7 @@ buttons.Add()
                                                 {
                                                     rules.AddRequired()
                                                     .Message("Voucher Amount Cannot be Zero Or Negative");
-                                                    rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                                                    rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
                                                 })
                                                
                                                 .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
@@ -335,7 +338,7 @@ buttons.Add()
                                                 })
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ddCurrency")
-                                                .ShowClearButton(true)
+                                                .ShowClearButton(false)
                                                 .AcceptCustomValue(false)
                                                 .OpenOnFieldClick(true)
                                                 .Value(baseCurrencyIdnew)
@@ -636,10 +639,6 @@ buttons.Add()
 
 
         <div id="chequePopupContainer"></div>
-
-
-        
-
         <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
 
         <div id="popupContainer">
@@ -705,7 +704,7 @@ buttons.Add()
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                         .ID("EmployeeAllocationPopup")
-                        .Title("Employee Allocation")
+                        .Title(new JS("formatMessage('Employee Allocation')"))
                         .Width("90%")
                         .Height(500)
                         .Visible(false)
@@ -913,9 +912,9 @@ buttons.Add()
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Account ID").DataField("AccountId");
-                        columns.Add().Caption("Account").DataField("AccountHead");
-                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                        columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                        columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                        columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
 
                     })
                     )
@@ -934,6 +933,8 @@ buttons.Add()
                         /// .Key("AccountHead") //salary paid entry
                         .Key("AccountId")
                         )
+                        .FocusedRowEnabled(true)
+                        .OnFocusedRowChanged("onGridFocusedRowChanged")
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
                         .SearchPanel(sp => sp.Visible(true))
@@ -952,28 +953,33 @@ buttons.Add()
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS("getSelectedRowKeys()"))
 
-                        .Columns(columns =>
-                        {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                            columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-                        .CellTemplate(@<text>
+                      .Columns(columns =>
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+    columns.Add().DataField("IsLedgerObselete")
+        .Caption(new JS("formatMessage('Is Ledger Obselete')"))
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
             <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+                <%= data.IsLedgerObselete 
+                    ? "<i style='color:red' class='fa fa-toggle-on'></i>" 
+                    : "<i style='color:green' class='fa fa-toggle-off'></i>" %>
             </div>
         </text>);
 
@@ -997,6 +1003,8 @@ buttons.Add()
                     )
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
+                    .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .SearchPanel(sp => sp.HighlightSearchText(true))
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
@@ -1011,31 +1019,36 @@ buttons.Add()
                     .Height(345)
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                    .Columns(columns =>
-                    {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                        columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
-                                       <div class="dx-icon">
-                                           <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-                                       </div>
-                                   </text>);
+                   .Columns(columns =>
+{
+    columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group ID')")).Visible(false);
+    columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+    columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+    columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+    columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+    columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+    columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Is Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Is Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Is Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Is Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Is Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Is Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+    columns.Add().DataField("IsLedgerObselete")
+        .Caption(new JS("formatMessage('Is Ledger Obselete')"))
+        .Alignment(HorizontalAlignment.Center)
+        .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete 
+                    ? "<i style='color:red' class='fa fa-toggle-on'></i>" 
+                    : "<i style='color:green' class='fa fa-toggle-off'></i>" %>
+            </div>
+        </text>);
+
                     })
                     .OnRowPrepared("onAccountHeadRowPrepared")
                     )
@@ -1156,9 +1169,9 @@ buttons.Add()
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Account ID").DataField("AccountId");
-                        columns.Add().Caption("Account").DataField("AccountHead");
-                        columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
+                        columns.Add().Caption(new JS("fomatMessage('Account ID')")).DataField("AccountId");
+                        columns.Add().Caption(new JS("formatMessage('Account'")).DataField("AccountHead");
+                        columns.Add().Caption(new JS("formatMessag(Account Head Arabic')")).DataField("AccountHeadArabic");
 
                     })
                     )
@@ -1166,7 +1179,7 @@ buttons.Add()
         <div id="attachOptionsPopup"></div>
     </div>
     <div  id="mainFooter"class="footer-fixed">
-    @await Html.PartialAsync("_Formfooter")
+    @await Html.PartialAsync("_ReceiptFooter")
 </div>
 </div>
    
@@ -1189,7 +1202,19 @@ buttons.Add()
             icon: "spinner", // built-in spinner icon
             text: "Loading..."
         });
+        var accountHeadValidator = $("#AccountHeadDropDown").dxValidator("instance");
+    var voucherAmtValidator = $("#Amount").dxValidator("instance");
+    var paymentHeadValidator = $("#accountDropDownBox").dxValidator("instance");
+    var accountHeadValidation = accountHeadValidator.validate();
+    var voucherAmtValidation = voucherAmtValidator.validate();
+    var PaymentHeadValidation = paymentHeadValidator.validate();
+    if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid && PaymentHeadValidation.isValid)) {
+        // ❌ Validation failed → stop, re-enable button
+        resetVoucherButton();
 
+        DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+        return;
+    }
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var griddatacount = rowCount;
@@ -1460,7 +1485,7 @@ buttons.Add()
 
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
                          var button = $("#btnSave").dxButton("instance");
-                        button.option("text", "Update");
+                        button.option("text", formatMessage("Update"));
                         //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
                         // Get accounthead-datagrid instance
         var accountGrid = $("#accounthead-datagrid").dxDataGrid("instance");
@@ -1609,7 +1634,7 @@ buttons.Add()
                      }
 
                                             var button = $("#btnSave").dxButton("instance");
-                                            button.option("text", "Update");
+                                            button.option("text", formatMessage("Update"));
                     },
                                         error: function (xhr, status, error) {
                                             resetVoucherButton();
@@ -1755,8 +1780,10 @@ buttons.Add()
 
 
         const text = ddbInstance.option("text");
-        if (dataGrid) {
-            dataGrid.option("searchPanel.text", text);
+        // Use the stored grid instance
+       const grid = e.component.__contentGridInstance;
+        if (grid) {
+            grid.option("searchPanel.text", text);
         }
     }
     function onDropDownBoxClosed(e) {
@@ -1826,7 +1853,7 @@ buttons.Add()
 
                  if(paymentIsLedgerObselete==true){
      IsObeselete=true;
-       DevExpress.ui.notify(
+       DevExpress.ui.dialog.alert(
 "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
 "LEDGER IS OBSELETE(NOT IN USE)"
 );
@@ -1867,7 +1894,7 @@ buttons.Add()
 
                  if(paymentIsLedgerObselete==true){
      IsObeselete=true;
-       DevExpress.ui.notify(
+       DevExpress.ui.dialog.alert(
 "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
 "LEDGER IS OBSELETE(NOT IN USE)"
 );
@@ -1956,7 +1983,7 @@ buttons.Add()
 
                             if(IsObeselete==true)
                             {
-                                  DevExpress.ui.alert(
+                                  DevExpress.ui.dialog.alert(
                    "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                    "LEDGER IS OBSELETE(NOT IN USE)"
                    );
@@ -1966,7 +1993,7 @@ buttons.Add()
 
                             // Change button label to "Update"
                             // var button = $("#btnSave").dxButton("instance");
-                            // button.option("text", "Update");
+                            // button.option("text", formatMessage("Update"));
                         } else {
                             alert("Update failed: " + response.message);
                         }
@@ -2290,40 +2317,40 @@ buttons.Add()
     });
 
 
-    $(function () {
-        var voucherDate = $("#VoucherDate").dxDateBox("instance");
-        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+    // $(function () {
+    //     var voucherDate = $("#VoucherDate").dxDateBox("instance");
+    //     var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-        voucherDate.option("onValueChanged", function (e) {
-            let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+    //     voucherDate.option("onValueChanged", function (e) {
+    //         let voucherDateval = e.value; // Get Date from DevExtreme DateBox
 
-            // Check if voucherDateval is valid
-            if (!voucherDateval) return;
+    //         // Check if voucherDateval is valid
+    //         if (!voucherDateval) return;
 
-            // Set effectiveDate to the same value as voucherDate
-            effectiveDate.option("value", voucherDateval);
+    //         // Set effectiveDate to the same value as voucherDate
+    //         effectiveDate.option("value", voucherDateval);
 
-            // Convert to 'yyyy-MM-dd' format
-            let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
+    //         // Convert to 'yyyy-MM-dd' format
+    //         let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
 
-            // Define the cutoff date (2021-12-31)
-            let cutoffDate = new Date("2021-12-31");
+    //         // Define the cutoff date (2021-12-31)
+    //         let cutoffDate = new Date("2021-12-31");
 
-            // Get the current date to set if the voucher date is blocked
-            let currentdate = new Date();
-            let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
+    //         // Get the current date to set if the voucher date is blocked
+    //         let currentdate = new Date();
+    //         let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
 
-            // Check if the formatted voucher date is before the cutoff date
-            if (new Date(formattedDate) < cutoffDate) {
-                // Show alert for blocked entry
-                DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+    //         // Check if the formatted voucher date is before the cutoff date
+    //         if (new Date(formattedDate) < cutoffDate) {
+    //             // Show alert for blocked entry
+    //             DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
-                // Set both voucherDate and effectiveDate to the current date
-                voucherDate.option("value", formattedCurrentDate);
-                effectiveDate.option("value", formattedCurrentDate);
-            }
-        });
-    });
+    //             // Set both voucherDate and effectiveDate to the current date
+    //             voucherDate.option("value", formattedCurrentDate);
+    //             effectiveDate.option("value", formattedCurrentDate);
+    //         }
+    //     });
+    // });
 
    
 
@@ -3136,7 +3163,7 @@ if (dropDownBox) {
                             dataGrid.option("dataSource", response.data);
                             dataGrid.refresh(true);
                             var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+                                button.option("text", formatMessage("Update"));
                                 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
                                 $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
                         } else {
@@ -3187,152 +3214,138 @@ if (dropDownBox) {
 
             
 
-              function onRowUpdating(e) { 
-    const updatedData = e.newData;
-    const key = e.key; // Get primary key value if needed
+              function onRowUpdating(e) {
+                      debugger;
+        const updatedData = e.newData;
+        const key = e.key; // Get primary key value if needed
 
-    let dataGrid = $("#dataGrid").dxDataGrid("instance");
-    let allData = dataGrid.option("dataSource");
+        let dataGrid = $("#dataGrid").dxDataGrid("instance");
+        let allData = dataGrid.option("dataSource");
 
-    // Find the row being updated
-    let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
-    let oldRowData = allData[rowIndex];
+        // Find the row being updated
+        let rowIndex = allData.findIndex(row => row.VoucherEntryNo === key.VoucherEntryNo);
+        let oldRowData = allData[rowIndex];
 
-    if (!oldRowData) return; // Exit if row not found
+        if (!oldRowData) return; // Exit if row not found
 
-    let oldAccountHead = oldRowData.AccountHead;
-    let newAccountHead = updatedData.AccountHead !== undefined 
-        ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead) 
-        : oldRowData.AccountHead;
+        let oldAccountHead = oldRowData.AccountHead;
+        let newAccountHead = updatedData.AccountHead !== undefined
+            ? (Array.isArray(updatedData.AccountHead) ? updatedData.AccountHead[0] : updatedData.AccountHead)
+            : oldRowData.AccountHead;
 
-    let requestData = {
-        VoucherEntryNo: oldRowData.VoucherEntryNo,
-        DrCr: updatedData.DrCr || oldRowData.DrCr,
-        AccountHead: newAccountHead,
-        DrAmount: (updatedData.DrCr === "Dr") 
-            ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.CrAmount) 
-            : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.DrAmount),
-        CrAmount: (updatedData.DrCr === "Cr") 
-            ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.DrAmount) 
-            : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.CrAmount),
-        EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
-        SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
-    };
+        let requestData = {
+            VoucherEntryNo: oldRowData.VoucherEntryNo,
+            DrCr: updatedData.DrCr || oldRowData.DrCr,
+            AccountHead: newAccountHead,
+            DrAmount: (updatedData.DrCr === "Dr")
+                ? (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.CrAmount)
+                : (updatedData.DrAmount !== undefined ? updatedData.DrAmount : oldRowData.DrAmount),
+            CrAmount: (updatedData.DrCr === "Cr")
+                ? (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.DrAmount)
+                : (updatedData.CrAmount !== undefined ? updatedData.CrAmount : oldRowData.CrAmount),
+            EntryNarration: updatedData.EntryNarration || oldRowData.EntryNarration,
+            SysRemarks: updatedData.SysRemarks || oldRowData.SysRemarks
+        };
 
-   
 
-    if (oldRowData.DrCr === "Cr") {
-    
-    // Find all corresponding "Cr" rows
-    let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
-    if (drRows.length > 0) {
-        drRows.forEach(drRow => {
-            // Replace "Received by : oldAccountHead" with newAccountHead
-            drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+        if (oldRowData.DrCr === "Cr") {
 
-            // Send update to backend for each "Cr" row
-            $.ajax({
-                url: "/api/VoucherMaster/UpdateVoucherEntry",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(drRow),
-                success: function(response) {
-    console.log("Cr row updated successfully");
-    $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
+        // Find all corresponding "Cr" rows
+        let drRows = allData.filter(row => row.DrCr === "Dr" && row.SysRemarks.includes(oldAccountHead));
 
-    // Update allData directly
-    allData.forEach(row => {
-        if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
-            row.SysRemarks = drRow.SysRemarks;
-        }
-    });
-     dataGrid.option("dataSource", allData);
-    // Refresh the specific row instead of reloading the entire data source
-    dataGrid.refresh();
-},
-                error: function(xhr) {
-                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
-                    console.error("Error Response:", xhr.responseText);
-                }
+        if (drRows.length > 0) {
+            drRows.forEach(drRow => {
+                // Replace "Received by : oldAccountHead" with newAccountHead
+                drRow.SysRemarks = drRow.SysRemarks.replace(oldAccountHead, newAccountHead);
+
+                // Send update to backend for each "Cr" row
+                $.ajax({
+                    url: "/api/VoucherMaster/UpdateVoucherEntry",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(drRow),
+                    success: function(response) {
+        console.log("Cr row updated successfully");
+
+        // Update allData directly
+        allData.forEach(row => {
+            if (row.VoucherEntryNo === drRow.VoucherEntryNo) {
+                row.SysRemarks = drRow.SysRemarks;
+            }
+        });
+         dataGrid.option("dataSource", allData);
+        // Refresh the specific row instead of reloading the entire data source
+        dataGrid.refresh();
+    },
+                    error: function(xhr) {
+                        DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                        console.error("Error Response:", xhr.responseText);
+                    }
+                });
             });
+        }
+    }
+
+
+
+
+        if (oldRowData.DrCr === "Dr") {
+
+        // Find all corresponding "Cr" rows
+        let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
+
+        if (crRows.length > 0) {
+            crRows.forEach(crRow => {
+                // Replace "Received by : oldAccountHead" with newAccountHead
+                crRow.SysRemarks = crRow.SysRemarks.replace(`Received by : ${oldAccountHead}`, `Received by : ${newAccountHead}`);
+
+                // Send update to backend for each "Cr" row
+                $.ajax({
+                    url: "/api/VoucherMaster/UpdateVoucherEntry",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(crRow),
+                    success: function(response) {
+        console.log("Cr row updated successfully");
+
+        // Update allData directly
+        allData.forEach(row => {
+            if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
+                row.SysRemarks = crRow.SysRemarks;
+            }
+        });
+         dataGrid.option("dataSource", allData);
+        // Refresh the specific row instead of reloading the entire data source
+        dataGrid.refresh();
+    },
+                    error: function(xhr) {
+                        DevExpress.ui.notify("Error updating Cr row", "error", 2000);
+                        console.error("Error Response:", xhr.responseText);
+                    }
+                });
+            });
+        }
+    }
+
+
+        console.log("Request Payload:", requestData);
+
+        // Update the "Cr" row in backend
+        $.ajax({
+            url: "/api/VoucherMaster/UpdateVoucherEntry",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(requestData),
+            success: function(response) {
+                fetchUpdatedData(requestData.VoucherEntryNo);
+            },
+            error: function(xhr) {
+                DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
+                console.error("Error Response:", xhr.responseText);
+            }
         });
     }
-}
-
-
-    
-
-    if (oldRowData.DrCr === "Dr") {
-    
-    // Find all corresponding "Cr" rows
-    let crRows = allData.filter(row => row.DrCr === "Cr" && row.SysRemarks.includes(`Received by : ${oldAccountHead}`));
-
-    if (crRows.length > 0) {
-        crRows.forEach(crRow => {
-            // Replace "Received by : oldAccountHead" with newAccountHead
-            crRow.SysRemarks = crRow.SysRemarks.replace(`Received by : ${oldAccountHead}`, `Received by : ${newAccountHead}`);
-
-            // Send update to backend for each "Cr" row
-            $.ajax({
-                url: "/api/VoucherMaster/UpdateVoucherEntry",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(crRow),
-                success: function(response) {
-    console.log("Cr row updated successfully");
-    $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
-    // Update allData directly
-    allData.forEach(row => {
-        if (row.VoucherEntryNo === crRow.VoucherEntryNo) {
-            row.SysRemarks = crRow.SysRemarks;
-        }
-    });
-     dataGrid.option("dataSource", allData);
-    // Refresh the specific row instead of reloading the entire data source
-    dataGrid.refresh();
-},
-                error: function(xhr) {
-                    DevExpress.ui.notify("Error updating Cr row", "error", 2000);
-                    console.error("Error Response:", xhr.responseText);
-                }
-            });
-        });
-    }
-}
-
-
-    console.log("Request Payload:", requestData);
-
-    // Update the "Cr" row in backend
-    $.ajax({
-        url: "/api/VoucherMaster/UpdateVoucherEntry",
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(requestData),
-        success: function(response) {
-            fetchUpdatedData(requestData.VoucherEntryNo);
-            $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
-   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
-    setTimeout(function () {
-        addbtnSave();
-    }, 500);
-        },
-        error: function(xhr) {
-            DevExpress.ui.notify("Error updating Voucher Entry", "error", 2000);
-            console.error("Error Response:", xhr.responseText);
-        }
-    });
-}
-
     // Function to fetch updated data from Qry201VoucherEntryScreenDisplay
 function fetchUpdatedData(voucherEntryNo) {
     $.ajax({
@@ -3459,7 +3472,7 @@ function showMainFooter() {
     if (selectedValue === "Cr") {
         // Code to handle Debit logic.
         console.log("Credit selected");
-    IsDrCr==false;
+    IsDrCr=false;
         // Example: update another control or perform a calculation.
     } else if (selectedValue === "Dr") {
         // Code to handle Credit logic.
@@ -3545,11 +3558,11 @@ function onBaseCurrencyInit(e) {
 
                                 // Change button label to "Update"
                                var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+                                button.option("text", formatMessage("Update"));
 
                              if(IsObeselete==true)
                              {
-                                   DevExpress.ui.notify(
+                                  DevExpress.ui.dialog.alert(
                     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                     "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -3823,49 +3836,7 @@ tippy('#circle-approve', {
      });
  }
 
-     $(function () {
-                                                $("#EditCostAllocationreceipt").dxTextBox({
-                                                            text:formatMessage("Edit Cost Allocation"),
-                                                        readOnly: true
-
-                                        });
-                                });
-                $(function () {
-                                                $("#DeleteAllLineEntriesreceipt").dxTextBox({
-                                                            text:formatMessage("Delete All Line Entries"),
-                                                    readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                                $("#EditBillReceivablereceipt").dxTextBox({
-                                                        text:formatMessage("Edit Bills Payable"),
-                                                    readOnly: true
-
-                                    });
-                            });
-                $(function () {
-                                                    $("#EditSalaryPayablereceipt").dxTextBox({
-                                                            text:formatMessage("Edit Salary Payable"),
-                                                        readOnly: true
-
-                                        });
-                                });
-                $(function () {
-                                                    $("#EditEmployeeAllocationreceipt").dxTextBox({
-                                                                text:formatMessage("Edit Employee Allocation"),
-                                                        readOnly: true
-
-                                        });
-                                });
-                $(function () {
-                                                    $("#EditPropertyAllocationreceipt").dxTextBox({
-                                                            text:formatMessage("Edit Property Allocation"),
-                                                        readOnly: true
-
-                                        });
-                                });
-               
+  
 
   const menuItems = [
     { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
@@ -3895,39 +3866,43 @@ tippy('#circle-approve', {
      menu.style.display = "none";
  }
 
- // Build menu once (or call again if items change)
- function renderContextMenu() {
-     const contextMenu = document.getElementById("contextMenu");
-     contextMenu.innerHTML = "";
+    function renderContextMenu() {
+    const contextMenu = document.getElementById("contextMenu");
+    contextMenu.innerHTML = "";
 
-     menuItems.forEach((item, index) => {
-         const li = document.createElement("li");
-         li.dataset.id = item.id;
-         li.tabIndex = -1;
-         li.innerHTML = `
-             <div class="custom-dropdown-item">
-                 <div class="side-bar" style="background-color:${item.color};"></div>
-                 <div class="item-content">
-                     <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
-                     <div class="item-title">${item.text}</div>
-                 </div>
-             </div>
-         `;
+    menuItems.forEach((item, index) => {
+        if (item.hidden) return; // skip invisible ones
 
-         li.addEventListener("click", () => {
-             if (typeof window[item.id] === "function") window[item.id]();
-             hideContextMenu();
-         });
+        const li = document.createElement("li");
+        li.dataset.id = item.id;
+        li.tabIndex = -1;
+        li.innerHTML = `
+            <div class="custom-dropdown-item ${item.disabled ? 'disabled' : ''}">
+                <div class="side-bar" style="background-color:${item.color};"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
+                    <div class="item-title">${item.text}</div>
+                </div>
+            </div>
+        `;
 
-         // keep mouse & keyboard highlight in sync
-         li.addEventListener("mouseenter", () => {
-             currentIndex = index;
-             highlightItem(li);
-         });
+        if (!item.disabled) {
+            li.addEventListener("click", () => {
+                if (typeof window[item.id] === "function") window[item.id]();
+                hideContextMenu();
+            });
+        }
 
-         contextMenu.appendChild(li);
-     });
- }
+        li.addEventListener("mouseenter", () => {
+            if (!item.disabled) {
+                currentIndex = index;
+                highlightItem(li);
+            }
+        });
+
+        contextMenu.appendChild(li);
+    });
+}
 
  // Show menu at x,y with edge-flip and focus
  function showContextMenu(x, y) {
@@ -4042,5 +4017,15 @@ tippy('#circle-approve', {
                 e.component.option("value", null); // clear if no match found
             }
         }
+           function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
 
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
+    }
+}
 </script>

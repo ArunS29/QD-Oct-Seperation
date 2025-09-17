@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 
 			try
 			{
-				this.sqlDataSource2.Fill();
+				this.sqlDataSource1.Fill();
                 LoadCurrencyImage(voucherType, frmDate, toDate);
             }
 			catch (Exception ex)
@@ -111,12 +111,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
 
         private void ConfigureSqlDataSource(string voucherType, DateTime frmDate, DateTime toDate)
         {
-            sqlDataSource2.Queries.Clear();
+            sqlDataSource1.Queries.Clear();
 
             // Multi-tenant connection string setup
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource2.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
                 // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
@@ -135,8 +135,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
             new QueryParameter("@EndDate", typeof(DateTime), toDate)
         });
 
-                sqlDataSource2.Queries.Add(storedProcQuery);
-                sqlDataSource2.Name = "sqlDataSource2";
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
             }
             else
             {

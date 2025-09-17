@@ -250,7 +250,7 @@
 	<div class="form-container">
 		<!-- Tab Menu -->
 		@(
-					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%").Height(210)
+					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%").Height(200)
 					.Items(item =>
 					{
 						item.Add()
@@ -258,7 +258,7 @@
 					.Icon("folder")
 					.Text("Material Recipts Details")
 					.Template(@<text>
-			<div style="padding: 20px;">
+			<div style="padding: 10px;">
 				<!-- Row 1 -->
 				<div style="display: flex; gap: 10px;">
 					<div style="flex: 1;">
@@ -506,7 +506,7 @@
 
 						item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
 
-			<div style="padding: 15px; margin-top: 15px;">
+			<div style="padding: 10px;">
 				<div style="display: flex; gap: 10px; align-items: flex-start;">
 					<!-- Signatory and Checkboxes -->
 					<div style="flex: 1;">
@@ -534,9 +534,23 @@
 							.OnKeyDown("onKeyDown")
 							//.OnValueChanged("dropDownBoxValueChanged")
 							.ContentTemplate(new TemplateName("GetSignatoryContentTemplate"))
+							.Buttons(buttons =>
+				{
+								buttons.Add()
+								.Name("AddPreparedBy")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+								.Type(ButtonType.Default)
+								.Icon("plus")
+								.ElementAttr(new { @class = "custom-hover-button add-hover" })
+								.OnClick("AddPreparedBy"));
+								buttons.Add()
+								.Name("dropDown");
+				})
 							)
 
 						</div>
+						
 						<div>
 							@(Html.DevExtreme().CheckBox().ID("ShowSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
 						</div>
@@ -564,8 +578,101 @@
 			</div>
 
 		</text>);
+		  item.Add().Title("Approvals").Icon("detailslayout").Text("Approvals").Template(@<text>
+            <div class="row" style="padding:10px">
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Prepared By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddPreparedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)//
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                                            //.OnValueChanged("dropDownBoxValueChanged")
+                    .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add()
+                        .Name("AddPreparedBy")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
+                        .Icon("plus")
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("AddPreparedBy"));
+                        buttons.Add()
+                        .Name("dropDown");
+                    }))
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Verified By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddVerifiedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+                    )
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Approved By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddApprovedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+                    )
+                </div>
+            </div>
+            
+        </text>);
 						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-			<div style="padding: 15px;display:flex;gap:10px;">
+			<div style="padding: 10px;display:flex;gap:10px;">
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Company Branch/Division')"))
 					.DataSource(d => d.WebApi()
@@ -589,8 +696,9 @@
 					.OnKeyDown("onKeyDown")
 					//.OnValueChanged("dropDownBoxValueChanged")
 					.ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
+						
 					)
-				
+		
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Inventory Group Master:*')"))
 					.DataSource(d => d.WebApi()
@@ -602,6 +710,7 @@
 					)
 					.LabelMode(EditorLabelMode.Floating)
 					.ID("ddInventory")
+					.Value(1)
 					.OpenOnFieldClick(false)//
 					.ValueChangeEvent("input")
 					.HoverStateEnabled(true)
@@ -646,7 +755,7 @@
 
 		</text>);
 					item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
-																																								<div class="p-3">
+																																								<div class="p-2">
 																																									<table style="width:100%; font-size:14px; margin:5px;">
 																																										<tr>
 																																											<td style="width: 30%;">
@@ -682,7 +791,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit")
+															.Icon("plus")
 															.Disabled(true) // Button is also disabled
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick"));
@@ -722,7 +831,7 @@
 															.Location(TextEditorButtonLocation.After)
 															.Widget(w => w.Button()
 															.Type(ButtonType.Default)
-															.Icon("edit") // Use "plus" or any other if needed
+															.Icon("plus") // Use "plus" or any other if needed
 															.Hint("Edit Description")
 															.ElementAttr(new { @class = "custom-hover-button add-hover" })
 															.OnClick("CurrencyClick")); // 👈 your existing handler
@@ -752,7 +861,10 @@
 				)
 
 	</div>
-	<div style="padding:10px;">
+	<div style="padding:5px 10px;">
+	<div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
 	@(
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 			.ID("B2BdataGrid")
@@ -940,7 +1052,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height("45vh")
+		.Height("38vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1337,6 +1449,102 @@
 																})
 																)
 }
+@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+{
+				@(Html.DevExtreme().DataGrid()
+						.ID("GetPreparedby-datagrid")
+						.DataSource(d => d.WebApi()
+						.Controller("AddNewClientRequest")
+						.LoadAction("GetSignatory")
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("SignatoryId")
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+						.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+						.OnSelectionChanged("dataGridSelectionChanged10")
+						.OnInitialized("dataGridInitialized10")
+						.HeaderFilter(p => p.Visible(true))
+						.ShowBorders(true)
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.FilterRow(f => f.Visible(false))//
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(345)
+						.Selection(s => s.Mode(SelectionMode.Single))
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+							columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+							columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+						})
+						)
+					}
+@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetVerifiedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged11")
+					.OnInitialized("dataGridInitialized11")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
+		@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetApprovedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged12")
+					.OnInitialized("dataGridInitialized12")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
 <div class="footer-fixed">
 @await Html.PartialAsync("/Pages/Shared/IMS/MaterialReceiptFormFooter.cshtml")
 </div>
@@ -1433,7 +1641,7 @@
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
-		const url = `/${tenantName}/VAT/SalesPersonMaster`;
+		const url = `/${tenantName}/IMS/SalesPersonMaster`;
 		const title = "Sales Person Master";
 		openModal(url, title);
 	}
@@ -1540,7 +1748,32 @@
 	function dataGridInitialized9(e) {
 		dataGrid = e.component;
 	}
-
+	function dataGridSelectionChanged11(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized11(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged12(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized12(e) {
+			dataGrid = e.component;
+		}
 
 	function onClientCodeRowPrepared(e) {
 		if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
@@ -1548,7 +1781,19 @@
 		}
 	}
 
-
+			function dataGridSelectionChanged10(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized10(e) {
+			dataGrid = e.component;
+		}
 	function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
@@ -1571,7 +1816,7 @@
 		const urlParams = new URLSearchParams(window.location.search);
 		const ReceiptNos = urlParams.get('ReceiptNo');
 		const ReceiptNo = ReceiptNos ? ReceiptNos.split("?")[0] : null;
-
+		getDefaultCompany("ddCompany");
 		//getSalesPersonByUser();
 		loadClientDetails(ReceiptNo);
 
@@ -1623,33 +1868,7 @@
 
 		if (response) {
 
-			 Approved = response.IsApproved;
-
-		// ✅ Disable buttons if already approved
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
-					hideAllButtonsExcept([
-					"btnPrint",
-					   "ddButtonLayout",
-						"btnBack",
-						"btnAttach"
-				]);
-				disableAllDropDownsAndSelects();
-				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-	if (gridInstance) {
-		gridInstance.option({
-			editing: {
-				allowUpdating: false,
-				allowAdding: false,
-				allowDeleting: false
-			},
-			selection: {
-				mode: "none"
-			}
-		});
-	}
-			}
+	
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data  ReceiptSignatory
 
@@ -1695,6 +1914,33 @@
 							console.error("Error fetching grid data:", error);
 						}
 					});
+					  		 Approved = response.IsApproved;
+
+		// ✅ Disable buttons if already approved
+
+			// ✅ Disable buttons if already approved
+			if (Approved === true) {
+					hideAllButtonsExcept([
+					"btnPrint",
+					   "ddButtonLayout",
+						"btnBack",
+						"btnAttach"
+				]);
+				disableAllDropDownsAndSelects();
+				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	if (gridInstance) {
+		gridInstance.option({
+			editing: {
+				allowUpdating: false,
+				allowAdding: false,
+				allowDeleting: false
+			},
+			selection: {
+				mode: "none"
+			}
+		});
+	}
+			}
 
 				} else {
 					console.warn("No Material Receipt details found in the response.");
@@ -1705,7 +1951,7 @@
 			}
 		});
 	}
-
+	
 			function getSalesPersonByUser() {
 		$.ajax({
 			type: "GET",
@@ -1733,9 +1979,10 @@
 				focusedRowEnabled: true,
 			dataSource: rowData,
 			keyExpr: "LineOrderNo",
-			// ✅ your columns, editing, dropdowns, and templates go here, unchanged
-			// Just make sure to close all functions properly
-			// For brevity, I'm skipping repeating all the column config here
+		 selection: {
+						mode: "multiple",
+						showCheckBoxesMode: "always"
+					},
 			columns: [
 				{
 
@@ -1772,13 +2019,13 @@
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+	
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
 					return;
 				}
-				$.getJSON(`/api/VATModule/GetGoodsAndServiceByCode?code=${options.value}`)
+				$.getJSON(`/api/GoodsandServices/GetGoodsAndServiceByCode?code=${options.value}`)
 					.done(function (data) {
 						$("<span>").text(data.GSDescrpition).appendTo(container);
 					});
@@ -1798,7 +2045,7 @@
 				load: function (loadOptions) {
 					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
 					const pageSize = loadOptions.take;
-						return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+					return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", {
 						pageNumber,
 						pageSize
 					}).then(response => {
@@ -1871,7 +2118,14 @@
 								dataGrid.cellValue(rowIndex, "Qty", 1);
 								dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
-
+								// Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "PotaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
+		dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								ItemNo = selectedItem.GSCode;
 								Gsdescrpition = selectedItem.GSDescrpition;
 								GsdescriptionAr = selectedItem.GsdescriptionAr;
@@ -2081,9 +2335,9 @@
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, "");
+									    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -2242,8 +2496,8 @@
 
 				},
 
-				{ dataField: "LineTaxAmount", caption: formatMessage('VAT'), width: 150 },
-				{ dataField: "LineTotalWithTax", caption: formatMessage('Amount'), width: 150 },
+				{ dataField: "LineTaxAmount", caption: formatMessage('VAT'), width: 150,format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "LineTotalWithTax", caption: formatMessage('Amount'), width: 150,format: { type: "fixedPoint", precision: 2 } },
 				{ dataField: "AddlDescription", visible: false },
 		{ dataField: "PoitemRemarks", visible: false },
 				{
@@ -2294,21 +2548,78 @@
 
 				mode: "cell",
 					 allowDeleting: true,
-					  confirmDelete: false
+					  confirmDelete: false,
 
-				//allowUpdating: true,
+				allowUpdating: true,
 
 				//allowAdding: false, // We'll add manually
 
 				//allowDeleting: true
 
 			},
+			 onContextMenuPreparing: function(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Delete Line Item",
+                    icon: "remove",
+                    onItemClick: function() {
+                        deletePoChild([e.row.data.ReceiptChildSlNo]);
+                    }
+                },
+                {
+                    text: "Delete All Selected Line Items",
+                    icon: "remove",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const selectedRows = grid.getSelectedRowsData();
+                        const ReceiptChildSlNos = selectedRows.map(row => row.ReceiptChildSlNo);
+                        if (ReceiptChildSlNos.length > 0) {
+                            deletePoChild(ReceiptChildSlNos);
+                        } else {
+                            DevExpress.ui.notify("No rows selected.", "warning", 2000);
+                        }
+                    }
+                },
+                {
+                    text: "Add New Line Item",
+                    icon: "add",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        grid.addRow();
+                    }
+                }
+            ];
+        }
+    },
 
 			onInitNewRow: function (e) {
 
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
+			 summary: {
+    totalItems: [
+        {
+            column: "ItemDiscount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+			// valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTaxAmount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTotalWithTax",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        }
+    ]
+},
 
 			columnAutoWidth: true,
 
@@ -2373,6 +2684,10 @@
 			dataSource: rowData,
 
 			keyExpr: "LineOrderNo",
+			 selection: {
+						mode: "multiple",
+						showCheckBoxesMode: "always"
+					},
 
 			columns: [
 
@@ -2387,7 +2702,14 @@
 					allowEditing: false // Prevent manual editing
 
 				},
+				{
 
+					dataField: "ReceiptChildSlNo",
+					caption: "ReceiptChildSlNo",
+					width: 100,
+					allowEditing: false, // Prevent manual editing
+					visible: false // Hide the column
+				},
 
 				{
 
@@ -2402,7 +2724,7 @@
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -2501,6 +2823,14 @@
 								dataGrid.cellValue(rowIndex, "Qty", 1);
 								dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
+								 // Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "PotaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
+	dataGrid.cellValue(rowIndex, "VAT%", "15%");
 
 								ItemNo = selectedItem.GSCode;
 								Gsdescrpition = selectedItem.GSDescrpition;
@@ -2681,9 +3011,9 @@
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, "");
+									    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -2807,9 +3137,9 @@
 					}
 
 				},
-				{ dataField: "LineTaxAmount", caption: formatMessage('VAT'), width: 150 },
-				{ dataField: "LineTotalWithTax", caption: formatMessage('Amount'), width: 150 },
-										{ dataField: "AddlDescription", visible: false },
+				{ dataField: "LineTaxAmount", caption: formatMessage('VAT'), width: 150,format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "LineTotalWithTax", caption: formatMessage('Amount'), width: 150,format: { type: "fixedPoint", precision: 2 } },
+			{ dataField: "AddlDescription", visible: false },
 	{ dataField: "PoitemRemarks", visible: false },
 				{
 		type: "buttons",
@@ -2860,21 +3190,78 @@
 
 				mode: "cell",
 					 allowDeleting: true,
-					  confirmDelete: false
+					  confirmDelete: false,
 
-				// allowUpdating: true,
+				allowUpdating: true,
 
 				// allowAdding: false, // We'll add manually
 
 				// allowDeleting: tr
 
 			},
-
+			                    onContextMenuPreparing: function(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Delete Line Item",
+                    icon: "remove",
+                    onItemClick: function() {
+                        deletePoChild([e.row.data.ReceiptChildSlNo]);
+                    }
+                },
+                {
+                    text: "Delete All Selected Line Items",
+                    icon: "remove",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const selectedRows = grid.getSelectedRowsData();
+                        const ReceiptChildSlNos = selectedRows.map(row => row.ReceiptChildSlNo);
+                        if (ReceiptChildSlNos.length > 0) {
+                            deletePoChild(ReceiptChildSlNos);
+                        } else {
+                            DevExpress.ui.notify("No rows selected.", "warning", 2000);
+                        }
+                    }
+                },
+                {
+                    text: "Add New Line Item",
+                    icon: "add",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        grid.addRow();
+                    }
+                }
+            ];
+        }
+    },
 			onInitNewRow: function (e) {
 
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
+			    summary: {
+    totalItems: [
+        {
+            column: "ItemDiscount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+			// valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTaxAmount",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            column: "LineTotalWithTax",
+            summaryType: "sum",
+            displayFormat: "{0}",
+             valueFormat: { type: "fixedPoint", precision: 2 }
+        }
+    ]
+},
+
 
 			columnAutoWidth: true,
 
@@ -4821,7 +5208,128 @@ const $btn = $(this).dxButton("instance");
             var receiptNoNew = data;
             $("#txtMaterialReceiptNo").dxTextBox("instance").option("value", receiptNoNew);
 
-            saveQuotation(receiptNoNew, $btn);
+            saveQuotation(receiptNoNew,$btn);
+        }).fail(function () {
+          $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var receiptNoNew = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null;
+        saveQuotation(receiptNoNew,$btn);
+    }
+});
+
+function saveQuotation(receiptNoNew,$btn) {
+
+			const master = {
+				ReceiptNo:receiptNoNew ,
+				ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
+				SupplierDeliveryNoteNo: $("#SupplierDeliveryNoteNo").dxTextBox("instance").option("value") || null,
+
+				SupplierCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
+
+				Mprno: $('#MaterialRequestNo').dxTextBox("instance").option("value") || null,
+
+				SupplierQuotationNo: $('#SupplierQuotationNo').dxTextBox("instance").option("value") || null,
+
+				JobCode: $('#txtjobCode').dxTextBox("instance").option("value") || null,
+
+				ClientCode: $('#ddClient').dxDropDownBox("instance").option("value") || null,
+				Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
+
+				OurPurchaseOrderNo: $("#PurchaseOrderNo").dxTextBox("instance").option("value") || null,
+
+				SalesPersonCode: $('#ddSalesPerson').dxDropDownBox("instance").option("value") || null,
+
+				StoreReceivedIn: $('#ddStore').dxDropDownBox("instance").option("value") || null,
+
+				ProjectMasterCode: $('#ddProject').dxDropDownBox("instance").option("value") || null,
+
+				ReceiptSignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
+
+				IssueRemarks: $('#RemarksNotes').dxTextArea("instance").option("value") || null,
+
+				CompanyBranch: $("#ddCompany").dxDropDownBox("instance").option("value") || null,
+
+				InventoryMasterGroupId: $("#ddInventory").dxDropDownBox("instance").option("value") || null,
+
+				ModeOfReceiptId: $("#ddRecivedType").dxDropDownBox("instance").option("value") || null,
+
+				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+
+				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+
+				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+			};
+
+			
+					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+          if (!children || children.length === 0) {
+	DevExpress.ui.notify("No child records to save.", "error", 3000);
+	$btn.option("disabled", false); // Re-enable the button
+	return;
+}
+
+			const model = {
+				...master,
+				MaterialReceiptDetailses: children
+			};
+
+			$.ajax({
+				type: "POST",
+				url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
+				contentType: "application/json",
+				data: JSON.stringify(model),
+				success: function (response) {
+					  isVoucherSaved = true; // Mark Updated step as done
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
+				DevExpress.ui.notify(response.message, "success", 3000);
+		        
+
+				 const receiptno = response.receiptno;
+				window.location.href=`/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${receiptno}`;
+				
+						// loadChildDataAndBindGrid(receiptno);
+					if (window.parent && window.parent.$("#dataGrid").length) {
+						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+						if (dataGrid) {
+							dataGrid.refresh();
+						}
+					}
+
+
+				},
+				error: function (xhr) {
+					DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+				}
+			});
+		
+}
+
+	
+	$("#btnSaveAndClose").on("click", function (e) {
+		const $btn = $(this).dxButton("instance");
+
+			// ✅ Step 1: Validate required field
+			var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
+			var suppliernameValidation = suppliernameValidator.validate();
+			if (!suppliernameValidation.isValid) {
+				DevExpress.ui.dialog.alert(
+					"Cannot continue saving with errors, please clear the errors and continue.",
+					"Clear Errors"
+				);
+				return;
+			}
+			
+				$btn.option("disabled", true);
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var receiptNoNew = data;
+            $("#txtMaterialReceiptNo").dxTextBox("instance").option("value", receiptNoNew);
+
+            saveAndCloseQuotation(receiptNoNew,$btn);
         }).fail(function () {
             $btn.option("disabled", false);
             DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
@@ -4829,12 +5337,12 @@ const $btn = $(this).dxButton("instance");
     } else {
         // 🔹 Edit → no need to regenerate
         var receiptNoNew = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null;
-        saveQuotation(receiptNoNew, $btn);
+        saveAndCloseQuotation(receiptNoNew,$btn);
     }
 });
 
-function saveQuotation(receiptNoNew, $btn) {
-    debugger;
+function saveAndCloseQuotation(receiptNoNew,$btn) {
+ 
 			const master = {
 				ReceiptNo:receiptNoNew ,
 				ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
@@ -4877,12 +5385,12 @@ function saveQuotation(receiptNoNew, $btn) {
 			};
 
 			//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+if (!children || children.length === 0) {
+	DevExpress.ui.notify("No child records to save.", "error", 3000);
+	$btn.option("disabled", false); // Re-enable the button
+	return;
+}
 
 			const model = {
 				...master,
@@ -4897,16 +5405,13 @@ function saveQuotation(receiptNoNew, $btn) {
 				success: function (response) {
 					DevExpress.ui.notify(response.message, "success", 3000);
 
-								 const receiptno = response.receiptno;
-
-						 loadChildDataAndBindGrid(receiptno);
-					if (window.parent && window.parent.$("#dataGrid").length) {
+									if (window.parent && window.parent.$("#dataGrid").length) {
 						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
 						if (dataGrid) {
 							dataGrid.refresh();
 						}
 					}
-
+					history.back();
 
 				},
 				error: function (xhr) {
@@ -4915,105 +5420,6 @@ function saveQuotation(receiptNoNew, $btn) {
 			});
 		
 }
-
-	// $("#btnSave").on("click", function (e) {
-
-	// 		const $btn = $(this).dxButton("instance");
-
-	// 		// ✅ Step 1: Validate required field
-	// 		var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
-	// 		var suppliernameValidation = suppliernameValidator.validate();
-	// 		if (!suppliernameValidation.isValid) {
-	// 			DevExpress.ui.dialog.alert(
-	// 				"Cannot continue saving with errors, please clear the errors and continue.",
-	// 				"Clear Errors"
-	// 			);
-	// 			return;
-	// 		}
-
-	// 		// ✅ Step 2: Disable the button after validation passes
-	// 		$btn.option("disabled", true);
-
-	// 			const master = {
-	// 			ReceiptNo: $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null,
-	// 			ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
-	// 			SupplierDeliveryNoteNo: $("#SupplierDeliveryNoteNo").dxTextBox("instance").option("value") || null,
-
-	// 			SupplierCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
-
-	// 			Mprno: $('#MaterialRequestNo').dxTextBox("instance").option("value") || null,
-
-	// 			SupplierQuotationNo: $('#SupplierQuotationNo').dxTextBox("instance").option("value") || null,
-
-	// 			JobCode: $('#txtjobCode').dxTextBox("instance").option("value") || null,
-
-	// 			ClientCode: $('#ddClient').dxDropDownBox("instance").option("value") || null,
-	// 			Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
-
-	// 			OurPurchaseOrderNo: $("#PurchaseOrderNo").dxTextBox("instance").option("value") || null,
-
-	// 			SalesPersonCode: $('#ddSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-	// 			StoreReceivedIn: $('#ddStore').dxDropDownBox("instance").option("value") || null,
-
-	// 			ProjectMasterCode: $('#ddProject').dxDropDownBox("instance").option("value") || null,
-
-	// 			ReceiptSignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
-
-	// 			IssueRemarks: $('#RemarksNotes').dxTextArea("instance").option("value") || null,
-
-	// 			CompanyBranch: $("#ddCompany").dxDropDownBox("instance").option("value") || null,
-
-	// 			InventoryMasterGroupId: $("#ddInventory").dxDropDownBox("instance").option("value") || null,
-
-	// 			ModeOfReceiptId: $("#ddRecivedType").dxDropDownBox("instance").option("value") || null,
-
-	// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-
-	// 			BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-
-	// 			CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
-	// 		};
-
-	// 		//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-	// 			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-	// 		if (!children || children.length === 0) {
-	// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
-	// 			return;
-	// 		}
-
-	// 		const model = {
-	// 			...master,
-	// 			MaterialReceiptDetailses: children
-	// 		};
-
-	// 		$.ajax({
-	// 			type: "POST",
-	// 			url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
-	// 			contentType: "application/json",
-	// 			data: JSON.stringify(model),
-	// 			success: function (response) {
-	// 				DevExpress.ui.notify(response.message, "success", 3000);
-
-	// 							 const receiptno = response.receiptno;
-
-	// 					 loadChildDataAndBindGrid(receiptno);
-	// 				if (window.parent && window.parent.$("#dataGrid").length) {
-	// 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-	// 					if (dataGrid) {
-	// 						dataGrid.refresh();
-	// 					}
-	// 				}
-
-
-	// 			},
-	// 			error: function (xhr) {
-	// 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-	// 			}
-	// 		});
-		
-	// });
 
 			function loadChildDataAndBindGrid(receiptno) {
 			
@@ -5059,7 +5465,7 @@ function saveQuotation(receiptNoNew, $btn) {
 		onDeleteButtonClick();
 	});
 	function onDeleteButtonClick(e) {
-		;
+		
 		var ReceiptNo = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value");
 
 		if (!ReceiptNo) {
@@ -5077,10 +5483,12 @@ function saveQuotation(receiptNoNew, $btn) {
 					url: `/api/MaterialReceipt/DeleteMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 					type: 'DELETE',
 					success: function (response) {
-						DevExpress.ui.dialog.alert("Material Receipt has been successfully removed from the database.", "Deleted").done(function () {
-							location.reload(); // Reload after user clicks OK
-						});
-					},
+    DevExpress.ui.notify("Material Receipt has been successfully removed from the database.", "success", 3000);
+     setTimeout(function () {
+                        window.location.href = `/${tenantName}/IMS/MaterialReceipts`;
+                    }, 1500);
+},
+
 					error: function (xhr) {
 						const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
 						DevExpress.ui.notify(msg, 'error', 3000);
@@ -5093,100 +5501,6 @@ function saveQuotation(receiptNoNew, $btn) {
 
 
 
-
-	$("#btnSaveAndClose").on("click", function (e) {
-
-			const $btn = $(this).dxButton("instance");
-
-				// ✅ Step 1: Validate required field
-				var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
-				var suppliernameValidation = suppliernameValidator.validate();
-				if (!suppliernameValidation.isValid) {
-					DevExpress.ui.dialog.alert(
-						"Cannot continue saving with errors, please clear the errors and continue.",
-						"Clear Errors"
-					);
-					return;
-				}
-
-				// ✅ Step 2: Disable the button after validation passes
-				$btn.option("disabled", true);
-			let master = {
-				ReceiptNo: $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null,
-				ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
-				SupplierDeliveryNoteNo: $("#SupplierDeliveryNoteNo").dxTextBox("instance").option("value") || null,
-
-				SupplierCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
-
-				Mprno: $('#MaterialRequestNo').dxTextBox("instance").option("value") || null,
-
-				SupplierQuotationNo: $('#SupplierQuotationNo').dxTextBox("instance").option("value") || null,
-
-				JobCode: $('#txtjobCode').dxTextBox("instance").option("value") || null,
-
-				ClientCode: $('#ddClient').dxDropDownBox("instance").option("value") || null,
-				Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
-
-				OurPurchaseOrderNo: $("#PurchaseOrderNo").dxTextBox("instance").option("value") || null,
-
-				SalesPersonCode: $('#ddSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-				StoreReceivedIn: $('#ddStore').dxDropDownBox("instance").option("value") || null,
-
-				ProjectMasterCode: $('#ddProject').dxDropDownBox("instance").option("value") || null,
-
-				ReceiptSignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
-
-				IssueRemarks: $('#RemarksNotes').dxTextArea("instance").option("value") || null,
-
-				CompanyBranch: $("#ddCompany").dxDropDownBox("instance").option("value") || null,
-
-				InventoryMasterGroupId: $("#ddInventory").dxDropDownBox("instance").option("value") || null,
-
-				ModeOfReceiptId: $("#ddRecivedType").dxDropDownBox("instance").option("value") || null,
-
-				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-
-				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-
-                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
-			};
-
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
-
-			const model = {
-				...master,
-				MaterialReceiptDetailses: children
-			};
-
-			$.ajax({
-				type: "POST",
-				url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
-				contentType: "application/json",
-				data: JSON.stringify(model),
-				success: function (response) {
-					DevExpress.ui.notify(response.message, "success", 3000);
-					// Refresh parent DataGrid (ensure the correct selector is used)
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
-					history.back();
-
-				},
-				error: function (xhr) {
-					DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-				}
-			});
-	
-	});
 
 
 	$(document).ready(function () {
@@ -5441,8 +5755,12 @@ $("#btnBack").on("click", function (e) {
 					url: `/api/MaterialReceipt/SubmitMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 					contentType: "application/json",
 					success: function (response) {
-						//disableEditing();
-	DevExpress.ui.notify("Material Receipt has been submitted for Approval.", "success", 3000);
+					console.log("sub",response.VoucherApprovedBy);
+	       DevExpress.ui.notify("Material Receipt has been submitted for Approval.", "success", 3000);
+	                          const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+                        if (approvedByBox && response.VoucherApprovedBy) {
+				approvedByBox.option("value", response.VoucherApprovedBy);
+                     }
 							// Update UI elements as needed
 					},
 					error: function (xhr, status, error) {
@@ -5510,7 +5828,10 @@ $("#btnBack").on("click", function (e) {
 			success: function (response) {
 				if (response && response.message) {
 						DevExpress.ui.notify("Material Receipt has been Verified and processed for approval.", "success", 3000);
-
+						       	const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+if (approvedByBox) {
+	approvedByBox.option("value", response.VoucherApprovedBy);
+}
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
@@ -5583,14 +5904,18 @@ $("#btnBack").on("click", function (e) {
 					url: `/api/MaterialReceipt/ApproveMaterialReceipt?ReceiptNo=${encodeURIComponent(ReceiptNo)}`,
 		contentType: "application/json",
 		success: function (response) {
-		  if (response?.VoucherApprovedBy) {
-				const approvedByBox = $("#ddSignatory").dxDropDownBox("instance");
-			if (approvedByBox) {
-			  approvedByBox.option("value", response.VoucherApprovedBy);
-			  approvedByBox.getDataSource().reload();  // refresh data
-			  approvedByBox.repaint();                // update display
-			}
-		  }
+		 
+					if (response.VoucherApprovedBy) {
+		const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+		if (approvedByBox) {
+			approvedByBox.option("value", response.VoucherApprovedBy);
+		}
+		const SignatoryBox = $("#ddSignatory").dxDropDownBox("instance");
+		if (SignatoryBox) {
+			SignatoryBox.option("value", response.VoucherApprovedBy);
+		}
+	}
+		
 
 		  if (response?.Message) {
 				DevExpress.ui.notify("Material Receipt has been Approved.", "success", 3000);
@@ -6401,5 +6726,117 @@ $("#btnBack").on("click", function (e) {
 				  }
 			  }
 		  }
-
+		              let isVoucherSaved = false;
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+    return 0;
+}
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = " - In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = " - Pending";
+            }
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+            }, 300);
+        });
+     
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
 </script>

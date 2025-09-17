@@ -253,7 +253,7 @@
 										.Text(new JS("formatMessage('Approved')"))
 										)
 					<div class="text-muted mt-1 small">
-						<label class="form-label mb-0">Approved On:</label>
+						<label class="form-label mb-0" id="propertyapprovedon"></label>
 						<span id="VoucherApprovedOn" class="fw-semibold text-dark"></span>
 					</div>
 				</div>
@@ -476,12 +476,18 @@
 						.ElementAttr(new { @class = "footer-button me-2 back-btn" })
 						)
 
-			@(Html.DevExtreme().Button()
+	@* 		@(Html.DevExtreme().Button()
 						.ID("btnpropertyDelete")
 						.Text(new JS("formatMessage('Delete')"))
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("close")
-						.ElementAttr(new { @class = "footer-button delete-btn" })
+						.ElementAttr(new { @class = "footer-button me-2 delete-btn" })
+						) *@
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertyDelete")
+						.Text(new JS("formatMessage('Delete')"))
+						.Icon("close")
+						.ElementAttr(new { @class = "bold-button me-2" })
 						)
 		</div>
 
@@ -1282,4 +1288,7 @@
 			editingRowIndex = null;
 			editingColumn = null;
 		}
+		 $(function () {
+		$("#propertyapprovedon").text(formatMessage("Approved On:"));
+	});
 </script>

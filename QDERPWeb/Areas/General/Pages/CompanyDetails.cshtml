@@ -236,7 +236,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Company Details</h3>
+    <h3 class="card-title-text" id="companydetailshome"></h3>
 </div>
 
 <meta charset="UTF-8">
@@ -246,13 +246,13 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().ID("SupplierTabs").Width("100%")
+                Html.DevExtreme().TabPanel().ID("SupplierTabs").Width("100%").DeferRendering(false)
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Company Details//تفاصيل الشركة")
+                .Title(new JS("formatMessage('Company Details')"))
                 .Icon("folder")
-                .Text("Company Details//تفاصيل الشركة")
+                .Text("Company Details")
                 .Template(@<text>
             <div style="display: flex; gap: 30px; justify-content: space-between; width:100%; padding: 20px; ">
 
@@ -260,7 +260,7 @@
                 <div style="flex: 1;">
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID")
-                    .Label("Company ID:")
+                    .Label(new JS("formatMessage('Company ID:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -268,7 +268,7 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName")
-                    .Label("Company Name:")
+                     .Label(new JS("formatMessage('Company Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%")
@@ -276,14 +276,14 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName")
-                    .Label("Our Address - Street Name: *")
+                     .Label(new JS("formatMessage('Our Address - Street Name: *')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress")
-                    .Label("Our Address - Additional Address:")
+                    .Label(new JS("formatMessage('Our Address - Additional Address:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -295,7 +295,7 @@
                             .MaxLength(4)
                             .Mask("0000") // Accept only 4 digits
                          @* .InputAttr("pattern", "[0-9]{4}") // HTML5 pattern for client-side validation *@
-                            .Label("Building Number:")
+                             .Label(new JS("formatMessage('Building Number:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -303,7 +303,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("City")
-                            .Label("City: *")
+                             .Label(new JS("formatMessage('City: *')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ValidationRules(rules =>
                             {
@@ -321,7 +321,7 @@
                             .ID("AdditionalNumber")
                             .MaxLength(4)
                             .Mask("0000")
-                            .Label("Additional Number:")
+                            .Label(new JS("formatMessage('Additional Number:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -329,7 +329,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("Province")
-                            .Label("Province / State:")
+                            .Label(new JS("formatMessage('Province / State:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -342,7 +342,7 @@
                             .ID("PostalCode")
                             .MaxLength(5)
                             .Mask("00000")
-                            .Label("Postal Code:")
+                            .Label(new JS("formatMessage('Postal Code:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -350,7 +350,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().TextBox()
                             .ID("District")
-                            .Label("District/Neighborhood: *")
+                            .Label(new JS("formatMessage('District/Neighborhood: *')"))
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
@@ -366,7 +366,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().DropDownBox()
                             .ID("CountryCode")
-                            .Label("Country Code: *")
+                                                        .Label(new JS("formatMessage('Country Code: *')"))
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
@@ -397,7 +397,7 @@
                             rules.AddRequired()
                             .Message("Company Short Name is required");
                             })
-                            .Label("Company Short Name:")
+                                                        .Label(new JS("formatMessage('Company Short Name:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -556,7 +556,7 @@
 
         </text>);
 
-                    item.Add().Title("ID Details").Icon("detailslayout").Text("ID Details").Template(@<text>
+                item.Add().Title(new JS("formatMessage('ID Details')")).Icon("detailslayout").Text("ID Details").Template(@<text>
 
             <div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 20px;">
                 <!-- Left Section -->
@@ -566,7 +566,7 @@
                             <!-- Full Address -->
                             @(Html.DevExtreme().TextBox()
                             .ID("FullAddress")
-                            .Label("Full Address")
+                            .Label(new JS("formatMessage('Full Address')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .Height(80))
@@ -576,7 +576,7 @@
                                 <div style="direction: rtl; display:flex; align-items:end;">
                                     @(Html.DevExtreme().TextBox()
                                       .ID("FullAddressArabic")
-                                      .Label("Full Address (Arabic)")
+                                      .Label(new JS("formatMessage('Full Address (Arabic)')"))
                                       .LabelMode(EditorLabelMode.Floating)
                                       .ReadOnly(true)
                                       .StylingMode(EditorStylingMode.Outlined)
@@ -595,12 +595,12 @@
 
                         </div>
                         <div id="CompanyLogoPreview" class="preview-box" oncontextmenu="triggerUpload('CompanyLogoInput'); return false;">
-                            <span>No image data for logo</span>
+                            <span id="noimagedatalogo"></span>
                         </div>
                         <input type="file" id="CompanyLogoInput" style="display:none" accept="image/*" onchange="uploadImage('logo')">
 
                         <div id="CompanySealPreview" class="preview-box" oncontextmenu="triggerUpload('CompanySealInput'); return false;">
-                            <span>No image data for seal</span>
+                            <span id="noimageforseal"></span>
                         </div>
                         <input type="file" id="CompanySealInput" style="display:none" accept="image/*" onchange="uploadImage('seal')">
 
@@ -612,13 +612,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("ProductName")
-                        .Label("Product Name")
+                        .Label(new JS("formatMessage('Product Name')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanySlogan")
-                        .Label("Company Slogan")
+                                                .Label(new JS("formatMessage('Company Slogan')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -627,13 +627,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("Phone")
-                        .Label("Company Phone")
+                                                .Label(new JS("formatMessage('Company Phone')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Fax")
-                        .Label("Company Fax")
+                                                .Label(new JS("formatMessage('Company Fax')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -642,13 +642,13 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("Email")
-                        .Label("Email Address")
+                                                .Label(new JS("formatMessage('Email Address')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Website")
-                        .Label("Website")
+                                                .Label(new JS("formatMessage('Website')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -657,7 +657,7 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().TextBox()
                         .ID("VAT")
-                        .Label("VAT Registration No *")
+                                                .Label(new JS("formatMessage('VAT Registration No *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -668,7 +668,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("GroupVAT")
-                        .Label("Group VAT No")
+                        .Label(new JS("formatMessage('Group VAT No')"))
                         .MaxLength(15)
                         .Mask("000000000000000")
                         .LabelMode(EditorLabelMode.Floating)
@@ -676,7 +676,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("TIN")
-                        .Label("TIN")
+                                                .Label(new JS("formatMessage('TIN')"))
                         .MaxLength(10)
                         .Mask("0000000000")
                         .LabelMode(EditorLabelMode.Floating)
@@ -687,7 +687,7 @@
                     <div style="display: flex; gap: 10px;">
                         @(Html.DevExtreme().DropDownBox()
                         .ID("IDType")
-                        .Label("ID Type *")
+                                                .Label(new JS("formatMessage('ID Type *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -709,7 +709,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("IDNumber")
-                        .Label("ID Number *")
+                                                .Label(new JS("formatMessage('ID Number *')"))
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -720,7 +720,7 @@
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CRNumber")
-                        .Label("Commercial Registration No")
+                                                .Label(new JS("formatMessage('Commercial Registration No')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
@@ -728,10 +728,13 @@
                     <!-- Print Button -->
                     <div style="text-align: right; margin-top: 10px;">
                         @(Html.DevExtreme().Button()
-                        .Text("Print Company Info")
+                                                .Text(new JS("formatMessage('Print Company Info')"))
                         .Icon("print")
+                        .Option("reportName", "CompanyDetail1")
                         .Type(ButtonType.Normal)
+                        .OnClick("handleQuatation")
                         .Width(250))
+                        .
                     </div>
                 </div>
 
@@ -741,47 +744,48 @@
             </div>
 
         </text>);
-                    item.Add().Text("Other//آخر").Icon("home").Title("Other//آخر").Template(@<text>
+                    item.Add().Text("Other").Icon("home").Title(new JS("formatMessage('Other')")).Template(@<text>
 
             <div style=" padding: 20px; width:100%">
 
                 <!-- Auditor Section -->
                 <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 25px;">
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorName")
-                        .Label("Auditor's Name:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorFax")
-                        .Label("Auditor's Fax Number:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 100%;">
-                        @(Html.DevExtreme().TextArea()
-                        .ID("AuditorAddress")
-                        .Label("Auditor's Address:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Height(70)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div style="flex: 1 1 45%;">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("AuditorEmail")
-                        .Label("Auditor's Email:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
-                </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorName")
+                                                    .Label(new JS("formatMessage(\"Auditor's Name:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorFax")
+                                                    .Label(new JS("formatMessage(\"Auditor's Fax Number:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 100%;">
+                            @(Html.DevExtreme().TextArea()
+                                                    .ID("AuditorAddress")
+                                                    .Label(new JS("formatMessage(\"Auditor's Address:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Height(70)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+                        <div style="flex: 1 1 45%;">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("AuditorEmail")
+                                                    .Label(new JS("formatMessage(\"Auditor's Email:\")"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
 
+                </div>
+                    
                 <!-- Backup Info Section -->
                 <div style="display: flex; flex-wrap: wrap; gap: 15px;">
                     <div style="flex: 3 1 65%;">
@@ -789,7 +793,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ERPDBLocation")
-                                .Label("ERP Database Location")
+                                                                .Label(new JS("formatMessage('ERP Database Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -797,7 +801,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DMSLocation")
-                                .Label("ERP DMS Location")
+                                                                .Label(new JS("formatMessage('ERP DMS Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -808,7 +812,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("AutoBackupLocation")
-                                .Label("ERP Auto Backup Location")
+                                                                .Label(new JS("formatMessage('ERP Auto Backup Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -816,7 +820,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReceivableLocation")
-                                .Label("Bills Receivable Location")
+                                                                .Label(new JS("formatMessage('Bills Receivable Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -828,7 +832,7 @@
                             <div style="margin-bottom: 10px; display: flex;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("BackupEmail")
-                                .Label("Backup Operator Email")
+                                                                .Label(new JS("formatMessage('Backup Operator Email')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -838,7 +842,7 @@
                             <div style="margin-bottom: 10px; display: flex; ">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("OnlineBackup")
-                                .Label("Online Backup Location")
+                                                                .Label(new JS("formatMessage('Online Backup Location')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -852,14 +856,14 @@
                     <div style="flex: 1 1 25%; display: flex; flex-direction: column; gap: 33px; margin-top: 25px; margin-right: 20px;">
                         @(Html.DevExtreme().Button()
                         .ID("btnBackupDB")
-                        .Text("Backup Database")
+                                                .Text(new JS("formatMessage('Backup Database')"))
                         .Icon("save")
                         .Type(ButtonType.Default)
                         .Width("100%")
                         )
                         @(Html.DevExtreme().Button()
                         .ID("btnBackupDMS")
-                        .Text("Backup DMS")
+                                                .Text(new JS("formatMessage('Backup DMS')"))
                         .Icon("save")
                         .Type(ButtonType.Default)
                         .Width("100%")
@@ -867,13 +871,13 @@
                         <div style="display: flex; gap: 10px; margin-top: 6px; margin-right: 4px;">
                             @(Html.DevExtreme().CheckBox()
                             .ID("SendSuccess")
-                            .Text("Send Success Email")
+                                                        .Text(new JS("formatMessage('Send Success Email')"))
                             .Value(true)
                             .Width(200)
                             )
                             @(Html.DevExtreme().CheckBox()
                             .ID("SendFailed")
-                            .Text("Send Failed Email")
+                                                        .Text(new JS("formatMessage('Send Failed Email')"))
                             .Value(true)
                             .Width(250)
                             )
@@ -881,13 +885,13 @@
                         <div style="display: flex; gap: 10px; margin-top: 8px; margin-right: 4px;">
                             @(Html.DevExtreme().CheckBox()
                             .ID("CloudBackup")
-                            .Text("Backup in Cloud")
+                                                        .Text(new JS("formatMessage('Backup in Cloud')"))
                             .Value(true)
                             .Width(200)
                             )
                             @(Html.DevExtreme().CheckBox()
                             .ID("OnlyDB")
-                            .Text("Backup Only the Database (No Need to Backup DMS Folder)")
+                            .Text(new JS("formatMessage('Backup Only the Database (No Need to Backup DMS Folder)')"))
                             .Value(false)
                             .Width(250)
                             )
@@ -898,23 +902,24 @@
             </div>
 
         </text>);
-                    item.Add().Text("Letter Head (Full)").Icon("user").Title("Letter Head (Full)").Template(@<text>
-                    <div class="form-group">
-                        <div class="dx-fieldset">
-                            <div class="imagecontainer" id="imgBox1" style="height: 450px;background-color: var(--background-color); cursor: pointer;border-radius: 10px;" oncontextmenu="handleRightClick(event)">
-                                <span>No Image Data</span>
-                            </div>
-                            <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
-                        </div>
-                    </div>
-
-        </text>);
-                    item.Add().Text("Company Documents").Icon("user").Title("Company Documents").Template(@<text>
-            <div style="display: flex; justify-content: center; gap: 15px; padding: 10px; width: fit-content;">
+                    item.Add().Text("Letter Head (Full)").Icon("user").Title(new JS("formatMessage('Letter Head (Full)')")).Template(@<text>
+    <div class="form-group">
+        <div class="dx-fieldset">
+            <div class="imagecontainer" id="imgBox1" style="height: 450px; background-color: var(--background-color); cursor: pointer; border-radius: 10px; position: relative;">
+                <span>No Image Data</span>
+                <button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
+        </div>
+    </div>
+</text>);
+                    item.Add().Text("Company Documents").Icon("user").Title(new JS("formatMessage('Company Documents')")).Template(@<text>
+            <div style="display: flex; justify-content: center, gap: 15px, padding: 10px; width: fit-content;">
+                    
                 <!-- Layout Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnLayout")
-                .Text("Layout")
+                                .Text(new JS("formatMessage('Layout')"))
                 .Icon("smalliconslayout")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -924,7 +929,7 @@
                 <!-- Add & Attach Files Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnAttach")
-                .Text("Add & Attach Files")
+                                .Text(new JS("formatMessage('Add & Attach Files')"))
                 .Icon("attach") // use a clip icon or custom one
                 .OnClick("onAttachmentButton")
                 .Type(ButtonType.Default)
@@ -935,7 +940,7 @@
                 <!-- Merge PDF Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnMergePDF")
-                .Text("Merge Selected Files")
+                                .Text(new JS("formatMessage('Merge Selected Files')"))
                 .Icon("file") // Replace with pdf icon if available
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -945,7 +950,7 @@
                 <!-- Save Separate PDF Files Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnSavePDF")
-                .Text("Save Separated PDF Files")
+                                .Text(new JS("formatMessage('Save Separated PDF Files')"))
                 .Icon("save") // Replace with appropriate icon
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -955,7 +960,7 @@
                 <!-- Print Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnPrint")
-                .Text("Print")
+                                .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Contained)
@@ -974,10 +979,10 @@
                 .Columns(columns =>
                 {
                 columns.Add().Caption("#").Width(100);
-                columns.Add().DataField("DocumentType").Caption("DocumentType");
-                columns.Add().DataField("DocumentRefNumber").Caption("Document Ref Number");
-                columns.Add().DataField("ExpiryOn").Caption("Expiry On");
-                columns.Add().DataField("NotifyOn").Caption("Notify On");
+                                    columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('DocumentType')"));
+                                    columns.Add().DataField("DocumentRefNumber").Caption(new JS("formatMessage('Document Ref Number')"));
+                columns.Add().DataField("ExpiryOn").Caption(new JS("formatMessage('Expiry On')"));
+                columns.Add().DataField("NotifyOn").Caption(new JS("formatMessage('Notify On')"));
                 })
                 .ColumnAutoWidth(true)
                 .Width("100%")
@@ -998,7 +1003,7 @@
                 )
             </div>
         </text>);
-                    item.Add().Text("Data Locking").Icon("user").Title("Data Locking").Template(@<text>
+                    item.Add().Text("Data Locking").Icon("user").Title(new JS("formatMessage('Data Locking')")).Template(@<text>
             <div>
                 <div style="display: flex; justify-content: center; gap: 15px; padding: 10px; width: fit-content;">
                     <!-- Date Picker -->
@@ -1014,62 +1019,76 @@
                     <!-- Set All Dates Button -->
                     @(Html.DevExtreme().Button()
                     .ID("btnSetAllDates")
-                    .Text("Set All Dates")
+                                        .Text(new JS("formatMessage('Set All Dates')"))
                     .Icon("event")
                     .Type(ButtonType.Default)
                     .StylingMode(ButtonStylingMode.Contained)
                     .Width(220)
+                    .OnClick("onSetAllDatesClick") 
                     )
 
                     <!-- Update Date Locked Button -->
                     @(Html.DevExtreme().Button()
                     .ID("btnUpdateDateLocked")
-                    .Text("Update Date Locked")
+                                        .Text(new JS("formatMessage('Update Date Locked')"))
                     .Icon("save")
                     .Type(ButtonType.Default)
                     .StylingMode(ButtonStylingMode.Contained)
                     .Width(220)
+                    .OnClick("onUpdateDateLockedClick") 
                     )
 
                 </div>
                 <div style="padding:0px;">
-                    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl90117VoucherDateLocking>()
-                    .ID("itemGrid1")
-                    .Height("65vh")
-                    .ColumnAutoWidth(true)
-                    .Width("100%")
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("CompanyDetails")
-                    .LoadAction("VoucherDateLocking"))
-                    .KeyExpr("VoucherTypeCode")
-                    .WordWrapEnabled(true)
-                    .OnCellClick("function(e) {handleCellClick(e);}")
-                    .ColumnChooser(columnChooser => columnChooser
-                    .Enabled(true)
-                    .Title(new JS("formatMessage('Show/Hide Column')"))
-                    .Mode(GridColumnChooserMode.DragAndDrop))
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .HeaderFilter(filter => filter.Visible(false))
-                    .Paging(p => p.Enabled(false))
-                    .Pager(pager => pager.Visible(false))
-                    .Grouping(grouping => grouping.AutoExpandAll(true))
-                    .FilterRow(filterRow => filterRow.Visible(false))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
-                    .ShowRowLines(true)
-                    .Columns(columns =>
-                    {
-                    columns.Add().DataField("VoucherTypeCode").Caption("Code");
-                    columns.Add().DataField("VoucherType").Caption("Voucher // Entry Type");
-                    columns.Add().DataField("VoucherDateLocked").Caption("Voucher Date Locked");
-                    })
-                    )
+                        @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl90117VoucherDateLocking>()
+                                            .ID("itemGrid1")
+                                            .Height("65vh")
+                                            .DataSource(ds => ds.Mvc()
+                                            .Controller("CompanyDetails")
+                                            .LoadAction("VoucherDateLocking"))
+                                            .KeyExpr("VoucherTypeCode")
+                                            .ColumnChooser(columnChooser => columnChooser
+                                            .Enabled(true)
+                                            .Title(new JS("formatMessage('Show/Hide Column')"))
+                                            .Mode(GridColumnChooserMode.DragAndDrop))
+                                            .AllowColumnReordering(true)
+                                            .AllowColumnResizing(true)
+                                            .ColumnFixing(fixing => fixing.Enabled(true))
+                                            .HeaderFilter(filter => filter.Visible(false))
+                                            .Paging(p => p.Enabled(false))
+                                            .Pager(pager => pager.Visible(false))
+                                            .Grouping(grouping => grouping.AutoExpandAll(true))
+                                            .FilterRow(filterRow => filterRow.Visible(false))
+                                            .Grouping(grouping => grouping.AutoExpandAll(true))
+                                            .GroupPanel(groupPanel => groupPanel.Visible(true))
+                                            .ShowBorders(true)
+                                            .ShowRowLines(true)
+
+                                            .Editing(editing => editing
+                                            .Mode(GridEditMode.Batch)
+                                            .AllowUpdating(true)
+                                            .AllowAdding(false)
+                                            .AllowDeleting(false)
+                                            )
+                                            .Columns(columns =>
+                                            {
+                                                columns.Add().DataField("VoucherModule")
+                                            .Caption(new JS("formatMessage('Module')"))
+                                            .GroupIndex(0)    // 👈 default group by VoucherModule
+                                            .Visible(false);
+                                                columns.Add().DataField("VoucherTypeCode").Caption(new JS("formatMessage('Code')"));
+                                                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher // Entry Type')"));
+                                                columns.Add().DataField("VoucherDateLocked")
+                                            .Caption(new JS("formatMessage('Voucher Date Locked')"))
+                                            .DataType(GridColumnDataType.Date)
+                                            .Format("dd-MMM-yyyy")
+                                            .EditorOptions(new { displayFormat = "dd-MMM-yyyy" });
+                                            })
+                                            )
                 </div>
             </div>
         </text>);
-                    item.Add().Text("Obselete").Icon("user").Title("Obselete").Template(@<text>
+                    item.Add().Text("Obselete").Icon("user").Title(new JS("formatMessage('Obselete')")).Template(@<text>
 
 
             <div class="form-container3" style="width:50%; padding: 10px; width:100%;">
@@ -1077,7 +1096,7 @@
                 <div class="column4">
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID1")
-                    .Label("Company ID:")
+                                        .Label(new JS("formatMessage('Company ID:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -1085,35 +1104,35 @@
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName1")
-                    .Label("Company Name:")
+                                        .Label(new JS("formatMessage('Company Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName1")
-                    .Label("Our Address - Street Name:")
+                                        .Label(new JS("formatMessage('Our Address - Street Name:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress1")
-                    .Label("Our Address - Additional Address:")
+                                        .Label(new JS("formatMessage('Our Address - Additional Address:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("ShortName1")
-                    .Label("Company Name Short:")
+                                        .Label(new JS("formatMessage('Company Name Short:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyCity")
-                    .Label("Company City:")
+                                        .Label(new JS("formatMessage('Company City:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -1192,13 +1211,13 @@
 
         @(Html.DevExtreme().Button()
             .ID("btnSave1")
-            .Text("Save")
+                .Text(new JS("formatMessage('Save')"))
             .Icon("check")
             .OnClick("onSaveCompanyClick"))
 
         @(Html.DevExtreme().Button()
             .ID("btnBack")
-            .Text("Back")
+                .Text(new JS("formatMessage('Back')"))
             .Icon("arrowleft")
             .OnClick("onBackClick"))
 
@@ -1224,8 +1243,8 @@
                         .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CountryCodeAlpha2").Caption("Country Code");
-                            columns.Add().DataField("CountryName").Caption("Country Name");
+                                columns.Add().DataField("CountryCodeAlpha2").Caption(new JS("formatMessage('Country Code')"));
+                                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
                         })
                         .OnSelectionChanged("onCodeSelected")  // Trigger onClientSelected on row selection
                     )
@@ -1250,13 +1269,113 @@
         .Selection(s => s.Mode(SelectionMode.Single))
         .Columns(columns =>
         {
-            columns.Add().DataField("SellerOtherIdtype").Caption("Code");
-            columns.Add().DataField("SellerIdtypeName").Caption("Company ID Type");
+                columns.Add().DataField("SellerOtherIdtype").Caption(new JS("formatMessage('Code')"));
+                columns.Add().DataField("SellerIdtypeName").Caption(new JS("formatMessage('Company ID Type')"));
         })
         .OnSelectionChanged("onIDSelected")
     )
 }
 <script>
+         const quotationReportMap = {
+            "Preview Quotation": "PreviewQuotations",
+            "Preview Quotation(W/O Discount Column)": "wtDiscount",
+            "Preview Quotation(W/o VAT)":"QuotationWOvat",
+            "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
+            "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
+            "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
+            "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
+            "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
+            "Preview Quotation(With Group Code)":"GroupCode",
+            "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
+             };
+         function handleQuatation(e) {
+    var reportName = "CompanyDetail1"; // Set your report name directly here
+    var tenantName = window.tenantName || "";
+    var companyId = $("#CompanyID").dxTextBox("instance").option("value");
+
+    if (!companyId) {
+        alert("Company ID is required.");
+        return;
+    }
+
+    window.open(
+        `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&CompanyId=${encodeURIComponent(companyId)}`,
+        '_blank',
+        'width=1200,height=800,scrollbars=yes,resizable=yes'
+    );
+
+    if (typeof ChangeRowHeight === "function") {
+        ChangeRowHeight(70);
+    }
+}
+        let currentCompanyId = null;
+
+     function onSetAllDatesClick(e) {
+    var dateBox = $("#lockedDate").dxDateBox("instance");
+    var selectedDate = dateBox ? dateBox.option("value") : null;
+
+    if (!selectedDate) {
+        DevExpress.ui.notify("Please select a date to lock.", "error", 3000);
+        return;
+    }
+
+    // Format date as yyyy-MM-dd (no time, no timezone)
+    var d = new Date(selectedDate);
+var formattedDate = d.getFullYear() + '-' +
+    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+    String(d.getDate()).padStart(2, '0');
+
+    $.ajax({
+        url: "/api/CompanyDetails/SetAllVoucherDates",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(formattedDate),
+        success: function (res) {
+            DevExpress.ui.notify("All voucher dates updated successfully.", "success", 3000);
+            var grid = $("#itemGrid1").dxDataGrid("instance");
+            if (grid) grid.refresh();
+        },
+        error: function () {
+            DevExpress.ui.notify("Failed to update voucher dates.", "error", 3000);
+        }
+    });
+}
+function onUpdateDateLockedClick(e) {
+    var grid = $("#itemGrid1").dxDataGrid("instance");
+    var changes = grid.getVisibleRows()
+        .filter(row => row.data && row.data.VoucherDateLocked !== row.oldData?.VoucherDateLocked)
+        .map(row => ({
+            VoucherTypeCode: row.data.VoucherTypeCode,
+            VoucherDateLocked: row.data.VoucherDateLocked
+        }));
+
+    // If your grid uses batch editing, use:
+    // var changes = grid.getChanges().filter(c => c.type === "update");
+
+    if (changes.length === 0) {
+        DevExpress.ui.notify("No changes to update.", "info", 3000);
+        return;
+    }
+
+    // Send all changes in one request (if your API supports bulk), or one by one
+    let updatePromises = changes.map(change =>
+        $.ajax({
+            url: "/api/CompanyDetails/UpdateVoucherDateLockedRow",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(change)
+        })
+    );
+
+    Promise.all(updatePromises)
+        .then(() => {
+            DevExpress.ui.notify("Voucher dates updated successfully.", "success", 3000);
+            grid.refresh();
+        })
+        .catch(() => {
+            DevExpress.ui.notify("Failed to update voucher dates.", "error", 3000);
+        });
+}
     // --- Company IDs and Navigation ---
     let companyIds = [];
     let currentCompanyIndex = 0;
@@ -1265,6 +1384,7 @@
     let uploadedLogoBase64 = null;
     let uploadedSealBase64 = null;
     let uploadedLetterHeadBase64 = null;
+    let lastLoadedLetterHeadBase64 = null; // for restoring preview
 
     // --- Utility: Update Prev/Next Button State ---
     function updateNavButtons() {
@@ -1301,19 +1421,69 @@
         event.preventDefault();
         document.getElementById("imageInput").click();
     }
-    function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const base64String = e.target.result.split(",")[1];
-            uploadedLetterHeadBase64 = base64String;
-            $("#imgBox1").html(`<img src="data:image/png;base64,${base64String}" style="max-width:100%; height:100%; object-fit:contain;">`);
-            DevExpress.ui.notify("Letter Head ready to be saved.", "info", 2000);
-        };
-        reader.readAsDataURL(file);
+    // Letter Head: Upload on left/right click, touch, and show delete button on hover/tap
+function renderLetterHeadImage() {
+    var base64 = uploadedLetterHeadBase64 || lastLoadedLetterHeadBase64;
+    if (base64) {
+        $("#imgBox1").html(
+            `<img src="data:image/png;base64,${base64}" style="max-width:100%; height:100%; object-fit:contain;">` +
+            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
+        );
+    } else {
+        $("#imgBox1").html(
+            `<span>No Image Data</span>` +
+            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
+        );
     }
-
+}
+function setupLetterHeadEvents() {
+    const $imgBox = $("#imgBox1");
+    $imgBox.off("click").on("click", function (e) {
+        if (e.target.id !== "deleteLetterHeadBtn") {
+            document.getElementById("imageInput").click();
+        }
+    });
+    $imgBox.off("touchstart").on("touchstart", function (e) {
+        if (e.target.id !== "deleteLetterHeadBtn") {
+            document.getElementById("imageInput").click();
+        }
+    });
+    $imgBox.off("mouseenter mouseleave").on("mouseenter", function () {
+        $("#deleteLetterHeadBtn").show();
+    }).on("mouseleave", function () {
+        $("#deleteLetterHeadBtn").hide();
+    });
+    $imgBox.off("touchend").on("touchend", function () {
+        $("#deleteLetterHeadBtn").show();
+        setTimeout(() => $("#deleteLetterHeadBtn").hide(), 2000);
+    });
+    $(document).off("click", "#deleteLetterHeadBtn").on("click", "#deleteLetterHeadBtn", function (e) {
+        e.stopPropagation();
+        uploadedLetterHeadBase64 = null;
+        lastLoadedLetterHeadBase64 = null;
+        renderLetterHeadImage();
+        setupLetterHeadEvents();
+        DevExpress.ui.notify("Letter Head image removed.", "info", 2000);
+    });
+}
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const base64String = e.target.result.split(",")[1];
+        uploadedLetterHeadBase64 = base64String;
+        lastLoadedLetterHeadBase64 = base64String;
+        renderLetterHeadImage();
+        setupLetterHeadEvents();
+        DevExpress.ui.notify("Letter Head ready to be saved.", "info", 2000);
+    };
+    reader.readAsDataURL(file);
+}
+// Call these after loading company or switching tab:
+$(function () {
+    setupLetterHeadEvents();
+});
     // --- Translation Handler (English to Arabic fields) ---
     async function translateFieldToArabic(sourceId, targetId) {
         const sourceInstance = $(`#${sourceId}`).dxTextBox("instance");
@@ -1352,31 +1522,38 @@
 
     // --- Company Data Loader ---
     function loadCompanyDetail(companyId) {
+        debugger;
         $.getJSON(`/api/CompanyDetails/GetAllCompanyDetails1?companyId=${companyId}`, function (data) {
             const company = data.data?.[0];
             if (!company) {
                 DevExpress.ui.notify("No data found for this company.", "error", 4000);
                 return;
             }
-
-
-
-                 // Logo, Seal, LetterHead
-                if (company.CompanyLogo) {
-                    $("#CompanyLogoPreview").html(`<img src="data:image/png;base64,${company.CompanyLogo}" alt="Logo" style="max-width:100%; height:auto;">`);
-                } else {
-                    $("#CompanyLogoPreview").html(`<span>Right click to upload logo</span>`);
-                }
-                if (company.CompanySeal) {
-                    $("#CompanySealPreview").html(`<img src="data:image/png;base64,${company.CompanySeal}" alt="Seal" style="max-width:100%; height:auto;">`);
-                } else {
-                    $("#CompanySealPreview").html(`<span>Right click to upload seal</span>`);
-                }
-                if (company.LetterHead) {
-                    $("#imgBox1").html(`<img src="data:image/png;base64,${company.LetterHead}" alt="LetterHead" style="max-width:100%; height:auto;">`);
-                } else {
-                    $("#imgBox1").html(`<span>No Image Data</span>`);
-                }
+                currentCompanyId = company.CompanyId;
+            // Logo, Seal, LetterHead
+            if (company.CompanyLogo) {
+                uploadedLogoBase64 = company.CompanyLogo;
+                $("#CompanyLogoPreview").html(`<img src="data:image/png;base64,${company.CompanyLogo}" alt="Logo" style="max-width:100%; height:auto;">`);
+            } else {
+                uploadedLogoBase64 = null;
+                $("#CompanyLogoPreview").html(`<span>Right click to upload logo</span>`);
+            }
+            if (company.CompanySeal) {
+                uploadedSealBase64 = company.CompanySeal;
+                $("#CompanySealPreview").html(`<img src="data:image/png;base64,${company.CompanySeal}" alt="Seal" style="max-width:100%; height:auto;">`);
+            } else {
+                uploadedSealBase64 = null;
+                $("#CompanySealPreview").html(`<span>Right click to upload seal</span>`);
+            }
+            if (company.LetterHead) {
+                uploadedLetterHeadBase64 = null;
+                lastLoadedLetterHeadBase64 = company.LetterHead;
+                $("#imgBox1").html(`<img src="data:image/png;base64,${company.LetterHead}" alt="LetterHead" style="max-width:100%; height:auto;">`);
+            } else {
+                uploadedLetterHeadBase64 = null;
+                lastLoadedLetterHeadBase64 = null;
+                $("#imgBox1").html(`<span>No Image Data</span>`);
+            }
 
 
 
@@ -1450,12 +1627,20 @@
 
         //for tab onchange of ID Details ,Obselete, Other//آخر
         function onTabChanged(e) {
-            const addedItem = e.addedItems?.[0];
-            const selectedTabText = addedItem?.text;
-
+            // Defensive: get selected tab text safely
+            let selectedTabText = null;
+            if (e.addedItems && e.addedItems.length > 0 && e.addedItems[0] && e.addedItems[0].text) {
+                selectedTabText = e.addedItems[0].text;
+            } else if (e.component && typeof e.component.option === 'function') {
+                const items = e.component.option("items");
+                const idx = e.component.option("selectedIndex");
+                if (Array.isArray(items) && idx >= 0 && idx < items.length && items[idx] && items[idx].title) {
+                    selectedTabText = items[idx].title;
+                }
+            }
             if (!selectedTabText) return;
 
-            if (["ID Details", "Other//آخر"].includes(selectedTabText)) {
+            if (["ID Details", "Other"].includes(selectedTabText)) {
                 if (companyIds.length > 0) {
                     loadCompanyDetail(companyIds[currentCompanyIndex]);
                 } else {
@@ -1484,6 +1669,15 @@
                     });
                 }
             }
+            // If switched to Letter Head tab, restore preview from base64 if available
+            if (selectedTabText && selectedTabText.toLowerCase().includes("letter head")) {
+                var base64 = uploadedLetterHeadBase64 || lastLoadedLetterHeadBase64;
+                if (base64) {
+                    $("#imgBox1").html(`<img src="data:image/png;base64,${base64}" style="max-width:100%; height:100%; object-fit:contain;">`);
+                } else {
+                    $("#imgBox1").html('<span>No Image Data</span>');
+                }
+            }
         }
 
             //For data fetching to Obselete
@@ -1501,7 +1695,7 @@
                 $("#StreetName1").dxTextBox("instance").option("value", company.StreetName);
                 $("#AdditionalAddress1").dxTextBox("instance").option("value", company.AdditionalAddress);
                 $("#ShortName1").dxTextBox("instance").option("value", company.ShortName);
-                    $("#CompanyCity").dxTextBox("instance").option("value", company.CompanyCity);
+                $("#CompanyCity").dxTextBox("instance").option("value", company.CompanyCity);
 
                 $("#CompanyID_Ar").dxTextBox("instance").option("value", company.CompanyId_Ar);
                 $("#CompanyName_Ar").dxTextBox("instance").option("value", company.CompanyNameAr);
@@ -1517,82 +1711,133 @@
 
 
 
+function safeDxValue(id, widget) {
+    var $el = $("#" + id);
+    if ($el.length === 0) return null;
+    var inst = $el[widget]("instance");
+    return inst ? inst.option("value") : null;
+}
+function safeDxCheck(id) {
+    var $el = $("#" + id);
+    if ($el.length === 0) return false;
+    var inst = $el.dxCheckBox("instance");
+    return inst ? inst.option("value") : false;
+}
+function safeDxTextArea(id) {
+    var $el = $("#" + id);
+    if ($el.length === 0) return "";
+    var inst = $el.dxTextArea("instance");
+    return inst ? inst.option("value") : "";
+}
 
 
-
+    function highlightField(id, widget) {
+        debugger;
+        var $el = $("#" + id);
+        // Remove previous highlight
+        $el.closest(".dx-widget").css("border", "");
+        // Add red border if invalid
+        $el.closest(".dx-widget").css("border", "2px solid red");
+        setTimeout(function() {
+            $el.closest(".dx-widget").css("border", "");
+        }, 2500);
+    }
     // --- Save Handler ---
-    function onSaveCompanyClick() {
-       const updatedCompany = {
-    // Core Company Info
-    CompanyId: $("#CompanyID").dxTextBox("instance").option("value"),
-    CompanyName: $("#CompanyName").dxTextBox("instance").option("value"),
-    CompanyAddress1: $("#StreetName").dxTextBox("instance").option("value"),
-    CompanyAddress2: $("#AdditionalAddress").dxTextBox("instance").option("value"),
-    SellerBuildingNumber: $("#BuildingNumber").dxTextBox("instance").option("value"),
-    CompanyCity: $("#City").dxTextBox("instance").option("value"),
-    SellerAdditionalNumber: $("#AdditionalNumber").dxTextBox("instance").option("value"),
-    SellerProvince: $("#Province").dxTextBox("instance").option("value"),
-    SellerPostalCode: $("#PostalCode").dxTextBox("instance").option("value"),
-    SellerNeighborhood: $("#District").dxTextBox("instance").option("value"),
-    SellerCountryCode: $("#CountryCode").dxDropDownBox("instance").option("value"),
-    CompanyNameShort: $("#ShortName").dxTextBox("instance").option("value"),
-    CompanyFullAddress: $("#FullAddress").dxTextBox("instance").option("value"),
-    ProductName: $("#ProductName").dxTextBox("instance").option("value"),
-    CompanySlogan: $("#CompanySlogan").dxTextBox("instance").option("value"),
-    CompanyPhone: $("#Phone").dxTextBox("instance").option("value"),
-    CompanyFax: $("#Fax").dxTextBox("instance").option("value"),
-    EmailAddress: $("#Email").dxTextBox("instance").option("value"),
-    Website: $("#Website").dxTextBox("instance").option("value"),
+      function onSaveCompanyClick() {
+          debugger;
+        // List of required fields: [ID, widgetType]
+        var requiredFields = [
+            ["City", "dxTextBox"],
+            ["District", "dxTextBox"],
+            ["CountryCode", "dxDropDownBox"],
+            ["VAT", "dxTextBox"],
+            ["IDType", "dxDropDownBox"],
+            ["IDNumber", "dxTextBox"],
+            ["ShortName", "dxTextBox"]
+        ];
+        var missing = [];
+        requiredFields.forEach(function([id, widget]) {
+            var inst = $("#" + id)[widget]("instance");
+            var value = inst ? inst.option("value") : null;
+            if (!value || (typeof value === "string" && value.trim() === "")) {
+                highlightField(id, widget);
+                missing.push(id);
+            }
+        });
+        if (missing.length > 0) {
+            DevExpress.ui.notify("Please fill all mandatory fields before saving.", "error", 3000);
+            return;
+        }
 
-    // ID Details
-    CompanyVatno: $("#VAT").dxTextBox("instance").option("value"),
-    SellerGroupVatnumber: $("#GroupVAT").dxTextBox("instance").option("value"),
-    CompanyTin: $("#TIN").dxTextBox("instance").option("value"),
-    SellerOtherIdtype: $("#IDType").dxDropDownBox("instance").option("value"),
-    SellerOtherSellerId: $("#IDNumber").dxTextBox("instance").option("value"),
-    CRNumber: $("#CRNumber").dxTextBox("instance").option("value"),
+      const companyId = Number(companyIds[currentCompanyIndex]);
+    if (!companyId || isNaN(companyId)) {
+        DevExpress.ui.notify("Company ID is missing or invalid. Please reload the page.", "error", 3000);
+        return;
+    }
+    const updatedCompany = {
 
-    // Auditor Info
-    AuditorName: $("#AuditorName").dxTextBox("instance").option("value"),
-    AuditorFaxNo: $("#AuditorFax").dxTextBox("instance").option("value"),
-    AuditorAddress: $("#AuditorAddress").dxTextArea("instance").option("value"),
-    AuditorEmail: $("#AuditorEmail").dxTextBox("instance").option("value"),
-
-    // Backup Info
-    ErpdatabaseLocation: $("#ERPDBLocation").dxTextBox("instance").option("value"),
-    Erpdmslocation: $("#DMSLocation").dxTextBox("instance").option("value"),
-    ErpAutoBackupLocation: $("#AutoBackupLocation").dxTextBox("instance").option("value"),
-    BillsReceivableLocation: $("#ReceivableLocation").dxTextBox("instance").option("value"),
-    BackupOperatorEmail: $("#BackupEmail").dxTextBox("instance").option("value"),
-    IsSendSuccessEmail: $("#SendSuccess").dxCheckBox("instance").option("value"),
-    IsSendFailedEmail: $("#SendFailed").dxCheckBox("instance").option("value"),
-    OnlineBackupLocation: $("#OnlineBackup").dxTextBox("instance").option("value"),
-    IsOnlineBackup: $("#CloudBackup").dxCheckBox("instance").option("value"),
-    IsBackupDatabaseOnly: $("#OnlyDB").dxCheckBox("instance").option("value"),
-
-    // Arabic Fields (Both RTL and Double Mapped)
-    CompanyNameAr: $("#ar_CompanyName").dxTextBox("instance").option("value"),
-    CompanyAddress1Ar: $("#ar_StreetName").dxTextBox("instance").option("value"),
-    CompanyAddress2Ar: $("#ar_AdditionalAddress").dxTextBox("instance").option("value"),
-    CompanyShortNameAr: $("#ar_ShortName").dxTextBox("instance").option("value"),
-    CompanyCityAr: $("#ar_City").dxTextBox("instance").option("value"),
-    SellerProvinceAr: $("#ar_Province").dxTextBox("instance").option("value"),
-    SellerNeighborhoodAr: $("#ar_District").dxTextBox("instance").option("value"),
-    CompanyFullAddressAr: $("#FullAddressArabic").dxTextBox("instance").option("value"),
-
-    // If you use both sets, include these as well:
-    CompanyName_Ar: $("#CompanyName_Ar").dxTextBox("instance").option("value"),
-    CompanyAddress1_Ar: $("#StreetName_Ar").dxTextBox("instance").option("value"),
-    CompanyAddress2_Ar: $("#AdditionalAddress_Ar").dxTextBox("instance").option("value"),
-    CompanyShortName_Ar: $("#ShortName_Ar").dxTextBox("instance").option("value"),
-    CompanyCity_Ar: $("#CompanyCity_Ar").dxTextBox("instance").option("value"),
-
-    // Images
-    CompanyLogoBase64: uploadedLogoBase64,
-    CompanySealBase64: uploadedSealBase64,
-    LetterHeadBase64: uploadedLetterHeadBase64
-};
-
+        CompanyId: companyId,
+        CompanyName: $("#CompanyName").dxTextBox("instance").option("value"),
+        CompanyAddress1: $("#StreetName").dxTextBox("instance").option("value"),
+        CompanyAddress2: $("#AdditionalAddress").dxTextBox("instance").option("value"),
+        SellerBuildingNumber: $("#BuildingNumber").dxTextBox("instance").option("value"),
+        CompanyCity: $("#City").dxTextBox("instance").option("value"),
+        SellerAdditionalNumber: $("#AdditionalNumber").dxTextBox("instance").option("value"),
+        SellerProvince: $("#Province").dxTextBox("instance").option("value"),
+        SellerPostalCode: $("#PostalCode").dxTextBox("instance").option("value"),
+        SellerNeighborhood: $("#District").dxTextBox("instance").option("value"),
+        SellerCountryCode: $("#CountryCode").dxDropDownBox("instance").option("value"),
+        CompanyNameShort: $("#ShortName").dxTextBox("instance").option("value"),
+        CompanyFullAddress: $("#FullAddress").dxTextBox("instance").option("value"),
+        ProductName: $("#ProductName").dxTextBox("instance").option("value"),
+        CompanySlogan: $("#CompanySlogan").dxTextBox("instance").option("value"),
+        CompanyPhone: $("#Phone").dxTextBox("instance").option("value"),
+        CompanyFax: $("#Fax").dxTextBox("instance").option("value"),
+        EmailAddress: $("#Email").dxTextBox("instance").option("value"),
+        Website: $("#Website").dxTextBox("instance").option("value"),
+        CompanyVatno: $("#VAT").dxTextBox("instance").option("value"),
+        SellerGroupVatnumber: $("#GroupVAT").dxTextBox("instance").option("value"),
+        CompanyTin: $("#TIN").dxTextBox("instance").option("value"),
+        SellerOtherIdtype: $("#IDType").dxDropDownBox("instance").option("value"),
+        SellerOtherSellerId: $("#IDNumber").dxTextBox("instance").option("value"),
+        CRNumber: $("#CRNumber").dxTextBox("instance").option("value"),
+        AuditorName: $("#AuditorName").dxTextBox("instance").option("value"),
+        AuditorFaxNo: $("#AuditorFax").dxTextBox("instance").option("value"),
+        AuditorAddress: $("#AuditorAddress").dxTextArea("instance").option("value"),
+        AuditorEmail: $("#AuditorEmail").dxTextBox("instance").option("value"),
+        ErpdatabaseLocation: $("#ERPDBLocation").dxTextBox("instance").option("value"),
+        Erpdmslocation: $("#DMSLocation").dxTextBox("instance").option("value"),
+        ErpAutoBackupLocation: $("#AutoBackupLocation").dxTextBox("instance").option("value"),
+        BillsReceivableLocation: $("#ReceivableLocation").dxTextBox("instance").option("value"),
+        BackupOperatorEmail: $("#BackupEmail").dxTextBox("instance").option("value"),
+        IsSendSuccessEmail: $("#SendSuccess").dxCheckBox("instance").option("value"),
+        IsSendFailedEmail: $("#SendFailed").dxCheckBox("instance").option("value"),
+        OnlineBackupLocation: $("#OnlineBackup").dxTextBox("instance").option("value"),
+        IsOnlineBackup: $("#CloudBackup").dxCheckBox("instance").option("value"),
+        IsBackupDatabaseOnly: $("#OnlyDB").dxCheckBox("instance").option("value"),
+        CompanyNameAr: $("#ar_CompanyName").dxTextBox("instance").option("value"),
+        CompanyAddress1Ar: $("#ar_StreetName").dxTextBox("instance").option("value"),
+        CompanyAddress2Ar: $("#ar_AdditionalAddress").dxTextBox("instance").option("value"),
+        CompanyShortNameAr: $("#ar_ShortName").dxTextBox("instance").option("value"),
+        CompanyCityAr: $("#ar_City").dxTextBox("instance").option("value"),
+        SellerProvinceAr: $("#ar_Province").dxTextBox("instance").option("value"),
+        SellerNeighborhoodAr: $("#ar_District").dxTextBox("instance").option("value"),
+        CompanyFullAddressAr: $("#FullAddressArabic").dxTextBox("instance").option("value"),
+        CompanyName_Ar: $("#CompanyName_Ar").dxTextBox("instance").option("value"),
+        CompanyAddress1_Ar: $("#StreetName_Ar").dxTextBox("instance").option("value"),
+        CompanyAddress2_Ar: $("#AdditionalAddress_Ar").dxTextBox("instance").option("value"),
+        CompanyShortName_Ar: $("#ShortName_Ar").dxTextBox("instance").option("value"),
+        CompanyCity_Ar: $("#CompanyCity_Ar").dxTextBox("instance").option("value"),
+        CompanyLogoBase64: (uploadedLogoBase64 && uploadedLogoBase64.length > 50 ? uploadedLogoBase64 : null),
+        CompanySealBase64: (uploadedSealBase64 && uploadedSealBase64.length > 50 ? uploadedSealBase64 : null),
+        LetterHeadBase64: (
+            uploadedLetterHeadBase64 && uploadedLetterHeadBase64.length > 50
+                    ? uploadedLetterHeadBase64
+                    : (lastLoadedLetterHeadBase64 && lastLoadedLetterHeadBase64.length > 50
+                        ? lastLoadedLetterHeadBase64
+                        : null)
+            )
+        };
 
         $.ajax({
             url: '/api/CompanyDetails/UpdateCompanyDetails',
@@ -1672,6 +1917,17 @@
         const title = "Master Documents";
 
         openModal(url, title);
-    } 
-
+    }
+        $(function () {
+                            $("#companydetailshome").text(formatMessage("Company Details"));
+                     });
+        $(function () {
+                                    $("#noimageforseal").text(formatMessage("No image data for seal"));
+                     });
+        $(function () {
+                                    $("#noimagedatalogo").text(formatMessage("No image data for logo"));
+                     });
+                           $(function () {
+                $("#clearAllNotifications").text(formatMessage("Clear All"));
+            });
 </script>

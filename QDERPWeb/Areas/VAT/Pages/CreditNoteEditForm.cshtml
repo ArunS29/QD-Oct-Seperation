@@ -2278,8 +2278,8 @@
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
 			let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 			if (rowIndex !== -1) {
-			grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-			grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+				grid.cellValue(rowIndex, `${formatMessage('DescriptionDetails')}`, selectedItem.UnitCode);
+				grid.cellValue(rowIndex, `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 			}
 
 			component.close();
@@ -2735,7 +2735,7 @@
 														.Columns(columns =>
 
 														{
-															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center);
 														})
 
 													)
@@ -3843,13 +3843,13 @@
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+								{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -3862,12 +3862,12 @@
 							const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 							if (rowIndex !== -1) {
-								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-								dataGrid.cellValue(rowIndex, "Qty", 1);
-								dataGrid.cellValue(rowIndex, "VAT%", "15%");
-								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+									dataGrid.cellValue(rowIndex, `${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+							dataGrid.cellValue(rowIndex, `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+							dataGrid.cellValue(rowIndex, `${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+							dataGrid.cellValue(rowIndex,`${formatMessage('Qty')}`, 1);
+							dataGrid.cellValue(rowIndex, `${formatMessage('VAT%')}`,"15%");
+							dataGrid.cellValue(rowIndex, `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 							    UnitCode=selectedItem.UnitCode;
 							}
 
@@ -3884,7 +3884,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+						openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3901,7 +3901,7 @@
 
 					const selected = selectedItemData;
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3910,199 +3910,264 @@
 
 		}
             },
-				{
-							dataField: "Descriptions",
-							caption: "...",
-							width: 50,
-							allowEditing: false,
-							cellTemplate: function (container, options) {
-								const buttonId = `popover-btn-${options.rowIndex}`;
-								const popoverId = `popover-${options.rowIndex}`;
+			{
+		dataField: "Descriptions",
+			 caption: formatMessage("Descriptions"),
+		width: 50,
+		allowEditing: false,
+		cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
 
-								$("<div>")
-									.attr("id", buttonId)
-									.appendTo(container)
-									.dxButton({
-										icon: "user",
-										onClick: function () {
-											$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
-										}
-									});
+			// Popover open button
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+					icon: "user",
+					hint: formatMessage("View / Edit Description"),
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
 
-								// Add hidden div for popover content
-								$("<div>")
-									.attr("id", popoverId)
-									.appendTo("body")
-									.dxPopover({
-										width: 900,
-										height: "auto",
-										position: "bottom",
-										showTitle: true,
-										title: "VAT Description",
-										contentTemplate: function () {
-											const formHtml = `
-						<div class="form-wrapper">
-							<div class="form-group">
-								<div class="top-buttons">
-									<div id="btnUseDetailedDesc"></div>
-									<div id="btnUseItemDesc"></div>
+			// Popover with form content
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body")
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: formatMessage("VAT Description"),
+					contentTemplate: function () {
+						const formHtml = `
+							<div class="form-wrapper">
+								<div class="form-group">
+									<div class="top-buttons">
+										<div id="btnUseDetailedDesc"></div>
+										<div id="btnUseItemDesc"></div>
+									</div>
 								</div>
+								<table style="width: 100%; border-spacing: 20px; border-collapse: separate;">
+									<tr>
+										<td colspan="4"><div id="DetailedDescription"></div></td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<div style="display: flex; align-items: end; gap: 10px;">
+												<div id="DetailedDescriptionArabic"></div>
+												<div id="btnConvertDescription"></div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td><div id="ServiceStartDate"></div></td>
+										<td><div id="ServiceEndDate"></div></td>
+										<td><div id="ExpiryDate"></div></td>
+									</tr>
+									<tr>
+										<td><div id="CostAllocationEmployees"></div></td>
+										<td><div id="CostAllocationProperty"></div></td>
+										<td><div id="BatchLotNo"></div></td>
+									</tr>
+									<tr>
+										<td><div id="DiscountText"></div></td>
+										<td>
+											<div style="display: flex; align-items: end; gap: 10px;">
+												<div id="btnConvertDiscount"></div>
+												<div id="DiscountTextArabic"></div>
+											</div>
+										</td>
+										<td><div id="Remarks"></div></td>
+									</tr>
+									<!-- Previous Sales Section -->
+									<tr>
+										<td colspan="3">
+											<fieldset style="border: 1px solid #ccc; padding: 0px; border-radius: 4px; background-color: #f5f8fc;">
+												<div style="font-weight: bold;">${formatMessage("Previous Sales to this Customer")}:</div>
+												<table style="width:100%; border-spacing: 10px; border-collapse: separate;">
+													<tr>
+														<td><div id="PrevSaleInvoicedOns"></div></td>
+														<td><div id="PrevSaleQtyInvoiceds"></div></td>
+														<td><div id="PrevSaleUoMs"></div></td>
+														<td><div id="PrevSaleUnitPrices"></div></td>
+													</tr>
+												</table>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
 							</div>
-							<table style="width: 100%; border-spacing: 20px; border-collapse: separate;">
-								<tr>
-									<td colspan="4">
-										<div id="DetailedDescription"></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3">
-										<div style="display: flex; align-items: end; gap: 10px;">
-											<div id="DetailedDescriptionArabic"></div>
-											<div id="btnConvertDescription"></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td><div id="ServiceStartDate"></div></td>
-									<td><div id="ServiceEndDate"></div></td>
-									<td><div id="ExpiryDate"></div></td>
-								</tr>
-								<tr>
-									<td><div id="CostAllocationEmployees"></div></td>
-									<td><div id="CostAllocationProperty"></div></td>
-									<td><div id="BatchLotNo"></div></td>
-								</tr>
-								<tr>
-									<td><div id="DiscountText"></div></td>
-									<td>
-										<div style="display: flex; align-items: end; gap: 10px;">
-											<div id="btnConvertDiscount"></div>
-											<div id="DiscountTextArabic"></div>
-										</div>
-									</td>
-									<td><div id="Remarks"></div></td>
-								</tr>
-								<!-- Previous Sales Section -->
-								<tr>
-									<td colspan="3">
-										<fieldset style="border: 1px solid #ccc; padding: 0px; border-radius: 4px; background-color: #f5f8fc;">
-											<div style="font-weight: bold;">Previous Sales to this Customer:</div>
-											<table style="width:100%; border-spacing: 10px; border-collapse: separate;">
-												<tr>
-													<td><div id="PrevSaleInvoicedOns"></div></td>
-													<td><div id="PrevSaleQtyInvoiceds"></div></td>
-													<td><div id="PrevSaleUoMs"></div></td>
-													<td><div id="PrevSaleUnitPrices"></div></td>
-												</tr>
-											</table>
-										</fieldset>
-									</td>
-								</tr>
-							</table>
-						</div>
 						`;
 
-											const $container = $("<div>").html(formHtml);
+						const $container = $("<div>").html(formHtml);
 
-											// Initialize DevExtreme controls after rendering
-											setTimeout(function () {
-												$("#btnUseDetailedDesc").dxButton({
-													text: "Use Detailed Description",
-													onClick: function () {
-														let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
-														if (!currentDesc) {
-															DevExpress.ui.notify("No description available to lookup", "warning", 2000);
-															return;
-														}
-
-														// Ajax call to backend
-														$.ajax({
-															url: `/api/VATModule/GetDetailedDescription`,
-															type: "GET",
-															data: { description: currentDesc },
-															success: function (result) {
-																if (result && result.success && result.detailedDesc) {
-																	// Replace in textbox
-																	$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
-
-																	// Update grid row data (so the cell also updates after closing popover)
-																	let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
-																	grid.cellValue(options.rowIndex, "Descriptions", result.detailedDesc);
-
-																	DevExpress.ui.notify("Detailed description applied", "success", 2000);
-																} else {
-																	DevExpress.ui.notify("No detailed description found", "info", 2000);
-																}
-															},
-															error: function () {
-																DevExpress.ui.notify("Error fetching detailed description", "error", 2000);
-															}
-														});
-													}
-												});
-												$("#btnUseItemDesc").dxButton({
-													text: "Use Detailed Description",
-													onClick: function () {
-														let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
-														if (!currentDesc) {
-															DevExpress.ui.notify("No description available to lookup", "warning", 2000);
-															return;
-														}
-
-														// Ajax call to backend
-														$.ajax({
-															url: `/api/VATModule/GetDescription`,
-															type: "GET",
-															data: { description: currentDesc },
-															success: function (result) {
-																if (result && result.success && result.detailedDesc) {
-																	// Replace in textbox
-																	$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
-
-																	// Update grid row data (so the cell also updates after closing popover)
-																	let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
-																	grid.cellValue(options.rowIndex, "Descriptions", result.detailedDesc);
-
-																	DevExpress.ui.notify("Detailed description applied", "success", 2000);
-																} else {
-																	DevExpress.ui.notify("No detailed description found", "info", 2000);
-																}
-															},
-															error: function () {
-																DevExpress.ui.notify("Error fetching detailed description", "error", 2000);
-															}
-														});
-													}
-												});
-
-												$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
-												$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
-												$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
-												$("#DetailedDescription").dxTextBox("instance").option("value", Gsdescrpition);
-												$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn(); } });
-												$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
-												$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
-												$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
-												$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
-												$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
-												$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
-												$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
-												$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2(); } });
-												$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
-												$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
-
-												// Previous sales section
-												$("#PrevSaleInvoicedOns").dxDateBox({ label: "Invoiced On:", labelMode: "outside", width: "100%" });
-												$("#PrevSaleQtyInvoiceds").dxNumberBox({ label: "Qty Invoiced:", labelMode: "outside", width: "100%" });
-												$("#PrevSaleUoMs").dxTextBox({ label: "UoM", labelMode: "outside", width: "100%" });
-												$("#PrevSaleUnitPrices").dxNumberBox({ label: "Unit Price", format: "#,##0.00", labelMode: "outside", width: "100%" });
-											}, 0);
-
-											return $container;
+						setTimeout(function () {
+							// Buttons
+							$("#btnUseDetailedDesc").dxButton({
+								text: formatMessage("Use Detailed Description"),
+								onClick: function () {
+									let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
+									if (!currentDesc) {
+										DevExpress.ui.notify(formatMessage("No description available to lookup"), "warning", 2000);
+										return;
+									}
+									$.ajax({
+										url: `/api/VATModule/GetDetailedDescription`,
+										type: "GET",
+										data: { description: currentDesc },
+										success: function (result) {
+											if (result && result.success && result.detailedDesc) {
+												$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
+												let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
+														grid.cellValue(options.rowIndex, `${formatMessage('Descriptions')}`, result.detailedDesc);
+												DevExpress.ui.notify(formatMessage("Detailed description applied"), "success", 2000);
+											} else {
+												DevExpress.ui.notify(formatMessage("No detailed description found"), "info", 2000);
+											}
+										},
+										error: function () {
+											DevExpress.ui.notify(formatMessage("Error fetching detailed description"), "error", 2000);
 										}
 									});
-							}
-			},
+								}
+							});
+
+							$("#btnUseItemDesc").dxButton({
+								text: formatMessage("Use Item Description"),
+								onClick: function () {
+									let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
+									if (!currentDesc) {
+										DevExpress.ui.notify(formatMessage("No description available to lookup"), "warning", 2000);
+										return;
+									}
+									$.ajax({
+										url: `/api/VATModule/GetDescription`,
+										type: "GET",
+										data: { description: currentDesc },
+										success: function (result) {
+											if (result && result.success && result.detailedDesc) {
+												$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
+												let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
+														grid.cellValue(options.rowIndex,`${formatMessage('Descriptions')}`, result.detailedDesc);
+												DevExpress.ui.notify(formatMessage("Item description applied"), "success", 2000);
+											} else {
+												DevExpress.ui.notify(formatMessage("No item description found"), "info", 2000);
+											}
+										},
+										error: function () {
+											DevExpress.ui.notify(formatMessage("Error fetching item description"), "error", 2000);
+										}
+									});
+								}
+							});
+
+							// Textboxes / DateBoxes / SelectBoxes
+							$("#DetailedDescription").dxTextBox({
+								label: formatMessage("Detailed Description"),
+								labelMode: "outside",
+								width: "100%"
+							}).dxTextBox("instance").option("value", Gsdescrpition);
+
+							$("#DetailedDescriptionArabic").dxTextBox({
+								label: formatMessage("Detailed Description (Arabic)"),
+								labelMode: "outside",
+								width: "98%",
+								height: 100
+							});
+
+							$("#btnConvertDescription").dxButton({
+								icon: "fas fa-language",
+								hint: formatMessage("Convert to Arabic"),
+								onClick: function () { convertToArabicbtn(); }
+							});
+
+							$("#ServiceStartDate").dxDateBox({
+								label: formatMessage("Service Start Date"),
+								labelMode: "outside"
+							});
+							$("#ServiceEndDate").dxDateBox({
+								label: formatMessage("Service End Date"),
+								labelMode: "outside"
+							});
+							$("#ExpiryDate").dxDateBox({
+								label: formatMessage("Expiry Date"),
+								labelMode: "outside",
+								width: "100%"
+							});
+
+							$("#CostAllocationEmployees").dxSelectBox({
+								label: formatMessage("Cost Allocation for Employees"),
+								labelMode: "outside",
+								width: "100%",
+								placeholder: formatMessage("Select Employees")
+							});
+							$("#CostAllocationProperty").dxSelectBox({
+								label: formatMessage("Cost Allocation for Property/Equipments"),
+								labelMode: "outside",
+								width: "100%",
+								placeholder: formatMessage("Select Property/Equipments")
+							});
+
+							$("#BatchLotNo").dxTextBox({
+								label: formatMessage("Batch/Lot No"),
+								labelMode: "outside",
+								width: "100%"
+							});
+
+							$("#DiscountText").dxTextBox({
+								label: formatMessage("Discount Text"),
+								labelMode: "outside",
+								width: "100%"
+							});
+							$("#btnConvertDiscount").dxButton({
+								icon: "fas fa-language",
+								hint: formatMessage("Convert to Arabic"),
+								onClick: function () { convertToArabicbtn2(); }
+							});
+							$("#DiscountTextArabic").dxTextBox({
+								label: formatMessage("Discount Text (Arabic)"),
+								labelMode: "outside",
+								width: "100%"
+							});
+
+							$("#Remarks").dxTextBox({
+								label: formatMessage("Remarks"),
+								labelMode: "outside"
+							});
+
+							// Previous sales section
+							$("#PrevSaleInvoicedOns").dxDateBox({
+								label: formatMessage("Invoiced On"),
+								labelMode: "outside",
+								width: "100%"
+							});
+							$("#PrevSaleQtyInvoiceds").dxNumberBox({
+								label: formatMessage("Qty Invoiced"),
+								labelMode: "outside",
+								width: "100%"
+							});
+							$("#PrevSaleUoMs").dxTextBox({
+								label: formatMessage("UoM"),
+								labelMode: "outside",
+								width: "100%"
+							});
+							$("#PrevSaleUnitPrices").dxNumberBox({
+								label: formatMessage("Unit Price"),
+								format: "#,##0.00",
+								labelMode: "outside",
+								width: "100%"
+							});
+						}, 0);
+
+						return $container;
+					}
+				});
+		}
+	},
+
             {
                 dataField: "UnitRateMethod",
                 caption: formatMessage('Unit Rate Method'),
@@ -4126,10 +4191,10 @@
                                     height: 300,
                                     scrolling: { mode: "virtual" },
                                     columns: [
-                                        { dataField: "UnitCode", caption: "Code", width: 80 },
-                                        { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-                                        { dataField: "UnitType", caption: "Unit Type", width: 150 },
-                                        { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+	                            { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
                                     ],
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -4139,7 +4204,7 @@
                                             let grid = $("#B2BdataGrid").dxDataGrid("instance");
                                             let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                             if (rowIndex !== -1) {
-                                                grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													grid.cellValue(rowIndex,`${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 												UnitCode=selectedItem.UnitCode;
                                             }
                                             e.component.close();
@@ -4154,7 +4219,7 @@
                             hint: "Add new item",
                             onClick: function () {
                                 let url = `/${tenantName}/VAT/VATMasterModule`;
-                                let title = "Unit of Measure";
+                                let title = formatMessage("Unit of Measure");
                                 openModal(url, title);
                             },
                             width: 60,
@@ -4220,9 +4285,9 @@
                         let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
 
-	let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
-	let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-	let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+			let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityCredited')}`) || 0;
+			let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+			let discountPercentage = grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0; // Get discount %
 
 	let amount = qty * unitPrice;
 	let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -4232,13 +4297,13 @@
 	let vatAmount = amountAfterDiscount * vatRate;
 	let total = amountAfterDiscount + vatAmount;
 
-	grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-	grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-	grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
+		grid.cellValue(rowIndex,`${formatMessage('CalcLineAmount')}`, formatAmount(amountAfterDiscount));
+			grid.cellValue(rowIndex,`${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+			grid.cellValue(rowIndex,`${formatMessage('LineTotal')}` , formatAmount(total));
 
-	grid.cellValue(rowIndex, "QuantityCredited", qty);
+		grid.cellValue(rowIndex, `${formatMessage('QuantityCredited')}`, qty);
 //	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
-	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+			grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
 
                             
                         }
@@ -4252,8 +4317,8 @@
                         height: 300,
                         scrolling: { mode: "virtual" },
                         columns: [
-                            { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                            { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                            { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+                            { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
                         ],
                         onSelectionChanged: function (selectedItems) {
                             let selectedItem = selectedItems.selectedRowsData[0];
@@ -4264,9 +4329,9 @@
                                 let grid = $("#B2BdataGrid").dxDataGrid("instance");
                                 let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                 if (rowIndex !== -1) {
-                                    let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
-	let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-	let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+											let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityCredited')}`) || 0;
+			let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+			let discountPercentage = grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0; // Get discount %
 
 	let amount = qty * unitPrice;
 	let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -4276,12 +4341,12 @@
 	let vatAmount = amountAfterDiscount * vatRate;
 	let total = amountAfterDiscount + vatAmount;
 
-	grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-	grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-	grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
-	grid.cellValue(rowIndex, "QuantityCredited", qty);
+		grid.cellValue(rowIndex,`${formatMessage('CalcLineAmount')}`, formatAmount(amountAfterDiscount));
+			grid.cellValue(rowIndex, `${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+			grid.cellValue(rowIndex,`${formatMessage('LineTotal')}`, formatAmount(total));
+			grid.cellValue(rowIndex, `${formatMessage('QuantityCredited')}`, qty);
 	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
-	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+			grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
                                 }
 
                                 e.component.close();
@@ -4307,7 +4372,7 @@
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.TaxExemptionReasonCode || "Select Reason")
+		  .text(options.data.TaxExemptionReasonCode || formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -4327,7 +4392,7 @@
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+				 <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -4347,7 +4412,7 @@
 
               // OK button
               $("#okButton_" + options.rowIndex).dxButton({
-                text: "OK",
+                text: formatMessage("OK"),
                 type: "success",
                 icon: "check",
                 onClick: function () {
@@ -4361,10 +4426,10 @@
                   DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
+						  grid.cellValue(options.rowIndex,`${formatMessage('TaxExemptionReasonCode')}`, selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+					  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -4372,7 +4437,7 @@
 
               // Close button
               $("#closeButton_" + options.rowIndex).dxButton({
-                text: "Close",
+                text: formatMessage("Close"),
                 type: "normal",
                 icon: "close",
                 onClick: function () {
@@ -4411,12 +4476,12 @@
 					let newValue = args.value;
 
 					// Get existing values or updated ones
-						let qty = e.dataField === "QuantityCredited" ? newValue : grid.cellValue(rowIndex, "QuantityCredited") || 0;
-						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-					let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+								let qty = e.dataField === "QuantityCredited" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityCredited')}`) || 0;
+								let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+							let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0;
 
 					// VAT rate handling
-					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+							let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VAT%')}`) || "0%";
 					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 					// Calculate amount
@@ -4429,14 +4494,14 @@
 					let vatValue = discountedAmount * vatRate;
 					let totalValue = discountedAmount + vatValue;
 
-					grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-                       grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-                       grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-                      // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-                       grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-                       grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-                       grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-                       grid.cellValue(rowIndex, "VAT%", vatRateStr); // % can remain as string
+						grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+							grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+							grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
+							grid.cellValue(rowIndex, `${formatMessage('Total Before Discountthod')}`, formatAmount(TotalAmtBeforeDiscount));
+							grid.cellValue(rowIndex,`${formatMessage('Amount')}`, formatAmount(amount));
+							grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+							grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+							grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
 
 			};
 		}
@@ -4567,13 +4632,13 @@
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -4583,15 +4648,16 @@
 						cellInfo.setValue(selectedItem.GSDescrpition);
 
 						const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+
 						const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 						if (rowIndex !== -1) {
-							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
-							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+									dataGrid.cellValue(rowIndex, `${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+									dataGrid.cellValue(rowIndex, `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+									dataGrid.cellValue(rowIndex,`${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+								dataGrid.cellValue(rowIndex, `${formatMessage('Qty')}`, 1);
+								dataGrid.cellValue(rowIndex, `${formatMessage('VAT%')}`, "15%");
+									dataGrid.cellValue(rowIndex, `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 							UnitCode=selectedItem.UnitCode;
 
 						    ItemNo = selectedItem.GSCode;
@@ -4617,7 +4683,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4630,7 +4696,7 @@
 		
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 				//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4640,199 +4706,224 @@
 	}
 					},
 
-				{
-							dataField: "Descriptions",
-							caption: "...",
-							width: 50,
-							allowEditing: false,
-							cellTemplate: function (container, options) {
-								const buttonId = `popover-btn-${options.rowIndex}`;
-								const popoverId = `popover-${options.rowIndex}`;
+					{
+		dataField: "Descriptions",
+			 caption: formatMessage("Descriptions"),
+		width: 50,
+		allowEditing: false,
+		cellTemplate: function (container, options) {
+			const buttonId = `popover-btn-${options.rowIndex}`;
+			const popoverId = `popover-${options.rowIndex}`;
 
-								$("<div>")
-									.attr("id", buttonId)
-									.appendTo(container)
-									.dxButton({
-										icon: "user",
-										onClick: function () {
-											$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
-										}
-									});
+			// Open popover button
+			$("<div>")
+				.attr("id", buttonId)
+				.appendTo(container)
+				.dxButton({
+					icon: "user",
+					hint: formatMessage("View / Edit Description"),
+					onClick: function () {
+						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
+					}
+				});
 
-								// Add hidden div for popover content
-								$("<div>")
-									.attr("id", popoverId)
-									.appendTo("body")
-									.dxPopover({
-										width: 900,
-										height: "auto",
-										position: "bottom",
-										showTitle: true,
-										title: "VAT Description",
-										contentTemplate: function () {
-											const formHtml = `
-						<div class="form-wrapper">
-							<div class="form-group">
-								<div class="top-buttons">
-									<div id="btnUseDetailedDesc"></div>
-									<div id="btnUseItemDesc"></div>
+			// Popover container
+			$("<div>")
+				.attr("id", popoverId)
+				.appendTo("body")
+				.dxPopover({
+					width: 900,
+					height: "auto",
+					position: "bottom",
+					showTitle: true,
+					title: formatMessage("VAT Description"),
+					contentTemplate: function () {
+						const formHtml = `
+							<div class="form-wrapper">
+								<div class="form-group">
+									<div class="top-buttons">
+										<div id="btnUseDetailedDesc"></div>
+										<div id="btnUseItemDesc"></div>
+									</div>
 								</div>
+								<table style="width: 100%; border-spacing: 20px; border-collapse: separate;">
+									<tr>
+										<td colspan="4"><div id="DetailedDescription"></div></td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<div style="display: flex; align-items: end; gap: 10px;">
+												<div id="DetailedDescriptionArabic"></div>
+												<div id="btnConvertDescription"></div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td><div id="ServiceStartDate"></div></td>
+										<td><div id="ServiceEndDate"></div></td>
+										<td><div id="ExpiryDate"></div></td>
+									</tr>
+									<tr>
+										<td><div id="CostAllocationEmployees"></div></td>
+										<td><div id="CostAllocationProperty"></div></td>
+										<td><div id="BatchLotNo"></div></td>
+									</tr>
+									<tr>
+										<td><div id="DiscountText"></div></td>
+										<td>
+											<div style="display: flex; align-items: end; gap: 10px;">
+												<div id="btnConvertDiscount"></div>
+												<div id="DiscountTextArabic"></div>
+											</div>
+										</td>
+										<td><div id="Remarks"></div></td>
+									</tr>
+									<!-- Previous Sales Section -->
+									<tr>
+										<td colspan="3">
+											<fieldset style="border: 1px solid #ccc; padding: 0px; border-radius: 4px; background-color: #f5f8fc;">
+												<div style="font-weight: bold;">${formatMessage("Previous Sales to this Customer")}:</div>
+												<table style="width:100%; border-spacing: 10px; border-collapse: separate;">
+													<tr>
+														<td><div id="PrevSaleInvoicedOns"></div></td>
+														<td><div id="PrevSaleQtyInvoiceds"></div></td>
+														<td><div id="PrevSaleUoMs"></div></td>
+														<td><div id="PrevSaleUnitPrices"></div></td>
+													</tr>
+												</table>
+											</fieldset>
+										</td>
+									</tr>
+								</table>
 							</div>
-							<table style="width: 100%; border-spacing: 20px; border-collapse: separate;">
-								<tr>
-									<td colspan="4">
-										<div id="DetailedDescription"></div>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="3">
-										<div style="display: flex; align-items: end; gap: 10px;">
-											<div id="DetailedDescriptionArabic"></div>
-											<div id="btnConvertDescription"></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td><div id="ServiceStartDate"></div></td>
-									<td><div id="ServiceEndDate"></div></td>
-									<td><div id="ExpiryDate"></div></td>
-								</tr>
-								<tr>
-									<td><div id="CostAllocationEmployees"></div></td>
-									<td><div id="CostAllocationProperty"></div></td>
-									<td><div id="BatchLotNo"></div></td>
-								</tr>
-								<tr>
-									<td><div id="DiscountText"></div></td>
-									<td>
-										<div style="display: flex; align-items: end; gap: 10px;">
-											<div id="btnConvertDiscount"></div>
-											<div id="DiscountTextArabic"></div>
-										</div>
-									</td>
-									<td><div id="Remarks"></div></td>
-								</tr>
-								<!-- Previous Sales Section -->
-								<tr>
-									<td colspan="3">
-										<fieldset style="border: 1px solid #ccc; padding: 0px; border-radius: 4px; background-color: #f5f8fc;">
-											<div style="font-weight: bold;">Previous Sales to this Customer:</div>
-											<table style="width:100%; border-spacing: 10px; border-collapse: separate;">
-												<tr>
-													<td><div id="PrevSaleInvoicedOns"></div></td>
-													<td><div id="PrevSaleQtyInvoiceds"></div></td>
-													<td><div id="PrevSaleUoMs"></div></td>
-													<td><div id="PrevSaleUnitPrices"></div></td>
-												</tr>
-											</table>
-										</fieldset>
-									</td>
-								</tr>
-							</table>
-						</div>
 						`;
 
-											const $container = $("<div>").html(formHtml);
+						const $container = $("<div>").html(formHtml);
 
-											// Initialize DevExtreme controls after rendering
-											setTimeout(function () {
-												$("#btnUseDetailedDesc").dxButton({
-													text: "Use Detailed Description",
-													onClick: function () {
-														let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
-														if (!currentDesc) {
-															DevExpress.ui.notify("No description available to lookup", "warning", 2000);
-															return;
-														}
-
-														// Ajax call to backend
-														$.ajax({
-															url: `/api/VATModule/GetDetailedDescription`,
-															type: "GET",
-															data: { description: currentDesc },
-															success: function (result) {
-																if (result && result.success && result.detailedDesc) {
-																	// Replace in textbox
-																	$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
-
-																	// Update grid row data (so the cell also updates after closing popover)
-																	let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
-																	grid.cellValue(options.rowIndex, "Descriptions", result.detailedDesc);
-
-																	DevExpress.ui.notify("Detailed description applied", "success", 2000);
-																} else {
-																	DevExpress.ui.notify("No detailed description found", "info", 2000);
-																}
-															},
-															error: function () {
-																DevExpress.ui.notify("Error fetching detailed description", "error", 2000);
-															}
-														});
-													}
-												});
-												$("#btnUseItemDesc").dxButton({
-													text: "Use Detailed Description",
-													onClick: function () {
-														let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
-														if (!currentDesc) {
-															DevExpress.ui.notify("No description available to lookup", "warning", 2000);
-															return;
-														}
-
-														// Ajax call to backend
-														$.ajax({
-															url: `/api/VATModule/GetDescription`,
-															type: "GET",
-															data: { description: currentDesc },
-															success: function (result) {
-																if (result && result.success && result.detailedDesc) {
-																	// Replace in textbox
-																	$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
-
-																	// Update grid row data (so the cell also updates after closing popover)
-																	let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
-																	grid.cellValue(options.rowIndex, "Descriptions", result.detailedDesc);
-
-																	DevExpress.ui.notify("Detailed description applied", "success", 2000);
-																} else {
-																	DevExpress.ui.notify("No detailed description found", "info", 2000);
-																}
-															},
-															error: function () {
-																DevExpress.ui.notify("Error fetching detailed description", "error", 2000);
-															}
-														});
-													}
-												});
-
-												$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
-												$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
-												$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
-												$("#DetailedDescription").dxTextBox("instance").option("value", Gsdescrpition);
-												$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn(); } });
-												$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
-												$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
-												$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
-												$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
-												$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
-												$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
-												$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
-												$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2(); } });
-												$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
-												$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
-
-												// Previous sales section
-												$("#PrevSaleInvoicedOns").dxDateBox({ label: "Invoiced On:", labelMode: "outside", width: "100%" });
-												$("#PrevSaleQtyInvoiceds").dxNumberBox({ label: "Qty Invoiced:", labelMode: "outside", width: "100%" });
-												$("#PrevSaleUoMs").dxTextBox({ label: "UoM", labelMode: "outside", width: "100%" });
-												$("#PrevSaleUnitPrices").dxNumberBox({ label: "Unit Price", format: "#,##0.00", labelMode: "outside", width: "100%" });
-											}, 0);
-
-											return $container;
+						setTimeout(function () {
+							// --- Buttons ---
+							$("#btnUseDetailedDesc").dxButton({
+								text: formatMessage("Use Detailed Description"),
+								onClick: function () {
+									let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
+									if (!currentDesc) {
+										DevExpress.ui.notify(formatMessage("No description available to lookup"), "warning", 2000);
+										return;
+									}
+									$.ajax({
+										url: `/api/VATModule/GetDetailedDescription`,
+										type: "GET",
+										data: { description: currentDesc },
+										success: function (result) {
+											if (result && result.success && result.detailedDesc) {
+												$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
+												let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
+														grid.cellValue(options.rowIndex, `${formatMessage('Descriptions')}`, result.detailedDesc);
+												DevExpress.ui.notify(formatMessage("Detailed description applied"), "success", 2000);
+											} else {
+												DevExpress.ui.notify(formatMessage("No detailed description found"), "info", 2000);
+											}
+										},
+										error: function () {
+											DevExpress.ui.notify(formatMessage("Error fetching detailed description"), "error", 2000);
 										}
 									});
-							}
-			},
+								}
+							});
+
+							$("#btnUseItemDesc").dxButton({
+								text: formatMessage("Use Item Description"),
+								onClick: function () {
+									let currentDesc = $("#DetailedDescription").dxTextBox("instance").option("value");
+									if (!currentDesc) {
+										DevExpress.ui.notify(formatMessage("No description available to lookup"), "warning", 2000);
+										return;
+									}
+									$.ajax({
+										url: `/api/VATModule/GetDescription`,
+										type: "GET",
+										data: { description: currentDesc },
+										success: function (result) {
+											if (result && result.success && result.detailedDesc) {
+												$("#DetailedDescription").dxTextBox("instance").option("value", result.detailedDesc);
+												let grid = $(container).closest(".dx-datagrid").dxDataGrid("instance");
+													grid.cellValue(options.rowIndex,`${formatMessage('Descriptions')}`, result.detailedDesc);
+												DevExpress.ui.notify(formatMessage("Item description applied"), "success", 2000);
+											} else {
+												DevExpress.ui.notify(formatMessage("No item description found"), "info", 2000);
+											}
+										},
+										error: function () {
+											DevExpress.ui.notify(formatMessage("Error fetching item description"), "error", 2000);
+										}
+									});
+								}
+							});
+
+							// --- Fields ---
+							$("#DetailedDescription").dxTextBox({
+								label: formatMessage("Detailed Description"),
+								labelMode: "outside",
+								width: "100%"
+							}).dxTextBox("instance").option("value", Gsdescrpition);
+
+							$("#DetailedDescriptionArabic").dxTextBox({
+								label: formatMessage("Detailed Description (Arabic)"),
+								labelMode: "outside",
+								width: "98%",
+								height: 100
+							});
+
+							$("#btnConvertDescription").dxButton({
+								icon: "fas fa-language",
+								hint: formatMessage("Convert to Arabic"),
+								onClick: function () { convertToArabicbtn(); }
+							});
+
+							$("#ServiceStartDate").dxDateBox({ label: formatMessage("Service Start Date"), labelMode: "outside" });
+							$("#ServiceEndDate").dxDateBox({ label: formatMessage("Service End Date"), labelMode: "outside" });
+							$("#ExpiryDate").dxDateBox({ label: formatMessage("Expiry Date"), labelMode: "outside", width: "100%" });
+
+							$("#CostAllocationEmployees").dxSelectBox({
+								label: formatMessage("Cost Allocation for Employees"),
+								labelMode: "outside",
+								width: "100%",
+								placeholder: formatMessage("Select Employees")
+							});
+
+							$("#CostAllocationProperty").dxSelectBox({
+								label: formatMessage("Cost Allocation for Property/Equipments"),
+								labelMode: "outside",
+								width: "100%",
+								placeholder: formatMessage("Select Property/Equipments")
+							});
+
+							$("#BatchLotNo").dxTextBox({ label: formatMessage("Batch/Lot No"), labelMode: "outside", width: "100%" });
+
+							$("#DiscountText").dxTextBox({ label: formatMessage("Discount Text"), labelMode: "outside", width: "100%" });
+
+							$("#btnConvertDiscount").dxButton({
+								icon: "fas fa-language",
+								hint: formatMessage("Convert to Arabic"),
+								onClick: function () { convertToArabicbtn2(); }
+							});
+
+							$("#DiscountTextArabic").dxTextBox({ label: formatMessage("Discount Text (Arabic)"), labelMode: "outside", width: "100%" });
+
+							$("#Remarks").dxTextBox({ label: formatMessage("Remarks"), labelMode: "outside" });
+
+							// Previous Sales section
+							$("#PrevSaleInvoicedOns").dxDateBox({ label: formatMessage("Invoiced On"), labelMode: "outside", width: "100%" });
+							$("#PrevSaleQtyInvoiceds").dxNumberBox({ label: formatMessage("Qty Invoiced"), labelMode: "outside", width: "100%" });
+							$("#PrevSaleUoMs").dxTextBox({ label: formatMessage("UoM"), labelMode: "outside", width: "100%" });
+							$("#PrevSaleUnitPrices").dxNumberBox({ label: formatMessage("Unit Price"), format: "#,##0.00", labelMode: "outside", width: "100%" });
+						}, 0);
+
+						return $container;
+					}
+				});
+		}
+	},
 
 
 					{
@@ -4895,13 +4986,11 @@
 
 											columns: [
 
-													{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-												{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-												{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-												{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
+												
 
 											],
 
@@ -4921,7 +5010,7 @@
 
 													if (rowIndex !== -1) {
 
-														grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+																grid.cellValue(rowIndex, `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 														UnitCode=selectedItem.UnitCode;
 													}
 
@@ -4950,7 +5039,7 @@
 										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
 																	
-let title = "Unit of Measure";
+let title = formatMessage("Unit of Measure");
 openModal(url, title);
 
 									},
@@ -5039,8 +5128,8 @@ openModal(url, title);
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function(selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -5072,7 +5161,7 @@ openModal(url, title);
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.TaxExemptionReasonCode || "Select Reason")
+		  .text(options.data.TaxExemptionReasonCode ||formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -5092,7 +5181,8 @@ openModal(url, title);
             width: 350,
             contentTemplate: function (contentElement) {
               contentElement.append(`
-                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                
+					   <h4 class="title">${formatMessage("Select Tax Exemption Reason")}:</h4>
                 <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
                 <div class="button-group mt-2">
                   <div id="okButton_${options.rowIndex}"></div>
@@ -5112,7 +5202,7 @@ openModal(url, title);
 
               // OK button
               $("#okButton_" + options.rowIndex).dxButton({
-                text: "OK",
+                text: formatMessage("OK"),
                 type: "success",
                 icon: "check",
                 onClick: function () {
@@ -5126,10 +5216,10 @@ openModal(url, title);
                   DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
+						  grid.cellValue(options.rowIndex,`${formatMessage('TaxExemptionReasonCode')}`, selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
-                  $(e.currentTarget).text(selectedText || "Select Reason");
+					  $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
                   $("#" + popoverId).dxPopover("instance").hide();
                 }
@@ -5137,7 +5227,7 @@ openModal(url, title);
 
               // Close button
               $("#closeButton_" + options.rowIndex).dxButton({
-                text: "Close",
+                text: formatMessage("Close"),
                 type: "normal",
                 icon: "close",
                 onClick: function () {
@@ -7106,7 +7196,7 @@ openModal(url, title);
 						// }
 
 						rowData.AccountHead = e.value; // Update the row data
-						grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+								grid.cellValue(rowIndex,`${formatMessage('AccountHead')}`, e.value); // Ensure it reflects in the grid
 
 					}
 					// Close the dropdown after selection
@@ -7128,12 +7218,12 @@ openModal(url, title);
 				let newValue = args.value;
 
 				// Get existing values or updated ones
-				let qty = e.dataField === "QuantityCredited" ? newValue : grid.cellValue(rowIndex, "QuantityCredited") || 0;
-				let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+						let qty = e.dataField === "QuantityCredited" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityCredited')}`) || 0;
+						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,`${formatMessage('UnitRate')}` ) || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0;
 
 				// VAT rate handling
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT%')}`) || "0%";
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 				// Calculate amount
@@ -7146,14 +7236,14 @@ openModal(url, title);
 				let vatValue = discountedAmount * vatRate;
 				let totalValue = discountedAmount + vatValue;
 
-					        grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-							grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-							grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+									grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+									grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+									grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
 							//grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-							grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-							grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-							grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-							grid.cellValue(rowIndex, "VAT%", vatRateStr);
+								grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
+								grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+								grid.cellValue(rowIndex,`${formatMessage('Qty')}` , formatAmount(qty));
+									grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr);
 				
 			};
 		}
@@ -7534,9 +7624,9 @@ openModal(url, title);
  // 
 
 // Get existing values or updated ones
-let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
-let unitPrice =  grid.cellValue(rowIndex, "UnitRate") || 0;
-let discount = grid.cellValue(rowIndex, "Discount") || 0;
+		let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityCredited')}`) || 0;
+		let unitPrice =  grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+		let discount = grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0;
 
 // VAT rate handling
 let vatRateStr = newValue || "0%";
@@ -7552,15 +7642,15 @@ if (discountedAmount < 0) discountedAmount = 0;
 let vatValue = discountedAmount * vatRate;
 let totalValue = discountedAmount + vatValue;
 
-	grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-	grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-	grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+			grid.cellValue(rowIndex, `${formatMessage('VAT')}`,formatAmount(vatValue));
+			grid.cellValue(rowIndex,`${formatMessage('Total')}` ,formatAmount(totalValue));
+			grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`,formatAmount(unitPrice));
 //	grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-	grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-	grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-	grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-	grid.cellValue(rowIndex, "VAT%", vatRateStr);
-    grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
+			grid.cellValue(rowIndex, `${formatMessage('Amount')}`,formatAmount(amount));
+			grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+			grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+			grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr);
+			grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, TaxSlabCode);
 
 
 		}
@@ -8437,7 +8527,7 @@ $(function () {
 			
 $(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		button.option("text", formatMessage("Update"));
 	});
 
 		$(document).ready(function () {
@@ -8837,11 +8927,20 @@ $(document).ready(function () {
 		const count = docs.length;
 		updateAttachButtonCount("#btnAttach", count);
 	}
+		 $(function () {
+		   $("#b2bdeletealllineitem").text(formatMessage("Delete All Line Items"));
+	  });
+	$(function () {
+		   $("#b2bdeletelineitem").text(formatMessage("Delete Line Item"));
+	  });
+	$(function () {
+		   $("#b2baddlineitem").text(formatMessage("Add Line Item"));
+	  });
 
 
 	function getExemptionCode(rowIndex, callback) {
 	  const grid = $("#B2BdataGrid").dxDataGrid("instance");
-	  const TaxSlabCode = grid.cellValue(rowIndex, "TaxSlabCode") || 0;
+			  const TaxSlabCode = grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`) || 0;
 
 	  $.ajax({
 		url: `/api/VATModule/GetByTaxSlabCode?TaxSlabCode=${encodeURIComponent(TaxSlabCode)}`,

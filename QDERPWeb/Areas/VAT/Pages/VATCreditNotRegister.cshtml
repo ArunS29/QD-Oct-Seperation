@@ -338,14 +338,14 @@
 
 <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoiceCreditNote()">
-		<i class="dx-icon-search"></i> View e-Invoice Credit Note
+		<i class="dx-icon-search" id="einvoicecredit"></i>
 	</div>
 
 	<div class="context-menu-item has-submenu">
-		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
+		<i class="dx-icon-file" id="vatcreditnotes"></i>
 		<div class="submenu">
 			<div class="context-menu-item" onclick="viewVATCreditNote()">
-				<i class="dx-icon-file"></i> View VAT Credit Note
+				<i class="dx-icon-file" id="viewvatcreditnote"></i>
 			</div>
 		</div>
 	</div>
@@ -391,7 +391,7 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -725,103 +725,103 @@
 			});
 			});
 			// Add hidden columns for remaining model fields
-					columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-					columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-					columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
-					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-					columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
-					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-					columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
-					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-					columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
-					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
-				//	columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
-					columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
-				//	columns.AddFor(m => m.BillingNameAr).Caption("Billing Name Ar").Visible(false);
-				//	columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
-					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-					columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
-					columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
-					columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
-					columns.AddFor(m => m.CreditEndDate).Caption("Credit End Date").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.CreditNoteEffectiveDate).Caption("Credit Note Effective Date").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.CreditNoteRemarks).Caption("Credit Note Remarks").Visible(false);
-					columns.AddFor(m => m.CreditStartDate).Caption("Credit Start Date").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
-					columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-					columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-					columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
-					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-					columns.AddFor(m => m.RevenueAccount).Caption("Revenue Account").Visible(false);
-				//	columns.AddFor(m => m.VATRegistrationNo).Caption("VAT Registration No").Visible(false);
-					columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
-					columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
-					columns.AddFor(m => m.BuyerAdditionalNumber).Caption("Buyer Additional Number").Visible(false);
-					columns.AddFor(m => m.BuyerAdditionalStreet).Caption("Buyer Additional Street").Visible(false);
-					columns.AddFor(m => m.BuyerAdditionalStreetAr).Caption("Buyer Additional Street Ar").Visible(false);
-					columns.AddFor(m => m.BuyerAddressStreet).Caption("Buyer Address Street").Visible(false);
-					columns.AddFor(m => m.BuyerAddressStreetAr).Caption("Buyer Address Street Ar").Visible(false);
-					columns.AddFor(m => m.BuyerBuildingNumber).Caption("Buyer Building Number").Visible(false);
-					columns.AddFor(m => m.BuyerCity).Caption("Buyer City").Visible(false);
-					columns.AddFor(m => m.BuyerCityAr).Caption("Buyer City Ar").Visible(false);
-					columns.AddFor(m => m.BuyerCountryCode).Caption("Buyer Country Code").Visible(false);
-					columns.AddFor(m => m.BuyerName).Caption("Buyer Name").Visible(false);
-					//columns.AddFor(m => m.BuyerGroupVATNumber).Caption("Buyer Group VAT Number").Visible(false);
-					columns.AddFor(m => m.BuyerNameAr).Caption("Buyer Name Ar").Visible(false);
-					columns.AddFor(m => m.BuyerNeighborhood).Caption("Buyer Neighborhood").Visible(false);
-					columns.AddFor(m => m.BuyerNeighborhoodAr).Caption("Buyer Neighborhood Ar").Visible(false);
-				//	columns.AddFor(m => m.BuyerOtherID).Caption("Buyer Other ID").Visible(false);
-				//	columns.AddFor(m => m.BuyerOtherIDType).Caption("Buyer Other ID Type").Visible(false);
-					columns.AddFor(m => m.BuyerPostalCode).Caption("Buyer Postal Code").Visible(false);
-					columns.AddFor(m => m.BuyerProvince).Caption("Buyer Province").Visible(false);
-					columns.AddFor(m => m.BuyerProvinceAr).Caption("Buyer Province Ar").Visible(false);
-				//	columns.AddFor(m => m.BuyerVATNumber).Caption("Buyer VAT Number").Visible(false);
-					columns.AddFor(m => m.InvoiceCounterValue).Caption("Invoice Counter Value").Visible(false);
-					columns.AddFor(m => m.InvoiceCurrencyCode).Caption("Invoice Currency Code").Visible(false);
-					columns.AddFor(m => m.InvoiceTransactionCode).Caption("Invoice Transaction Code").Visible(false);
-					columns.AddFor(m => m.InvoiceTypeCode).Caption("Invoice Type Code").Visible(false);
-					columns.AddFor(m => m.InvoiceTypeCodeSubType).Caption("Invoice Type Code Sub Type").Visible(false);
-				//	columns.AddFor(m => m.InvoiceUUID).Caption("Invoice UUID").Visible(false);
-					columns.AddFor(m => m.SellerAdditionalNumber).Caption("Seller Additional Number").Visible(false);
-					columns.AddFor(m => m.SellerAdditionalStreet).Caption("Seller Additional Street").Visible(false);
-				//	columns.AddFor(m => m.ReasonforIssuanceOfCRN).Caption("Reason for Issuance Of CRN").Visible(false);
-				//	columns.AddFor(m => m.ReasonforIssuanceOfCRNAr).Caption("Reason for Issuance Of CRN Ar").Visible(false);
-					columns.AddFor(m => m.SellerAdditionalStreetAr).Caption("Seller Additional Street Ar").Visible(false);
-					columns.AddFor(m => m.SellerAddressStreet).Caption("Seller Address Street").Visible(false);
-					columns.AddFor(m => m.SellerAddressStreetAr).Caption("Seller Address Street Ar").Visible(false);
-					columns.AddFor(m => m.SellerBuildingNumber).Caption("Seller Building Number").Visible(false);
-					columns.AddFor(m => m.SellerCity).Caption("Seller City").Visible(false);
-					columns.AddFor(m => m.SellerCityAr).Caption("Seller City Ar").Visible(false);
-					columns.AddFor(m => m.SellerCountryCode).Caption("Seller Country Code").Visible(false);
-					columns.AddFor(m => m.SellerName).Caption("Seller Name").Visible(false);
-				//	columns.AddFor(m => m.SellerGroupVATNumber).Caption("Seller Group VAT Number").Visible(false);
-				//	columns.AddFor(m => m.SellerNameAr).Caption("Seller Name Ar").Visible(false);
-					columns.AddFor(m => m.SellerNeighborhood).Caption("Seller Neighborhood").Visible(false);
-					columns.AddFor(m => m.SellerNeighborhoodAr).Caption("Seller Neighborhood Ar").Visible(false);
-				//	columns.AddFor(m => m.SellerOtherID).Caption("Seller Other ID").Visible(false);
-				//	columns.AddFor(m => m.SellerOtherIDType).Caption("Seller Other ID Type").Visible(false);
-					columns.AddFor(m => m.SellerPostalCode).Caption("Seller Postal Code").Visible(false);
-					columns.AddFor(m => m.SellerProvince).Caption("Seller Province").Visible(false);
-					columns.AddFor(m => m.SellerProvinceAr).Caption("Seller Province Ar").Visible(false);
-			//		columns.AddFor(m => m.SellerVATNumber).Caption("Seller VAT Number").Visible(false);
-					columns.AddFor(m => m.TaxCurrencyCode).Caption("Tax Currency Code").Visible(false);
-					columns.AddFor(m => m.EInvoiceSubmittedToZatcaBy).Caption("eInvoice Submitted To Zatca By").Visible(false);
-					columns.AddFor(m => m.EInvoiceSubmittedToZatcaOn).Caption("eInvoice Submitted To Zatca On").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.InvoiceSupplyDate).Caption("Invoice Supply Date").Visible(false).Format("dd-MM-yyyy");
-					columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
-					columns.AddFor(m => m.Currency).Caption("Currency").Visible(false);
-					columns.AddFor(m => m.OtherDeductionAmount).Caption("Other Deduction Amount").Visible(false);
-					columns.AddFor(m => m.ReasonforCreditNote).Caption("Reason for Credit Note").Visible(false);
-					columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
+					columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+					columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+					columns.AddFor(m => m.VerifiedByAr).Caption(new JS("formatMessage('Verified By Ar')")).Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+					columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+					columns.AddFor(m => m.ApprovedByAr).Caption(new JS("formatMessage('Approved By Ar')")).Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+					columns.AddFor(m => m.AddedByAr).Caption(new JS("formatMessage('Added By Ar')")).Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+					columns.AddFor(m => m.ModifiedByAr).Caption(new JS("formatMessage('Modified By Ar')")).Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.BillingAddress).Caption(new JS("formatMessage('Billing Address')")).Visible(false);
+				//	columns.AddFor(m => m.BillingAddressAr).Caption(new JS("formatMessage('Billing Address Ar").Visible(false);
+					columns.AddFor(m => m.BillingName).Caption(new JS("formatMessage('Billing Name')")).Visible(false);
+				//	columns.AddFor(m => m.BillingNameAr).Caption(new JS("formatMessage('Billing Name Ar").Visible(false);
+				//	columns.AddFor(m => m.CompanyBranch).Caption(new JS("formatMessage('Company Branch").Visible(false);
+					columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
+					columns.AddFor(m => m.CostAllocationGroup).Caption(new JS("formatMessage('Cost Allocation Group')")).Visible(false);
+					columns.AddFor(m => m.CostAllocationMasterGroup).Caption(new JS("formatMessage('Cost Allocation Master Group')")).Visible(false);
+					columns.AddFor(m => m.CostAllocationUnit).Caption(new JS("formatMessage('Cost Allocation Unit')")).Visible(false);
+					columns.AddFor(m => m.CreditEndDate).Caption(new JS("formatMessage('Credit End Date')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.CreditNoteEffectiveDate).Caption(new JS("formatMessage('Credit Note Effective Date')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.CreditNoteRemarks).Caption(new JS("formatMessage('Credit Note Remarks')")).Visible(false);
+					columns.AddFor(m => m.CreditStartDate).Caption(new JS("formatMessage('Credit Start Date')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Visible(false);
+					columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+					columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+					columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Visible(false);
+					columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+					columns.AddFor(m => m.SubmittedByAr).Caption(new JS("formatMessage('Submitted By Ar')")).Visible(false);
+					columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Visible(false);
+					columns.AddFor(m => m.RevenueAccount).Caption(new JS("formatMessage('Revenue Account')")).Visible(false);
+				//	columns.AddFor(m => m.VATRegistrationNo).Caption(new JS("formatMessage('VAT Registration No").Visible(false);
+					columns.AddFor(m => m.BranchCode).Caption(new JS("formatMessage('Branch Code')")).Visible(false);
+					columns.AddFor(m => m.BranchName).Caption(new JS("formatMessage('Branch Name')")).Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalNumber).Caption(new JS("formatMessage('Buyer Additional Number')")).Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalStreet).Caption(new JS("formatMessage('Buyer Additional Street')")).Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalStreetAr).Caption(new JS("formatMessage('Buyer Additional Street Ar')")).Visible(false);
+					columns.AddFor(m => m.BuyerAddressStreet).Caption(new JS("formatMessage('Buyer Address Street')")).Visible(false);
+					columns.AddFor(m => m.BuyerAddressStreetAr).Caption(new JS("formatMessage('Buyer Address Street Ar')")).Visible(false);
+					columns.AddFor(m => m.BuyerBuildingNumber).Caption(new JS("formatMessage('Buyer Building Number')")).Visible(false);
+					columns.AddFor(m => m.BuyerCity).Caption(new JS("formatMessage('Buyer City')")).Visible(false);
+					columns.AddFor(m => m.BuyerCityAr).Caption(new JS("formatMessage('Buyer City Ar')")).Visible(false);
+					columns.AddFor(m => m.BuyerCountryCode).Caption(new JS("formatMessage('Buyer Country Code')")).Visible(false);
+					columns.AddFor(m => m.BuyerName).Caption(new JS("formatMessage('Buyer Name')")).Visible(false);
+					//columns.AddFor(m => m.BuyerGroupVATNumber).Caption(new JS("formatMessage('Buyer Group VAT Number").Visible(false);
+					columns.AddFor(m => m.BuyerNameAr).Caption(new JS("formatMessage('Buyer Name Ar')")).Visible(false);
+					columns.AddFor(m => m.BuyerNeighborhood).Caption(new JS("formatMessage('Buyer Neighborhood')")).Visible(false);
+					columns.AddFor(m => m.BuyerNeighborhoodAr).Caption(new JS("formatMessage('Buyer Neighborhood Ar')")).Visible(false);
+				//	columns.AddFor(m => m.BuyerOtherID).Caption(new JS("formatMessage('Buyer Other ID").Visible(false);
+				//	columns.AddFor(m => m.BuyerOtherIDType).Caption(new JS("formatMessage('Buyer Other ID Type").Visible(false);
+					columns.AddFor(m => m.BuyerPostalCode).Caption(new JS("formatMessage('Buyer Postal Code')")).Visible(false);
+					columns.AddFor(m => m.BuyerProvince).Caption(new JS("formatMessage('Buyer Province')")).Visible(false);
+					columns.AddFor(m => m.BuyerProvinceAr).Caption(new JS("formatMessage('Buyer Province Ar')")).Visible(false);
+				//	columns.AddFor(m => m.BuyerVATNumber).Caption(new JS("formatMessage('Buyer VAT Number").Visible(false);
+					columns.AddFor(m => m.InvoiceCounterValue).Caption(new JS("formatMessage('Invoice Counter Value')")).Visible(false);
+					columns.AddFor(m => m.InvoiceCurrencyCode).Caption(new JS("formatMessage('Invoice Currency Code')")).Visible(false);
+					columns.AddFor(m => m.InvoiceTransactionCode).Caption(new JS("formatMessage('Invoice Transaction Code')")).Visible(false);
+					columns.AddFor(m => m.InvoiceTypeCode).Caption(new JS("formatMessage('Invoice Type Code')")).Visible(false);
+					columns.AddFor(m => m.InvoiceTypeCodeSubType).Caption(new JS("formatMessage('Invoice Type Code Sub Type')")).Visible(false);
+				//	columns.AddFor(m => m.InvoiceUUID).Caption(new JS("formatMessage('Invoice UUID").Visible(false);
+					columns.AddFor(m => m.SellerAdditionalNumber).Caption(new JS("formatMessage('Seller Additional Number')")).Visible(false);
+					columns.AddFor(m => m.SellerAdditionalStreet).Caption(new JS("formatMessage('Seller Additional Street')")).Visible(false);
+				//	columns.AddFor(m => m.ReasonforIssuanceOfCRN).Caption(new JS("formatMessage('Reason for Issuance Of CRN").Visible(false);
+				//	columns.AddFor(m => m.ReasonforIssuanceOfCRNAr).Caption(new JS("formatMessage('Reason for Issuance Of CRN Ar").Visible(false);
+					columns.AddFor(m => m.SellerAdditionalStreetAr).Caption(new JS("formatMessage('Seller Additional Street Ar')")).Visible(false);
+					columns.AddFor(m => m.SellerAddressStreet).Caption(new JS("formatMessage('Seller Address Street')")).Visible(false);
+					columns.AddFor(m => m.SellerAddressStreetAr).Caption(new JS("formatMessage('Seller Address Street Ar')")).Visible(false);
+					columns.AddFor(m => m.SellerBuildingNumber).Caption(new JS("formatMessage('Seller Building Number')")).Visible(false);
+					columns.AddFor(m => m.SellerCity).Caption(new JS("formatMessage('Seller City')")).Visible(false);
+					columns.AddFor(m => m.SellerCityAr).Caption(new JS("formatMessage('Seller City Ar')")).Visible(false);
+					columns.AddFor(m => m.SellerCountryCode).Caption(new JS("formatMessage('Seller Country Code')")).Visible(false);
+					columns.AddFor(m => m.SellerName).Caption(new JS("formatMessage('Seller Name')")).Visible(false);
+				//	columns.AddFor(m => m.SellerGroupVATNumber).Caption(new JS("formatMessage('Seller Group VAT Number").Visible(false);
+				//	columns.AddFor(m => m.SellerNameAr).Caption(new JS("formatMessage('Seller Name Ar").Visible(false);
+					columns.AddFor(m => m.SellerNeighborhood).Caption(new JS("formatMessage('Seller Neighborhood')")).Visible(false);
+					columns.AddFor(m => m.SellerNeighborhoodAr).Caption(new JS("formatMessage('Seller Neighborhood Ar')")).Visible(false);
+				//	columns.AddFor(m => m.SellerOtherID).Caption(new JS("formatMessage('Seller Other ID").Visible(false);
+				//	columns.AddFor(m => m.SellerOtherIDType).Caption(new JS("formatMessage('Seller Other ID Type").Visible(false);
+					columns.AddFor(m => m.SellerPostalCode).Caption(new JS("formatMessage('Seller Postal Code')")).Visible(false);
+					columns.AddFor(m => m.SellerProvince).Caption(new JS("formatMessage('Seller Province')")).Visible(false);
+					columns.AddFor(m => m.SellerProvinceAr).Caption(new JS("formatMessage('Seller Province Ar')")).Visible(false);
+			//		columns.AddFor(m => m.SellerVATNumber).Caption(new JS("formatMessage('Seller VAT Number").Visible(false);
+					columns.AddFor(m => m.TaxCurrencyCode).Caption(new JS("formatMessage('Tax Currency Code')")).Visible(false);
+					columns.AddFor(m => m.EInvoiceSubmittedToZatcaBy).Caption(new JS("formatMessage('eInvoice Submitted To Zatca By')")).Visible(false);
+					columns.AddFor(m => m.EInvoiceSubmittedToZatcaOn).Caption(new JS("formatMessage('eInvoice Submitted To Zatca On')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.InvoiceSupplyDate).Caption(new JS("formatMessage('Invoice Supply Date')")).Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.AdvanceAmount).Caption(new JS("formatMessage('Advance Amount')")).Visible(false);
+					columns.AddFor(m => m.Currency).Caption(new JS("formatMessage('Currency')")).Visible(false);
+					columns.AddFor(m => m.OtherDeductionAmount).Caption(new JS("formatMessage('Other Deduction Amount')")).Visible(false);
+					columns.AddFor(m => m.ReasonforCreditNote).Caption(new JS("formatMessage('Reason for Credit Note')")).Visible(false);
+					columns.AddFor(m => m.RetentionAmount).Caption(new JS("formatMessage('Retention Amount')")).Visible(false);
 
 
 		})
@@ -1726,10 +1726,10 @@
 				offset: "8 0"
 			},
 			items: [
-				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
-				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
-				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
-				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+				{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+				{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
 			],
 			onItemClick: function(e) {
 				const quarter = e.itemData.value;
@@ -1785,7 +1785,15 @@
 	$(function () {
 		$("#creditnotesraisedtotal").text(formatMessage("Credit Notes Raised Total"));
 	});
-
+	   $(function () {
+		$("#einvoicecredit").text(formatMessage("View e-Invoice Credit Note"));
+	});
+	   $(function () {
+		$("#vatcreditnotes").text(formatMessage("VAT Credit Notes (Obsolete)"));
+	});
+	   $(function () {
+		$("#viewvatcreditnote").text(formatMessage("View VAT Credit Note"));
+	});
 
 	function closeMainDropdown() {
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");

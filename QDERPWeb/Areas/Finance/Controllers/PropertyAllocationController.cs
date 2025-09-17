@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -16,11 +17,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<PropertyAllocationController> _logger;
-
-        public PropertyAllocationController(ILogger<PropertyAllocationController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public PropertyAllocationController(ILogger<PropertyAllocationController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, string accountId, string effectiveDate)
@@ -86,7 +88,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 		[HttpPost]
-		public IActionResult SavePropertyAllocations([FromBody] List<Tbl20122PropertyAllocationMaster> allocations)
+		public async Task<IActionResult> SavePropertyAllocationsAsync([FromBody] List<Tbl20122PropertyAllocationMaster> allocations)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
@@ -111,8 +113,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 			{
 				var existing = dbContext.Tbl20122PropertyAllocationMasters
 					.FirstOrDefault(x => x.PropertyAllocationId == allocation.PropertyAllocationId);
-
-				if (existing != null && allocation.PropertyAllocationId > 0)
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Property Allocation",
+                    actionDetail: $"Updated Property Allocation: {existing.VoucherNo}",
+                    documentNo: existing.VoucherNo
+                    );
+                if (existing != null && allocation.PropertyAllocationId > 0)
 				{
 					// Update existing record
 					existing.PropertyNo = allocation.PropertyNo;
@@ -141,7 +147,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 						EnteredBy = userName,
 						EnteredOn = now
 					});
-				}
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Property Allocation",
+                    actionDetail: $"Saved Property Aloocation: {allocation.VoucherNo}",
+                    documentNo: allocation.VoucherNo
+                    );
+                }
 			}
 
 			dbContext.SaveChanges();

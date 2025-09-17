@@ -275,6 +275,7 @@
             .Width("90%")
             .Height(500)
             .Visible(false)
+            .Title(new JS("formatMessage('Supplier Payment Request')"))
             .ShowCloseButton(true)
             .ResizeEnabled(true)
             .DragEnabled(true)
@@ -287,7 +288,7 @@
 <div id="warningPopup"></div>
 
 <script type="text/javascript">
-
+     let menuPermissions = {};
         $(document).ready(function () {
             console.log('Start permission handling');
             // Form ID
@@ -357,6 +358,14 @@
                                 console.warn(`Button with ID "${key}" not found in the DOM.`);
                             }
                         });
+                          response.permissions.forEach(p => {
+                             if (p.ItemName) {
+                                 menuPermissions[p.ItemName.trim().toLowerCase()] = {
+                                     visible: p.ItemVisible || false,
+                                     enabled: p.ItemEnabled || false
+                                 };
+                             }
+                         });
                     } else {
                         console.warn("Failed to fetch permissions or no permissions available.");
                     }
@@ -1217,14 +1226,14 @@
         }
         function addExpenseButton_click(e) {
             switch (e.itemData.text) {
-
-                case ('Expense Claim Request'):
+                  
+                  case (formatMessage('Expense Claim Request')):
                     window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                     break;
-                case ('Petty Cash Request'):
+                 case (formatMessage('Petty Cash Request')):
                     window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                     break;
-                case 'Supplier Payment Request':
+                 case (formatMessage('Supplier Payment Request')):
 
                     $.ajax({
 

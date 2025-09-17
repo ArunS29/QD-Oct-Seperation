@@ -574,13 +574,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="purchaseaddline"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="delete">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="purchasedeleteline"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
-		<i class="dx-icon-trash"></i> Delete All Line Items
+		<i class="dx-icon-trash" id="purchasedeleteallline"></i>
 	</div>
 </div>
 
@@ -629,7 +629,7 @@
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.OnValueChanged("onVoucherDateChanged") // JS function name
+														//.OnValueChanged("onVoucherDateChanged") // JS function name
 
 														)
 						</td>
@@ -2175,8 +2175,8 @@
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
 			let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 			if (rowIndex !== -1) {
-			grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-			grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+			grid.cellValue(rowIndex,  `${formatMessage('DescriptionDetails')}`, selectedItem.UnitCode);
+			grid.cellValue(rowIndex,  `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 			}
 
 			component.close();
@@ -3342,9 +3342,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 									// }
 
 										let rowData = response.map((item, index) => ({
-			SNo: index + 1,
-			...item
-		}));
+		                               	SNo: index + 1,
+		                                 	...item
+	                                    	}));
 									// let rowData = response;
 
 									// ✅ Now safely initialize the grid here
@@ -3454,13 +3454,13 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						 { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -3473,12 +3473,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 						if (rowIndex !== -1) {
-							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
-							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+							dataGrid.cellValue(rowIndex,`${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+							dataGrid.cellValue(rowIndex, `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+							dataGrid.cellValue(rowIndex,`${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+							dataGrid.cellValue(rowIndex,`${formatMessage('Qty')}`, 1);
+							dataGrid.cellValue(rowIndex,`${formatMessage('VAT%')}`, "15%");
+							dataGrid.cellValue(rowIndex`${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 							UnitCode=selectedItem.UnitCode;
 
 							ItemNo = selectedItem.GSCode;
@@ -3504,7 +3504,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -3516,7 +3516,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			onClick: function () {
 			
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -3532,7 +3532,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					allowEditing: true,
 					editCellTemplate: function (cellElement, cellInfo) {
 						let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
-						let title = "VAT Details Description";
+						let title = formatMessage("VAT Details Description");
 						window.currentDescriptionCell = cellInfo;
 						openModal(url, title);
 					}
@@ -3560,10 +3560,10 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 										height: 300,
 										scrolling: { mode: "virtual" },
 										columns: [
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 										],
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
@@ -3573,7 +3573,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 												let grid = $("#B2BdataGrid").dxDataGrid("instance");
 												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 												if (rowIndex !== -1) {
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													grid.cellValue(rowIndex, `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
 												}
 												e.component.close();
@@ -3588,7 +3588,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 								hint: "Add new item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATMasterModule`;
-									let title = "Unit of Measure";
+									let title = formatMessage("Unit of Measure");
 									openModal(url, title);
 								},
 								width: 60,
@@ -3652,9 +3652,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
 
-			let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-		let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-		let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+			let qty = grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
+		let unitPrice = grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+		let discountPercentage = grid.cellValue(rowIndex,`${formatMessage('Discount')}` ) || 0; // Get discount %
 
 		let amount = qty * unitPrice;
 		let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -3664,12 +3664,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 		let vatAmount = amountAfterDiscount * vatRate;
 		let total = amountAfterDiscount + vatAmount;
 
-	    grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-	    grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-	    grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
-		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
+	    grid.cellValue(rowIndex, `${formatMessage('CalcLineAmount')}`, formatAmount(amountAfterDiscount));
+	    grid.cellValue(rowIndex,`${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+	    grid.cellValue(rowIndex, `${formatMessage('LineTotal')}`, formatAmount(total));
+		grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`, qty);
 		//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
-		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+		grid.cellValue(rowIndex,`${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
 
 							}
 						}
@@ -3682,8 +3682,8 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function (selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -3694,9 +3694,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 									let grid = $("#B2BdataGrid").dxDataGrid("instance");
 									let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 									if (rowIndex !== -1) {
-		let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-		let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-		let discountPercentage = grid.cellValue(rowIndex, "Discount") || 0; // Get discount %
+		let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`) || 0;
+		let unitPrice = grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+		let discountPercentage = grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0; // Get discount %
 
 		let amount = qty * unitPrice;
 		let discountAmount = (amount * discountPercentage) / 100; // Calculate discount
@@ -3707,12 +3707,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 		let total = amountAfterDiscount + vatAmount;
 
 
-	   grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
-	   grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
-	   grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
-		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
+	   grid.cellValue(rowIndex, `${formatMessage('CalcLineAmount')}`, formatAmount(amountAfterDiscount));
+	   grid.cellValue(rowIndex, `${formatMessage('CalcTaxAmount')}`, formatAmount(vatAmount));
+	   grid.cellValue(rowIndex, `${formatMessage('LineTotal')}`, formatAmount(total));
+		grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}` , qty);
 		//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", formatAmount(amount)); // original amount before discount
-		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+		grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, selectedItem.TaxSlabCode);
 
 									}
 
@@ -3748,12 +3748,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						let newValue = args.value;
 
 						// Get existing values or updated ones
-							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`) || 0;
+							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0;
 
 						// VAT rate handling
-						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT Description") || "0%";
+						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT Description')}`) || "0%";
 						let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 						// Calculate amount
@@ -3766,14 +3766,14 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						let vatValue = discountedAmount * vatRate;
 						let totalValue = discountedAmount + vatValue;
 
-						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-                        grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-                        grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+						grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+                        grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+                        grid.cellValue(rowIndex,`${formatMessage('Unit Price')}`, formatAmount(unitPrice));
                       //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-                        grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-                        grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-                        grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-                        grid.cellValue(rowIndex, "VAT Description", vatRateStr); // % can remain as string
+                        grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
+                        grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+                        grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+                        grid.cellValue(rowIndex, `${formatMessage('VAT Description')}`, vatRateStr); // % can remain as string
 
 					
 
@@ -3910,13 +3910,13 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				},
 				selection: { mode: "single" },
 				columns: [
-					{ dataField: "GSCode", caption: "Code", width: 80 },
-					{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-					{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-					{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-					{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-					{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-					{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					 { dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+                    { dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+                    { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+                    { dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+                    { dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+                    { dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+                    { dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 				],
 				onSelectionChanged: function (selectedItems) {
 					const selectedItem = selectedItems.selectedRowsData[0];
@@ -3929,12 +3929,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 					const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
 					if (rowIndex !== -1) {
-						dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-						dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-						dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-						dataGrid.cellValue(rowIndex, "Qty", 1);
-						dataGrid.cellValue(rowIndex, "VAT%", "15%");
-						dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+						dataGrid.cellValue(rowIndex `${formatMessage('Item Code')}`, selectedItem.GSCode || selectedItem.Gscode || "");
+						dataGrid.cellValue(rowIndex,  `${formatMessage('Cost Price')}`, selectedItem.CostPrice || 0);
+						dataGrid.cellValue(rowIndex,  `${formatMessage('GSSellingRate')}`, selectedItem.GSSellingRate || 0);
+						dataGrid.cellValue(rowIndex, `${formatMessage('Qty')}`, 1);
+						dataGrid.cellValue(rowIndex, `${formatMessage('VAT%')}`, "15%");
+						dataGrid.cellValue(rowIndex,  `${formatMessage('UnitRateMethod')}`, selectedItem.UnitDescription);
 						UnitCode=selectedItem.UnitCode;
 
 					    ItemNo = selectedItem.GSCode;
@@ -3960,7 +3960,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 		icon: "plus",
 		hint: "Add new item",
 		onClick: function () {
-			openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+			openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 		},
 		width: 60,
 		height: 30
@@ -3973,7 +3973,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			
 			
             const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-            openModal(url, "Goods and Services");
+            openModal(url, formatMessage("Goods and Services"));
 		},
 		width: 60,
 		height: 30
@@ -4001,7 +4001,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 					   // Open modal
 					   let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
-					   let title = "VAT Details Description";
+					   let title = formatMessage("VAT Details Description");
 					   openModal(url, title);
 				   }
 			   }).appendTo(container);
@@ -4069,13 +4069,10 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 										   columns: [
 
-											   { dataField: "UnitCode", caption: "Code", width: 80 },
-
-											   { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-											   { dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-											   { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											   { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										   ],
 
@@ -4095,7 +4092,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 												   if (rowIndex !== -1) {
 
-													   grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													   grid.cellValue(rowIndex,  `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
 													   UnitCode=selectedItem.UnitCode;
 												   }
 
@@ -4122,7 +4119,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 								   onClick: function () {
 
 									   let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-										let title = "Unit of Measure";
+										let title = formatMessage("Unit of Measure");
 									   openModal(url, title);
 									   //window.location.href = url;
 
@@ -4223,8 +4220,8 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 										   height: 300,
 										   scrolling: { mode: "virtual" },
 										   columns: [
-											   { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-											   { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+											   { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+											   { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 										   ],
 											   onSelectionChanged: function (selectedItems) {
 	                                        	let selectedItem = selectedItems.selectedRowsData[0];
@@ -6154,7 +6151,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							// }
 
 							rowData.AccountHead = e.value; // Update the row data
-							grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+							grid.cellValue(rowIndex,`${formatMessage('AccountHead')}`, e.value); // Ensure it reflects in the grid
 
 						}
 						// Close the dropdown after selection
@@ -6224,12 +6221,12 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				let newValue = args.value;
 
 				// Get existing values or updated ones
-					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('QuantityInvoiced')}`) || 0;
+					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('UnitRate')}`) || 0;
+				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0;
 
 				// VAT rate handling
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VAT%')}`) || "0%";
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
 				// Calculate amount
@@ -6243,14 +6240,14 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				let totalValue = discountedAmount + vatValue;
 
 
-				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-                grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-                grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+				grid.cellValue(rowIndex,  `${formatMessage('VAT')}`, formatAmount(vatValue));
+                grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+                grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
                // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-                grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-                grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-                grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-                grid.cellValue(rowIndex, "VAT Description", vatRateStr); // % can remain as string
+                grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
+                grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+                grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+                grid.cellValue(rowIndex, `${formatMessage('VAT Description')}`, vatRateStr); // % can remain as string
 
 			
 			};
@@ -6264,9 +6261,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				
 
 						// Get existing values or updated ones
-							let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-							let unitPrice =  grid.cellValue(rowIndex, "UnitRate") || 0;
-						let discount = grid.cellValue(rowIndex, "Discount") || 0;
+							let qty = grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
+							let unitPrice =  grid.cellValue(rowIndex,`${formatMessage('UnitRate')}` ) || 0;
+						let discount = grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0;
 
 						// VAT rate handling
 						let vatRateStr = newValue || "0%";
@@ -6282,15 +6279,15 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						let vatValue = discountedAmount * vatRate;
 						let totalValue = discountedAmount + vatValue;
 
-					   grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
-                        grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
-                        grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-                        grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
-                        grid.cellValue(rowIndex, "Amount", formatAmount(amount));
-                        grid.cellValue(rowIndex, "Discount", formatAmount(discount));
-                        grid.cellValue(rowIndex, "Qty", formatAmount(qty));
-                        grid.cellValue(rowIndex, "VAT Description", vatRateStr); // % can remain as string
-						grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
+					   grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+                        grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+                        grid.cellValue(rowIndex,`${formatMessage('Unit Price')}`, formatAmount(unitPrice));
+                        grid.cellValue(rowIndex,`${formatMessage('Total Before Discount')}`, formatAmount(TotalAmtBeforeDiscount));
+                        grid.cellValue(rowIndex,`${formatMessage('Amount')}`, formatAmount(amount));
+                        grid.cellValue(rowIndex,`${formatMessage('Discount')}`, formatAmount(discount));
+                        grid.cellValue(rowIndex,`${formatMessage('Qty')}`, formatAmount(qty));
+                        grid.cellValue(rowIndex,`${formatMessage('VAT Description')}`, vatRateStr); // % can remain as string
+						grid.cellValue(rowIndex,`${formatMessage('TaxSlabCode')}`, TaxSlabCode);
 	}
 			
 		function SaveInvoiceDetails() {
@@ -6637,10 +6634,10 @@ button.option("disabled", false);
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 				// Get current row values
-					let qty = grid.cellValue(rowIndex, "UnitsToBill") || 0;
+					let qty = grid.cellValue(rowIndex,`${formatMessage('UnitsToBill')}`) || 0;
 
 
-				let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+				let unitPrice = grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
 				let vatRateStr = newValue || "0%";
 
 
@@ -6654,12 +6651,12 @@ button.option("disabled", false);
 				let totalValue = amount + vatValue;
 				//alert(vatValue)
 							// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",amount);
-						grid.cellValue(rowIndex, "Qty",qty);
-						grid.cellValue(rowIndex, "VAT%",vatRateStr);
-						 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
+						grid.cellValue(rowIndex, `${formatMessage('VAT')}`, vatValue.toFixed(2));
+						grid.cellValue(rowIndex, `${formatMessage('Total')}`, totalValue.toFixed(2));
+						grid.cellValue(rowIndex,`${formatMessage('Unit Price')}`,amount);
+						grid.cellValue(rowIndex, `${formatMessage('Qty')}`,qty);
+						grid.cellValue(rowIndex,`${formatMessage('VAT%')}`,vatRateStr);
+						 grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`,TaxSlabCode);
 
 			}
 
@@ -7357,21 +7354,11 @@ if(clientnameValidation.isValid)
 		if (!newDate) return;
 		debugger;
 		const formattedNewDate = newDate.toISOString().split("T")[0];
-		// const cutoffDate = new Date("2021-12-31");
-		// const currentDate = new Date();
-		// const formattedCurrentDate = currentDate.toISOString().split("T")[0];
+	
 
 		const oldDateString = $("#InvoiceDate").val();
 		const oldDate = new Date(oldDateString);
-		// debugger;
-		// // Step 1: Check cutoff date
-		// if (newDate < cutoffDate) {
-		// 	DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-		// 	// Reset to current date
-		// 	$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
-		// 	return;
-		// }
+		
 
 		// Step 2: Check if year has changed
 		if (newDate.getFullYear() !== oldDate.getFullYear()) {
@@ -7771,9 +7758,8 @@ if(clientnameValidation.isValid)
 			dateBox.option("displayFormat", "dd-MMM-yyyy");
 		});
 	});
-	
-	$(function () {
-
+	// IMS PO to VAT navigation
+$(function () {
     const urlParams = new URLSearchParams(window.location.search);
     const receiptNo = urlParams.get("receiptNo");
     const poNo = urlParams.get("poNo");
@@ -7784,80 +7770,155 @@ if(clientnameValidation.isValid)
         // Set generated purchase voucher number
         $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
 
-        // Get material receipt data by receiptNo and poNo
-		$.get("/api/PurchaseOrders/GetByPoNo", {receiptNo, poNo })
-
+        // ✅ Only pass poNo (receiptNo is not used in API)
+        $.get("/api/PurchaseOrders/GetByPoNoforVAT", {receiptNo, poNo })
             .done(function (data) {
-                // Map master fields (add null checks as needed)
+                console.log("POData", data);
+
+                // Master fields
                 $("#InvoiceDate").dxDateBox("instance").option("value", data.receiptDate || new Date());
-					$("#VATInvoiceType").dxTextBox("instance").option("value", data.pono);
-                // $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value", data.supplierInvoiceNo || "");
-                // $("#ddclientcode").dxDropDownBox("instance").option("value", data.supplierCode || "");
-                // $("#ddclientname").dxDropDownBox("instance").option("value", data.supplierName || "");
-                // $("#UUID").dxTextBox("instance").option("value", data.referenceNo || "");
-                // $("#MaterialReceipt").dxTextBox("instance").option("value", data.receiptNo || "");
-                // $("#VATInvoiceType").dxTextBox("instance").option("value", data.poNo || "");
-                // Add more mappings as needed for your fields
-							 if (data.supplierCode) {
-            $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.supplierCode })
-                .done(function (client) {
-                    $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
-                    $("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
-                })
-                .fail(function () {
-                    DevExpress.ui.notify("Failed to load client details.", "error", 2000);
-                });
-        }
-                // Bind child items to grid
-               getDropdownData().done(function (dropdownData) {
-			getUnitRateMethods().done(function (unitRates) {
-				  getTaxSlabData().done(function (taxSlabData) {
-		const invoiceItems = (data.items || []).map((item, idx) => {
-			let found = dropdownData.find(d => d.GSCode === item.Gscode);
-			let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
-			let taxSlabObj = taxSlabData.find(t => t.TaxSlabCode == item.PotaxSlab);
+                $("#VATInvoiceType").dxTextBox("instance").option("value", data.pono);
 
-			// Extract numeric discount from TaxCodeToDisplay if needed
-			let discountValue = item.ItemDiscount;
-			if (!discountValue && taxSlabObj && taxSlabObj.TaxCodeToDisplay) {
-				// Try to extract number from "5%" or "0% (E)"
-				let match = taxSlabObj.TaxCodeToDisplay.match(/(\d+(\.\d+)?)/);
-				discountValue = match ? parseFloat(match[1]) : 0;
-			}
+                // Supplier info
+                if (data.supplierCode) {
+                    $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.supplierCode })
+                        .done(function (client) {
+                            console.log("POclientData", client);
+                            $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+                            $("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+                        })
+                        .fail(function () {
+                            DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+                        });
+                }
 
-			return {
-				SNo: idx + 1,
-				ItemCode: item.Gscode || "",
-				DetailedDescription: found ? found.GSDescrpition : (item.Gsdescrpition || ""),
-				DescriptionDetails: unitRateObj ? unitRateObj.UnitDesc : "",
-				UnitRateMethod: item.UnitRateMethod,
-				UnitRate: item.UnitPrice || 0,
-				VATPercentage: item.PotaxSlab || "",
-				QuantityInvoiced: item.QuotedQuantity || 0,
-				Discount: discountValue, // <-- always a number for backend
-				DiscountDisplay: taxSlabObj ? taxSlabObj.TaxCodeToDisplay : "", 
-				CalcLineAmount: item.LineTotalAfterDiscount || 0,
-				CalcTaxAmount: item.LineTaxAmount || 0,
-				LineTotal: item.LineTotalWithTax || 0,
-				...item
-    };
-});
-        // Now bind invoiceItems to your grid
-        const grid = $("#B2BdataGrid").dxDataGrid("instance");
-        if (grid) {
-            grid.option("dataSource", invoiceItems);
-            grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-        }
-		 });
-    });
-});
-              
+                // ✅ Child items are already enriched by API (like VATEdit does)
+              const rowData = (data.items || []).map((item, index) => ({
+    SNo: index + 1,
+    ItemCode: item.Gscode || "",
+    DetailedDescription: item.Gsdescrpition || "",
+    Descriptions: item.AddlDescription || "",
+	UnitRateMethod: item.UnitRateMethod || "",        // keep ID
+    DescriptionDetails: item.UnitRateMethodDesc || "",  
+     QuantityInvoiced: item.OrderedQty || 0,
+    UnitRate: item.UnitPrice || 0,
+    CalcLineAmountBeforeDiscount: item.LineTotalBeforeTax || 0,
+    CalcLineDiscount: item.ItemDiscount || 0,
+    CalcLineAmount: item.LineTotalAfterDisc || 0,
+    VATPercentage: item.VATPercentage || "",
+    CalcTaxAmount: item.LineTaxAmount || 0,
+    CalcLineWithTax: item.LineTotalWithTax || 0,
+    TaxSlabCode: item.PotaxSlab || ""
+}));
+
+
+                // Bind directly to grid
+                const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                if (grid) {
+                    grid.option("dataSource", rowData);
+                    grid.option("editing", {
+                        mode: "cell",
+                        allowUpdating: true,
+                        allowAdding: true,
+                        allowDeleting: true
+                    });
+                }
             })
             .fail(function () {
-                DevExpress.ui.notify("Failed to load material receipt details.", "error", 2000);
+                DevExpress.ui.notify("Failed to load purchase order details.", "error", 2000);
             });
     }
 });
+
+	//IMS PO to VAT navigation
+// 	$(function () {
+
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const receiptNo = urlParams.get("receiptNo");
+//     const poNo = urlParams.get("poNo");
+//     const purchaseVoucherNo = urlParams.get("invoiceNo"); // This is the generated PurchaseVoucherNo
+//     const mode = urlParams.get("mode");
+
+//     if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
+//         // Set generated purchase voucher number
+//         $("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
+
+//         // Get material receipt data by receiptNo and poNo
+// 		$.get("/api/PurchaseOrders/GetByPoNo", {receiptNo, poNo })
+
+//             .done(function (data) {
+// 				console.log("POData",data);
+//                 // Map master fields (add null checks as needed)
+//                 $("#InvoiceDate").dxDateBox("instance").option("value", data.receiptDate || new Date());
+// 					$("#VATInvoiceType").dxTextBox("instance").option("value", data.pono);
+//                 // $("#SupplierInvoiceNo").dxDropDownBox("instance").option("value", data.supplierInvoiceNo || "");
+//                 // $("#ddclientcode").dxDropDownBox("instance").option("value", data.supplierCode || "");
+//                 // $("#ddclientname").dxDropDownBox("instance").option("value", data.supplierName || "");
+//                 // $("#UUID").dxTextBox("instance").option("value", data.referenceNo || "");
+//                 // $("#MaterialReceipt").dxTextBox("instance").option("value", data.receiptNo || "");
+//                 // $("#VATInvoiceType").dxTextBox("instance").option("value", data.poNo || "");
+//                 // Add more mappings as needed for your fields
+// 							 if (data.supplierCode) {
+//             $.get("/api/SupplierMaster/GetSupplierByCode", { SupplierCode: data.supplierCode })
+//                 .done(function (client) {
+// 					console.log("POclientData",client);
+//                     $("#ddclientcode").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+//                     $("#ddclientname").dxDropDownBox("instance").option("value", client.SupplierAccountLedgerNo || "");
+//                 })
+//                 .fail(function () {
+//                     DevExpress.ui.notify("Failed to load client details.", "error", 2000);
+//                 });
+//         }
+//                 // Bind child items to grid
+//                getDropdownData().done(function (dropdownData) {
+// 			getUnitRateMethods().done(function (unitRates) {
+// 				  getTaxSlabData().done(function (taxSlabData) {
+// 		const invoiceItems = (data.items || []).map((item, idx) => {
+// 			let found = dropdownData.find(d => d.GSCode === item.Gscode);
+// 			let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
+// 			let taxSlabObj = taxSlabData.find(t => t.TaxSlabCode == item.PotaxSlab);
+
+// 			// Extract numeric discount from TaxCodeToDisplay if needed
+// 			let discountValue = item.ItemDiscount;
+// 			if (!discountValue && taxSlabObj && taxSlabObj.TaxCodeToDisplay) {
+// 				// Try to extract number from "5%" or "0% (E)"
+// 				let match = taxSlabObj.TaxCodeToDisplay.match(/(\d+(\.\d+)?)/);
+// 				discountValue = match ? parseFloat(match[1]) : 0;
+// 			}
+
+// 			return {
+// 				SNo: idx + 1,
+// 				ItemCode: item.Gscode || "", 
+// 				DetailedDescription: found ? found.GSDescrpition : (item.Gsdescrpition || ""),
+// 				DescriptionDetails: unitRateObj ? unitRateObj.UnitDesc : "",
+// 				UnitRateMethod: item.UnitRateMethod,
+// 				UnitRate: item.UnitPrice || 0,
+// 				VATPercentage: item.PotaxSlab || "",
+// 				QuantityInvoiced: item.QuotedQuantity || 0,
+// 				Discount: discountValue, // <-- always a number for backend
+// 				DiscountDisplay: taxSlabObj ? taxSlabObj.TaxCodeToDisplay : "", 
+// 				CalcLineAmount: item.LineTotalAfterDiscount || 0,
+// 				CalcTaxAmount: item.LineTaxAmount || 0,
+// 				LineTotal: item.LineTotalWithTax || 0,
+// 				...item
+//     };
+// });
+//         // Now bind invoiceItems to your grid
+//         const grid = $("#B2BdataGrid").dxDataGrid("instance");
+//         if (grid) {
+//             grid.option("dataSource", invoiceItems);
+//             grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
+//         }
+// 		 });
+//     });
+// });
+              
+//             })
+//             .fail(function () {
+//                 DevExpress.ui.notify("Failed to load material receipt details.", "error", 2000);
+//             });
+//     }
+// });
 
 
 		function btnPostToLedgerdisableEditing() {
@@ -8307,6 +8368,15 @@ async function getDocumentCount() {
 
 	updateAttachButtonCount("#btnAttach", count);
 }
+$(function () {
+		   $("#purchasedeleteallline").text(formatMessage("Delete All Line Items"));
+	  });
+	$(function () {
+		   $("#purchasedeleteline").text(formatMessage("Delete Line Item"));
+	  });
+	$(function () {
+		   $("#purchaseaddline").text(formatMessage("Add Line Item"));
+	  });
 
 
 

@@ -2,6 +2,15 @@
 @using DevExtreme.AspNet.Mvc
 
 <style type="text/css">
+	.dx-context-menu .dx-menu-item.dx-state-hover {
+		background-color: var(--title-background-color) !important;
+		color: white !important;
+	}
+
+		/* Also ensure icon gets white color */
+		.dx-context-menu .dx-menu-item.dx-state-hover .dx-icon {
+			color: white !important;
+		}
 	.overlay {
 		display: none;
 		position: fixed;
@@ -438,7 +447,10 @@
 			<div class="value-block">
 
 				<h2 id="accountingregister"></h2>
-				<h6 id="QuickDiceERPSolutions4">Quick Dice ERP Solutions</h6>
+				<h2 id="registertotalvoucher"></h2>
+				<h2 id="registertotaldebit"></h2>
+				<h2 id="registertotalcredit"></h2>
+				<h6 id="QuickDiceERPSolutions4"></h6>
 
 			</div>
 		</div>
@@ -521,7 +533,7 @@
 	<div id="contextControlContent"></div>
 	<div class="context-menu-item">
 		<div style='text-align:right;'>
-			<button id='okButton' onclick='hideEditControl()' style='margin-right:5px;'> OK</button>
+			<button id='okButton' onclick='hideEditControl()' style='margin-right:5px;'>OK</button>
 		</div>
 	</div>
 </div>
@@ -534,7 +546,7 @@
 	</div>
 	@(Html.DevExtreme().Button()
 		.ID("btnShowVoucher")
-		.Text("Show Voucher")
+		.Text(new JS("formatMessage('Show Voucher')"))
 		.Type(ButtonType.Normal)
 		.StylingMode(ButtonStylingMode.Outlined)
 		.Icon("paste")
@@ -774,30 +786,30 @@
 					.Visible(false); *@
 
 			columns.AddFor(m => m.VoucherAmountFormatted)
-			.Caption(new JS("formatMessage('VoucherAmountFormatted')"))
+			.Caption(new JS("formatMessage('Voucher Amount Formatted')"))
 			.Alignment(HorizontalAlignment.Left)
 			.Visible(false);
 
 			columns.AddFor(m => m.TransactionCurrencyName)
-			.Caption("Conversion Currency")
-			
+			.Caption(new JS("formatMessage('Conversion Currency')"))
 			.Visible(false);
+
 			columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
-			columns.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('VoucherVerifiedOn')")).Alignment(HorizontalAlignment.Center).Visible(false);
-			columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('VoucherVerifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('EntryNarration')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.SubGroupName).Caption(new JS("formatMessage('SubGroupName')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('VoucherAmountFormatted')")).Alignment(HorizontalAlignment.Right).Visible(false);
-			columns.AddFor(m => m.VoucherApprovedBy).Caption(new JS("formatMessage('VoucherApprovedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('VoucherApprovedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherEnteredBy).Caption(new JS("formatMessage('VoucherEnteredBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherEnteredOn).Caption(new JS("formatMessage('VoucherEnteredOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherVerifiedOn).Caption(new JS("formatMessage('Voucher Verified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+			columns.AddFor(m => m.VoucherVerifiedBy).Caption(new JS("formatMessage('Voucher Verified By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.SubGroupName).Caption(new JS("formatMessage('Sub Group Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('Voucher Amount Formatted')")).Alignment(HorizontalAlignment.Right).Visible(false);
+			columns.AddFor(m => m.VoucherApprovedBy).Caption(new JS("formatMessage('Voucher Approved By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('Voucher Approved On')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherEnteredBy).Caption(new JS("formatMessage('Voucher Entered By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherEnteredOn).Caption(new JS("formatMessage('Voucher Entered On')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('Voucher Entry No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+			columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('Voucher Modified By')")).Alignment(HorizontalAlignment.Left).Visible(false);
 
 			// Enable custom inline editing for "SysRemarks" with a multiline TextArea
 			columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
@@ -880,15 +892,15 @@
 </div>
 <script>
 		$(function () {
-											 $("#AccountingRegister").dxTextBox({
-													 text:formatMessage("Accounting Register"),
-													 readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+						$("#AccountingRegister").dxTextBox({
+							text:formatMessage("Accounting Register"),
+						    readOnly: true,
+						    onContentReady: function(e) {
+						    $(e.element).addClass("dx-textbox-heading");
+				        }
 
-									 });
-							 });
+						 });
+		});
 
 
 
@@ -1431,5 +1443,35 @@
 	$(function () {
 		$("#registertotalcredit").text(formatMessage("Total Credit"));
 	});
+		$(document).ready(function () {
+		$("#dataGrid").dxDataGrid({
+			// ... your grid options ...
+			onContextMenuPreparing: function (e) {
+				e.items = [];
+
+				
+
+				if (e.target === "header") {
+					e.items.push(
+						{
+							text: "Column Chooser",
+							icon: "columnchooser",  // ✅ correct icon
+							onItemClick: function () {
+								$("#dataGrid").dxDataGrid("instance").showColumnChooser();
+							}
+						},
+						{
+							text: "Refresh Data",
+							icon: "refresh",
+							onItemClick: function () {
+								$("#dataGrid").dxDataGrid("instance").refresh();
+							}
+						}
+					);
+				}
+			}
+		});
+	});
+
 
 </script>

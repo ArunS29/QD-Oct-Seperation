@@ -1,6 +1,7 @@
 ﻿@page
 @model QD.ERP.Web.Areas.IMS.Pages.OpeningBalanceModel
 @{
+    int unitCodeValue = 0;
 }
 
 @using DevExtreme.AspNet.Mvc
@@ -58,10 +59,6 @@
     .signature-upload {
     border: 1px solid #ccc;
     background-color: #fff;
-    }
-
-    .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
-    display: none !important;
     }
 
     .upload{
@@ -154,9 +151,9 @@
         <div style="flex: 1;">
             @(Html.DevExtreme().SelectBox()
                     .ID("txtStockCode")
-                    .Label("Stock Code")
+                    .Label(new JS("formatMessage('Stock Code')"))
                     .LabelMode(EditorLabelMode.Floating)
-                    .ReadOnly(true)
+                    .Disabled(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
         </div>
@@ -165,10 +162,10 @@
         <div style="flex: 2;">
             @(Html.DevExtreme().TextBox()
                     .ID("txtStockDescription")
-                    .ReadOnly(true)
-                    .Label("Stock Item Description")
+                    .Label(new JS("formatMessage('Stock Item Description')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
+                    .Disabled(true)
                     )
         </div>
 
@@ -176,33 +173,84 @@
         <div style="flex: 1;">
             @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningBalance")
-                    .Format("#,##0.00")
-                    .ReadOnly(true)
-                    .Label("Opening Balance")
+                    .Format(new JS("{ type: 'fixedPoint', precision: 2 }"))
+                    .Label(new JS("formatMessage('Opening Balance')"))
                     .LabelMode(EditorLabelMode.Floating)
+                    .Disabled(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
         </div>
-    </div>
-    <div>
-        <div style="gap: 10px;display: flex;flex-direction: column;padding: 10px;">
-            @(Html.DevExtreme().NumberBox()
-                    .ID("txtOpeningQty")
-                    .ReadOnly(true)
-                    .ShowSpinButtons(true)
-                    .StylingMode(EditorStylingMode.Outlined)
+        <div style="gap: 10px;display: flex;flex-direction: column;padding:0 10px;">
+            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+            .Label(new JS("formatMessage('Unit of Measure : *')"))
                     .Placeholder("Qty")
-                    )
+                .DataSource(d => d.WebApi()
+                    .Controller("StockInventory")
+                    .LoadAction("GetUnitCodes")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("UnitCode")
+                )
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("UnitOfMeasure")
+                .Option("dataGridId", "GetUOM-datagrid")
+                .Width("90%")
+                .OpenOnFieldClick(false)
+                .ValueExpr("UnitCode")
+                .DisplayExpr("UnitType")
+                .OnInput("dropDownBoxOnInput")
+                .OnOpened("onOpened")
+                .TabIndex(1)
+                .Disabled(true)
+                .Value(unitCodeValue)
+                .Width("100%")
+                .OnKeyDown("onKeyDown")
+                //.OnValueChanged("dropDownBoxValueChanged")
+                .ContentTemplate(new TemplateName("GetTypeOfUOMContentTemplate"))
+                )
             @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningRate")
-                    .ReadOnly(true)
-                    .Format("#,##0.0000")
+                    .Disabled(true)
+                    .Format(new JS("{ type: 'fixedPoint', precision: 4 }"))
                     .ShowSpinButtons(true)
                     )
         </div>
     </div>
 </div>
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfUOMContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetUOM-datagrid")
+                    .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetUnitCodes")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("UnitCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged4")
+                    .OnInitialized("dataGridInitialized4")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            columns.Add().DataField("UnitType").Caption(new JS("formatMessage('Unit Type')"));
 
+
+
+                    })
+                    )
+}
 <!-- GRID -->
 <div>
     @(
@@ -212,8 +260,8 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("ReceiptChildSlNo").AllowEditing(false).Visible(false);
-                columns.Add().DataField("Gscode").Caption("Stock Code").AllowEditing(false);
-                columns.Add().DataField("Unit").Caption("Unit")
+            columns.Add().DataField("Gscode").Caption(new JS("formatMessage('Stock Code')")).AllowEditing(false);
+            columns.Add().DataField("Unit").Caption(new JS("formatMessage('Unit')"))
                     .Lookup(lookup => lookup
                     .DataSource(d => d.WebApi()
                     .Controller("StockInventory")
@@ -223,12 +271,19 @@
                     .ValueExpr("UnitCode")       // The value from your grid's data
                     .DisplayExpr("UnitType"))
                     .AllowEditing(false);
-                    
-                columns.Add().DataField("UnitPrice").Caption("Unit Price").AllowEditing(false); 
-                columns.Add().DataField("Quantity").Caption("Quantity").AllowEditing(false); 
-                columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date).AllowEditing(true); 
-                columns.Add().DataField("BatchNo").Caption("Batch No").AllowEditing(true); 
-                })
+
+            columns.Add()
+                .DataField("UnitPrice")
+                .Caption(new JS("formatMessage('Unit Price')"))
+                .AllowEditing(false)
+                .Format(f => f
+                    .Type(Format.FixedPoint)
+                    .Precision(4)
+                );
+            columns.Add().DataField("Quantity").Caption(new JS("formatMessage('Quantity')")).AllowEditing(true);
+            columns.Add().DataField("ExpiryDate").Caption(new JS("formatMessage('Expiry Date')")).DataType(GridColumnDataType.Date).AllowEditing(true);
+            columns.Add().DataField("BatchNo").Caption(new JS("formatMessage('Batch No')")).AllowEditing(true);
+        })
                 .Editing(editing =>
                 {
                     editing.Mode(GridEditMode.Cell); // or Row, depending on your preference
@@ -251,28 +306,18 @@
 
     <!-- BUTTON FOOTER -->
     <div class="footer-fixed" style="display:flex; gap:10px;">
-    @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
-    @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
-    @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
-    @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
+    @(Html.DevExtreme().Button().ID("btnUpdate").Text(new JS("formatMessage('Save & Close')")).Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
+    @(Html.DevExtreme().Button().ID("btnPrint").Text(new JS("formatMessage('Print')")).Icon("print"))
+    @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
+    @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
     </div>
 
  <script>
 
-    $(document).ready(function () {
-
-          $(".limited-footer .btn-container").each(function () {
-
-              if (!$(this).find("#btnUpdate,#btnBack").length) {
-
-                  $(this).remove();
-
-              }
-
-          });
-      });
-
     $(document).on("click", "#btnBack", function () {
+        window.parent.closeModal();
+    });
+    $(document).on("click", "#btnUpdate", function () {
         window.parent.closeModal();
     });
 
@@ -320,39 +365,6 @@
     }
 
     
-  
-    // function addStoreToGrid() {
-    //     Validate fields using the Validator components
-    //     const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-    //     const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
-
-    //     if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-    //         DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-    //         return;
-    //     }
-
-    //     const data = {
-    //         StoreId: $("#txtStoreCode").dxTextBox("instance").option("value"),
-    //         StoreName: $("#txtStoreName").dxTextBox("instance").option("value"),
-            
-    //         CostAllocationUnitId: $("#ddCostcenter").dxDropDownBox("instance").option("value")
-            
-    //     };
-
-    //     $.ajax({
-    //         url: '/api/StoreCode/SaveOrUpdateStory',
-    //         method: "POST",
-    //         contentType: "application/json",
-    //         data: JSON.stringify(data),
-    //         success: function () {
-    //             DevExpress.ui.notify("Story saved successfully!", "success", 2000);
-    //             $("#gridOpeningBalance").dxDataGrid("instance").refresh();
-    //         },
-    //         error: function () {
-    //             DevExpress.ui.notify("Failed to save Story.", "error", 2000);
-    //         }
-    //     });
-    // }
 
 
     $("#btnUpdate").on("click", function () {
@@ -362,7 +374,7 @@
 
 
     function onStoryUpdating(e) {
-        const allowedFields = ['BatchNo', 'ExpiryDate'];
+        const allowedFields = ['Quantity','BatchNo', 'ExpiryDate'];
         const filteredNewData = {};
 
         for (const key of allowedFields) {
@@ -374,6 +386,7 @@
         const data = {
             ReceiptChildSlNo: e.oldData.ReceiptChildSlNo,
             Gscode: e.oldData.Gscode,
+            Quantity: filteredNewData.Quantity ?? e.oldData.Quantity,
             BatchNo: filteredNewData.BatchNo ?? e.oldData.BatchNo,
             ExpiryDate: filteredNewData.ExpiryDate ?? e.oldData.ExpiryDate
         };
@@ -411,7 +424,8 @@
             const descBox = $("#txtStockDescription").dxTextBox("instance");
             const openingBalBox = $("#txtOpeningBalance").dxNumberBox("instance");
             const costPriceBox = $("#txtOpeningRate").dxNumberBox("instance");
-            const unitTypeBox = $("#txtOpeningQty").dxNumberBox("instance");
+            const unitTypeBox = $("#UnitOfMeasure").dxDropDownBox("instance");
+
             if (gscode) {
                 stockBox.option("acceptCustomValue", true); // This is important
                 stockBox.option("value", gscode);
@@ -430,7 +444,9 @@
             }
 
             if (unitCode) {
-                unitTypeBox.option("value", unitCode);
+                debugger;
+                unitCodeValue = parseInt(unitCode);
+                unitTypeBox.option("value", unitCodeValue);
             }
 
             loadOpeningBalanceGrid(gscode);
@@ -463,6 +479,62 @@
     }
 
    
+    function dataGridSelectionChanged4(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
 
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized4(e) {
+        dataGrid = e.component;
+    }
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+
+    function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
 
     </script>

@@ -260,6 +260,7 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrSubreport3 = new DevExpress.XtraReports.UI.XRSubreport();
             this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
             this.xrPanel2 = new DevExpress.XtraReports.UI.XRPanel();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
@@ -547,6 +548,7 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrSubreport3,
             this.xrSubreport2,
             this.xrPanel2,
             this.xrSubreport1,
@@ -554,12 +556,19 @@
             this.xrPanel1,
             this.xrPanel3,
             this.xrLabel38});
-            this.Detail.HeightF = 91.63001F;
+            this.Detail.HeightF = 106.8385F;
             this.Detail.Name = "Detail";
+            // 
+            // xrSubreport3
+            // 
+            this.xrSubreport3.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 90.63004F);
+            this.xrSubreport3.Name = "xrSubreport3";
+            this.xrSubreport3.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201Property();
+            this.xrSubreport3.SizeF = new System.Drawing.SizeF(465.6346F, 16.20842F);
             // 
             // xrSubreport2
             // 
-            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 68.63001F);
+            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 67.63001F);
             this.xrSubreport2.Name = "xrSubreport2";
             this.xrSubreport2.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201empReport();
             this.xrSubreport2.SizeF = new System.Drawing.SizeF(465.6345F, 23F);
@@ -574,7 +583,7 @@
             this.xrPanel2.KeepTogether = false;
             this.xrPanel2.LocationFloat = new DevExpress.Utils.PointFloat(318.8005F, 0.004984538F);
             this.xrPanel2.Name = "xrPanel2";
-            this.xrPanel2.SizeF = new System.Drawing.SizeF(127.5649F, 91.62501F);
+            this.xrPanel2.SizeF = new System.Drawing.SizeF(127.5649F, 106.8335F);
             this.xrPanel2.StylePriority.UseBorderColor = false;
             this.xrPanel2.StylePriority.UseBorders = false;
             this.xrPanel2.StylePriority.UseBorderWidth = false;
@@ -621,7 +630,7 @@
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrLabel7.Name = "xrLabel7";
-            this.xrLabel7.SizeF = new System.Drawing.SizeF(194.1666F, 91.62501F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(194.1666F, 106.8384F);
             this.xrLabel7.StylePriority.UseBorderColor = false;
             this.xrLabel7.StylePriority.UseBorders = false;
             this.xrLabel7.StylePriority.UseBorderWidth = false;
@@ -639,7 +648,7 @@
             this.xrPanel1.KeepTogether = false;
             this.xrPanel1.LocationFloat = new DevExpress.Utils.PointFloat(194.1666F, 0F);
             this.xrPanel1.Name = "xrPanel1";
-            this.xrPanel1.SizeF = new System.Drawing.SizeF(124.634F, 91.62501F);
+            this.xrPanel1.SizeF = new System.Drawing.SizeF(124.634F, 106.8384F);
             this.xrPanel1.StylePriority.UseBorderColor = false;
             this.xrPanel1.StylePriority.UseBorders = false;
             this.xrPanel1.StylePriority.UseBorderWidth = false;
@@ -678,7 +687,7 @@
             this.xrPanel3.KeepTogether = false;
             this.xrPanel3.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 0F);
             this.xrPanel3.Name = "xrPanel3";
-            this.xrPanel3.SizeF = new System.Drawing.SizeF(465.6346F, 91.62501F);
+            this.xrPanel3.SizeF = new System.Drawing.SizeF(465.6346F, 106.8384F);
             this.xrPanel3.StylePriority.UseBorderColor = false;
             this.xrPanel3.StylePriority.UseBorders = false;
             this.xrPanel3.StylePriority.UseBorderWidth = false;
@@ -2462,5 +2471,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel30;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
         private DevExpress.XtraReports.UI.XRSubreport xrSubreport2;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport3;
     }
 }

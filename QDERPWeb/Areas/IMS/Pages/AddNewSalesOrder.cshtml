@@ -202,7 +202,7 @@
                 .Items(item =>
                 {
                     item.Add()
-                .Title("Sales Order Details")
+                .Title(new JS("formatMessage('Sales Order Details')"))
                 .Icon("folder")
                 .Text("Sales Order Details")
                 .Template(@<text>
@@ -224,7 +224,7 @@
                             rules.AddRequired()
                             .Message("Sales Order No is required");
                             })
-                            .Label("Sales Order NO:")
+                            .Label(new JS("formatMessage('Sales Order No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -238,7 +238,7 @@
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
                            	.DisplayFormat("dd-MMM-yyyy") // ✅ Ensure consistent format
-                            .Label("Sales Order Date")
+                            .Label(new JS("formatMessage('Sales Order Date')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -264,7 +264,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ClientCode")
                                     )
-                                    .Label("Client Name")
+                                    .Label(new JS("formatMessage('Client Name')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%")
                                       .OnOpened("onOpened")
@@ -314,7 +314,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("QuotationNo")
-                            .Label("Quotation No:")
+                            .Label(new JS("formatMessage('Quotation No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -322,7 +322,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
-                            .Label("Quotation Date:")
+                            .Label(new JS("formatMessage('Quotation Date:')"))
                             	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -333,7 +333,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientRefName")
-                                    .Label("Client Ref. Name:")
+                                    .Label(new JS("formatMessage('Client Ref. Name:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -352,7 +352,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientEmail")
-                                    .Label("Client Email:")
+                                    .Label(new JS("formatMessage('Client Email:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
@@ -362,7 +362,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
-                                    .Label("Client Contact No:")
+                                    .Label(new JS("formatMessage('Client Contact No:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
@@ -377,7 +377,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientPoNo")
-                            .Label("Client PO No:")
+                            .Label(new JS("formatMessage('Client PO No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -385,7 +385,7 @@
                         <td>
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
-                            .Label("Client PO Date:")
+                            .Label(new JS("formatMessage('Client PO Date:')"))
                             	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -425,7 +425,7 @@
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                            .OnClick("AddProject"));
+                                        .OnClick("AddProject"));
                                         buttons.Add()
                                         .Name("dropDown");
                                     }))
@@ -447,7 +447,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("TypeOfRequestId")
                                     )
-                                    .Label("Type of Sales Order:")
+                                    .Label(new JS("formatMessage('Type of Sales Order:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
@@ -462,6 +462,7 @@
                                             .Widget(w => w.Button()
                                             .Type(ButtonType.Default)
                                             .Icon("plus")
+                                            .OnClick("AddTypeReq")
                                             .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                               );
                                             buttons.Add()
@@ -472,7 +473,7 @@
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ReferenceNo")
-                                    .Label("Reference No:")
+                                    .Label(new JS("formatMessage('Reference No:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -486,14 +487,13 @@
 
 
         </text>);
-                    item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Signatories')")).Icon("detailslayout").Text("Signatories").Template(@<text>
             <div>
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top; padding: 10px;">
-                            <div style="font-weight: bold;">Signatories:</div>
-                            <div class="mb-3" style="display:flex;">
+                           <div class="mb-3" style="display:flex;">
                                 @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("preparedBy")
                                 .ValueChangeEvent("input")
@@ -509,6 +509,8 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SignatoryId")
                                 )
+                                .Label(new JS("formatMessage('Signatories:')"))
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
@@ -532,19 +534,24 @@
                                     }))
                             </div>
                             <div>
-                                @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))<br />
-                                @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))<br />
-                                @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
+                                    <br />
+                                       @(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+									<br />        
+                                   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
                             </div>
                         </td>
 
                         <!-- Right: Additions & Deductions -->
                         <td style="width: 50%; padding: 10px;">
-                            <div style="font-weight: bold;">Shipment & Discounts:</div>
+                            <div style="font-weight: bold;" id="shipmentsalesorder"></div>
 
                             <!-- Additions -->
                             <div style="margin-top: 10px; margin-bottom: 15px;">
-                                <div>Additions:</div>
+                                <div id="additionssalesorders"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("AdditionsText")
@@ -563,7 +570,7 @@
 
                             <!-- Deductions -->
                             <div>
-                                <div>Deductions:</div>
+                                <div id="deductionssalesorder"></div>
                                 <div class="d-flex gap-2 mt-1">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("DeductionsText")
@@ -588,7 +595,100 @@
 
 
         </text>);
-                    item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
+        item.Add().Title(new JS("formatMessage('Approvals')")).Icon("detailslayout").Text("Approvals").Template(@<text>
+            <div class="row" style="padding:10px">
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Prepared By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddPreparedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)//
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                                            //.OnValueChanged("dropDownBoxValueChanged")
+                    .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add()
+                        .Name("AddPreparedBy")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
+                        .Icon("plus")
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("AddPreparedBy"));
+                        buttons.Add()
+                        .Name("dropDown");
+                    }))
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Verified By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddVerifiedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+                    )
+                </div>
+                <div class="col-4">
+                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                    .Label(new JS("formatMessage('Approved By:')"))
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddApprovedby")
+                    .Width(900)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("SignatoryId")
+                    .DisplayExpr("SignatoryName")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+                    )
+                </div>
+            </div>
+            
+        </text>);
+                    item.Add().Text("Branch / Divisions").Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
 
             <div class="p-3" style="padding:10px;">
                 <table style="width: 100%; vertical-align: top;">
@@ -602,9 +702,9 @@
                                 .ID("CompanyBranch")
                                 .ValueExpr("CompanyId")
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+							    .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .DisplayExpr("CompanyName")
                                 .DataSource(ds => ds
                                 .Mvc()
@@ -613,14 +713,14 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("CompanyId")
                                 )                            .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Company Branch / Division")
+                                .Label(new JS("formatMessage('Company Branch / Division')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ContentTemplate(new TemplateName("CompanyBranchDropDownTemplate")))
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReferenceNo1")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Reference No")
+                                .Label(new JS("formatMessage('Reference No')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
@@ -631,9 +731,9 @@
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                           .OnInput("dropDownBoxOnInput")
-.OnOpened("onOpened")
+                                .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .ValueExpr("SalesPersonCode")
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
@@ -643,11 +743,11 @@
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("SalesPersonCode")
                                 )
-                                .Label("Sales Person")
+                                .Label(new JS("formatMessage('Sales Person')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
-                                  .OnOpened("onOpened")
-                                   .Option("dataGridId", "SalesPersonGrid")
+                                .OnOpened("onOpened")
+                                .Option("dataGridId", "SalesPersonGrid")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate"))
 
                                  .Buttons(buttons =>
@@ -658,6 +758,7 @@
                                         .Widget(w => w.Button()
                                         .Type(ButtonType.Default)
                                         .Icon("plus")
+                                        .OnClick("redirecttosalespersonmaster")
                                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                            );
                                         buttons.Add()
@@ -682,7 +783,7 @@
                             .Key("InventoryMasterGroupId")
                             )
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Inventory Group Master *")
+                            .Label(new JS("formatMessage('Inventory Group Master *')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("MasterGroupDropDownTemplate")))
@@ -694,7 +795,7 @@
     .ValueExpr("CostAllocationMasterGroup") // Selecting group name as value
     .DisplayExpr("CostAllocationMasterGroup") // Display group name
     .AcceptCustomValue(false)
-    .Label("Cost Center Master *")
+    .Label(new JS("formatMessage('Cost Center Master *')"))
     .LabelMode(EditorLabelMode.Floating)
     .Value("")
     .DataSource(ds => ds
@@ -717,7 +818,7 @@
                             .ID("OrderExpiryDate")
                             .DisplayFormat("dd-MMM-yyyy")
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Order Expiry Date")
+                            .Label(new JS("formatMessage('Order Expiry Date')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
 
@@ -726,7 +827,7 @@
                             .ID("SalesOrderRemarks")
                             .MinHeight(85)
                             .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Sales Order Remarks")
+                            .Label(new JS("formatMessage('Sales Order Remarks')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
@@ -737,7 +838,7 @@
                                 .ID("ExpectedDeliveryDate")
                                 .DisplayFormat("dd-MMM-yyyy")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Expected Delivery Date")
+                                .Label(new JS("formatMessage('Expected Delivery Date')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%;"))
@@ -745,7 +846,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryPeriod")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Period")
+                                .Label(new JS("formatMessage('Delivery Period')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
@@ -753,7 +854,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveryTerms")
                                 .StylingMode(EditorStylingMode.Outlined)
-                                .Label("Delivery Terms")
+                                .Label(new JS("formatMessage('Delivery Terms')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%; margin-left: 10px;"))
@@ -763,7 +864,7 @@
                 </table>
             </div>
         </text>);
-        item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+        item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
     <div class="p-3">
     <table style="width:100%; font-size:14px; margin:5px;">
 					<tr>
@@ -800,7 +901,7 @@
 							.Location(TextEditorButtonLocation.After)
 							.Widget(w => w.Button()
 							.Type(ButtonType.Default)
-							.Icon("edit")
+							.Icon("plus")
 							.Disabled(true) // Button is also disabled
 							.ElementAttr(new { @class = "custom-hover-button add-hover" })
 							.OnClick("CurrencyClick"));
@@ -840,7 +941,7 @@
 						    .Location(TextEditorButtonLocation.After)
 						    .Widget(w => w.Button()
 						    .Type(ButtonType.Default)
-						    .Icon("edit") // Use "plus" or any other if needed
+						    .Icon("plus") // Use "plus" or any other if needed
 						    .Hint("Edit Description")
 						    .ElementAttr(new { @class = "custom-hover-button add-hover" })
 						    .OnClick("CurrencyClick")); // 👈 your existing handler
@@ -870,10 +971,14 @@
             )
 
     </div>
+    <div>
+        @await Html.PartialAsync("/Pages/Shared/IMS/ChildGridFooter.cshtml")
+    </div>
     @(Html.DevExtreme().DataGrid()
-        .ID("itemGrid")
-        .Height("38vh")
-        .DataSource(new JS("window.itemGridDataSource"))        
+        .ID("B2BdataGrid")
+        .Height("33vh")
+        
+        .DataSource(new JS("window.B2BdataGridDataSource"))        
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -881,7 +986,7 @@
         .Columns(columns =>
         {
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
-            columns.Add().Caption(new JS("formatMessage('#')")).Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
+            columns.Add().Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
             columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120).AllowEditing(false)
                 .CellTemplate(new JS(@"
                     function(container, options) {
@@ -890,7 +995,7 @@
                 "));
             columns.Add()
             .DataField("Gscode") // ✅ this is the field stored in DB or model
-            .Caption("Description")
+            .Caption(new JS("formatMessage('Description')"))
             .Width(400)
             .EditCellTemplate(new JS("descriptionDropDownTemplate")) // ✅ editor for editing
             .CellTemplate(new JS(@"
@@ -921,7 +1026,7 @@
                             if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
                             if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
                             const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-                            openModal(url, 'Details Description','60%','60%');
+                            openModal(url, formatMessage('Details Description'),'60%','60%');
                         }
                     }).appendTo(container);
                 }
@@ -942,7 +1047,7 @@
                             if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
                             if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
                             const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-                            openModal(url, 'Details Description');
+                            openModal(url, formatMessage('Details Description'));
                         }
                     }).appendTo(container);
                 }
@@ -951,19 +1056,19 @@
 
             columns.Add()
             .DataField("UnitRateMethod")
-            .Caption("Unit Rate Method")
+            .Caption(new JS("formatMessage('Unit Rate Method')"))
             .Width(400)
             .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
             .CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 
-            columns.Add().DataField("QuotedQuantity").Caption("Qty");
-            columns.Add().DataField("CostPrice").Caption("Cost Price");
-            columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
-            columns.Add().DataField("QuotedDiscount").Caption("Quoted Discount");
-            columns.Add().DataField("LineTotalAfterDiscount").Caption("Amount").AllowEditing(false);
+            columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')"));
+            columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')"));
+            columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+            columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Quoted Discount')"));
+            columns.Add().DataField("LineTotalAfterDiscount").Caption(new JS("formatMessage('Amount')")).AllowEditing(false);
             columns.Add()
             .DataField("QuotedTaxSlab")
-            .Caption("VAT Desc")
+            .Caption(new JS("formatMessage('VAT Description')"))
             .Width(300)
             .EditCellTemplate(new JS("vatDescDropDownTemplate"))
             .CellTemplate(new JS(@"
@@ -972,8 +1077,8 @@
     container.text(found ? found.TaxCodeToDisplay : options.value);
     }
     "));
-                columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
-            columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
+                columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT')")).AllowEditing(false);
+            columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).AllowEditing(false);
 
             columns.Add().DataField("AddlDescription").Visible(false);
             columns.Add().DataField("QuoteRemarks").Visible(false);
@@ -1000,52 +1105,137 @@
         .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
         .AllowDeleting(true)
-        )     
-        .OnContextMenuPreparing("onGridRightClick")
+        )
+        .Columns(columns => {
+            columns.Add().Type(GridCommandColumnType.Buttons)
+            .Caption("Delete")
+                .Buttons(b => {
+                    b.Add().Name(GridColumnButtonName.Edit);
+                    b.Add().Name(GridColumnButtonName.Delete)
+                        .Icon("trash")
+                        .Hint("Delete");
+                });
+        })
         )
 </div>
 <div class="Head">
     <div class="footer-fixed">
-
         @await Html.PartialAsync("/Pages/Shared/IMS/SalesOrderEDitFooter.cshtml")
-
     </div>
 </div>
-<!-- Context Menu -->
-<div id="lineItemContextMenu" style="display:none; position:absolute; z-index:9999;">
-    <ul style="list-style:none; margin:0; padding:0; min-width:220px;">
-        <li class="ctx-menu-item" data-action="delete-line" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="delete-selected" style="padding:8px;cursor:pointer;">
-            <span style="color:red;font-size:18px;">&#10060;</span> Delete Selected Line Items
-        </li>
-        <li class="ctx-menu-item" data-action="add-line" style="padding:8px;cursor:pointer;">
-            <span style="color:green;font-size:18px;">&#10133;</span> Add Line Item
-        </li>
-        <li class="ctx-menu-item" data-action="generate-jo" style="padding:8px;cursor:pointer;">
-            <span style="color:#666;font-size:18px;">&#128202;</span> Generate Job Orders
-        </li>
-    </ul>
-</div>
-
 <!-- Generate Job Order Modal -->
 <div id="generateJobOrderModal" style="display:none; position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); background:white; color:black; padding:20px; border-radius:8px; z-index:10000;">
-    <div style="font-weight:bold; margin-bottom:10px;">Create Job Orders for:</div>
+    <div style="font-weight:bold; margin-bottom:10px;" id="createjoborderfor"></div>
     <div>
-        <label><input type="radio" name="joType" value="Manual Valves" checked> <b>Manual Valves</b></label><br>
-        <label><input type="radio" name="joType" value="Control Valves"> <b>Control Valves</b></label><br>
-        <label><input type="radio" name="joType" value="Safety Valves"> <b>Safety Valves</b></label>
+        <label><input type="radio" name="joType" id="manualvaluessales"value="Manual Valves" checked> <b></b></label><br>
+        <label><input type="radio" name="joType" id="controlvalvessales"value="Control Valves"> <b></b></label><br>
+        <label><input type="radio" name="joType" id="safetyvaluessales" value="Safety Valves"> <b></b></label>
     </div>
     <div style="margin-top:15px;">
         <button id="btnGenerateJO" style="margin-right:10px;">
-            <span style="font-size:18px;">&#128202;</span> Generate JO
+            <span style="font-size:18px;" id="generatejosales">&#128202;</span> 
         </button>
         <button id="btnCloseJO" style="background:#c00;color:#fff;">
-            <span style="font-size:18px;">&#10060;</span> Close
+            <span style="font-size:18px;" id="salesorderclose">&#10060;</span> 
         </button>
     </div>
 </div>
+        @using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+							.ID("GetPreparedby-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("AddNewClientRequest")
+							.LoadAction("GetSignatory")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("SignatoryId")
+							)
+							.WordWrapEnabled(true)
+							.ShowBorders(true)
+							   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridSelectionChanged10")
+							.OnInitialized("dataGridInitialized10")
+							.HeaderFilter(p => p.Visible(true))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							.Paging(p => p.PageSize(15))
+							.FilterRow(f => f.Visible(false))//
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(345)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+							})
+							)
+						}
+		@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetVerifiedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged11")
+					.OnInitialized("dataGridInitialized11")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
+		@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetApprovedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged12")
+					.OnInitialized("dataGridInitialized12")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
@@ -1331,7 +1521,27 @@
 
 <script>
 
-    
+     $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
 		 $(function () {
 			const dateBox = $("#ClientPoDate").dxDateBox("instance");
 
@@ -1397,85 +1607,6 @@
 				dateBox.option("displayFormat", "dd-MMM-yyyy");
 			});
 		});
-
-            // $(document).ready(function () {
-
-            //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            //         if (!$(this).find("#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnAttach").length) {
-
-            //             $(this).remove();
-
-            //         }
-
-            //     });
-
-            // });
-
-           function onGridRightClick(e) {
-            if (e.row && e.row.rowType === "data") {
-                e.event.preventDefault(); // disable browser context menu
-
-                // Select the row that was right-clicked
-                const grid = $("#itemGrid").dxDataGrid("instance");
-                grid.selectRowsByIndexes([e.rowIndex]);
-
-                // Position and show the custom menu
-                const menu = document.getElementById("lineItemContextMenu");
-                menu.style.left = e.event.pageX + "px";
-                menu.style.top = e.event.pageY + "px";
-                menu.style.display = "block";
-            }
-        }
-
-        // Hide the menu when clicking anywhere else
-        document.addEventListener("click", function (e) {
-            const menu = document.getElementById("lineItemContextMenu");
-            if (!e.target.closest("#lineItemContextMenu")) {
-                menu.style.display = "none";
-            }
-        });
-
-        // Menu action handling
-        $(document).on("click", ".ctx-menu-item", function () {
-            const action = $(this).data("action");
-            const grid = $("#itemGrid").dxDataGrid("instance");
-            switch (action) {
-                case "delete-line":
-                    const selected = grid.getSelectedRowsData();
-                    if (selected.length > 0) {
-                        grid.deleteRow(grid.getRowIndexByKey(selected[0].id)); // Use correct key field
-                    }
-                    break;
-
-                case "delete-selected":
-                    const selectedKeys = grid.getSelectedRowKeys();
-                    selectedKeys.forEach(key => {
-                        const rowIndex = grid.getRowIndexByKey(key);
-                        if (rowIndex >= 0) grid.deleteRow(rowIndex);
-                    });
-                    break;
-
-                case "add-line":
-                    grid.addRow();
-                    break;
-
-               case "generate-jo":
-                     $("#generateJobOrderModal").fadeIn(200);
-        break;
-
-            }
-
-            $("#lineItemContextMenu").hide();
-        });
-
-
-        // Handle Generate JO Button
-        // $("#btnGenerateJO").on("click", function () {
-        //     const selectedType = $("input[name='joType']:checked").val();
-        //     DevExpress.ui.notify(`Generating JO for ${selectedType}`, "success", 2000);
-        //     closeGenerateJobOrderModal();
-        // });
 
         $("#btnCloseJO").on("click", function () {
             closeGenerateJobOrderModal();
@@ -1552,14 +1683,14 @@
                     keyExpr: "Gscode",
                     selection: { mode: "single" },
                     columns: [
-                        { dataField: "Gscode", caption: "Code" },
-                        { dataField: "ItemPartNo", caption: "Item Part No" },
-                        { dataField: "Gsdescrpition", caption: "Description" },
-                        { dataField: "GsdescriptionAr", caption: "Arabic Description" },
-                        { dataField: "GspackingUnit", caption: "Unit Desc" },
+                        { dataField: "Gscode", caption: formatMessage("Code")},
+                        { dataField: "ItemPartNo", caption: formatMessage("Item Part No")},
+                        { dataField: "Gsdescrpition", caption: formatMessage("Description")},
+                        { dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description")},
+                        { dataField: "GspackingUnit", caption: formatMessage("Unit Desc")},
                         {
                             dataField: "IsDiscontinued",
-                            caption: "Discontinued?",
+                            caption: formatMessage("Discontinued"),
                             dataType: "boolean",
                             width: 120
                         }
@@ -1576,7 +1707,7 @@
                             cellInfo.setValue(selected.Gscode); // ✅ sets value in underlying row
 
                             // Optional: update other columns in the same row
-                            const grid = $("#itemGrid").dxDataGrid("instance");
+                            const grid = $("#B2BdataGrid").dxDataGrid("instance");
                             const rowIndex = grid.getRowIndexByKey(cellInfo.key);
                             grid.cellValue(rowIndex, "Gscode", selected.Gscode);
                             grid.cellValue(rowIndex, "Gsdescrpition", selected.Gsdescrpition);           
@@ -1619,7 +1750,7 @@
                     return;
                 }
                 let url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(gsCode)}&modal=true`;
-                openModal(url, "Goods and Services");
+                openModal(url, formatMessage("Goods and Services"));
             },
             width: 50
         });
@@ -1631,7 +1762,7 @@
             stylingMode: "text",
             onClick: function () {
                 const url = `/${tenantName}/IMS/GoodsAndService`;
-                openModal(url, "Goods and Services");
+                openModal(url, formatMessage("Goods and Services"));
             },
             width: 50
         });
@@ -1677,10 +1808,10 @@
                         keyExpr: "UnitCode",
                         selection: { mode: "single" },
                         columns: [
-                            { dataField: "UnitCode", caption: "Code" },
-                            { dataField: "UnitDesc", caption: "Description" },
-                            { dataField: "UnitDescAr", caption: "Arabic Desc" },
-                            { dataField: "UnitType", caption: "Type" }
+                            { dataField: "UnitCode", caption: formatMessage("Code")},
+                            { dataField: "UnitDesc", caption: formatMessage("Description")},
+                            { dataField: "UnitDescAr", caption: formatMessage("Arabic Desc")},
+                            { dataField: "UnitType", caption: formatMessage("Type")}
                         ],
                         searchPanel: {
                             visible: true,
@@ -1721,7 +1852,7 @@
                 stylingMode: "text",
                 onClick: function () {
               let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
-                    openModal(url, ""); // Your modal open function here
+                    openModal(url, formatMessage("Unit Of Measure")); // Your modal open function here
                 },
                 width: 60,
                 height: 30
@@ -1770,15 +1901,15 @@
             showDropDownButton: true,
             deferRendering: false,
             width: "100%",
-            dropDownOptions: { width: 600 },
+            dropDownOptions: { width: 300 },
             contentTemplate: function (e) {
                 const gridBox = $("<div>").dxDataGrid({
                     dataSource: TaxSlabs,
                             keyExpr: "TaxSlabCode",
                     selection: { mode: "single" },
                     columns: [
-                        { dataField: "TaxSlabCode", caption: "Code", width: 100 },
-                        { dataField: "TaxSlab", caption: "VAT Desc", width: 300 }
+                        { dataField: "TaxSlabCode", caption: formatMessage("Code"), width: 100 },
+                        { dataField: "TaxSlab", caption: formatMessage("VAT Description"), width: 300 }
                     ],
                     hoverStateEnabled: true,
                     height: 250,
@@ -1815,13 +1946,13 @@
 
 
         function serialTemplate(cellElement, cellInfo) {
-             const grid = $("#itemGrid").dxDataGrid("instance");
+             const grid = $("#B2BdataGrid").dxDataGrid("instance");
              const rowIndex = grid.getRowIndexByKey(cellInfo.key);
              if (rowIndex >= 0) {
                  cellElement.text(rowIndex + 1);
              }
          }
-          window.itemGridDataSource = new DevExpress.data.ArrayStore({
+          window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
             key: "ItemCode",
             data: []
         });
@@ -1829,9 +1960,9 @@
             $(function () {
         $("#btnAddNew").on("click", function () {
             var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+            button.option("text", formatMessage("Update"));
 
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
             var totalCount = grid.totalCount();
             var pageSize = grid.pageSize();
@@ -1908,13 +2039,13 @@
         return;
     }
     const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${encodeURIComponent(selectedClientCode)}`;
-    const title = "Client Master";
+    const title = formatMessage("Client Master");
     openModal(url, title);
 }
         //add new client
          function AddClients(){
                 const url = `/${tenantName}/IMS/ClientLeadMaster`;
-                const title = "Client Master";
+                const title = formatMessage("Client Master");
                     openModal(url, title);
             }   
             // function EditClients(){
@@ -1925,14 +2056,14 @@
             ////AddnewProject
          function AddProject(){
                 const url = `/${tenantName}/IMS/Projects`;
-                const title = "Project";
+                const title = formatMessage("Project");
                     openModal(url, title);
             }
 
               ////Addnewsignatory
          function Signatorynew(){
                 const url = `/${tenantName}/IMS/Signatories`;
-                const title = "Signatories";
+                const title = formatMessage("Signatories");
                     openModal(url, title);
             }
 
@@ -1958,10 +2089,14 @@
                 $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {
                         salesOrderTextBox.option("value", data.SalesOrderNo);
-                        // ...populate other fields as needed...
-                         // Now bind children to grid:
+                        if (data.IsSubmitted) {
+                            $("#btnSubmit").dxButton("instance").option("disabled", true);
+                        }
+                        if (data.IsVerified) {
+                            $("#btnVerify").dxButton("instance").option("disabled", true);
+                        }
                 if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
-                    var grid = $("#itemGrid").dxDataGrid("instance");
+                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
                   if (data.IsApproved === true) {
@@ -2114,7 +2249,7 @@ function NewSalesOrderNoForSave() {
       function receiveModalFieldData(modalData) {
     console.log("📥 Received from modal:", modalData);
 
-    const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+    const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance"); // ✅ add this line
 
     if (!dataGridInstance) {
         console.error("❌ dataGridInstance is not initialized.");
@@ -2142,7 +2277,23 @@ function NewSalesOrderNoForSave() {
     dataGridInstance.cellValue(rowIndex, "DeliveryPeriod", modalData.DeliveryPeriod || "");
     dataGridInstance.cellValue(rowIndex, "PlanNo", modalData.PlanNo || "");
 }
-
+function validateFields(ids) {
+    let isAllValid = true;
+    for (const id of ids) {
+        const validatorInstance = $(`#${id}`).dxValidator("instance");
+        if (validatorInstance) {
+            const result = validatorInstance.validate();
+            if (!result.isValid) {
+                isAllValid = false;
+            }
+        }
+    }
+    return isAllValid;
+}
+const requiredFields = [
+    "ClientNames",      
+  
+];
 
 $("#btnSave").on("click", function (e) {
     e.preventDefault();
@@ -2167,8 +2318,22 @@ $("#btnSave").on("click", function (e) {
 });
 
 function saveSalesOrder(salesOrderNo, $btn) {
-    const gridInstance = $("#itemGrid").dxDataGrid("instance");
-
+       const allValid = validateFields(requiredFields);
+    if (!allValid) {
+        DevExpress.ui.notify("Please fill in all required fields.", "error", 3000);
+        $btn.option("disabled", false);
+        return;
+    }
+    const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+   if (gridInstance.hasEditData()) {
+        gridInstance.saveEditData().done(() => {
+            doSave(salesOrderNo, $btn, gridInstance); // new helper
+        });
+    } else {
+        doSave(salesOrderNo, $btn, gridInstance);
+    }
+    }
+    function doSave(salesOrderNo, $btn, gridInstance) {
     // ✅ collect children
     const children = gridInstance.getDataSource().items().map(row => ({
         SalesOrderChildId: row.SalesOrderChildId ?? 0,
@@ -2189,7 +2354,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
     // ✅ master
     const master = {
         SalesOrderNo: salesOrderNo,
-        SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
+        SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
         ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
         ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
         QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
@@ -2228,15 +2393,135 @@ function saveSalesOrder(salesOrderNo, $btn) {
         data: JSON.stringify(master),
         success: function (response) {
             DevExpress.ui.notify(response.message, "success", 3000);
+            isVoucherSaved = true;
+            updateWorkflowVisual(getWorkflowStatusFromFields());
+              const salesOrderNo=response.salesOrderNo;
 
-            if (response.salesOrderNo) {
-                $("#SalesOrderNO").dxTextBox("instance").option("value", response.salesOrderNo);
-            }
+              window.location.href = `/${tenantName}/IMS/AddNewSalesOrder?SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+             isSaved = true; 
+          
 
             $btn.option("disabled", false);
              // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
+                            window.B2BdataGridDataSource = data;
+                            gridInstance.option("dataSource", data);
+                        });
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Failed to save sales order.", "error", 3000);
+            $btn.option("disabled", false);
+        }
+    });
+}
+$("#btnSaveAndClose").on("click", function (e) {
+    e.preventDefault();
+    const $btn = $(this).dxButton("instance");
+    $btn.option("disabled", true);
+
+    if (edit === false) {
+        // New entry → regenerate number safely
+        NewSalesOrderNoForSave().done(function (soNoNew) {
+            $("#SalesOrderNO").dxTextBox("instance").option("value", soNoNew);
+            saveAndCloseSalesOrder(soNoNew, $btn);
+        }).fail(function (err) {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert(err || "Failed to generate Sales Order No.", "Error");
+        });
+    } else {
+        // Edit → keep existing no
+        var soNoExisting = $("#SalesOrderNO").dxTextBox("instance").option("value") || null;
+        saveAndCloseSalesOrder(soNoExisting, $btn);
+    }
+
+});
+
+function saveAndCloseSalesOrder(salesOrderNo, $btn) {
+       const allValid = validateFields(requiredFields);
+    if (!allValid) {
+        DevExpress.ui.notify("Please fill in all required fields.", "error", 3000);
+        $btn.option("disabled", false);
+        return;
+    }
+    const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+   if (gridInstance.hasEditData()) {
+        gridInstance.saveEditData().done(() => {
+            doSave(salesOrderNo, $btn, gridInstance); // new helper
+        });
+    } else {
+        doSave(salesOrderNo, $btn, gridInstance);
+    }
+    }
+    function doSave(salesOrderNo, $btn, gridInstance) {
+    // ✅ collect children
+    const children = gridInstance.getDataSource().items().map(row => ({
+        SalesOrderChildId: row.SalesOrderChildId ?? 0,
+        SalesOrderNo: salesOrderNo,
+        Gscode: row.Gscode ?? "",
+        QuotedQuantity: row.QuotedQuantity ?? null,
+        UnitRateMethod: row.UnitRateMethod ?? null,
+        QuotedUnitPrice: row.QuotedUnitPrice ?? null,
+        QuotedDiscount: row.QuotedDiscount ?? null,
+        QuotedTaxSlab: row.QuotedTaxSlab ?? null,
+        CostPrice: row.CostPrice ?? null,
+        AddlDescription: row.AddlDescription ?? null,
+        QuoteRemarks: row.QuoteRemarks ?? null,
+        DeliveryPeriod: row.DeliveryPeriod ?? null,
+        PlanNo: row.PlanNo ?? null,
+    }));
+
+    // ✅ master
+    const master = {
+        SalesOrderNo: salesOrderNo,
+        SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
+        ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+        ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+        QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+        QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+        OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+        ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
+        Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+        ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+        SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+        ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
+        TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
+        ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
+        ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
+        QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
+        SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+        AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+        DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+        QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
+        QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
+        CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+        CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
+        InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+        CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance").option("value"),
+        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+        SalesOrderChildren: children
+    };
+
+    // ✅ post data
+    $.ajax({
+        url: "/api/SalesOrders/SaveSalesOrder",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(master),
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 3000);
+            isVoucherSaved = true;
+            updateWorkflowVisual(getWorkflowStatusFromFields());
+            history.back();
+            isSaved = true; 
+        
+
+            $btn.option("disabled", false);
+             // ✅ Reload grid after save
+                        $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+                            window.B2BdataGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
         },
@@ -2247,306 +2532,118 @@ function saveSalesOrder(salesOrderNo, $btn) {
     });
 }
 
-    //         $("#btnSave").on("click", function (e) {
-    //         e.preventDefault();
 
-    //         const gridInstance = $("#itemGrid").dxDataGrid("instance");
 
-    //         // ✅ Save pending cell edits before proceeding
-    //         if (gridInstance.hasEditData()) {
-    //             gridInstance.saveEditData().done(() => {
-    //                 validateAndSave();
-    //             });
-    //         } else {
-    //             validateAndSave();
-    //         }
 
-    //         function validateAndSave() {
-    //             // ✅ Validate required DropDown fields
-    //             const requiredFields = [
-    //                 { id: "#ClientNames", label: "Client Name" },
-    //                 // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-    //                 // { id: "#CompanyBranch", label: "Company Branch" },
-    //                 // Add more if needed
-    //             ];
 
-    //             let allValid = true;
-    //             let missingLabels = [];
 
-    //             requiredFields.forEach(field => {
-    //                 const $el = $(field.id);
-    //                 const inst = $el.dxDropDownBox("instance");
 
-    //                 if (inst) {
-    //                     const value = inst.option("value");
-    //                     if (!value) {
-    //                         allValid = false;
-    //                         missingLabels.push(field.label);
-    //                         $el.addClass("dx-invalid");
-    //                     } else {
-    //                         $el.removeClass("dx-invalid");
-    //                     }
-    //                 } else {
-    //                     console.warn("Instance not found:", field.id);
-    //                 }
-    //             });
 
-    //             if (!allValid) {
-    //                 DevExpress.ui.dialog.alert(
-    //                     "Please fill the required field(s): " + missingLabels.join(", "),
-    //                     "Validation Failed"
-    //                 );
-    //                 return;
-    //             }
+        // $("#btnSaveAndClose").on("click", function (e) {
+        //     e.preventDefault();
 
-    //             // ✅ Helper to extract date in yyyy-MM-dd format
-    //                function getDateOnlyValue(dateBoxId) {
-    //     var val = $(dateBoxId).dxDateBox("instance").option("value");
-    //     if (!val) return null;
-    //     // Format as yyyy-MM-dd (local date, no time)
-    //     return val instanceof Date
-    //         ? val.getFullYear() + '-' +
-    //           String(val.getMonth() + 1).padStart(2, '0') + '-' +
-    //           String(val.getDate()).padStart(2, '0')
-    //         : val;
-    // }
+        //     const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 
-    //             // ✅ Collect children grid data
-    //             const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
-    //             const children = gridInstance.getDataSource().items().map(row => ({
-    //                 SalesOrderChildId: row.SalesOrderChildId ?? 0,
-    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //                 QuotedQuantity: row.QuotedQuantity ?? null,
-    //                 UnitRateMethod: row.UnitRateMethod ?? null,
-    //                 Gscode: row.Gscode ?? "",
-    //                 QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
-    //                 QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
-    //                 QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-    //                 CostPrice: (row.CostPrice * CurrencyRate) ?? null,
-    //                 AddlDescription:row.AddlDescription ?? null,
-    //                 QuoteRemarks:row.QuoteRemarks ?? null,
-    //                 DeliveryPeriod:row.DeliveryPeriod ?? null,
-    //                 PlanNo:row.PlanNo ?? null,
-    //             }));
+        //     // ✅ Save pending cell edits before proceeding
+        //     if (gridInstance.hasEditData()) {
+        //         gridInstance.saveEditData().done(() => {
+        //             validateAndSave();
+        //         });
+        //     } else {
+        //         validateAndSave();
+        //     }
 
-    //             // ✅ Prepare full model for submission
-    //             const model = {
-    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-    //                 SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-    //                 ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-    //                 ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
-    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-    //                 QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-    //                 OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-    //                 ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-    //                 Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-    //                 ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-    //                 SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-    //                 ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-    //                 TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-    //                 ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-    //                     Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-    //                     ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-    //                                 ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-    //                 QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-    //                 SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-    //                 AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-    //                 DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-    //                 QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-    //                 QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-    //                 CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-    //                 CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-    //                 InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-    //                 CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //                 BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-    //                 CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-    //                 // CurrencyId : 1,
-    //                 // BaseCurrencyId :1,
-    //                 // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-    //                 SalesOrderChildren: children
-    //             };
+        //         // ✅ Collect children grid data
+        //         const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
+        //         const children = gridInstance.getDataSource().items().map(row => ({
+        //             SalesOrderChildId: row.SalesOrderChildId ?? 0,
+        //             SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+        //             QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+        //             QuotedQuantity: row.QuotedQuantity ?? null,
+        //             UnitRateMethod: row.UnitRateMethod ?? null,
+        //             Gscode: row.Gscode ?? "",
+        //             QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
+        //             QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
+        //             QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
+        //             CostPrice: (row.CostPrice * CurrencyRate) ?? null,
+        //             AddlDescription:row.AddlDescription ?? null,
+        //             QuoteRemarks:row.QuoteRemarks ?? null,
+        //             DeliveryPeriod:row.DeliveryPeriod ?? null,
+        //             PlanNo:row.PlanNo ?? null,
+        //         }));
 
-    //             console.log("Saving model:", model);
+        //         // ✅ Prepare full model for submission
+        //         const model = {
+        //             SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+        //             SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
+        //             ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+        //             ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+        //             QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+        //             QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+        //             OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+        //             ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
+        //             Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+        //             ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+        //             SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+        //             ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
+        //             TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
+        //             ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+        //                 Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+        //                 ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
+        //                             ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
+        //             QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
+        //             SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+        //             AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+        //             DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+        //             QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
+        //             QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
+        //             CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+        //             CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
+        //             InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+        //             CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        //             BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        //             CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+        //             // CurrencyId : 1,
+        //             // BaseCurrencyId :1,
+        //             // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        //             SalesOrderChildren: children
+        //         };
 
-    //             // ✅ AJAX Save Call
-    //             $.ajax({
-    //                 url: "/api/SalesOrders/SaveSalesOrder",
-    //                 type: "POST",
-    //                 contentType: "application/json",
-    //                 data: JSON.stringify(model),
-    //                 success: function (response) {
-    //                     DevExpress.ui.notify(response.message, "success", 2000);
-    //                      location.reload();
-    //                     // ✅ Reload grid after save
-    //                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-    //                         window.itemGridDataSource = data;
-    //                         gridInstance.option("dataSource", data);
-    //                     });
-    //                 },
-    //                 error: function (xhr) {
-    //                     DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
-    //                     console.error("Save error:", xhr.responseText);
-    //                 }
-    //             });
-    //         }
-    //     });
-         $("#btnSaveAndClose").on("click", function (e) {
-            e.preventDefault();
+        //         console.log("Saving model:", model);
 
-            const gridInstance = $("#itemGrid").dxDataGrid("instance");
-
-            // ✅ Save pending cell edits before proceeding
-            if (gridInstance.hasEditData()) {
-                gridInstance.saveEditData().done(() => {
-                    validateAndSave();
-                });
-            } else {
-                validateAndSave();
-            }
-
-            function validateAndSave() {
-                // ✅ Validate required DropDown fields
-                const requiredFields = [
-                    { id: "#ClientNames", label: "Client Name" },
-                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                    // { id: "#CompanyBranch", label: "Company Branch" },
-                    // Add more if needed
-                ];
-
-                let allValid = true;
-                let missingLabels = [];
-
-                requiredFields.forEach(field => {
-                    const $el = $(field.id);
-                    const inst = $el.dxDropDownBox("instance");
-
-                    if (inst) {
-                        const value = inst.option("value");
-                        if (!value) {
-                            allValid = false;
-                            missingLabels.push(field.label);
-                            $el.addClass("dx-invalid");
-                        } else {
-                            $el.removeClass("dx-invalid");
-                        }
-                    } else {
-                        console.warn("Instance not found:", field.id);
-                    }
-                });
-
-                if (!allValid) {
-                    DevExpress.ui.dialog.alert(
-                        "Please fill the required field(s): " + missingLabels.join(", "),
-                        "Validation Failed"
-                    );
-                    return;
-                }
-
-                // ✅ Helper to extract date in yyyy-MM-dd format
-                   function getDateOnlyValue(dateBoxId) {
-        var val = $(dateBoxId).dxDateBox("instance").option("value");
-        if (!val) return null;
-        // Format as yyyy-MM-dd (local date, no time)
-        return val instanceof Date
-            ? val.getFullYear() + '-' +
-              String(val.getMonth() + 1).padStart(2, '0') + '-' +
-              String(val.getDate()).padStart(2, '0')
-            : val;
-    }
-
-                // ✅ Collect children grid data
-                const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
-                const children = gridInstance.getDataSource().items().map(row => ({
-                    SalesOrderChildId: row.SalesOrderChildId ?? 0,
-                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                    QuotedQuantity: row.QuotedQuantity ?? null,
-                    UnitRateMethod: row.UnitRateMethod ?? null,
-                    Gscode: row.Gscode ?? "",
-                    QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
-                    QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
-                    QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-                    CostPrice: (row.CostPrice * CurrencyRate) ?? null,
-                    AddlDescription:row.AddlDescription ?? null,
-                    QuoteRemarks:row.QuoteRemarks ?? null,
-                    DeliveryPeriod:row.DeliveryPeriod ?? null,
-                    PlanNo:row.PlanNo ?? null,
-                }));
-
-                // ✅ Prepare full model for submission
-                const model = {
-                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                    SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-                    ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-                    ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
-                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                    QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-                    OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-                    ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-                    Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-                    ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-                    SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-                    ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-                    TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-                    ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-                        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-                                    ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-                    QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-                    SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-                    AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-                    DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-                    QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-                    QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-                    CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-                    CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-                    InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                    CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                    BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-                    CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-                    // CurrencyId : 1,
-                    // BaseCurrencyId :1,
-                    // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                    SalesOrderChildren: children
-                };
-
-                console.log("Saving model:", model);
-
-                // ✅ AJAX Save Call
-                $.ajax({
-                    url: "/api/SalesOrders/SaveSalesOrder",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(model),
-                    success: function (response) {
-                        DevExpress.ui.notify(response.message, "success", 2000);
+        //         // ✅ AJAX Save Call
+        //         $.ajax({
+        //             url: "/api/SalesOrders/SaveSalesOrder",
+        //             type: "POST",
+        //             contentType: "application/json",
+        //             data: JSON.stringify(model),
+        //             success: function (response) {
+        //                 DevExpress.ui.notify(response.message, "success", 2000);
                   
 						
-                        // ✅ Reload grid after save
-                        $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                            window.itemGridDataSource = data;
-                            gridInstance.option("dataSource", data);
-                        });
-                        if (window.parent && window.parent.$("#dataGrid").length) {
-				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.refresh();
-				}
-}
-				history.back();
+        //                 // ✅ Reload grid after save
+        //                 $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+        //                     window.B2BdataGridDataSource = data;
+        //                     gridInstance.option("dataSource", data);
+        //                 });
+        //                 if (window.parent && window.parent.$("#dataGrid").length) {
+        //                     let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+        //                     if (dataGrid) {
+        //                         dataGrid.refresh();
+        //                     }
+        //                 }
+				    //     history.back();
                         
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
-                        console.error("Save error:", xhr.responseText);
-                    }
-                });
-            }
-        });
+        //             },
+        //             error: function (xhr) {
+        //                 DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
+        //                 console.error("Save error:", xhr.responseText);
+        //             }
+        //         });
+        // });
 
        
-         ////
+    
         $(function () {
             // Helper to get query string parameter
             function getQueryParam(name) {
@@ -2591,6 +2688,9 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         $("#currencyexchangerate").dxNumberBox("instance").option("value", data.CurrencyRate);
                         $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId);
                         $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId);
+                        $("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
+                        $("#ddVerifiedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
+                        $("#ddApprovedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
                         // Add more fields as needed
                     })
                     .fail(function () {
@@ -2602,7 +2702,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
                    $("#btnGenerateJO").on("click", function () {
             var valveType = $("input[name='joType']:checked").val();
             var salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
-            var grid = $("#itemGrid").dxDataGrid("instance");
+            var grid = $("#B2BdataGrid").dxDataGrid("instance");
             var selectedRows = grid.getSelectedRowsData();
 
             if (!salesOrderNo) {
@@ -2635,15 +2735,9 @@ function saveSalesOrder(salesOrderNo, $btn) {
                 }
             });
         });
-
-
-
-
-
-            $("#btnBack").on("click", function (e) {
-                history.back();
-                    });
-
+    function onBackButtonClick() {
+        window.history.back();
+    }
      
 
 
@@ -2671,7 +2765,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
                         type: 'DELETE',
                         success: function (response) {
                             DevExpress.ui.dialog.alert("Sales Order deleted successfully.", "Deleted").done(function () {
-                                location.reload();
+                                window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
                             });
                         },
                         error: function (xhr) {
@@ -2718,9 +2812,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
-
-                
-
+                    if (response.submittedBy) {
+                        const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.submittedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     // 🛑 Disable Submit button
                     if ($("#btnSubmit").data("dxButton")) {
                         $("#btnSubmit").dxButton("instance").option("disabled", true);
@@ -2754,6 +2852,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
+                    if (response.verifiedBy) {
+                        const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.verifiedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     $("#btnVerify").dxButton("instance").option("disabled", true);
                 } else {
                     DevExpress.ui.notify(response.message, "error", 2000);
@@ -2782,6 +2887,13 @@ function saveSalesOrder(salesOrderNo, $btn) {
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
+                    if (response.ApprovedBy) {
+                        const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.ApprovedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
                     disableAllControls(); // disable fields/buttons
                 } else {
                     DevExpress.ui.notify(response.message, "error", 2000);
@@ -2839,7 +2951,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
             }
         });
          // Disable DataGrid editing
-    const grid = $("#itemGrid").dxDataGrid("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
     if (grid) {
         grid.option("editing", {
             allowUpdating: false,
@@ -2854,7 +2966,7 @@ function saveSalesOrder(salesOrderNo, $btn) {
         });
 
         // Make grid look disabled (read-only style)
-        $("#itemGrid").addClass("dx-state-disabled");
+        $("#B2BdataGrid").addClass("dx-state-disabled");
     }
     }
 $(document).ready(function () {
@@ -2972,10 +3084,11 @@ $(document).ready(function () {
     }
     function CurrencyClick() {
         let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-        let title = "Currency Master";
+        let title = formatMessage("Currency Master");
         openModal(url, title);
     }
     $(document).ready(function () {
+        getDefaultCompany("CompanyBranch");
         var urlParams = new URLSearchParams(window.location.search);
         var IsEditflag = urlParams.get('IsEditflag') ?? "";
             IsCurrent=IsEditflag.toString();
@@ -3033,7 +3146,7 @@ $(document).ready(function () {
         // Get Voucher No safely
         const SalesOrderNOBox = $("#SalesOrderNO").dxTextBox("instance");
         const salesOrderNO = SalesOrderNOBox ? SalesOrderNOBox.option("value") : null;
-        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var dataSource = dataGrid.option("dataSource");
         
@@ -3090,7 +3203,7 @@ $(document).ready(function () {
 				encodeURIComponent(clientCode) + '&clientName=' +
 				encodeURIComponent(clientName);
 
-			openModal(url, 'Client Contact List');
+			openModal(url, formatMessage('Client Contact List'));
 		});
 	}
 
@@ -3113,7 +3226,7 @@ $(document).ready(function () {
 
     // On document ready
     $(document).ready(function () {
-        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
         dataGrid.on("selectionChanged", function (e) {
             const selectedRowData = e.selectedRowsData[0];
@@ -3158,7 +3271,7 @@ $(document).ready(function () {
             //MoveupDown functionality
         function moveRowUp() {
             
-                var dataGrid = $("#itemGrid").dxDataGrid("instance");
+                var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Flatten the grouped data
             //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3187,7 +3300,7 @@ $(document).ready(function () {
 
         function moveRowDown() {
 
-            var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Get flattened data
             // var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -3224,8 +3337,8 @@ $(document).ready(function () {
 
 
             // Get the DataGrid instance and update the data source
-            var dataGrid1 = $("#itemGrid").dxDataGrid("instance");
-            var dataGrid = $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
+            var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
+            var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
 
 
             dataGrid1.refresh();
@@ -3251,5 +3364,338 @@ $(document).ready(function () {
          let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
           window.location.href=url;
     });
+    let isVoucherSaved = false;
 
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = " - In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = " - Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = " - Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
+    function redirecttosalespersonmaster() {
+		const url = `/${tenantName}/IMS/SalesPersonMaster`;
+		const title = formatMessage("Sales Person Master");
+		openModal(url, title);
+	}
+    function AddTypeReq(){
+        const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+        const title = formatMessage("Quotation Type Of Request");
+        openModal(url, title);
+    }
+    function getDateOnlyValue(dateBoxId) {
+        var val = $(dateBoxId).dxDateBox("instance").option("value");
+        if (!val) return null;
+        return val instanceof Date? val.getFullYear() + '-' +String(val.getMonth() + 1).padStart(2, '0') + '-' + String(val.getDate()).padStart(2, '0'): val;
+    }
+    function validateAndSave() {
+        // ✅ Validate required DropDown fields
+        const requiredFields = [
+            { id: "#ClientNames", label: "Client Name" },
+            // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
+            // { id: "#CompanyBranch", label: "Company Branch" },
+            // Add more if needed
+        ];
+
+        let allValid = true;
+        let missingLabels = [];
+
+        requiredFields.forEach(field => {
+            const $el = $(field.id);
+            const inst = $el.dxDropDownBox("instance");
+
+            if (inst) {
+                const value = inst.option("value");
+                if (!value) {
+                    allValid = false;
+                    missingLabels.push(field.label);
+                    $el.addClass("dx-invalid");
+                } else {
+                    $el.removeClass("dx-invalid");
+                }
+            } else {
+                console.warn("Instance not found:", field.id);
+            }
+        });
+
+        if (!allValid) {
+            DevExpress.ui.dialog.alert(
+                "Please fill the required field(s): " + missingLabels.join(", "),
+                "Validation Failed"
+            );
+            return;
+        }
+    }
+
+    $("#B2BdataGrid").dxDataGrid({
+    dataSource: window.B2BdataGridDataSource,
+    keyExpr: "Gscode",
+    selection: { mode: "multiple" },
+    onContextMenuPreparing: function(e) {
+        if (e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text:formatMessage("Delete Line Item"),
+                    icon: "trash",
+                    onItemClick: function() {
+                        const rowKey = e.row.key;
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const rowIndex = grid.getRowIndexByKey(rowKey);
+                        if (rowIndex >= 0) {
+                            grid.deleteRow(rowIndex);
+                        }
+                    }
+                },
+                {
+                    text: formatMessage("Delete Selected Items"),
+                    icon: "remove",
+                    onItemClick: function() {
+                        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                        const keys = grid.getSelectedRowKeys();
+                        if (keys.length === 0) return;
+
+                        const doDelete = () => {
+                            keys.forEach(k => {
+                                const idx = grid.getRowIndexByKey(k);
+                                if (idx >= 0) grid.deleteRow(idx);
+                            });
+                        };
+                        doDelete();
+                    }
+                },
+                {
+                    text: formatMessage("Add Line Item"),
+                    icon: "add",
+                    onItemClick: function() {
+                        $("#B2BdataGrid").dxDataGrid("instance").addRow();
+                    }
+                },
+                {
+                    text: formatMessage("Generate Job Orders"),
+                    icon: "chart",
+                    onItemClick: function() {
+                        $("#generateJobOrderModal").fadeIn(200);
+                    }
+                }
+            ];
+        }
+    }
+});
+        function onKeyDown(e) {
+			const ddbInstance = e.component;
+			if (e.event.keyCode !== 40) return;
+			if (!ddbInstance.option("opened")) {
+				ddbInstance.open();
+			} else {
+				let focusedIndex = dataGrid.option("focusedRowIndex");
+				let visibleRows = dataGrid.getVisibleRows().length - 1;
+				if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+				dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+			}
+		}
+        function AddPreparedBy(){
+            const url = `/${tenantName}/IMS/Signatories`;
+            const title = formatMessage("Signatories");
+            openModal(url, title);
+        }
+        
+        function dataGridSelectionChanged10(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized10(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged11(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized11(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged12(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized12(e) {
+			dataGrid = e.component;
+		}
+        $(function () {
+				$("#shipmentsalesorder").text(formatMessage("Shipment & Discounts:"));
+		     });
+             $(function () {
+				$("#additionssalesorders").text(formatMessage("Additions:"));
+		     });
+             $(function () {
+				$("#deductionssalesorder").text(formatMessage("Deductions:"));
+		     });
+               $(function () {
+		$("#safetyvaluessales").text(formatMessage("Safety Valves"));
+	});
+               $(function () {
+		$("#controlvalvessales").text(formatMessage("Control Valves"));
+	});
+               $(function () {
+		$("#manualvaluessales").text(formatMessage("Manual Valves"));
+	});
+               $(function () {
+		$("#createjoborderfor").text(formatMessage("Create Job Orders for:"));
+	});
+               $(function () {
+		$("#salesorderclose").text(formatMessage("Close"));
+	});
+               $(function () {
+		$("#generatejosales").text(formatMessage("Generate JO"));
+	});
 </script>

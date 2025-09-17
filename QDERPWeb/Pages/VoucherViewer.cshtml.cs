@@ -7,6 +7,7 @@ using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 // using QD.ERP.Web.Areas.Finance.Reports.journalEntry;
 using QD.ERP.Web.Areas.Finance.Reports.Journal_Register;
 using QD.ERP.Web.Areas.Finance.Reports.test;
+using QD.ERP.Web.Areas.General.Pages.Report;
 using QD.ERP.Web.Areas.IMS.Inventory_Reports;
 using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
 using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
@@ -25,6 +26,7 @@ using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -58,8 +60,9 @@ namespace QD.ERP.Web.Pages
         public string rfqNo { get; private set; }
         public string purchaseOrderNo { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
-            bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false)
+        public IActionResult OnGet(string reportName, string voucherNo, string CompanyId, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
+            bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false,bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false,
+            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false )
         {
             // Set the properties for Razor
             ReportName = reportName;
@@ -526,7 +529,7 @@ namespace QD.ERP.Web.Pages
             }
 
 
-            if (reportName == "SalesOrderReport")
+            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
             {
                 if (string.IsNullOrEmpty(salesOrderNo))
                 {
@@ -538,12 +541,12 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "SalesOrderReport")
 
                 {
-                    Report = new SalesOrderReport(salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 else if (reportName == "SalesOrderReportWithoutPrice")
 
                 {
-                    Report = new SalesOrderReportWithoutPrice(salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
 
 
@@ -568,17 +571,17 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "PreviewDeliveryNote")
 
                 {
-                    Report = new previewDeliveryNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "ReportforMaterialIssueNote")
 
                 {
-                    Report = new ReportforMaterialIssueNote(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "PreviewDeliveryNotewithPrice")
 
                 {
-                    Report = new PreviewDeliveryNotewithPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
                 if (reportName == "DotMatrics")
 
@@ -588,7 +591,7 @@ namespace QD.ERP.Web.Pages
                 if (reportName == "DeliveryNoteWithCostPrice")
 
                 {
-                    Report = new DeliveryNoteWithCostPrice(deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
                 }
 
 
@@ -606,6 +609,7 @@ namespace QD.ERP.Web.Pages
 
                 if (reportName == "RFQEdit") {
                     Report = new RFQEdit(
+                        showSeal, showSignature, printLetterhead,
                         rfqNo,
                         tenantName,
                         companyName,
@@ -622,6 +626,25 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
+
+            if (reportName == "CompanyDetail1")
+            {
+                if (string.IsNullOrEmpty(CompanyId))
+                {
+                    return BadRequest("rfqNo is required for IMS reports.");
+                }
+
+                if (reportName == "CompanyDetail1")
+                {
+                    Report = new CompanyDetail1(
+
+                        CompanyId,
+                        _tenantDbContextHelper
+                    );
+                }
+
+                return Page();
+            }
             if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT" 
                 || reportName == "WithoutVATTotalPrice")
 
@@ -633,35 +656,35 @@ namespace QD.ERP.Web.Pages
                 }
                 if (reportName == "PreviewPurchaseOrder")
                 {
-                    Report = new PreviewPurchaseOrder(
-                        purchaseOrderNo,
-                        tenantName,
-                        companyName,
-                      
-                        companySealImage,
-                        companyAddress,
-                        companyNameAr,
-                        companyAddressAr,
-                        _tenantDbContextHelper
-                    );
+                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
+    ShowitemPartNumberinsteadStockCode,
+    ShowHSCodeinsteadStockCode,
+    showSeal,
+    showSignature,
+    printLetterhead,
+    pageBreakAfter,
+    pageBreakBefore,
+    purchaseOrderNo,
+    tenantName,
+    companyName,
+    companySealImage,    
+    companyAddress,
+    companyNameAr,
+    companyAddressAr,
+    _tenantDbContextHelper
+);
                 }
                 if (reportName == "PreviewPurchaseOrderForeignCurrency")
                 {
                     Report = new PreviewPurchaseOrderForeignCurrency(
-                        purchaseOrderNo,
-                        tenantName,
-                        companyName,
-                      
-                        companySealImage,
-                        companyAddress,
-                        companyNameAr,
-                        companyAddressAr,
+                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
                         _tenantDbContextHelper
                     );
                 }
                 if (reportName == "PreviewPurchaseOrderWithoutVAT")
                 {
-                    Report = new PreviewPurchaseOrderWithoutVAT(
+                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                         pageBreakAfter, pageBreakBefore,
                         purchaseOrderNo,
                         tenantName,
                         companyName,
@@ -675,7 +698,8 @@ namespace QD.ERP.Web.Pages
                 }
                 if (reportName == "WithoutVATTotalPrice")
                 {
-                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(
+                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                            pageBreakAfter, pageBreakBefore,
                         purchaseOrderNo,
                         tenantName,
                         companyName,

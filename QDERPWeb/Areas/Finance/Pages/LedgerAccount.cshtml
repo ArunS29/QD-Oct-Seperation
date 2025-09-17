@@ -492,7 +492,7 @@
                                                         .LoadMode(DataSourceLoadMode.Raw)
                                                         .Key("OpeningBalanceDrCr"))
                                                         .ID("ddlCreditDebit")
-                                                        .Label("Dr/Cr")
+                                                        .Label(new JS("formatMessage('Dr/Cr')"))
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ShowClearButton(true)
                                                         .AcceptCustomValue(false)
@@ -817,8 +817,10 @@
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ID("txtPersonMobile")
                                                         .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
-                                                        
-                                                        .Width("100%"))
+                                                        .Width("100%")
+                                                        .MaxLength(15)
+                                                        )
+)
                         </div>
 
                         <div class="col-md-8">
@@ -940,6 +942,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(25)
                             )
                         </div>
                     </div>
@@ -952,6 +955,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(30)
                             )
                         </div>
                         <div class="col-md-3">
@@ -961,6 +965,7 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
+                                .MaxLength(50)
                             )
                         </div>
                     </div>
@@ -1016,7 +1021,7 @@
                                         .ID("txtClientBillingAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Billing")
-                                            .Label(new JS("formatMessage('Client Billing Name(Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Billing Name(Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
 
                                         )
@@ -1029,39 +1034,41 @@
                             @*     <div id="ClientVATNo" class="no-border-input"></div> *@
                             @* </td> *@
                             <td colspan="2">
-                                    @(Html.DevExtreme().NumberBox()
-                                        .ID("txtClientVATNo") // Keep the same ID
-                                        .Width("100%") // Set the width to 50%
-                                        .InputAttr("aria-label", "txtClientVATNo")
-                                        .Min(0) // No negative numbers allowed
-                                        .Max(999999999999999) // Max limit of 15 digits
-                                        .InputAttr("maxlength", "15") // Set the max length attribute to 15
-                                        .Format("###########") // Ensures only integers (up to 15 digits)
-                                        .OnValueChanged("syncVATNumbers")
-                                        .Label(new JS("formatMessage('Client VAT No')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                                       // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-                                        )
+                             @(Html.DevExtreme().TextBox()
+                             .ID("txtClientVATNo")
+                             .Label(new JS("formatMessage('Client VAT No')"))
+                             .LabelMode(EditorLabelMode.Floating)
+                             .Width("100%") // Set the width to 50%
+                             .InputAttr("aria-label", "txtClientVATNo")
+                             .MaxLength(15)
+                             .Mask("000000000000000")
+                             .MaskChar(" ")
+                             .OnValueChanged("syncVATNumbers")
+                             .OnValueChanged("validateClientVATNo")
+                            // .OnValueChanged("validateClientVATNo")
+                              )
+
 
                             </td>
                            @*  <td>
                                 <div id="GrouptVATNo" class="no-border-input"></div>
                             </td> *@
                             <td colspan="2">
-                                    @(Html.DevExtreme().NumberBox()
-                                        .ID("txtGrouptVATNo") // Keep the same ID
-                                        .Width("100%") // Set width to 100%
-                                        .InputAttr("aria-label", "txtGrouptVATNo")
-                                        .Min(0) // No negative numbers allowed
-                                        .Max(999999999999999) // Max limit of 15 digits
-                                        .InputAttr("maxlength", "15") // Set max length to 15
-                                        .Format("###########") // Format for numeric input (max 15 digits)
-                                        .Label(new JS("formatMessage('Group VAT Number:')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                        
-                                        //  .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
-                                        )
 
+                              @(Html.DevExtreme().TextBox()
+                             .ID("txtGrouptVATNo")
+                             .Label(new JS("formatMessage('Group VAT Number:')"))
+                             .LabelMode(EditorLabelMode.Floating)
+                             .Width("100%") // Set the width to 50%
+                             .InputAttr("aria-label", "txtGrouptVATNo")
+                             .MaxLength(15)
+                             .Mask("000000000000000")
+                             .MaskChar(" ")
+                             .OnValueChanged("syncVATNumbers")
+                             .OnValueChanged("validateClientVATNo")
+                            // .OnValueChanged("validateClientVATNo")
+                              )
+                                  
                             </td>
                         </tr>
 
@@ -1094,7 +1101,7 @@
                                     .OnKeyDown("ddlOtherTypeonKeyDown")
                                     .OnValueChanged("ddlOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("OtherTypeContentTemplate"))
-                                        .Label(new JS("formatMessage('Other ID Type: *')"))
+                                        .Label(new JS("formatMessage('Other ID Type:')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
@@ -1144,7 +1151,7 @@
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Address")
                                         .ValidationRules(rules => rules.AddRequired())
-                                            .Label(new JS("formatMessage('Client Address - Street Name (Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Address - Street Name (Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
@@ -1160,7 +1167,7 @@
                                     .ID("txtClientAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientAdditionalAddress")
-                                        .Label(new JS("formatMessage('Client Address - Additional Address:')"))
+                                        .Label(new JS("formatMessage('Client Address - Additional Address')"))
                                         .LabelMode(EditorLabelMode.Floating)
 
                                     )
@@ -1180,7 +1187,7 @@
                                         .ID("txtClientAdditionalAddressAr")
                                         .Width("100%")
                                         .InputAttr("aria-label", "Client Additional Address")
-                                            .Label(new JS("formatMessage('Client Address - Additional Address (Arabic):')"))
+                                            .Label(new JS("formatMessage('Client Address - Additional Address (Arabic)')"))
                                             .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </div>
@@ -1276,7 +1283,7 @@
                                     .ID("txtState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtClientCity")
-                                        .Label(new JS("formatMessage('Province/State:')"))
+                                        .Label(new JS("formatMessage('Province/State')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                         )
                                     
@@ -1458,7 +1465,7 @@
                                     .ID("txtSupBillingAr")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Supplier Billing Name(Arabic):')"))
+                                    .Label(new JS("formatMessage('Supplier Billing Name(Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1539,7 +1546,7 @@
                                     .OnKeyDown("ddlSupOtherTypeonKeyDown")
                                     .OnValueChanged("ddlSupOtherTypeValueChanged")
                                     .ContentTemplate(new TemplateName("SupOtherTypeContentTemplate"))
-                                    .Label(new JS("formatMessage('Other ID Type: *')"))
+                                    .Label(new JS("formatMessage('Other ID Type:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1595,7 +1602,7 @@
                                     .ID("txtSupAddressAr1")
                                     .Value("")
                                     .Width("200%")
-                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic):')"))
+                                    .Label(new JS("formatMessage('Supplier Address-Street Name (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1611,7 +1618,7 @@
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
-                                    .Label(new JS("formatMessage('Supplier Address - Street Name: *')"))
+                                    .Label(new JS("formatMessage('Address - Additional Address: *')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1630,7 +1637,7 @@
                                     .ID("txtSupAdditionalAddressAr1")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic):')"))
+                                    .Label(new JS("formatMessage('Address-Additional Address (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1722,7 +1729,7 @@
                                     .ID("txtSupState")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupState")
-                                    .Label(new JS("formatMessage('Province/State:')"))
+                                    .Label(new JS("formatMessage('Province/State')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -1800,7 +1807,7 @@
                                     .ID("txtSupDistrictAr1")
                                     .Value("")
                                     .Width("100%")
-                                    .Label(new JS("formatMessage('Neighborhood (Arabic):')"))
+                                    .Label(new JS("formatMessage('Neighborhood (Arabic)')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                             </td>
@@ -2071,6 +2078,8 @@
                                     .ID("txtBillingContactNumber")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingContactNumber")
+                                    .MaxLength(15)
+
                                     )
                             </td>
                         </tr>
@@ -2093,6 +2102,7 @@
                                     .ID("txtBillingVendorNo")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtBillingVendorNo")
+                                    .MaxLength(20)
                                     )
                             </td>
                         </tr>
@@ -2318,7 +2328,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountGroup");
+                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')"));
             })
             )
     }
@@ -2382,7 +2392,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BranchName");
+                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')"));
             })
             )
     }
@@ -2414,7 +2424,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SubGroupName");
+                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')"));
             })
             )
     }
@@ -2446,7 +2456,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("SalesPersonName");
+                columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
             })
             )
     }
@@ -2537,7 +2547,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountHead");
+                columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
             })
             )
     }
@@ -2564,7 +2574,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("CountryName");
+                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
             })
             )
     }
@@ -2590,7 +2600,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("CountryName");
+                columns.Add().DataField("CountryName").Caption(new JS("formatMessage('Country Name')"));
             })
             )
     }
@@ -2832,14 +2842,14 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#ClientBilling").dxTextBox({
-            text: formatMessage("Client Billing Name: *"),
+            text: formatMessage("Client Billing Name:"),
             readOnly: true
 
         });
     });
     $(function () {
         $("#ClientBillingAr").dxTextBox({
-            text: formatMessage("Client Billing Name(Arabic):"),
+            text: formatMessage("Client Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -2997,7 +3007,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#SupBillingAr").dxTextBox({
-            text: formatMessage("Supplier Billing Name(Arabic):"),
+            text: formatMessage("Supplier Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -3109,7 +3119,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#ClientBillingNameArabic").dxTextBox({
-            text: formatMessage("Client Billing Name(Arabic):"),
+            text: formatMessage("Client Billing Name(Arabic)"),
             readOnly: true
 
         });
@@ -3137,7 +3147,7 @@ function syncSupVATNumbers(e) {
     });
     $(function () {
         $("#BillingVATRegNoArabic").dxTextBox({
-            text: formatMessage("Client VAT Registration Number(Arabic):"),
+            text: formatMessage("Client VAT Registration Number (Arabic):"),
             readOnly: true
 
         });
@@ -3187,7 +3197,8 @@ function syncSupVATNumbers(e) {
     $(function () {
         $("#BillingPayment").dxTextBox({
             text: formatMessage("Bank Account for Receiving Payment:"),
-            readOnly: true
+            readOnly: true,
+            width: "100%" 
 
         });
     });
@@ -5448,7 +5459,7 @@ if (dropDownInstance.option("opened")) {
                 SupplierNeighborhood: supDistrict,
                 SupplierNeighborhoodAr: supDistrictAr,
                 SupplierCountryCode: cntSupCountryCode,
-                BillingName: bClientBillingName,
+              //  BillingName: bClientBillingName,
                 BillingAddress: bBillingAddress,
                 BillingAddressAr: bBillingAddressAr,
                 VATRegistrationNo: String(bVATNO),
@@ -6506,5 +6517,18 @@ if (dropDownInstance.option("opened")) {
                 $("#ModifiedOn1").text(
                          formatMessage("Modified On:"));
             });
+
+      function validateClientVATNo(e) {
+    if (e.value.length !== 15) {
+        DevExpress.ui.notify("", "error", 3000);
+    }
+}
+
+function validateGroupVATNo(e) {
+    if (e.value.length !== 15) {
+        DevExpress.ui.notify("Group VAT No must be exactly 15 digits", "error", 3000);
+    }
+}
+
 </script>
 

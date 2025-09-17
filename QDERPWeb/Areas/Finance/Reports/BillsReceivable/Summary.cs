@@ -13,6 +13,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         
        public Summary(
+              string username,
             string tenantName,
             string company_Name,
             string company_address,
@@ -23,7 +24,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
+            SetReportParameters(username,tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb);
 
             try
             {
@@ -42,7 +43,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
            
         }
 
-        private void SetReportParameters(string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
+        private void SetReportParameters(string username, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -68,6 +69,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             AddOrUpdateParameter("CompanyAddress", company_address ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyNameAr", Company_Name_Ar ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", company_address_arb ?? "", typeof(string), false);
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
+                userNameLabel.Text = username;
 
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;

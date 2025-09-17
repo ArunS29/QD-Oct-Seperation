@@ -16,6 +16,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -72,7 +73,51 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.ClientPono,
                         i.ClientProject,
                         i.SalesOrderNo,
-                        i.StoreName
+                        i.StoreName,
+                        i.QuotationNo,
+                        i.MaterialRequestNo,
+                        i.NoteOfItems,
+                        i.StoreCode,
+                        i.ClientPodate,
+                        i.IsVerified,
+                        i.IsApproved,
+                        i.PreparedBy,
+                        i.PreparedOn,
+                        i.ApprovedBy,
+                        i.ApprovedOn,
+                        i.AddedBy,
+                        i.AddedOn,
+                        i.ModifiedBy,
+                        i.ModifiedOn,
+                        i.SalesPersonCode,
+                        i.Attention,
+                        i.ClientContactNo,
+                        i.ClientContactEmail,
+                        i.CompanyBranch,
+                        i.DeliveryNoteRemarks,
+                        i.Salesman,
+                        i.TransportedBy,
+                        i.DriversName,
+                        i.DriversId,
+                        i.VehicleNo,
+                        i.CompanyName,
+                        i.IssuedFromStoreCode,
+                        i.IssuedFromStoreName,
+                        i.IsPosted,
+                        i.VoucherNo,
+                        i.PostedOn,
+                        i.PostedBy,
+                        i.ProjectMasterCode,
+                        i.ProjectDescription,
+                        i.ProjectDuration,
+                        i.ProjectLocation,
+                        i.InventoryMasterGroupId,
+                        i.InventoryMasterGroup,
+                        i.TotalIssuedQty,
+                        i.SalesPersonName,
+                        i.SaesPersonUserId,
+                        i.QuoteTotalBeforeDiscount,
+
                     }).ToListAsync();
 
                     return Json(data);
@@ -196,11 +241,22 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     return NotFound(new { message = "Delivery note not found", success = false });
 
                 string approvedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                var userIdString = HttpContext.Session.GetString("UserId");
+
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { success = false, message = "Invalid or missing UserId in session." });
+                }
 
                 existingNote.IsApproved = true;
                 existingNote.ApprovedBy = approvedBy; // ? Correct usage
                 existingNote.ApprovedOn = DateTime.Now;
 
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                if (signatoryId.HasValue)
+                {
+                    existingNote.Dnsignatory = (byte)signatoryId.Value;
+                }
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Approve Delivery Note",
@@ -209,14 +265,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
 
-                return Ok(new { message = "Delivery note approved successfully", success = true });
+                return Ok(new { message = "Delivery note approved successfully", success = true,
+                    VoucherApprovedBy = signatoryId
+                });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Error approving delivery note: " + ex.Message, success = false });
             }
         }
+        private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+        {
+            if (userId == null)
+                return null;
 
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return await dbContext.Tbl90104DocumentSignatories
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.SignatoryId)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Tenant context is invalid; return null
+            return null;
+        }
 
         [HttpGet("GetCompanyBranch")]
         public async Task<IActionResult> GetCompanyBranch()
@@ -662,10 +735,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     salesOrderNo = master.SalesOrderNo,
                     quotationNo = master.QuotationNo,
                     Dnsignatory = master.Dnsignatory,
-                    IsApproved = master.IsApproved,
                     CurrencyId = master.CurrencyId ?? 1,
                     CurrencyRate = master.CurrencyRate ?? 1,
                     BaseCurrencyId = master.BaseCurrencyId ?? 1,
+                    IsApproved = master.IsApproved,
                     items = children.Select(x => new
                     {
                         DeliveryNoteSlNo = x.DeliveryNoteSlNo,
@@ -679,7 +752,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         EmployeeNo = x.EmployeeNo,
                         PropertyNo = x.PropertyNo,
                         AddlDescription = x.AddlDescription,
-                        DeliveryRemarks = x.DeliveryRemarks
+                        DeliveryRemarks = x.DeliveryRemarks,
+                        QuoteTotalBeforeDiscount=x.QuoteTotalBeforeDiscount,
                     })
                 });
             }
@@ -695,16 +769,47 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                 {
                     var result = await dbContext.Qry60306deliveryNoteDetails
-                        .Select(d => new
+                        .Select(i=> new
                         {
-                            d.DeliveryNoteNo,
-                            d.DeliveryDate,
-                            d.DeliveryIssuedTo,
-                            d.Gscode,
-                            d.Gsdescrpition,
-                            d.UnitType,
-                            d.UnitRateMethod,
-                            d.IssuedQty
+                            i.DeliveryNoteNo,
+                            i.DeliveryDate,
+                            i.DeliveryIssuedTo,
+                            i.Gscode,
+                            i.Gsdescrpition,
+                            i.UnitType,
+                            i.UnitRateMethod,
+                            i.IssuedQty,
+                            i.AddedOn,
+                            i.AddlDescription,
+                            i.Attention,
+                            i.BatchNo,
+                            i.ClientAddress,
+                            i.ClientContactNo,
+                            i.ClientContactEmail,
+                            i.ClientPodate,
+                            i.ClientPono,
+                            i.ClientProject,
+                            i.ContactEmail,
+                            i.ContactMobile1,
+                            i.ContactMobile2,
+                            i.ContactPhone1,
+                            i.ContactPhone2,
+                            i.ContactPerson,
+                            i.ContactPersonTitle,
+                            i.DeliveryNoteRemarks,
+                            i.DeliveryRemarks,
+                            i.DeliveryTypeName,
+                            i.DeliveryType,
+                            i.DriversName,
+                            i.DriversId,
+                            i.EmployeeName,
+                            i.EmployeeNo,
+                            i.ExpiryDate,
+                            i.GsgroupName,
+                            i.Hscode,
+                            i.Identification,
+
+
                         })
                         .ToListAsync();
 
@@ -984,7 +1089,380 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-    }
 
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryType(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var RequestedBy = dbContext.Tbl60303deliveryTypes.Select(i => new
+                    {
+                        i.DeliveryTypeCode,
+                        i.DeliveryType
+
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(RequestedBy, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDeliveryNote([FromQuery] string deliveryNoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (string.IsNullOrEmpty(deliveryNoteNo))
+            {
+                return BadRequest(new { success = false, message = "DeliveryNote No. is required." });
+            }
+
+            try
+            {
+                // Retrieve the master record
+                var masterRecord = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (masterRecord == null)
+                {
+                    return NotFound(new { success = false, message = "Delivery Note not found." });
+                }
+
+                // Retrieve and remove child records
+                var childRecords = dbContext.Tbl60302deliveryNoteChildren
+                    .Where(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                dbContext.Tbl60302deliveryNoteChildren.RemoveRange(childRecords);
+
+                // Remove the master record
+                dbContext.Tbl60301deliveryNoteMasters.Remove(masterRecord);
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Delivery Note",
+                   actionDetail: $"Deleted Delivery Note: {deliveryNoteNo}",
+                   documentNo: $"{deliveryNoteNo}"
+                );
+
+                return Ok(new { success = true, message = "Delivery Note and its details deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnlockDeliveryNote([FromBody] Tbl60301deliveryNoteMaster data)
+        {
+            try
+            {
+                 string deliveryNoteNo = data?.DeliveryNoteNo;
+                if (string.IsNullOrWhiteSpace(deliveryNoteNo))
+                    return BadRequest(new { success = false, message = "Delivery Note number is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                // ✅ 1. Check logged-in user level
+              
+                var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var userName = HttpContext.Items["UserName"]?.ToString();
+
+                var userLevel = await dbContext.TblUserMasters
+                    .Where(u => u.UserId == currentUserId)
+                    .Select(u => u.UserLevel)
+                    .FirstOrDefaultAsync();
+
+                if (userLevel != 99)
+                {
+                    return Ok(new { success = false, message = "Your access level cannot unlock this Delivery Note." });
+                }
+
+                // ✅ 2. Check if Delivery Note exists
+                var dn = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (dn == null)
+                    return Ok(new { success = false, message = "Delivery Note not found." });
+
+                // ✅ 3. Check if already posted
+                var postedVoucher = await dbContext.Tbl201VoucherMasters
+                    .AnyAsync(v => v.VoucherRefNo == deliveryNoteNo);
+
+                if (postedVoucher)
+                {
+                    return Ok(new { success = false, message = "This Delivery Note is already posted to ledgers." });
+                }
+
+                // ✅ 4. Unlock → reset flags
+                dn.IsVerified = false;
+                dn.IsApproved = false;
+                dn.ApprovedBy = null;
+                dn.ApprovedOn = null;
+
+                await dbContext.SaveChangesAsync();
+
+                // ✅ 5. Log the action
+                await _userActionLogger.LogAsync(
+                    module: "IMS Delivery Note",
+                    actionDetail: $"Delivery Note {deliveryNoteNo} has been unlocked by {userName} (User ID: {currentUserId}).",
+                    documentNo: deliveryNoteNo
+                );
+
+                return Ok(new { success = true, message = "Delivery Note has been unlocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+       
+        public async Task<IActionResult> CreateInvoiceFromDeliveryNote([FromBody] string deliveryNoteNo)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(deliveryNoteNo))
+                    return BadRequest(new { success = false, message = "Delivery Note No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+                // 1️⃣ Check if invoice already exists for this Delivery Note
+                bool isInvoiceAvailable = dbContext.Tbl60301deliveryNoteMasters
+                    .Any(d => d.DeliveryNoteNo == deliveryNoteNo && !string.IsNullOrEmpty(d.InvoiceNo));
+
+                if (isInvoiceAvailable)
+                    return BadRequest(new { success = false, message = "Invoice is already created for this Delivery Note, please review again." });
+
+                // 2️⃣ Get Ledger No for client
+                var deliveryNote = await dbContext.Tbl60301deliveryNoteMasters
+                    .FirstOrDefaultAsync(d => d.DeliveryNoteNo == deliveryNoteNo);
+
+                if (deliveryNote == null)
+                    return NotFound(new { success = false, message = "Delivery Note not found." });
+
+                string ledgerNo = dbContext.Qry65113clientListWithLedgerNos
+                    .Where(c => c.ClientCode == deliveryNote.ClientCode)
+                    .Select(c => c.AccountId)
+                    .FirstOrDefault();
+
+                if (string.IsNullOrEmpty(ledgerNo))
+                    return BadRequest(new { success = false, message = "This Client details are not added to Accounting Ledger. Please link the client with accounts ledgers." });
+
+                // 3️⃣ Generate new VAT Invoice No
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte companyId = 0;
+                byte.TryParse(defaultCompanyString, out companyId);
+
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyId == companyId);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+                string invoiceNo = GetVATInvoiceNoAPI(
+     invoiceAbbr: company.IsUseEinvoiceAbbrv == true ? company.EinvoiceAbbrv : "",
+     yearInDigit: company.InvoiceYearDigits ?? 0,
+     invoiceDate: DateTime.Now,
+     isResetByYear: company.IsResetInvoiceInYear ?? false,
+     noOfDigits: company.NoOfDigitsInEinvoiceNo ?? 5   // <--- use "noOfDigits" to match method signature
+        );
+
+
+                // 4️⃣ Generate Invoice UUID & Counter
+                string invoiceUUID = Guid.NewGuid().ToString();
+              long invoiceCounter = await GetNewInvoiceCounterValueAsync();
+
+
+                // 5️⃣ Call SP to insert invoice master & child
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_06InsertToInvoiceFromDeliveryNote @InvoiceNo={0}, @ClientAccountNo={1}, @DeliveryNoteNo={2}, @AddedBy={3}, @InvoiceUUID={4}, @InvoiceCounterValue={5}",
+                    invoiceNo, ledgerNo, deliveryNoteNo, HttpContext.Session.GetString("UserName") ?? "System", invoiceUUID, invoiceCounter
+                );
+
+                // 6️⃣ Update Invoice Due Date
+               // DateTime dueDate = GetDueDateOfInvoice(ledgerNo);
+               // deliveryNote.InvoiceDueDate = dueDate;
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Invoice created successfully.", invoiceNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+        public string GetVATInvoiceNoAPI(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits)
+        {
+            string strYear = "";
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    int maxNumber = 0;
+
+                    var query = dbContext.Tbl20161VatinvoiceMasters.AsQueryable();
+
+                    if (isResetByYear)
+                    {
+                        query = query.Where(d => d.InvoiceDate.HasValue && d.InvoiceDate.Value.Year == invoiceDate.Year);
+                    }
+
+                    maxNumber = query
+                        .Select(d => d.InvoiceNo)
+                        .Where(no => !string.IsNullOrEmpty(no) && no.Length >= noOfDigits)
+                        .AsEnumerable()
+                        .Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int number) ? number : 0)
+                        .DefaultIfEmpty(0)
+                        .Max();
+
+                    maxNumber += 1;
+
+                    strYear = invoiceDate.Year.ToString();
+                    if (yearInDigit > 0 && yearInDigit <= 4)
+                    {
+                        strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                    }
+                    else if (yearInDigit <= 0)
+                    {
+                        strYear = "";
+                    }
+
+                    return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "" : invoiceAbbr)}{strYear}-{maxNumber.ToString().PadLeft(noOfDigits, '0')}";
+                }
+                else
+                {
+                    throw new Exception("Tenant or DbContext not found");
+                }
+            }
+            catch
+            {
+                strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                else
+                    strYear = "";
+
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "" : invoiceAbbr)}-{strYear}-000001";
+            }
+        }
+        private async Task<long> GetNewInvoiceCounterValueAsync()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return 0;
+
+            var counter = await dbContext.Qry00101invoiceCounterValues
+     .Select(x => (long?)x.InvoiceCounterValue)
+     .FirstOrDefaultAsync();
+
+            long maxCounter = counter ?? 0;
+
+            return maxCounter + 1;
+        }
+
+        //private DateTime GetDueDateOfInvoice(string ledgerNo)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+        //        return DateTime.Now;
+
+        //    var creditDays = dbContext.TblAccountLedgers
+        //        .Where(l => l.LedgerNo == ledgerNo)
+        //        .Select(l => (int?)l.CreditDays ?? 0)
+        //        .FirstOrDefault();
+
+        //    return DateTime.Now.AddDays(creditDays);
+        //}
+
+        //Receive button form
+        [HttpGet]
+        public async Task<IActionResult> GetDeliveryAmount(string deliveryNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+
+                try
+                {
+
+                var amount = await dbContext.Qry60303deliveryNoteItemsWithTotals
+                .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                .Select(x => x.TotalAfterDiscount ?? 0)
+                .FirstOrDefaultAsync();
+
+            return Ok(new { DeliveryNoteNo = deliveryNoteNo, TotalAfterDiscount = amount });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetDeliveryAmount: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDescription(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl20164GoodsAndServicesMasters.Select(i => new
+                    {
+                      i.Gscode,
+                      i.Gsdescrpition
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDescriptionDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUOM(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl40111PropertyUnitCodes.Select(i => new
+                    {
+                       i.UnitCode,
+                       i.UnitType
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUOMDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+    }
 
 }

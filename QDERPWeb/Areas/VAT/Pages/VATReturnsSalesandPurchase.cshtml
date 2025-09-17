@@ -691,7 +691,7 @@
             items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
             items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
             items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-            items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+            items.Add().Text(new JS("formatMessage('By Quarter'")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
             items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
             items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
             items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -722,15 +722,15 @@
 <div class="containerLedgerAccount">
     
         <div class="horizontal-container">
-            @(Html.DevExtreme().Tabs()
-                        .Items(items =>
-                        {
-                            items.Add().Icon("").Text(new JS("formatMessage('VAT on Sales')"));
-                            items.Add().Icon("").Text(new JS("formatMessage('VAT on Purchase')"));
-                        })
-                        .SelectedIndex(0)
-                        .OnSelectionChanged("onTabSelectionChanged")
-                        )
+        @(Html.DevExtreme().Tabs()
+                .Items(items =>
+                {
+                    items.Add().Icon("").Text(new JS("getTabText('sales')"));
+                    items.Add().Icon("").Text(new JS("getTabText('purchase')"));
+                })
+                .SelectedIndex(0)
+                .OnSelectionChanged("onTabSelectionChanged")
+                )
             
         </div>
 
@@ -1240,10 +1240,11 @@
             formatMessage("Standard rated Sales 5%"));
      });
 
-    $(function () {
-                    $("#Standardrated").text(
-                         formatMessage("Standard rated Sales 15%"));
-            });
+    // $(function () {
+    //                 $("#Standardrated").text(
+    //                      formatMessage("Standard rated Sales 15%"));
+    //         });
+   
     $(function () {
                     $("#Salestocustomer").text(
                          formatMessage("Sales to customers in VAT Implementing GCC"));
@@ -1268,26 +1269,26 @@
                     $("#StandardratedDomestics").text(
                          formatMessage("7 - Standard rated Domestic Purchase 5%"));
             });
-    $(function () {
-                    $("#StandardratedDomestic").text(
-                         formatMessage("7a - Standard rated Domestic Purchase 15%"));
-            });
+    // $(function () {
+    //                 $("#StandardratedDomestic").text(
+    //                      formatMessage("7a - Standard rated Domestic Purchase 15%"));
+    //         });
     $(function () {
                     $("#ImportssubjecttoVATpaidatCustomer").text(
                          formatMessage("8 - Imports subject to VAT Paid at Customer 5%"));
             });
-    $(function () {
-                    $("#Importssubject").text(
-                         formatMessage("8a - Imports subject to VAT Paid at Customer 15%"));
-            });
+    // $(function () {
+    //                 $("#Importssubject").text(
+    //                      formatMessage("8a - Imports subject to VAT Paid at Customer 15%"));
+    //         });
     $(function () {
                     $("#ImportssubjecttoVAT").text(
                          formatMessage("9 - Imports Subject to VAT - thru RCM 5%"));
             });
-    $(function () {
-                    $("#ImportssubjecttoVATthru").text(
-                         formatMessage("9a - Imports Subject to VAT - thru RCM 15%"));
-            });
+    // $(function () {
+    //                 $("#ImportssubjecttoVATthru").text(
+    //                      formatMessage("9a - Imports Subject to VAT - thru RCM 15%"));
+    //         });
     $(function () {
                     $("#ZeroratePurchase").text(
                          formatMessage("10 - Zero rate Purchases"));
@@ -1432,10 +1433,10 @@
                 offset: "8 0"
             },
             items: [
-                { text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
-                { text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
-                { text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
-                { text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+                { text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+                { text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+                { text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+                { text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
             ],
             onItemClick: function(e) {
                 const quarter = e.itemData.value;
@@ -1520,21 +1521,21 @@
                             $(function () {
                                 $("#zeroratepurchasevat").text(formatMessage("Zero rate Purchases"));
                             });
-                            $(function () {
-                                $("#importssubjecttovatrcm").text(formatMessage("Imports Subject to VAT - thru RCM 15%"));
-                            });
+                            // $(function () {
+                            //     $("#importssubjecttovatrcm").text(formatMessage("Imports Subject to VAT - thru RCM 15%"));
+                            // });
                             $(function () {
                                 $("#importssubjecttovathru").text(formatMessage("Imports Subject to VAT - thru RCM 5%"));
                             });
-                            $(function () {
-                                $("#importssubjectpaidcustomer").text(formatMessage("Imports subject to VAT Paid at Customer 15%"));
-                            });
+                            // $(function () {
+                            //     $("#importssubjectpaidcustomer").text(formatMessage("Imports subject to VAT Paid at Customer 15%"));
+                            // });
                             $(function () {
                                 $("#importsasubjectvatpaid").text(formatMessage("Imports subject to VAT Paid at Customer 5%"));
                             });
-                            $(function () {
-                                $("#standardratesdomesticpurchasevatreturns5").text(formatMessage("Standard rated Domestic Purchase 15%"));
-                            });
+                            // $(function () {
+                            //     $("#standardratesdomesticpurchasevatreturns5").text(formatMessage("Standard rated Domestic Purchase 15%"));
+                            // });
                             $(function () {
                                 $("#standadrrateddomesticpurchase").text(formatMessage("Standard rated Domestic Purchase 5%"));
                             });
@@ -1550,9 +1551,25 @@
                             $(function () {
                                 $("#standardratedsalesvatss").text(formatMessage("Standard rated Sales 5%"));
                             });
-                            $(function () {
-                                $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 15%"));
-                            });
+                            // $(function () {
+                            //     $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 15%"));
+                            // });
+
+     $(function () {
+        debugger;
+        if (currencyDecimals === 3) {
+            $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 10%"));
+            $("#standardratesdomesticpurchasevatreturns5").text(formatMessage("7a - Standard rated Domestic Purchase 10%"));
+            $("#importssubjectpaidcustomer").text(formatMessage("8a - Imports subject to VAT Paid at Customer 10%"));
+            $("#importssubjecttovatrcm").text(formatMessage("9a - Imports Subject to VAT - thru RCM 10%"));
+        }
+         else {
+            $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 15%"));
+            $("#standardratesdomesticpurchasevatreturns5").text(formatMessage("7a - Standard rated Domestic Purchase 15%"));
+            $("#importssubjectpaidcustomer").text(formatMessage("8a - Imports subject to VAT Paid at Customer 15%"));
+            $("#importssubjecttovatrcm").text(formatMessage("9a - Imports Subject to VAT - thru RCM 15%"));
+        }
+    });
 
 
                                          // Fetch from API when page loads
@@ -1570,5 +1587,22 @@
         let decimals = currencyDecimals || 2;
         return "#,##0." + "0".repeat(decimals);
     }
+
+
+
+    function getTabText(type) {
+        if (currencyDecimals === 3) {
+            return type === "sales"
+                ? formatMessage("VAT on Sales (BH)")
+                : formatMessage("VAT on Purchase (BH)");
+        } else {
+            return type === "sales"
+                ? formatMessage("VAT on Sales")
+                : formatMessage("VAT on Purchase");
+        }
+    }
+
+
+
 
 </script>

@@ -121,15 +121,15 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2>Depreciation Master</h2>
-                <h6>Quick Dice ERP Solutions</h6>
+                <h2 id="depreciationmaster"></h2>
+                <h6 id="quickdiceerpsolutiondepreciation"></h6>
 
             </div>
         </div>
 
         <!-- BALANCE -->
         <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header">Balance</div>
+            <div class="header" id="depreciationbalance"></div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -148,7 +148,7 @@
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header">Total Debit</div>
+            <div class="header" id="depreciationtotaldebit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -163,7 +163,7 @@
 
         <!-- CREDIT -->
         <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header">Total Credit</div>
+            <div class="header" id="depreciationtotalcredit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -262,7 +262,7 @@
                 columns.Add().Caption(new JS("formatMessage('Depreciation Register Details')")).Alignment(HorizontalAlignment.Center).Columns(band =>
             {
 
-                band.Add().DataField("IsPosted").Caption("Posted").Alignment(HorizontalAlignment.Center)
+                band.Add().DataField("IsPosted").Caption(new JS("formatMessage('Posted')")).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
                     @(Html.DevExtreme().CheckBox()
                     .Value(new JS("data.IsPosted"))
@@ -277,10 +277,10 @@
 
 
             });
-                columns.Add().Caption("No of Assets").Columns(band =>
+                columns.Add().Caption(new JS("formatMessage('No of Assets')")).Columns(band =>
     {
 
-                band.Add().DataField("NoOfAssets").Caption("No of Assets");
+                band.Add().DataField("NoOfAssets").Caption(new JS("formatMessage('No of Assets')"));
 
             });
                 columns.Add().Caption(new JS("formatMessage('Depreciation Amount')")).Columns(band =>
@@ -486,29 +486,46 @@
             $("#voucherPopup").dxPopup("instance").hide();
         }
     });
-      function onDepreciationContextMenuPreparing(e) {
+              function onDepreciationContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") {
-            e.items = [
+            // Build context menu items correctly
+            let items = [
                 {
-                    text: "Edit Depreciation",
+                    text: formatMessage("Edit Depreciation"),
                     icon: "edit", // DevExtreme built-in icon
-                    onItemClick: () => {
-                        
-                        editDepreciation(e.row.data);
-                    },
-                    cssClass: "context-menu-edit"
+                    onItemClick: () => editDepreciation(e.row.data),
+                    cssClass: "context-menu-edit",
+                    permissionSuffix: "EditDepreciation"
                 },
                 {
-                    text: "Delete Depreciation",
+                    text: formatMessage("Delete Depreciation"),
                     icon: "trash", // DevExtreme built-in icon
-                    onItemClick: () => {
-                        deleteDepreciation(e.row.data);
-                    },
-                    cssClass: "context-menu-delete"
+                    onItemClick: () => deleteDepreciation(e.row.data),
+                    cssClass: "context-menu-delete",
+                    permissionSuffix: "DeleteDepreciation"
                 }
             ];
+
+            // Filter based on permissions (populated globally in document.ready)
+            if (window.depreciationPermissions) {
+                items = items.map(item => {
+                    const permission = window.depreciationPermissions.find(p =>
+                        p.ItemName &&
+                        p.ItemName.trim().toLowerCase() === ("frmDepreciationView_" + item.permissionSuffix).toLowerCase()
+                    );
+
+                    if (!permission || !permission.ItemVisible) {
+                        // hide item if permission not found or not visible
+                        return { ...item, visible: false, disabled: true };
+                    }
+                    return item;
+                });
+            }
+
+            e.items = items;
         }
-      }
+    }
+
      function editDepreciation(rowData) {
       
         const depreciationDocNo = rowData.DepreciationDocNo;
@@ -526,5 +543,20 @@
         // Or redirect in same tab:
         window.location.href = targetUrl;
      }
+     $(function () {
+        $("#depreciationtotalcredit").text(formatMessage("Total Credit"));
+    });
+     $(function () {
+        $("#depreciationtotaldebit").text(formatMessage("Total Debit"));
+    });
+     $(function () {
+        $("#depreciationbalance").text(formatMessage("Balance"));
+    });
+     $(function () {
+        $("#depreciationmaster").text(formatMessage("Depreciation Master"));
+    });
+    $(function () {
+        $("#quickdiceerpsolutiondepreciation").text(formatMessage("Quick Dice ERP Solutions"));
+    });
 
     </script>

@@ -19,6 +19,9 @@ namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
         }
 
         public SalesOrderReportWithoutPrice(
+              bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
             string salesorderNo,
             string tenantName,
             string companyName,
@@ -36,11 +39,13 @@ namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(salesorderNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyPhone, companyEmail, companyWebsite, companyNameAr, companyAddressAr, username);
+            SetReportParameters(showSeal, showSignature, printLetterhead, salesorderNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyPhone, companyEmail, companyWebsite, companyNameAr, companyAddressAr, username);
             LoadReportData(salesorderNo);
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+
         }
 
-        private void SetReportParameters(
+        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead,
             string salesorderNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress, string companyPhone, string companyEmail, string companyWebsite,
             string companyNameAr, string companyAddressAr, string username)
@@ -93,7 +98,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
             if (FindControl("UserName", true) is XRLabel usernameLabel)
                 usernameLabel.Text = username;
 
-            if (FindControl("xrPictureBox0", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
@@ -153,6 +158,43 @@ namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
                     }
                 }
             }
+        }
+
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        {
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox2", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox1", "xrPictureBox0", "xrPictureBox0" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel26", true) is XRLabel lbl26)
+                lbl26.Visible = printLetterhead;
+
+            if (FindControl("xrLabel27", true) is XRLabel lbl27)
+                lbl27.Visible = printLetterhead;
+            if (FindControl("xrLabel88", true) is XRLabel lbl88)
+                lbl88.Visible = printLetterhead;
+            if (FindControl("xrLabel64", true) is XRLabel lbl64)
+                lbl64.Visible = printLetterhead;
+            if (FindControl("xrLabel52", true) is XRLabel lbl52)
+                lbl52.Visible = printLetterhead;
+            if (FindControl("xrLabel60", true) is XRLabel lbl60)
+                lbl60.Visible = printLetterhead;
+            if (FindControl("xrLabel87", true) is XRLabel lbl87)
+                lbl87.Visible = printLetterhead;
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
         }
         private DataTable GetReportData(string salesorderNo)
         {

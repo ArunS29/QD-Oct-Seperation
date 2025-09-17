@@ -12,6 +12,59 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
+/* --- Default icon colors --- */
+.menu-icon-costallocation::before {
+    color: #007bff !important;
+}
+.menu-icon-propertyallocation::before {
+    color: #28a745 !important;
+}
+.menu-icon-employeeallocation::before {
+    color: #ffc107 !important;
+}
+.menu-icon-deleteallselectedlineitems::before {
+    color: #dc3545 !important;
+}
+
+/* --- Hover Effect --- */
+.custom-menu-item:hover {
+    background-color: var(--title-background-color) !important;  /* Blue background */
+    color: white !important;               /* Text color white */
+}
+
+.custom-menu-item:hover .dx-icon::before {
+    color: white !important; /* Icon turns white */
+}
+
+
+/* Align side-by-side with spacing */
+.journal-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* space between textbox and button */
+}
+
+/* Ensure button is tall enough */
+.btn-post-journal.dx-button {
+    height: 80px !important; /* override default */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-post-journal .dx-button-content {
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Optional: Make button wrapper fixed width */
+.journal-button-wrapper {
+    flex-shrink: 0; /* prevent button from shrinking */
+}
+
+
     #dataGrid .dx-data-row {
         border-bottom: 1px solid lightgrey;
     }
@@ -99,7 +152,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Journal Entry Edit</h3>
+    <h3 class="card-title-text" id="journalentryedit"></h3>
 </div>
 
 
@@ -112,7 +165,7 @@
                 .Placeholder("Generating...")
                 .ReadOnly(true)
                         .LabelMode(EditorLabelMode.Floating)
-                        .Label("Journal Reference No")
+                        .Label(new JS("formatMessage('Journal Reference No')"))
                 )
         </div>
 
@@ -122,7 +175,7 @@
                 .ID("VoucherDate")
                 .Value(DateTime.Now)
                         .LabelMode(EditorLabelMode.Floating)
-                        .Label("Voucher Date")
+                        .Label(new JS("formatMessage('Voucher Date')"))
                         .OnValueChanged("onVoucherDateChanged")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true) // Ensures proper date input handling
@@ -135,7 +188,7 @@
                 .ID("EffectiveDate")
                 .Value(DateTime.Now)
                         .LabelMode(EditorLabelMode.Floating)
-                        .Label("Effective Date")
+                        .Label(new JS("formatMessage('Effective Date')"))
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true)
                 .OnValueChanged("onVoucherDateChanged")
@@ -151,7 +204,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CostAllocationUnitId")
                         )
-                        .Label("Claim Name:")
+                        .Label(new JS("formatMessage('Claim Name:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
@@ -202,22 +255,48 @@
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("CostAllocationUnitId");
-                                columns.Add().DataField("CostAllocationUnit").Alignment(HorizontalAlignment.Left);
+                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit Id')"));
+                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Left);
                             })
 
                             )
                         }
         </div>
-        <div class="form-group flex-grow-1">
-            @* <label for="VoucherNarration" class="form-label">Voucher Narration</label> *@
-            @(Html.DevExtreme().TextArea()
-                        .ID("VoucherNarration")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Label("Voucher Narration")
-                        .Width(1390)
-                        )
-        </div>
+       <div class="form-group d-flex" style="gap: 10px; align-items: flex-start;">
+    <div style="flex: 1 1 auto;">
+        @(Html.DevExtreme().TextArea()
+            .ID("VoucherNarration")
+            .LabelMode(EditorLabelMode.Floating)
+            .Label(new JS("formatMessage('Voucher Narration')"))
+            .Height(80)
+            .Width(1050) 
+        )
+    </div>
+
+    <div style="flex: 0 0 300px;">
+        @(Html.DevExtreme().DropDownBox()
+            .ID("ddlBaseCurrency")
+            .DataSource(d => d.WebApi()
+                .Controller("Utility")
+                .LoadAction("GetCurrencyList")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CurrencyExchangeId")
+            )
+            .ValueExpr("CurrencyExchangeId")
+            .DisplayExpr("CurrencyName")
+            .Value(baseCurrencyIdnew)
+            .Label(new JS("formatMessage('Base Currency')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+            .ShowClearButton(true)
+            .AcceptCustomValue(false)
+            .DropDownOptions(o => o.Width(300))
+            .ReadOnly(true)
+            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+        )
+    </div>
+</div>
+
     </div>
 
 
@@ -250,7 +329,7 @@
                 <%= row.rowIndex + 1 %>
             </div>
         </text>);
-                    columns.Add().DataField("AccountID").Caption("Account Ledger").Width(300).AllowEditing(true)
+                    columns.Add().DataField("AccountID").Caption(new JS("formatMessage('Account Ledger')")).Width(300).AllowEditing(true)
                 .CellTemplate(@<text>
             <%- data.AccountHead ? data.AccountHead : " " %>
         </text>)
@@ -285,13 +364,13 @@
 
 
 
-                    columns.Add().DataField("EntryNarration").Caption("Entry Narration").Width(200);
-                    columns.Add().DataField("DrCr").Caption("Dr/Cr").Width(80).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String).Lookup(lookup => lookup
+                    columns.Add().DataField("EntryNarration").Caption(new JS("formatMessage('Entry Narration')")).Width(200);
+                    columns.Add().DataField("DrCr").Caption(new JS("formatMessage('Dr/Cr')")).Width(80).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String).Lookup(lookup => lookup
             .DataSource(new[] { "Dr", "Cr" })
             .ValueExpr("this")
             .DisplayExpr("this")
             );
-                    columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+                    columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Dr Amount')")).Width(120).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Dr' : ''; }")
             .EditorOptions(new {
         showSpinButtons = true,
@@ -300,7 +379,7 @@
         onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
     });
 
-                    columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
+                    columns.Add().DataField("CrAmount").Caption(new JS("formatMessage('Cr Amount')")).Width(120).Alignment(HorizontalAlignment.Right)
             .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Cr' : ''; }")
             .EditorOptions(new {
         showSpinButtons = true,
@@ -308,8 +387,8 @@
         max = 99999999, // Allows up to 8 digits before decimal
         onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
     });
-                    columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
-                    columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150).AllowEditing(false);
+                    columns.Add().DataField("CostAllocationDescription").Caption(new JS("formatMessage('Cost Allocation')")).Width(200);
+                    columns.Add().DataField("TotalCostAllocated").Caption(new JS("formatMessage('Total Cost Allocated')")).Width(150).AllowEditing(false);
                     columns.Add().Caption("...").Width(100).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -324,8 +403,8 @@
         .HeaderCellTemplate(@<text>
             <div class="headerBolder">...</div>
         </text>);
-                    columns.Add().DataField("EmployeeCostDescription").Caption("Employees Allocation").Width(150);
-                    columns.Add().DataField("TotalEmpAllocated").Caption("Total Employee Allocation").Width(150).Visible(true).AllowEditing(false);
+                    columns.Add().DataField("EmployeeCostDescription").Caption(new JS("formatMessage('Employees Allocation')")).Width(150);
+                    columns.Add().DataField("TotalEmpAllocated").Caption(new JS("formatMessage('Total Employee Allocation')")).Width(150).Visible(true).AllowEditing(false);
                     columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -341,14 +420,14 @@
             <div class="headerBolder">...</div>
         </text>);
                     // ✅ Additional columns from entity
-                    columns.Add().DataField("JournalChildNo").Caption("Journal Child No").Width(150).Visible(false);
-                    columns.Add().DataField("JournalRefNo").Caption("Journal Ref No").Width(200).Visible(false);
+                    columns.Add().DataField("JournalChildNo").Caption(new JS("formatMessage('Journal Child No')")).Width(150).Visible(false);
+                    columns.Add().DataField("JournalRefNo").Caption(new JS("formatMessage('Journal Ref No')")).Width(200).Visible(false);
                     
-                    columns.Add().DataField("AccountId").Caption("Account ID").Width(150).Visible(false);
+                    columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account ID')")).Width(150).Visible(false);
 
-                    columns.Add().DataField("PropertyCostDescription").Caption("Property Cost Desc").Width(200).Visible(false);
-                    columns.Add().DataField("FormattedAmount").Caption("Formatted Amount").Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
-                    columns.Add().DataField("TotalEqpAllocted").Caption("Total Equipment Allocated").Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
+                    columns.Add().DataField("PropertyCostDescription").Caption(new JS("formatMessage('Property Cost Desc')")).Width(200).Visible(false);
+                    columns.Add().DataField("FormattedAmount").Caption(new JS("formatMessage('Formatted Amount')")).Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
+                    columns.Add().DataField("TotalEqpAllocted").Caption(new JS("formatMessage('Total Equipment Allocated')")).Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
                 })
             .DataSource(new List<object>())
                 .AllowColumnReordering(true)
@@ -394,28 +473,36 @@
             .OnRowRemoving("onjournalrowremoving")
             )
     </div>
-    <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center" style="height:100px!important;">
+  <div class="col-md-2 col-sm-6 d-flex align-items-center journal-container">
+    <div class="flex-grow-1">
         @(Html.DevExtreme().TextBox()
-                .ID("journalvoucher")
-                .Value(null)
-                .ReadOnly(true))
-        @(Html.DevExtreme().Button()
-                .ID("btnPostJournal")
-                .Template(@<text>
-            <div class="text-center" style="line-height: 1;">
-                <div style="display: flex; flex-direction: column; align-items: center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
-                        <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
-                    </svg>
-                    <div style="font-size: 13px; margin-top: 4px;">Post the Journal</div>
-                </div>
-            </div>
-        </text>)
-                .Height(80)
-                .Width("100%")
-                .OnClick("onPostJournalClick")
-                )
+            .ID("journalvoucher")
+            .Value(null)
+            .ReadOnly(true)
+            .ElementAttr("style", "width: 200px;"))
     </div>
+
+    <div class="journal-button-wrapper">
+        @(Html.DevExtreme().Button()
+            .ID("btnPostJournal")
+            .ElementAttr("class", "btn-post-journal")
+            .Template(@<text>
+                <div class="text-center" style="line-height: 1;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
+                            <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
+                        </svg>
+                        <div style="font-size: 13px; margin-top: 4px;" id="postthejournal"></div>
+                    </div>
+                </div>
+            </text>)
+            .Width(90) 
+            .OnClick("onPostJournalClick")
+        )
+    </div>
+</div>
+
+
 
 
     <div class="row g-3 align-items-end" style="display:none;">
@@ -552,11 +639,11 @@
                 .Selection(s => s.Mode(SelectionMode.Single))
                 .Columns(columns =>
                 {
-                    columns.Add().Caption("Account ID").DataField("AccountId");
-                    columns.Add().Caption("Account").DataField("AccountHead");
-                    columns.Add().Caption("Account Group").DataField("AccountGroup");
-                    columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
-                    columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                    columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                    columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                    columns.Add().Caption(new JS("formatMessage('Account Group')")).DataField("AccountGroup");
+                    columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+                    columns.Add().Caption(new JS("formatMessage('Reference No')")).DataField("ReferenceNo");
                     columns.Add().DataField("IsLedgerObselete")
 
 
@@ -666,14 +753,7 @@
         if (voucherNo) {
             loadLedgerGridData(voucherNo);
         }
-        $("#btnAddLine").dxButton({
-            text: "Add Line",
-            icon: "add",
-            onClick: function () {
-                addRow();
-            }
-        });
-
+      
 
         $("#dataGrid").dxDataGrid({
 
@@ -1062,25 +1142,17 @@
         dataGrid.option("onContextMenuPreparing", function (e) {
             if (e.row && e.row.rowType === "data") {
                 e.event.preventDefault();
-                
-                // Get selected row data
+
                 let rowData = e.row.data;
                 let selectedAccountHead = rowData.AccountHead;
                 let selectedAccountId = rowData.AccountId;
                 let selectedDrCr = rowData.DrCr;
                 let SelectedEntryNo = rowData.JournalChildNo;
                 let selectedAmount = selectedDrCr === "Dr" ? rowData.DrAmount : rowData.CrAmount;
-                selectedAmount = parseFloat(selectedAmount).toFixed(2); // Ensuring numeric format
-                var effectiveDate = $("#EffectiveDate").dxDateBox("instance").option("value");
-                if (effectiveDate) {
-                    var formattedDate = new Date(effectiveDate).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric"
-                    }).replace(",", ""); // Remove comma if present
+                selectedAmount = parseFloat(selectedAmount).toFixed(2);
 
+               
 
-                } // Fetch from input field
                 let voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                 const params = {
                     VoucherNo: voucherNo,
@@ -1090,17 +1162,19 @@
                     VoucherAmount: selectedAmount,
                     DrCr: selectedDrCr
                 };
-                // Define context menu options
+
+                // ✅ Define context menu options WITH ICONS & COLORS
                 let menuItems = [
                     {
                         text: "Cost Allocation",
+                        icon: "money",              // dx icon
+                        color: "#007bff",           // Blue
                         onItemClick: function () {
                             $.ajax({
                                 type: "GET",
                                 url: `/api/JournalEntryEdit/IsPLItemLedger?accountId=${encodeURIComponent(selectedAccountId)}`,
                                 success: function (isPLItem) {
-                                    
-                                    if (isPLItem== true) {
+                                    if (isPLItem === true) {
                                         openAllocationPopup("Cost", params);
                                     } else {
                                         DevExpress.ui.dialog.alert(
@@ -1118,36 +1192,68 @@
                     },
                     {
                         text: "Property Allocation",
+                        icon: "home",
+                        color: "#28a745",           // Green
                         onItemClick: function () {
                             openAllocationPopup("Property", params);
                         }
                     },
                     {
                         text: "Employee Allocation",
+                        icon: "user",
+                        color: "#ffc107",           // Yellow
                         onItemClick: function () {
                             openAllocationPopup("Employee", params);
                         }
                     },
                     {
                         text: "Delete All Selected Line Items",
+                        icon: "trash",
+                        color: "#dc3545",           // Red
                         onItemClick: function () {
                             Deleteallrecords();
                         }
                     }
                 ];
 
-                // Create context menu and attach it to the clicked cell
+                // ✅ Create context menu with custom template for colors
                 let contextMenu = $("<div>").appendTo("body").dxContextMenu({
                     dataSource: menuItems,
                     target: e.cellElement,
                     showEvent: "dxcontextmenu",
+                   itemTemplate: function (itemData, itemIndex, itemElement) {
+                        // Add a wrapper so we can style hover effect
+                        let $container = $("<div>")
+                            .addClass("custom-menu-item") // ✅ custom class for hover
+                            .css({
+                                display: "flex",
+                                alignItems: "center",
+                                padding: "6px 10px",
+                                cursor: "pointer"
+                            });
+
+                        // Icon
+                        if (itemData.icon) {
+                            $("<i>")
+                                .addClass("dx-icon dx-icon-" + itemData.icon)
+                                .addClass("menu-icon-" + itemData.text.replace(/\s+/g, '').toLowerCase())
+                                .css({ marginRight: "8px", fontSize: "16px" })
+                                .appendTo($container);
+                        }
+
+                        // Text
+                        $("<span>")
+                            .text(itemData.text)
+                            .appendTo($container);
+
+                        itemElement.append($container);
+                   },
                     onItemClick: function (itemData) {
                         itemData.itemData.onItemClick();
                     },
                     onHidden: function () {
                         if (contextMenu) {
-                            contextMenu.dispose();  // Properly dispose of the instance
-                            // contextMenuElement.remove();  // Remove the element from the DOM
+                            contextMenu.dispose();
                         }
                     }
                 }).dxContextMenu("instance");
@@ -1155,6 +1261,7 @@
                 contextMenu.show();
             }
         });
+
     });
 
     // Function to open modal and load the URL with passed data
@@ -1518,6 +1625,10 @@
     const popupInstances = {}; // Global object to store popups by voucherEntryNo
 
     function openAllocationPopup(allocationType, params) {
+         if (!params.AccountId) {
+        DevExpress.ui.notify("Please select the ledger account.", "warning", 2000);
+        return;
+    }
         const queryString = Object.keys(params)
             .map(key => `${key}=${encodeURIComponent(params[key])}`)
             .join('&');
@@ -2456,4 +2567,10 @@
          }
      });
  }
+  $(function () {
+        $("#postthejournal").text(formatMessage("Post the Journal"));
+    });
+  $(function () {
+        $("#journalentryedit").text(formatMessage("Journal Entry Edit"));
+    });
 </script>

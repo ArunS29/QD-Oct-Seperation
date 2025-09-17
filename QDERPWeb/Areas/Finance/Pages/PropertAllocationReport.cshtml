@@ -7,13 +7,13 @@
 
 
 
-<h2>Property Allocation Details for Ledger Account</h2>
+<h2 id="propertyledgeraccount"></h2>
 
 <div class="toolbar custom-toolbar">
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
 .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Start Date")
             .Type(DateBoxType.Date)
@@ -26,7 +26,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
 .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "End Date")
             .Type(DateBoxType.Date)
@@ -39,7 +39,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().TextBox()
             .ID("accountIdLabel")
-            .Label("Ledger No")
+            .Label(new JS("formatMessage('Ledger No')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Ledger No")
             .ReadOnly(true)
@@ -80,6 +80,9 @@
 <div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
 
 <script>
+       $(function () {
+         $("#propertyledgeraccount").text(formatMessage("Property Allocation Details for Ledger Account"));
+    });
     $(document).ready(function () {
       
         const accountId = getQueryParam('accountId');
@@ -125,47 +128,48 @@
                 height: 400
             },
             dataSource: {
-                fields: [
-                    { dataField: "CostAllocationMasterGroup", area: "row", caption: "Property Master Group" },
-                    { dataField: "CostAllocationGroup", area: "row", caption: "Property Group" },
-                    { dataField: "CostAllocationUnit", area: "row", caption: "Property Center Unit" },
+                    fields: [
+      { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Property Master Group") },
+      { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Property Group") },
+      { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Property Center Unit") },
 
-                    { dataField: "CostAmount", summaryType: "sum", displayFormat: "currency" },
-                    { dataField: "Income", summaryType: "sum", displayFormat: "currency" },
-                    { dataField: "Expenses", summaryType: "sum", displayFormat: "currency" },
-                    { dataField: "VoucherDate", dataType: "date", displayFormat: "MMM-yyyy" },
-                    { dataField: "EffectiveDate", dataType: "date", displayFormat: "MMM-yyyy" },
-                    { dataField: "AllocationEffectiveDate", dataType: "date", displayFormat: "MMM-yyyy" },
-                    { dataField: "CostAllocationId" },
-                    { dataField: "VoucherEntryId" },
-                    { dataField: "CostAllocationUnitId" },
-                    { dataField: "CostAllocDrCr" },
-                    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency" },
-                    { dataField: "CostAllocRemarks" },
-                    { dataField: "IsDisabled" },
-                    { dataField: "AccountHead" },
-                    { dataField: "AccountGroup" },
-                    { dataField: "MasterGroup" },
-                    { dataField: "Pl" },
-                    { dataField: "AccountId" },
-                    { dataField: "VoucherNo" },
-                    { dataField: "VoucherType" },
-                    { dataField: "VoucherTypeAndNo" },
-                    { dataField: "CostCenterIncharge" },
-                    { dataField: "EntryNarration" },
-                    { dataField: "SysRemarks" },
-                    { dataField: "VoucherMonth" },
-                    { dataField: "VoucherYear" },
-                    { dataField: "EffectiveMonth" },
-                    { dataField: "EffectiveYear" },
-                    { dataField: "AllocationEffectiveMonth" },
-                    { dataField: "AllocationEffectiveYear" },
-                    { dataField: "ProjectMasterCode" },
-                    { dataField: "BranchCode" },
-                    { dataField: "BranchName" },
-                    { dataField: "VoucherNarration" },
-                    { dataField: "VoucherRefNo" }
-                ]
+      { dataField: "CostAmount", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Cost Amount") },
+      { dataField: "Income", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Income") },
+      { dataField: "Expenses", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Expenses") },
+      { dataField: "VoucherDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Voucher Date") },
+      { dataField: "EffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Effective Date") },
+      { dataField: "AllocationEffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Allocation Effective Date") },
+      { dataField: "CostAllocationId", caption: formatMessage("Cost Allocation Id") },
+      { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
+      { dataField: "CostAllocationUnitId", caption: formatMessage("Cost Allocation Unit Id") },
+      { dataField: "CostAllocDrCr", caption: formatMessage("Cost Allocation Dr/Cr") },
+      { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
+      { dataField: "CostAllocRemarks", caption: formatMessage("Cost Allocation Remarks") },
+      { dataField: "IsDisabled", caption: formatMessage("Is Disabled") },
+      { dataField: "AccountHead", caption: formatMessage("Account Head") },
+      { dataField: "AccountGroup", caption: formatMessage("Account Group") },
+      { dataField: "MasterGroup", caption: formatMessage("Master Group") },
+      { dataField: "Pl", caption: formatMessage("PL") },
+      { dataField: "AccountId", caption: formatMessage("Account Id") },
+      { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
+      { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
+      { dataField: "VoucherTypeAndNo", caption: formatMessage("Voucher Type And No") },
+      { dataField: "CostCenterIncharge", caption: formatMessage("Cost Center Incharge") },
+      { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
+      { dataField: "SysRemarks", caption: formatMessage("System Remarks") },
+      { dataField: "VoucherMonth", caption: formatMessage("Voucher Month") },
+      { dataField: "VoucherYear", caption: formatMessage("Voucher Year") },
+      { dataField: "EffectiveMonth", caption: formatMessage("Effective Month") },
+      { dataField: "EffectiveYear", caption: formatMessage("Effective Year") },
+      { dataField: "AllocationEffectiveMonth", caption: formatMessage("Allocation Effective Month") },
+      { dataField: "AllocationEffectiveYear", caption: formatMessage("Allocation Effective Year") },
+      { dataField: "ProjectMasterCode", caption: formatMessage("Project Master Code") },
+      { dataField: "BranchCode", caption: formatMessage("Branch Code") },
+      { dataField: "BranchName", caption: formatMessage("Branch Name") },
+      { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
+      { dataField: "VoucherRefNo", caption: formatMessage("Voucher Reference No") }
+    ]
+
             },
             width: "100%",
             height: $(window).height() - 50,

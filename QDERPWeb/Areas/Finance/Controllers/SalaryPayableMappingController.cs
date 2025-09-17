@@ -1,16 +1,18 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using DevExpress.CodeParser;
+﻿using DevExpress.CodeParser;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -20,11 +22,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SalaryPayableMappingController> _logger;
-
-        public SalaryPayableMappingController(ILogger<SalaryPayableMappingController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public SalaryPayableMappingController(ILogger<SalaryPayableMappingController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -142,7 +145,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         //}
 
         [HttpGet]
-        public IActionResult GetBankReconciliation(DataSourceLoadOptions loadOptions, string accid)
+        public IActionResult GetBankReconciliation(DataSourceLoadOptions loadOptions, string accid, DateTime? fromDate, DateTime? toDate)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -158,10 +161,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 var query = from t1 in dbContext.Tbl201VoucherEntries
                             join t2 in dbContext.Tbl201VoucherMasters
-                            on t1.VoucherNo equals t2.VoucherNo
+                                on t1.VoucherNo equals t2.VoucherNo
                             where t1.AccountHead == accid
                                   && t1.BankClearedOn == null
                                   && t1.SysRemarks != "System Generated Opening Balance"
+                                 
                             select new
                             {
                                 t1.VoucherEntryNo,
@@ -185,22 +189,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
 
+
         [HttpGet]
-        public IActionResult Getshowreconcileditems(DataSourceLoadOptions loadOptions)
+        public IActionResult Getshowreconcileditems(DataSourceLoadOptions loadOptions, string accid, DateTime? fromDate, DateTime? toDate)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
 
-           
+            if (string.IsNullOrWhiteSpace(accid) || accid == "0")
+            {
+                return BadRequest("Valid Account ID is required.");
+            }
 
             try
             {
                 var query = from t1 in dbContext.Tbl201VoucherEntries
                             join t2 in dbContext.Tbl201VoucherMasters
-                            on t1.VoucherNo equals t2.VoucherNo
+                                on t1.VoucherNo equals t2.VoucherNo
                             where t1.BankClearedOn != null
+                                  && t1.AccountHead == accid
                                   
                             select new
                             {
@@ -220,10 +229,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetBankReconciliation");
+                _logger.LogError(ex, "Error in Getshowreconcileditems");
                 return BadRequest(new { message = "An error occurred while fetching data.", error = ex.Message });
             }
         }
+
 
 
         [HttpPost]
@@ -273,7 +283,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public IActionResult UpdateBankClearedOn(string VoucherEntryNo, DateTime? BankClearedOn, string PaymentStatus)
+        public async Task<IActionResult> UpdateBankClearedOnAsync(string VoucherEntryNo, DateTime? BankClearedOn, string PaymentStatus)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -306,6 +316,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Bank Reconcialiation",
+                    actionDetail: $"Updated: {voucher.VoucherNo}",
+                    documentNo: voucher.VoucherNo
+                    );
 
                     return Ok("Voucher entry updated successfully.");
                 }
@@ -463,7 +478,83 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetBankBalances(string accid, DateTime toDate, CancellationToken ct)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
 
+            try
+            {
+                // 1️⃣ Get Account Balance
+                var accountBalanceResult = await dbContext.AccountBalanceResults
+                    .FromSqlRaw("EXEC sp20102GetAccountBalance @p0, @p1", accid, toDate)
+                    .ToListAsync(ct);
+
+                // 2️⃣ Get Bank Cleared Balance
+                var bankClearedBalanceResult = await dbContext.BankClearedBalanceResults
+                    .FromSqlRaw("EXEC sp20102GetBankClearedBalance @p0, @p1", accid, toDate)
+                    .ToListAsync(ct);
+
+                var accountBalance = accountBalanceResult.Sum(x => x.Amount);
+
+                var bankClearedBalance = bankClearedBalanceResult.FirstOrDefault()?.Balance ?? 0;
+
+                return Ok(new
+                {
+                    AccountBalance = accountBalance,
+                    BankClearedBalance = bankClearedBalance
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching balances: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateBankClearedOnBulk([FromBody] List<BankReconciliationUpdateDto> updates)
+        {
+            if (updates == null || updates.Count == 0)
+                return BadRequest("No data received for update.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var entryNos = updates.Select(u => u.VoucherEntryNo).ToList();
+                var vouchers = dbContext.Tbl201VoucherEntries
+                                        .Where(v => entryNos.Contains(v.VoucherEntryNo))
+                                        .ToList();
+
+                foreach (var update in updates)
+                {
+                    var voucher = vouchers.FirstOrDefault(v => v.VoucherEntryNo == update.VoucherEntryNo);
+                    if (voucher == null)
+                        continue;
+
+                    // Directly update row values (null allowed)
+                    voucher.BankClearedOn = update.BankClearedOn;
+                    voucher.PaymentStatus = update.PaymentStatus;
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "Finance > Bank Reconciliation",
+                    actionDetail: $"Bulk updated {updates.Count} vouchers",
+                    documentNo: string.Join(",", updates.Select(x => x.VoucherEntryNo))
+                );
+
+                return Ok(new { message = "All rows updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in UpdateBankClearedOnBulk");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
 

@@ -391,6 +391,22 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     return BadRequest(new { success = false, message = "UnitPrice cannot be negative." });
             }
 
+            int slNoCounter = await dbContext.Tbl20162VatinvoiceChildren.Where(x => x.InvoiceNo == request.RequestNo).CountAsync();
+            if (request.IsExist != true)
+            {
+                var existingChildren = await dbContext.Tbl20162VatinvoiceChildren
+                        .Where(x => x.InvoiceNo == request.RequestNo)
+                        .ToListAsync();
+                slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
+
+
+                var toDelete = existingChildren.ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl20162VatinvoiceChildren.RemoveRange(toDelete);
+                }
+            }
             var executionStrategy = dbContext.Database.CreateExecutionStrategy();
 
             await executionStrategy.ExecuteAsync(async () =>
@@ -398,7 +414,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 using var transaction = await dbContext.Database.BeginTransactionAsync();
                 try
                 {
-                    int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
                     foreach (var item in request.Items)
                     {
@@ -533,7 +548,22 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 if (item.UnitPrice < 0)
                     return BadRequest(new { success = false, message = "UnitPrice cannot be negative." });
             }
+            int slNoCounter = await dbContext.Tbl20182ProformaInvoiceChildren.Where(x => x.ProformaInvoiceNo == request.RequestNo).CountAsync();
+            if (request.IsExist != true)
+            {
+                var existingChildren = await dbContext.Tbl20182ProformaInvoiceChildren
+                        .Where(x => x.ProformaInvoiceNo == request.RequestNo)
+                        .ToListAsync();
+                slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
+
+                var toDelete = existingChildren.ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl20182ProformaInvoiceChildren.RemoveRange(toDelete);
+                }
+            }
             var executionStrategy = dbContext.Database.CreateExecutionStrategy();
 
             await executionStrategy.ExecuteAsync(async () =>
@@ -541,7 +571,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 using var transaction = await dbContext.Database.BeginTransactionAsync();
                 try
                 {
-                    int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
                     foreach (var item in request.Items)
                     {
@@ -676,7 +705,22 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 if (item.UnitPrice < 0)
                     return BadRequest(new { success = false, message = "UnitPrice cannot be negative." });
             }
+            int slNoCounter = await dbContext.Tbl20167VatpurchaseChildren.Where(x => x.PurchaseVoucherNo == request.RequestNo).CountAsync();
+            if (request.IsExist != true)
+            {
+                var existingChildren = await dbContext.Tbl20167VatpurchaseChildren
+                        .Where(x => x.PurchaseVoucherNo == request.RequestNo)
+                        .ToListAsync();
+                slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
+
+                var toDelete = existingChildren.ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl20167VatpurchaseChildren.RemoveRange(toDelete);
+                }
+            }
             var executionStrategy = dbContext.Database.CreateExecutionStrategy();
 
             await executionStrategy.ExecuteAsync(async () =>
@@ -684,7 +728,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 using var transaction = await dbContext.Database.BeginTransactionAsync();
                 try
                 {
-                    int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
                     foreach (var item in request.Items)
                     {

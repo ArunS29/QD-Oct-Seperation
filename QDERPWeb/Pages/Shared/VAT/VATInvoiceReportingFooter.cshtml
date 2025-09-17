@@ -256,13 +256,13 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Invoice Collection Report")
+                        .Text(new JS("formatMessage('Invoice Collection Report')"))
                         .Icon("file")
                         .Option("color", "#FF7043") // Orange
                         .OnClick("navigateToDebtorsCollection");
 
                     items.Add()
-                        .Text("Sales Reporting with Line Details")
+                        .Text(new JS("formatMessage('Sales Reporting with Line Details')"))
                         .Icon("file")
                         .Option("color", "#00ACC1") // Cyan
                         .OnClick("navigateToReportingInDetails");

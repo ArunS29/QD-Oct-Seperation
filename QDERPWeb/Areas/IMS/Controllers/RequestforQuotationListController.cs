@@ -676,7 +676,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			master.ModifiedBy = userName;
 			master.ModifiedOn = DateTime.Now;
 
-			
+			var signatoryId = await GetSignatoryIDfromUserID(userId);
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
@@ -685,7 +685,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                              documentNo: $"{Rfqno}"
                            );
 
-            return Ok(new { success = true, message = "RFQ submitted successfully." });
+            return Ok(new { success = true, message = "RFQ submitted successfully.",submittedBy = signatoryId  });
 		}
         [HttpPost]
         public async Task<IActionResult> VerifyRFQ(string Rfqno)
@@ -721,6 +721,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedOn = DateTime.Now;
             voucher.VerifiedBy = userName;
 
+            var signatoryId = await GetSignatoryIDfromUserID(userId);
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify RFQ",
@@ -731,7 +732,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Ok(new
             {
                 message = "RFQ has been Verified and processed for Approval.",
-               
+                verifiedBy = signatoryId
             });
         }
 
@@ -871,9 +872,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (existingEntity.IsApproved != true && existingEntity.IsSubmitted != true && existingEntity.IsVerified != true)
                     return Ok(new { success = false, message = "RFQ is already unlocked." });
 
-                existingEntity.IsApproved = false;
                 existingEntity.IsSubmitted = false;
+                existingEntity.SubmittedBy = "";
+                existingEntity.SubmittedOn = null;
+
+                existingEntity.IsApproved = false;
+                existingEntity.ApprovedBy = "";
+                existingEntity.ApprovedOn = null;
+                
                 existingEntity.IsVerified = false;
+                existingEntity.VerifiedBy = "";
+                existingEntity.VerifiedOn = null;
+                
 
                 dbContext.Tbl60701rfqmasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();

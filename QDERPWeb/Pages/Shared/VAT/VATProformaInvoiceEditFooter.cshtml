@@ -264,60 +264,61 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Preview Invoice")
-                        .Icon("print")
-                        .Option("color", "#FF7043"); // Orange
+                    .Text(new JS("formatMessage('Preview Invoice')"))
+                    .Icon("print")
+                    .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview Proforma Invoice(NewFormat)")
-                        .Icon("file")
-                        .Option("color", "#00ACC1"); // Cyan
+                    .Text(new JS("formatMessage('Preview Proforma Invoice(NewFormat)')"))
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
 
                     items.Add()
-                        .Text("Preview Invoice(English)")
-                        .Icon("folder")
-                        .Option("color", "#AB47BC"); // Purple
+                    .Text(new JS("formatMessage('Preview Invoice(English)')"))
+                    .Icon("folder")
+                    .Option("color", "#AB47BC"); // Purple
 
                     items.Add()
-                        .Text("Preview Invoices in Foreign Currency(English)")
-                        .Icon("edit")
-                        .Option("color", "#FBBC05"); // Yellow
+                    .Text(new JS("formatMessage('Preview Invoices in Foreign Currency(English)')"))
+                    .Icon("edit")
+                    .Option("color", "#FBBC05"); // Yellow
 
                     items.Add()
-                        .Text("Preview Invoices in (Foreign Currency)")
-                        .Icon("upload")
-                        .Option("color", "#EA4335"); // Red
+                    .Text(new JS("formatMessage('Preview Invoices in (Foreign Currency)')"))
+                    .Icon("upload")
+                    .Option("color", "#EA4335"); // Red
+
+                    @* items.Add()
+                    .Text(new JS("formatMessage('Preview Invoices in -with discount')"))
+                    .Icon("upload")
+                    .Option("color", "#34A853"); // Green
 
                     items.Add()
-                        .Text("Preview Invoices in -with discount")
-                        .Icon("upload")
-                        .Option("color", "#34A853"); // Green
+                    .Text(new JS("formatMessage('Preview Invoices in -withOut discount')"))
+                    .Icon("upload")
+                    .Option("color", "#4285F4"); // Blue *@
 
                     items.Add()
-                        .Text("Preview Invoices in -withOut discount")
-                        .Icon("upload")
-                        .Option("color", "#4285F4"); // Blue
-
-                    items.Add()
-                        .Text("Upload Items From Excel")
-                        .Icon("chart")
-                        .Option("color", "#FF7043")
-                        .OnClick("ProformaUpload");
+                    .Text(new JS("formatMessage('Upload Items From Excel')"))
+                    .Icon("chart")
+                    .Option("color", "#FF7043")
+                    .OnClick("ProformaUpload");
                 })
                 .ItemTemplate(@<text>
-                    <div class="custom-dropdown-item">
-                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                        <div class="item-content">
-                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                            <div>
-                                <div class="item-title"><%- text %></div>
-                            </div>
-                        </div>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
                     </div>
-                </text>)
+                </div>
+            </div>
+        </text>)
                 .OnItemClick("addPrintButton_click")
                 )
     </div>
+
 
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
@@ -1420,9 +1421,9 @@
                         // case "Preview Invoices in -with discount":
                         //     reportName = "Wtdiscountpreviewinvoice";
                         //     break;
-                        case "Preview Invoices in -withOut discount":
-                            reportName = "WithoutDiscountInvoice";
-                            break;
+                        // case "Preview Invoices in -withOut discount":
+                        //     reportName = "WithoutDiscountInvoice";
+                        //     break;
 
                     case "Preview VAT Purchase Bill":
                             reportName = "BillsPurchases";
@@ -1461,7 +1462,7 @@
         async function checkInvoiceApprovalStatus(invoiceNo) {
             try {
                 const response = await $.ajax({
-                    url: `/api/VATModule/GetInvoiceApprovalStatus/${encodeURIComponent(invoiceNo)}`,
+                    url: `/api/VATModule/GetInvoiceApprovalStatusProforma/${encodeURIComponent(invoiceNo)}`,
                     method: 'GET',
                     dataType: 'json',
                 });
@@ -1784,11 +1785,108 @@
 
         openModal(url, title);
     }
+    
     function ProformaUpload() {
-        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-        var url = `/${tenantName}/VAT/ProformaUpload?ProformaInvoiceNo=${invoiceNo}`;
-        window.location.href = url; // Navigate to the page
-    }
+            const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+            const totalCount = gridInstance.totalCount();
+            console.log("Total Count from DataSource:", totalCount);
+            var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+            if (!invoiceNo) {
+                DevExpress.ui.notify("Request No is required.", "error", 2000);
+                return;
+            }
+            if(totalCount > 0){
+                handleUploadConfirm(invoiceNo);
+            }else{
+                window.location.href = `/${tenantName}/VAT/ProformaUpload?ProformaInvoiceNo=${invoiceNo}`;
+            }
+        }
+
+        (function(){
+        const dialog = document.getElementById('confirmDialog');
+        const form = document.getElementById('confirmForm');
+        const titleEl = document.getElementById('confirmTitle');
+        const messageEl = document.getElementById('confirmMessage');
+        const stepChoice = document.getElementById('stepChoice');
+        const stepType = document.getElementById('stepType');
+        const phraseInput = document.getElementById('confirmPhrase');
+        const phraseBadge = document.getElementById('phraseBadge');
+        const phraseError = document.getElementById('phraseError');
+        const btnConfirm = document.getElementById('btnConfirm');
+        const chooseYes = document.getElementById('chooseYes');
+        const chooseNo = document.getElementById('chooseNo');
+        
+        let REQUIRED_PHRASE = 'Replace by user';
+        
+        function resetSteps(){
+            stepChoice.classList.add('active');
+            stepType.classList.remove('active');
+            phraseInput.value = '';
+            phraseError.classList.remove('show');
+            btnConfirm.disabled = true;
+        }
+        function openDialog(opts){
+            const { title, message, phrase } = opts || {};
+            if(title) titleEl.textContent = title;
+            if(message) messageEl.textContent = message;
+            REQUIRED_PHRASE = phrase || 'Replace by user';
+            phraseBadge.textContent = REQUIRED_PHRASE;
+            resetSteps();
+            if(typeof dialog.showModal === 'function'){
+            dialog.showModal();
+            } else {
+            dialog.setAttribute('open','');
+            }
+        }
+        function closeDialog(){
+            if(dialog.open) dialog.close();
+            dialog.removeAttribute('open');
+        }
+        function validate() {
+            const ok = (phraseInput.value || '').trim() === REQUIRED_PHRASE;
+            btnConfirm.disabled = !ok;
+            phraseError.classList.toggle('show', !ok && phraseInput.value.length > 0);
+            return ok;
+        }
+        phraseInput.addEventListener('input', validate);
+        form.addEventListener('submit', e => e.preventDefault());
+        chooseYes.addEventListener('click', (e)=>{
+            e.preventDefault();
+            stepChoice.classList.remove('active');
+            stepType.classList.add('active');
+            setTimeout(()=>phraseInput.focus(), 0);
+        });
+        chooseNo.addEventListener('click', (e)=>{
+            e.preventDefault();
+            closeDialog();
+            if(currentResolver) { currentResolver(false); currentResolver=null; }
+        });
+        btnConfirm.addEventListener('click', (e)=>{
+            e.preventDefault();
+            if(validate()){
+            closeDialog();
+            if(currentResolver) { currentResolver(true); currentResolver=null; }
+            }
+        });
+        let currentResolver = null;
+        window.confirmDeleteWithPhrase = function(options){
+            debugger;
+            openDialog(options || {});
+            return new Promise(resolve => { currentResolver = resolve; });
+        }
+        window.handleUploadConfirm = async function (requestNo) {
+            const ok = await window.confirmDeleteWithPhrase({
+                title: 'Upload via Excel?',
+                message: 'This cannot be undone. Related data may also be removed.',
+                phrase: 'Replace by user'
+            });
+            if (ok) {
+                window.location.href = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}`;
+            } else {
+                window.location.href = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}&exist=true`;
+            }
+        }
+        })();
 
     // Attachment Count
     //1. Button Modify in btn-attach

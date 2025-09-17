@@ -386,6 +386,7 @@
             @* <div class="bar"><span style="width:50%"></span></div> *@
             <div class="overlay">
                 <div class="detail"><i class="fa-solid fa-book"></i> Today: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Month: 0</div>
                 <div class="detail"><i class="fa-solid fa-book"></i> This Week: 0</div>
             
             </div>
@@ -429,22 +430,22 @@
     <div style="margin-top:10px">
         @await Html.PartialAsync("_ExpenseClaimFooter")
     </div>
-    <div class="context-menu" id="contextMenu">
+   @*  <div class="context-menu" id="contextMenu">
         <div class="context-menu-item">
             <div class="menu-item">
                 <i class="fa fa-pencil-square-o" style="color:cornflowerblue;"></i>
-                <span class="spnRightClickGride">Edit Claim</span>
+                <span class="spnRightClickGride" id="editclaim"></span>
             </div>
             <div class="menu-item">
                 <i class="fa fa-times" style="color:red;"></i>
-                <span class="spnRightClickGride">Delete Claim</span>
+                <span class="spnRightClickGride" id="deleteclaim"></span>
             </div>
             <div class="menu-item">
                 <i class="fa fa-unlock" style="color:orange;"></i>
-                <span class="spnRightClickGride">Unlock Claim</span>
+                <span class="spnRightClickGride" id="unlockclaim"></span>
             </div>
         </div>
-    </div>
+    </div> *@
 
 
 
@@ -585,7 +586,7 @@ columns.AddFor(m => m.ClaimerName)
 
 
 columns.Add()
-.Caption("Total Consumed Amount")
+.Caption(new JS("formatMessage('Total Consumed Amount')"))
 .DataField("TotalConsumedAmount")
 .CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
 .Format(f => f.Type(Format.FixedPoint).Precision(2))
@@ -834,7 +835,7 @@ columns.Add()
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("UserName");
+                    columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')"));
                     columns.Add().DataField("UserId").Visible(false);
                     
 
@@ -899,248 +900,289 @@ columns.Add()
         }
         });
         getJournalOnLoad();
-        var contextMenu = $("#contextMenu");
-        var contextMenuContent = $("#contextMenuContent");
-        // Hide context menu on click outside
-        $(document).on("click", function () {
-            contextMenu.hide();
-        });
-        $(".context-menu").on("click", ".menu-item", function () {
-            const actionLabel = $(this).find(".spnRightClickGride").text().trim();
+         let currentIndex = -1;
 
-            switch (actionLabel) {
-                case "Edit Claim":
-                    handleEditJournalEntry();
-                    break;
-                case "Delete Claim":
-                    handleDeleteJournalEntry();
-                    break;
-                case "Unlock Claim":
-                    handleUnlockJournalEntry();
-                    break;
-               
-                default:
-                    DevExpress.ui.notify("Unknown action.", "warning", 2000);
-            }
-        });
+    $("#dataGrid").dxDataGrid({
+        // ... your grid options ...
+        onContextMenuPreparing: function (e) {
+            e.items = [];
 
-        function handleEditJournalEntry() {
-            
-            if (contextMenuRowData) {
-                const claimRefNo = contextMenuRowData.items && contextMenuRowData.items.length > 0
-                    ? contextMenuRowData.items[0].ClaimRefNo
-                    : null;
-                if (claimRefNo && claimRefNo.trim() !== "") {
-                    let targetUrl = '';
+             if (e.target === "content" && e.row && e.row.rowType === "data") {
+            const rowData = e.row.data;
 
-                    if (claimRefNo.startsWith('EXP')) {
-                        targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
-                    } else if (claimRefNo.startsWith('PCQ')) {
-                        targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
-                    } else if (claimRefNo.startsWith('SRQ')) {
-                        targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
-                    }
-
-                    if (targetUrl) {
-                        window.location.href = targetUrl;
-                    }
-                } else {
-                    alert("Claim Reference Number is missing.");
-                }
-            } else {
-                alert("Please right-click a row to edit.");
-            }
-        }
-
-
-        function handleDeleteJournalEntry() {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const selectedRow = dataGrid.getSelectedRowsData();
-
-            if (selectedRow.length > 0) {
-                const journalRefNo = selectedRow[0].JournalRefNo;
-
-                if (journalRefNo && journalRefNo.trim() !== "") {
-                    $.ajax({
-                        type: "GET",
-                        url: "/api/JournalRegister/GetJournalStatus",
-                        contentType: "application/json",
-                        data: { journalRefNo: journalRefNo },
-                        success: function (response) {
-                            if (response) {
-                                const { isSubmitted, isApproved, isPosted } = response;
-
-                                if (isSubmitted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Submitted, You cannot delete the Submitted JV.", "JV is submitted already");
-                                } else if (!isSubmitted && isApproved || isPosted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Approved, You cannot delete the Approved JV.", "JV is Approved already");
-                                } else if (isSubmitted && isApproved && isPosted) {
-                                    DevExpress.ui.dialog.alert("Journal Entry is already Paid, You cannot delete the Posted JV.", "Warning");
-                                } else if (!isSubmitted && !isApproved && !isPosted) {
-                                    let result = DevExpress.ui.dialog.confirm(
-                                        "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
-                                        "Confirm Deletion"
-                                    );
-                                    result.done(function (dialogResult) {
-                                        if (dialogResult) {
-                                            $.ajax({
-                                                type: "POST",
-                                                url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
-                                                contentType: "application/json",
-                                                success: function (deleteResponse) {
-                                                    if (deleteResponse.success) {
-                                                        getAllSubmissionJournal();
-                                                        DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
-                                                    } else {
-                                                        DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
-                                                    }
-                                                },
-                                                error: function () {
-                                                    DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            } else {
-                                DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+             // Define context menu items with permission keys
+            let menuConfig = [
+                {
+                    text: "Edit Claim",
+                    icon: "edit",
+                    color: "#28a745",
+                    permissionKey: "frm20107ExpenseClaimView_EditClaim",
+                    onItemClick: function () {
+                        if (rowData.ClaimRefNo && rowData.ClaimRefNo.trim() !== "") {
+                            let targetUrl = '';
+                            if (rowData.ClaimRefNo.startsWith('EXP')) {
+                                targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                            } else if (rowData.ClaimRefNo.startsWith('PCQ')) {
+                                targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                            } else if (rowData.ClaimRefNo.startsWith('SRQ')) {
+                                targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
                             }
-                        },
-                        error: function () {
-                            DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
+                            if (targetUrl) window.location.href = targetUrl;
+                        } else {
+                            alert("Claim Reference Number is missing.");
                         }
-                    });
-                } else {
-                    DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                    }
+                },
+                {
+                    text: "Unlock Claim",
+                    icon: "unlock",
+                    color: "#17a2b8",
+                    permissionKey: "frm20107ExpenseClaimView_UnlockClaim",
+                    onItemClick: function () {
+                        handleUnlockJournalEntry(rowData.ClaimRefNo, rowData.IsPaid);
+                    }
+                },
+                {
+                    text: "Delete Claim",
+                    icon: "trash",
+                    color: "#dc3545",
+                    permissionKey: "frm20107ExpenseClaimView_DeleteClaim",
+                    onItemClick: function () {
+                        handleDeleteJournalEntry(rowData.ClaimRefNo);
+                    }
                 }
-            } else {
-                DevExpress.ui.dialog.alert("Please select a row to delete.", "Error");
-            }
-        }
+            ];
 
-
-        function handleUnlockJournalEntry() {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const selectedRow = dataGrid.getSelectedRowsData();
-            if (!selectedRow || selectedRow.length === 0) {
-                DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
-                return;
-            }
-
-
-            const journalRefNo = selectedRow[0].JournalRefNo;
-            const isPosted = selectedRow[0].IsPosted;
-
-            if (isPosted) {
-                DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
-                return;
-            }
-
-            DevExpress.ui.dialog.confirm(
-                "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
-                "Unlock Confirmation"
-            ).done(function (dialogResult) {
-                if (dialogResult) {
-                    // Perform AJAX request to update the database
-                    $.ajax({
-                        url: `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
-                        type: 'POST',
-                        contentType: "application/json",
-
-                        success: function (response) {
-                            if (response.success) {
-                                getAllSubmissionJournal();
-                                DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
-                                // Optionally refresh your DataGrid here
-                            } else {
-                                DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
-                            }
-                        },
-                        error: function () {
-                            DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
-                        }
+            // Apply permissions
+            menuConfig.forEach(item => {
+                let perm = menuPermissions[item.permissionKey?.toLowerCase()];
+                if (perm && perm.visible) {
+                    e.items.push({
+                        ...item,
+                        disabled: !perm.enabled
                     });
                 }
             });
         }
-        function handleCloneJournalEntry() {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const selectedRow = dataGrid.getSelectedRowsData();
-            if (!selectedRow || selectedRow.length === 0) {
-                DevExpress.ui.notify("No Journal Entry selected.", "warning", 2000);
-                return;
+        
+
+            if (e.target === "header") {
+                e.items.push(
+                    {
+                        text: "Column Chooser",
+                        icon: "columnchooser",
+                        color: "#007bff",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    },
+                    {
+                        text: "Refresh Data",
+                        icon: "refresh",
+                        color: "#ffc107",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        }
+                    }
+                );
             }
 
-            DevExpress.ui.dialog.confirm(
-                "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
-                "Confirm Clone"
-            ).done(function (dialogResult) {
-                if (dialogResult) {
-                    const journalRefNo = selectedRow[0].JournalRefNo;
-                    const requesterId = selectedRow[0].RequesterID;
+            // ❌ prevent menu & line when no items
+            if (!e.items || e.items.length === 0) {
+                e.cancel = true;
+            }
 
-                    // Step 1: Get new voucher number
-                    $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
-                        // Step 2: Call clone action
+            // ❌ prevent highlight line when clicking below last row
+            if (e.target === "content" && !e.row) {
+                e.cancel = true;
+            }
+        }
+    });
+
+    // // ✅ Keyboard navigation
+    // $(document).on("keydown", function (e) {
+    //     const menuItems = $(".dx-context-menu .dx-menu-item");
+    //     if (!menuItems.length) return;
+
+    //     if (e.key === "ArrowDown") {
+    //         currentIndex = (currentIndex + 1) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //         e.preventDefault();
+    //     } else if (e.key === "ArrowUp") {
+    //         currentIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //         e.preventDefault();
+    //     } else if (e.key === "Enter" || e.key === " ") {
+    //         if (currentIndex >= 0) {
+    //             $(menuItems[currentIndex]).trigger("dxclick");
+    //         }
+    //         e.preventDefault();
+    //     } else if (e.key === "Escape") {
+    //         $(".dx-context-menu").dxContextMenu("instance").hide();
+    //         currentIndex = -1;
+    //     }
+    // });
+
+    // ✅ Mouse hover sync
+    $(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+        const menuItems = $(".dx-context-menu .dx-menu-item");
+        currentIndex = menuItems.index(this);
+        highlightItem(this);
+    });
+
+    // ✅ Highlight helper
+    function highlightItem(item) {
+        $(".dx-context-menu .dx-menu-item").removeClass("highlighted"); // remove old highlight
+        if (item) $(item).addClass("highlighted"); // apply new highlight
+    }
+
+    // ✅ Custom CSS
+    $("<style>")
+        .prop("type", "text/css")
+        .html(`
+            /* Remove DevExtreme default hover/focus */
+            .dx-context-menu .dx-menu-item.dx-state-focused,
+            .dx-context-menu .dx-menu-item.dx-state-hover {
+                    background-color: var(--title-background-color) !important;
+                    color: white !important;
+            }
+
+            /* Our unified highlight */
+            .dx-context-menu .dx-menu-item.highlighted {
+                   background-color: var(--title-background-color) !important;
+                   color: white !important;
+            }
+        `)
+        .appendTo("head");
+
+
+        // function handleEditJournalEntry() {
+            
+        //     if (contextMenuRowData) {
+        //         const claimRefNo = contextMenuRowData.items && contextMenuRowData.items.length > 0
+        //             ? contextMenuRowData.items[0].ClaimRefNo
+        //             : null;
+        //         if (claimRefNo && claimRefNo.trim() !== "") {
+        //             let targetUrl = '';
+
+        //             if (claimRefNo.startsWith('EXP')) {
+        //                 targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+        //             } else if (claimRefNo.startsWith('PCQ')) {
+        //                 targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+        //             } else if (claimRefNo.startsWith('SRQ')) {
+        //                 targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+        //             }
+
+        //             if (targetUrl) {
+        //                 window.location.href = targetUrl;
+        //             }
+        //         } else {
+        //             alert("Claim Reference Number is missing.");
+        //         }
+        //     } else {
+        //         alert("Please right-click a row to edit.");
+        //     }
+        // }
+
+
+         function handleDeleteJournalEntry(claimRefNo) {
+
+
+                    if (claimRefNo && claimRefNo.trim() !== "") {
                         $.ajax({
-                            url: '/api/JournalRegister/CloneJournalEntry',
-                            type: 'POST',
-                            contentType: 'application/json',
-                            data: JSON.stringify({
-                                fromJournalRefNo: journalRefNo,
-                                toJournalRefNo: newVoucherNo,
-                                requesterId: requesterId
-                            }),
+                            type: "GET",
+                            url: "/api/ExpenseClaim/GetJournalStatus",
+                            contentType: "application/json",
+                            data: { claimRefNo: claimRefNo },
                             success: function (response) {
-                                if (response.success) {
-                                    getAllSubmissionJournal();
-                                    DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
-                                    // Optionally refresh DataGrid
+                                if (response) {
+                                    const { isSubmitted, isApproved, isPaid } = response;
+
+                                    if (isSubmitted) {
+                                        DevExpress.ui.dialog.alert("Claim is already Submitted, You cannot delete the Submitted Claim.", "Claim is submitted already");
+                                    } else if (!isSubmitted && isApproved || isPaid) {
+                                        DevExpress.ui.dialog.alert("Claim is already Approved, You cannot delete the Approved Claim.", "Claim is Approved already");
+                                    } else if (isSubmitted && isApproved && isPaid) {
+                                        DevExpress.ui.dialog.alert("Claim is already Paid, You cannot delete the Posted JV.", "Claim is Paid");
+                                    } else if (!isSubmitted && !isApproved && !isPaid) {
+                                        let result = DevExpress.ui.dialog.confirm(
+                                            "You are about to delete the Claim for the Expense,<br/>Click Yes if you would like to continue.",
+                                            "Confirm Deletion"
+                                        );
+                                        result.done(function (dialogResult) {
+                                            if (dialogResult) {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: `/api/ExpenseClaim/DeleteJournalEntry?claimRefNo=${encodeURIComponent(claimRefNo)}`,
+                                                    contentType: "application/json",
+                                                    success: function (deleteResponse) {
+                                                        if (deleteResponse.success) {
+                                                            // getAllSubmissionJournal();
+                                                            DevExpress.ui.notify("Claim deleted successfully.", "success", 2000);
+                                                        } else {
+                                                            DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                 } else {
-                                    DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                                    DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
                                 }
                             },
-                            error: function (xhr) {
-                                DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                            error: function () {
+                                DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
                             }
                         });
-                    });
-                }
-            });
+                    } else {
+                        DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                    }
+
+            }
+
+
+               function handleUnlockJournalEntry(claimRefNo, isPaid) {
+        if (!claimRefNo) {
+            DevExpress.ui.notify("Invalid Journal Reference Number.", "error", 2000);
+            return;
         }
 
+        if (isPaid) {
+            DevExpress.ui.dialog.alert("Claim is already Paid, You can't unlock the Paid Claim.", "Claim is Paid already");
+            return;
+        }
 
-            $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-                e.preventDefault();
-                e.stopPropagation();
+        DevExpress.ui.dialog.confirm(
+            "You are about to unlock the Claim.</br>Click Yes if you would like to continue.",
+            "Unlock Confirmation"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: `/api/ExpenseClaim/UnlockJournalEntry?claimRefNo=${encodeURIComponent(claimRefNo)}`,
+                    type: 'POST',
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            // getAllSubmissionJournal();
+                            DevExpress.ui.notify("Claim unlocked successfully.", "success", 2000);
+                        } else {
+                            DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
+                    }
+                });
+            }
+        });
+    }
 
-                const gridElement = $("#dataGrid");
-                const gridInstance = DevExpress.ui.dxDataGrid.getInstance(gridElement[0]); // ✅ THIS IS THE FIX
 
-                const rowElement = e.currentTarget;
-                const rowIndex = gridInstance.getRowIndexByElement($(rowElement)); // ✅ No longer throws error
-
-                const visibleRows = gridInstance.getVisibleRows();
-
-                if (rowIndex === -1 || visibleRows[rowIndex]?.rowType !== "data") {
-                    console.warn("Clicked row is a group row or invalid.");
-                    return;
-                }
-
-                contextMenuRowData = visibleRows[rowIndex].data;
-
-                console.log("Right-clicked row data:", contextMenuRowData);
-
-                // Optional: visually select the row
-                gridInstance.selectRowsByIndexes([rowIndex]);
-
-                // Show your context menu
-                $("#contextMenuContent").empty(); // Optional
-                $("#contextMenu").css({
-                        top: e.pageY + "px",
-                        left: e.pageX + "px"
-                }).show();
-            });
+           
 
 
 
@@ -1706,5 +1748,14 @@ columns.Add()
     });
     $(function () {
         $("#expensetotalapproved").text(formatMessage("Total Approved Amount"));
+    });
+    $(function () {
+        $("#unlockclaim").text(formatMessage("Unlock Claim"));
+    });
+    $(function () {
+        $("#deleteclaim").text(formatMessage("Delete Claim"));
+    });
+    $(function () {
+        $("#editclaim").text(formatMessage("Edit Claim"));
     });
 </script>

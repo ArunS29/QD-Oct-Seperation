@@ -4,13 +4,13 @@
 }
 
 
-<h2>Cost Allocation Details for Ledger Account</h2>
+<h2 id="costledger"></h2>
 
 <div class="toolbar custom-toolbar">
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
 .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Start Date")
             .Type(DateBoxType.Date)
@@ -23,7 +23,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
 .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "End Date")
             .Type(DateBoxType.Date)
@@ -36,7 +36,7 @@
     <div class="toolbar-item">
         @(Html.DevExtreme().TextBox()
             .ID("accountIdLabel")
-            .Label("Ledger No")
+            .Label(new JS("formatMessage('Ledger No')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Ledger No")
             .ReadOnly(true)
@@ -80,6 +80,9 @@
 
 
     <script>
+           $(function () {
+         $("#costledger").text(formatMessage("Cost Allocation Details for Ledger Account"));
+    });
     $(document).ready(function () {
         // Example way to set Ledger No (can be from query, or grid value)
         const accountId = getQueryParam('accountId');
@@ -147,14 +150,14 @@
             paging: { pageSize: 100 },
             pager: { visible: false },
             columns: [
-                { dataField: "EmployeeNo", caption: "Employee No" },
-                { dataField: "EmployeeName", caption: "Employee Name" },
-                { dataField: "NationalId", caption: "National ID" },
-                { dataField: "EmpAllocDrCr", caption: "Dr/Cr" },
-                { dataField: "AmountAllocated", caption: "Amount Allocated" },
+                { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
+                { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
+                { dataField: "NationalId", caption: formatMessage("National ID") },
+                { dataField: "EmpAllocDrCr", caption: formatMessage("Dr/Cr") },
+                { dataField: "AmountAllocated", caption: formatMessage("Amount Allocated") },
 
                 {
-                    dataField: "VoucherRefNo", caption: "Voucher No", cellTemplate: function (container, options) {
+                    dataField: "VoucherRefNo", caption: formatMessage("Voucher No"), cellTemplate: function (container, options) {
                         $('<a>')
                             .attr('href', `/voucher/details/${options.value}`)
                             .text(options.value)
@@ -162,9 +165,9 @@
                     }
                 },
 
-                { dataField: "VoucherDate", caption: "Voucher Date", dataType: "date" },
-                { dataField: "Department", caption: "Department" },
-                { dataField: "CostCentreTitle", caption: "COst centre Title" }
+                { dataField: "VoucherDate", caption: formatMessage("Voucher Date"), dataType: "date" },
+                { dataField: "Department", caption: formatMessage("Department") },
+                { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") }
             ]
         }).dxDataGrid("instance");
 

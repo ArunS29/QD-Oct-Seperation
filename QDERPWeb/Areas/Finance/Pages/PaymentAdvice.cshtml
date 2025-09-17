@@ -7,7 +7,7 @@
         <!-- Left Form Panel -->
         <div style="width: 400px;">
             <div class="dx-field">
-                <div class="dx-field-label">Payment Mode:</div>
+                <div class="dx-field-label" id="paymentmodeadvice"></div>
                 <div class="dx-field-value">
                     @(Html.DevExtreme().SelectBox()
                                     .ID("paymentMode")
@@ -20,7 +20,7 @@
             </div>
 
             <div class="dx-field">
-                <div class="dx-field-label">Instrument Details:</div>
+                <div class="dx-field-label" id="instrumentsdetailsadvice"></div>
                 <div class="dx-field-value">
                     @(Html.DevExtreme().TextBox()
                                     .ID("instrumentDetails")
@@ -30,7 +30,7 @@
             </div>
 
             <div class="dx-field">
-                <div class="dx-field-label">Instrument Date:</div>
+                <div class="dx-field-label" id="instrumentdates"></div>
                 <div class="dx-field-value">
                     @(Html.DevExtreme().DateBox()
                                     .ID("instrumentDate")
@@ -42,7 +42,7 @@
             </div>
 
             <div class="dx-field">
-                <div class="dx-field-label">Transferred to : (Bank Name)</div>
+                <div class="dx-field-label" id="transferedtobankname"></div>
                 <div class="dx-field-value">
                     @(Html.DevExtreme().TextBox()
                                     .ID("bankName")
@@ -52,7 +52,7 @@
             </div>
 
             <div class="dx-field">
-                <div class="dx-field-label">Transferred to : (Bank Account No:)</div>
+                <div class="dx-field-label" id="transferredtobankaccount"></div>
                 <div class="dx-field-value">
                     @(Html.DevExtreme().TextBox()
                                     .ID("bankAccount")
@@ -66,16 +66,16 @@
         <div style="margin-top: 30px;">
             @(Html.DevExtreme().Button()
                     .ID("btnPrintAdvice")
-                    .Text("Print Payment Advice")
+                    .Text(new JS("formatMessage('Print Payment Advice')"))
                     .Type(ButtonType.Default)
                     .Icon("print")
                     .Width(250)
-                    @* .OnClick("printPaymentAdvice") *@
+                    .OnClick("printPaymentAdvice") 
                     )
             <br /><br />
             @(Html.DevExtreme().Button()
                     .ID("btnClose")
-                    .Text("Close")
+                    .Text(new JS("formatMessage('Close')"))
                     .Type(ButtonType.Normal)
                     .Icon("close")
                     .Width(250)
@@ -85,3 +85,20 @@
         </div>
     </div>
 </div>
+<script>
+     $(function () {
+        $("#transferredtobankaccount").text(formatMessage("Transferred to : (Bank Account No:)"));
+    });
+     $(function () {
+        $("#paymentmodeadvice").text(formatMessage("Payment Mode:"));
+    });
+     $(function () {
+        $("#instrumentsdetailsadvice").text(formatMessage("Instrument Details:"));
+    });
+     $(function () {
+        $("#instrumentdates").text(formatMessage("Instrument Date:"));
+    });
+     $(function () {
+        $("#transferedtobankname").text(formatMessage("Transferred to : (Bank Name)"));
+    });
+</script>

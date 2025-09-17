@@ -147,12 +147,17 @@
 	}
 </style>
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
 	</div>
+</div> *@
+<div class="dx-card-header minimal-header">
+	<div class="card-title-icon">
+		<i class="fas fa-file-invoice-dollar"></i>
+	</div>
+	<div id="VATInvoiceWithDetails" class="titleText no-border-title"></div>
 </div>
-
 <div class="Head">
 	
 		@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceWithDetailsFooter.cshtml")
@@ -161,10 +166,10 @@
 
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
-		<i class="dx-icon-search"></i> View Invoice
+		<i class="dx-icon-search" id="invoiceviewdetails"></i>
 	</div>
 	<div class="context-menu-itemInvoice" onclick="viewStock()">
-		<i class="dx-icon-close"></i> View Stock Details
+		<i class="dx-icon-close" id="viwwstockdetailscredit"></i>
 	</div>
 </div>
 
@@ -576,15 +581,18 @@
 			 console.log('End permission handling');
 		});
 		let selectedVoucherNo = null;
-		$(function () {
-			$("#VATInvoiceWithDetails").dxTextBox({
-				text: formatMessage("Invoice With Details"),
-				readOnly: true,
-				onContentReady: function (e) {
-					$(e.element).addClass("dx-textbox-heading");
-				}
-			});
-		});
+		// $(function () {
+		// 	$("#VATInvoiceWithDetails").dxTextBox({
+		// 		text: formatMessage(""),
+		// 		readOnly: true,
+		// 		onContentReady: function (e) {
+		// 			$(e.element).addClass("dx-textbox-heading");
+		// 		}
+		// 	});
+		// });
+				   $(function () {
+	 $("#VATInvoiceWithDetails").text(formatMessage("Invoice With Details"));
+	});
 	$(function () {
 		var contextMenu = $("#contextMenu");
 		let selectedRowData = null;
@@ -736,4 +744,10 @@
 			}
 		}
 	}
+			   $(function () {
+	 $("#invoiceviewdetails").text(formatMessage("View Invoice"));
+	});
+			   $(function () {
+	 $("#viwwstockdetailscredit").text(formatMessage("View Stock Details"));
+	});
 </script>

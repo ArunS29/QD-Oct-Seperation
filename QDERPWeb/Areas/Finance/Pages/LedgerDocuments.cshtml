@@ -369,7 +369,7 @@
 
 <div style="display: flex; flex-direction: column; height: 100vh; padding-right: 10px; padding-left: 10px;">
 
-    <!-- Header -->
+    @* <!-- Header -->
     <div class="dx-card-container">
         <div class="dx-card-header minimal-header">
             <div class="card-title-icon">
@@ -377,7 +377,7 @@
             </div>
             <h3 class="card-title-text" id="documentTitle"></h3>
         </div>
-    </div>
+    </div> *@
 
     <!-- Main Scrollable Content -->
     <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
@@ -391,7 +391,7 @@
                     <div style="margin-bottom: 10px;">
                         @(Html.DevExtreme().TextBox()
                             .ID("LedgerNo")
-                            .Label("Folder ID")
+                            .Label(new JS("formatMessage('Folder ID')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ReadOnly(true))
@@ -400,7 +400,7 @@
                     <div style="margin-bottom: 10px;">
                         @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
-                            .Label("Reference No")
+                            .Label(new JS("formatMessage('Reference No')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .MaxLength(25)
                             .Width("100%")
@@ -411,7 +411,7 @@
                     <div class="drop-zone" id="dropZone"
                          style="height: 250px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
-                        <p style="margin: 10px 0; font-weight: 500;">Drag & drop files here or click to browse</p>
+                        <p style="margin: 10px 0; font-weight: 500;" id="draganddropfinance"></p>
                         <input type="file" id="fileUploader" multiple style="display:none;" />
                     </div>
                 </div>
@@ -430,7 +430,7 @@
         </div>
         <div style="margin-top: 5px; padding-bottom: 10px; text-align: right;">
             @(Html.DevExtreme().Button()
-                .Text("Back")
+                .Text(new JS("formatMessage('Back')"))
                 .Icon("fas fa-arrow-left")
                 .Type(ButtonType.Normal)
                 .Width(100)
@@ -445,14 +445,38 @@
 
 <script>
 
-    var urlParams = new URLSearchParams(window.location.search);
-    var referenceNo = urlParams.get("ReferenceNo");
-    var moduleType = urlParams.get("ModuleType");
-    var isMaster = urlParams.get("isMaster");
-    var folderNo2 = urlParams.get("FolderNo2") || "";
-    var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
-    document.getElementById("documentTitle").textContent = title + " - " + moduleType;
-    let currentEditRowIndex = -1;
+    // var urlParams = new URLSearchParams(window.location.search);
+    // var referenceNo = urlParams.get("ReferenceNo");
+    // var moduleType = urlParams.get("ModuleType");
+    // var isMaster = urlParams.get("isMaster");
+    // var folderNo2 = urlParams.get("FolderNo2") || "";
+    // var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
+    // document.getElementById("documentTitle").textContent = title + " - " + moduleType;
+    // let currentEditRowIndex = -1;
+        // Wait until the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var referenceNo = urlParams.get("ReferenceNo");
+        var moduleType = urlParams.get("ModuleType");
+        var isMaster = urlParams.get("isMaster");
+        var folderNo2 = urlParams.get("FolderNo2") || "";
+
+        // Compute the localized title using formatMessage inside template literal
+        var title = isMaster === "true"
+            ? formatMessage("Master Documents")
+            : formatMessage("Transaction Documents");
+
+        // Safely set the textContent if the element exists
+        var el = document.getElementById("documentTitle");
+        if(el) {
+            el.textContent = `${title} - ${moduleType}`;
+        }
+
+        // Initialize other variables
+        let currentEditRowIndex = -1;
+    });
+
 
     $(function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -534,7 +558,7 @@
 
                 {
                     dataField: "SerialNo",
-                    caption: "S.No",
+                    caption: formatMessage("S.No"),
                     width: 60,
                     allowEditing: false
                 },
@@ -542,7 +566,7 @@
 
                 {
                     dataField: "FileUrl",
-                    caption: "Document",
+                    caption: formatMessage("Document"),
                     allowEditing: false,
                     cellTemplate: function (container, options) {
                         const fileUrl = options.value;
@@ -560,7 +584,7 @@
 
                 {
                     dataField: "DocumentType",
-                    caption: "Document Type",
+                    caption: formatMessage("Document Type"),
                     lookup: {
                         dataSource: documentTypeStore,
                         valueExpr: "DocumentTypeId",
@@ -604,7 +628,7 @@
 
                 {
                     dataField: "DocumentRefNo",
-                    caption: "Reference No",
+                    caption: formatMessage("Reference No"),
                     editorOptions: {
                         maxLength: 25,
                         onInput: function (e) {
@@ -616,11 +640,11 @@
                     }
                 },
 
-                { dataField: "DocumentRemarks", caption: "Remarks", allowEditing: true },
+                { dataField: "DocumentRemarks", caption: formatMessage("Remarks"), allowEditing: true },
 
                 {
                     dataField: "DocumentExpDate",
-                    caption: "Expiry On",
+                    caption: formatMessage("Expiry On"),
                     allowEditing: true,
                     dataType: "date",
                     editorType: "dxDateBox",
@@ -652,7 +676,7 @@
                 },
                 {
                     dataField: "DocumentExpDateAr",
-                    caption: "Expiry (Hijri)",
+                    caption: formatMessage("Expiry (Hijri)"),
                     allowEditing: false,
                     editorType: "dxTextBox",
                     editorOptions: {
@@ -662,7 +686,7 @@
                 },
                 {
                     dataField: "DocumentNotificationDate",
-                    caption: "Notify On",
+                    caption: formatMessage("Notify On"),
                     dataType: "date",
                     allowEditing: true,
                     editorType: "dxDateBox",
@@ -678,7 +702,7 @@
 
                 {
                 type: "buttons",
-                caption: "Actions",
+                caption: formatMessage("Actions"),
                 width: 180,
                 buttons: [
                     {
@@ -1178,5 +1202,7 @@
 
      document.addEventListener("DOMContentLoaded", setupDragDrop);
 
-
+        $(function () {
+            $("#draganddropfinance").text(formatMessage("Drag & drop files here or click to browse"));
+        });
 </script>

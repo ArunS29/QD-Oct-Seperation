@@ -98,11 +98,11 @@
     }
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="QuotationCostItem" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 <div class="quotationCostItem-form-container">
     <div id="DatabaseSignatories" class="no-border-title"></div>
 
@@ -125,7 +125,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                         .ID("btnJobOrderStatus")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                         .OnClick("function() { AddJobOrderStatus(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
@@ -154,9 +154,9 @@
             .OnRowUpdating("onQuotationCostItemUpdating")                       // Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("JobOrderStatusId").Caption("Code").Width(80).AllowEditing(false);
-            columns.Add().DataField("JobOrderStatus").Caption("Job Order Status").Width(200);
-            columns.Add().DataField("IsUnDeletable").Caption("Is UnDeletable").Width(200).Visible(false);
+            columns.Add().DataField("JobOrderStatusId").Caption(new JS("formatMessage('Code')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("JobOrderStatus").Caption(new JS("formatMessage('Job Order Status')")).Width(200);
+            columns.Add().DataField("IsUnDeletable").Caption(new JS("formatMessage('Is UnDeletable')")).Width(200).Visible(false);
          
             })
             .Height(500)

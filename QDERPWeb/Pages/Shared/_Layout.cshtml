@@ -1093,7 +1093,7 @@
         .modal {
             display: none; /* Hidden by default */
             position: fixed;
-            z-index: 1000;
+            z-index: 10000;
             left: 0;
             top: 0;
             width: 100%;
@@ -1728,46 +1728,45 @@
                     <div class="header-top">
                         <div class="header-title">
                             <i class="fas fa-bell notification-icon"></i>
-                            <span class="title">Notifications</span>
+                            <span class="title" id="generalnotification"></span>
                             <span class="notification-badge" id="sidebarBadge">0</span>
                         </div>
-                        <button class="mark-read-btn">Mark all as read</button>
+                        <button class="mark-read-btn" id="makeallasreads"></button>
                     </div>
 
                     <!-- Category Tabs -->
                     <div class="category-tabs">
-                        <span class="category-tab active" id="financeTab" data-tab="financeContent">Finance 0</span>
-                        <span class="category-tab inactive" id="vatTab" data-tab="vatContent">VAT 0</span>
-                        <span class="category-tab inactive" id="inventoryTab" data-tab="inventoryContent">Inventory 0</span>
-                        <span class="category-tab inactive" id="othersTab" data-tab="othersContent">Others 0</span>
+                        <span class="category-tab active" id="financeTab" data-tab="financeContent"></span>
+                        <span class="category-tab inactive" id="vatTab" data-tab="vatContent"></span>
+                        <span class="category-tab inactive" id="inventoryTab" data-tab="inventoryContent"></span>
+                        <span class="category-tab inactive" id="othersTab" data-tab="othersContent"></span>
                     </div>
                 </div>
 
                 <!-- Content -->
                 <div class="notification-content">
 
-                    <!-- Finance Tab Content -->
                     <div class="tab-content" id="financeContent">
                         <!-- Payments (Bank/Cash) -->
                         <div class="status-card">
-                            <div class="status-card-title">Payments (Bank/Cash)</div>
+                            <div class="status-card-title" id="paymentsnotifications"></div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeVerified')">
+                                <div class="status-item" id="payments-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiednotify"></div>
                                     <span class="new-dot" id="payments-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeApproved')">
+                                <div class="status-item" id="payments-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovednotify"></div>
                                     <span class="new-dot" id="payments-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeAudited')">
+                                <div class="status-item" id="payments-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="payments-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="tobeauditednotify"></div>
                                     <span class="new-dot" id="payments-audited-dot"></span>
                                 </div>
                             </div>
@@ -1775,24 +1774,24 @@
 
                         <!-- Receipt (Bank/Cash) -->
                         <div class="status-card">
-                            <div class="status-card-title">Receipt (Bank/Cash)</div>
+                            <div class="status-card-title" id="receiptsnotification"></div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeVerified')">
+                                <div class="status-item" id="receipt-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="receiptyverifiednotify"></div>
                                     <span class="new-dot" id="receipt-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeApproved')">
+                                <div class="status-item" id="receipt-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="approvedreceiptsnotifuy"></div>
                                     <span class="new-dot" id="receipt-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeAudited')">
+                                <div class="status-item" id="receipt-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="receipt-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="auditreceiptnotify"></div>
                                     <span class="new-dot" id="receipt-audited-dot"></span>
                                 </div>
                             </div>
@@ -1800,24 +1799,24 @@
 
                         <!-- Sales/Purchase -->
                         <div class="status-card">
-                            <div class="status-card-title">Sales/Purchase</div>
+                            <div class="status-card-title" id="salespurchasenotifi"></div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeVerified')">
+                                <div class="status-item" id="salespurchase-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="salespurchaseverified"></div>
                                     <span class="new-dot" id="salespurchase-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeApproved')">
+                                <div class="status-item" id="salespurchase-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="salespurchaseapproved"></div>
                                     <span class="new-dot" id="salespurchase-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeAudited')">
+                                <div class="status-item" id="salespurchase-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salespurchase-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="salespurchaseaudited"></div>
                                     <span class="new-dot" id="salespurchase-audited-dot"></span>
                                 </div>
                             </div>
@@ -1825,24 +1824,24 @@
 
                         <!-- Journals -->
                         <div class="status-card">
-                            <div class="status-card-title">Journals</div>
+                            <div class="status-card-title" id="journalsnotifications"></div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeVerified')">
+                                <div class="status-item" id="journals-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="journaltoveririfednotify"></div>
                                     <span class="new-dot" id="journals-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeApproved')">
+                                <div class="status-item" id="journals-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="journaltobeapprovednotify"></div>
                                     <span class="new-dot" id="journals-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeAudited')">
+                                <div class="status-item" id="journals-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="journals-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="journaltobeauditednotify"></div>
                                     <span class="new-dot" id="journals-audited-dot"></span>
                                 </div>
                             </div>
@@ -1850,46 +1849,47 @@
 
                         <!-- Expense Claims -->
                         <div class="status-card">
-                            <div class="status-card-title">Expense Claims</div>
+                            <div class="status-card-title" id="expensesclaimnotify"></div>
                             <div class="status-grid">
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeVerified')">
+                                <div class="status-item" id="expenseclaims-verified-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedexpenses"></div>
                                     <span class="new-dot" id="expenseclaims-verified-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeApproved')">
+                                <div class="status-item" id="expenseclaims-approved-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedexpense"></div>
                                     <span class="new-dot" id="expenseclaims-approved-dot"></span>
                                 </div>
-                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeAudited')">
+                                <div class="status-item" id="expenseclaims-audited-item">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="expenseclaims-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="tobeauditedexpense"></div>
                                     <span class="new-dot" id="expenseclaims-audited-dot"></span>
                                 </div>
                             </div>
                         </div>
-                        <!-- Clear All & Individual Notifications -->
-                        <button id="clearAllNotifications" class="text-button">Clear All</button>
-                        <div class="notification-divider" id="notificationList">
-                            <!-- Individual notifications will be dynamically injected -->
-                        </div>
+
+                         <button id="clearAllNotifications" class="text-button"></button>
+                        
+
+                        <div class="notification-divider" id="notificationList"></div>
                     </div>
+
 
                     <!-- VAT Tab Content -->
                     <div class="tab-content" id="vatContent" style="display:none;">
                         <!-- Sales -->
                         <div class="status-card">
-                            <div class="status-card-title">Sales</div>
+                            <div class="status-card-title" id="salesnotifications"></div>
                             <div class="status-grid">
                                 <!-- To Be Verified -->
                                 <div class="status-item" onclick="VATSales('Sales','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedsales"></div>
                                     <span class="new-dot" id="vatsales-dot-verified"></span>
                                 </div>
 
@@ -1897,7 +1897,7 @@
                                 <div class="status-item" onclick="VATSales('Sales','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedsales"></div>
                                     <span class="new-dot" id="vatsales-dot-approved"></span>
                                 </div>
 
@@ -1905,7 +1905,7 @@
                                 <div class="status-item" onclick="VATSales('Sales','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-audited">0</div>
-                                    <div class="status-label">To Be Post</div>
+                                    <div class="status-label" id="tobepostsales"></div>
                                     <span class="new-dot" id="vatsales-dot-post"></span>
                                 </div>
                             </div>
@@ -1914,24 +1914,24 @@
 
                         <!-- Debit -->
                         <div class="status-card">
-                            <div class="status-card-title">Debit</div>
+                            <div class="status-card-title" id="debitnotification"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="VATDebit('Debit','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="debittobeverified"></div>
                                     <span class="new-dot" id="vatdebit-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATDebit('Debit','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="debittobeapproved"></div>
                                     <span class="new-dot" id="vatdebit-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATDebit('Debit','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-audited">0</div>
-                                    <div class="status-label">To Be Post</div>
+                                    <div class="status-label" id="debittobepost"></div>
                                     <span class="new-dot" id="vatdebit-dot"></span>
                                 </div>
                             </div>
@@ -1939,24 +1939,24 @@
 
                         <!-- Credit -->
                         <div class="status-card">
-                            <div class="status-card-title">Credit</div>
+                            <div class="status-card-title" id="creditnotifications"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="VATCredit('Credit','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="credittobeverified"></div>
                                     <span class="new-dot" id="vatcredit-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATCredit('Credit','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="credittobeapproved"></div>
                                     <span class="new-dot" id="vatcredit-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATCredit('Credit','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-audited">0</div>
-                                    <div class="status-label">To Be Post</div>
+                                    <div class="status-label" id="credittobepost"></div>
                                     <span class="new-dot" id="vatcredit-dot"></span>
                                     @* onclick="goToVoucherApproval('VATCredit','ToBeAudited') *@
                                 </div>
@@ -1965,30 +1965,34 @@
 
                         <!-- Purchase -->
                         <div class="status-card">
-                            <div class="status-card-title">Purchase</div>
+                            <div class="status-card-title" id="purchasesnotification"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="VATPurchase('Purchase','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedpurchase"></div>
                                     <span class="new-dot" id="vatpurchase-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATPurchase('Purchase','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-approved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedpurchase"></div>
                                     <span class="new-dot" id="vatpurchase-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="VATPurchase('Purchase','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-audited">0</div>
-                                    <div class="status-label">To Be Audited</div>
+                                    <div class="status-label" id="tobeauditpurchases"></div>
                                     <span class="new-dot" id="vatpurchase-dot"></span>
                                 </div>
                             </div>
                         </div>
                         <!-- Clear All & Individual Notifications -->
-                        <button id="clearAllNotifications" class="text-button">Clear All</button>
+                         <button id="clearAllNotifications" class="text-button"></button> 
+                      @*   <button id="clearAllNotifications" class="text-button">
+                            <script>document.write(formatMessage("Clear All"));</script>
+                        </button>
+ *@
                         <div class="notification-divider" id="notificationVATList">
                             <!-- Individual notifications will be dynamically injected -->
                         </div>
@@ -1998,24 +2002,24 @@
                     <div class="tab-content" id="inventoryContent" style="display:none;">
                         <!-- Inventory -->
                         <div class="status-card">
-                            <div class="status-card-title">Material Request</div>
+                            <div class="status-card-title" id="materialrequestnotify"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="materialrequest-tobeverified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label"id="tobeverifiedrequest"></div>
                                     <span class="new-dot" id="materialrequest-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="materialrequest-tobeapproved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedrequest"></div>
                                     <span class="new-dot" id="materialrequest-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeCancelled')">
                                     <div class="status-icon"><i class="fas fa-times-circle"></i></div>
                                     <div class="status-number" id="materialrequest-tobecancelled">0</div>
-                                    <div class="status-label">To Be Cancelled</div>
+                                    <div class="status-label" id="tobecancelled"></div>
                                     <span class="new-dot" id="materialrequest-dot"></span>
                                 </div>
                             </div>
@@ -2023,18 +2027,18 @@
 
 
                         <div class="status-card">
-                            <div class="status-card-title">Quotation to Client</div>
+                            <div class="status-card-title" id="quotationtoclientsnotify"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="InventoryAction2('Quotation','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="quotation-tobeverified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedquotation"></div>
                                     <span class="new-dot" id="quotation-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction2('Quotation','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="quotation-tobeapproved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedquotation"></div>
                                     <span class="new-dot" id="quotation-dot"></span>
                                 </div>
                             </div>
@@ -2042,24 +2046,24 @@
 
 
                         <div class="status-card">
-                            <div class="status-card-title">Sales Order</div>
+                            <div class="status-card-title" id="salesordernotifications"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salesorder-tobeverified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeveririfedsalesorer"></div>
                                     <span class="new-dot" id="salesorder-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="salesorder-tobeapproved">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id="tobeapprovedsalesorder"></div>
                                     <span class="new-dot" id="salesorder-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBePosted')">
                                     <div class="status-icon"><i class="fas fa-check-circle"></i></div>
                                     <div class="status-number" id="salesorder-tobeposted">0</div>
-                                    <div class="status-label">To Be Posted</div>
+                                    <div class="status-label" id="tobepostedsalesorder"></div>
                                     <span class="new-dot" id="salesorder-dot"></span>
                                 </div>
                             </div>
@@ -2078,36 +2082,36 @@
                         </div> *@
 
                         <div class="status-card">
-                            <div class="status-card-title">RFQ</div>
+                            <div class="status-card-title" id="rfqnotication"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="InventoryAction4('RFQ','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="rfq-tobequoted">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedrfq"></div>
                                     <span class="new-dot" id="rfq-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction4('RFQ','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="rfq-quoted">0</div>
-                                    <div class="status-label">To Be Approved</div>
+                                    <div class="status-label" id=tobeapprovedrfq></div>
                                     <span class="new-dot" id="rfq-dot"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="status-card">
-                            <div class="status-card-title">Purchase Order</div>
+                            <div class="status-card-title" id="purchaseordernotify"></div>
                             <div class="status-grid">
                                 <div class="status-item" onclick="InventoryAction('PurchaseOrder','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="purchaseorder-verified">0</div>
-                                    <div class="status-label">To Be Verified</div>
+                                    <div class="status-label" id="tobeverifiedpurchasesss"></div>
                                     <span class="new-dot" id="purchaseorder-dot"></span>
                                 </div>
                                 <div class="status-item" onclick="InventoryAction('PurchaseOrder','ToBePosted')">
                                     <div class="status-icon"><i class="fas fa-check-circle"></i></div>
                                     <div class="status-number" id="purchaseorder-posted">0</div>
-                                    <div class="status-label">To Be Posted</div>
+                                    <div class="status-label"id="tobepostedpurchase"></div>
                                     <span class="new-dot" id="purchaseorder-dot"></span>
                                 </div>
                             </div>
@@ -2129,11 +2133,15 @@
                     <!-- Others Tab Content -->
                     <div class="tab-content" id="othersContent" style="display:none;">
                         <!-- Clear All & Individual Notifications -->
-                        <button id="clearAllOthers" class="text-button">Clear All</button>
+                        <button id="clearAllOthers" class="text-button">
+                           
+                        </button>
+
                         <div class="notification-divider" id="othersNotificationList">
                             <!-- Notifications will be injected dynamically -->
                         </div>
                     </div>
+
 
                    
 
@@ -2145,7 +2153,7 @@
     <!-- Floating Chatbot -->
     <div id="chatbot-container">
         <div id="chatbot-inactive" onclick="toggleChat()">
-            <span><i class="fas fa-robot text-white"></i> <span id="chat_text" style="display: none;">Chat with us</span></span>
+            <span><i class="fas fa-robot text-white"></i> <span id="chat_text" style="display: none;"></span></span>
             <i id="chat_close" style="display: none;" class="fas fa-times text-white"></i>
         </div>
         <div id="chatbot-box">
@@ -2159,8 +2167,8 @@
         <div id="toastModalContent" class="toast toast-success">
             <div class="toast-icon" id="toastIcon">✔️</div>
             <div class="toast-content">
-                <strong id="toastTitle">Success</strong><br>
-                <span id="toastMessage">This is a toast modal message</span>
+                <strong id="toastTitle"></strong><br>
+                <span id="toastMessage"></span>
             </div>
             <div class="toast-close" onclick="hideToastModal()">&times;</div>
         </div>
@@ -2271,17 +2279,17 @@
 
                         <div class="dropdown-item" onclick="handleInfoClick()">
                             <i class="fas fa-building"></i>
-                            <span>Company Details</span>
+                            <span id="companydetailsdocument"></span>
                         </div>
 
                         <div class="dropdown-item" onclick="handleReserpasswordClick()">
                             <i class="fas fa-lock"></i>
-                            <span>Change Password</span>
+                            <span id="changepassworddocument"></span>
                         </div>
 
                         <div class="dropdown-item" onclick="logout()">
                             <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
+                            <span id="logoutdocument"></span>
                         </div>
                     </div>
                 </div>
@@ -2886,7 +2894,7 @@
             <div id="sidebar" class="sidebar hidden">
                 <div class="menu-item1" style="cursor:pointer" onclick="navigateToTenantHome()">
                     <img border="0" src="~/images/erp_logo.png" alt="QD-ERP" width="45" height="30">
-                    <div id="HumanResources2" style="color:white;" class="text no-border-input">Quick Dice</div>
+                    <div id="HumanResources2" style="color:white;" class="text no-border-input"></div>
                 </div>
                 <div class="menu">
                     @if (userModules.Contains("HR"))
@@ -2966,7 +2974,7 @@
                 <div id="changePasswordPopupContainer">
                     @(Html.DevExtreme().Popup()
                                         .ID("changePasswordPopup")
-                                        .Title("Change Your Password")
+                                        .Title(new JS("formatMessage('Change Your Password')"))
                                         .Width("50%")
                                         .Height(430)
                                         .Visible(false)
@@ -3280,7 +3288,7 @@
                         readOnly: true
                     });
                     $("#AccountConfirmationLetter").dxTextBox({
-                        text: formatMessage("AccountConfirmationLetter"),
+                        text: formatMessage("Account Confirmation Letter"),
                         width:400,
                         readOnly: true
                     });
@@ -5347,7 +5355,7 @@
              }
         }
 
-                $(document).ready(function () {
+        $(document).ready(function () {
             let previousIds = new Set(); // track notifications already seen
 
             function updateNotifications() {
@@ -5409,7 +5417,7 @@
                         summary.ExpenseClaims.ToBeVerified + summary.ExpenseClaims.ToBeApproved + summary.ExpenseClaims.ToBeAudited;
 
                     $("#sidebarBadge").text(totalCount);
-                    $("#financeTab").text(`Finance ${totalCount}`);
+                    $("#financeTab").text(`${formatMessage("Finance")} ${totalCount}`);
                 });
             }
 
@@ -5424,11 +5432,12 @@
                 const $items = $("#notificationList .notification-item");
                 if ($items.length === 0) return;
 
+
                 $items.slideUp(300, function () { $(this).remove(); });
 
                 // Reset badges
                 $("#bellBadge, #sidebarBadge").text(0);
-                $("#financeTab").text(`Finance 0`);
+                $("#financeTab").text(`${formatMessage("Finance")} 0`);
                 previousIds.clear();
             });
 
@@ -5477,12 +5486,15 @@
          * Payments → BankCash
          * Receipts → BankCashReceipt
          */
-        function goToVoucherApproval(module, status) {
+                function goToVoucherApproval(module, status) {
             let docType = module;
             if (module === "Payments") docType = "BankCashPayment";
             if (module === "Receipts") docType = "BankCashReceipt";
+            if (module === "SalesPurchase") docType = "SalesPurchase";
+            if (module === "Journals") docType = "Journal";
+            if (module === "ExpenseClaims") docType = "ExpenseClaim";
 
-           window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
+            window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
         }
 
               // Open sidebar when bell clicked
@@ -5555,7 +5567,7 @@
                     const totalCount = res.totalCount || notifications.length;
 
                     // Update Others tab
-                    $("#othersTab").text(`Others ${totalCount}`);
+                    $("#othersTab").text(`${formatMessage("Others")} ${totalCount}`);
 
                     // Add this section's count to the bell badge
                     updateBellBadge(totalCount);
@@ -5570,7 +5582,7 @@
                 $("#othersNotificationList .notification-item").fadeOut(300, function () {
                     $(this).remove();
                 });
-                $("#othersTab").text("Others 0");
+                $("#othersTab").text(`${formatMessage("Others")} 0`);
 
                 // Reduce bell badge count accordingly
                 let currentCount = parseInt($("#bellBadge").text()) || 0;
@@ -5592,7 +5604,7 @@
             let totalVatCount = 0;
 
             function updateVatTab() {
-                $("#vatTab").text(`VAT ${totalVatCount}`);
+                $("#vatTab").text(`${formatMessage("VAT")} ${totalVatCount}`);
             }
 
             // ---------------- VAT Sales ----------------
@@ -5719,7 +5731,7 @@
             // Update VAT Tab total
             const totalCount = data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
             const currentVatCount = parseInt($("#vatTab").text().replace(/\D/g, "")) || 0;
-            $("#vatTab").text(`VAT ${currentVatCount + totalCount}`);
+            $("#vatTab").text(`${formatMessage("VAT")} ${currentVatCount + totalCount}`);
 
             // Render notifications
             data.Notifications.forEach(n => {
@@ -5817,7 +5829,7 @@
             let totalInventoryCount = 0;
 
             function updateInventoryTab() {
-                $("#inventoryTab").text(`Inventory ${totalInventoryCount}`);
+                $("#inventoryTab").text(`${formatMessage("Inventory")} ${totalInventoryCount}`);
             }
 
             // Generic function for fetching and updating summaries
@@ -5909,6 +5921,241 @@
 
 
         }
+                // Helper to update tab text with localization
+                     function updateTabText(tabId, labelKey, count) {
+            const label = formatMessage(labelKey); // localized label
+            $(`#${tabId}`).text(`${label} ${count}`);
+        }
+
+        $(function () {
+            // --- Initial setup for tabs with 0 ---
+            updateTabText("financeTab", "Finance", 0);
+            updateTabText("vatTab", "VAT", 0);
+            updateTabText("inventoryTab", "Inventory", 0);
+            updateTabText("othersTab", "Others", 0);
+
+            // --- Initial badges ---
+            $("#bellBadge, #sidebarBadge").text(0);
+
+            // --- Update tabs dynamically ---
+            const totalFinanceCount = data.Summary.Finance ?? 0;
+            updateTabText("financeTab", "Finance", totalFinanceCount);
+
+            const totalVatCount = (data.Summary.ToBeVerified ?? 0) +
+                                  (data.Summary.ToBeApproved ?? 0) +
+                                  (data.Summary.ToBeAudited ?? 0);
+            updateTabText("vatTab", "VAT", totalVatCount);
+
+            const totalInventoryCount = data.Summary.Inventory ?? 0;
+            updateTabText("inventoryTab", "Inventory", totalInventoryCount);
+
+            const totalOthersCount = data.Summary.Others ?? 0;
+            updateTabText("othersTab", "Others", totalOthersCount);
+
+            // --- Update total badges dynamically ---
+            const totalNotifications = totalFinanceCount + totalVatCount + totalInventoryCount + totalOthersCount;
+            $("#bellBadge, #sidebarBadge").text(totalNotifications);
+        });
+
+
+         $(function () {
+            $("#HumanResources2").text(formatMessage("Quick Dice"));
+        });
+         $(function () {
+            $("#journaltoveririfednotify").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#journaltobeapprovednotify").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#journaltobeauditednotify").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#tobeverifiedsales").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#debittobeverified").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#tobeapprovedsales").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobepostsales").text(formatMessage("To Be Post"));
+        });
+         $(function () {
+            $("#creditnotifications").text(formatMessage("Credit"));
+        });
+         $(function () {
+            $("#credittobeverified").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#credittobeapproved").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#credittobepost").text(formatMessage("To Be Post"));
+        });
+         $(function () {
+            $("#debitnotification").text(formatMessage("Debit"));
+        });
+         $(function () {
+            $("#salesnotifications").text(formatMessage("Sales"));
+        });
+         $(function () {
+            $("#debittobeapproved").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#debittobepost").text(formatMessage("To Be Post"));
+        });
+         $(function () {
+            $("#makeallasreads").text(formatMessage("Mark all as read"));
+        });
+         $(function () {
+            $("#generalnotification").text(formatMessage("Notifications"));
+        });
+         $(function () {
+            $("#financeTab").text(formatMessage("Finance"));
+        });
+         $(function () {
+            $("#tobeauditedexpense").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#tobeapprovedexpense").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeverifiedexpenses").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#tobeverifiednotify").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#paymentsnotifications").text(formatMessage("Payments (Bank/Cash)"));
+        });
+         $(function () {
+            $("#tobeapprovednotify").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeauditednotify").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#receiptsnotification").text(formatMessage("Receipts (Bank/Cash)"));
+        });
+         $(function () {
+            $("#approvedreceiptsnotifuy").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#receiptyverifiednotify").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#auditreceiptnotify").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#salespurchasenotifi").text(formatMessage("Sales/Purchase"));
+        });
+         $(function () {
+            $("#salespurchaseverified").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#salespurchaseapproved").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#salespurchaseaudited").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#purchasesnotification").text(formatMessage("Purchase"));
+        });
+         $(function () {
+            $("#journalsnotifications").text(formatMessage("Journal"));
+        });
+         $(function () {
+            $("#tobeverifiedpurchase").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#tobeapprovedpurchase").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeauditpurchases").text(formatMessage("To Be Audited"));
+        });
+         $(function () {
+            $("#expensesclaimnotify").text(formatMessage("Expense Claims"));
+        });
+         $(function () {
+            $("#clearAllNotifications").text(formatMessage("Clear All"));
+        });
+         $(function () {
+            $("#clearAllOthers").text(formatMessage("Clear All"));
+        });
+         $(function () {
+            $("#tobecancelled").text(formatMessage("To Be Cancelled"));
+        });
+         $(function () {
+            $("#tobeapprovedrequest").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeverifiedrequest").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#materialrequestnotify").text(formatMessage("Material Request"));
+        });
+         $(function () {
+            $("#tobeapprovedquotation").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeverifiedquotation").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#quotationtoclientsnotify").text(formatMessage("Quotation to Clients"));
+        });
+         $(function () {
+            $("#tobepostedsalesorder").text(formatMessage("To Be Posted"));
+        });
+         $(function () {
+            $("#tobeapprovedsalesorder").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeveririfedsalesorer").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#salesordernotifications").text(formatMessage("Sales Order"));
+        });
+         $(function () {
+            $("#tobeapprovedrfq").text(formatMessage("To Be Approved"));
+        });
+         $(function () {
+            $("#tobeverifiedrfq").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#rfqnotication").text(formatMessage("RFQ"));
+        });
+         $(function () {
+            $("#toastMessage").text(formatMessage("This is a toast modal message"));
+        });
+         $(function () {
+            $("#toastTitle").text(formatMessage("Success"));
+        });
+         $(function () {
+            $("#purchaseordernotify").text(formatMessage("Purchase Orders"));
+        });
+       
+         $(function () {
+            $("#tobeverifiedpurchasesss").text(formatMessage("To Be Verified"));
+        });
+         $(function () {
+            $("#chat_text").text(formatMessage("Chat with us"));
+        });
+         $(function () {
+            $("#logoutdocument").text(formatMessage("Logout"));
+        });
+         $(function () {
+            $("#changepassworddocument").text(formatMessage("Change Password"));
+        });
+         $(function () {
+            $("#companydetailsdocument").text(formatMessage("Company Details"));
+        });
+         $(function () {
+            $("#tobepostedpurchase").text(formatMessage("To Be Posted"));
+        });
+               
+      
     </script>
 </body>
 </html>
