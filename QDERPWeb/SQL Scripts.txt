@@ -1566,10 +1566,10 @@ VALUES
 	(540,'Delivery Note Journal Posting', 'frm60107DeliveryNoteJournalPosting_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
-INSERT INTO tbl901UserAccessMasterWeb 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
-    (541,'Delivery Note Edit Form','frm60106DeliveryNoteEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (541,'Delivery Note Edit Form','frm60106DeliveryNoteEdit_ddButtonLayout1','Layout',1,1,null,'IMS',null,null,null,null), 
 	(542,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
     (543,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
     (544,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
