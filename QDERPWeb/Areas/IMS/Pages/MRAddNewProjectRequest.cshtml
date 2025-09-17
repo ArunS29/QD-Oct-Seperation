@@ -6916,8 +6916,7 @@ function onIMSAttachmentButtonClick() {
       });
 	let currentResolver = null;
 	window.confirmDeleteWithPhrase = function(options){
-		debugger;
-		openDialog(options || {});
+				openDialog(options || {});
 		return new Promise(resolve => { currentResolver = resolve; });
 	}
 	window.handleUploadConfirm = async function (requestNo) {

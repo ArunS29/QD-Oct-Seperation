@@ -3021,8 +3021,7 @@ function disableSpecificControls() {
 }
 
     function deletePoChild(poChildNos) {
-        debugger;
-        const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+                const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
         if (!Array.isArray(poChildNos)) poChildNos = [poChildNos];
 
         DevExpress.ui.dialog.confirm(

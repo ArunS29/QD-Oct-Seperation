@@ -173,7 +173,10 @@
         <div style="flex: 1;">
             @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningBalance")
-                    .Format(new JS("{ type: 'fixedPoint', precision: 2 }"))
+                        .Format(f => f
+                        .Type(Format.FixedPoint)
+                        .Precision(2)
+                        )
                     .Label(new JS("formatMessage('Opening Balance')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .Disabled(true)
@@ -210,7 +213,10 @@
             @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningRate")
                     .Disabled(true)
-                    .Format(new JS("{ type: 'fixedPoint', precision: 4 }"))
+                    .Format(f => f
+                    .Type(Format.FixedPoint)
+                    .Precision(2)
+                    )
                     .ShowSpinButtons(true)
                     )
         </div>
@@ -280,16 +286,27 @@
                     .Type(Format.FixedPoint)
                     .Precision(4)
                 );
-            columns.Add().DataField("Quantity").Caption(new JS("formatMessage('Quantity')")).AllowEditing(true);
+            columns.Add().DataField("Quantity").Caption(new JS("formatMessage('Quantity')")).AllowEditing(true)
+            .Format(f => f
+                .Type(Format.FixedPoint)
+                .Precision(3)
+                );
             columns.Add().DataField("ExpiryDate").Caption(new JS("formatMessage('Expiry Date')")).DataType(GridColumnDataType.Date).AllowEditing(true);
             columns.Add().DataField("BatchNo").Caption(new JS("formatMessage('Batch No')")).AllowEditing(true);
-        })
+            columns.Add().Type(GridCommandColumnType.Buttons).Buttons(b =>
+                {
+                    b.Add().Name(GridColumnButtonName.Delete)
+                        .Icon("trash")
+                        .Hint("Delete")
+                        .OnClick("onDeleteOpeningBalance");
+                });
+            })
                 .Editing(editing =>
                 {
                     editing.Mode(GridEditMode.Cell); // or Row, depending on your preference
                     editing.AllowUpdating(true);
                     editing.AllowAdding(false);
-                    editing.AllowDeleting(false);
+                    editing.AllowDeleting(true);
 
                 })
                 //.OnCellClick("onStoryUpdating")
@@ -372,6 +389,23 @@
         grid.saveEditData(); // 🔥 only triggers on manual click
     });
 
+    function onDeleteOpeningBalance(e) {
+        var grid = $("#gridOpeningBalance").dxDataGrid("instance");
+            var key = e.row.data.ReceiptChildSlNo;
+            if (confirm("Are you sure you want to delete this row?")) {
+                $.ajax({
+                    url: '/api/StockInventory/DeleteOpeningBalance/' + key,
+                    type: 'DELETE',
+                    success: function () {
+                        grid.refresh();
+                        DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Delete failed", "error", 2000);
+                    }
+                });
+            }
+    }
 
     function onStoryUpdating(e) {
         const allowedFields = ['Quantity','BatchNo', 'ExpiryDate'];
@@ -386,7 +420,7 @@
         const data = {
             ReceiptChildSlNo: e.oldData.ReceiptChildSlNo,
             Gscode: e.oldData.Gscode,
-            Quantity: filteredNewData.Quantity ?? e.oldData.Quantity,
+            QtyReceived: filteredNewData.Quantity ?? e.oldData.Quantity,
             BatchNo: filteredNewData.BatchNo ?? e.oldData.BatchNo,
             ExpiryDate: filteredNewData.ExpiryDate ?? e.oldData.ExpiryDate
         };
@@ -398,12 +432,11 @@
             data: JSON.stringify(data)
         })
         .done(() => {
+            $("#gridOpeningBalance").dxDataGrid("instance").refresh();
             DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
         })
         .fail(() => {
             DevExpress.ui.notify("Failed to save.", "error", 1500);
-            // Optionally cancel editing on error
-            // e.cancel = true; // but usually this is handled internally
         });
     }
 
@@ -444,7 +477,6 @@
             }
 
             if (unitCode) {
-                debugger;
                 unitCodeValue = parseInt(unitCode);
                 unitTypeBox.option("value", unitCodeValue);
             }
