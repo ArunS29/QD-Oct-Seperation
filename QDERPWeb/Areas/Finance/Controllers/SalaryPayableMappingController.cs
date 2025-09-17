@@ -165,8 +165,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             where t1.AccountHead == accid
                                   && t1.BankClearedOn == null
                                   && t1.SysRemarks != "System Generated Opening Balance"
-                                  && (!fromDate.HasValue || t2.VoucherDate >= fromDate.Value)
-                                  && (!toDate.HasValue || t2.VoucherDate <= toDate.Value)
+                                 
                             select new
                             {
                                 t1.VoucherEntryNo,
@@ -211,8 +210,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 on t1.VoucherNo equals t2.VoucherNo
                             where t1.BankClearedOn != null
                                   && t1.AccountHead == accid
-                                  && (!fromDate.HasValue || t2.VoucherDate >= fromDate.Value)
-                                  && (!toDate.HasValue || t2.VoucherDate <= toDate.Value)
+                                  
                             select new
                             {
                                 t1.VoucherEntryNo,
