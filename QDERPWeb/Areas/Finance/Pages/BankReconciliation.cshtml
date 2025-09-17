@@ -871,9 +871,18 @@ $(document).ready(function () {
                     const accountBalance = response.AccountBalance ?? 0;
                     const bankClearedBalance = response.BankClearedBalance ?? 0;
                 const bankStatementBalance = accountBalance - bankClearedBalance;
+                    const formattedBalance = accountBalance < 0
+        ? `(${Math.abs(accountBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          })})`
+        : accountBalance.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          });
 
                 // Update DevExtreme textboxes
-                $("#BalanceAsPerOurBooks").dxTextBox("instance").option("value", accountBalance);
+                    $("#BalanceAsPerOurBooks").dxTextBox("instance").option("value", formattedBalance);
 
                 // $("#AmountNotReflectedinBank").dxTextBox("instance").option("value", bankClearedBalance);
                 // $("#BalanceAsPerBankStatement").dxTextBox("instance").option("value", bankStatementBalance);
