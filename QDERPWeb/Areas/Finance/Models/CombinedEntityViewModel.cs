@@ -1361,10 +1361,21 @@ public class InvoiceRequest
     }
 
 
-    public class SwapRequest
+    public class AccountBalanceResult
     {
-        public string AccountGroupId { get; set; }
-        public string Direction { get; set; }
+        public string AccountHead { get; set; }
+        public decimal Amount { get; set; }  // ✅ matches SP output column name
+    }
+
+    public class BankClearedBalanceResult
+    {
+        public decimal Balance { get; set; }
+    }
+    public class BankReconciliationUpdateDto
+    {
+        public long VoucherEntryNo { get; set; }
+        public DateTime? BankClearedOn { get; set; }
+        public string PaymentStatus { get; set; }
     }
 
 
