@@ -865,6 +865,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 else
                 {
                     // Update fields
+                    if (existingItem.CreatedBy == "" || string.IsNullOrEmpty(existingItem.CreatedBy))
+                    {
+                        existingItem.CreatedBy = addedBy;
+                    }
                     existingItem.Gsdescrpition = model.Gsdescrpition;
                     existingItem.GsdescriptionAr = model.GsdescriptionAr;
                     existingItem.GsgroupId = model.GsgroupId;
@@ -1617,6 +1621,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // Update only the fields you want (ExpiryDate, BatchNo)
                 entity.ExpiryDate = update.ExpiryDate;
+                entity.QtyReceived = update.QtyReceived;
                 entity.BatchNo = update.BatchNo;
 
                 await dbContext.SaveChangesAsync();

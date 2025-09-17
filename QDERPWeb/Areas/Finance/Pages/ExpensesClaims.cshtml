@@ -913,7 +913,7 @@ columns.Add()
              // Define context menu items with permission keys
             let menuConfig = [
                 {
-                    text: "Edit Journal Voucher",
+                    text: "Edit Claim",
                     icon: "edit",
                     color: "#28a745",
                     permissionKey: "frm20107ExpenseClaimView_EditClaim",
@@ -925,7 +925,7 @@ columns.Add()
                             } else if (rowData.ClaimRefNo.startsWith('PCQ')) {
                                 targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
                             } else if (rowData.ClaimRefNo.startsWith('SRQ')) {
-                                targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                                targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
                             }
                             if (targetUrl) window.location.href = targetUrl;
                         } else {
@@ -934,7 +934,7 @@ columns.Add()
                     }
                 },
                 {
-                    text: "Unlock Journal Voucher",
+                    text: "Unlock Claim",
                     icon: "unlock",
                     color: "#17a2b8",
                     permissionKey: "frm20107ExpenseClaimView_UnlockClaim",
@@ -943,7 +943,7 @@ columns.Add()
                     }
                 },
                 {
-                    text: "Delete Journal Voucher",
+                    text: "Delete Claim",
                     icon: "trash",
                     color: "#dc3545",
                     permissionKey: "frm20107ExpenseClaimView_DeleteClaim",

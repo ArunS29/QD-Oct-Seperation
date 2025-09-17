@@ -645,7 +645,9 @@
                         <tbody>
                             <tr>
                                 <!-- Prepared By SelectBox -->
-                                <td colspan="2" style=" display:flex; align-items:end;">
+                                <td colspan="3">
+                                    <div class="row" style="padding:0 10px">
+                						<div class="col-3">
                                     @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Signatory:')"))
                                     .DataSource(d => d.WebApi()
@@ -684,6 +686,96 @@
                                         .Name("dropDown");
                                     })
                                     )
+                                    </div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Prepared By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddPreparedby")
+											.Width(900)
+											.OpenOnFieldClick(false)//
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+																	//.OnValueChanged("dropDownBoxValueChanged")
+											.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+											.Buttons(buttons =>
+											{
+												buttons.Add()
+												.Name("AddPreparedBy")
+												.Location(TextEditorButtonLocation.After)
+												.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("plus")
+												.ElementAttr(new { @class = "custom-hover-button add-hover" })
+												.OnClick("AddPreparedBy"));
+												buttons.Add()
+												.Name("dropDown");
+											}))
+										</div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Verified By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddVerifiedby")
+											.Width(900)
+											.OpenOnFieldClick(false)
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+											.ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+											)
+										</div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Approved By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddApprovedby")
+											.Width(900)
+											.OpenOnFieldClick(false)
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+											.ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+											)
+										</div>
+									</div>
                                 </td>
                             </tr>
 
@@ -1451,11 +1543,6 @@
     function dataGridInitialized5(e) {
         dataGrid = e.component;
     }
-    function AddPreparedBy(){
-            const url = `/${tenantName}/IMS/Signatories`;
-            const title = "Signatories";
-            openModal(url, title);
-          }
           function dataGridPreparedByHeadInitialized(e) {
 
                     dataGrid = e.component;
