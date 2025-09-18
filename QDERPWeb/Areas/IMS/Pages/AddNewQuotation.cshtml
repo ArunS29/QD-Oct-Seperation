@@ -5704,8 +5704,7 @@ AddlDescription: null,
     }
 });
 function saveQuotation(quotationNoNew, $btn) {
-    debugger;
-			let master = {
+    			let master = {
 				QuoteNo: quotationNoNew,
 				RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
@@ -5829,8 +5828,7 @@ $("#btnSaveAndClose").on("click", function (e) {
 });
 
 function saveAndCloseQuotation(quotationNoNew, $btn) {
-    debugger;
-			let master = {
+    			let master = {
 				QuoteNo: quotationNoNew,
 				RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
@@ -5922,8 +5920,7 @@ if (!children || children.length === 0) {
 			});
 }
 function loadChildDataAndBindGrid(quoteno) {
-		debugger;
-    if (!quoteno) {
+		    if (!quoteno) {
         console.warn("No Quote number provided.");
         return;
     }
@@ -6218,8 +6215,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 	//MoveupDown functionality
 	function moveRowUp() {
-		debugger;
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Flatten the grouped data
 		//   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -6247,8 +6243,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 
 	function moveRowDown() {
-		debugger;
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Get flattened data
 		// var selectedRowKeys = dataGrid.option("selectedRowKeys");
