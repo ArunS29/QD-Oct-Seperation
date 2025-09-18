@@ -252,10 +252,6 @@
             transition: all 0.3s ease;
         }
 
-        .backgroundWhite {
-            background-color: white !important;
-        }
-
         * {
             font-size: var(--Font-size-300, 12px); /* Font size */
             font-style: normal; /* Font style */
@@ -488,7 +484,6 @@
 
         .menu-item.active {
             background-color: white;
-            color: white;
             font-weight: bold;
             border-radius: 10px 0px 0px 10px;
             width: 215px;
@@ -544,7 +539,7 @@
         }
 
             .menu-item.active .text {
-                color: var(--highlight-color);
+                color: black !important;
             }
 
             .menu-item i::after {
@@ -2901,49 +2896,49 @@
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
                             <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px" /></i>
-                            <div id="HumanResources" class="text backgroundWhite"></div>
+                            <div id="HumanResources" class="text menu-label"></div>
                         </div>
                     }
                     @if (userModules.Contains("Finance"))
                     {
                         <div class="menu-item finance" onclick="navigate('Finance')">
                             <i id="FinanceIcon"><img src="~/images/finance.png" style="width:30px" /></i>
-                            <div id="Finance" class="text backgroundWhite"></div>
+                            <div id="Finance" class="text menu-label"></div>
                         </div>
                     }
                     @if (userModules.Contains("VAT"))
                     {
                         <div class="menu-item vat" onclick="navigate('VAT Modules')">
                             <i id="VATModulesIcon"><img src="~/images/vat_icon.png" style="width:30px" /></i>
-                            <div id="VATModules" class="text backgroundWhite" backgroundWhite></div>
+                            <div id="VATModules" class="text menu-label" backgroundWhite></div>
                         </div>
                     }
                     @if (userModules.Contains("Equipment"))
                     {
                         <div class="menu-item rentals" onclick="navigate('Equipment Rentals')">
                             <i id="EquipmentRentalsIcon"><img src="~/images/renting.png" style="width:30px" /></i>
-                            <div id="EquipmentRentals" class="text backgroundWhite"></div>
+                            <div id="EquipmentRentals" class="text menu-label"></div>
                         </div>
                     }
                     @if (userModules.Contains("CAMP"))
                     {
                         <div class="menu-item camp" onclick="navigate('Camp Management')">
                             <i id="CampManagementIcon"><img src="~/images/camp.png" style="width:30px" /></i>
-                            <div id="CampManagement" class="text backgroundWhite"></div>
+                            <div id="CampManagement" class="text menu-label"></div>
                         </div>
                     }
                     @if (userModules.Contains("IMS"))
                     {
                         <div class="menu-item inventory" onclick="navigate('Inventory Management')">
                             <i id="InventoryManagementIcon"><img src="~/images/IMS_icon.png" style="width:30px" /></i>
-                            <div id="InventoryManagement" class="text backgroundWhite"></div>
+                            <div id="InventoryManagement" class="text menu-label"></div>
                         </div>
                     }
                     @if (userModules.Contains("Projects"))
                     {
                         <div class="menu-item projects" onclick="navigate('Projects Control')">
                             <i id="ProjectsControlIcon"><img src="~/images/project_control.png" style="width:30px" /></i>
-                            <div id="ProjectsControl" class="text backgroundWhite"></div>
+                            <div id="ProjectsControl" class="text menu-label"></div>
                         </div>
                     }
                 </div>
@@ -3558,55 +3553,14 @@
                     });
                 });
 
-
                 $(function () {
-                    $("#HumanResources").dxTextBox({
-                        text: formatMessage("Human Resources"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#Finance").dxTextBox({
-                        text: formatMessage("Finance"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#VATModules").dxTextBox({
-                        text: formatMessage("VAT Modules"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#EquipmentRentals").dxTextBox({
-                        text: formatMessage("Equipment Rentals"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#CampManagement").dxTextBox({
-                        text: formatMessage("Camp Management"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#InventoryManagement").dxTextBox({
-                        text: formatMessage("Inventory Management"),
-                        readOnly: true
-
-                    });
-                });
-                $(function () {
-                    $("#ProjectsControl").dxTextBox({
-                        text: formatMessage("Projects Control"),
-                        readOnly: true
-
-                    });
+                    $("#HumanResources").text(formatMessage("Human Resources"));
+                    $("#Finance").text(formatMessage("Finance"));
+                    $("#VATModules").text(formatMessage("VAT Modules"));
+                    $("#EquipmentRentals").text(formatMessage("Equipment Rentals"));
+                    $("#CampManagement").text(formatMessage("Camp Management"));
+                    $("#InventoryManagement").text(formatMessage("Inventory Management"));
+                    $("#ProjectsControl").text(formatMessage("Projects Control"));
                 });
 
                 var authToken = '@authToken';
@@ -3799,29 +3753,28 @@
 
 
                 const breadcrumbTrail = [];
+                let activeMenu = null;
                 function navigate(name) {
                     const sidebar2 = document.getElementById('sidebar2');
                     const sidebar3 = document.getElementById('sidebar3div');
-                    if (sidebar3.style.display === 'none') {
-                        sidebar3.style.display = 'flex';
-                    } else {
-                        sidebar3.style.display = 'flex';
-                    }
+                    const mainContent = document.getElementById('main-content');
+                    sidebar3.style.display = 'flex';
                     document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
 
                     const clickedMenu = Array.from(document.querySelectorAll('.menu-item')).find(el =>
                         el.onclick?.toString().includes(name)
                     );
                     if (clickedMenu) clickedMenu.classList.add('active');
-                    const mainContent = document.getElementById('main-content');
-                    if (sidebar2.style.display === 'block') {
+                    if (activeMenu === name) {
                         sidebar2.style.display = 'none';
+                        document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
                         mainContent.classList.remove('blur');
-                    } else {
-                        sidebar2.style.display = 'block'; // Show sidebar2
-                        mainContent.classList.add('blur');
+                        activeMenu = null;
+                        return;
                     }
-                    // Dynamically load submenu items for the first sidebar menu
+                    sidebar2.style.display = 'block';
+                    mainContent.classList.add('blur');
+                    activeMenu = name;
                     if (name === 'Finance') {
                         showFinanceSubmenu();
                     } else if (name === 'Human Resources') {
@@ -4296,6 +4249,7 @@
                     sidebar2.classList.add('hidden');
                     sidebar2.style.display = 'none'; // Set display to none for sidebar2
                     sidebar3div.style.display = 'none'; // Set display to none for sidebar3
+                    activeMenu = null;
                     document.getElementById('main-content').classList.remove('blur');
                     document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
 

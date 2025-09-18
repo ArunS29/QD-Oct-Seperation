@@ -1123,3 +1123,10 @@ dx-item-content dx-list-item-content:hover{
 .step-status-msg::before {
     content: "\00a0-\00a0";
 }
+.menu-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff !important;
+    padding-left: 5px;
+    line-height: 30px;
+}
