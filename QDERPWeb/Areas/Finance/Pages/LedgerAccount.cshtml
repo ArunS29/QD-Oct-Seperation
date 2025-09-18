@@ -2617,11 +2617,11 @@
 
     function syncVATNumbers(e) {
     // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-    $("#txtBillingVATRegNo").dxNumberBox("instance").option("value", e.value);
+    $("#txtBillingVATRegNo").dxTextBox("instance").option("value", e.value);
 }
 function syncSupVATNumbers(e) {
     // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-    $("#txtObsSupRegNo").dxNumberBox("instance").option("value", e.value);
+    $("#txtObsSupRegNo").dxTextBox("instance").option("value", e.value);
 }
    
     $(function () {
@@ -3629,12 +3629,12 @@ function syncSupVATNumbers(e) {
 
                     }
 
-                    var txtClientVATNo = $('#txtClientVATNo').dxNumberBox("instance");
+                    var txtClientVATNo = $('#txtClientVATNo').dxTextBox("instance");
                     if (txtClientVATNo) {
                         txtClientVATNo.option("value", account.VatregistrationNo);
 
                     }
-                    var txtGrouptVATNo = $('#txtGrouptVATNo').dxNumberBox("instance");
+                    var txtGrouptVATNo = $('#txtGrouptVATNo').dxTextBox("instance");
                     if (txtGrouptVATNo) {
                         txtGrouptVATNo.option("value", account.ClientGroupVatnumber);
 
@@ -4369,7 +4369,7 @@ if (dropDownInstance.option("opened")) {
     if (disabledIndex !== undefined && selectedTabIndex === disabledIndex) {
         const previousIndex = e.previousIndex ?? 0;
         e.component.option("selectedIndex", previousIndex);
-        DevExpress.ui.notify("", "warning", 2000);
+        // DevExpress.ui.notify("", "warning", 2000);
         return;
     }
 
@@ -5247,8 +5247,8 @@ if (dropDownInstance.option("opened")) {
         //Client Details Tab
         var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
         var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
-        var cntVATNo = $('#txtClientVATNo').dxNumberBox('option', 'value');
-        var cntGroupVATNo = $('#txtGrouptVATNo').dxNumberBox('option', 'value');
+        var cntVATNo = $('#txtClientVATNo').dxTextBox('option', 'value');
+        var cntGroupVATNo = $('#txtGrouptVATNo').dxTextBox('option', 'value');
         var cntOtherType = $('#ddlOtherType').dxDropDownBox('option', 'value');
         var cntOtherID = $('#txtOtherId').dxTextBox('option', 'value');
         var cntAddress = $('#txtClientAddress').dxTextBox('option', 'value');
@@ -6478,7 +6478,7 @@ if (dropDownInstance.option("opened")) {
 
       function validateClientVATNo(e) {
     if (e.value.length !== 15) {
-        DevExpress.ui.notify("", "error", 3000);
+        DevExpress.ui.notify("Client VAT No must be exactly 15 digits", "error", 3000);
     }
 }
 

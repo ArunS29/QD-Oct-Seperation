@@ -423,6 +423,14 @@
             </text>)
 
                         .OnItemClick("handlePreviewClick"))
+            @(Html.DevExtreme().Button()
+                        .ID("btnPrints")
+                        .Text(new JS("formatMessage('Print')"))
+                        .Icon("print")
+                        .Hint("Click to print")
+                        .OnClick("function() { openPrint(); }")
+                        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
+                        )
 
             @(Html.DevExtreme().Button()
                         .ID("btnDelete")
@@ -502,7 +510,7 @@
                             "btnSave": { "Visible": true, "Enabled": true },
                             "btnSaveAndClose": { "Visible": false, "Enabled": false },
                             "btnPreview1": { "Visible": true, "Enabled": true },
-                            "btnPrint": { "Visible": true, "Enabled": true },
+                            "btnPrints": { "Visible": true, "Enabled": true },
                             "btnDelete": { "Visible": false, "Enabled": false },
                             "btnBack": { "Visible": false, "Enabled": false },
                             "btnVerify": { "Visible": true, "Enabled": true },
@@ -1018,7 +1026,7 @@
             $('input, select, textarea').prop('disabled', true);
 
             $('.dx-button').each(function () {
-                const allowedButtons = ['btnBack',  'btnPrint', 'btnAttach','btnAttachment','btnEditAHead','btnAddAHead','btncostBack'];
+                const allowedButtons = ['btnBack',  'btnPrints', 'btnAttach','btnAttachment','btnEditAHead','btnAddAHead','btncostBack','btnPropertyBack','AEbtnBack'];
                 if (!allowedButtons.includes($(this).attr('id'))) {
                     $(this).dxButton('option', 'disabled', true);
                 }
@@ -1033,19 +1041,17 @@
                 console.error("btnPreview1 instance not found");
             }
             // Modify context menu items
-        $("#EditCostAllocation").text("View Cost Allocation");
-        $("#EditBillReceivable").text("View Bill Receivable");
-        $("#EditSalaryPayable").text("View Salary Payable");
-        $("#EditEmployeeAllocation").text("View Employee Allocation");
-        $("#EditPropertyAllocation").text("View Property Allocation");
+        menuItems.forEach(item => {
+                if (item.text.startsWith("Edit ")) {
+                    item.text = item.text.replace("Edit", "View");
+                }
+                if (item.id === "onAllRowRemoving") {
+                    item.disabled = true; // disable delete menu item
+                }
+            });
 
-        // Completely disable DeleteAllLineEntries
-        $("#DeleteAllLineEntries").parent().css({
-            "pointer-events": "none",  // Disables interaction
-            "opacity": "0.5",  // Makes it look disabled
-            "cursor": "default"  // Prevents pointer cursor
-        }).attr("aria-disabled", "true");
-
+            // Re-render context menu so UI updates
+            renderContextMenu();
         // Disable DevExtreme DateBox components
         $("#VoucherDate").dxDateBox("instance").option("disabled", true);
         $("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
@@ -1326,23 +1332,23 @@
         });
 
 
-        function openPrint() {
-            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-            var voucherNo = voucherNoBox.option("value");
+           function openPrint() {
+        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        var voucherNo = voucherNoBox.option("value");
 
-            if (!voucherNo) {
-                alert("Voucher No is required.");
-                return;
-            }
-
-            var reportName = "cashPayments"; // Modify as needed
-
-            // **Use the new API URL**
-            var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;
-
-            // **Trigger file download**
-            window.location.href = url;
+        if (!voucherNo) {
+           DevExpress.ui.notify("Voucher No is required.", "error", 2000);
+            return;
         }
+
+        var reportName = "cashPayments"; // Modify as needed
+
+        // **Use the new API URL**
+        var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;
+
+        // **Trigger file download**
+        window.location.href = url;
+    }
 
 
 

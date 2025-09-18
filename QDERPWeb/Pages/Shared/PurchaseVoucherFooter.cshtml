@@ -985,11 +985,15 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack','btnPropertyBack','AEbtnBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
+        const btnPrintpInstance = $("#btnPrintp").dxButton("instance");
+    if (btnPrintpInstance) {
+        btnPrintpInstance.option("disabled", false);
+    }
         // Enable the DropDownButton explicitly
         const previewButton = $("#btnPreview2").dxDropDownButton("instance");
 
@@ -1229,11 +1233,11 @@
         var voucherNo = voucherNoBox.option("value");
 
         if (!voucherNo) {
-            alert("Voucher No is required.");
+           DevExpress.ui.notify("Voucher No is required.", "error", 2000);
             return;
         }
 
-        var reportName = "SalesVoucherReport"; // Modify as needed
+        var reportName = "cashPayments"; // Modify as needed
 
         // **Use the new API URL**
         var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;

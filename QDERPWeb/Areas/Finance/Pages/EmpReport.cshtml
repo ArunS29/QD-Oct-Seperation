@@ -6,70 +6,95 @@
 
 <h2 id="costledger"></h2>
 
-<div class="toolbar custom-toolbar">
-    <div class="toolbar-item">
+<div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label(new JS("formatMessage('Start Date')"))
-.LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Start Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(1)
-            )
+                .ID("frmdateBox")
+                .Label(new JS("formatMessage('Start Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Start Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(1)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label(new JS("formatMessage('End Date')"))
-.LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "End Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            )
+                .ID("todateBox")
+                .Label(new JS("formatMessage('End Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "End Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(2)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 150px;">
         @(Html.DevExtreme().TextBox()
-            .ID("accountIdLabel")
-            .Label(new JS("formatMessage('Ledger No')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Ledger No")
-            .ReadOnly(true)
-            .StylingMode(EditorStylingMode.Outlined)
-            .TabIndex(3)
-            )
+                .ID("accountIdLabel")
+                .Label(new JS("formatMessage('Ledger No')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger No")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(3)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <!-- ✅ New Ledger Name textbox -->
+    <div class="toolbar-item" style="flex: 1 1 250px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("ledgerNameLabel")
+                .Label(new JS("formatMessage('Ledger Name')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger Name")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(4)
+                )
+    </div>
+
+    <div class="toolbar-item" style="flex: 0 0 auto;">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text(new JS("formatMessage('Show Records')"))
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-            })
-            )
+                .ID("ddBtnShowRecords")
+                .Text(new JS("formatMessage('Show Records')"))
+                .Icon("smalliconslayout")
+                .Width(180)
+                .ElementAttr("class", "button-alignment-down")
+                .TabIndex(5)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                )
     </div>
 </div>
+
 
 
 <div id="dataGrid" style="margin-top: 15px;"></div>
@@ -81,13 +106,32 @@
 
     <script>
            $(function () {
-         $("#costledger").text(formatMessage("Cost Allocation Details for Ledger Account"));
+         $("#costledger").text(formatMessage("Employee Allocation Details for Ledger Account"));
     });
     $(document).ready(function () {
-        // Example way to set Ledger No (can be from query, or grid value)
-        const accountId = getQueryParam('accountId');
-        $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
-    });
+         const accountId = getQueryParam('accountId');
+
+         if (accountId) {
+             // Bind accountId to Ledger No textbox
+             $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
+
+             // Fetch Ledger Name from server
+             $.ajax({
+                 url: '/api/UCCostAnalysis/GetLedgerName', // adjust area/controller if needed
+                 type: 'GET',
+                 data: { accountId: accountId },
+                 success: function (response) {
+                     if (response && response.ledgerName) {
+                         $("#ledgerNameLabel").dxTextBox("instance").option("value", response.ledgerName);
+                     }
+                 },
+                 error: function (xhr) {
+                     console.error("Failed to load Ledger Name:", xhr.responseText);
+                     $("#ledgerNameLabel").dxTextBox("instance").option("value", "");
+                 }
+             });
+         }
+     });
 
         let dataGrid;
 
@@ -138,10 +182,13 @@
             summary: {
                 totalItems: [
                     {
-                        column: "AmountAllocated",
+                         column: "AmountAllocated",
                         summaryType: "sum",
-                        displayFormat: "Total: {0}",
-                        valueFormat: "currency"
+                        valueFormat: {
+                            type: "fixedPoint",  // ensures numeric formatting
+                            precision: 2         // always shows .00
+                        },
+                        displayFormat: "{0}"
                     }
                 ]
             },
@@ -154,18 +201,64 @@
                 { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
                 { dataField: "NationalId", caption: formatMessage("National ID") },
                 { dataField: "EmpAllocDrCr", caption: formatMessage("Dr/Cr") },
-                { dataField: "AmountAllocated", caption: formatMessage("Amount Allocated") },
+                    {
+        dataField: "AmountAllocated",
+        caption: formatMessage("Amount Allocated"),
+        dataType: "number",
+        alignment: "right",
+        cellTemplate: function (container, options) {
+            if (options.value != null) {
+                let value = options.value;
+                let formattedValue = Math.abs(value).toFixed(2); // always show .00
+                if (value < 0) {
+                    formattedValue = "(" + formattedValue + ")";
+                }
+                $("<div>")
+                    .text(formattedValue)
+                    // .css("color", value < 0 ? "red" : "black") // optional styling
+                    .appendTo(container);
+            } else {
+                container.text('');
+            }
+        }
+    },
+
+                 { dataField: "VoucherType", caption: formatMessage("Voucher Type"), visible: false },
+                 {
+        dataField: "VoucherNo",
+        caption: formatMessage("Voucher No"),
+        cellTemplate: function (container, options) {
+            if (options.value) {
+                $('<a>')
+                    .attr('href', 'javascript:void(0);')
+                    .text(options.value)
+                    .css({
+                        color: '#007bff',        // Bootstrap-like blue
+                        cursor: 'pointer',       // Pointer cursor
+                        'text-decoration': 'underline' // Underline for link appearance
+                    })
+                    .on('mouseenter', function () {
+                        $(this).css('text-decoration', 'none'); // Optional hover effect
+                    })
+                    .on('mouseleave', function () {
+                        $(this).css('text-decoration', 'underline');
+                    })
+                    .on('click', function () {
+                        navigateToVoucherPage(options.value, options.data.VoucherType);
+                    })
+                    .appendTo(container);
+            } else {
+                container.text('');
+            }
+        }
+    },
 
                 {
-                    dataField: "VoucherRefNo", caption: formatMessage("Voucher No"), cellTemplate: function (container, options) {
-                        $('<a>')
-                            .attr('href', `/voucher/details/${options.value}`)
-                            .text(options.value)
-                            .appendTo(container);
-                    }
-                },
-
-                { dataField: "VoucherDate", caption: formatMessage("Voucher Date"), dataType: "date" },
+                dataField: "VoucherDate",
+                caption: formatMessage("Voucher Date"),
+                dataType: "date",
+                format: "dd-MMM-yyyy"
+            },
                 { dataField: "Department", caption: formatMessage("Department") },
                 { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") }
             ]
@@ -175,28 +268,102 @@
         loadCostGrid();
     });
     function ddBtnShowRecords_click(option) {
-        const today = new Date();
+        let today = new Date();
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+        // Keep original date object safe (no mutation issues)
+        const currentDate = new Date();
+
         const setDates = {
-            'today': [today, today],
-            'yesterday': [new Date(today.setDate(today.getDate() - 1)), new Date()],
-            'week': [new Date(today.setDate(today.getDate() - today.getDay())), new Date()],
+            'today': [new Date(), new Date()],
+            'yesterday': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1),
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1)
+            ],
+            'week': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay()),
+                new Date()
+            ],
             'tillmonth': [startOfMonth, new Date()],
             'fullmonth': [startOfMonth, endOfMonth],
             'tillyear': [new Date(today.getFullYear(), 0, 1), new Date()],
             'fullyear': [new Date(today.getFullYear(), 0, 1), new Date(today.getFullYear(), 11, 31)],
-            'lastmonth': [new Date(today.getFullYear(), today.getMonth() - 1, 1), new Date(today.getFullYear(), today.getMonth(), 0)],
-            'lastyear': [new Date(today.getFullYear() - 1, 0, 1), new Date(today.getFullYear() - 1, 11, 31)],
-            'range': [$("#frmdateBox").dxDateBox("instance").option("value"), $("#todateBox").dxDateBox("instance").option("value")]
+            'lastmonth': [
+                new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                new Date(today.getFullYear(), today.getMonth(), 0)
+            ],
+            'lastyear': [
+                new Date(today.getFullYear() - 1, 0, 1),
+                new Date(today.getFullYear() - 1, 11, 31)
+            ],
+            'range': [
+                $("#frmdateBox").dxDateBox("instance").option("value"),
+                $("#todateBox").dxDateBox("instance").option("value")
+            ]
         };
 
-        const [from, to] = setDates[option] || [today, today];
+        const [from, to] = setDates[option] || [new Date(), new Date()];
         $("#frmdateBox").dxDateBox("instance").option("value", from);
         $("#todateBox").dxDateBox("instance").option("value", to);
 
-        loadCostGrid({ fromDate: from, toDate: to });
+        // Pass selected dates directly to loadCostGrid
+        loaddateCostGrid(from, to);
+    }
+
+    function loaddateCostGrid(fromDate, toDate) {
+        const accountId = getQueryParam('accountId');
+
+        dataGrid.option("dataSource", {
+            load: function () {
+                const params = new URLSearchParams();
+                if (accountId) params.append("accountId", accountId);
+
+                // ✅ Use parameters passed from function instead of query params
+                if (fromDate) params.append("fromDate", fromDate.toISOString());
+                if (toDate) params.append("toDate", toDate.toISOString());
+
+                return fetch(`/api/EmployeeReport/GetEmployeeAllocations?${params}`)
+                    .then(res => res.json());
+            }
+        });
+
+        dataGrid.refresh();
+    }
+     function navigateToVoucherPage(voucherNo, voucherType) {
+        console.log("Original VoucherNo:", voucherNo, "VoucherType:", voucherType); // Debugging
+
+        if (!voucherNo || !voucherType) {
+            alert("Invalid voucher details.");
+            return;
+        }
+
+        let formattedVoucher = voucherNo.trim().toUpperCase(); // Convert to uppercase for consistency
+        let formattedVoucherType = voucherType.trim(); // Trim to avoid leading/trailing spaces
+
+        console.log("Formatted VoucherNo:", formattedVoucher, "Formatted VoucherType:", formattedVoucherType); // Debugging
+
+        // Define voucher type-based URLs
+        const voucherRoutes = {
+            "Bank Payment": `/${tenantName}/finance/VoucherBankPayment`,
+            "Cash Payment": `/${tenantName}/finance/VoucherCashPayment`,
+            "Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
+            "Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
+            "Sales": `/${tenantName}/finance/SalesVoucher`,
+            "Purchases": `/${tenantName}/finance/PurchaseVoucher`,
+            "Journal": `/${tenantName}/finance/Voucherjournal`
+        };
+
+        let baseUrl = voucherRoutes[formattedVoucherType];
+
+        if (baseUrl) {
+            // Append both VoucherNo and VoucherType as query parameters
+            let targetUrl = `${baseUrl}?argsledno=${encodeURIComponent(formattedVoucher)}&vouchertype=${encodeURIComponent(formattedVoucherType)}`;
+            console.log("Navigating to:", targetUrl); // Debugging
+            window.location.href = targetUrl; // Navigate
+        } else {
+            alert("Unknown voucher type: " + voucherType);
+        }
     }
     $(document).ready(function () {
 
