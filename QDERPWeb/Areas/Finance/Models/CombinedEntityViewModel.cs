@@ -58,6 +58,35 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime DeliveryDate { get; set; }
         public int DeliveryType { get; set; } 
     }
+    public class PostDeliveryNoteRequest
+    {
+        public string DeliveryNoteNo { get; set; }
+        public DateTime? DeliveryNoteDate { get; set; }
+    }
+    public class MaterialReceiptDto
+    {
+        public string ReceiptNo { get; set; }
+        public string DeliveryNoteNo { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public string ReceivedFrom { get; set; }
+        public decimal Amount { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? CurrencyId { get; set; }
+
+        public List<MaterialReceiptChildDto> Items { get; set; }
+    }
+
+    public class MaterialReceiptChildDto
+    {
+        public long ReceiptChildSlNo { get; set; }
+        public string ItemCode { get; set; }
+        public byte UOM { get; set; }
+        public decimal Qty { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal TotalAmount { get; set; }
+        public decimal? LineTotalWithTax { get; set; }
+    }
     public class VoucherEntryDisplayDTO
     {
         public string VoucherNo { get; set; }
