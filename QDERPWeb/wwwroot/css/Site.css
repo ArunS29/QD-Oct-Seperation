@@ -1120,3 +1120,6 @@ dx-item-content dx-list-item-content:hover{
     font-size: 14px;
     color: #333;
 }*/
+.step-status-msg::before {
+    content: "\00a0-\00a0";
+}
