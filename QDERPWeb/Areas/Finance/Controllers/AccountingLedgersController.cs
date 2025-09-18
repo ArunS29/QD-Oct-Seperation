@@ -1,4 +1,6 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.XtraRichEdit.Import.Doc;
+using DevExpress.XtraSpreadsheet.Import.Xls;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -110,21 +112,43 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     if (string.IsNullOrEmpty(id))
                         return Json(new { success = false, message = "Invalid Cost Center ID." });
 
-                    var costCenter = dbContext.Tbl201ChartOfAccounts.FirstOrDefault(c => c.AccountId == id);
+                    var costCenter = dbContext.Tbl201ChartOfAccounts
+                                              .FirstOrDefault(c => c.AccountId == id);
+
                     if (costCenter == null)
                         return Json(new { success = false, message = "Cost Center not found." });
 
-                    return Json(new { success = true, data = costCenter });
+                    // fetch account group name
+                    var accountGroup = dbContext.Tbl201AccountGroups
+                                                .Where(x => x.AccountGroupId == costCenter.AccountGroupId)
+                                                .Select(x => x.AccountGroup)
+                                                .FirstOrDefault();
+
+                    // return both costCenter and AccountGroup
+                    return Json(new
+                    {
+                        success = true,
+                        data = new
+                        {
+                            costCenter.AccountId,
+                            costCenter.AccountHead,
+                            costCenter.AccountGroupId,
+                            costCenter.ReferenceNo,
+                            costCenter.AccountHeadArabic,
+                            AccountGroup = accountGroup
+                        }
+                    });
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"This is an error log message from the AccountingLedger controller from GetAccountId(string id) at {DateTime.Now}. Error: {ex.Message}");
+                    _logger.LogError($"Error in GetAccountId(string id) at {DateTime.Now}. Error: {ex.Message}");
                     return Json(new { success = false, message = ex.Message });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
 
         public IActionResult GetAccountHeadName(string accountId)

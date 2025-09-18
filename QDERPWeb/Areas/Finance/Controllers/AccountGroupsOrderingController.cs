@@ -81,6 +81,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         //[HttpPost]
         //public async Task<IActionResult> SwapWithinGroup([FromBody] SwapRequest request)
         //{
@@ -135,6 +136,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         //    return Ok(new { success = true });
         //}
+
 
 
     }
