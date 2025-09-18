@@ -6,6 +6,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
+    /* Make button fill entire cell */
+    .cell-button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    .full-cell-button {
+        width: 100% !important;
+        height: 100% !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold; /* Make >| look prominent */
+        font-size: 1rem;
+    }
+
     .card {
         margin: 20px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -122,22 +141,26 @@
             <%- value %>
         </div>
     </text>);
-                          
 
 
-                        // Add Button Column
-                        columns.Add()
-                            .Caption("...")
-                            .Width(50)
-                            .CellTemplate(@<text>
-                    <div style="text-align: center;">
-                        <div class="dx-button dx-button-mode-contained dx-widget" onclick="onNextButtonClick(this)">
-                            <i class="dx-icon dx-icon-chevronright"></i>
-                        </div>
-                    </div>
-                </text>);
 
-                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+            // Add Button Column
+            columns.Add()
+            .Caption("...")
+            .Width(50)
+            .CellTemplate(@<text>
+                               <div class="cell-button-container">
+                @(Html.DevExtreme().Button()
+                            .Icon("chevrondoubleright") // better than simple chevron
+                            .StylingMode(ButtonStylingMode.Contained)
+                            .Type(ButtonType.Default)
+                            .ElementAttr("class", "full-cell-button")
+                            .OnClick("onNextButtonClick"))
+        </div>
+    </text>);
+
+
+                        columns.Add().DataField("BankClearedOn").Caption(new JS("formatMessage('Cleared On')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").AllowEditing(true);
                     columns.Add().DataField("PaymentStatus").Caption(new JS("formatMessage('Status')")).AllowEditing(true);
                     columns.Add().DataField("DrAmount").Caption(new JS("formatMessage('Receipts')")).CustomizeText(
                 "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
@@ -265,44 +288,39 @@
         }
     }
 
-function onNextButtonClick(button) {
-    var dataGrid = $("#dataGrid").dxDataGrid("instance");  // Get DataGrid instance
-    var rowIndex = $(button).closest("tr").index(); // Get row index
+        function onNextButtonClick(e) {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-       // Find the clicked row's data
-   // var ClickedrowIndex = $(element).closest(".dx-row").index();
-    var ClickedrowData = dataGrid.getVisibleRows()[rowIndex].data;
-     voucherEntryNo = ClickedrowData.VoucherEntryNo;
-     var formattedDate1 = formatDate(ClickedrowData.VoucherDate);
- 
-     bankclearedOn = formattedDate1;
-  
+        // Find the clicked row element
+        var $rowElement = $(e.element).closest(".dx-row");
 
-    if (rowIndex === -1) {
-        console.error("Row index not found.");
-        return;
-    }
-    var rowData = dataGrid.getVisibleRows()[rowIndex].data; // Get row data
+        // Get its index among visible data rows
+        var rowIndex = $rowElement.index(".dx-data-row");
 
+        // Get the visible rows from DataGrid
+        var visibleRows = dataGrid.getVisibleRows();
 
+        // Safely get row data
+        var rowData = visibleRows[rowIndex] ? visibleRows[rowIndex].data : null;
 
-    if (rowData) {
-        var voucherDate = rowData.VoucherDate;  // Get raw date
-        if (voucherDate) {
-            var formattedDate = formatDate(voucherDate);
-            console.log("Formatted Voucher Date: ", formattedDate);
-            console.log("Row Data:", rowData);
-
-           // alert("Row Index: " + rowIndex); // Show correct row index
-
-            // Update the BankClearedOn column at the same row index
-            dataGrid.cellValue(rowIndex, "BankClearedOn", formattedDate);
-
-            // Refresh the grid to reflect the changes
-            //dataGrid.refresh();
+        if (!rowData) {
+            console.error("Row data not found for rowIndex:", rowIndex);
+            return;
         }
+
+        console.log("Row Data:", rowData);
+
+        // Assign global variables
+        voucherEntryNo = rowData.VoucherEntryNo;
+        var formattedDate1 = formatDate(rowData.VoucherDate);
+        bankclearedOn = formattedDate1;
+
+        // Update the BankClearedOn cell value for this row
+        dataGrid.cellValue(rowIndex, "BankClearedOn", formattedDate1);
+            dataGrid.saveEditData();
     }
-}
+
+
 
 // Function to format date as dd-MMM-yyyy
 function formatDate(date) {
@@ -379,7 +397,7 @@ if (balanceOurBooksInstance) {
 
               const dataGrid = $("#dataGrid").dxDataGrid("instance");
         if (dataGrid) {
-            fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}`)
+                fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}&fromDate=${encodeURIComponent(FromDate)}&toDate=${encodeURIComponent(ToDate)}`)
                 .then(response => response.json())
                 .then(result => {
                     console.log("Raw response:", result);
@@ -387,7 +405,7 @@ if (balanceOurBooksInstance) {
                     // Ensure `data` property exists
                     if (Array.isArray(result.data)) {
                         dataGrid.option("dataSource", result.data);
-                       
+                           loadBankBalances();
                     } else {
                         console.warn("Unexpected response format", result);
                     }
@@ -492,7 +510,7 @@ $(document).ready(function () {
 
     $(function () {
 
-       
+           
 
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         
@@ -503,7 +521,7 @@ $(document).ready(function () {
         }
 
         function calculateTotals() {
-
+                loadBankBalances();
             const data = dataGrid.getVisibleRows().map(row => row.data);
             const totalDebit = dataGrid.getTotalSummaryValue("DrAmount") || 0;
             const totalCredit = dataGrid.getTotalSummaryValue("CrAmount") || 0;
@@ -528,16 +546,22 @@ $(document).ready(function () {
                 amountNotReflectedBox.option("value", formattedAmount);
             }
 
-            // Get lastRowBalance from query string and parse it
-            const lastRowBalance = getQueryParam("lastRowBalance") || "0";
-            console.log("lstbal:", lastRowBalance);
-            const cleanedBalanceLR = lastRowBalance.replace(/[^0-9.-]/g, "");
-            const lastRowBalanceVal = parseFloat(cleanedBalanceLR) || 0;
+               // Get BalanceAsPerOurBooks value directly from the TextBox
+                const balanceTextBox = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+                const balanceValue = balanceTextBox ? balanceTextBox.option("value") : "0";
 
-            // Parse formattedAmount to a number for calculation
-            const cleanedFormattedAmount = formattedAmount.replace(/[\(\),]/g, "");
-            const formattedAmountVal = parseFloat(cleanedFormattedAmount) || 0;
-            const netBalance = lastRowBalanceVal - formattedAmountVal;
+                console.log("BalanceAsPerOurBooks value:", balanceValue);
+
+                // Clean the value and parse to number
+                const cleanedBalance = (balanceValue || "0").toString().replace(/[^0-9.-]/g, "");
+                const lastRowBalanceVal = parseFloat(cleanedBalance) || 0;
+
+                // Parse formattedAmount to a number for calculation
+                const cleanedFormattedAmount = formattedAmount.replace(/[\(\),]/g, "");
+                const formattedAmountVal = parseFloat(cleanedFormattedAmount) || 0;
+
+                const netBalance = lastRowBalanceVal - formattedAmountVal;
+                console.log("Net Balance:", netBalance);
 
             // Format and set the BalanceAsPerBankStatement textbox
             const balanceAsPerBankBox = $("#BalanceAsPerBankStatement").dxTextBox("instance");
@@ -567,12 +591,19 @@ $(document).ready(function () {
         // Recalculate totals on content changes
         dataGrid.on("contentReady", calculateTotals);
         dataGrid.on("dataSourceChanged", calculateTotals);
-
+            loadBankBalances();
         $("#btnShowReconciled").on("click", function (e) {
             e.preventDefault();
+                function getQueryParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+            const accid = getQueryParam("accid");
+            const FromDate = getQueryParam("FromDate");
+             const ToDate = getQueryParam("ToDate");
             const dataGrid = $("#dataGrid").dxDataGrid("instance");
             if (dataGrid) {
-                fetch(`/api/SalaryPayableMapping/Getshowreconcileditems`)
+                    fetch(`/api/SalaryPayableMapping/Getshowreconcileditems?accid=${accid}&fromDate=${encodeURIComponent(FromDate)}&toDate=${encodeURIComponent(ToDate)}`)
                     .then(response => response.json())
                     .then(result => {
                         console.log("Raw response:", result);
@@ -598,69 +629,133 @@ $(document).ready(function () {
 
     });
 
+        function calculateTotals() {
+                    loadBankBalances();
+                        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                const data = dataGrid.getVisibleRows().map(row => row.data);
+                const totalDebit = dataGrid.getTotalSummaryValue("DrAmount") || 0;
+                const totalCredit = dataGrid.getTotalSummaryValue("CrAmount") || 0;
+                const balance = totalDebit - totalCredit;
+
+                // Format balance for AmountNotReflectedinBank
+                let formattedAmount;
+                if (balance < 0) {
+                    formattedAmount = `(${Math.abs(balance).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    })})`;
+                } else {
+                    formattedAmount = balance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                }
+
+                const amountNotReflectedBox = $("#AmountNotReflectedinBank").dxTextBox("instance");
+                if (amountNotReflectedBox) {
+                    amountNotReflectedBox.option("value", formattedAmount);
+                }
+
+                   // Get BalanceAsPerOurBooks value directly from the TextBox
+                    const balanceTextBox = $("#BalanceAsPerOurBooks").dxTextBox("instance");
+                    const balanceValue = balanceTextBox ? balanceTextBox.option("value") : "0";
+
+                    console.log("BalanceAsPerOurBooks value:", balanceValue);
+
+                    // Clean the value and parse to number
+                    const cleanedBalance = (balanceValue || "0").toString().replace(/[^0-9.-]/g, "");
+                    const lastRowBalanceVal = parseFloat(cleanedBalance) || 0;
+
+                    // Parse formattedAmount to a number for calculation
+                    const cleanedFormattedAmount = formattedAmount.replace(/[\(\),]/g, "");
+                    const formattedAmountVal = parseFloat(cleanedFormattedAmount) || 0;
+
+                    const netBalance = lastRowBalanceVal - formattedAmountVal;
+                    console.log("Net Balance:", netBalance);
+
+                // Format and set the BalanceAsPerBankStatement textbox
+                const balanceAsPerBankBox = $("#BalanceAsPerBankStatement").dxTextBox("instance");
+                if (balanceAsPerBankBox) {
+                    let formattedNetBalance;
+                    if (netBalance < 0) {
+                        formattedNetBalance = `(${Math.abs(netBalance).toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        })})`;
+                    } else {
+                        formattedNetBalance = netBalance.toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    }
+
+                    balanceAsPerBankBox.option("value", formattedNetBalance);
+                }
 
 
-    function onUpdateClick() {
-    // Validate the inputs
-    if (!voucherEntryNo || !bankclearedOn) {
-             DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
-        return;
-    }
+                // Optionally update total Debit and Credit boxes
+                // totalDebitTextbox.option("value", totalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                // totalCreditTextbox.option("value", totalCredit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            }
 
-    // Convert the bankclearedOn value to a Date object if it's a string
-    let bankClearedDate = new Date(bankclearedOn);
-    if (isNaN(bankClearedDate.getTime())) {
-        alert("Invalid BankClearedOn date.");
-        return;
-    }
+        function onUpdateClick() {
+        let grid = $("#dataGrid").dxDataGrid("instance");
+        let rows = grid.getDataSource().items(); // get all rows
 
-    // Convert to ISO 8601 format
-    let formattedDate = bankClearedDate.toISOString(); // e.g., "2024-10-30T18:30:00.000Z"
-
-    // Send AJAX request to update the BankClearedOn field
-    $.ajax({
-        url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
-        type: "POST",
-        success: function (response) {
-                    DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
-            Reloadgriddata();
-        },
-        error: function (xhr) {
-            alert("Error updating BankClearedOn: " + xhr.responseText);
-        }
-    });
-}
-    function onUpdatecloseClick() {
-        // Validate the inputs
-        if (!voucherEntryNo || !bankclearedOn) {
-            DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
-                    window.parent.closeModal();
+        if (!rows || rows.length === 0) {
+            DevExpress.ui.notify("No data to update.", "warning", 3000);
             return;
         }
 
-        // Convert the bankclearedOn value to a Date object if it's a string
-        let bankClearedDate = new Date(bankclearedOn);
-        if (isNaN(bankClearedDate.getTime())) {
-            alert("Invalid BankClearedOn date.");
-            return;
-        }
+        let payload = rows.map(row => ({
+            VoucherEntryNo: row.VoucherEntryNo,
+            BankClearedOn: row.BankClearedOn ? new Date(row.BankClearedOn).toISOString() : null,
+            PaymentStatus: row.PaymentStatus || null
+        }));
 
-        // Convert to ISO 8601 format
-        let formattedDate = bankClearedDate.toISOString(); // e.g., "2024-10-30T18:30:00.000Z"
-
-        // Send AJAX request to update the BankClearedOn field
         $.ajax({
-            url: `/api/SalaryPayableMapping/UpdateBankClearedOn?VoucherEntryNo=${encodeURIComponent(voucherEntryNo)}&BankClearedOn=${encodeURIComponent(formattedDate)}`,
+            url: `/api/SalaryPayableMapping/UpdateBankClearedOnBulk`,
             type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(payload),
             success: function (response) {
-                        DevExpress.ui.notify("Bank Reconciliation updated Successfully.", "success", 3000);
+                DevExpress.ui.notify("Bank Reconciliation updated successfully.", "success", 3000);
                 Reloadgriddata();
-                       window.parent.closeModal();
             },
             error: function (xhr) {
                 alert("Error updating BankClearedOn: " + xhr.responseText);
             }
         });
+    }
+
+    function onUpdatecloseClick() {
+             let grid = $("#dataGrid").dxDataGrid("instance");
+            let rows = grid.getDataSource().items(); // get all rows
+
+            if (!rows || rows.length === 0) {
+                DevExpress.ui.notify("No data to update.", "warning", 3000);
+                return;
+            }
+
+            let payload = rows.map(row => ({
+                VoucherEntryNo: row.VoucherEntryNo,
+                BankClearedOn: row.BankClearedOn ? new Date(row.BankClearedOn).toISOString() : null,
+                PaymentStatus: row.PaymentStatus || null
+            }));
+
+            $.ajax({
+                url: `/api/SalaryPayableMapping/UpdateBankClearedOnBulk`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(payload),
+                success: function (response) {
+                    DevExpress.ui.notify("Bank Reconciliation updated successfully.", "success", 3000);
+                         window.parent.closeModal();
+                },
+                error: function (xhr) {
+                    alert("Error updating BankClearedOn: " + xhr.responseText);
+                }
+            });
     }
 
     function onEditorPreparing(e) {
@@ -722,9 +817,11 @@ $(document).ready(function () {
             return urlParams.get(name);
         }
         const accid = getQueryParam("accid");
+        const FromDate = getQueryParam("FromDate");
+         const ToDate = getQueryParam("ToDate");
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         if (dataGrid) {
-            fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}`)
+                 fetch(`/api/SalaryPayableMapping/GetBankReconciliation?accid=${accid}&fromDate=${encodeURIComponent(FromDate)}&toDate=${encodeURIComponent(ToDate)}`)
                 .then(response => response.json())
                 .then(result => {
                     console.log("Raw response:", result);
@@ -732,9 +829,10 @@ $(document).ready(function () {
                     // Ensure `data` property exists
                     if (Array.isArray(result.data)) {
                         dataGrid.option("dataSource", result.data);
-
+                            calculateTotals();
                     } else {
                         console.warn("Unexpected response format", result);
+                            calculateTotals();
                     }
                 })
                 .catch(error => {
@@ -749,6 +847,49 @@ $(document).ready(function () {
         e.preventDefault();
         
         Reloadgriddata();
+
     });
+        async function loadBankBalances() {
+        
+                function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+    const accid = getQueryParam("accid");
+    
+     const ToDate = getQueryParam("ToDate");
+         if (!accid || !ToDate) return;
+        try {
+            const response = await $.ajax({
+                url: `/api/SalaryPayableMapping/GetBankBalances`,
+                type: "GET",
+                data: { accid: accid, toDate: ToDate }
+            });
+
+            if (response) {
+                debugger;
+                    const accountBalance = response.AccountBalance ?? 0;
+                    const bankClearedBalance = response.BankClearedBalance ?? 0;
+                const bankStatementBalance = accountBalance - bankClearedBalance;
+                    const formattedBalance = accountBalance < 0
+        ? `(${Math.abs(accountBalance).toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          })})`
+        : accountBalance.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+          });
+
+                // Update DevExtreme textboxes
+                    $("#BalanceAsPerOurBooks").dxTextBox("instance").option("value", formattedBalance);
+
+                // $("#AmountNotReflectedinBank").dxTextBox("instance").option("value", bankClearedBalance);
+                // $("#BalanceAsPerBankStatement").dxTextBox("instance").option("value", bankStatementBalance);
+            }
+        } catch (err) {
+            console.error("Failed to load bank balances", err);
+        }
+    }
     
 </script>

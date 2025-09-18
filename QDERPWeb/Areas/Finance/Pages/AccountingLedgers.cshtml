@@ -499,6 +499,9 @@
 			<div class="value-block">
 
 				<h2 id="accountingLedgerss"></h2>
+				<h2 id="accountingbalance"></h2>
+				<h2 id="TotalsDebit"></h2>
+				<h2 id="TotalsCredit"></h2>
 				<h6 id="QuickDiceERPSolutions2"></h6>
 
 			</div>
@@ -1360,8 +1363,10 @@
 		// 	});
 		// }
 		$(document).ready(function () {
+			debugger;
 			const urlParams = new URLSearchParams(window.location.search);
 			const AccountId = urlParams.get('AccountId');
+			const IsChartOfAccounts = urlParams.get('IsChartOfAccounts');
 			// alert(AccountId);
 
 			if (AccountId) {
@@ -1369,7 +1374,7 @@
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
 				// button.option("text", "Update");
-
+					
 				// Fetch and bind data to form fields if CostAllocationUnitId is in the query string
 				$.ajax({
 					url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
@@ -1386,6 +1391,11 @@
 							// $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
 							// $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
 							// $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
+
+							if(IsChartOfAccounts=="true")
+							{
+								ddBtnShowRecords_click("fullmonth")
+							}
 
 						} else {
 							//   alert(response.message);

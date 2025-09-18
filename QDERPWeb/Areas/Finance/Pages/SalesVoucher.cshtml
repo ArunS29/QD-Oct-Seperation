@@ -1548,7 +1548,7 @@ buttons.Add()
 
 
 	 function addVoucherEntry() {
-
+		 debugger;
 		 var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 		 var ClientName = $("#accountDropDownBox").dxDropDownBox("instance");
 		 var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
@@ -3709,8 +3709,6 @@ if (dropDownBox) {
 	  function onVoucherDrCrValueChanged(e) {
         // Retrieve the new selected value from the event argument.
         var selectedValue = e.value;
-        
-
         // Log the selected value for debugging purposes.
         console.log("Transaction type selected: " + selectedValue);
 
@@ -3718,7 +3716,7 @@ if (dropDownBox) {
         if (selectedValue === "Cr") {
             // Code to handle Debit logic.
             console.log("Credit selected");
-        IsDrCr==false;
+        IsDrCr=false;
             // Example: update another control or perform a calculation.
         } else if (selectedValue === "Dr") {
             // Code to handle Credit logic.
@@ -4164,6 +4162,7 @@ function initWorkflowTippyPopovers() {
                 effectiveDate.option("value", e.value);
             });
         });
+
 </script>
 
 

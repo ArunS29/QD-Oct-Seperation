@@ -1872,10 +1872,8 @@
                             </div>
                         </div>
 
-                        @* <button id="clearAllNotifications" class="text-button"></button> *@
-                        <button id="clearAllNotifications" class="text-button">
-                            <script>document.write(formatMessage("Clear All"));</script>
-                        </button>
+                         <button id="clearAllNotifications" class="text-button"></button>
+                        
 
                         <div class="notification-divider" id="notificationList"></div>
                     </div>
@@ -1990,11 +1988,11 @@
                             </div>
                         </div>
                         <!-- Clear All & Individual Notifications -->
-                        @* <button id="clearAllNotifications" class="text-button">Clear All</button> *@
-                        <button id="clearAllNotifications" class="text-button">
+                         <button id="clearAllNotifications" class="text-button"></button> 
+                      @*   <button id="clearAllNotifications" class="text-button">
                             <script>document.write(formatMessage("Clear All"));</script>
                         </button>
-
+ *@
                         <div class="notification-divider" id="notificationVATList">
                             <!-- Individual notifications will be dynamically injected -->
                         </div>
@@ -2136,7 +2134,7 @@
                     <div class="tab-content" id="othersContent" style="display:none;">
                         <!-- Clear All & Individual Notifications -->
                         <button id="clearAllOthers" class="text-button">
-                            <script>document.write(formatMessage("Clear All"));</script>
+                           
                         </button>
 
                         <div class="notification-divider" id="othersNotificationList">
@@ -2976,7 +2974,7 @@
                 <div id="changePasswordPopupContainer">
                     @(Html.DevExtreme().Popup()
                                         .ID("changePasswordPopup")
-                                        .Title("Change Your Password")
+                                        .Title(new JS("formatMessage('Change Your Password')"))
                                         .Width("50%")
                                         .Height(430)
                                         .Visible(false)
@@ -5419,7 +5417,7 @@
                         summary.ExpenseClaims.ToBeVerified + summary.ExpenseClaims.ToBeApproved + summary.ExpenseClaims.ToBeAudited;
 
                     $("#sidebarBadge").text(totalCount);
-                    $("#financeTab").text(`Finance ${totalCount}`);
+                    $("#financeTab").text(`${formatMessage("Finance")} ${totalCount}`);
                 });
             }
 
@@ -5434,11 +5432,12 @@
                 const $items = $("#notificationList .notification-item");
                 if ($items.length === 0) return;
 
+
                 $items.slideUp(300, function () { $(this).remove(); });
 
                 // Reset badges
                 $("#bellBadge, #sidebarBadge").text(0);
-                $("#financeTab").text(`Finance 0`);
+                $("#financeTab").text(`${formatMessage("Finance")} 0`);
                 previousIds.clear();
             });
 
@@ -5568,7 +5567,7 @@
                     const totalCount = res.totalCount || notifications.length;
 
                     // Update Others tab
-                    $("#othersTab").text(`Others ${totalCount}`);
+                    $("#othersTab").text(`${formatMessage("Others")} ${totalCount}`);
 
                     // Add this section's count to the bell badge
                     updateBellBadge(totalCount);
@@ -5583,7 +5582,7 @@
                 $("#othersNotificationList .notification-item").fadeOut(300, function () {
                     $(this).remove();
                 });
-                $("#othersTab").text("Others 0");
+                $("#othersTab").text(`${formatMessage("Others")} 0`);
 
                 // Reduce bell badge count accordingly
                 let currentCount = parseInt($("#bellBadge").text()) || 0;
@@ -5605,7 +5604,7 @@
             let totalVatCount = 0;
 
             function updateVatTab() {
-                $("#vatTab").text(`VAT ${totalVatCount}`);
+                $("#vatTab").text(`${formatMessage("VAT")} ${totalVatCount}`);
             }
 
             // ---------------- VAT Sales ----------------
@@ -5732,7 +5731,7 @@
             // Update VAT Tab total
             const totalCount = data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
             const currentVatCount = parseInt($("#vatTab").text().replace(/\D/g, "")) || 0;
-            $("#vatTab").text(`VAT ${currentVatCount + totalCount}`);
+            $("#vatTab").text(`${formatMessage("VAT")} ${currentVatCount + totalCount}`);
 
             // Render notifications
             data.Notifications.forEach(n => {
@@ -5830,7 +5829,7 @@
             let totalInventoryCount = 0;
 
             function updateInventoryTab() {
-                $("#inventoryTab").text(`Inventory ${totalInventoryCount}`);
+                $("#inventoryTab").text(`${formatMessage("Inventory")} ${totalInventoryCount}`);
             }
 
             // Generic function for fetching and updating summaries
@@ -6156,7 +6155,7 @@
             $("#tobepostedpurchase").text(formatMessage("To Be Posted"));
         });
                
-
+      
     </script>
 </body>
 </html>

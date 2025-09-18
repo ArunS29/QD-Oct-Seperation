@@ -170,14 +170,14 @@
 			border-bottom-right-radius: 12px;
 		}
 </style>
-<div class="title" id="kpiCarousel">
+<div class="title" id="kpiCarousel" style="width:25% !important;">
 
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Job Order</h2>
+				<h2 class="title-slide" id="jodorderss"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickjonorders"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -188,7 +188,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="mainCard" class="card today-bg with-sidebar">
+	@* <div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs">
 			<div class="tab-text active" onclick="switchTab(0)">Today</div>
 			<div class="tab-text" onclick="switchTab(1)">Week</div>
@@ -200,21 +200,21 @@
 			<div class="count" id="count0">0</div>
 			@* <div class="trend">🔺 12% more than yesterday</div> *@
 			@* <div class="message">You're getting things moving!</div> *@
-		</div>
+		@* </div>
 
 		<div class="tab-content">
 			<h4> Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
+			<div class="count" id="count1">0</div> *@
 			@* <div class="trend">🔼 25% higher than last week</div> *@
 			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
+		@* </div>
 
 		<div class="tab-content">
 			<h4> New Vouchers</h4>
-			<div class="count" id="count2">0</div>
+			<div class="count" id="count2">0</div> *@
 			@* <div class="trend">🔽 10% drop this month</div> *@
 			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
-		</div>
+	@* 	</div>
 		<div class="tile-icon">
 			<!-- Icon as SVG -->
 			<svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,7 +235,7 @@
 			</svg>
 
 		</div>
-	</div>
+	</div> *@ 
 </div>
 
 @* <div class="title">
@@ -334,24 +334,70 @@
 				@* subColumns.AddFor(m => m.ItemSlNo).Caption(new JS("formatMessage('Item Sl No ')")).Alignment(HorizontalAlignment.Center).Visible(true); *@
 				subColumns.AddFor(m => m.WorkOrderNo).Caption(new JS("formatMessage('Work Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.ValveType).Caption(" Valve Type").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderNo).Caption("JobOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderDate).Caption(" Job Order Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.JobOrderDescription).Caption(" Job Order Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				
-				subColumns.AddFor(m => m.JobOrderStatus).Caption("Job Order Status Name ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.JobOrderType).Caption("Job Order Type ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TagNo).Caption("TagNo ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Size).Caption("Size ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Class).Caption("Class ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Operator).Caption("Operator ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Materials).Caption("Materials ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Qty).Caption("Qty ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Make).Caption("Make ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ModelNo).Caption("Model No ").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ItemSlNo).Caption("Item Sl No ").Alignment(HorizontalAlignment.Center).Visible(true);
-				@* subColumns.AddFor(m => m.ItemSlNo).Caption("Item Sl No ").Alignment(HorizontalAlignment.Center).Visible(true); *@
-				subColumns.AddFor(m => m.WorkOrderNo).Caption("  Work Order No ").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ValveType)
+			.Caption(new JS("formatMessage('Valve Type')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.JobOrderNo)
+			.Caption(new JS("formatMessage('Job Order No')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.JobOrderDate)
+			.Caption(new JS("formatMessage('Job Order Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Format("dd-MMM-yyyy").Visible(true);
+
+				subColumns.AddFor(m => m.JobOrderDescription)
+			.Caption(new JS("formatMessage('Job Order Description')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.JobOrderStatus)
+			.Caption(new JS("formatMessage('Job Order Status Name')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.JobOrderType)
+			.Caption(new JS("formatMessage('Job Order Type')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.TagNo)
+			.Caption(new JS("formatMessage('Tag No')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Size)
+			.Caption(new JS("formatMessage('Size')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Class)
+			.Caption(new JS("formatMessage('Class')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Operator)
+			.Caption(new JS("formatMessage('Operator')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Materials)
+			.Caption(new JS("formatMessage('Materials')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Qty)
+			.Caption(new JS("formatMessage('Qty')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.Make)
+			.Caption(new JS("formatMessage('Make')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.ModelNo)
+			.Caption(new JS("formatMessage('Model No')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.ItemSlNo)
+			.Caption(new JS("formatMessage('Item Sl No')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.WorkOrderNo)
+			.Caption(new JS("formatMessage('Work Order No')"))
+			.Alignment(HorizontalAlignment.Center).Visible(true);
 
 
 
@@ -693,85 +739,10 @@
 
 		console.log('End permission handling');
 	});
-			 function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
-
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
-		}
-	  }, 30);
-	}
-
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
-
-	  const card = document.getElementById('mainCard');
-	const counts = [8, 15, 5];
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
-
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Start "Today" count immediately
-	animateCount(countEls[0], counts[0]);
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Auto-start animation for "Today"
-	animateCount(countEls[0], counts[0]);
+				$(function () {
+							$("#quickjonorders").text(formatMessage("Quick Dice ERP Solutions"));
+					 });
+						 $(function () {
+							$("#jodorderss").text(formatMessage("Job Order"));
+					 });
 </script>

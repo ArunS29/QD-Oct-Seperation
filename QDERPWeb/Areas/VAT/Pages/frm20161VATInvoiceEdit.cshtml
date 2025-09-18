@@ -4044,6 +4044,10 @@
                                         $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
 										$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
+										 $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value",account.InvoiceCheckedBy);
+										 $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value",account.InvoicePreparedBy);
+										 $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value",account.InvoiceApprovedBy);
+
 									       if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();
@@ -10290,6 +10294,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 
 
 	function validateGroupVATNo(e) {
+		debugger;
     const value = e.value;
     const valid = validateVATPrefix(value);
     if (!valid.success) {
@@ -10335,18 +10340,18 @@ $(document).ready(function () {
 
 
 
-function validateVATPrefix(vatNo) {
+// function validateVATPrefix(vatNo) {
 
-    if (!vatNo || vatNo.length === 0) return { success: true };
-	let currencyType="";
-    if (currencyType === "BHD" && !vatNo.startsWith("2")) {
-        return { success: false, message: "VAT No must start with 2 for BHD currency." };
-    }
-    if (currencyType === "SAR" && !vatNo.startsWith("3")) {
-        return { success: false, message: "VAT No must start with 3 for SAR currency." };
-    }
-    return { success: true };
-}
+//     if (!vatNo || vatNo.length === 0) return { success: true };
+// 	let currencyType="";
+//     if (currencyType === "BHD" && !vatNo.startsWith("2")) {
+//         return { success: false, message: "VAT No must start with 2 for BHD currency." };
+//     }
+//     if (currencyType === "SAR" && !vatNo.startsWith("3")) {
+//         return { success: false, message: "VAT No must start with 3 for SAR currency." };
+//     }
+//     return { success: true };
+// }
 
 function onClientLinkClick(e) {
     var dropDownBox = $("#ddclientname").dxDropDownBox("instance");
