@@ -1370,6 +1370,7 @@
 			// alert(AccountId);
 
 			if (AccountId) {
+				
 				// Change the Save button to Update
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
@@ -1394,6 +1395,13 @@
 
 							if(IsChartOfAccounts=="true")
 							{
+								acchedid = response.data.AccountId;
+                                accheadname = response.data.AccountHead;
+                                refno = response.data.ReferenceNo;
+                                accgroup = response.data.AccountGroup;
+                                accgroupid = response.data.AccountGroupId;
+                                accheadar = response.data.AccountHeadArabic;
+								
 								ddBtnShowRecords_click("fullmonth")
 							}
 

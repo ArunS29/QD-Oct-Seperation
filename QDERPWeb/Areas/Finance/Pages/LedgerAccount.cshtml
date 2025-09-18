@@ -820,7 +820,7 @@
                                                         .Width("100%")
                                                         .MaxLength(15)
                                                         )
-)
+
                         </div>
 
                         <div class="col-md-8">
@@ -3832,8 +3832,6 @@ function syncSupVATNumbers(e) {
 
                     }
 
-
-
                     var txtBillingAddress = $('#txtBillingAddress').dxTextArea("instance");
                     if (txtBillingAddress) {
                         txtBillingAddress.option("value", account.BillingAddress);
@@ -4024,23 +4022,10 @@ function syncSupVATNumbers(e) {
         dropDownInstance.close();
     }
     const url = `/${tenantName}/Finance/Divmaster`;
-
-    const modalOverlay = document.createElement("div");
-    modalOverlay.classList.add("modal-overlay");
-    modalOverlay.innerHTML = `
-        <div class="custom-sub-modal">
-            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
-        </div>
-    `;
-    document.body.appendChild(modalOverlay);
-
-    // Dismiss logic
-    modalOverlay.addEventListener("click", function (event) {
-        if (event.target === modalOverlay) {
-            modalOverlay.remove();
+ 
+				 const title = `${formatMessage('Branch Master')}`;
+					  openModal(url, title);
             refreshaccountledgerSelectBox();
-        }
-    });
 }
 
     function refreshBranchmasterSelectBox() {
@@ -4074,23 +4059,9 @@ function syncSupVATNumbers(e) {
         dropDownInstance.close();
     }
     const url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
-
-    const modalOverlay = document.createElement("div");
-    modalOverlay.classList.add("modal-overlay");
-    modalOverlay.innerHTML = `
-        <div class="custom-sub-modal">
-            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
-        </div>
-    `;
-    document.body.appendChild(modalOverlay);
-
-    // Close the modal when clicking outside the iframe
-    modalOverlay.addEventListener("click", function (event) {
-        if (event.target === modalOverlay) {
-            modalOverlay.remove();
+   	 const title = `${formatMessage('Ledger Sub Group Master')}`;
+		  openModal(url, title);
             refreshaccountledgerSelectBox();
-        }
-    });
 }
 
 
@@ -4125,23 +4096,10 @@ if (dropDownInstance.option("opened")) {
     dropDownInstance.close();
 }
     const url = `/${tenantName}/Finance/SalesPersonMaster`;
-
-    const modalOverlay = document.createElement("div");
-    modalOverlay.classList.add("modal-overlay");
-    modalOverlay.innerHTML = `
-        <div class="custom-sub-modal">
-            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
-        </div>
-    `;
-    document.body.appendChild(modalOverlay);
-
-    // Close the modal when clicking outside the iframe
-    modalOverlay.addEventListener("click", function (event) {
-        if (event.target === modalOverlay) {
-            modalOverlay.remove();
-            refreshaccountledgerSelectBox();
-        }
-    });
+    const title = `${formatMessage('Sales Person Master')}`;
+     openModal(url, title);
+    refreshaccountledgerSelectBox();
+    
 }
 
 

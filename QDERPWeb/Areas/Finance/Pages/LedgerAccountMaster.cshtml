@@ -1,4 +1,4 @@
-@page
+﻿@page
 @using QD.ERP.Web.DAL.Entities
 @{
     ViewData["Title"] = "Accounting Ledger Groups//";
@@ -202,6 +202,7 @@
     .titleCard-toggle {
         display: none !important;
     }
+    
 
 </style>
 
@@ -211,6 +212,7 @@
     </div>
     <div id="AccountingLedgerGroupss" class="titleText no-border-title"></div>
 </div>
+
 @* <div class="title">
     <div class="header-container">
         <div id="AccountingLedgerGroups" class="no-border-input"></div>
@@ -272,7 +274,6 @@
                     .ShowClearButton(true)
                     .AcceptCustomValue(false)
                     .OpenOnFieldClick(true)
-                    .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
                     .ValueExpr("MasterGroup")
                     .DisplayExpr("MasterGroup")
@@ -351,7 +352,6 @@
                     .ShowClearButton(true)
                     .AcceptCustomValue(true)
                     .OpenOnFieldClick(false)
-                    .ValueChangeEvent("input")
                     .HoverStateEnabled(true)
                     .ValueExpr("MasterGroup")
                     .DisplayExpr("MasterGroupAr")
@@ -458,7 +458,7 @@
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center gap-2">
                     @(Html.DevExtreme().CheckBox()
-                                .Text(new JS("formatMessage('Choose if this group is part of sales')"))
+                        .Text("اختر إذا كانت هذه المجموعة جزءًا من المبيعات")
                         .ID("ChooseifthisgrouptobeunderSales1")
                         .Value(true)
                         )
@@ -468,7 +468,7 @@
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center gap-2">
                     @(Html.DevExtreme().CheckBox()
-                                .Text(new JS("formatMessage('Choose if this group is under salary advance')"))
+                        .Text("اختر إذا كانت هذه المجموعة تحت سلفة الرواتب")
                         .ID("ChooseifthisgrouptobeunderPurchases1")
                         .Value(true)
                         )
@@ -478,7 +478,7 @@
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center gap-2">
                     @(Html.DevExtreme().CheckBox()
-                        .Text(new JS("formatMessage('Choose if this group is under salary salary')"))
+                        .Text("اختر إذا كانت هذه المجموعة تحت الرواتب")
                         .ID("ChooseifthisgrouptobeunderSalaryPayable1")
                         .Value(true)
                         )
@@ -488,7 +488,7 @@
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center gap-2">
                     @(Html.DevExtreme().CheckBox()
-                        .Text(new JS("formatMessage('Choose if this group is under the bank reconciliation item')"))
+                        .Text("اختر إذا كانت هذه المجموعة تحت بند تسوية البنك")
                         .ID("ChooseifthisgroupwanttobeReconcilied1")
                         .Value(true)
                         )
@@ -570,7 +570,6 @@
             </div>
         </div>
     </div> *@
-
     <div>
         @await Html.PartialAsync("_LedgerAccountMasterFooter")
     </div>
@@ -643,7 +642,8 @@
             })
         )
 }
-
+<div id="ledgerAccountMasterModal" class="modal">
+</div>
 
 <script>
         $(function () {
@@ -764,11 +764,18 @@
                         CreatedOns = response.RecordCreatedOn;  
                         console.log("getres:", CreatedOns);
                         $("#ModifiedBy").dxTextBox("instance").option("value", getUN);
-                      
-                    
                         $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
                         // Change button text to "Update"
-                  
+
+                            $("#ChooseifthisgrouptobeunderSales").dxCheckBox("instance").option("value", response.IsUseInSales);
+                            $("#ChooseifthisgrouptobeunderPurchases").dxCheckBox("instance").option("value", response.IsUsedInPurchase);
+                            $("#ChooseifthisgrouptobeunderSalaryPayable").dxCheckBox("instance").option("value", response.IsSalaryPayable);
+                            $("#ChooseifthisgroupwanttobeReconcilied").dxCheckBox("instance").option("value", response.IsUseInReconciliation);
+
+                            $("#ChooseifthisgrouptobeunderSales1").dxCheckBox("instance").option("value", response.IsUseInSales);
+                            $("#ChooseifthisgrouptobeunderPurchases1").dxCheckBox("instance").option("value", response.IsUsedInPurchase);
+                            $("#ChooseifthisgrouptobeunderSalaryPayable1").dxCheckBox("instance").option("value",  response.IsSalaryPayable);
+                            $("#ChooseifthisgroupwanttobeReconcilied1").dxCheckBox("instance").option("value", response.IsUseInReconciliation);
 
                     } else {
                         console.warn("No data received for the provided AccountGroupId.");
@@ -1305,6 +1312,7 @@ $("#btnDelete").on("click", function (e) {
 
     $("#btnmasterBack").on("click", function (e) {
         e.preventDefault();
+            debugger;
       // Hide the form container. You can also use .remove() if you want to remove it from the DOM.
    window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
     });
