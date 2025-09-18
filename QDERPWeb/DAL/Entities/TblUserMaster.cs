@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace QD.ERP.Web.DAL.Entities;
 
+
 public partial class TblUserMaster
 {
     public byte UserId { get; set; }
@@ -62,4 +63,7 @@ public partial class TblUserMaster
     public int? HrtimeSheetProjectGroup { get; set; }
 
     public bool? IsArabicVersion { get; set; }
+  
+    public string? StoreId { get; set; }
+
 }
