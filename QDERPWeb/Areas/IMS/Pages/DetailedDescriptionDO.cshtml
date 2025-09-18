@@ -84,14 +84,14 @@
  
 <div style="padding: 10px; border-radius: 5px;">
 <div style="display: flex; justify-content: space-between; align-items: center;">
-<label style="font-weight: bold;">Detailed Description / Specification:</label>
+<label style="font-weight: bold;" id="detaileddescriptiondelivery"></label>
 <div>
 
             @(Html.DevExtreme().Button()
 
                         .ID("btnUseDetailedDescription")
 
-                        .Text("Use Detailed Description")
+                        .Text(new JS("formatMessage('Use Detailed Description')"))
 
                         .Icon("info")
 
@@ -106,7 +106,7 @@
 
                         .ID("btnUseItemDesc")
 
-                        .Text("Use Item Desc.")
+                        .Text(new JS("formatMessage('Use Item Description')"))
 
                         .Icon("info")
 
@@ -124,7 +124,7 @@
 
                 .ID("DetailedDescription")
 
-                .Label("Detailed Description / Specification")
+                .Label(new JS("formatMessage('Detailed Description / Specification')"))
 
                 .LabelMode(EditorLabelMode.Floating)
 
@@ -138,7 +138,7 @@
 
                 .ID("Remarks")
 
-                .Label("Remarks")
+                .Label(new JS("formatMessage('Remarks')"))
 
                 .LabelMode(EditorLabelMode.Floating)
 
@@ -151,7 +151,7 @@
 
 
         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-                .Label(new JS("formatMessage('Cost Allocation For Employees:')"))
+                .Label(new JS("formatMessage('Cost Allocation for Employees:')"))
                 .DataSource(d => d.WebApi()
                 .Controller("DeliveryNote")
                 .LoadAction("GetEmployeeDetails")
@@ -179,7 +179,7 @@
  
     
         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-                .Label(new JS("formatMessage('Cost Allocation For Property/Equipments:')"))
+                .Label(new JS("formatMessage('Cost Allocation for Property/Equipments:')"))
                 .DataSource(d => d.WebApi()
                 .Controller("DeliveryNote")
                 .LoadAction("GetPropertyDetails")
@@ -207,7 +207,7 @@
 </div>
  @(Html.DevExtreme().Button()
         .ID("btnApplyAndClose")
-        .Text("Apply & Close")
+        .Text(new JS("formatMessage('Apply & Close')"))
         .Icon("check")
         .OnClick("applyAndClose"))
 </div>
@@ -239,8 +239,8 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("EmployeeId");
-                                columns.Add().DataField("EmployeeName");
+                                columns.Add().DataField("EmployeeId").Caption(new JS("formatMessage('Employee ID')"));
+                                columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
 
 
 
@@ -275,8 +275,8 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("PropertyNo");
-                                columns.Add().DataField("PropertyDescription");
+                                columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
+                                columns.Add().DataField("PropertyDescription").Caption(new JS("formatMessage('Property Description')"));
 
 
 
@@ -480,6 +480,8 @@
     }
 
 
-
+      $(function () {
+            $("#detaileddescriptiondelivery").text(formatMessage("Detailed Description / Specification:"));
+         });
 
 </script>
