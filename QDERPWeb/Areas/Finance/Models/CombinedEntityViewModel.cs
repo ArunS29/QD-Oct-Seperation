@@ -79,6 +79,18 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string Type { get; set; }
 
     }
+
+    public class GetDataForGeneratingTimesheet
+    {
+        public string PropertyNo { get; set; }
+        public string PlateNo { get; set; }
+        public string Location { get; set; }
+        public string ClientName { get; set; }
+        public decimal ClientratePerHours { get; set; }
+        public string SupplierName { get; set; }
+        public string PropertyIssueNo { get; set; }
+        public DateTime? PropertyIssuedDate { get; set; }
+    }
     public class AccountLedger
     {
         public string VoucherNo { get; set; }

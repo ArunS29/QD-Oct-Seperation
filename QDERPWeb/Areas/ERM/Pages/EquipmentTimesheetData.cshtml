@@ -1,0 +1,378 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.EquipmentTimesheetDataModel
+@{
+}
+
+<style>
+    .timesheet-container {
+        padding: 15px;
+    }
+
+    .footer-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .summary-box {
+        padding: 10px;
+        flex: 1;
+        margin-right: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+        .summary-box:last-child {
+            margin-right: 0;
+        }
+
+    .timesheet-container {
+        padding: 15px;
+    }
+
+    .footer-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+
+    .summary-box {
+        padding: 10px;
+        flex: 1;
+        margin-right: 10px;
+        font-weight: bold;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+        .summary-box:last-child {
+            margin-right: 0;
+        }
+
+</style>
+<div class="timesheet-container">
+
+
+    <!-- ================= Header Section ================= -->
+    <table class="header-grid" style="width:100%; border-collapse:separate; border-spacing:15px;">
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtPropertyNo")
+                                .Label("Property No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(250)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtPropertyDesc")
+                                .Label("Property Description:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(300)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextArea()
+                                .ID("txtComments")
+                                .Label("Comments:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(400)
+                                .ElementAttr("style", "height:60px !important;")
+                                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtPlateNo")
+                                .Label("Plate No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtSerialNo")
+                                .Label("Serial No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtDoorNo")
+                                .Label("Door No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                        .ID("txtSupplierDeduction")
+                        .Label("Supplier Deductions:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(200)
+                        )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtMonthId")
+                                .Label("")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
+            </td>
+        </tr>
+    </table>
+
+    <!-- Header (dxForm for alignment) -->
+
+    <h4 style="margin-top:20px;">Time Sheet Entries:</h4>
+   <div>
+    <!-- Timesheet DataGrid -->
+    @(
+        Html.DevExtreme().DataGrid()
+            .ID("timesheetGrid")
+            .ShowBorders(true)
+            .DataSource(d => d.WebApi()
+                .Controller("ERRequestforQuotationList")
+                .LoadAction("GetTimesheetGrid")
+            )
+            .ColumnAutoWidth(true)
+            .Paging(p => p.Enabled(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Standard))
+            .Editing(edit => edit.Mode(GridEditMode.Cell).AllowUpdating(true))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("PropertyNo").Caption("Property No").Width(120);
+                columns.Add().DataField("TimeSheetDate").Caption("Date").DataType(GridColumnDataType.Date);
+
+                columns.Add()
+                    .DataField("WorkStatus")
+                    .Caption("Status")
+                    .Width(250)
+                    .EditCellTemplate(new JS("function(cellElement, cellInfo){ workStatusDropDownEditor(cellElement, cellInfo); }"))
+                    .CellTemplate(new JS("function(container, options) { " +
+                        "if (Array.isArray(workStatusList)) { " +
+                            "var item = workStatusList.find(function(d) { return d.DayCode === options.value; }); " +
+                            "container.text(item ? item.DayDescription : (options.value || '')); " +
+                        "} else { " +
+                            "container.text(options.value || ''); " +
+                        "} " +
+                    "}"));
+
+                columns.Add().DataField("ClientName").Caption("Client Name").Width(200);
+                columns.Add().DataField("ClientRegHours").Caption("Reg Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                columns.Add().DataField("ClientOthours").Caption("OT Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                columns.Add().DataField("TotalHoursM").Caption("Total Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                columns.Add().DataField("ClientRatePerHour").Caption("Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                columns.Add().DataField("ClientOtratePerHour").Caption("OT/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+            })
+            .Height("45vh")
+            .Width("98%")
+            .ColumnFixing(fixing => fixing.Enabled(true))
+            .HeaderFilter(filter => filter.Visible(false))
+            .ShowRowLines(true)
+    )
+</div>
+
+
+
+    <!-- Footer / Summary Panels -->
+    <div class="footer-section">
+        <div class="summary-box">
+            Client Timesheet:<br />
+            Reg.Hours: <span>ClientRegHours</span>
+            OT Hours: <span>ClientOTHours</span>
+            Total: <span>ClientTotalHours</span>
+        </div>
+        <div class="summary-box">
+            Supplier Timesheet:<br />
+            Reg.Hours: <span>SupplierRegHours</span>
+            OT Hours: <span>SupplierOTHours</span>
+            Total: <span>SupplierTotalHours</span>
+        </div>
+        <div class="summary-box">
+            Day Shift Operator Timesheet:<br />
+            Reg.Hours: <span>DayRegHours</span>
+            OT Hours: <span>DayOTHours</span>
+            Total: <span>Summary.DayTotalHours</span>
+        </div>
+        <div class="summary-box">
+            Night Shift Operator Timesheet:<br />
+            Reg.Hours: <span>NightRegHours</span>
+            OT Hours: <span>NightOTHours</span>
+            Total: <span>NightTotalHours</span>
+        </div>
+    </div>
+</div>
+<script>
+           var workStatusList = [];
+
+    // utility to read query string params
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name) || "";
+    }
+
+    $(document).ready(function () {
+        // initial load of work status lookup
+        $.get("/api/ERRequestforQuotationList/GetWorkStatus")
+            .done(function (data) {
+                workStatusList = data || [];
+                console.log("workStatusList loaded:", workStatusList);
+            })
+            .fail(function (err) {
+                console.error("Failed to load workStatusList", err);
+            });
+
+        // bind header fields from querystring (if present)
+        const propertyNo = decodeURIComponent(getQueryParam("PropertyNo") || "");
+        const propertyDesc = decodeURIComponent(getQueryParam("PropertyDescription") || "");
+        const plateNo = decodeURIComponent(getQueryParam("PlateNo") || "");
+        const deducation = decodeURIComponent(getQueryParam("Deducation") || "");
+        const timeSheetMaster = decodeURIComponent(getQueryParam("TimeSheetMasterId") || "");
+
+        if ($("#txtPropertyNo").length && propertyNo) $("#txtPropertyNo").dxTextBox("instance").option("value", propertyNo);
+        if ($("#txtPropertyDesc").length && propertyDesc) $("#txtPropertyDesc").dxTextBox("instance").option("value", propertyDesc);
+        if ($("#txtPlateNo").length && plateNo) $("#txtPlateNo").dxTextBox("instance").option("value", plateNo);
+        if ($("#txtSupplierDeduction").length && deducation) $("#txtSupplierDeduction").dxNumberBox("instance").option("value", deducation);
+        if ($("#txtMonthId").length && timeSheetMaster) $("#txtMonthId").dxTextBox("instance").option("value", timeSheetMaster);
+
+        // load grid when both propertyNo and month provided
+        if (propertyNo && timeSheetMaster) {
+            loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster);
+        }
+
+        $("#txtPropertyNo").dxTextBox("instance").on("valueChanged", function (e) {
+            const propVal = e.value;
+            const monthVal = $("#txtMonthId").dxTextBox("instance").option("value");
+            if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
+        });
+
+        $("#txtMonthId").dxTextBox("instance").on("valueChanged", function (e) {
+            const monthVal = e.value;
+            const propVal = $("#txtPropertyNo").dxTextBox("instance").option("value");
+            if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
+        });
+    });
+
+    function loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster) {
+        $.ajax({
+            url: '/api/ERRequestforQuotationList/GetTimesheetGrid',
+            type: 'GET',
+            data: { propertyNo: propertyNo, timeSheetMaster: timeSheetMaster },
+            success: function (data) {
+                var grid = $("#timesheetGrid").dxDataGrid("instance");
+                if (!grid) return;
+                if (data && data.data) grid.option("dataSource", data.data);
+                else grid.option("dataSource", data);
+                grid.refresh();
+            },
+            error: function (xhr) {
+                console.error("AJAX Error", xhr.responseText || xhr);
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+    // ---------- Editor function used by EditCellTemplate ----------
+    window.workStatusDropDownEditor = function (cellElement, cellInfo) {
+        var $container = $("<div>").css({ width: "100%" }).appendTo(cellElement);
+
+        function initWithList(list) {
+            // create single DropDownBox instance and keep reference
+            var $dd = $("<div>").appendTo($container).dxDropDownBox({
+                value: cellInfo.value,
+                valueExpr: "DayCode",
+                displayExpr: "DayDescription",
+                dataSource: list,
+                showClearButton: true,
+                width: 320,
+                dropDownOptions: { width: 520 },
+
+                // contentTemplate gets 'args' where args.component is DropDownBox instance
+                contentTemplate: function (args) {
+                    var dropDownBoxInstance = args.component;
+
+                    var $grid = $("<div>").dxDataGrid({
+                        dataSource: list,
+                        keyExpr: "DayCode",
+                        selection: { mode: "single" },
+                        columns: [
+                            { dataField: "DayCode", caption: "Code", width: 120 },
+                            { dataField: "DayDescription", caption: "Description" }
+                        ],
+                        hoverStateEnabled: true,
+                        height: 300,
+                        filterRow: { visible: true },
+
+                        onSelectionChanged: function (selArgs) {
+                            var selected = selArgs.selectedRowsData && selArgs.selectedRowsData[0];
+                            if (!selected) return;
+
+                            // update DropDownBox value and grid cell value
+                            dropDownBoxInstance.option("value", selected.DayCode);
+                            cellInfo.setValue(selected.DayCode);
+
+                            // optionally update other visible column values on the main grid
+                            try {
+                                var mainGrid = $("#timesheetGrid").dxDataGrid("instance");
+                                if (mainGrid) {
+                                    var rowIndex = mainGrid.getRowIndexByKey(cellInfo.key);
+                                    if (rowIndex >= 0) {
+                                        mainGrid.cellValue(rowIndex, "WorkStatus", selected.DayCode);
+                                        // update DayDescription column if it exists
+                                        try {
+                                            var col = mainGrid.columnOption("DayDescription");
+                                            if (col !== undefined) {
+                                                mainGrid.cellValue(rowIndex, "DayDescription", selected.DayDescription);
+                                            }
+                                        } catch (err) { /* ignore if column missing */ }
+                                    }
+                                }
+                            } catch (err) {
+                                console.warn("Could not update main grid cell programmatically:", err);
+                            }
+
+                            // close dropdown
+                            dropDownBoxInstance.close();
+                        }
+                    });
+
+                    // pre-select current value
+                    setTimeout(function () {
+                        var gridInst = $grid.dxDataGrid("instance");
+                        if (gridInst && cellInfo.value) {
+                            try { gridInst.selectRows([cellInfo.value], false); } catch (ignore) {}
+                        }
+                    }, 0);
+
+                    return $grid;
+                }
+            });
+
+            return $dd.dxDropDownBox("instance");
+        }
+
+        // Initialize immediately if data loaded, otherwise fetch then init
+        if (Array.isArray(workStatusList) && workStatusList.length > 0) {
+            initWithList(workStatusList);
+        } else {
+            $container.text("Loading statuses...");
+            $.get("/api/ERRequestforQuotationList/GetWorkStatus")
+                .done(function (data) {
+                    workStatusList = data || [];
+                    $container.empty();
+                    initWithList(workStatusList);
+                })
+                .fail(function () {
+                    $container.text("Failed to load statuses");
+                });
+        }
+    };
+</script>
