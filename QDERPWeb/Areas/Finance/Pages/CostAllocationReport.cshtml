@@ -341,7 +341,13 @@
         // Pass selected dates directly to loadCostGrid
         loaddateCostGrid(from, to);
     }
-
+           function formatDateOnly(date) {
+        if (!(date instanceof Date)) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
     function loaddateCostGrid(fromDate, toDate) {
         const accountId = getQueryParam('accountId');
 
@@ -350,9 +356,10 @@
                 const params = new URLSearchParams();
                 if (accountId) params.append("accountId", accountId);
 
-                // ✅ Use parameters passed from function instead of query params
-                if (fromDate) params.append("fromDate", fromDate.toISOString());
-                if (toDate) params.append("toDate", toDate.toISOString());
+                    // ✅ Pass only date (yyyy-MM-dd) without time
+                    if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
+                    if (toDate) params.append("toDate", formatDateOnly(toDate));
+
 
                 return fetch(`/api/UCCostAnalysis/GetCostAllocationReport?${params}`)
                     .then(res => res.json());
