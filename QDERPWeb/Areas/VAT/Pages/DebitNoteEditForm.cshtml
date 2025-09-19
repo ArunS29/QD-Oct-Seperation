@@ -1075,7 +1075,9 @@
 				</div>
 			</div>
 		</div>
-
+		 <div style="margin: 10px;">
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATChildGridFooter.cshtml")
+    </div>
 		<div class="dx-field ledgerResult">
 			@(
 										Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()

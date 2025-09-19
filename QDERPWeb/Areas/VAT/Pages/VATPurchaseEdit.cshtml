@@ -854,7 +854,7 @@
 														.ShowClearButton(true)
 														.Width("100%")
 														.LabelMode(EditorLabelMode.Floating)
-														.DropDownOptions(o => o.Width(600).Height(550))
+														.DropDownOptions(o => o.Width(600).Height(246))
 														.OpenOnFieldClick(true)
 														.ContentTemplate(@<text>
 
@@ -1602,7 +1602,9 @@
 			</div>
 
 
-
+			 <div style="margin: 10px;">
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATChildGridFooter.cshtml")
+    </div>
 		<div class="dx-field ledgerResult">
 			@(
 									Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201701vatpurchaseChild>()
