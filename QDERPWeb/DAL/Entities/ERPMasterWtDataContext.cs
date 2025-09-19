@@ -3429,6 +3429,12 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
     public DbSet<PostAvgCostDto> PostAvgCostDtos { get; set; }
     public DbSet<PostJournalDto> PostJournalDtos { get; set; }
+    public DbSet<PostJournalDtos> PostJournalDtoss { get; set; }
+    public DbSet<PostDeliveryNoteRequest> PostDeliveryNoteRequests { get; set; }
+    public DbSet<MaterialReceiptDto> MaterialReceiptDtos { get; set; }
+    public DbSet<MaterialReceiptChildDto> MaterialReceiptChildDtos { get; set; }
+
+
     public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
     public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
    
@@ -3461,6 +3467,10 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
         modelBuilder.Entity<PostAvgCostDto>().HasNoKey();
         modelBuilder.Entity<PostJournalDto>().HasNoKey();
+        modelBuilder.Entity<PostJournalDtos>().HasNoKey();
+        modelBuilder.Entity<PostDeliveryNoteRequest>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptDto>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptChildDto>().HasNoKey();
         modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
         modelBuilder.Entity<ApproveDeliveryNoteDto>().HasNoKey();
        // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();

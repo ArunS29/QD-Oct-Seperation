@@ -659,7 +659,7 @@
                                     .Controller("AddNewClientRequest")
                                     .LoadAction("GetSignatory")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SignatoryID")
+                                    .Key("SignatoryId")
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("Dnsignatory")
@@ -668,7 +668,7 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("SignatoryID")
+                                    .ValueExpr("SignatoryId")
                                     .DisplayExpr("SignatoryName")
                                     .OnInput("dropDownBoxOnInput")
                                     .OnOpened("onOpened")
@@ -873,7 +873,7 @@
                                                     .OpenOnFieldClick(false)//
                                                     .ValueChangeEvent("input")
                                                     .HoverStateEnabled(true)
-                                                    .Value(1)
+                                                    .Value(4)
                                                     .ValueExpr("DeliveryTypeCode")
                                                     .DisplayExpr("DeliveryType")
                                                     .OnInput("dropDownBoxOnInput")
@@ -1208,7 +1208,7 @@
                 .Controller("AddNewClientRequest")
                 .LoadAction("GetSignatory")
                 .LoadMode(DataSourceLoadMode.Raw)
-                .Key("SignatoryID")
+                .Key("SignatoryId")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -1223,8 +1223,8 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
                 })
             )
 }
@@ -1369,36 +1369,104 @@
 @using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("GetPreparedby-datagrid")
-                            .DataSource(d => d.WebApi()
-                            .Controller("AddNewClientRequest")
-                            .LoadAction("GetSignatory")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("SignatoryId")
-                            )
-                            .WordWrapEnabled(true)
-                            .ShowBorders(true)
-                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridSelectionChanged10")
-                            .OnInitialized("dataGridInitialized10")
-                            .HeaderFilter(p => p.Visible(true))
-                            .ShowBorders(true)
-                            .HoverStateEnabled(true)
-                            .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(false))//
-                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                            .Height(345)
-                            .Selection(s => s.Mode(SelectionMode.Single))
-                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                            .Columns(columns =>
-                            {
-                                columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+                        .ID("GetPreparedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged10")
+                        .OnInitialized("dataGridInitialized10")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
 
-                                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
-                            })
-                            )
+                        })
+                        )
+}
+@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetVerifiedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged11")
+                        .OnInitialized("dataGridInitialized11")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                        })
+                        )
+}
+@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetApprovedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged12")
+                        .OnInitialized("dataGridInitialized12")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                        })
+                        )
 }
 @using (Html.DevExtreme().NamedTemplate("GetQuotationStatusContentTemplate"))
 {
@@ -1652,6 +1720,48 @@ function dataGridSelectionChanged8(e) {
 function dataGridInitialized8(e) {
 	dataGrid = e.component;
 }
+function dataGridSelectionChanged10(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized10(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged11(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized11(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged12(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized12(e) {
+        dataGrid = e.component;
+    }
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
         const title =  formatMessage("Quotation Type Of Request");
@@ -1741,45 +1851,17 @@ function dataGridInitialized8(e) {
 
                 }
 
-                function dataGridPreparedByHeadSelectionChanged(e) {
+         function dataGridPreparedByHeadSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#Dnsignatory").dxDropDownBox("instance");
 
-                const selectedKey = e.selectedRowKeys[0];
-
-                const ddbInstance = $("#Dnsignatory").dxDropDownBox("instance");
-
-                acchead = selectedKey;
-
-                if (selectedKey) {
-
-                    ddbInstance.option("value", selectedKey);
-
-                    if (ddbInstance.option("opened")) {
-
-                        ddbInstance.close();
-
-                    }
-                        if(IsCurrent!="true")
-                    {
-                    var selectedRowData = $("#preparedby-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-                    // Get ReferenceNo from selected row
-
-                    if (selectedRowData.length > 0) {
-
-                                    SignatoryID = selectedRowData[0].SignatoryID;
-
-                    } else {
-
-                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-                        return;
-
-                    }
-                    }
-
-                }
-
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
             }
+        }
+    }
             function dataGridCheckedByHeadInitialized(e) {
 
                     dataGrid = e.component;

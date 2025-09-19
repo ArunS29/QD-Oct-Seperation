@@ -176,7 +176,7 @@
     <div class="btn-container">
 
 
-        @* @(Html.DevExtreme().Button()
+         @(Html.DevExtreme().Button()
 
             .ID("btnCreateNew")
 
@@ -190,7 +190,7 @@
 
             .OnClick("function() { onCreateNewClick(); }") // your JS function
 
-            ) *@
+            ) 
 
     </div>
 @*     <div class="btn-container">
@@ -239,38 +239,48 @@
     </div>
 
     <div class="btn-container">
-        @* @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
             .Width(50)
             .Text(new JS("formatMessage('Column Chooser')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("showColumnChooser")
-            ) *@
+            ) 
    
     
-    
-  
+      
+
   
  </div>
+<div class="btn-container">
+    @(Html.DevExtreme().Button()
+        .ID("btnUserEntryLog")
+        .Icon("user")
+        .Text("User Entry Log")
+        .Width(140)
+        .OnClick("onUserEntryLogClick")
+    )
+</div>
 </div>
 <script type="text/javascript">
-
+   function onUserEntryLogClick() {
+        // Use global tenantName variable
+        window.location.href = `/${tenantName}/General/UserEntryLog`;
+    }
     $(document).ready(function () {
         console.log('Start permission handling');
-        // Form ID
         var formId = "frm201LedgerView";
 
-        // Call the API to get permissions
         $.ajax({
             url: '/api/Permissions/GetAccessDetails?formId=' + formId,
             type: 'GET',
             contentType: 'application/json',
             success: function (response) {
-                console.log("API Response:", response); // Log the API response
+                console.log("API Response:", response); 
 
                 if (response.success && response.permissions) {
-                    // Default visibility and enable status for buttons
+                   
                     var controlStates = {
                         "btnShowRecords": { "Visible": false, "Enabled": false },
                         "btnPrint": { "Visible": false, "Enabled": false },
@@ -288,18 +298,17 @@
                     };
 
 
-                    // Check for full access
                     var fullAccess = response.permissions.find(p =>
                         p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
                     );
 
                     if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-                        // Grant full access: make all controls visible and enabled
+                    
                         Object.keys(controlStates).forEach(key => {
                             controlStates[key] = { "Visible": true, "Enabled": true };
                         });
                     } else {
-                        // Update states based on specific permissions for each control
+                     
                         Object.keys(controlStates).forEach(key => {
                             var controlPermission = response.permissions.find(p =>
                                 p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
@@ -313,17 +322,15 @@
                         });
                     }
 
-                    console.log("Control States:", controlStates); // Log the control states
+                    console.log("Control States:", controlStates); 
 
-                    // Dynamically update button visibility and enabled state
+                  
                     Object.keys(controlStates).forEach(key => {
                         var button = document.getElementById(key);
                         if (button) {
-                            // Handle visibility
                             button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-                            // Handle enable/disable state
                             button.disabled = !controlStates[key].Enabled;
-                            console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); 
                         } else {
                             console.warn(`Button with ID "${key}" not found in the DOM.`);
                         }
@@ -337,7 +344,6 @@
                 alert('An error occurred while fetching permissions. Please try again.');
             }
         });
-       // showColumnChooser();
         console.log('End permission handling');
     });
 
@@ -581,17 +587,17 @@
         var isVisible = dataGrid.option("groupPanel.visible");
         dataGrid.option("groupPanel.visible", !isVisible);
     }
-    function showColumnChooser() {
-            var dataGrid = $("#DataGrid").dxDataGrid("instance");
-        var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+    // function showColumnChooser() {
+    //         var dataGrid = $("#DataGrid").dxDataGrid("instance");
+    //     var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
-        if (isColumnChooserVisible) {
-            dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-        } else {
-            dataGrid.option("columnChooser.enabled", true); 
-            dataGrid.showColumnChooser(); 
-        }
-    }
+    //     if (isColumnChooserVisible) {
+    //         dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+    //     } else {
+    //         dataGrid.option("columnChooser.enabled", true); 
+    //         dataGrid.showColumnChooser(); 
+    //     }
+    // }
 
 
 

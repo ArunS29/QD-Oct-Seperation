@@ -75,6 +75,7 @@ public partial class Tbl901CompanyDetails02
     public bool? IsEnableQuotationWorkflow { get; set; }
     public bool? IsEnableRFQWorkflow { get; set; }
     public bool? IsEnableReceiptWorkflow { get; set; }
+    public bool? IsEnableDeliveryNoteWorkflow { get; set; }
 
     public byte? NoOfDigitsInVouchers { get; set; }
 

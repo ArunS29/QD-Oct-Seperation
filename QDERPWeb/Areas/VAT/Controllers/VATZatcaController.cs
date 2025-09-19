@@ -1,4 +1,4 @@
-﻿//using Chilkat;
+﻿using Chilkat;
 using DevExpress.Entity.Model;
 using DevExpress.Pdf.Native.BouncyCastle.Utilities;
 using DevExpress.XtraEditors;
@@ -87,6 +87,13 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             // Create REST client
             //var rest = new Rest();
+            Chilkat.Global glob = new Chilkat.Global();
+            bool unlocked = glob.UnlockBundle("WwMfDn.CBX1127_2ThZtySnD3DV");
+            if (!unlocked)
+            {
+                Console.WriteLine(glob.LastErrorText);
+
+            }
 
             // Connect to ZATCA Production (or Developer if testing)
             bool success = rest.Connect("gw-fatoora.zatca.gov.sa", port, bTls, bAutoReconnect);
