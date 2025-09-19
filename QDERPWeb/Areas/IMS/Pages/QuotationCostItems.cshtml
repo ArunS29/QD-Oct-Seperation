@@ -96,11 +96,11 @@
     }
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="QuotationCostItem" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 <div class="quotationCostItem-form-container">
     <div id="DatabaseSignatories" class="no-border-title"></div>
 
@@ -123,7 +123,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddQuotationCostItem")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addQuotationCostItem(); }")
                 .ElementAttr(new { @class = "custom-ui-button" })
@@ -155,10 +155,10 @@
             .OnRowUpdating("onQuotationCostItemUpdating")                       // Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("CostItemCode").Caption("Code").Width(80).AllowEditing(false);
-            columns.Add().DataField("CostItem").Caption("CostItem").Width(200);
+            columns.Add().DataField("CostItemCode").Caption(new JS("formatMessage('Code')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("CostItem").Caption(new JS("formatMessage('Cost Item')")).Width(200);
             columns.Add()
-            .Caption("Action").Width(100)
+            .Caption(new JS("formatMessage('Action')")).Width(100)
             .Type(GridCommandColumnType.Buttons)
             .Buttons(buttons =>
             {

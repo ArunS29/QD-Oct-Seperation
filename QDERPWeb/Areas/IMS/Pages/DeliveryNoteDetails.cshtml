@@ -219,55 +219,54 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Delivery Note Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
-				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("Gs Code").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("Gs Description").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitType).Caption("Unit Type").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
-				function(cellElement, cellInfo) {
-				if (cellInfo.value != null && cellInfo.value !== '') {
-				$('<span>')
-				.text(cellInfo.value)
-				.css({
-				display: 'inline-block',
-				backgroundColor: '#e6ffe6', // Light yellow
-				color: '#1a8f1a',            // Amber text
-				fontWeight: 'bold',
-				padding: '4px 10px',
-				borderRadius: '20px',
-				minWidth: '24px',
-				textAlign: 'center'
-				})
-				.appendTo(cellElement);
-				}
-				// else: do nothing (no span rendered)
-				}
-				"));
-				subColumns.AddFor(m => m.IssuedQty).Caption("IssuedQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
-				function(cellElement, cellInfo) {
-				if (cellInfo.value != null && cellInfo.value !== '') {
-				$('<span>')
-				.text(cellInfo.value)
-				.css({
-				display: 'inline-block',
-				backgroundColor: '#e6ffe6', // Light yellow
-				color: '#1a8f1a',            // Amber text
-				fontWeight: 'bold',
-				padding: '4px 10px',
-				borderRadius: '20px',
-				minWidth: '24px',
-				textAlign: 'center'
-				})
-				.appendTo(cellElement);
-				}
-				// else: do nothing (no span rendered)
-				}
-		")); columns.AddFor(m => m.IssuedUnitPrice).Caption(new JS("formatMessage('Issued Unit Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption(new JS("formatMessage('Delivery Issued To')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				subColumns.AddFor(m => m.DeliveryNoteNo).Caption(new JS("formatMessage('Delivery Note No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeliveryDate).Caption(new JS("formatMessage('Delivery Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption(new JS("formatMessage('Delivery Issued To')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitType).Caption(new JS("formatMessage('Unit Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit Rate Method')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.IssuedQty).Caption(new JS("formatMessage('Issued Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				columns.AddFor(m => m.IssuedUnitPrice).Caption(new JS("formatMessage('Issued Unit Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
 		function(cellElement, cellInfo) {
 		if (cellInfo.value != null) {
 		const formattedValue = new Intl.NumberFormat('en-US', {
@@ -309,41 +308,39 @@
 		}
 		}
 		"));
-				
-				subColumns.AddFor(m => m.AddedOn).Caption("Added On").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
-				subColumns.AddFor(m => m.AddlDescription).Caption("Additional Description").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Attention).Caption("Attention").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.BatchNo).Caption("Batch No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientAddress).Caption("Client Address").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client PO No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactEmail).Caption("Contact Email").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactMobile1).Caption("Contact Mobile 1").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactMobile2).Caption("Contact Mobile 2").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactPhone1).Caption("Contact Phone 1").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactPhone2).Caption("Contact Phone 2").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactPerson).Caption("Contact Person").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ContactPersonTitle).Caption("Contact Person Title").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DeliveryNoteRemarks).Caption("Delivery Note Remarks").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DeliveryRemarks).Caption("Delivery Remarks").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DeliveryTypeName).Caption("Delivery Type Name").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DeliveryType).Caption("Delivery Type").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DriversName).Caption("Driver's Name").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.DriversId).Caption("Driver's ID").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.EmployeeName).Caption("Employee Name").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.EmployeeNo).Caption("Employee No").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.ExpiryDate).Caption("Expiry Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
-				subColumns.AddFor(m => m.GsgroupName).Caption("GS Group Name").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Hscode).Caption("HS Code").Alignment(HorizontalAlignment.Center).Visible(false);
-				subColumns.AddFor(m => m.Identification).Caption("Identification").Alignment(HorizontalAlignment.Center).Visible(false);
 
+				subColumns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.AddlDescription).Caption(new JS("formatMessage('Additional Description')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Attention).Caption(new JS("formatMessage('Attention')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.BatchNo).Caption(new JS("formatMessage('Batch No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientAddress).Caption(new JS("formatMessage('Client Address')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactNo).Caption(new JS("formatMessage('Client Contact No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactEmail).Caption(new JS("formatMessage('Client Contact Email')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientPodate).Caption(new JS("formatMessage('Client PO Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.ClientPono).Caption(new JS("formatMessage('Client PO No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientProject).Caption(new JS("formatMessage('Client Project')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactEmail).Caption(new JS("formatMessage('Contact Email')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactMobile1).Caption(new JS("formatMessage('Contact Mobile 1')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactMobile2).Caption(new JS("formatMessage('Contact Mobile 2')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPhone1).Caption(new JS("formatMessage('Contact Phone 1')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPhone2).Caption(new JS("formatMessage('Contact Phone 2')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPerson).Caption(new JS("formatMessage('Contact Person')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ContactPersonTitle).Caption(new JS("formatMessage('Contact Person Title')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryNoteRemarks).Caption(new JS("formatMessage('Delivery Note Remarks')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryRemarks).Caption(new JS("formatMessage('Delivery Remarks')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryTypeName).Caption(new JS("formatMessage('Delivery Type Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DeliveryType).Caption(new JS("formatMessage('Delivery Type')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DriversName).Caption(new JS("formatMessage(\"Driver's Name\")")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.DriversId).Caption(new JS("formatMessage(\"Driver's ID\")")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.EmployeeName).Caption(new JS("formatMessage('Employee Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.EmployeeNo).Caption(new JS("formatMessage('Employee No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ExpiryDate).Caption(new JS("formatMessage('Expiry Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('GS Group Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Hscode).Caption(new JS("formatMessage('HS Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Identification).Caption(new JS("formatMessage('Identification')")).Alignment(HorizontalAlignment.Center).Visible(false);
+			});
+		})
 
-					});
-			
-				})
 		.Height("70vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")

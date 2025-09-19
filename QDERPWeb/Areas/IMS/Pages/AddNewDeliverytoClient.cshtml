@@ -238,7 +238,7 @@
                     .Items(item =>
                     {
                         item.Add()
-                    .Title("Delivery Note Details")
+                    .Title(new JS("formatMessage('Delivery Note Details')"))
                     .Icon("folder")
                     .Text("Delivery Note Details")
                     .Template(@<text>
@@ -250,7 +250,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("deliveryNoteNo")
                         .Value("") // leave it blank initially
-                        .Label("Delivery Note No:")
+                        .Label(new JS("formatMessage('Delivery Note No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ReadOnly(false)
                         .Width("100%")
@@ -264,7 +264,7 @@
                         .Type(DateBoxType.Date)
                         .Value(DateTime.Now)
                         .DisplayFormat("dd-MMM-yyyy")
-                        .Label("Delivery Note Date:")
+                        .Label(new JS("formatMessage('Delivery Note Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -326,7 +326,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
-                        .Label("Client Contact No:")
+                        .Label(new JS("formatMessage('Client Contact No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .Width("100%")
@@ -336,7 +336,7 @@
                     <!-- Row 2 -->
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Sales Person / Store Incharge :")
+                        .Label(new JS("formatMessage('Sales Person / Store Incharge :')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetSalesPerson")
@@ -377,7 +377,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("clientPOnumber")
-                        .Label("Client PO No:")
+                        .Label(new JS("formatMessage('Client PO No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -385,7 +385,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
-                        .Label("Client PO Date:")
+                        .Label(new JS("formatMessage('Client PO Date:')"))
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
                         	.Type(DateBoxType.Date)
@@ -396,7 +396,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
-                        .Label("Client Ref. Name / Attention To:")
+                        .Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Buttons(buttons =>
@@ -416,7 +416,7 @@
                     <!-- Row 3 -->
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Stock Delivery From Store:")
+                        .Label(new JS("formatMessage('Stock Delivery From Store:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetStores")
@@ -457,7 +457,7 @@
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Issued to Projects:")
+                        .Label(new JS("formatMessage('Issued to Projects:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetTypeOfRequest")
@@ -501,7 +501,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientEmail")
                         .Mode(TextBoxMode.Email)
-                        .Label("Client Email:")
+                        .Label(new JS("formatMessage('Client Email:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
@@ -511,7 +511,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("clientProject")
-                        .Label(" Client Project:")
+                        .Label(new JS("formatMessage('Client Project:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -521,7 +521,7 @@
 
         </text>);
 
-            item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
+            item.Add().Title(new JS("formatMessage('Delivery Details')")).Icon("detailslayout").Text("Delivery Details").Template(@<text>
             <div class="layout-container">
                 <div class="form-row" style="display: flex; gap: 20px;">
                     <!-- Left Column: Delivery Note Remarks -->
@@ -529,7 +529,7 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("DeliveryNoteRemarks")
                         .ElementAttr("class", "important-height")
-                        .Label("Delivery Note Remarks:")
+                        .Label(new JS("formatMessage('Delivery Note Remarks:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -541,7 +541,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("Salesman")
-                                .Label("Sales man:")
+                                .Label(new JS("formatMessage('Sales man:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -549,7 +549,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveredBy")
-                                .Label("Transported / Delivered By:")
+                                .Label(new JS("formatMessage('Transported / Delivered By:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -560,7 +560,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DriverName")
-                                .Label("Driver's Name:")
+                                .Label(new JS("formatMessage('Driver Name:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -568,7 +568,7 @@
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("VehicleNo")
-                                .Label("Vehicle No:")
+                                .Label(new JS("formatMessage('Vehicle No:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
@@ -578,7 +578,7 @@
                         <div>
                             @(Html.DevExtreme().TextBox()
                             .ID("DriverID")
-                            .Label("Driver's ID:")
+                            .Label(new JS("formatMessage('Driver ID:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
@@ -589,7 +589,7 @@
         </text>);
 
 
-                        item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+                        item.Add().Text("Signatories").Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
                 <div class="p-2">
                     <table class=" table-borderless w-100">
@@ -733,27 +733,27 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text("Show Item Line No instead of Sl.No"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text(new JS("formatMessage('Show Item Line No instead of Sl.No')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text("Print Item Code with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Print Item Code with Description')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text("Print Item Part No with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text(new JS("formatMessage('Print Item Part No with Description')")))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text("Print Item Part No with Arabic Desc"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(true).Text("Print Footer At Bottom"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(true).Text(new JS("formatMessage('Print Footer At Bottom')")))
 
                                 </td>
                             </tr>
@@ -763,7 +763,7 @@
             </div>
 
         </text>);
-                        item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+                        item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Division')")).Template(@<text>
             <div class="p-2">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
@@ -868,7 +868,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
-                        .Label("Sales Order No:")
+                        .Label(new JS("formatMessage('Sales Order No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -878,7 +878,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("QuotationNo")
-                        .Label("Quotation No:")
+                        .Label(new JS("formatMessage('Quotation No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -888,7 +888,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("EnquiryRequestNo")
-                        .Label("Enquiry/Request No:")
+                        .Label(new JS("formatMessage('Enquiry/Request No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -898,7 +898,7 @@
             </div>
 
         </text>);
-                    item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
                                                                                                                                                                 <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
@@ -1047,7 +1047,7 @@
 
             .ColumnChooser(cc => cc
             .Enabled(true)
-            .Title("Show/Hide Column")
+            .Title(new JS("formatMessage('Show/Hide Column')"))
             .Mode(GridColumnChooserMode.DragAndDrop)
             )
             .AllowColumnReordering(true)
@@ -1096,7 +1096,7 @@
                                                 {
                                                     columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
                                                     columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-                                                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+                                                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Alignment(HorizontalAlignment.Center);
 
 
                                                 })
@@ -1136,7 +1136,7 @@
                                                 columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
                                                 columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
                                                 columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-                                                columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+                                                columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Alignment(HorizontalAlignment.Center);
 
 
                                             })
@@ -1165,8 +1165,8 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
                 })
             )
 }
@@ -1198,7 +1198,7 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                    columns.Add().DataField("StoreName");
+                                    columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')"));
 
 
 
@@ -1232,7 +1232,7 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("TypeOfRequest");
+                                columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
 
 
 
@@ -1267,7 +1267,7 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("SalesPersonName");
+                        columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 
 
@@ -1293,7 +1293,7 @@
             .OnInitialized("dataGridInitialized1")
             .Columns(columns =>
             {
-                columns.Add().DataField("ClientName").Caption("Client Name");
+                columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
                 columns.Add().DataField("ContactPerson").Visible(false);
                 columns.Add().DataField("ContactMobile1").Visible(false);
                 columns.Add().DataField("ContactEmail").Visible(false);
@@ -1363,7 +1363,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("QuoteStatus");
+                                columns.Add().DataField("QuoteStatus").Caption(new JS("formatMessage(''Quote Status)"));
 
 
 
@@ -1431,8 +1431,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().Caption(new JS("formatMessage('DeliveryTypeCode')")).DataField("Code");
-				columns.Add().Caption(new JS("formatMessage('DeliveryType')")).DataField("Delivery Type");
+				columns.Add().Caption(new JS("formatMessage('Delivery Type Code')")).DataField("Code");
+				columns.Add().Caption(new JS("formatMessage('Delivery Type')")).DataField("Delivery Type");
 			})
 			)
 		}
@@ -1528,7 +1528,7 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-        const title = "Quotation Mode of Request";
+        const title = formatMessage("Quotation Mode of Request");
         openModal(url, title);
     }
     function dataGridInitialized2(e) {
@@ -1586,22 +1586,22 @@ function dataGridInitialized8(e) {
 }
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-        const title = "Quotation Type Of Request";
+        const title = formatMessage("Quotation Type Of Request");
             openModal(url, title);
     }
     function AddQuoteStatus(){
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "Purchase Order Categories";
+        const title = formatMessage("Purchase Order Categories");
             openModal(url, title);
     }
     function redirecttosalespersonmaster(){
         const url = `/${tenantName}/IMS/SalesPersonMaster`;
-        const title = "Sales Person Master";
+        const title = formatMessage("Sales Person Master");
             openModal(url, title);
     }
     function redirecttoClientLeadmaster1(){
         const url = `/${tenantName}/IMS/ClientLeadMaster`;
-        const title = "Client Master";
+        const title = formatMessage("Client Master");
             openModal(url, title);
     }
         function redirecttoClientLeadmaster() {
@@ -1618,7 +1618,7 @@ function dataGridInitialized8(e) {
 
         // Assuming tenantName is defined globally or you can set it here
         const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-        const title = "Edit Client";
+        const title = formatMessage("Edit Client");
 
         openModal(url, title);
     }
@@ -1908,13 +1908,13 @@ function dataGridInitialized8(e) {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 },
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 },
                                               { dataField: "MaxQty", caption: "Max Qty", width: 100 },
                                               { dataField: "MinQty", caption: "Min Qty", width: 100 }
 						],
@@ -1964,7 +1964,7 @@ function dataGridInitialized8(e) {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -1982,7 +1982,7 @@ function dataGridInitialized8(e) {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2019,7 +2019,7 @@ function dataGridInitialized8(e) {
                           window.currentDescriptionCell = options;
 
                                 let url = `/${tenantName}/IMS/DetailedDescriptionDO?gsCode=${encodeURIComponent(gsCode)}`;
-                          let title = "Details Description";
+                          let title = formatMessage("Details Description");
 
                           openModal(url, title);
                       }
@@ -2138,7 +2138,7 @@ function dataGridInitialized8(e) {
 
                                           let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-                                          openModal(url, "Unit Of Measure");
+                                          openModal(url, formatMessage("Unit Of Measure"));
 
                                       },
 
@@ -2168,7 +2168,7 @@ function dataGridInitialized8(e) {
     },
     {
         dataField: "Qty",
-        caption: "Qty",
+        caption: formatMessage("Qty"),
         width: 200,
         dataType: "number",
         editCellTemplate: function (cellElement, cellInfo) {
@@ -2325,8 +2325,8 @@ function dataGridInitialized8(e) {
                         columns: [
 
 
-                                 { dataField: "EmployeeID", caption: "ID", width: 80 },
-                                 { dataField: "EmployeeName", caption: "Name" }
+                                 { dataField: "EmployeeID", caption: formatMessage("ID"), width: 80 },
+                                 { dataField: "EmployeeName", caption: formatMessage("Name") }
 
 
                         ],
@@ -2427,8 +2427,8 @@ function dataGridInitialized8(e) {
                         columns: [
 
 
-                                  { dataField: "PropertyNo", caption: "ID", width: 80 },
-                                  { dataField: "PropertyDescription", caption: "Name" }
+                                  { dataField: "PropertyNo", caption: formatMessage("ID"), width: 80 },
+                                  { dataField: "PropertyDescription", caption: formatMessage("Name")}
 
 
                         ],
@@ -2462,7 +2462,7 @@ function dataGridInitialized8(e) {
    
       { dataField: "AddlDescription", visible: false },
             { dataField: "DeliveryRemarks", visible: false },
-              { dataField: "DeliveryNoteSlNo", visible: true },
+              { dataField: "DeliveryNoteSlNo",caption:formatMessage("Delivery Note Sl No"), visible: true },
 
             
          
@@ -2536,33 +2536,34 @@ function dataGridInitialized8(e) {
             });
 
 
-                 function getDropdownData() {
-        return $.ajax({
-            url: "/api/VATModule/GetGoodsAndServices",
-            method: "GET",
-            dataType: "json"
-        }).then(function (response) {
-            console.log("GsData", response);
+                function getDropdownData() {
+    return $.ajax({
+        url: "/api/VATModule/GetGoodsAndServices",
+        method: "GET",
+        dataType: "json"
+    }).then(function (response) {
+        console.log("GsData", response);
 
-            // Safely get the array from the API response
-            const data = Array.isArray(response.data) ? response.data : [];
+        // Safely get the array from the API response
+        const data = Array.isArray(response.data) ? response.data : [];
 
-            return data.map(item => ({
-                    GSCode: item.GSCode,
-                    GSDescrpition: item.GSDescrpition,
-                    GsdescriptionAr:item.GsdescriptionAr,
-                    ItemPartNo: item.ItemPartNo,
-                    CostPrice: item.CostPrice,
-                    GSSellingRate: item.GSSellingRate,
-                    MaxQty:item.MaxQty,
-                    MinQty:item.MinQty,
-                    ReorderQty:item.ReorderQty
-            }));
-        }).catch(function (error) {
-            console.error("Error fetching dropdown data:", error);
-            return [];
-        });
-    }
+        return data.map(item => ({
+            GSCode: item.GSCode,
+            GSDescrpition: item.GSDescrpition,
+            GsdescriptionAr: item.GsdescriptionAr,
+            ItemPartNo: item.ItemPartNo,
+            CostPrice: item.CostPrice,
+            GSSellingRate: item.GSSellingRate,
+            MaxQty: item.MaxQty,
+            MinQty: item.MinQty,
+            ReorderQty: item.ReorderQty
+        }));
+    }).catch(function (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    });
+}
+
       function getUnitRateMethods() {
                   return $.ajax({
                       url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -2698,7 +2699,7 @@ function dataGridInitialized8(e) {
           }
            function CurrencyClick() {
           let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-          let title = "Currency Master";
+          let title = formatMessage("Currency Master");
           openModal(url, title);
       }
         function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -2758,7 +2759,7 @@ function dataGridInitialized8(e) {
                 encodeURIComponent(clientCode) + '&clientName=' +
                 encodeURIComponent(clientName);
 
-            openModal(url, 'Client Contact List');
+            openModal(url, formatMessage('Client Contact List'));
         });
     }
              $(function () {
@@ -2807,7 +2808,7 @@ function dataGridInitialized8(e) {
 
           // Bind move up
           $("#btnMoveUp").dxButton({
-              text: "Move Up",
+              text: formatMessage("Move Up"),
               onClick: function () {
                   moveRow(-1); // up = -1
               }
@@ -2815,7 +2816,7 @@ function dataGridInitialized8(e) {
 
           // Bind move down
           $("#btnMoveDown").dxButton({
-              text: "Move Down",
+              text: formatMessage("Move Down"),
               onClick: function () {
                   moveRow(1); // down = +1
               }

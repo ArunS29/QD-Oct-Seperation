@@ -812,6 +812,22 @@
                             $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
                             DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
                                 "Data Deleted Successfully").done(function () {
+                                        // Attachment Delete
+                                    var module = "finance";
+                                    $.ajax({
+                                            url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(module)}`,
+                                        type: "POST",
+                                        success: function (response) {
+                                            if (response.success) {
+                                                    DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                            } else {
+                                                    DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                        }
+                                    });
                                     history.back(); // Execute only when "OK" is clicked
                                 });
 
@@ -866,6 +882,24 @@
                                     "Voucher has been successfully removed from the database.",
                                     "Data Deleted Successfully"
                                 ).done(function () {
+                                    // Attachment Delete
+                                var module = "finance";
+                                $.ajax({
+                                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(module)}`,
+                                    type: "POST",
+                                    success: function (response) {
+                                        if (response.success) {
+                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                        } else {
+                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                        }
+
+                                    },
+                                    error: function (xhr, status, error) {
+                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+
+                                    }
+                                });
                                     history.back();
                                 });
                             } else {
