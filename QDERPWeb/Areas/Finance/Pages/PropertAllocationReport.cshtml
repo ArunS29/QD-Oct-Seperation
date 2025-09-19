@@ -95,7 +95,7 @@
 
 <div id="dataGrid" style="margin-top: 15px;"></div>
 <div class="limited-footer">
-    @await Html.PartialAsync("_GridFooter")
+    @await Html.PartialAsync("CostAllocationReport FOOTER")
 </div>
 
 
@@ -159,7 +159,7 @@
         dataGrid.refresh();
     }
 
-       $(function () {
+         $(function () {
         dataGrid = $("#dataGrid").dxDataGrid({
             showBorders: true,
             remoteOperations: false,
@@ -175,7 +175,6 @@
                 visible: false
             },
             groupRowTemplate: function (groupData, detailCells) {
-                // Custom group row to make it bold like your first image
                 detailCells.append(
                     $("<div>")
                         .css({
@@ -190,39 +189,78 @@
             summary: {
                 groupItems: [
                     {
-                        column: "ExpenseAmount",
+                        column: "CostAndRevenueClubbed",
                         summaryType: "sum",
-                        showInGroupFooter: false,
+                        showInGroupFooter: true,
+                        alignByColumn: false,
+                         showInColumn: "VoucherDate",
+                        cssClass: "profit-loss-summary",
+                        customizeText: function (e) {
+                            let val = e.value || 0;
+                            let absVal = Math.abs(val).toFixed(2);
+                            return "Profit/Loss: " + absVal + (val < 0 ? " Loss" : " Profit");
+                        }
+                    },
+                    {
+                        column: "RevenueAmount",
+                        summaryType: "sum",
+                        showInGroupFooter: true,
                         alignByColumn: true,
                         valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Expense: {0}"
+                        displayFormat: "{0}"
+                    },
+                    {
+                        column: "ExpenseAmount",
+                        summaryType: "sum",
+                        showInGroupFooter: true,
+                        alignByColumn: true,
+                        valueFormat: { type: "fixedPoint", precision: 2 },
+                        displayFormat: "{0}"
                     },
                     {
                         column: "CostAndRevenueClubbed",
                         summaryType: "sum",
-                        showInGroupFooter: false,
+                        showInGroupFooter: true,
                         alignByColumn: true,
+                        valueFormat: { type: "fixedPoint", precision: 2 },
                         customizeText: function (e) {
                             let val = e.value || 0;
-                            let absVal = Math.abs(val).toFixed(2);
-                            return absVal + (val < 0 ? " Loss" : " Profit");
+                            return (val < 0 ? "(" + Math.abs(val).toFixed(2) + ")" : val.toFixed(2));
                         }
                     }
                 ],
                 totalItems: [
                     {
+                        column: "CostAndRevenueClubbed",
+                        summaryType: "sum",
+                         showInColumn: "VoucherDate",
+                        cssClass: "profit-loss-summary",
+                        customizeText: function (e) {
+                            let val = e.value || 0;
+                            let absVal = Math.abs(val).toFixed(2);
+                            return "Profit / Loss = " + (val < 0 ? "-" : "") + absVal + (val < 0 ? " Loss" : " Profit");
+                        },
+                        alignment: "left"
+                    },
+                    {
+                        column: "RevenueAmount",
+                        summaryType: "sum",
+                        valueFormat: { type: "fixedPoint", precision: 2 },
+                        displayFormat: "{0}"
+                    },
+                    {
                         column: "ExpenseAmount",
                         summaryType: "sum",
                         valueFormat: { type: "fixedPoint", precision: 2 },
-                        displayFormat: "Total Expense: {0}"
+                        displayFormat: "{0}"
                     },
                     {
                         column: "CostAndRevenueClubbed",
                         summaryType: "sum",
+                        valueFormat: { type: "fixedPoint", precision: 2 },
                         customizeText: function (e) {
                             let val = e.value || 0;
-                            let absVal = Math.abs(val).toFixed(2);
-                            return "Total: " + absVal + (val < 0 ? " Loss" : " Profit");
+                            return (val < 0 ? "(" + Math.abs(val).toFixed(2) + ")" : val.toFixed(2));
                         }
                     }
                 ]
@@ -258,7 +296,13 @@
                         if (options.value != null) {
                             $("<div>")
                                 .text(options.value.toFixed(2))
-                                .css("background-color", "#d4f4d4") // light green background
+                                .css({
+                                    "background-color": "#d4f4d4",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "padding": "2px 4px",
+                                    "text-align": "right"
+                                })
                                 .appendTo(container);
                         }
                     }
@@ -272,7 +316,13 @@
                         if (options.value != null) {
                             $("<div>")
                                 .text(options.value.toFixed(2))
-                                .css("background-color", "#ffd6d6") // light red background
+                                .css({
+                                    "background-color": "#ffd6d6",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "padding": "2px 4px",
+                                    "text-align": "right"
+                                })
                                 .appendTo(container);
                         }
                     }
@@ -288,18 +338,34 @@
                             let formattedValue = Math.abs(value).toFixed(2);
                             $("<div>")
                                 .text(value < 0 ? `(${formattedValue})` : formattedValue)
-                                .css("background-color", value < 0 ? "#ffd6d6" : "#d4f4d4") // red if loss, green if profit
+                                .css({
+                                    "background-color": value < 0 ? "#ffd6d6" : "#d4f4d4",
+                                    "width": "100%",
+                                    "height": "100%",
+                                    "padding": "2px 4px",
+                                    "text-align": "right"
+                                })
                                 .appendTo(container);
                         }
                     }
                 },
                 { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
                 { dataField: "EntryNarration", caption: formatMessage("Bill Remarks") }
-            ]
+            ],
+            onCellPrepared: function (e) {
+                if (e.rowType === "groupFooter" && e.column.dataField === "CostAndRevenueClubbed" && e.cellElement.hasClass("dx-datagrid-summary-item")) {
+                    e.cellElement.css({
+                        "font-weight": "bold",
+                        "border-top": "1px solid #ccc",
+                        "background-color": "#f9f9f9"
+                    });
+                }
+            }
         }).dxDataGrid("instance");
 
         loadCostGrid();
     });
+
 
     function ddBtnShowRecords_click(option) {
         let today = new Date();
@@ -344,7 +410,13 @@
         // Pass selected dates directly to loadCostGrid
         loaddateCostGrid(from, to);
     }
-
+           function formatDateOnly(date) {
+        if (!(date instanceof Date)) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
     function loaddateCostGrid(fromDate, toDate) {
         const accountId = getQueryParam('accountId');
 
@@ -353,9 +425,10 @@
                 const params = new URLSearchParams();
                 if (accountId) params.append("accountId", accountId);
 
-                // ✅ Use parameters passed from function instead of query params
-                if (fromDate) params.append("fromDate", fromDate.toISOString());
-                if (toDate) params.append("toDate", toDate.toISOString());
+                    // ✅ Pass only date (yyyy-MM-dd) without time
+                    if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
+                    if (toDate) params.append("toDate", formatDateOnly(toDate));
+
 
                 return fetch(`/api/EmployeeReport/GetPropertyAllocations?${params}`)
                     .then(res => res.json());
