@@ -371,7 +371,7 @@
 					.Type(ButtonType.Default)
 					.Icon("edit")
 					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-					.OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }"));
+					.OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectEditledgerAccountMaster() }"));
 
 
 
@@ -3300,6 +3300,8 @@ function syncSupVATNumbers(e) {
          debugger;
         acgid = accgroupid;
 
+        accgrpId = accgroupid;
+
         var accheadar = urlParams.get('AccountHeadAr') || "";
 
         const IsCharOfAccounts = urlParams.get('IsCharOfAccounts'); // This will be a string ('true' or 'false')
@@ -3922,9 +3924,9 @@ function syncSupVATNumbers(e) {
         });
 
 
-
-
-        dataGridSelectionChanged({ selectedRowKeys: [accgroup] });
+        dataGridSelectionChanged(
+            { selectedRowKeys: [accgroup] }
+        );
         // Show the content of the first tab by default
         var selectedTabIndex = 0;
         $("#tab-content-" + (selectedTabIndex + 1)).show();
@@ -4150,8 +4152,19 @@ if (dropDownInstance.option("opened")) {
     }
 
     function redirectledgerAccountMaster() {
+     let IsLedgerAccMaster=false;
+        url = `/${tenantName}/Finance/LedgerAccountMaster?IsLedgerAccMaster=${encodeURIComponent(IsLedgerAccMaster)}`;
+        openModal(url,"Accounting Ledger Groups");
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+                refreshaccountledgerSelectBox();
+            }
+        };
+    }
+    function redirectEditledgerAccountMaster() {
            const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlAccountGroup"));
-
+           let IsLedgerAccMaster=true;
 // Close the dropdown if it's open
 if (dropDownInstance.option("opened")) {
     dropDownInstance.close();
@@ -4165,7 +4178,7 @@ if (dropDownInstance.option("opened")) {
         // const modal = document.getElementById("ledgerAccountMasterModal");
         // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        // iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}`;
+        // iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}&IsLedgerAccMaster=${encodeURIComponent(IsLedgerAccMaster)}`;
 
         // modal.style.display = "block";
 
@@ -4174,8 +4187,8 @@ if (dropDownInstance.option("opened")) {
         //     modal.style.display = "none";
         //     refreshaccountledgerSelectBox();
         // };
-        url = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}`;
-        openModal(url,"");
+        url = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}&IsLedgerAccMaster=${encodeURIComponent(IsLedgerAccMaster)}`;
+        openModal(url,"Accounting Ledger Groups");
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -4183,6 +4196,8 @@ if (dropDownInstance.option("opened")) {
             }
         };
     }
+
+
     //Disable Tabs
     function disableTabs(tabIds) {
         tabIds.forEach(tabId => {
@@ -4488,6 +4503,7 @@ if (dropDownInstance.option("opened")) {
                     accgrpunder = selectedRowData[0].AccountGroupUnder;
                     accgrpId = selectedRowData[0].AccountGroupId;
                     console.log("aid:", accgrpId);
+                    
 
                 } else {
                     DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);

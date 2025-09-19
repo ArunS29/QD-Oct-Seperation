@@ -78,9 +78,7 @@
         border-color: #ddd; /* #ddd for dropdown borders */
     }
 
-        .dx-dropdownbox .dx-texteditor-input {
-            color: #ddd; /* #ddd for dropdown text */
-        }
+        
 
     /* Textbox styling */
     .dx-textbox {
@@ -206,12 +204,6 @@
 
 </style>
 
-<div class="dx-card-header minimal-header">
-    <div class="card-title-icon">
-        <i class="fas fa-file-invoice-dollar"></i>
-    </div>
-    <div id="AccountingLedgerGroupss" class="titleText no-border-title"></div>
-</div>
 
 @* <div class="title">
     <div class="header-container">
@@ -301,7 +293,7 @@
             <div class="form-group">
                 @(
                     Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Number')"))
+                    .Label(new JS("formatMessage('Account Group ID')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ID("AccountGroupID1")
                     .Value(null)
@@ -720,15 +712,17 @@
     let CreatedOns = null;
 
     $(document).ready(function () {
+        debugger;
         // Retrieve query parameters
         const urlParams = new URLSearchParams(window.location.search);
         const accountGroup = urlParams.get("AccountGroup");
         const accountGroupID = urlParams.get("AccountGroupId");
         const accountGroupUnder = urlParams.get("AccountGroupUnder");
+        const IsLedgerAccMaster = urlParams.get("IsLedgerAccMaster");
       //  alert(accountGroupID);
         console.log("URL Parameters:", { accountGroup, accountGroupID, accountGroupUnder });
-
-        if (accountGroupID!=null) {
+          mARresponse =  accountGroupUnder;
+            if (IsLedgerAccMaster=="true") {
             // Case 1: AccountGroupId exists ? Fetch existing data
             
             $.ajax({
@@ -785,8 +779,8 @@
                     console.error("Error fetching Account Group data:", error);
                 }
             });
-        } 
-         if (accountGroupID == "null") {
+        }
+             if (IsLedgerAccMaster=="false") {
            
             // Case 2: AccountGroupId is NULL ? Generate new AccountGroupId
             $.ajax({
@@ -845,7 +839,7 @@
                 success: function (response) {
                     if (response) {
                         console.log("Account Group Under Data:", response);
-                        IsArabic = false;
+                        //IsArabic = false;
                         dataGridAccountMasterSelectionChanged({ selectedRowKeys: [response.masterGroup] });
                     } else {
                         console.warn("No data received for AccountGroupUnder.");
@@ -872,9 +866,14 @@
 
         if (aAccountMasterDropDownBoxValidator.isValid && aAccountGroupValidator.isValid) {
 
-            
-            let CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
-            let CreatedOn = $("#CreatedOn").dxTextBox("instance").option("value");
+            let crtdOn = new Date().toISOString();
+                $("#CreatedOn").dxTextBox("instance").option("value", crtdOn);
+
+
+            let CreatedBy = getUN;
+            let CreatedOn = crtdOn;
+
+           
 
             if (!CreatedOn || !Date.parse(CreatedOn)) {
                 CreatedOn = new Date().toISOString(); // Assign current timestamp if not set
@@ -884,6 +883,19 @@
             let accountGroupIdTextbox = $("#AccountGroupID").dxTextBox("instance").option("value");
             const urlParams = new URLSearchParams(window.location.search);
             let accountGroupIdParam = urlParams.get("AccountGroupId");
+
+               let AccountGroupId = accountGroupIdParam;  // Use param for update, textbox for save
+               let AccountGroup = $("#AccountGroup").dxTextBox("instance").option("value");
+               let AccountMaster = $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value");
+               let AccountGroupIDAr = $("#AccountGroupID1").dxTextBox("instance").option("value");
+               let AccountGroupAr = $("#AccountGroup1").dxTextBox("instance").option("value");
+               let AccountMasterAr = $("#accountDropDownBoxArabic").dxDropDownBox("instance").option("value");
+
+                let IsUseInSales = $("#ChooseifthisgrouptobeunderSales").dxCheckBox("instance").option("value");
+                let IsUsedInPurchase = $("#ChooseifthisgrouptobeunderPurchases").dxCheckBox("instance").option("value");
+                let IsSalaryPayable=$("#ChooseifthisgrouptobeunderSalaryPayable").dxCheckBox("instance").option("value");
+                let IsUseInReconciliation=$("#ChooseifthisgroupwanttobeReconcilied").dxCheckBox("instance").option("value");
+
 
             // **Determine if it's an update**
             let isUpdate = accountGroupIdParam && accountGroupIdParam.trim() !== "" && accountGroupIdParam !== "null";
@@ -903,7 +915,11 @@
                 "AccountGroupIDAr": $("#AccountGroupID1").dxTextBox("instance").option("value"),
                 "AccountGroupAr": $("#AccountGroup1").dxTextBox("instance").option("value"),
                 "AccountMasterAr": $("#accountDropDownBoxArabic").dxDropDownBox("instance").option("value"),
-               "AccountGroupUnder": mARresponse,
+                "AccountGroupUnder": mARresponse,
+                "IsUseInSales":$("#ChooseifthisgrouptobeunderSales").dxCheckBox("instance").option("value"),
+                "IsUsedInPurchase":$("#ChooseifthisgrouptobeunderPurchases").dxCheckBox("instance").option("value"),
+                "IsSalaryPayable":$("#ChooseifthisgrouptobeunderSalaryPayable").dxCheckBox("instance").option("value"),
+                "IsUseInReconciliation":$("#ChooseifthisgroupwanttobeReconcilied").dxCheckBox("instance").option("value")
               // "AccountGroupUnder": mARresponseMasterGroupId,
 
 
@@ -928,6 +944,18 @@
 
                 VM["RecordModifiedBy"] = getUN;
                 VM["RecordModifiedOn"] = modifiedOn;
+
+                VM["AccountGroupId"] = AccountGroupId;
+                VM["AccountGroup"] = AccountGroup;
+                VM["AccountMaster"] = AccountMaster;
+                VM["AccountGroupIDAr"] = AccountGroupIDAr;
+                VM["AccountMasterAr"] = AccountMasterAr;
+                VM["AccountGroupUnder"] = AccountGroupUnder;
+
+                VM["IsUseInSales"] = IsUseInSales;
+                VM["IsUsedInPurchase"] = IsUsedInPurchase;
+                VM["IsSalaryPayable"] = IsSalaryPayable;
+                VM["IsUseInReconciliation"] = IsUseInReconciliation;
             }
 
             console.log("API URL:", apiUrl);
@@ -947,7 +975,7 @@
                             "success",
                             2000
                         );
-
+                        debugger;
                         // Log success for debugging
                         console.log("Success Response:", response);
 
@@ -965,8 +993,8 @@
                             $("#ModifiedBy").dxTextBox("instance").option("value", modifiedBy || "");
                             $("#ModifiedOn").dxTextBox("instance").option("value", formattedDate || new Date().toISOString());
                         } else {
-                            const createdBy = data.AG.RecordCreatedBy;
-                            const createdOn = new Date(data.AG.RecordCreatedOn);
+                            const createdBy = data.RecordCreatedBy;
+                            const createdOn = new Date(data.RecordCreatedOn);
 
                             // Format to dd-MMM-yyyy
                             const formattedDate = createdOn.toLocaleDateString('en-GB', {
@@ -974,7 +1002,8 @@
                                 month: 'short',
                                 year: 'numeric'
                             }).replace(/ /g, '-');
-                            $("#CreatedBy").dxTextBox("instance").option("value", createdBy || "");
+                           // $("#CreatedBy").dxTextBox("instance").option("value", createdBy || "");
+                                   $("#CreatedBy").dxTextBox("instance").option("value", createdBy || "");
                             $("#CreatedOn").dxTextBox("instance").option("value", formattedDate || new Date().toISOString());
                         }
                     } else {
@@ -1316,15 +1345,7 @@ $("#btnDelete").on("click", function (e) {
       // Hide the form container. You can also use .remove() if you want to remove it from the DOM.
    window.parent.document.getElementById("ledgerAccountMasterModal").style.display = "none";
     });
-         $(function () {
-                 $("#AccountingLedgerGroupss").dxTextBox({
-                    text: formatMessage("Accounting Ledger Groups"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textcolor-heading");
-            }
-            });
-        });
+        
 
 </script>
 
