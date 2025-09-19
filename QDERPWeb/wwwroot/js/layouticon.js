@@ -24,19 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Try to re-enter DOM fullscreen after reload (on first interaction)
-    function tryRestoreFullscreen() {
-        if (localStorage.getItem("isFullscreen") === "true" && !document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log("Fullscreen restore blocked:", err.message);
-            });
-        }
-        document.removeEventListener("click", tryRestoreFullscreen);
-        document.removeEventListener("keydown", tryRestoreFullscreen);
-    }
-
-    document.addEventListener("click", tryRestoreFullscreen);
-    document.addEventListener("keydown", tryRestoreFullscreen);
 
     fullscreenBtn.addEventListener("click", function () {
         if (!document.fullscreenElement) {
@@ -56,18 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }).catch(err => {
                 console.log("Error exiting fullscreen:", err.message);
             });
-        }
-    });
-
-    document.addEventListener("fullscreenchange", function () {
-        if (document.fullscreenElement) {
-            fullscreenIcon.classList.remove("fa-expand");
-            fullscreenIcon.classList.add("fa-compress");
-            localStorage.setItem("isFullscreen", "true");
-        } else {
-            fullscreenIcon.classList.remove("fa-compress");
-            fullscreenIcon.classList.add("fa-expand");
-            localStorage.setItem("isFullscreen", "false");
         }
     });
 });

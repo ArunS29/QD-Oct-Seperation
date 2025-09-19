@@ -125,17 +125,17 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Distribute Cost By Equally")
+                        .Text(new JS("formatMessage('Distribute Cost By Equally')"))
                         .Option("color", "#FF7043") // Orange
                         .OnClick("function() { onDistributeCostClick(1); }");
 
                     items.Add()
-                        .Text("Distribute Cost Proportionately")
+                        .Text(new JS("formatMessage('Distribute Cost Proportionately')"))
                         .Option("color", "#00ACC1") // Cyan
                         .OnClick("function() { onDistributeCostClick(2); }");
 
                     items.Add()
-                        .Text("Distribute Cost By Percentage")
+                        .Text(new JS("formatMessage('Distribute Cost By Percentage')"))
                         .Option("color", "#AB47BC") // Purple
                         .OnClick("function() { onDistributeCostClick(3); }");
                 })

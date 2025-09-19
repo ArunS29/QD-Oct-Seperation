@@ -1488,7 +1488,24 @@
                                             if (deleteResponse.success) {
                                                 DevExpress.ui.dialog.alert("Journal Entry sucesfully removed from the database", "Success")
                                                     .done(function () {
-                                                        sessionStorage.setItem("refreshPage", "true");
+                                                     
+                                                        // Attachment Delete
+                                                var module = "finance";
+                                                $.ajax({
+                                                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(journalRefNo)}&module=${encodeURIComponent(module)}`,
+                                                    type: "POST",
+                                                    success: function (response) {
+                                                        if (response.success) {
+                                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                                        } else {
+                                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                                        }
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                                    }
+                                                                        });
+                           sessionStorage.setItem("refreshPage", "true");
                                                         history.back();
                                                     });
 
@@ -2319,7 +2336,7 @@
             const isMaster = false;
             console.log(voucherType)
             const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-            const title = "Transaction Documents";
+             const title = formatMessage("Transaction Documents");
             openModal(url, title);
         }
     }
