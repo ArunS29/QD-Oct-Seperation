@@ -170,7 +170,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingNote.Attention = model.Attention;
                     existingNote.ClientContactNo = model.ClientContactNo;
                     existingNote.ClientContactEmail = model.ClientContactEmail;
-                    existingNote.StoreId = model.StoreId;
+                   existingNote.StoreId = model.StoreId;
                     existingNote.ProjectId = model.ProjectId;
                     existingNote.ClientProject = model.ClientProject;
                     existingNote.DeliveryType = model.DeliveryType;
@@ -182,6 +182,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingNote.DriversName = model.DriversName;
                     existingNote.DriversId = model.DriversId;
                     existingNote.VehicleNo = model.VehicleNo;
+                    existingNote.StoreIssuedFrom = model.StoreIssuedFrom;
                     existingNote.StoreCode = model.StoreCode;
                     existingNote.RevisionNo = model.RevisionNo;
                     existingNote.InvoiceNo = model.InvoiceNo;
@@ -859,6 +860,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     clientContactNo = master.ClientContactNo,
                     clientContactEmail = master.ClientContactEmail,
                     StoreCode = master.StoreCode,
+                    StoreIssuedFrom = master.StoreIssuedFrom,
                     projectId = master.ProjectId,
                     clientProject = master.ClientProject,
                     deliveryNoteRemarks = master.DeliveryNoteRemarks,
