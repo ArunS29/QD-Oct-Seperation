@@ -1349,11 +1349,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 // ✅ 4. Unlock → reset flags
+                dn.IsSubmitted = false;
                 dn.IsVerified = false;
                 dn.IsApproved = false;
                 dn.ApprovedBy = null;
                 dn.ApprovedOn = null;
-
+                dn.SubmittedBy = null;
+                dn.SubmittedOn = null;
+                dn.VerifiedBy = null;
+                dn.VerifiedOn = null;
                 await dbContext.SaveChangesAsync();
 
                 // ✅ 5. Log the action
@@ -1798,29 +1802,44 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 try
                 {
-                    var master = new Tbl60501materialReceiptMaster
+                    // 🔹 Check if master already exists
+                    var master = await dbContext.Tbl60501materialReceiptMasters
+                        .FirstOrDefaultAsync(m => m.ReceiptNo == dto.ReceiptNo);
+
+                    if (master == null)
                     {
-                        ReceiptNo = dto.ReceiptNo,
-                        DeliveryNoteNo = dto.DeliveryNoteNo,
-                        ReceiptDate = dto.DeliveryDate,
-                        BaseCurrencyId = 1,
-                        CurrencyId =1,
-                        CurrencyRate=1
+                        // ✅ Case 1: New Revision → insert Master
+                        master = new Tbl60501materialReceiptMaster
+                        {
+                            ReceiptNo = dto.ReceiptNo,
+                            DeliveryNoteNo = dto.DeliveryNoteNo,
+                            ReceiptDate = dto.DeliveryDate,
+                            BaseCurrencyId = 1,
+                            CurrencyId = 1,
+                            CurrencyRate = 1
+                        };
 
-                    };
+                        dbContext.Tbl60501materialReceiptMasters.Add(master);
+                        await dbContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        // ✅ Case 2: Existing Revision → skip master
+                        // Optionally you can update some fields if needed
+                        master.ReceiptDate = dto.DeliveryDate;
+                        dbContext.Tbl60501materialReceiptMasters.Update(master);
+                    }
 
-                    dbContext.Tbl60501materialReceiptMasters.Add(master);
-                    await dbContext.SaveChangesAsync();
-
+                    // 🔹 Always insert child records
                     foreach (var item in dto.Items)
                     {
                         var child = new Tbl60502materialReceiptChild
                         {
                             ReceiptNo = master.ReceiptNo,
                             Gscode = item.ItemCode,
-                            UnitRateMethod = item.UOM,  // assuming UOM is byte now
-                            QtyReceived = item.Qty,
-                            UnitPrice = item.UnitPrice,
+                            UnitRateMethod = item.UnitRateMethod,
+                            QtyReceived = item.QtyReceived,
+                            UnitPrice = item.UnitPrice
                         };
 
                         dbContext.Tbl60502materialReceiptChildren.Add(child);
@@ -1829,24 +1848,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await transaction.CommitAsync();
 
-                    return Ok(new { success = true, message = "Material Receipt saved successfully.",ReceiptNo=dto.ReceiptNo});
+                    return Ok(new
+
+                    {
+                        success = true,
+                        message = master == null
+                            ? "Material Receipt (new revision) saved successfully."
+                            : "Child items added to existing Material Receipt.",
+                        ReceiptNo = dto.ReceiptNo
+                    });
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-
-                    // Show inner exception if available
-                    var errorMessage = ex.InnerException?.Message ?? ex.Message;
-
-                    return StatusCode(500, new
-                    {
-                        success = false,
-                        message = errorMessage
-                    });
+                    return StatusCode(500, new { success = false, message = ex.InnerException?.Message ?? ex.Message });
                 }
-
             });
         }
+
         //Initially load grid data
         [HttpGet]
         public async Task<IActionResult> GetMaterialReceiptByDeliveryNo(string deliveryNo)
@@ -1923,14 +1942,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // ✅ Update fields
            
-                child.QtyReceived = dto.Qty;
-                child.UnitRateMethod = dto.UOM;
+                child.QtyReceived = dto.QtyReceived;
+                child.UnitRateMethod = dto.UnitRateMethod;
                 child.UnitPrice = dto.UnitPrice;
-                
+
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Material Receipt updated successfully." });
+                return Ok(new { success = true, message = "Material Receipt updated successfully." ,
+                    ReceiptNo = child.ReceiptNo
+                });
             }
             catch (Exception ex)
             {
@@ -1939,53 +1960,242 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(string key)
+        public async Task<IActionResult> DeleteMaterialReceipt(string deliveryNoteNo)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant" });
+
+                if (string.IsNullOrEmpty(deliveryNoteNo))
+                    return BadRequest(new { success = false, message = "Delivery Note No is required." });
+
+                // ✅ Get all master records for this Delivery Note
+                var masterRecords = await dbContext.Tbl60501materialReceiptMasters
+                    .Where(m => m.DeliveryNoteNo == deliveryNoteNo)
+                    .ToListAsync();
+
+                if (masterRecords == null || masterRecords.Count == 0)
+                    return NotFound(new { success = false, message = "No receipts found for this Delivery Note." });
+
+                foreach (var master in masterRecords)
                 {
-                    var masterRecord = await dbContext.Tbl60501materialReceiptMasters
-                                                      .FirstOrDefaultAsync(x => x.ReceiptNo == key);
-
-                    if (masterRecord == null)
-                        return NotFound(new { success = false, message = "Receipt not found." });
-
-                    // 🚨 Check if already posted
-                    if (masterRecord.IsPosted == true)
+                    // 🚨 Prevent deleting posted receipts
+                    if (master.IsPosted == true)
                     {
-                        return BadRequest(new { success = false, message = "This Receipt Entry is already posted to your ledgers." });
+                        return BadRequest(new
+                        {
+                            success = false,
+                            message = $"Receipt {master.ReceiptNo} is already posted to your ledgers. Delete aborted."
+                        });
                     }
 
-                    // ✅ Remove child records
+                    // ✅ Delete child records for this master
                     var childRecords = dbContext.Tbl60502materialReceiptChildren
-                                                .Where(x => x.ReceiptNo == key);
+                        .Where(c => c.ReceiptNo == master.ReceiptNo);
 
                     dbContext.Tbl60502materialReceiptChildren.RemoveRange(childRecords);
 
-                    // ✅ Remove the master record
-                    dbContext.Tbl60501materialReceiptMasters.Remove(masterRecord);
-
-                    await dbContext.SaveChangesAsync();
+                    // ✅ Delete master
+                    dbContext.Tbl60501materialReceiptMasters.Remove(master);
 
                     await _userActionLogger.LogAsync(
                         module: "IMS > Delete Material Receipt",
-                        actionDetail: $"Deleted Material Receipt {key}",
-                        documentNo: key
+                        actionDetail: $"Deleted Material Receipt {master.ReceiptNo} (DeliveryNote: {deliveryNoteNo})",
+                        documentNo: master.ReceiptNo
                     );
-
-                    return Ok(new { success = true, message = "Material Receipt has been successfully removed from the database." });
                 }
 
-                return Unauthorized(new { success = false, message = "Invalid tenant" });
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = $"All receipts under Delivery Note {deliveryNoteNo} were deleted successfully." });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in Delete: {ex}");
-                return StatusCode(500, new { success = false, message = "An error occurred while deleting the data.", error = ex.Message });
+                _logger.LogError($"Error in DeleteByDeliveryNote: {ex}");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while deleting the data.",
+                    error = ex.Message
+                });
             }
         }
 
+        //Post Journal
+        [HttpPost]
+        public async Task<IActionResult> PostJournal([FromBody] PostJournalDtos dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+            if (dto == null || string.IsNullOrEmpty(dto.DeliveryNoteNo))
+                return BadRequest(new { success = false, message = "Delivery Note No is required." });
+
+            try
+            {
+                // ✅ 1. Find Receipt using DeliveryNoteNo
+                var master = await dbContext.Tbl60501materialReceiptMasters
+                    .FirstOrDefaultAsync(x => x.DeliveryNoteNo == dto.DeliveryNoteNo);
+
+                if (master == null)
+                    return NotFound(new { success = false, message = "Material Receipt not found for this Delivery Note." });
+
+                if (master.IsPosted == true)
+                    return BadRequest(new { success = false, message = "This Receipt is already posted to ledgers." });
+
+                string deliveryNoteNo = master.DeliveryNoteNo;
+                string receiptNo = master.ReceiptNo;
+
+                // ✅ 2. Generate VoucherNo
+                var currentDate = master.ReceiptDate ?? DateTime.Now;
+                string currentYear = currentDate.Year.ToString();
+                string currentMonth = currentDate.Month.ToString("D2");
+                string voucherPrefix = $"JV-{currentYear.Substring(2)}-{currentMonth}-";
+
+                string voucherNo = await GetNewVoucherNo(dbContext, voucherPrefix);
+
+                // ✅ 3. Call SP
+                string addedBy = User?.Identity?.Name ?? "system";
+                DateTime addedOn = DateTime.Now;
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_23InsertProductionReceiptToVoucher @p0, @p1, @p2, @p3, @p4",
+                    deliveryNoteNo, voucherNo, addedBy, addedOn, receiptNo
+                );
+
+                // ✅ 4. Update master
+                master.IsPosted = true;
+                master.PostedBy = addedBy;
+                master.PostedOn = addedOn;
+                master.VoucherNo = voucherNo;
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Production Receipt has been posted to the Accounting Books.",
+                    voucherNo,
+                    receiptNo
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error posting journal: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        // Utility function to generate new voucher number
+        private async Task<string> GetNewVoucherNo(ERPMasterWtDataContext dbContext, string prefix)
+{
+    // Get last voucher
+    var lastVoucher = await dbContext.Tbl201VoucherMasters
+        .Where(v => v.VoucherNo.StartsWith(prefix))
+        .OrderByDescending(v => v.VoucherNo)
+        .Select(v => v.VoucherNo)
+        .FirstOrDefaultAsync();
+
+    int nextNumber = 1;
+    if (!string.IsNullOrEmpty(lastVoucher))
+    {
+        var parts = lastVoucher.Split('-');
+        if (parts.Length == 4 && int.TryParse(parts[3], out int lastNo))
+        {
+            nextNumber = lastNo + 1;
+        }
+    }
+
+    return $"{prefix}{nextNumber:D5}";
+}
+
+     [HttpPost]
+        public async Task<IActionResult> PostJournal11(string deliveryNoteNo)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant" });
+
+                if (string.IsNullOrEmpty(deliveryNoteNo))
+                    return BadRequest(new { success = false, message = "Delivery Note No is required." });
+
+                // 🔹 Find receipt master
+                var masterRecord = await dbContext.Tbl60501materialReceiptMasters
+                                                  .FirstOrDefaultAsync(x => x.DeliveryNoteNo == deliveryNoteNo);
+
+                if (masterRecord == null)
+                    return NotFound(new { success = false, message = "Material Receipt not found for this Delivery Note." });
+
+                if (masterRecord.IsPosted == true)
+                    return BadRequest(new { success = false, message = "This Receipt is already posted to ledgers." });
+
+                // 🔹 Generate Voucher No (same logic as your VB)
+                var currentDate = masterRecord.ReceiptDate ?? DateTime.Now;
+                var currentYear = currentDate.Year.ToString();
+                var currentMonth = currentDate.Month.ToString("00");
+
+                string voucherPrefix = $"JV-{currentYear.Substring(currentYear.Length - 2)}-{currentMonth}-";
+                string voucherNo = await GenerateNewVoucherNoAsync(dbContext, "Journal", "JV", voucherPrefix, currentMonth, currentYear);
+
+                // 🔹 Call Stored Procedure
+                var addedBy = "System"; // or HttpContext.User.Identity.Name
+                var addedOn = DateTime.Now;
+
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_23InsertProductionReceiptToVoucher @p0, @p1, @p2, @p3, @p4",
+                    deliveryNoteNo, voucherNo, addedBy, addedOn, masterRecord.ReceiptNo
+                );
+
+                // 🔹 Update master record
+                masterRecord.IsPosted = true;
+                masterRecord.PostedBy = addedBy;
+                masterRecord.PostedOn = addedOn;
+                masterRecord.VoucherNo = voucherNo;
+
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Post Journal",
+                    actionDetail: $"Posted Delivery Note {deliveryNoteNo} to Journal {voucherNo}",
+                    documentNo: voucherNo
+                );
+
+                return Ok(new { success = true, message = $"Delivery Note {deliveryNoteNo} posted to Journal {voucherNo}." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in PostJournal: {ex}");
+                return StatusCode(500, new { success = false, message = "Error posting journal.", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Generates new VoucherNo (similar to GetNewVoucherNo in VB)
+        /// </summary>
+        private async Task<string> GenerateNewVoucherNoAsync(ERPMasterWtDataContext dbContext, string voucherType, string prefix, string voucherString, string month, string year)
+        {
+            // 🔹 Get last voucher for this month/year
+            var lastVoucher = await dbContext.Tbl201VoucherMasters
+                                             .Where(x => x.VoucherNo.StartsWith(voucherString))
+                                             .OrderByDescending(x => x.VoucherNo)
+                                             .Select(x => x.VoucherNo)
+                                             .FirstOrDefaultAsync();
+
+            int nextNo = 1;
+            if (!string.IsNullOrEmpty(lastVoucher))
+            {
+                var parts = lastVoucher.Split('-');
+                if (parts.Length >= 3 && int.TryParse(parts.Last(), out int lastNo))
+                {
+                    nextNo = lastNo + 1;
+                }
+            }
+
+            return voucherString + nextNo.ToString("0000"); // e.g. JV-25-09-0001
+        }
+
+       
 
     }
 }

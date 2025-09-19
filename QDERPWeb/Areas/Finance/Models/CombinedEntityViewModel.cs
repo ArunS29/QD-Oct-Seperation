@@ -81,11 +81,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public long ReceiptChildSlNo { get; set; }
         public string ItemCode { get; set; }
-        public byte UOM { get; set; }
-        public decimal Qty { get; set; }
+        public byte UnitRateMethod { get; set; }
+        public decimal QtyReceived { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal? LineTotalWithTax { get; set; }
+    }
+    public class PostJournalDtos
+    {
+        public string DeliveryNoteNo { get; set; }
     }
     public class VoucherEntryDisplayDTO
     {
