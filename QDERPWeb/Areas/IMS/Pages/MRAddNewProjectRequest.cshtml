@@ -6630,20 +6630,20 @@ $("#btnSave").on("click", function (e) {
 				icon.className = step.icon;
 				if (index < status) {
 					el.classList.add("completed");
-					statusMsg.textContent = " - Done";
+					statusMsg.textContent = "Done";
 					icon.className = "fas fa-check-circle";
 				} else if (index === status && status < 3) {
 					el.classList.add("current");
-					statusMsg.textContent = " - In Progress";
+					statusMsg.textContent = "In Progress";
 					icon.className = "fas fa-spinner fa-spin";
 				} else {
 					el.classList.add("upcoming");
-					statusMsg.textContent = " - Pending";
+					statusMsg.textContent = "Pending";
 				}
 				// Final Approved state
 							if (status === 4 && index === 4) {
 					el.classList.add("completed");
-					statusMsg.textContent = " - Done";
+					statusMsg.textContent = "Done";
 					icon.className = "fas fa-check-circle";
 				}
 			});

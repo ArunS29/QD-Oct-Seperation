@@ -12,7 +12,6 @@
         /* padding: 16px 0; */
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
         gap: 10px;
         height: 48px;
     }
@@ -39,6 +38,9 @@
         position: relative;
         transition: all 0.3s ease;
         z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .step-circle {
@@ -66,11 +68,11 @@
     }
 
     .step-status-msg {
-        margin-top: 4px;
+        margin-top: 9px;
         font-size: 11px;
-        font-weight: 500;
+        font-weight: 600;
         color: #9ca3af;
-        opacity: 0;
+        opacity: 1;
         transform: translateY(-4px);
         transition: all 0.3s ease;
     }
@@ -96,7 +98,6 @@
     .workflow-step.current .step-status-msg {
         color: #3b82f6;
         opacity: 1;
-        transform: translateY(0);
     }
 
     .workflow-step.upcoming .step-circle {
@@ -113,7 +114,6 @@
         transform: scale(1.05);
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
     }
-
 
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -323,19 +323,24 @@
 
         <div class="workflow-step" id="step-update">
             <div class="step-circle"><i class="fas fa-user"></i></div>
-            <div class="step-label">Updated</div>
-            <div class="step-status-msg">In Progress</div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg">In Progress</div>
+            </div>
         </div>
         <div class="workflow-step" id="step-verify">
             <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
-            <div class="step-label">Verified</div>
-            <div class="step-status-msg">Waiting</div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg">Waiting</div>
+            </div>
         </div>
-
         <div class="workflow-step" id="step-approve">
             <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Approved</div>
-            <div class="step-status-msg">Pending</div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg">Pending</div>
+            </div>
         </div>
 
         <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
@@ -807,6 +812,22 @@
                             $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
                             DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.",
                                 "Data Deleted Successfully").done(function () {
+                                        // Attachment Delete
+                                    var module = "finance";
+                                    $.ajax({
+                                            url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(module)}`,
+                                        type: "POST",
+                                        success: function (response) {
+                                            if (response.success) {
+                                                    DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                            } else {
+                                                    DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                        }
+                                    });
                                     history.back(); // Execute only when "OK" is clicked
                                 });
 
@@ -861,6 +882,24 @@
                                     "Voucher has been successfully removed from the database.",
                                     "Data Deleted Successfully"
                                 ).done(function () {
+                                    // Attachment Delete
+                                var module = "finance";
+                                $.ajax({
+                                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(module)}`,
+                                    type: "POST",
+                                    success: function (response) {
+                                        if (response.success) {
+                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                        } else {
+                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                        }
+
+                                    },
+                                    error: function (xhr, status, error) {
+                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+
+                                    }
+                                });
                                     history.back();
                                 });
                             } else {
@@ -985,11 +1024,15 @@
         $('input, select, textarea').prop('disabled', true);
 
         $('.dx-button').each(function () {
-            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+            const allowedButtons = ['btnBack', 'btnPrintp', 'btnAttach', 'btnEditAHead', 'btnAddAHead', 'btncostBack','btnPropertyBack','AEbtnBack'];
             if (!allowedButtons.includes($(this).attr('id'))) {
                 $(this).dxButton('option', 'disabled', true);
             }
         });
+        const btnPrintpInstance = $("#btnPrintp").dxButton("instance");
+    if (btnPrintpInstance) {
+        btnPrintpInstance.option("disabled", false);
+    }
         // Enable the DropDownButton explicitly
         const previewButton = $("#btnPreview2").dxDropDownButton("instance");
 
@@ -1229,11 +1272,11 @@
         var voucherNo = voucherNoBox.option("value");
 
         if (!voucherNo) {
-            alert("Voucher No is required.");
+           DevExpress.ui.notify("Voucher No is required.", "error", 2000);
             return;
         }
 
-        var reportName = "SalesVoucherReport"; // Modify as needed
+        var reportName = "cashPayments"; // Modify as needed
 
         // **Use the new API URL**
         var url = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}`;

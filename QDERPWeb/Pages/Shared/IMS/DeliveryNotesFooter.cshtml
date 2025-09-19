@@ -211,34 +211,34 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Custom Report Designs")
-                        .Icon("print")
-                        .Option("color", "#FF7043"); // Orange
+                    .Text(new JS("formatMessage('Custom Report Designs')"))
+                    .Icon("print")
+                    .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview Delivery Note")
-                        .Icon("file")
-                        .Option("color", "#00ACC1"); // Cyan
+                    .Text(new JS("formatMessage('Preview Delivery Note')"))
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
 
                     items.Add()
-                        .Text("Preview Material Issue Note")
-                        .Icon("folder")
-                        .Option("color", "#AB47BC"); // Purple
+                    .Text(new JS("formatMessage('Preview Material Issue Note')"))
+                    .Icon("folder")
+                    .Option("color", "#AB47BC"); // Purple
 
                     items.Add()
-                        .Text("Preview Delivery Note (Dot Matrix)")
-                        .Icon("folder")
-                        .Option("color", "#FBBC05"); // Yellow
+                    .Text(new JS("formatMessage('Preview Delivery Note (Dot Matrix)')"))
+                    .Icon("folder")
+                    .Option("color", "#FBBC05"); // Yellow
 
                     items.Add()
-                        .Text("Preview Delivery Note (with Price)")
-                        .Icon("folder")
-                        .Option("color", "#EA4335"); // Red
+                    .Text(new JS("formatMessage('Preview Delivery Note (with Price)')"))
+                    .Icon("folder")
+                    .Option("color", "#EA4335"); // Red
 
                     items.Add()
-                        .Text("Preview Delivery Note (WIth Cost Price)")
-                        .Icon("folder")
-                        .Option("color", "#34A853"); // Green
+                    .Text(new JS("formatMessage('Preview Delivery Note (With Cost Price)')"))
+                    .Icon("folder")
+                    .Option("color", "#34A853"); // Green
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -1244,20 +1244,20 @@ let isVoucherSaved = false;
             icon.className = step.icon;
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });

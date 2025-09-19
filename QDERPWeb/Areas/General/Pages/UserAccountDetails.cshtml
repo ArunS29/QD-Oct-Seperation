@@ -88,6 +88,7 @@
                         .OnChange("validateEmail")
                         .Label(new JS("formatMessage('User Name:')"))
                         .Value(null)
+                        .ReadOnly(true)
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -98,7 +99,7 @@
                     </div>
 
                     <div class="form-group">
-                        @(Html.DevExtreme().TextBox().ID("Password").Label(new JS("formatMessage('Password:')")).Mode(TextBoxMode.Password).Width("100%"))
+                        @(Html.DevExtreme().TextBox().ReadOnly(true).ID("Password").Label(new JS("formatMessage('Password:')")).Mode(TextBoxMode.Password).Width("100%"))
                     </div>
 
                     <div class="form-group">
@@ -241,7 +242,7 @@
                         .HoverStateEnabled(true)
                         .Value(null)
                         .DisplayExpr("EmployeeGroup")
-                        .ValueExpr("EmpGroupID")
+                        .ValueExpr("EmpGroupID") // <-- FIXED HERE
                         .Width("100%")
                         .TabIndex(1)
                         .DropDownOptions(o => o
@@ -305,7 +306,7 @@
                         .TabIndex(1)
                         .DropDownOptions(o => o
                         //.Width("100%") // Set the desired width for the dropdown content*@
-                        .Width(1000)
+                        .Width(600)
                         )
                         // .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate")))
@@ -395,6 +396,31 @@
                             )
                         </div>
                     </div>
+                     <div class="form-group">
+                          <div class="form-group">
+                     @(Html.DevExtreme().DropDownBox()
+    .ID("ddInventoryStoreAccess")
+    .Label("Inventory Stores Access :")
+    .LabelMode(EditorLabelMode.Floating)
+    .DataSource(d => d.WebApi()
+        .Controller("Utility")
+        .LoadAction("GetInventoryStoreAccess")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StoreId"))
+    .ValidationRules(rules => {
+        rules.AddRequired().Message("Store is required");
+    })
+    .ShowClearButton(true)
+    .AcceptCustomValue(false)
+    .Placeholder("Select Inventory Store")
+    .ValueExpr("StoreId")
+    .DisplayExpr("StoreName")
+    .Width("100%")
+    .DropDownOptions(o => o.Width("100%"))
+    .ContentTemplate(new TemplateName("StoreaccessContentTemplate"))
+)
+                        </div>
+                    </div>
 
 
 
@@ -406,12 +432,28 @@
                         @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('User Email Address:')")).ID("UserEmailAddress").Width("100%"))
                     </div>
 
+    
+
+
                     <div class="form-group">
-                        @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged In Time:')")).ID("UserLastLoggedInTime").Width("100%"))
+                        @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged In Time:')"))
+                            .ID("UserLastLoggedInTime")
+                            .Width("100%")
+                            .Type(DateBoxType.DateTime)
+                                .DisplayFormat("M/d/yyyy h:mm:ss tt")
+                                .ReadOnly(true)
+                        )
                     </div>
 
                     <div class="form-group">
-                        @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged Off Time:')")).ID("UserLastLoggedOffTime").Width("100%"))
+
+                         @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged Off Time:')")).Width("100%")
+                            .ID("UserLastLoggedOffTime")
+                            .Width("100%")
+                            .Type(DateBoxType.DateTime)
+                            .DisplayFormat("M/d/yyyy h:mm:ss tt")
+                            .ReadOnly(true)
+                        )
                     </div>
 
                 </div>
@@ -825,7 +867,7 @@
                                     {
                                         columns.Add().DataField("AccountId")
                                             .Caption(new JS("formatMessage('Account ID')"))
-                                            .Visible(true);
+                                            .Visible(false);
 
                                         columns.Add().DataField("AccountHead")
                                             .Caption(new JS("formatMessage('Account Head')"))
@@ -940,7 +982,31 @@
                                     })
                                 )
 }
-
+@using (Html.DevExtreme().NamedTemplate("StoreaccessContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("storeaccess-datagrid")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetInventoryStoreAccess")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StoreId"))
+        .ShowBorders(true)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+        .Paging(p => p.PageSize(10))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .HoverStateEnabled(true)
+        .Height(300)
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .OnSelectionChanged("onInventoryStoreAccessSelectionChanged")
+        .Columns(columns =>
+        {
+            columns.Add().DataField("StoreId").Caption("Store ID").Visible(true).Width(120);
+            columns.Add().DataField("StoreName").Caption("Store Name").Visible(true);
+        })
+    )
+}
 
 
 
@@ -993,10 +1059,46 @@
             }
         });
 
+function onInventoryStoreAccessSelectionChanged(e) {
+    const selectedKey = e.selectedRowKeys[0];
+    const ddbInstance = $("#ddInventoryStoreAccess").dxDropDownBox("instance");
 
+    if (selectedKey) {
+        ddbInstance.option("value", selectedKey);
+        if (ddbInstance.option("opened")) {
+            ddbInstance.close();
+        }
+        const selectedRowData = e.selectedRowsData[0];
+        if (selectedRowData) {
+            console.log("Selected Store:", selectedRowData.StoreName);
+        }
+    }
+}
+function showColumnChooser() {
+    var gridIds = [
+        "gridContainer",      // Finance
+        "VATgridContainer",   // VAT
+        "gridContainer1",     // Master Module
+        "IMSgridContainer"    // Inventory Management
+    ];
+
+    gridIds.forEach(function(gridId) {
+        var $gridElem = $("#" + gridId);
+        // Only proceed if the grid element is visible and has a dxDataGrid instance
+        if ($gridElem.is(":visible")) {
+            var grid = $gridElem.dxDataGrid("instance");
+            if (grid) {
+                if (!grid.option("columnChooser.enabled")) {
+                    grid.option("columnChooser.enabled", true);
+                }
+                grid.showColumnChooser();
+            }
+        }
+    });
+}
 	function toggleFilterRow() {
     // Find the selected vertical tab index
-   var tabsInstance = $("#userAccessTabs").dxTabs("instance");
+    var tabsInstance = $("#userAccessTabs").dxTabs("instance");
     var selectedIndex = tabsInstance ? tabsInstance.option("selectedIndex") : 0;
 
     // Map tab index to grid IDs
@@ -1018,8 +1120,8 @@
     if (gridId) {
         var grid = $("#" + gridId).dxDataGrid("instance");
         if (grid) {
-            var isVisible = grid.option("filterRow.visible");
-            grid.option("filterRow.visible", !isVisible);
+            var isVisible = grid.option("searchPanel.visible");
+            grid.option("searchPanel.visible", !isVisible);
         }
     }
 }
@@ -1180,6 +1282,8 @@
                     $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
                     // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
                     $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
+                    $("#ddInventoryStoreAccess").dxDropDownBox("instance").option("value", user.StoreId);
+
                     //alert(user.CompanyId)
                     onCompanySelectionChanged({ selectedRowKeys: [user.CompanyName] });
                     onBranchSelectionChanged({ selectedRowKeys: [user.BranchName] });
@@ -1368,7 +1472,7 @@ function onOuterTabSelectionChanged(e) {
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
                 }
-
+                IsPettyCashAccountflag = true; // <-- Add this line to ensure changed value is saved!
                 const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
                 if (selectedRowData) {
                     console.log("Selected Account:", selectedRowData.AccountHead);
@@ -1501,6 +1605,7 @@ function onOuterTabSelectionChanged(e) {
                 EqptQuotationAccess: $("#ddHRUserLevel").dxDropDownBox("instance").option("value"),
                     InventoryMpraccess: InventoryMpraccessIDvalue,
                 HrtimeSheetProjectGroup: $("#ddProjectGroup").dxDropDownBox("instance").option("value"),
+               StoreId: $("#ddInventoryStoreAccess").dxDropDownBox("instance").option("value"),
                 // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
                 MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
                 EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
@@ -1624,10 +1729,14 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
-                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
-                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
                         caption: formatMessage("Visible"),
@@ -1687,10 +1796,14 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
-                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
-                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
                         caption: formatMessage("Visible"),
@@ -1749,10 +1862,14 @@ function onOuterTabSelectionChanged(e) {
                     grouping: { autoExpandAll: true },         // <-- add this
                     groupPanel: { visible: true },             // <-- add this
                 columns: [
-                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
-                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: formatMessage("Item Name") },                // new column
-                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
                         caption: formatMessage("Visible"),
@@ -1811,10 +1928,14 @@ function onOuterTabSelectionChanged(e) {
                 grouping: { autoExpandAll: true },        
                 groupPanel: { visible: true },      
                 columns: [
-                    { dataField: "SlNo", caption: formatMessage("Serial No"), visible: false },
-                    { dataField: "ItemForm", caption: formatMessage("Item Form"), groupIndex: 0 ,showWhenGrouped: true}, // group by
-                    { dataField: "ItemName", caption: formatMessage("Item Name") },     
-                    { dataField: "ItemDescription", caption: formatMessage("Action Name") },
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
                         caption: formatMessage("Visible"),
