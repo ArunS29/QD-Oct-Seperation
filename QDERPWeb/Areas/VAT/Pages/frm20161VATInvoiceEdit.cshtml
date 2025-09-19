@@ -877,7 +877,7 @@
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
 															.LabelMode(EditorLabelMode.Floating)
-															.DropDownOptions(o => o.Width(650).Height(550))
+															.DropDownOptions(o => o.Width(650).Height(250))
 															.OpenOnFieldClick(true)
 															.Width("100%")
 															.ContentTemplate(@<text>
@@ -1931,7 +1931,7 @@
 																			.LoadAction("getVATInvoiceTypes")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("InvoiceType"))
-																			.DropDownOptions(o => o.Width(600).Height(600))
+																			.DropDownOptions(o => o.Width(600).Height(250))
 																			.LabelMode(EditorLabelMode.Floating)
 																			
 																			.ContentTemplate(@<text>
@@ -2336,7 +2336,9 @@
 		</div>
 
 
-
+		  <div style="margin: 10px;">
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATChildGridFooter.cshtml")
+    </div>
 		<div class="dx-field ledgerResult">
 			@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
