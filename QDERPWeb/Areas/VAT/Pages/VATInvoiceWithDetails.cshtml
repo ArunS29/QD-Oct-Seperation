@@ -29,10 +29,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser,#btnInvoiceDetails,#ddReports,#ddButtonPayment)) {
-		display: none !important
-	}
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -310,7 +306,7 @@
 		.OnCellPrepared("onCellPrepared")
 	@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
 		@* .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop)) *@
-		.Height("60vh") // <<< fixed height
+		.Height("70vh") // <<< fixed height
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.ColumnAutoWidth(true)
 		.Width("98%")
@@ -500,13 +496,6 @@
 			dataGrid.showColumnChooser();
 		}
 	}
-		$(document).ready(function () {
-		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#InvoiceDetailsddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel").length) {
-				$(this).remove();
-			}
-		});
-	});
 
 	function viewInvoice() {
 			
