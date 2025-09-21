@@ -686,6 +686,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 u.EqptQuotationAccess,
                                 u.InventoryMpraccess,
                                 u.HrtimeSheetProjectGroup,
+                                 u.StoreId,
                                 u.LogTerminal
                             });
 
@@ -715,6 +716,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             u.EqptQuotationAccess,
                             u.InventoryMpraccess,
                             u.HrtimeSheetProjectGroup,
+                            u.StoreId,
                             u.LogTerminal
                         });
 
@@ -793,7 +795,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                           u.EqptQuotationAccess,
                                           u.InventoryMpraccess,
                                           InventoryMprAccessDesc = spm.SalesPersonAccessDesc,
-                                          u.HrtimeSheetProjectGroup
+                                          u.HrtimeSheetProjectGroup,
+                                           u.StoreId
                                       }).FirstOrDefaultAsync();
 
                     if (user == null)
@@ -850,7 +853,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             u.PettyCashAccount,
                             u.EqptQuotationAccess,
                             u.InventoryMpraccess,
-                            u.HrtimeSheetProjectGroup
+                            u.HrtimeSheetProjectGroup               
                         })
                         .FirstOrDefaultAsync();
 
@@ -1024,11 +1027,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     // Fetch employee groups from the database
-                    var employeeGroupList = await dbContext.Tbl901HruserLevelMasters
+                    var employeeGroupList = await dbContext.Qry90113ErpusersHrlevels
                         .Select(eg => new
                         {
-                            EmpGroupID = eg.HruserLevelId.ToString(),
-                            EmployeeGroup = eg.HruserLevelDesc
+                            EmpGroupID = eg.EmpGroupId.ToString(),
+                            EmployeeGroup = eg.EmployeeGroup
                         })
                         .ToListAsync();
 
@@ -1166,6 +1169,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetInventoryStoreAccess(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Tbl60001storeMasters.Select(i => new
+                    {
+                        i.StoreName,
+                        i.StoreId
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
         [HttpGet]
         public IActionResult GetProjectGroups(DataSourceLoadOptions loadOptions)
@@ -1200,7 +1226,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-
+      
 
         //Svae funcanality
 
@@ -1234,6 +1260,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         existingUser.InventoryMpraccess = user.InventoryMpraccess;
                         existingUser.HrtimeSheetProjectGroup = user.HrtimeSheetProjectGroup;
                         existingUser.MobileNo = user.MobileNo;
+                        existingUser.StoreId = user.StoreId;
                         existingUser.EmailAddress = user.EmailAddress;
                         existingUser.LastLogOnTime = user.LastLogOnTime;
                         existingUser.LastLogOffTime = user.LastLogOffTime;

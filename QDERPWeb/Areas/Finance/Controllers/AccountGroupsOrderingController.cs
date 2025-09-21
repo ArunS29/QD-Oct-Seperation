@@ -81,60 +81,62 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        [HttpPost]
-        public async Task<IActionResult> SwapWithinGroup([FromBody] SwapRequest request)
-        {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
-                return BadRequest(new { success = false, message = "Tenant context not found." });
 
-            var strategy = dbContext.Database.CreateExecutionStrategy();
+        //[HttpPost]
+        //public async Task<IActionResult> SwapWithinGroup([FromBody] SwapRequest request)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+        //        return BadRequest(new { success = false, message = "Tenant context not found." });
 
-            await strategy.ExecuteAsync(async () =>
-            {
-                await using var transaction = await dbContext.Database.BeginTransactionAsync();
+        //    var strategy = dbContext.Database.CreateExecutionStrategy();
 
-                try
-                {
-                    // Find current row
-                    var current = await dbContext.Qry201207accountGroupOrderings
-                        .FirstOrDefaultAsync(x => x.AccountGroupId == request.AccountGroupId);
+        //    await strategy.ExecuteAsync(async () =>
+        //    {
+        //        await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
-                    if (current == null)
-                        throw new Exception("Row not found.");
+        //        try
+        //        {
+        //            // Find current row
+        //            var current = await dbContext.Qry201207accountGroupOrderings
+        //                .FirstOrDefaultAsync(x => x.AccountGroupId == request.AccountGroupId);
 
-                    // Find target row in same group based on direction
-                    var target = request.Direction == "up"
-                        ? await dbContext.Qry201207accountGroupOrderings
-                            .Where(x => x.ChartOfAccountsOrder < current.ChartOfAccountsOrder &&
-                                        x.MasterGroup == current.MasterGroup)
-                            .OrderByDescending(x => x.ChartOfAccountsOrder)
-                            .FirstOrDefaultAsync()
-                        : await dbContext.Qry201207accountGroupOrderings
-                            .Where(x => x.ChartOfAccountsOrder > current.ChartOfAccountsOrder &&
-                                        x.MasterGroup == current.MasterGroup)
-                            .OrderBy(x => x.ChartOfAccountsOrder)
-                            .FirstOrDefaultAsync();
+        //            if (current == null)
+        //                throw new Exception("Row not found.");
 
-                    if (target == null)
-                        throw new Exception("No row to swap with.");
+        //            // Find target row in same group based on direction
+        //            var target = request.Direction == "up"
+        //                ? await dbContext.Qry201207accountGroupOrderings
+        //                    .Where(x => x.ChartOfAccountsOrder < current.ChartOfAccountsOrder &&
+        //                                x.MasterGroup == current.MasterGroup)
+        //                    .OrderByDescending(x => x.ChartOfAccountsOrder)
+        //                    .FirstOrDefaultAsync()
+        //                : await dbContext.Qry201207accountGroupOrderings
+        //                    .Where(x => x.ChartOfAccountsOrder > current.ChartOfAccountsOrder &&
+        //                                x.MasterGroup == current.MasterGroup)
+        //                    .OrderBy(x => x.ChartOfAccountsOrder)
+        //                    .FirstOrDefaultAsync();
 
-                    // Swap order numbers
-                    var temp = current.ChartOfAccountsOrder;
-                    current.ChartOfAccountsOrder = target.ChartOfAccountsOrder;
-                    target.ChartOfAccountsOrder = temp;
+        //            if (target == null)
+        //                throw new Exception("No row to swap with.");
 
-                    await dbContext.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                }
-                catch
-                {
-                    await transaction.RollbackAsync();
-                    throw;
-                }
-            });
+        //            // Swap order numbers
+        //            var temp = current.ChartOfAccountsOrder;
+        //            current.ChartOfAccountsOrder = target.ChartOfAccountsOrder;
+        //            target.ChartOfAccountsOrder = temp;
 
-            return Ok(new { success = true });
-        }
+        //            await dbContext.SaveChangesAsync();
+        //            await transaction.CommitAsync();
+        //        }
+        //        catch
+        //        {
+        //            await transaction.RollbackAsync();
+        //            throw;
+        //        }
+        //    });
+
+        //    return Ok(new { success = true });
+        //}
+
 
 
     }

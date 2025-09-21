@@ -1329,6 +1329,41 @@
 		
 
 		});
-	
 
+			 $(document).ready(function () {
+		var voucherNo = '@VoucherNo';
+
+		// Call your API or controller action to check IsApproved
+		$.ajax({
+			url: '/api/CostAllocation/CheckVoucherApproval',
+			type: 'GET',
+			data: { voucherNo: voucherNo },
+			success: function (response) {
+				if (response && response.isApproved) {
+					disableEditingAndButtons();
+				}
+			},
+			error: function () {
+				console.error("Failed to check voucher approval status.");
+			}
+		});
+
+		function disableEditingAndButtons() {
+			// Disable editing and deleting in DataGrid
+			var gridInstance = $("#AEdataGrid").dxDataGrid("instance");
+			if (gridInstance) {
+				gridInstance.option("editing.allowUpdating", false);
+				gridInstance.option("editing.allowDeleting", false);
+			}
+
+			// Disable all buttons except btncostBack
+			$(".dx-button").each(function () {
+				 const allowedButtons = ['btnBack','btnPrints', 'btnPrintp', 'btnAttach', 'btnPrint', 'btnAddAHead', 'AEbtnBack'];
+				if (!allowedButtons.includes($(this).attr('id'))) {
+					$(this).dxButton("instance").option("disabled", true);
+				}
+			});
+			 disableEditing();
+		}
+	});
 </script>

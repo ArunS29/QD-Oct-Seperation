@@ -586,7 +586,7 @@
 			</div>
 
 		</text>);
-		  item.Add().Title("Approvals").Icon("detailslayout").Text("Approvals").Template(@<text>
+		  item.Add().Title(new JS("formatMessage('Approvals')")).Icon("detailslayout").Text("Approvals").Template(@<text>
     <div class="row" style="padding:10px">
         <div class="col-4">
             @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -762,7 +762,7 @@
 			</div>
 
 		</text>);
-					item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+					item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
 																																								<div class="p-2">
 																																									<table style="width:100%; font-size:14px; margin:5px;">
 																																										<tr>
@@ -1809,7 +1809,7 @@
 	function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-		const title = "";
+		const title = formatMessage("Signatories");
 		openModal(url, title); // opens in modal instead of new window
 	}
 
@@ -1882,7 +1882,7 @@
 		if (response) {
 
 	
-					$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
 					// Populate DevExtreme controls with the response data  ReceiptSignatory
 
 					$('#txtMaterialReceiptNo').dxTextBox("instance").option("value", response.ReceiptNo);
@@ -2210,7 +2210,7 @@
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "Goods and Services");
+									openModal(url, formatMessage("Goods and Services"));
 
 								},
 
@@ -2241,7 +2241,7 @@
 			}
 
 			const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-		   openModal(url, "Goods And Service", function () {
+		   openModal(url, formatMessage("Goods And Service"), function () {
 				// ✅ Reload dropdown data after edit modal closes
 				getDropdownData().done(function (newData) {
 					// Update the dataSource of the dropdown inside this cell
@@ -2291,7 +2291,7 @@
 							window.currentDescriptionCell = options;
 
 											let url = `/${tenantName}/IMS/DetailedDescriptionMReceipt?ReceiptChildSlNo=${encodeURIComponent(ReceiptChildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
-							let title = "Details Description";
+							let title = formatMessage("Details Description");
 
 							openModal(url, title);
 						}
@@ -2423,7 +2423,7 @@
 								onClick: function () {
 
 								    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
-                                         let title = "Unit of Measure";
+                                         let title = formatMessage("Unit of Measure");
                                           openModal(url, title,"70%","70%");
 
 								},
@@ -2589,7 +2589,7 @@
 		{ dataField: "PoitemRemarks", visible: false },
 				{
 		type: "buttons",
-		caption: "Delete",
+		caption: formatMessage("Delete"),
 		width: 80,
 		buttons: [{
 			hint: "Delete Row",
@@ -2648,14 +2648,14 @@
     if (e.row && e.row.rowType === "data") {
         e.items = [
             {
-                text: "Delete Line Item",
+                text: formatMessage("Delete Line Item"),
                 icon: "remove",
                 onItemClick: function() {
                     deletePoChild([e.row.data.ReceiptChildSlNo]);
                 }
             },
             {
-                text: "Delete All Selected Line Items",
+                text: formatMessage("Delete All Selected Line Items"),
                 icon: "remove",
                 onItemClick: function() {
                     const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2669,7 +2669,7 @@
                 }
             },
             {
-                text: "Add New Line Item",
+                text: formatMessage("Add New Line Item"),
                 icon: "add",
                 onItemClick: function() {
                     const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2992,7 +2992,7 @@
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "Goods and Services");
+									openModal(url, formatMessage("Goods and Services"));
 
 								},
 
@@ -3017,7 +3017,7 @@
 		}
 
 		const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-		openModal(url, "Goods And Service");
+		openModal(url, formatMessage("Goods And Service"));
 	},
 
 								width: 60,
@@ -3053,7 +3053,7 @@
 						window.currentDescriptionCell = options;
 
 							let url = `/${tenantName}/IMS/DetailedDescriptionMReceipt?gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = formatMessage("Details Description");
 
 						openModal(url, title);
 					}
@@ -3133,13 +3133,13 @@
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -3172,7 +3172,7 @@
 								onClick: function () {
 
 									    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
-                                         let title = "Unit of Measure";
+                                         let title = formatMessage("Unit of Measure");
                                           openModal(url, title,"70%","70%");
 
 								},
@@ -3266,9 +3266,9 @@
 										columns: [
 
 
-											{ dataField: "TaxSlabCode", caption: "Code", width: 80 },
+											{ dataField: "TaxSlabCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "TaxSlab", caption: "Tax Slab", width: 200 }
+											{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 }
 
 
 										],
@@ -3303,7 +3303,7 @@
 	{ dataField: "PoitemRemarks", visible: false },
 				{
 		type: "buttons",
-		caption: "Delete",
+		caption: formatMessage("Delete"),
 		width: 80,
 		buttons: [{
 			hint: "Delete Row",
@@ -3368,14 +3368,14 @@
         if (e.row && e.row.rowType === "data") {
             e.items = [
                 {
-                    text: "Delete Line Item",
+                    text: formatMessage("Delete Line Item"),
                     icon: "remove",
                     onItemClick: function() {
                         deletePoChild([e.row.data.ReceiptChildSlNo]);
                     }
                 },
                 {
-                    text: "Delete All Selected Line Items",
+                    text: formatMessage("Delete All Selected Line Items"),
                     icon: "remove",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3389,7 +3389,7 @@
                     }
                 },
                 {
-                    text: "Add New Line Item",
+                    text: formatMessage("Add New Line Item"),
                     icon: "add",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3469,7 +3469,7 @@
 				grid.refresh(); // Ensure the UI updates with the new row
 					// ✅ Update Save button text here
 				var button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+				button.option("text", formatMessage("Update"));
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -6759,18 +6759,18 @@ if (approvedByBox) {
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "Signatories";
+		const title = formatMessage("Signatories");
 		openModal(url, title);
 	}
 
 	function AddReqUnit() {
 		const url = `/${tenantName}/IMS/ProjectSubUnits`;
-		const title = "";
+		const title = formatMessage("Project Sub Units");
 		openModal(url, title);
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "Quotation Mode Of Request";
+		const title = formatMessage("Quotation Mode Of Request");
 		openModal(url, title);
 	}
 	$(function () {
@@ -6963,7 +6963,7 @@ if (approvedByBox) {
 			  }
 			   function CurrencyClick() {
 			  let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-			  let title = "Currency Master";
+			  let title = formatMessage("Currency Master");
 			  openModal(url, title);
 		  }
 			function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -7025,20 +7025,20 @@ if (approvedByBox) {
             icon.className = step.icon;
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });

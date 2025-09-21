@@ -79,12 +79,12 @@
 	}
 
 .address-form-container {
-		/* max-height: 250px; */
-		overflow-y: auto;
+	 max-height: 290px; 
+		/* overflow-y: auto; */
 		padding: 5px;
 		box-sizing: border-box;
 		width: 100%;
-		font-size: 11px;
+		font-size: 12px;
 	}
 
 
@@ -627,7 +627,7 @@
 																.Label(new JS("formatMessage('Client Address Details')"))
 																.ShowClearButton(true)
 																.Width("100%")
-																.DropDownOptions(o => o.Width(900).Height(600))
+																.DropDownOptions(o => o.Width(900).Height(300))
 																.OpenOnFieldClick(true)
 																.LabelMode(EditorLabelMode.Floating)
 																.ContentTemplate(@<text>
@@ -746,7 +746,8 @@
 																										.ContentTemplate(new TemplateName("countrycode"))
 																										)
 												</td>
-
+														</tr>
+												<tr>
 												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('District / Neighborhood:')"))
@@ -1609,7 +1610,7 @@
 																			.LoadAction("getVATInvoiceTypes")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("InvoiceType"))
-																			.DropDownOptions(o => o.Width(900).Height(600))
+																			.DropDownOptions(o => o.Width(900).Height(300))
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ContentTemplate(@<text>
 										<div class="dx-viewport address-form-container">
@@ -1838,7 +1839,9 @@
 			</div>
 		</div>
 
-
+		<div style="margin: 10px;">
+			@await Html.PartialAsync("/Pages/Shared/VAT/VATChildGridFooter.cshtml")
+		</div>
 
 
 
@@ -2672,9 +2675,9 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
-														columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Branch Code')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('Branch Name Ar')")).Alignment(HorizontalAlignment.Center);
 													})
 
 												)

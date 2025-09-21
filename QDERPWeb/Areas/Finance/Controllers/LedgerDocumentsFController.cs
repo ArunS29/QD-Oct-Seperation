@@ -664,6 +664,57 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllVoucherEntry(string VoucherNo, string module)
+        {
+            try
+            {
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrWhiteSpace(VoucherNo) || string.IsNullOrWhiteSpace(module))
+                    return BadRequest("Both VoucherNo and module are required.");
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                // Get all documents under this voucher
+                var docs = await dbContext.Tbl20116LedgerDocuments
+                                .Where(d => d.LedgerNo == VoucherNo &&
+                                    !string.IsNullOrEmpty(d.AzurePath) &&
+                                    d.AzurePath.Contains(normalizedModule))
+                                .ToListAsync();
+
+                if (docs == null || !docs.Any())
+                    return NotFound("No documents found for this voucher.");
+
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
+
+                // Delete all blob files one by one
+                foreach (var doc in docs)
+                {
+                    if (!string.IsNullOrEmpty(doc.AzurePath))
+                    {
+                        await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+                    }
+                }
+
+                // Remove from DB
+                dbContext.Tbl20116LedgerDocuments.RemoveRange(docs);
+
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete DocumentCount: {ex}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
+        }
         [HttpGet]
         public ActionResult LedgerDocuments(string ReferenceNo, string ModuleType, string isMaster)
         {

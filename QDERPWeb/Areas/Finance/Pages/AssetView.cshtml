@@ -714,6 +714,22 @@
                                 dataType: "json",
                                 data: JSON.stringify({ assetLedgerNo: selectedVoucherId }),
                                 success: function (response) {
+                                        // Attachment Delete
+                                var module = "finance";
+                                $.ajax({
+                                         url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(assetLedgerNo)}&module=${encodeURIComponent(module)}`,
+                                    type: "POST",
+                                    success: function (response) {
+                                        if (response.success) {
+                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                        } else {
+                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                    }
+                                });
                                     DevExpress.ui.dialog.alert(response.message || "Voucher deleted successfully.", "Success");
                                     $("#dataGrid").dxDataGrid("instance").refresh();
                                     injectHeaderSVG();
