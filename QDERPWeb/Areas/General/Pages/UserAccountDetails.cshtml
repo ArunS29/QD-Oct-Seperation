@@ -1,4 +1,4 @@
-﻿ @page
+﻿@page
 @using DevExtreme.AspNet.Mvc
 
 @{
@@ -45,11 +45,20 @@
 
 </style>
 <form id="userForm">
-    <div class="title">
+    @* <div class="title">
         <div class="header-container">
-            <h2>User Account Details</h2>
+            <h2 id="useraccountdetailssh"></h2>
         </div>
+    </div> *@
+    <div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="useraccountdetailssh" class="titleText no-border-title"></div>
     </div>
+</div>
+
     <div class="Head">
     <div class="limited-footer">
         <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
@@ -58,26 +67,28 @@
     <div id="tabPanelContainer">
         @(Html.DevExtreme().TabPanel()
                 .ID("accessTabPanel")
+                .OnSelectionChanged("onOuterTabSelectionChanged")
                 .Items(items =>
                 {
                     items.Add()
-                .Title("User Account Details")
+                .Title(new JS("formatMessage('User Account Details')"))
                 .Template(@<text>
             <div class="dx-form" style="padding: 20px; max-width: 1200px;">
                 <div class="form-grid">
 
                     <div class="form-group">
-                        <label>User ID:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserId").Width("100%").ReadOnly(true))
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('User ID:')")).ID("UserId").Width("100%").ReadOnly(true))
                     </div>
 
                     <div class="form-group">
-                        <label>User Name:</label>
+                     
                         @(Html.DevExtreme().TextBox()
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("UserName")
                         .OnChange("validateEmail")
+                        .Label(new JS("formatMessage('User Name:')"))
                         .Value(null)
+                        .ReadOnly(true)
                         .ValidationRules(rules =>
                         {
                         rules.AddRequired()
@@ -88,14 +99,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Password:</label>
-                        @(Html.DevExtreme().TextBox().ID("Password").Mode(TextBoxMode.Password).Width("100%"))
+                        @(Html.DevExtreme().TextBox().ReadOnly(true).ID("Password").Label(new JS("formatMessage('Password:')")).Mode(TextBoxMode.Password).Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>Department :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .ID("ddDepartment")
+                        .Label(new JS("formatMessage('Department :')"))
                         .DataSource(d => d.WebApi()
                         .Controller("utility")
                         .LoadAction("GetDepartments")
@@ -119,10 +129,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Company Branch :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
                         .LabelMode(EditorLabelMode.Floating)
+                        .Label(new JS("formatMessage('Company Branch')"))
                         .ID("ddCompany")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a company.");
@@ -150,9 +160,12 @@
 
 
                     <div class="form-group">
-                        <label>Company Division :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+                        .Label(new JS("formatMessage('Company Division')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")
+                        .LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw)
+                        .Key("BranchCode"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddBranch")
                         .ValidationRules(rules => {
@@ -178,9 +191,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>User Level :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
+                        .Label(new JS("formatMessage('User Level')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")
+                        .LoadAction("GetUserLevels")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("UserLevelID"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddUserLevel")
                         .ValidationRules(rules => {
@@ -206,9 +223,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Employee File Access Group :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
+                        .Label(new JS("formatMessage('Employee File Access Group:')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("utility")                       
+                        .LoadAction("GetEmployeeGroups")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("EmpGroupID"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddEmployeeGroup")
                         .ValidationRules(rules => {
@@ -221,7 +242,7 @@
                         .HoverStateEnabled(true)
                         .Value(null)
                         .DisplayExpr("EmployeeGroup")
-                        .ValueExpr("EmpGroupID")
+                        .ValueExpr("EmpGroupID") // <-- FIXED HERE
                         .Width("100%")
                         .TabIndex(1)
                         .DropDownOptions(o => o
@@ -235,9 +256,9 @@
 
 
                     <div class="form-group">
-                        <label>Inventory Master Access:</label>
                         @(Html.DevExtreme().DropDownBox()
                         .ID("ddInventoryMasterGroup")
+                        .Label(new JS("formatMessage('Inventory Master Access:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("utility")
                         .LoadAction("GetInventoryGroups")
@@ -261,9 +282,13 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Petty Cash Account(Finance Module) :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetFilteredAccountHead").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
+                        .Label(new JS("formatMessage('Petty Cash Account(Finance Module)')"))
+                        .DataSource(d => d.WebApi()
+                        
+                        .Controller("utility")
+                        .LoadAction("GetFilteredAccountHead")
+                        .LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddFilteredAccountHead")
                         .ValidationRules(rules => {
@@ -281,7 +306,7 @@
                         .TabIndex(1)
                         .DropDownOptions(o => o
                         //.Width("100%") // Set the desired width for the dropdown content*@
-                        .Width(1000)
+                        .Width(600)
                         )
                         // .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("FilteredAccountHeadContentTemplate")))
@@ -290,9 +315,8 @@
 
 
                     <div class="form-group">
-                        <label>Equipment Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
-                        .Label(new JS("formatMessage('User Level')"))
+                        .Label(new JS("formatMessage('Equipment Sales Person Access :')"))
                         .ID("ddHRUserLevel")
                         .DataSource(d => d.WebApi()
                         .Controller("Utility")
@@ -316,10 +340,10 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Inventory Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetSalesPersonAccessLevels").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonID"))
                         .LabelMode(EditorLabelMode.Floating)
+                         .Label(new JS("formatMessage('Inventory Sales Person Access :')"))
                         .ID("ddSalesPerson")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Ledger Account should be entered.");
@@ -344,8 +368,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>HR Employee Timesheet Group :</label><div class="form-group">
+                        <div class="form-group">
                             @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('HR Employee Timesheet Group :')"))
                             .DataSource(d => d.WebApi()
                             .Controller("Utility")
                             .LoadAction("GetProjectGroups")
@@ -371,27 +396,64 @@
                             )
                         </div>
                     </div>
+                     <div class="form-group">
+                          <div class="form-group">
+                     @(Html.DevExtreme().DropDownBox()
+    .ID("ddInventoryStoreAccess")
+    .Label("Inventory Stores Access :")
+    .LabelMode(EditorLabelMode.Floating)
+    .DataSource(d => d.WebApi()
+        .Controller("Utility")
+        .LoadAction("GetInventoryStoreAccess")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StoreId"))
+    .ValidationRules(rules => {
+        rules.AddRequired().Message("Store is required");
+    })
+    .ShowClearButton(true)
+    .AcceptCustomValue(false)
+    .Placeholder("Select Inventory Store")
+    .ValueExpr("StoreId")
+    .DisplayExpr("StoreName")
+    .Width("100%")
+    .DropDownOptions(o => o.Width("100%"))
+    .ContentTemplate(new TemplateName("StoreaccessContentTemplate"))
+)
+                        </div>
+                    </div>
 
 
 
                     <div class="form-group">
-                        <label>User Mobile No:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserMobileNo").Width("100%"))
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('User Mobile No:')")).ID("UserMobileNo").Width("100%"))
                     </div>
 
                     <div class="form-group">
-                        <label>User Email Address:</label>
-                        @(Html.DevExtreme().TextBox().ID("UserEmailAddress").Width("100%"))
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('User Email Address:')")).ID("UserEmailAddress").Width("100%"))
+                    </div>
+
+    
+
+
+                    <div class="form-group">
+                        @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged In Time:')"))
+                            .ID("UserLastLoggedInTime")
+                            .Width("100%")
+                            .Type(DateBoxType.DateTime)
+                                .DisplayFormat("M/d/yyyy h:mm:ss tt")
+                                .ReadOnly(true)
+                        )
                     </div>
 
                     <div class="form-group">
-                        <label>User Last Logged In Time:</label>
-                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedInTime").Width("100%"))
-                    </div>
 
-                    <div class="form-group">
-                        <label>User Last Logged Off Time:</label>
-                        @(Html.DevExtreme().DateBox().ID("UserLastLoggedOffTime").Width("100%"))
+                         @(Html.DevExtreme().DateBox().Label(new JS("formatMessage('User Last Logged Off Time:')")).Width("100%")
+                            .ID("UserLastLoggedOffTime")
+                            .Width("100%")
+                            .Type(DateBoxType.DateTime)
+                            .DisplayFormat("M/d/yyyy h:mm:ss tt")
+                            .ReadOnly(true)
+                        )
                     </div>
 
                 </div>
@@ -399,7 +461,7 @@
 
                 <div class="form-actions">
 
-                    <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()">Save</button>
+                    <button type="button" id="btnSave" class="btn btn-success" onclick="saveUserDetails()"></button>
                     @* <button type="button" id="btnResetPassword" class="btn btn-warning" onclick="resetPassword()">Reset Password</button> *@
                 </div>
             </div>
@@ -407,7 +469,7 @@
         </text>);
 
                     items.Add()
-                .Title("User Access Details")
+                .Title(new JS("formatMessage('User Access Details')"))
                 .Template(@<text>
             <div>
                 <div class="containerInventoryStock">
@@ -419,7 +481,7 @@
                                     <td>
                                         @(Html.DevExtreme().Button()
                                         .ID("btnGenerateAccessList")
-                                        .Text("Generate Access List")
+                                        .Text(new JS("formatMessage('Generate Access List')"))
                                         .Icon("key")
                                         .Width("100%")
                                         .ElementAttr("class", "inline-icon")
@@ -430,7 +492,7 @@
                                         <div style="display: flex; align-items: center;">
                                             @(Html.DevExtreme().Button()
                                             .ID("btnReplicateUserAccessMain")
-                                            .Text("Replicate User Access")
+                                            .Text(new JS("formatMessage('Replicate User Access')"))
                                             .Icon("group")
                                             .Width(200)
                                             .OnClick("ReplicateAccess")
@@ -455,19 +517,21 @@
                         <div class="tab-menu">
                             @(
                             Html.DevExtreme().Tabs()
+                             .ID("userAccessTabs") 
                             .Items(items =>
                             {
-                            items.Add().Icon("preferences").Text("Master Module");
-                            items.Add().Icon("chart").Text("Finance");
-                            items.Add().Icon("image").Text("VAT");
-                            items.Add().Icon("money").Text("Human Resources");
-                            items.Add().Icon("repeat").Text("Equipment Rental");
-                            items.Add().Icon("tags").Text("Inventory Management");
-                            items.Add().Icon("cart").Text("Camp Management");
-                            items.Add().Icon("runner").Text("Project Control");
-                            items.Add().Icon("check").Text("Scaffolding Rental Solution");
-                            items.Add().Icon("repeat").Text("Alert Notification");
-                            items.Add().Icon("doc").Text("Finance Ledger Access");
+                            items.Add().Icon("preferences").Text(new JS("formatMessage('Master Module')"));
+                            items.Add().Icon("chart").Text(new JS("formatMessage('Finance')"));
+                            items.Add().Icon("image").Text(new JS("formatMessage('VAT')"));
+                            items.Add().Icon("money").Text(new JS("formatMessage('Human Resources')"));
+                            items.Add().Icon("repeat").Text(new JS("formatMessage('Equipment Rental')"));
+                            items.Add().Icon("tags").Text(new JS("formatMessage('Inventory Management')"));
+                            items.Add().Icon("cart").Text(new JS("formatMessage('Camp Management')"));
+                            items.Add().Icon("runner").Text(new JS("formatMessage('Project Control')"));
+                            items.Add().Icon("check").Text(new JS("formatMessage('Scaffolding Rental Solution')"));
+                            items.Add().Icon("repeat").Text(new JS("formatMessage('Alert Notification')"));
+                            items.Add().Icon("doc").Text(new JS("formatMessage('Finance Ledger Access')"));
+
                             })
                             .SelectedIndex(0)
                             .Orientation(DevExtreme.AspNet.Mvc.Orientation.Vertical)
@@ -602,8 +666,8 @@
                                         .OnSelectionChanged("onDepartmentSelectionChanged")
                                         .Columns(columns =>
                                         {
-                                            columns.Add().DataField("DepartmentCode").Caption("Code").Width(100);
-                                            columns.Add().DataField("Department").Caption("Department Name");
+                                            columns.Add().DataField("DepartmentCode").Caption(new JS("formatMessage('Code')")).Width(100);
+                                            columns.Add().DataField("Department").Caption(new JS("formatMessage('Department Name')"));
                                         }))
 }
 
@@ -635,8 +699,8 @@
                                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                     .Columns(columns =>
                                                     {
-                                                        columns.Add().DataField("CompanyID").Caption("ID").Width(100);
-                                                        columns.Add().DataField("CompanyName").Caption("Company Name");
+                                                        columns.Add().DataField("CompanyID").Caption(new JS("formatMessage('ID')")).Width(100);
+                                                        columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')"));
 
 
                                                     })
@@ -673,8 +737,8 @@
                                                                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                                         .Columns(columns =>
                                                                             {
-                                                                                columns.Add().DataField("BranchCode").Caption("Code").Width(100);
-                                                                                columns.Add().DataField("BranchName").Caption("Branch Name");
+                                                                                columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Code')")).Width(100);
+                                                                                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')"));
 
 
                                                                             })
@@ -708,8 +772,8 @@
                                                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                          .Columns(columns =>
                                     {
-                                        columns.Add().DataField("UserLevelID").Caption("ID").Width(100);
-                                        columns.Add().DataField("UserLevelDesc").Caption("Description");
+                                        columns.Add().DataField("UserLevelID").Caption(new JS("formatMessage('ID')")).Width(100);
+                                        columns.Add().DataField("UserLevelDesc").Caption(new JS("formatMessage('Description')"));
                                     })
                                 )
 }
@@ -741,8 +805,8 @@
                                                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                        .Columns(columns =>
                                     {
-                                        columns.Add().DataField("EmpGroupID").Caption("Group ID").Width(100);
-                                        columns.Add().DataField("EmployeeGroup").Caption("Group Name");
+                                        columns.Add().DataField("EmpGroupID").Caption(new JS("formatMessage('Group ID')")).Width(100);
+                                        columns.Add().DataField("EmployeeGroup").Caption(new JS("formatMessage('Group Name')"));
                                     })
                                 )
 }
@@ -767,8 +831,8 @@
                                     .OnSelectionChanged("onInventoryGroupSelectionChanged")
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("InventoryMasterGroupID").Caption("Group ID").Width(100);
-                                        columns.Add().DataField("InventoryMasterGroup").Caption("Group Name");
+                                        columns.Add().DataField("InventoryMasterGroupID").Caption(new JS("formatMessage('Group ID')")).Width(100);
+                                        columns.Add().DataField("InventoryMasterGroup").Caption(new JS("formatMessage('Group Name')"));
                                     })
                                 )
 }
@@ -801,12 +865,28 @@
                                                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                        .Columns(columns =>
                                     {
-                                        columns.Add().DataField("AccountId").Caption("Account ID").Visible(true);
-                                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(true);
-                                        columns.Add().DataField("IsRestricted").Caption("Restricted").DataType(GridColumnDataType.Boolean);
-                                        columns.Add().DataField("MasterGroup").Caption("Master Group");
-                                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic");
+                                        columns.Add().DataField("AccountId")
+                                            .Caption(new JS("formatMessage('Account ID')"))
+                                            .Visible(false);
+
+                                        columns.Add().DataField("AccountHead")
+                                            .Caption(new JS("formatMessage('Account Head')"))
+                                            .Visible(true);
+
+                                        columns.Add().DataField("AccountGroup")
+                                            .Caption(new JS("formatMessage('Account Group')"))
+                                            .Visible(true);
+
+                                        columns.Add().DataField("IsRestricted")
+                                            .Caption(new JS("formatMessage('Restricted')"))
+                                            .DataType(GridColumnDataType.Boolean);
+
+                                        columns.Add().DataField("MasterGroup")
+                                            .Caption(new JS("formatMessage('Master Group')"));
+
+                                        columns.Add().DataField("AccountHeadArabic")
+                                            .Caption(new JS("formatMessage('Account Head Arabic')"));
+
                                     })
                                 @*     .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(true))
@@ -830,8 +910,8 @@
                                     .OnSelectionChanged("onHRUserLevelSelectionChanged")
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("HruserLevelId").Caption("ID").Visible(true);
-                                        columns.Add().DataField("HruserLevelDesc").Caption("Description").Visible(true);
+                                        columns.Add().DataField("HruserLevelId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                                        columns.Add().DataField("HruserLevelDesc").Caption(new JS("formatMessage('Description')")).Visible(true);
                                     })
                                     .Paging(p => p.PageSize(10))
                                     .Height(300)
@@ -867,8 +947,8 @@
                                                            .Columns(columns =>
                                     {
 
-                                        columns.Add().DataField("SalesPersonAccessLevelId").Caption("Sales Person");
-                                        columns.Add().DataField("SalesPersonAccessDesc").Caption("Access Level");
+                                        columns.Add().DataField("SalesPersonAccessLevelId").Caption(new JS("formatMessage('Sales Person')"));
+                                        columns.Add().DataField("SalesPersonAccessDesc").Caption(new JS("formatMessage('Access Level')"));
                                     })@*
                         .Height(300)
                         .Paging(p => p.PageSize(10))
@@ -897,12 +977,36 @@
                                     .OnSelectionChanged("projectGroupSelectionChanged")
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("ProjectGroupID").Caption("Project Group ID").Visible(true).Width(120);
-                                        columns.Add().DataField("ProjectGroupName").Caption("Project Group Name").Visible(true);
+                                        columns.Add().DataField("ProjectGroupID").Caption(new JS("formatMessage('Project Group ID')")).Visible(true).Width(120);
+                                        columns.Add().DataField("ProjectGroupName").Caption(new JS("formatMessage('Project Group Name')")).Visible(true);
                                     })
                                 )
 }
-
+@using (Html.DevExtreme().NamedTemplate("StoreaccessContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("storeaccess-datagrid")
+        .DataSource(d => d.WebApi()
+            .Controller("Utility")
+            .LoadAction("GetInventoryStoreAccess")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("StoreId"))
+        .ShowBorders(true)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+        .Paging(p => p.PageSize(10))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .HoverStateEnabled(true)
+        .Height(300)
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .OnSelectionChanged("onInventoryStoreAccessSelectionChanged")
+        .Columns(columns =>
+        {
+            columns.Add().DataField("StoreId").Caption("Store ID").Visible(true).Width(120);
+            columns.Add().DataField("StoreName").Caption("Store Name").Visible(true);
+        })
+    )
+}
 
 
 
@@ -916,12 +1020,12 @@
              let PettyCashAccountID=null,IsPettyCashAccountflag=false;
         $(document).ready(function () {
 
-            // Hide all tabs and show the first one
+            // Hide all tab containers and show the first one
             $('.tab-container').hide();
             $('.tab-container').eq(0).show();
 
             // Load Master Module data by default
-            loadMasterModuleData("Master Module");
+            loadMasterModuleData();
 
             
 
@@ -954,6 +1058,74 @@
                 });
             }
         });
+
+function onInventoryStoreAccessSelectionChanged(e) {
+    const selectedKey = e.selectedRowKeys[0];
+    const ddbInstance = $("#ddInventoryStoreAccess").dxDropDownBox("instance");
+
+    if (selectedKey) {
+        ddbInstance.option("value", selectedKey);
+        if (ddbInstance.option("opened")) {
+            ddbInstance.close();
+        }
+        const selectedRowData = e.selectedRowsData[0];
+        if (selectedRowData) {
+            console.log("Selected Store:", selectedRowData.StoreName);
+        }
+    }
+}
+function showColumnChooser() {
+    var gridIds = [
+        "gridContainer",      // Finance
+        "VATgridContainer",   // VAT
+        "gridContainer1",     // Master Module
+        "IMSgridContainer"    // Inventory Management
+    ];
+
+    gridIds.forEach(function(gridId) {
+        var $gridElem = $("#" + gridId);
+        // Only proceed if the grid element is visible and has a dxDataGrid instance
+        if ($gridElem.is(":visible")) {
+            var grid = $gridElem.dxDataGrid("instance");
+            if (grid) {
+                if (!grid.option("columnChooser.enabled")) {
+                    grid.option("columnChooser.enabled", true);
+                }
+                grid.showColumnChooser();
+            }
+        }
+    });
+}
+	function toggleFilterRow() {
+    // Find the selected vertical tab index
+    var tabsInstance = $("#userAccessTabs").dxTabs("instance");
+    var selectedIndex = tabsInstance ? tabsInstance.option("selectedIndex") : 0;
+
+    // Map tab index to grid IDs
+    var gridIds = [
+        "gridContainer1",      // Master Module
+        "gridContainer",       // Finance
+        "VATgridContainer",    // VAT
+        null,                  // Human Resources (no grid)
+        null,                  // Equipment Rental (no grid)
+        "IMSgridContainer",    // Inventory Management
+        null,                  // Camp Management (no grid)
+        null,                  // Project Control (no grid)
+        null,                  // Scaffolding Rental Solution (no grid)
+        null,                  // Alert Notification (no grid)
+        null                   // Finance Ledger Access (no grid)
+    ];
+
+    var gridId = gridIds[selectedIndex];
+    if (gridId) {
+        var grid = $("#" + gridId).dxDataGrid("instance");
+        if (grid) {
+            var isVisible = grid.option("searchPanel.visible");
+            grid.option("searchPanel.visible", !isVisible);
+        }
+    }
+}
+	
 
           // Get User ID from URL or TextBox
     function getUserId() {
@@ -1110,6 +1282,8 @@
                     $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
                     // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
                     $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
+                    $("#ddInventoryStoreAccess").dxDropDownBox("instance").option("value", user.StoreId);
+
                     //alert(user.CompanyId)
                     onCompanySelectionChanged({ selectedRowKeys: [user.CompanyName] });
                     onBranchSelectionChanged({ selectedRowKeys: [user.BranchName] });
@@ -1128,6 +1302,7 @@
                 }
             });
         }
+
 
         function onDepartmentSelectionChanged(e) {
             const selectedKey = e.selectedRowKeys[0];
@@ -1168,7 +1343,17 @@
                 }
             }
         }
+function onOuterTabSelectionChanged(e) {
+    var selectedIndex = e.component.option('selectedIndex');
+    var selectedText = e.component.option('items')[selectedIndex].title || e.component.option('items')[selectedIndex].text;
 
+    if (selectedText === `${formatMessage("User Access Details")}`) {
+        
+        $('.tab-container').hide();
+        $('.tab-container').eq(0).show();
+        loadMasterModuleData();
+    }
+}
         function onBranchSelectionChanged(e) {
 
             // const selectedKey = e.selectedRowKeys && e.selectedRowKeys[0];
@@ -1287,7 +1472,7 @@
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
                 }
-
+                IsPettyCashAccountflag = true; // <-- Add this line to ensure changed value is saved!
                 const selectedRowData = e.selectedRowsData && e.selectedRowsData[0];
                 if (selectedRowData) {
                     console.log("Selected Account:", selectedRowData.AccountHead);
@@ -1420,6 +1605,7 @@
                 EqptQuotationAccess: $("#ddHRUserLevel").dxDropDownBox("instance").option("value"),
                     InventoryMpraccess: InventoryMpraccessIDvalue,
                 HrtimeSheetProjectGroup: $("#ddProjectGroup").dxDropDownBox("instance").option("value"),
+               StoreId: $("#ddInventoryStoreAccess").dxDropDownBox("instance").option("value"),
                 // HRTimesheetGroup: $("#HRTimesheetGroup").dxSelectBox("instance").option("value"),
                 MobileNo: $("#UserMobileNo").dxTextBox("instance").option("value"),
                 EmailAddress: $("#UserEmailAddress").dxTextBox("instance").option("value"),
@@ -1490,32 +1676,33 @@
             return date.toLocaleString();
         }
 
-        function onTabSelectionChanged(e) {
-            var selectedIndex = e.component.option('selectedIndex');
-            var selectedText = e.component.option('items')[selectedIndex].text;
+       function onTabSelectionChanged(e) {
+    var selectedIndex = e.component.option('selectedIndex');
+    var selectedText = e.component.option('items')[selectedIndex].text;
 
-            // Hide all containers
-            $('.tab-container').hide();
+    // Hide all containers
+    $('.tab-container').hide();
 
-            // Show the correct container
-            $('.tab-container').eq(selectedIndex).show();
+    // Show the correct container
+    $('.tab-container').eq(selectedIndex).show();
 
-            if (selectedText === "Finance") {
-                loadFinanceData(selectedText);
-            }
+    // Always load the correct grid for the selected tab
+    if (selectedText === `${formatMessage("Master Module")}`) {
+        loadMasterModuleData();
+    } else if (selectedText === `${formatMessage("Finance")}`) {
+        loadFinanceData();
+    } else if (selectedText === `${formatMessage("VAT")}`) {
+        loadVATData();
+    } else if (selectedText === `${formatMessage("Inventory Management")}`) {
+        loadIMSData();
+    }
+    // Add more else-if blocks if you want to load grids for other tabs
+}
 
-            if (selectedText === "Master Module") {
-                loadMasterModuleData(selectedText);
-            }
-            if (selectedText === "VAT") {
-                loadVATData(selectedText);
-            }
-            if (selectedText === "Inventory Management") {
-                loadIMSData(selectedText);
-            }
-        }
 
-        function loadFinanceData(selectedText) {
+
+
+        function loadFinanceData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
 
@@ -1523,7 +1710,7 @@
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Finance`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1539,13 +1726,20 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1575,14 +1769,14 @@
         }
 
 
-           function loadVATData(selectedText) {
+           function loadVATData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#VATgridContainer").dxDataGrid({
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=VAT`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1598,13 +1792,21 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+               
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1633,7 +1835,7 @@
             });
         }
 
-        function loadIMSData(selectedText) {
+        function loadIMSData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             $("#IMSgridContainer").dxDataGrid({
@@ -1656,13 +1858,21 @@
                     mode: "virtual",
                     showScrollbar: "always"
                 },
+               
+                    grouping: { autoExpandAll: true },         // <-- add this
+                    groupPanel: { visible: true },             // <-- add this
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1691,7 +1901,7 @@
             });
         }
 
-        function loadMasterModuleData(selectedText) {
+        function loadMasterModuleData() {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
             
@@ -1699,7 +1909,7 @@
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
                     load: function () {
-                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=Master Module`)
                             .then(function (result) {
                                 return {
                                     data: result.data,
@@ -1714,14 +1924,21 @@
                 scrolling: {
                     mode: "virtual",
                     showScrollbar: "always"
-                },
+                }, 
+                grouping: { autoExpandAll: true },        
+                groupPanel: { visible: true },      
                 columns: [
                     { dataField: "SlNo", caption: "Serial No", visible: false },
-                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemForm", caption: "Item Form", groupIndex: 0, showWhenGrouped: true,
+                        groupCellTemplate: function(element, info) {
+                            element.html("Screen / Form / Modules : <b>" + info.value + "</b>");
+                        }
+                    },
+                    { dataField: "ItemName", caption: "Item Name" },
                     { dataField: "ItemDescription", caption: "Action Name" },
                     {
                         dataField: "ItemVisible",
-                        caption: "Visible",
+                        caption: formatMessage("Visible"),
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
@@ -1772,23 +1989,6 @@
                     }
                 });
             }
-
-
-         
-         
-
-
-     
-
-        // function loadFinanceData() {
-        //     console.log("Loading Finance data...");
-        //     // Add your logic here
-        // }
-
-        // function loadVATData() {
-        //     console.log("Loading VAT data...");
-        //     // Add your logic here
-        // }
 
         function loadHRData() {
             console.log("Loading Human Resources data...");
@@ -1873,7 +2073,7 @@
             contextMenuInstance = $("#addOrRemoveContextMenu").dxContextMenu({
                 items: [
                     {
-                        text: "Add or Remove Buttons",
+                        text: formatMessage("Add or Remove Buttons"),
                         items: [
                             {
                                 text: "User Access",
@@ -1928,7 +2128,7 @@
 
         function ReplicateAccess() {
             const url = `/${tenantName}/Finance/ReplicateUserAccount`;
-            const title = "";
+            const title = formatMessage("Replicate User Account");
             openModal(url, title);
         }
 
@@ -1973,7 +2173,12 @@
         }
 
         // ... (rest of your JavaScript code remains unchanged) ...
-        
+          $(function () {
+                            $("#useraccountdetailssh").text(formatMessage("User Account Details"));
+                     });
+          $(function () {
+                            $("#btnSave").text(formatMessage("Save"));
+                     });
     </script>
 
 }

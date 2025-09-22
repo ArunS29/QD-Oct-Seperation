@@ -73,8 +73,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             .OrderByDescending(x => x.PocategoryId)
                             .Select(x => (int?)x.PocategoryId)
                             .FirstOrDefaultAsync();
+                        // 🔍 If it's a new record (insert)
+                      
+                            // Check if StoreName already exists (case-insensitive)
+                            bool isDuplicateName = await dbContext.Tbl60404pocategories
+                                .AnyAsync(x => x.PocategoryName.ToLower() == model.PocategoryName.ToLower());
 
-                        model.PocategoryId = (byte)((lastId ?? 0) + 1);
+                            if (isDuplicateName)
+                            {
+                                return BadRequest(new { success = false, message = "This Stock Classification is already in the database. Please check again." });
+                            }
+
+                            model.PocategoryId = (byte)((lastId ?? 0) + 1);
                         dbContext.Tbl60404pocategories.Add(model);
                     }
 

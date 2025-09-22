@@ -290,9 +290,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Material Receipts</h2>
+				<h2 class="title-slide" id="materialreceiptsims"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickmaterialreceipts"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -306,23 +306,20 @@
 	<!-- VOUCHER STATUS CARD -->
 	<div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text active" onclick="switchTab(0)" id="materialreceiptverified"></div>
+			<div class="tab-text" onclick="switchTab(1)"id="materialreceiptapproved"></div>
+			<div class="tab-text" onclick="switchTab(2)" id="materialreceiptsubmitted">Submitted</div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>Total Verified</h4>
 			<div class="count" id="verifiedcounttotals">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>Total Approved</h4>
 			<div class="count" id="approvedcounttotals">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>Total Submitted</h4>
 			<div class="count" id="submittedcounttotals">0</div>
 		</div>
 		<div class="tile-icon">
@@ -337,10 +334,10 @@
 
 	<!-- QUOTATION AMOUNT CARD -->
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Material Amount</h4>
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;" id="materialreceiptamunts"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4 style="color: white;text-align:left;">Total Tax Amount</h4>
+				<h4 style="color: white;text-align:left;" id="materialreceipttax"></h4>
 				<h1 id="materialamounts" style="color: white; font-weight: bold;text-align:left;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -349,7 +346,7 @@
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4 style="color: white;text-align:left">Total with Tax</h4>
+				<h4 style="color: white;text-align:left" id="materialreceipttotal"></h4>
 				<h1 id="materialtotalwith" style="color: white; font-weight: bold;text-align:left;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -957,7 +954,7 @@
 
 				e.items = [
 					{
-							text: "Edit Material Receipt",
+							text: formatMessage("Edit Material Receipt"),
 						icon: "edit",
 						onItemClick: function () {
 										const url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
@@ -966,7 +963,7 @@
 					},
 					
 					{
-					text: "Delete Material Receipt",
+					text: formatMessage("Delete Material Receipt"),
 					icon: "trash",
 					onItemClick: function () {
 						DevExpress.ui.dialog.confirm(
@@ -983,7 +980,7 @@
 				},
 					
 					{
-		text: "Unlock the Material Receipt",  // ? Corrected closing quote
+		text: formatMessage("Unlock the Material Receipt"),  // ? Corrected closing quote
 		icon: "unlock",
 		onItemClick: function () {
 			const ReceiptNo = e.row.data.ReceiptNo;
@@ -1008,11 +1005,10 @@
 		}
 	},
 	{
-    text: "Create VAT Purchase",
+    text: formatMessage("Create VAT Purchase"),
     icon: "cart",
     onItemClick: function () {
-		debugger;
-        const receiptNo = e.row?.data?.ReceiptNo;
+		        const receiptNo = e.row?.data?.ReceiptNo;
         const supplierCode = e.row?.data?.SupplierCode;
         const tenantName = window.tenantName || "defaultTenant";
 
@@ -1061,7 +1057,7 @@
                                     if (result && result.success) {
                                         DevExpress.ui.notify(result.message, "success", 2000);
                                         // Redirect to edit page (adjust route as needed)
-															window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(result.purchaseVoucherNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+									window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(result.purchaseVoucherNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
                                     } else {
                                         DevExpress.ui.notify(result.message || "Failed to create VAT Purchase Bill.", "error", 3000);
                                     }
@@ -1189,5 +1185,29 @@
 
 		console.log('End permission handling');
 	});
-		
+
+			 $(function () {
+										$("#materialreceiptsims").text(formatMessage("Material Receipts"));
+						 });
+								 $(function () {
+										$("#quickmaterialreceipts").text(formatMessage("Quick Dice ERP Solutions"));
+						 });
+								 $(function () {
+												$("#materialreceiptapproved").text(formatMessage("Approved"));
+						 });
+								 $(function () {
+												$("#materialreceiptsubmitted").text(formatMessage("Submitted"));
+						 });
+								 $(function () {
+												$("#materialreceiptamunts").text(formatMessage("Material Amount"));
+						 });
+								 $(function () {
+														$("#materialreceiptverified").text(formatMessage("Verified"));
+						 });
+								 $(function () {
+																$("#materialreceipttotal").text(formatMessage("Total with Tax"));
+						 });
+								 $(function () {
+																$("#materialreceipttax").text(formatMessage("Total Tax Amount"));
+						 });
 </script>

@@ -973,7 +973,7 @@
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
                             @(Html.DevExtreme().CheckBox()
                                 .ID("ItemDiscontinued")
-                                .Value(true))
+                                .Value(false))
                         </td>
                         </tr>
                     </table>
@@ -3529,8 +3529,7 @@
 
 
     $(document).ready(function () {
-        debugger;
-            var urlParams = new URLSearchParams(window.location.search);
+                    var urlParams = new URLSearchParams(window.location.search);
             var Gsdescrpition = urlParams.get('Gsdescrpition');
             var GsdescriptionAr = urlParams.get('GsdescriptionAr');
             var UnitOfMeasure = urlParams.get('UnitOfMeasure');

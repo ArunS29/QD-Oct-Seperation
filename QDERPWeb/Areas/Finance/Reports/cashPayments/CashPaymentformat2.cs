@@ -19,7 +19,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
     public partial class cashPaymentformat2 : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-
+        private readonly Tenant _resolvedTenant;
         public cashPaymentformat2(
             string voucherNo,
             string tenantName,
@@ -32,7 +32,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
-
+            // ✅ Resolve tenant once while HttpContext is valid
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
             InitializeComponent();
             SetReportParameters(voucherNo, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
             LoadReportData(voucherNo);
@@ -42,10 +44,90 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
             // ✅ Hook BeforePrint event here
             xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
 
-
+            xrSubreport2.BeforePrint += xrSubreport2_BeforePrint;
+            xrSubreport3.BeforePrint += xrSubreport3_BeforePrint;
         }
 
+        // ---------------- Subreport 2 ----------------
+        private void xrSubreport3_BeforePrint(object sender, EventArgs e)
+        {
+            string drCr = GetCurrentColumnValue("DrCr")?.ToString();
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
 
+            if (string.IsNullOrWhiteSpace(drCr) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport3.Visible = false;
+                return;
+            }
+
+            var tenant = _resolvedTenant; // ✅ Use cached tenant instead of HttpContext
+            if (_drCrWithEmpAllocations.Contains(drCr) && tenant != null)
+            {
+                var subReport = new rpt201Property();
+                subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);
+
+                if ((subReport.DataSource as DataTable)?.Rows.Count > 0)
+                {
+                    xrSubreport3.ReportSource = subReport;
+                    xrSubreport3.Visible = true;
+                }
+                else
+                {
+                    xrSubreport3.Visible = false;
+                }
+            }
+            else
+            {
+                xrSubreport3.Visible = false;
+            }
+        }
+
+        // ---------------- Collections ----------------
+        private HashSet<string> _drCrWithPropAllocations =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Dr", "Cr"
+            };
+
+        private void xrSubreport2_BeforePrint(object sender, EventArgs e)
+        {
+            string drCr = GetCurrentColumnValue("DrCr")?.ToString();
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
+
+            if (string.IsNullOrWhiteSpace(drCr) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport2.Visible = false;
+                return;
+            }
+
+            var tenant = _resolvedTenant; // ✅ Use cached tenant instead of HttpContext
+            if (_drCrWithEmpAllocations.Contains(drCr) && tenant != null)
+            {
+                var subReport = new rpt201empReport();
+                subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);
+
+                if ((subReport.DataSource as DataTable)?.Rows.Count > 0)
+                {
+                    xrSubreport2.ReportSource = subReport;
+                    xrSubreport2.Visible = true;
+                }
+                else
+                {
+                    xrSubreport2.Visible = false;
+                }
+            }
+            else
+            {
+                xrSubreport2.Visible = false;
+            }
+        }
+
+        // ---------------- Collections ----------------
+        private HashSet<string> _drCrWithEmpAllocations =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+                "Dr", "Cr"
+            };
 
         private void xrSubreport1_BeforePrint(object sender, EventArgs e)
         {
@@ -58,12 +140,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
                 return;
             }
 
-            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) &&
-                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+            var tenant = _resolvedTenant; // ✅ Use cached tenant
+            if (_accountHeadsWithCostAllocations.Contains(currentAccountHead) && tenant != null)
             {
                 var subReport = new subCostReport();
-
-
                 subReport.LoadData(voucherNo, currentAccountHead, tenant.ConnectionString);
                 xrSubreport1.ReportSource = subReport;
                 xrSubreport1.Visible = true;
@@ -73,8 +153,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
                 xrSubreport1.Visible = false;
             }
         }
-
-
 
         private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
 

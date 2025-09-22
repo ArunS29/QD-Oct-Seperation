@@ -3412,7 +3412,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
     public DbSet<TotalDepreciationResult> TotalDepreciationResults { get; set; }
-
+    public virtual DbSet<AccountBalanceResult> AccountBalanceResults { get; set; }
+    public virtual DbSet<BankClearedBalanceResult> BankClearedBalanceResults { get; set; }
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
     //public virtual DbSet<ClientCategoryDisplayDTO> ClientCategoryDisplayDTOs { get; set; }
@@ -3428,6 +3429,12 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
     public DbSet<PostAvgCostDto> PostAvgCostDtos { get; set; }
     public DbSet<PostJournalDto> PostJournalDtos { get; set; }
+    public DbSet<PostJournalDtos> PostJournalDtoss { get; set; }
+    public DbSet<PostDeliveryNoteRequest> PostDeliveryNoteRequests { get; set; }
+    public DbSet<MaterialReceiptDto> MaterialReceiptDtos { get; set; }
+    public DbSet<MaterialReceiptChildDto> MaterialReceiptChildDtos { get; set; }
+
+
     public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
     public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
    
@@ -3460,6 +3467,10 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
         modelBuilder.Entity<PostAvgCostDto>().HasNoKey();
         modelBuilder.Entity<PostJournalDto>().HasNoKey();
+        modelBuilder.Entity<PostJournalDtos>().HasNoKey();
+        modelBuilder.Entity<PostDeliveryNoteRequest>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptDto>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptChildDto>().HasNoKey();
         modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
         modelBuilder.Entity<ApproveDeliveryNoteDto>().HasNoKey();
        // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();
@@ -3467,7 +3478,8 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
-
+        modelBuilder.Entity<AccountBalanceResult>().HasNoKey();
+        modelBuilder.Entity<BankClearedBalanceResult>().HasNoKey();
         modelBuilder.Entity<FinancialSummaryReport>(entity =>
         {
             entity.HasNoKey(); // required for views or tables without PK

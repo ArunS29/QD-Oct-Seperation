@@ -15,7 +15,6 @@
         /* padding: 16px 0; */
         background: #fff;
         border-radius: 12px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
         gap: 10px;
         height: 48px;
     }
@@ -42,6 +41,9 @@
         position: relative;
         transition: all 0.3s ease;
         z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .step-circle {
@@ -69,11 +71,11 @@
     }
 
     .step-status-msg {
-        margin-top: 4px;
+        margin-top: 9px;
         font-size: 11px;
-        font-weight: 500;
+        font-weight: 600;
         color: #9ca3af;
-        opacity: 0;
+        opacity: 1;
         transform: translateY(-4px);
         transition: all 0.3s ease;
     }
@@ -99,7 +101,6 @@
     .workflow-step.current .step-status-msg {
         color: #3b82f6;
         opacity: 1;
-        transform: translateY(0);
     }
 
     .workflow-step.upcoming .step-circle {
@@ -332,25 +333,33 @@
 
         <div class="workflow-step" id="step-update">
             <div class="step-circle"><i class="fas fa-user"></i></div>
-            <div class="step-label">Updated</div>
-            <div class="step-status-msg">In Progress</div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg">In Progress</div>
+            </div>
         </div>
         <div class="workflow-step" id="step-submit">
             <div class="step-circle" id="circle-submit"><i class="fas fa-paper-plane"></i></div>
-            <div class="step-label">Submitted</div>
-            <div class="step-status-msg">Pending</div>
+            <div class="workflowText">
+                <div class="step-label">Submitted</div>
+                <div class="step-status-msg">Pending</div>
+            </div>
         </div>
 
         <div class="workflow-step" id="step-verify">
             <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
-            <div class="step-label">Verified</div>
-            <div class="step-status-msg">Waiting</div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg">Waiting</div>
+            </div>
         </div>
 
         <div class="workflow-step" id="step-approve">
             <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Approved</div>
-            <div class="step-status-msg">Pending</div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg">Pending</div>
+            </div>
         </div>
 
         <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>

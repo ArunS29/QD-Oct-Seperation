@@ -8,80 +8,92 @@
 
 <h2 id="costallocationdetailsreport"></h2>
 
-<div class="toolbar custom-toolbar">
-    <div class="toolbar-item">
+<div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label(new JS("formatMessage('Start Date')"))
-.LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Start Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(1)
-            )
+                .ID("frmdateBox")
+                .Label(new JS("formatMessage('Start Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Start Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(1)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label(new JS("formatMessage('End Date')"))
-.LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "End Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            )
+                .ID("todateBox")
+                .Label(new JS("formatMessage('End Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "End Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .TabIndex(2)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 150px;">
         @(Html.DevExtreme().TextBox()
-            .ID("accountIdLabel")
-            .Label(new JS("formatMessage('Ledger No')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Ledger No")
-            .ReadOnly(true)
-            .StylingMode(EditorStylingMode.Outlined)
-            .TabIndex(3)
-            )
+                .ID("accountIdLabel")
+                .Label(new JS("formatMessage('Ledger No')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger No")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(3)
+                )
     </div>
 
-    <div class="toolbar-item">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text(new JS("formatMessage('Show Records')"))
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                  items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-   items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-   items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-   items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-   items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-   items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-   items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-   items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-   items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-   items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+    <!-- ✅ New Ledger Name textbox -->
+    <div class="toolbar-item" style="flex: 1 1 250px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("ledgerNameLabel")
+                .Label(new JS("formatMessage('Ledger Name')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger Name")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(4)
+                )
+    </div>
 
-            })
-            .ItemTemplate(@<text>
-				   			<div class="custom-dropdown-item">
-				   				<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-				   				<div class="item-content">
-				   					<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-				   					<div>
-				   						<div class="item-title"><%- text %></div>
-				   					</div>
-				   				</div>
-				   			</div>
-				   		</text>)
-            )
+    <div class="toolbar-item" style="flex: 0 0 auto;">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddBtnShowRecords")
+                .Text(new JS("formatMessage('Show Records')"))
+                .Icon("smalliconslayout")
+                .Width(180)
+                .ElementAttr("class", "button-alignment-down")
+                .TabIndex(5)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                )
     </div>
 </div>
 <div id="dataGrid" style="margin-top: 15px;"></div>
@@ -91,10 +103,29 @@
 <div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
 
 <script>
-    $(document).ready(function () {
-      
+     $(document).ready(function () {
         const accountId = getQueryParam('accountId');
-        $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
+
+        if (accountId) {
+            // Bind accountId to Ledger No textbox
+            $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
+
+            // Fetch Ledger Name from server
+            $.ajax({
+                url: '/api/UCCostAnalysis/GetLedgerName', // adjust area/controller if needed
+                type: 'GET',
+                data: { accountId: accountId },
+                success: function (response) {
+                    if (response && response.ledgerName) {
+                        $("#ledgerNameLabel").dxTextBox("instance").option("value", response.ledgerName);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Failed to load Ledger Name:", xhr.responseText);
+                    $("#ledgerNameLabel").dxTextBox("instance").option("value", "");
+                }
+            });
+        }
     });
 
     let dataGrid;
@@ -125,39 +156,60 @@
         dataGrid.refresh();
     }
 
-    $(function () {
+     $(function () {
         dataGrid = $("#dataGrid").dxPivotGrid({
             showBorders: true,
             allowSorting: true,
             allowFiltering: true,
-            showFieldChooser: true, // Allows users to drag fields manually
+            showFieldChooser: true,
             fieldChooser: {
                 enabled: true,
-                height: 400
+                height: 400,
+                allowSearch: true
             },
             dataSource: {
                 fields: [
-                    { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Allocation Master Group") },
-                    { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Group") },
-                    { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Center Unit") },
+                    // === ROW FIELD ===
+                    { dataField: "AccountHead", area: "column", caption: formatMessage("Account Head"), showTotals: false, showGrandTotals: false },
 
-                    { dataField: "CostAmount", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Cost Amount") },
-                    { dataField: "Income", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Income") },
-                    { dataField: "Expenses", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Expenses") },
+                    // === COLUMN FIELDS ===
+                    { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Allocation Master Group"), showTotals: false, showGrandTotals: false },
+                    { dataField: "CostAllocationGroup", caption: formatMessage("Cost Group"), showTotals: false, showGrandTotals: false },
+                    { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Center Unit"), showTotals: false, showGrandTotals: false },
+
+                    // === DATA FIELD ===
+                    {
+                        dataField: "AmountAllocated",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Amount Allocated"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+
+                    // === EXTRA FIELDS (available in chooser but not visible initially) ===
+                    { dataField: "CostAmount", summaryType: "sum", caption: formatMessage("Cost Amount") },
+                    { dataField: "Income", summaryType: "sum", caption: formatMessage("Income") },
+                    { dataField: "Expenses", summaryType: "sum", caption: formatMessage("Expenses") },
                     { dataField: "VoucherDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Voucher Date") },
                     { dataField: "EffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Effective Date") },
                     { dataField: "AllocationEffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Allocation Effective Date") },
                     { dataField: "CostAllocationId", caption: formatMessage("Cost Allocation Id") },
                     { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
                     { dataField: "CostAllocationUnitId", caption: formatMessage("Cost Allocation Unit Id") },
-                    { dataField: "CostAllocDrCr" , caption: formatMessage("Cost Alloc DrCr")},
-                    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
+                    { dataField: "CostAllocDrCr" , caption: formatMessage("Cost Alloc DrCr") },
                     { dataField: "CostAllocRemarks", caption: formatMessage("Cost Alloc Remarks") },
                     { dataField: "IsDisabled", caption: formatMessage("Is Disabled") },
-                    { dataField: "AccountHead", caption: formatMessage("Account Head") },
-                    { dataField: "AccountGroup" , caption: formatMessage("Account Group")},
+                    { dataField: "AccountGroup" , caption: formatMessage("Account Group") },
                     { dataField: "MasterGroup", caption: formatMessage("Master Group") },
-                    { dataField: "Pl" , caption: formatMessage("Pl")},
+                    { dataField: "Pl" , caption: formatMessage("Pl") },
                     { dataField: "AccountId", caption: formatMessage("Account Id") },
                     { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
                     { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
@@ -171,7 +223,7 @@
                     { dataField: "EffectiveYear", caption: formatMessage("Effective Year") },
                     { dataField: "AllocationEffectiveMonth", caption: formatMessage("Allocation Effective Month") },
                     { dataField: "AllocationEffectiveYear", caption: formatMessage("Allocation Effective Year") },
-                    { dataField: "ProjectMasterCode" , caption: formatMessage("Project Master Code")},
+                    { dataField: "ProjectMasterCode" , caption: formatMessage("Project Master Code") },
                     { dataField: "BranchCode", caption: formatMessage("Branch Code") },
                     { dataField: "BranchName", caption: formatMessage("Branch Name") },
                     { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
@@ -181,20 +233,11 @@
             width: "100%",
             height: $(window).height() - 50,
             allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
             allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
             columnAutoWidth: true,
             allowColumnResizing: true,
-            rowHeaderLayout: "tree",
             wordWrapEnabled: true,
 
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true
-            },
             fieldPanel: {
                 visible: true,
                 allowFieldDragging: true,
@@ -203,42 +246,89 @@
                 showDataFields: true,
                 showFilterFields: true
             },
+
+            // Remove automatic totals & grand totals
             showColumnTotals: false,
             showColumnGrandTotals: false,
-            showDataHeaders: true,
             showRowTotals: false,
             showRowGrandTotals: false
-        
         }).dxPivotGrid("instance");
-    
 
-        // Initial Load
+        // Load data
         loadCostPivotGrid();
     });
 
+
+
     function ddBtnShowRecords_click(option) {
-        const today = new Date();
+        let today = new Date();
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+        // Keep original date object safe (no mutation issues)
+        const currentDate = new Date();
+
         const setDates = {
-            'today': [today, today],
-            'yesterday': [new Date(today.setDate(today.getDate() - 1)), new Date()],
-            'week': [new Date(today.setDate(today.getDate() - today.getDay())), new Date()],
+            'today': [new Date(), new Date()],
+            'yesterday': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1),
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1)
+            ],
+            'week': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay()),
+                new Date()
+            ],
             'tillmonth': [startOfMonth, new Date()],
             'fullmonth': [startOfMonth, endOfMonth],
             'tillyear': [new Date(today.getFullYear(), 0, 1), new Date()],
             'fullyear': [new Date(today.getFullYear(), 0, 1), new Date(today.getFullYear(), 11, 31)],
-            'lastmonth': [new Date(today.getFullYear(), today.getMonth() - 1, 1), new Date(today.getFullYear(), today.getMonth(), 0)],
-            'lastyear': [new Date(today.getFullYear() - 1, 0, 1), new Date(today.getFullYear() - 1, 11, 31)],
-            'range': [$("#frmdateBox").dxDateBox("instance").option("value"), $("#todateBox").dxDateBox("instance").option("value")]
+            'lastmonth': [
+                new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                new Date(today.getFullYear(), today.getMonth(), 0)
+            ],
+            'lastyear': [
+                new Date(today.getFullYear() - 1, 0, 1),
+                new Date(today.getFullYear() - 1, 11, 31)
+            ],
+            'range': [
+                $("#frmdateBox").dxDateBox("instance").option("value"),
+                $("#todateBox").dxDateBox("instance").option("value")
+            ]
         };
 
-        const [from, to] = setDates[option] || [today, today];
+        const [from, to] = setDates[option] || [new Date(), new Date()];
         $("#frmdateBox").dxDateBox("instance").option("value", from);
         $("#todateBox").dxDateBox("instance").option("value", to);
 
-        loadCostPivotGrid({ fromDate: from, toDate: to });
+        // Pass selected dates directly to loadCostGrid
+        loaddateCostGrid(from, to);
+    }
+           function formatDateOnly(date) {
+        if (!(date instanceof Date)) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+    function loaddateCostGrid(fromDate, toDate) {
+        const accountId = getQueryParam('accountId');
+
+        dataGrid.option("dataSource", {
+            load: function () {
+                const params = new URLSearchParams();
+                if (accountId) params.append("accountId", accountId);
+
+                    // ✅ Pass only date (yyyy-MM-dd) without time
+                    if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
+                    if (toDate) params.append("toDate", formatDateOnly(toDate));
+
+
+                return fetch(`/api/UCCostAnalysis/GetCostAllocationReport?${params}`)
+                    .then(res => res.json());
+            }
+        });
+
+        dataGrid.refresh();
     }
     $(document).ready(function () {
 
@@ -357,4 +447,13 @@
             padding: 10px;
         }
     }
+    /* Force pivot grid text to black */
+    .dx-pivotgrid .dx-pivotgrid-area,
+    .dx-pivotgrid .dx-pivotgrid-area td,
+    .dx-pivotgrid .dx-pivotgrid-fields-area,
+    .dx-pivotgrid .dx-pivotgrid-fields-area td,
+    .dx-pivotgrid .dx-pivotgrid-field-area {
+        color: #000 !important;
+    }
+
 </style>

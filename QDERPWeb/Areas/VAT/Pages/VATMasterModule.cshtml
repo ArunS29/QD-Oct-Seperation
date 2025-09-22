@@ -84,7 +84,6 @@
         }
 
         .mainContainer {
-            margin-top: 1em;
             width:98%;
         }
 
@@ -244,16 +243,6 @@
 </body>
 </html>
 <script>
-    $(document).ready(function () {
-
-        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-            if (!$(this).find("#btnSave, #btnBack").length) {
-                $(this).remove();
-            }
-
-        });
-    });
 
         $(document).on('click', '#btnBack', function () {
             window.parent.closeModal();

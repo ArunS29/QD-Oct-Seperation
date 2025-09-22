@@ -284,9 +284,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">Delivery Note</h2>
+				<h2 class="title-slide" id="deliverynotes"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="quickdelivery"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -298,9 +298,9 @@
 	</div>
 	<div id="mainCard" class="card today-bg with-sidebar">
 		<div class="tabs" style="gap:5px;">
-			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text active" onclick="switchTab(0)" id="deliveryverified"></div>
+			<div class="tab-text" onclick="switchTab(1)" id="deliveryapproved"></div>
+			<div class="tab-text" onclick="switchTab(2)" id="deliverysubmitted"></div>
 		</div>
 
 		<div class="tab-content active">
@@ -324,10 +324,10 @@
 	</div>
 
 	<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Invoice Details</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="invoicedetailsdelivery"></h2>
 
 		<!-- Rotating Heading -->
-		<h5 id="statusHeadingse" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
+		<h5 id="statusHeadingse" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;"></h5>
 
 		<!-- Value with SVG -->
 		<div id="switchValuese" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
@@ -351,7 +351,7 @@
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
 
 		<!-- Main Heading: Voucher Count -->
-		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="vouchercountdeliveryy"></h2>
 
 		<!-- Rotating Heading -->
 		<h3 id="statusHeadinges" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
@@ -377,14 +377,18 @@
  *@
 		@await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNoteFooter.cshtml")
 <div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice" onclick="viewRecord()">
-		<i class="dx-icon-search"></i> View
-	</div>
+	
 	<div class="context-menu-itemInvoice" onclick="editRecord()">
 		<i class="dx-icon-edit"></i> Edit
 	</div>
 	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
 		<i class="dx-icon-trash"></i> Delete
+	</div>
+	<div class="context-menu-itemInvoice" onclick="unlockRecord()">
+		<i class="dx-icon-search"></i> Unlock the Delivery Note
+	</div>
+	<div class="context-menu-itemInvoice" onclick="createInvoiceRecord()">
+		<i class="dx-icon-search"></i> Create Invoice for this Delivery Note
 	</div>
 </div>
 <div class="dx-fieldset horizontal-container">
@@ -456,27 +460,78 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Delivery Note Details").Columns(subColumns =>
+	  	// Delivery Note Details
+			columns.Add().Caption(new JS("formatMessage('Delivery Note Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.DeliveredTo).Caption("DeliveredTo To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption("Mpr no").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeliveredTo).Caption(new JS("formatMessage('Delivered To')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeliveryNoteNo).Caption(new JS("formatMessage('Delivery Note No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.DeliveryDate).Caption(new JS("formatMessage('Delivery Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.DeliveryIssuedTo).Caption(new JS("formatMessage('Delivery Issued To')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+				// 👉 Unused fields (hidden but with localized captions)
+				subColumns.AddFor(m => m.QuotationNo).Caption(new JS("formatMessage('Quotation No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.MaterialRequestNo).Caption(new JS("formatMessage('Material Request No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.NoteOfItems).Caption(new JS("formatMessage('Note Of Items')")).Alignment(HorizontalAlignment.Right).Visible(false);
+				subColumns.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Store Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientPodate).Caption(new JS("formatMessage('Client PO Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PreparedBy).Caption(new JS("formatMessage('Prepared By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.PreparedOn).Caption(new JS("formatMessage('Prepared On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonCode).Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Attention).Caption(new JS("formatMessage('Attention')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ClientContactNo).Caption(new JS("formatMessage('Client Contact No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientContactEmail).Caption(new JS("formatMessage('Client Contact Email')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.CompanyBranch).Caption(new JS("formatMessage('Company Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DeliveryNoteRemarks).Caption(new JS("formatMessage('Delivery Note Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.Salesman).Caption(new JS("formatMessage('Salesman')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.TransportedBy).Caption(new JS("formatMessage('Transported By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DriversName).Caption(new JS("formatMessage('Driver Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.DriversId).Caption(new JS("formatMessage('Driver ID')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.VehicleNo).Caption(new JS("formatMessage('Vehicle No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.CompanyName).Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.IssuedFromStoreCode).Caption(new JS("formatMessage('Issued From Store Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.IssuedFromStoreName).Caption(new JS("formatMessage('Issued From Store Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.ProjectDuration).Caption(new JS("formatMessage('Project Duration')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectLocation).Caption(new JS("formatMessage('Project Location')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroupId).Caption(new JS("formatMessage('Inventory Master Group Id')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Alignment(HorizontalAlignment.Right).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+				subColumns.AddFor(m => m.SaesPersonUserId).Caption(new JS("formatMessage('Sales Person User Id')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.QuoteTotalBeforeDiscount).Caption(new JS("formatMessage('Quote Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(false);
 			});
-			columns.Add().Caption("Delivery To Client").Columns(subColumns =>
+
+			// Delivery To Client
+			columns.Add().Caption(new JS("formatMessage('Delivery To Client')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.ClientProject).Caption("Client Project").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption("SalesOrder No").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientPono).Caption(new JS("formatMessage('Client PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientProject).Caption(new JS("formatMessage('Client Project')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
-			columns.Add().Caption("Delivery To Store").Columns(subColumns =>
+
+			// Delivery To Store
+			columns.Add().Caption(new JS("formatMessage('Delivery To Store')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.StoreName).Caption("Store Name").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.StoreName).Caption(new JS("formatMessage('Store Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			});
 		})
+
 		.Height("55vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
@@ -519,6 +574,32 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+		 $(function () {
+				const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#frmdateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#frmdateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+			 $(function () {
+				const dateBox = $("#todateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#todateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#todateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
 		 $(function () {
 	$("#DeliveryNote").dxTextBox({
 	text: formatMessage("Delivery Note"),
@@ -672,14 +753,85 @@
 			window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
 		}
 	}
+		function unlockRecord() {
+		if (!selectedRowData) {
+			DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+			return;
+		}
+
+			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+
+		DevExpress.ui.dialog.confirm(
+			`Are you sure you want to unlock Delivery Note`,
+			"Confirm Unlock"
+		).done(function (dialogResult) {
+			if (dialogResult) {
+				$.ajax({
+							url: "/api/DeliveryNote/UnlockDeliveryNote",
+					method: "POST",
+					contentType: "application/json",
+							data: JSON.stringify({ DeliveryNoteNo: DeliveryNoteNo }),
+					success: function (result) {
+						if (result.success) {
+							DevExpress.ui.notify(result.message, "success", 2000);
+								ddBtnShowRecords_click('range');
+						} else {
+							DevExpress.ui.notify(result.message, "warning", 2000);
+						}
+					},
+						error: function (xhr) {
+		let msg = xhr.responseJSON?.message || "Error unlocking Delivery Note";
+		DevExpress.ui.notify(msg, "error", 2000);
+		console.error(xhr);
+	}
+
+				});
+			}
+		});
+	}
+		
+function createInvoiceRecord() {
+    if (!selectedRowData) {
+        DevExpress.ui.notify("Please select a row to unlock.", "warning", 2000);
+        return;
+    }
+
+    const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
+		 const tenantName = window.tenantName || "defaultTenant";
+
+		DevExpress.ui.dialog.confirm("You are about to create a new VAT Invoice. Proceed?", "Confirm")
+        .done(function (dialogResult) {
+            if (!dialogResult) return;
+
+            $.ajax({
+                url: "/api/DeliveryNote/CreateInvoiceFromDeliveryNote",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(DeliveryNoteNo),
+                success: function (result) {
+                    if (result.success) {
+                        DevExpress.ui.notify(result.message, "success", 2000);
+							var IsEdit = true;
+                        window.location.href =`/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(result.invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+                    } else {
+                        DevExpress.ui.notify(result.message, "warning", 3000);
+                    }
+                },
+					error: function () {frm20161VATInvoiceEdit
+                    DevExpress.ui.notify("Error while creating Invoice.", "error", 3000);
+                }
+            });
+        });
+}
 
 
+				
 		function deleteRecord() {
 		if (selectedRowData) {
 			const code = selectedRowData.DeliveryNoteNo;
 
 			DevExpress.ui.dialog.confirm(
-				`Are you sure you want to delete stock item: <b>${code}</b>?`,
+				`Are you sure you want to delete delivery note: <b>${code}</b>?`,
 				"Confirm Deletion"
 			).done(function (dialogResult) {
 				if (dialogResult) {
@@ -836,8 +988,7 @@ $(document).ready(function () {
 
 			const headingEl = document.getElementById("statusHeadingse");
 			const valueEl = document.getElementById("switchValuese");
-
-			headingEl.textContent = headings[currentIndex];
+			headingEl.textContent = formatMessage(headings[currentIndex]);
 			valueEl.innerHTML = `
 
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
@@ -890,18 +1041,20 @@ $(document).ready(function () {
 			const value = document.getElementById("valueDisplayes");
 
 			if (isLast5Years) {
-				heading.textContent = "New Voucher Today";
+				heading.textContent = formatMessage("New Voucher Today");
 
 				const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
 				animateTodayVoucherCount(todayTarget); // Animate count-up
 			} else {
-				heading.textContent = "Last 5 Years";
+					heading.textContent = formatMessage("Last 5 Years");
 				value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
 			}
 
 			isLast5Years = !isLast5Years;
 		}
-
+			function formatMessage(key) {
+			return key;
+		}
 		// Call once on page load
 		switchData();
 
@@ -996,7 +1149,27 @@ $(document).ready(function () {
 			}
 		}
 	}
-
+		 $(function () {
+				$("#deliverynotes").text(formatMessage("Delivery Note"));
+		});
+		 $(function () {
+			    $("#quickdelivery").text(formatMessage("Quick Dice ERP Solutions"));
+		 });
+		 $(function () {
+				$("#deliverysubmitted").text(formatMessage("Submitted"));
+		 });
+		 $(function () {
+				$("#deliveryapproved").text(formatMessage("Approved"));
+		});
+		 $(function () {
+				$("#deliveryverified").text(formatMessage("Verified"));
+		});
+		 $(function () {
+				$("#invoicedetailsdelivery").text(formatMessage("Invoice Details"));
+		});
+		 $(function () {
+						$("#vouchercountdeliveryy").text(formatMessage("Voucher Count"));
+		});
 		// 	function startVoucherSlide() {
 		// 	let currentSlide = 0;
 		// 	const slides = document.querySelectorAll('.voucher-slide');
