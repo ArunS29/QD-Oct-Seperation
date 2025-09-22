@@ -2773,7 +2773,7 @@ function getSalesPersonByUser() {
 					$("<span>").text("").appendTo(container);
 					return;
 				}
-				$.getJSON(`/api/VATModule/GetGoodsAndServiceByCode?code=${options.value}`)
+				$.getJSON(`/api/GoodsandServices/GetGoodsAndServiceByCode?code=${options.value}`)
 					.done(function (data) {
 						$("<span>").text(data.GSDescrpition).appendTo(container);
 					});
@@ -2791,7 +2791,7 @@ function getSalesPersonByUser() {
 				load: function (loadOptions) {
 					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
 					const pageSize = loadOptions.take;
-						return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+						return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", {
 						pageNumber,
 						pageSize
 					}).then(response => {
@@ -3022,8 +3022,9 @@ function getSalesPersonByUser() {
 										icon: "plus",
 										hint: "Add new item",
 										onClick: function () {
-											let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
-										   openModal(url, "Unit Of Measure");
+											    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+     let title = "Unit of Measure";
+      openModal(url, title,"70%","70%");
 										},
 										width: 60,
 										height: 30
@@ -3354,7 +3355,7 @@ function getSalesPersonByUser() {
 					$("<span>").text("").appendTo(container);
 					return;
 				}
-				$.getJSON(`/api/VATModule/GetGoodsAndServiceByCode?code=${options.value}`)
+			$.getJSON(`/api/GoodsandServices/GetGoodsAndServiceByCode?code=${options.value}`)
 					.done(function (data) {
 						$("<span>").text(data.GSDescrpition).appendTo(container);
 					});
@@ -3372,7 +3373,7 @@ function getSalesPersonByUser() {
 				load: function (loadOptions) {
 					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
 					const pageSize = loadOptions.take;
-						return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+						return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", {
 						pageNumber,
 						pageSize
 					}).then(response => {
@@ -3582,8 +3583,9 @@ function getSalesPersonByUser() {
 							icon: "plus",
 							hint: "Add new item",
 							onClick: function () {
-								let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
-								openModal(url, "Unit Of Measure");
+								    let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+     let title = "Unit of Measure";
+      openModal(url, title,"70%","70%");
 							},
 							width: 60,
 							height: 30
@@ -5340,7 +5342,95 @@ AddlDescription: null,
     }
 });
 function saveQuotation(mprNoNew, $btn) {
-    debugger;
+   
+			let master = {
+			Mprno: mprNoNew,
+			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+			RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+			RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+			ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+			SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+			ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+			PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+			Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+			CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+			ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+			ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+			Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+			ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+			BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+			StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
+			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+            BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+            CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		};
+	const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+		if (!children || children.length === 0) {
+			DevExpress.ui.notify("No child records to save.", "error", 3000);
+			$btn.option("disabled", false); // Re-enable the button
+			return;
+		}
+		const model = {
+			...master,
+			PurchaseRequestDetails: children
+		};
+		$.ajax({
+			type: "POST",
+			url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
+			contentType: "application/json",
+			data: JSON.stringify(model),
+			success: function (response) {
+				DevExpress.ui.notify(response.message, "success", 3000);
+					 const mprno = response.mprno;
+				 window.location.href = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${mprno}`	
+				 //loadChildDataAndBindGrid(mprno);
+				// Refresh parent DataGrid (ensure the correct selector is used)
+				// if (window.parent && window.parent.$("#dataGrid").length) {
+				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+				// 	if (dataGrid) {
+				// 		dataGrid.refresh();
+				// 	}
+				// }
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+			}
+		});
+}
+
+$("#btnSaveAndClose").on("click", function (e) {
+   	const $btn = $(this).dxButton("instance");
+	$btn.option("disabled", true);
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var mprNoNew = data;
+            $("#txtRequestNo").dxTextBox("instance").option("value", mprNoNew);
+            saveAndCloseQuotation(mprNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var mprNoNew = $('#txtRequestNo').dxTextBox("instance").option("value") || null;
+        saveAndCloseQuotation(mprNoNew, $btn);
+    }
+});
+function saveAndCloseQuotation(mprNoNew, $btn) {
+
 			let master = {
 			Mprno: mprNoNew,
 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
@@ -5377,6 +5467,7 @@ function saveQuotation(mprNoNew, $btn) {
 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
 		if (!children || children.length === 0) {
 			DevExpress.ui.notify("No child records to save.", "error", 3000);
+			$btn.option("disabled", false); // Re-enable the button
 			return;
 		}
 		const model = {
@@ -5390,9 +5481,9 @@ function saveQuotation(mprNoNew, $btn) {
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
+				history.back();
 					 const mprno = response.mprno;
-				 window.location.href = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${mprno}`	
-				 //loadChildDataAndBindGrid(mprno);
+				
 				// Refresh parent DataGrid (ensure the correct selector is used)
 				// if (window.parent && window.parent.$("#dataGrid").length) {
 				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -5406,74 +5497,7 @@ function saveQuotation(mprNoNew, $btn) {
 			}
 		});
 }
-	// $("#btnSave").on("click", function (e) {
-	// const $btn = $(this).dxButton("instance");
-	// $btn.option("disabled", true);
-	// 	let master = {
-	// 		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
-	// 		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
-	// 		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-	// 		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-	// 		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-	// 		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
-	// 		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
-	// 		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-	// 		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-	// 		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
-	// 		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
-	// 		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
-	// 		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
-	// 		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
-	// 		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
-	// 		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
-	// 		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-	// 		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-	// 		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-	// 		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
-	// 		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
-	// 		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
-	// 		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
-	// 		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-	// 		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-	// 		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-	// 		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
-	// 		StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
-	// 		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
- //            BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
- //            CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-	// 	};
-	// 	const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-	// 	if (!children || children.length === 0) {
-	// 		DevExpress.ui.notify("No child records to save.", "error", 3000);
-	// 		return;
-	// 	}
-	// 	const model = {
-	// 		...master,
-	// 		PurchaseRequestDetails: children
-	// 	};
-	// 	$.ajax({
-	// 		type: "POST",
-	// 		url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
-	// 		contentType: "application/json",
-	// 		data: JSON.stringify(model),
-	// 		success: function (response) {
-	// 			DevExpress.ui.notify(response.message, "success", 3000);
-	// 				 const mprno = response.mprno;
-				
-	// 			 loadChildDataAndBindGrid(mprno);
-	// 			// Refresh parent DataGrid (ensure the correct selector is used)
-	// 			if (window.parent && window.parent.$("#dataGrid").length) {
-	// 				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-	// 				if (dataGrid) {
-	// 					dataGrid.refresh();
-	// 				}
-	// 			}
-	// 		},
-	// 		error: function (xhr) {
-	// 			DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-	// 		}
-	// 	});
-	// });
+	
 		function loadChildDataAndBindGrid(mprno) {
 		
     if (!mprno) {
@@ -5535,78 +5559,78 @@ function saveQuotation(mprNoNew, $btn) {
 			}
 		});
 	}
-	$("#btnSaveAndClose").on("click", function (e) {
-		const $btn = $(this).dxButton("instance");
-		$btn.option("disabled", true);
+// 	$("#btnSaveAndClose").on("click", function (e) {
+// 		const $btn = $(this).dxButton("instance");
+// 		$btn.option("disabled", true);
 	
-		let master = {
-			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
-			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
-			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-			RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-			RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
-			ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
-			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-			SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-			ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
-			PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
-			Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
-			CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
-			ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
-			ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
-			Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
-			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-			ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
-			BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
-			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
-			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
-			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
-			StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
-			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-            BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-            CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-		};
-		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			return;
-		}
-		const model = {
-			...master,
-			PurchaseRequestDetails: children
-		};
-		$.ajax({
-			type: "POST",
-			url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
-			contentType: "application/json",
-			data: JSON.stringify(model),
-			success: function (response) {
-				DevExpress.ui.notify(response.message, "success", 3000);
-								setTimeout(function () {
+// 		let master = {
+// 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+// 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+// 			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+// 			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+// 			RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+// 			RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+// 			ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+// 			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+// 			SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+// 			ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+// 			PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+// 			Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+// 			CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+// 			ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+// 			ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+// 			Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+// 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+// 			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+// 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+// 			ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+// 			BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+// 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+// 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+// 			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+// 			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+// 			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+// 			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+// 			StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
+// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+//             BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+//             CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+// 		};
+// 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+// 		if (!children || children.length === 0) {
+// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 			return;
+// 		}
+// 		const model = {
+// 			...master,
+// 			PurchaseRequestDetails: children
+// 		};
+// 		$.ajax({
+// 			type: "POST",
+// 			url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
+// 			contentType: "application/json",
+// 			data: JSON.stringify(model),
+// 			success: function (response) {
+// 				DevExpress.ui.notify(response.message, "success", 3000);
+// 								setTimeout(function () {
     
-    if (window.parent && window.parent.$("#dataGrid").length) {
-        const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-        if (dataGrid) {
-            dataGrid.refresh();
-        }
-    }
+//     if (window.parent && window.parent.$("#dataGrid").length) {
+//         const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+//         if (dataGrid) {
+//             dataGrid.refresh();
+//         }
+//     }
 
-    history.back();
+//     history.back();
 
-}, 3000);
+// }, 3000);
 				
-			},
-			error: function (xhr) {
-				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-			}
-		});
-	});
+// 			},
+// 			error: function (xhr) {
+// 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+// 			}
+// 		});
+// 	});
 	// $(document).ready(function () {
 	// 	$.ajax({
 	// 		url: "/api/VATModule/CreateNewInvoiceCounter",
@@ -6563,20 +6587,20 @@ $("#btnBack").on("click", function (e) {
             icon.className = step.icon;
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });
@@ -6850,8 +6874,7 @@ function onIMSAttachmentButtonClick(e) {
       });
 	let currentResolver = null;
 	window.confirmDeleteWithPhrase = function(options){
-		debugger;
-		openDialog(options || {});
+				openDialog(options || {});
 		return new Promise(resolve => { currentResolver = resolve; });
 	}
 	window.handleUploadConfirm = async function (requestNo) {

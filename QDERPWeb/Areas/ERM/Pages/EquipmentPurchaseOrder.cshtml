@@ -2037,10 +2037,14 @@ $("#btnSave").on("click", function () {
         DevExpress.ui.notify("PO number is missing. Please refresh and try again.", "error", 3000);
         return;
     }
-
+   
     // Finalize grid edits before reading children
      const grid = $("#itemGrid").dxDataGrid("instance");
-
+      if (!children || children.length === 0) {
+			DevExpress.ui.notify("No child records to save.", "error", 3000);
+			$btn.option("disabled", false); // Re-enable the button
+			return;
+		}
             if (!grid) {
                 console.warn("itemGrid is not initialized");
                 return;

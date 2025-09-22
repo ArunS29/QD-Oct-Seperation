@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Mvc;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Service;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -18,11 +19,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<JournalRegisterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public JournalRegisterController(ILogger<JournalRegisterController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public JournalRegisterController(ILogger<JournalRegisterController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -194,7 +197,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
         // POST: /Finance/DeleteJournalEntry
         [HttpPost]
-        public IActionResult DeleteJournalEntry(string journalRefNo)
+        public async Task<IActionResult> DeleteJournalEntryAsync(string journalRefNo)
         {
             if (string.IsNullOrEmpty(journalRefNo))
                 return BadRequest("Invalid JournalRefNo.");
@@ -227,6 +230,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(employeeList);
                 dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(propertyList);
                 dbContext.SaveChanges();
+                await _userActionLogger.LogAsync(
+                module: "Finance > Journal Register",
+                actionDetail: $"Delete Journal: {master.JournalRefNo}",
+                documentNo: master.JournalRefNo
+            );
 
                 return Json(new { success = true });
             }
@@ -235,7 +243,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult UnlockJournalEntry(string journalRefNo)
+        public async Task<IActionResult> UnlockJournalEntryAsync(string journalRefNo)
         {
             if (string.IsNullOrEmpty(journalRefNo))
                 return BadRequest(new { success = false, message = "JournalRefNo is required." });
@@ -265,7 +273,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             entry.ApprovedOn = null;
 
             dbContext.SaveChanges();
-
+            await _userActionLogger.LogAsync(
+            module: "Finance > Journal Register",
+            actionDetail: $"Unlocked: {entry.JournalRefNo}",
+            documentNo: entry.JournalRefNo
+            );
             return Ok(new { success = true });
         }
         [HttpPost]

@@ -198,6 +198,7 @@
                 .Type(ButtonType.Default)
                 .Icon("check")
                 .Width(150)
+                .OnClick("btnSaveAndCloseClick")
                 .ElementAttr("style", "margin-left: 10px;"))
 
         @(Html.DevExtreme().Button()
@@ -206,6 +207,7 @@
                 .Type(ButtonType.Normal)
                 .Icon("arrowleft")
                 .Width(120)
+                .OnClick("Goback")
                 .ElementAttr("style", "margin-left: 10px;"))
     </div>
 </div>
@@ -523,4 +525,75 @@
         }
     });
 
+
+        function btnSaveAndCloseClick() {
+        const OperatorName = $("#OperatorName").dxTextBox("instance").option("value");
+        const PropertyOperatorTypeID = $("#OperatorType").dxDropDownBox("instance").option("value");
+
+        // ===== Validation Start =====
+        if (!OperatorName || OperatorName.trim() === "") {
+            DevExpress.ui.notify("Operator Name is required!", "error", 3000);
+            $("#OperatorName").dxTextBox("instance").focus();
+            return;
+        }
+
+        if (!PropertyOperatorTypeID || PropertyOperatorTypeID.length === 0) {
+            DevExpress.ui.notify("Operator Type is required!", "error", 3000);
+            $("#OperatorType").dxDropDownBox("instance").focus();
+            return;
+        }
+
+        try {
+            const data = {
+                EquipmentNo: $("#PropertyNo").dxTextBox("instance")?.option("value") || "",
+                PropertyOperatorTypeID: $("#OperatorType").dxDropDownBox("instance")?.option("value") || "",
+                OperatorName: $("#OperatorName").dxTextBox("instance")?.option("value") || "",
+                OperatorRegHourlyRate: $("#HourlyRate").dxNumberBox("instance")?.option("value") || 0,
+                EmployeeID: $("#EmployeeNo").dxDropDownBox("instance")?.option("value") || "",
+                OperatorOthourlyRate: $("#OvertimeRate").dxNumberBox("instance")?.option("value") || 0,
+                WorkStartDate: $("#WorkStartDate").dxDateBox("instance")?.option("value") || null,
+                WorkEndDate: $("#DemobilizedOn").dxDateBox("instance")?.option("value") || null,
+                OperatorRemarks: $("#Remarks").dxTextArea("instance")?.option("value") || "",
+                WorkingShift: $("#Shift").dxSelectBox("instance")?.option("value") || "",
+            };
+
+            $.ajax({
+                url: "/api/PropertyOperator/SaveOrUpdate",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result?.success) {
+                        DevExpress.ui.notify(result.message, "success", 3000);
+
+                        setTimeout(() => {
+                            // ✅ Refresh dxDataGrid
+                            const grid = $("#OperatorGrid").dxDataGrid("instance");
+                            if (grid) {
+                                grid.refresh();
+                            }
+                            // ✅ Close popup if form was inside popup
+                            const popup = $("#OperatorPopup").dxPopup("instance");
+                            if (popup) {
+                                popup.hide();
+                            }
+                        }, 300);
+
+                    } else {
+                        DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("AJAX Error:", xhr.responseText);
+                    DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                }
+            });
+        } catch (err) {
+            console.error("btnSaveAndCloseClick error:", err);
+            DevExpress.ui.notify("Form controls not initialized properly", "error", 3000);
+        }
+    }
+      function Goback() {
+          window.parent.closeModal();
+      }
 </script>

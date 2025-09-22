@@ -1,6 +1,12 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.CreatePaymentRequestModel
 @{
+    // pull your session value (“2”) into baseCurrencyIdnew
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
+
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -317,6 +323,29 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
                         .Value(null)
+                        )
+        </div>
+        <div class="form-group col-md-2 col-sm-6">
+            @(Html.DevExtreme().DropDownBox()
+                        .ID("ddlBaseCurrency")
+                        .DataSource(d => d.WebApi()
+                        .Controller("Utility")
+                        .LoadAction("GetCurrencyList")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CurrencyExchangeId")
+                        )
+                        .ValueExpr("CurrencyExchangeId")
+                        .DisplayExpr("CurrencyName")
+                                                     // now use your renamed variable
+                        .Value(baseCurrencyIdnew)
+                        .Label(new JS("formatMessage('Base Currency')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(false)
+                        .DropDownOptions(o => o.Width(300))
+                        .ReadOnly(true)
+                        .ElementAttr(new { @class = "custom-disabled-selectbox" })
                         )
         </div>
     </div>
@@ -1529,7 +1558,13 @@
                                 }
                                 if (formattedPostedDate) {
                                     disableclaim();
-                                    btnPreview.option("disabled", false);
+                                     // Re-enable Preview button explicitly AFTER disableclaim
+                                    setTimeout(() => {
+                                        const btnPreview = $("#btnPrintnew").dxDropDownButton("instance");
+                                        if (btnPreview) {
+                                            btnPreview.option("disabled", false);
+                                        }
+                                    }, 50);
                                 }
 
                                 // ✅ Sync fields
@@ -2221,7 +2256,15 @@
                         }
                     });
                 }, 100);
+                 // Enable the DropDownButton explicitly
+                    const previewButton = $("#btnPrintnew").dxDropDownButton("instance");
 
+                    if (previewButton) {
+                        previewButton.option("disabled", false);
+                        previewButton.repaint();  // Force UI refresh
+                    } else {
+                        console.error("btnPreview1 instance not found");
+                    }
             }
 
             function onTaxBoxClosed(e) {
@@ -2390,7 +2433,7 @@
 
             const isMaster = false;
                     const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-            const title = "Transaction Documents";
+             const title = formatMessage("Transaction Documents");
 
             openModal(url, title);
         }
@@ -2699,6 +2742,22 @@
                                         if (deleteResult.success) {
                                             DevExpress.ui.dialog.alert("Claim Successfully   removed from the database", "Success")
                                                         .done(function () {
+                                                                // Attachment Delete
+                                                var module = "finance";
+                                                $.ajax({
+                                                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(module)}`,
+                                                    type: "POST",
+                                                    success: function (response) {
+                                                        if (response.success) {
+                                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                                        } else {
+                                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                                        }
+                                                    },
+                                                    error: function (xhr, status, error) {
+                                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                                    }
+                                                });
                                                             sessionStorage.setItem("refreshPage", "true");
                                                             history.back();
                                                         });

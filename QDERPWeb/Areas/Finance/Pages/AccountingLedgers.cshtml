@@ -431,7 +431,6 @@
 
 	.titleCard-card .header {
 		position: relative;
-
 	}
 
 	.value-slider span {
@@ -1175,7 +1174,9 @@
 											)
 }
 
-<script>function onToolbarPreparing(e) {
+<script>
+	
+	function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
 		e.toolbarOptions.items = e.toolbarOptions.items.filter(function(item) {
 			return item.name !== "columnChooserButton";
@@ -1197,9 +1198,6 @@
 
 
 		$(document).ready(function () {
-
-
-
 	   $("#btnCreateNew").css("display", "none");
 
 			console.log('Start permission handling AccountingLedgers');
@@ -1360,16 +1358,19 @@
 		// 	});
 		// }
 		$(document).ready(function () {
+			debugger;
 			const urlParams = new URLSearchParams(window.location.search);
 			const AccountId = urlParams.get('AccountId');
+			const IsChartOfAccounts = urlParams.get('IsChartOfAccounts');
 			// alert(AccountId);
 
 			if (AccountId) {
+				
 				// Change the Save button to Update
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
 				// button.option("text", "Update");
-
+			    accgroupid = response.data.AccountGroupId;
 				// Fetch and bind data to form fields if CostAllocationUnitId is in the query string
 				$.ajax({
 					url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
@@ -1386,6 +1387,18 @@
 							// $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
 							// $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
 							// $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
+
+							if(IsChartOfAccounts=="true")
+							{
+								acchedid = response.data.AccountId;
+                                accheadname = response.data.AccountHead;
+                                refno = response.data.ReferenceNo;
+                                accgroup = response.data.AccountGroup;
+                                accgroupid = response.data.AccountGroupId;
+                                accheadar = response.data.AccountHeadArabic;
+								
+								ddBtnShowRecords_click("fullmonth")
+							}
 
 						} else {
 							//   alert(response.message);

@@ -1166,7 +1166,7 @@
             </div>
 
         </text>);
-         item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+         item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
                                                                                                                                                                 <div class="p-2">
                                                                                                                                                                     <table style="width:100%; font-size:14px; margin:5px;">
                                                                                                                                                                         <tr>
@@ -1875,7 +1875,7 @@ function dataGridInitialized6(e) {
 
         const tenantName = window.tenantName || "defaultTenant";
         const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${encodeURIComponent(selectedSupplierCode)}`;
-        const title = "Supplier Master";
+        const title = formatMessage("Supplier Master");
 
         openModal(url, title);
     }
@@ -1885,7 +1885,7 @@ function dataGridInitialized6(e) {
             selectBox.close();
 
             const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-        const title = "Supplier Master";
+        const title = formatMessage("Supplier Master");
             openModal(url, title);
     }
        function isDxInitialized($el, widgetName) {
@@ -2081,13 +2081,13 @@ function dataGridInitialized6(e) {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -2134,7 +2134,7 @@ function dataGridInitialized6(e) {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2152,7 +2152,7 @@ function dataGridInitialized6(e) {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2199,7 +2199,7 @@ function dataGridInitialized6(e) {
                 }
 
                 let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
-                let title = "Details Description";
+                let title = formatMessage("Details Description");
 
                 openModal(url, title);
             }
@@ -2230,7 +2230,7 @@ function dataGridInitialized6(e) {
                 }
 
                 let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
-                let title = "Details Description";
+                let title = formatMessage("Details Description");
 
                 openModal(url, title);
             }
@@ -2311,13 +2311,13 @@ function dataGridInitialized6(e) {
 
                                             columns: [
 
-                                                { dataField: "UnitCode", caption: "Code", width: 80 },
+                                                { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-                                                { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+                                                { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-                                                { dataField: "UnitType", caption: "Unit Type", width: 150 },
+                                                { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-                                                { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+                                                { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
                                             ],
 
@@ -2356,7 +2356,7 @@ function dataGridInitialized6(e) {
                                     onClick: function () {
 
                                         let url = `/${tenantName}/IMS/UnitOfMeasure`; 
-                                         let title = "Unit of Measure";
+                                         let title = formatMessage("Unit of Measure");
                                           openModal(url, title,"70%","70%");
 
                                     },
@@ -2503,7 +2503,7 @@ function dataGridInitialized6(e) {
 
 
                         { dataField: "Amount", caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } ,visible: false },
-                        { dataField: "LineTaxAmount",  caption: formatMessage('VAT'), width: 150 },
+                        { dataField: "LineTaxAmount",  caption: formatMessage('VAT'), width: 150,format: { type: "fixedPoint", precision: 2 }},
 
                         { dataField: "LineTotalWithTax",  caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
@@ -2535,14 +2535,14 @@ function dataGridInitialized6(e) {
         if (e.row && e.row.rowType === "data") {
             e.items = [
                 {
-                    text: "Delete Line Item",
+                    text: formatMessage("Delete Line Item"),
                     icon: "remove",
                     onItemClick: function() {
                         deletePoChild([e.row.data.PochildNo]);
                     }
                 },
                 {
-                    text: "Delete All Selected Line Items",
+                    text: formatMessage("Delete All Selected Line Items"),
                     icon: "remove",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2556,7 +2556,7 @@ function dataGridInitialized6(e) {
                     }
                 },
                 {
-                    text: "Add New Line Item",
+                    text: formatMessage("Add New Line Item"),
                     icon: "add",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2638,7 +2638,7 @@ function dataGridInitialized6(e) {
             $(function () {
         $("#btnAddNew").on("click", function () {
             var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+            button.option("text", formatMessage("Update"));
 
             var grid = $("#B2BdataGrid").dxDataGrid("instance");
             // Get total row count
@@ -3021,8 +3021,7 @@ function disableSpecificControls() {
 }
 
     function deletePoChild(poChildNos) {
-        debugger;
-        const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+                const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
         if (!Array.isArray(poChildNos)) poChildNos = [poChildNos];
 
         DevExpress.ui.dialog.confirm(
@@ -3560,8 +3559,8 @@ const children = grid.getDataSource().items().map(item => {
                       updateWorkflowVisual(getWorkflowStatusFromFields());
             DevExpress.ui.notify("Saved successfully", "success", 3000);
            const Pono=response.pono;
-
-            window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(Pono)}&mode=edit`;
+             history.back();
+           
              isSaved = true; 
             // Reload grid from server if needed
             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
@@ -3573,9 +3572,7 @@ const children = grid.getDataSource().items().map(item => {
         data: data.items || []
     }));
     B2BdataGridInstance.refresh();
-      setTimeout(() => {
-                    history.back();
-                }, 1000);
+    
             });
         },
         error: function (xhr) {
@@ -3869,7 +3866,7 @@ let isApproved=null;
 rvNo = urlParams.get("RevNo") ?? "";
 $('#RevNo').dxTextBox("instance").option("value", RevisionNo);
 
-           $("#btnSave").dxButton("instance").option("text", "Update");
+           $("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
         if (Pono) {
             edit=true;
             const isEditMode = mode === "edit";
@@ -4212,7 +4209,7 @@ function getDefaultCompany() {
           }
            function CurrencyClick() {
           let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-          let title = "Currency Master";
+          let title = formatMessage("Currency Master");
           openModal(url, title);
       }
         function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -4314,7 +4311,7 @@ function getDefaultCompany() {
         encodeURIComponent(supplierCode) + '&SupplierName=' +
         encodeURIComponent(supplierName);
 
-    openModal(url, 'Supplier Contact List');
+    openModal(url, formatMessage('Supplier Contact List'));
 }
 function selectContact(name, email, mobile, phone) {
 			$("#AttentionTo").dxTextBox("instance").option("value", name);
@@ -4333,7 +4330,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/Projects`;
-        const title = "Project";
+        const title = formatMessage("Project");
             openModal(url, title);
     }
      function AddSignatory(){
@@ -4341,7 +4338,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/Signatories`;
-        const title = "Signatories";
+        const title = formatMessage("Signatories");
             openModal(url, title);
     }
     function AddPOCategory(){
@@ -4349,7 +4346,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "Purchase Order Categories";
+        const title = formatMessage("Purchase Order Categories");
             openModal(url, title);
     }
       // Grid moveup and movedown
@@ -4477,7 +4474,7 @@ function selectContact(name, email, mobile, phone) {
         }
    function AddPreparedBy(){
 					const url = `/${tenantName}/IMS/Signatories`;
-				  const title = "Signatories";
+				  const title = formatMessage("Signatories");
 					  openModal(url, title);
 			  }
 
@@ -4511,20 +4508,20 @@ function selectContact(name, email, mobile, phone) {
             icon.className = step.icon;
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });

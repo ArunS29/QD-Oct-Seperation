@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -15,11 +16,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ChartOfAccountsController> _logger;
-
-        public ChartOfAccountsController(ILogger<ChartOfAccountsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public ChartOfAccountsController(ILogger<ChartOfAccountsController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
         [FinancePermission("uc20101ChartOfAccounts")]
         public IActionResult ChartOfAccounts() => View();
@@ -79,6 +81,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         dbContext.Tbl201ChartOfAccounts.Remove(item);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                        module: "Finance > Chart of Account",
+                        actionDetail: $"Updated: {accountId}",
+                        documentNo: accountId
+                        );
                         return Ok(new { success = true, message = "Ledger has been successfully removed from the database" });
                     }
 

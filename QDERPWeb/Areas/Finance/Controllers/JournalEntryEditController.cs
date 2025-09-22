@@ -1,4 +1,8 @@
-﻿using DevExpress.XtraRichEdit.Import.Html;
+﻿using System;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +12,8 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
-using System;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -23,12 +24,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private ERPMasterWtDataContext _context;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<JournalEntryEditController> _logger;
-
-        public JournalEntryEditController(ILogger<JournalEntryEditController> logger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
+        private readonly IUserActionLogger _userActionLogger;
+        public JournalEntryEditController(ILogger<JournalEntryEditController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper, ERPMasterWtDataContext context)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _context = context;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -313,6 +315,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+        module: "Finance > Journal Register",
+        actionDetail: $"Saved Journal: {model.JournalRefNo}",
+        documentNo: model.JournalRefNo
+    );
 
                 return Ok(new { success = true });
             }
@@ -757,7 +764,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
         [HttpPost]
-        public IActionResult SubmitToFinance(string voucherNo)
+        public async Task<IActionResult> SubmitToFinanceAsync(string voucherNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -787,6 +794,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 entry.SubmittedOn = now;
 
                 dbContext.SaveChanges();
+                await _userActionLogger.LogAsync(
+                module: "Finance > Journal Register",
+                actionDetail: $"Submitted: {entry.JournalRefNo}",
+                documentNo: entry.JournalRefNo
+            );
 
                 return Json(new
                 {
@@ -803,7 +815,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult VerifyJournal(string voucherNo)
+        public async Task<IActionResult> VerifyJournalAsync(string voucherNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -833,7 +845,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 entry.VerifiedOn = now;
 
                 dbContext.SaveChanges();
-
+                await _userActionLogger.LogAsync(
+                 module: "Finance > Journal Register",
+                 actionDetail: $"Verified: {entry.JournalRefNo}",
+                 documentNo: entry.JournalRefNo
+                );
                 return Json(new
                 {
                     success = true,
@@ -848,7 +864,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
         [HttpPost]
-        public IActionResult ApproveJournal(string voucherNo)
+        public async Task<IActionResult> ApproveJournalAsync(string voucherNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -878,7 +894,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 entry.ApprovedOn = now;
 
                 dbContext.SaveChanges();
-
+                await _userActionLogger.LogAsync(
+                 module: "Finance > Journal Register",
+                 actionDetail: $"Approved: {entry.JournalRefNo}",
+                 documentNo: entry.JournalRefNo
+                );
                 return Json(new
                 {
                     success = true,

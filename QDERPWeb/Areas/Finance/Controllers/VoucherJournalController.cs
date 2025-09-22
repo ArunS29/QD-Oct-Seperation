@@ -1,13 +1,13 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.Emf;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
-
-using Microsoft.EntityFrameworkCore;
-using DevExpress.Emf;
-using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 //using SkiaSharp;
 using QDERPWeb.Models;
 
@@ -23,12 +23,15 @@ namespace QDWEB.Areas.Finance.Controllers
         private readonly ILogger<VoucherJournalController> _logger;
 
         private readonly FcmService _fcmService;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public VoucherJournalController(ILogger<VoucherJournalController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
+        public VoucherJournalController(ILogger<VoucherJournalController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
+            
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -328,7 +331,16 @@ namespace QDWEB.Areas.Finance.Controllers
                             dbContext.Tbl201VoucherMasters.Add(voucherMaster);
                             await dbContext.Tbl201VoucherEntries.AddRangeAsync(VM.VoucherEntries);
                             await dbContext.SaveChangesAsync();
-
+                            await _userActionLogger.LogAsync(
+                  module: "Finance > Voucher Journal",
+                  actionDetail: $"Saved Voucher: {VM.VoucherMaster.VoucherNo}",
+                  documentNo: VM.VoucherMaster.VoucherNo
+              );
+                            await _userActionLogger.LogAsync(
+                  module: "Finance > Voucher Journal",
+                  actionDetail: $"Added Voucher: {VM.VoucherEntries[0].VoucherNo}, Entries: {VM.VoucherEntries.Count}",
+                  documentNo: VM.VoucherEntries[0].VoucherNo
+              );
                             await transaction.CommitAsync();
                         }
                     });
@@ -474,7 +486,11 @@ namespace QDWEB.Areas.Finance.Controllers
 
                             dbContext.Tbl201VoucherEntries.RemoveRange(existingEntries);
                             await dbContext.SaveChangesAsync();
-
+                            await _userActionLogger.LogAsync(
+module: "Finance > Voucher Journal",
+actionDetail: $"Added Voucher: {VM.VoucherEntries[0].VoucherNo}, Entries: {VM.VoucherEntries.Count}",
+documentNo: VM.VoucherEntries[0].VoucherNo
+);
                             // Add new entries
                             var newEntries = new List<Tbl201VoucherEntry>();
                             foreach (var entry in VM.VoucherEntries)
@@ -502,7 +518,11 @@ namespace QDWEB.Areas.Finance.Controllers
 
                             await dbContext.Tbl201VoucherEntries.AddRangeAsync(newEntries);
                             await dbContext.SaveChangesAsync();
-
+                            await _userActionLogger.LogAsync(
+module: "Finance > Voucher Journal",
+actionDetail: $"Added Voucher: {VM.VoucherEntries[0].VoucherNo}, Entries: {VM.VoucherEntries.Count}",
+documentNo: VM.VoucherEntries[0].VoucherNo
+);
                             await transaction.CommitAsync();
                         }
                     });
@@ -685,7 +705,7 @@ namespace QDWEB.Areas.Finance.Controllers
                     // Use EF execution strategy for retryable operations
                     var strategy = dbContext.Database.CreateExecutionStrategy();
 
-                    strategy.Execute(() =>
+                    strategy.Execute(async () =>
                     {
                         using (var transaction = dbContext.Database.BeginTransaction())
                         {
@@ -707,6 +727,7 @@ namespace QDWEB.Areas.Finance.Controllers
                             {
                                 dbContext.Tbl201VoucherEntries.RemoveRange(entryRecords);
                                 dbContext.SaveChanges();
+                               
                             }
 
                             // 3. Delete Masters
@@ -717,6 +738,11 @@ namespace QDWEB.Areas.Finance.Controllers
                             {
                                 dbContext.Tbl201VoucherMasters.RemoveRange(masterEntries);
                                 dbContext.SaveChanges();
+                                await _userActionLogger.LogAsync(
+module: "Finance > Voucher Journal",
+actionDetail: $"Deleted Voucher : {VoucherNo}",
+documentNo: VoucherNo
+);
                             }
 
                             // 4. Delete Cost Allocation
@@ -748,7 +774,7 @@ namespace QDWEB.Areas.Finance.Controllers
                                 dbContext.Tbl20104EmployeeAllocationMasters.RemoveRange(employeeEntries);
                                 dbContext.SaveChanges();
                             }
-
+                
                             transaction.Commit();
                         }
                     });
