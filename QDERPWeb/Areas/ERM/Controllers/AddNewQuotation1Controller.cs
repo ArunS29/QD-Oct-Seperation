@@ -655,10 +655,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public decimal? MobilizationRate { get; set; }
             public decimal? DemobRate { get; set; }
             public string DeliveryDetails { get; set; }
+            public decimal? LineOrderNo { get; set; }
         }
-
-
-
 
 
 
@@ -681,13 +679,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             try
             {
-                // Check if quotation already exists
+                // ✅ Check if child already exists for given QuoteNo + LineOrderNo
                 var existing = await dbContext.Tbl40104PropertyQuoteChildren
-                    .FirstOrDefaultAsync(x => x.QuoteNo == request.QuoteNo);
+                    .FirstOrDefaultAsync(x => x.QuoteNo == request.QuoteNo && x.LineOrderNo == request.LineOrderNo);
 
                 if (existing != null)
                 {
-                    // Update existing record
+                    // 🔄 Update existing record
                     existing.PropertyAddlDescription = request.DetailedDescription;
                     existing.Certification = request.Certification;
                     existing.Capacity = request.Capacity;
@@ -705,10 +703,18 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
                 else
                 {
-                    // Insert new record
+                    // ✅ Generate next LineOrderNo for this QuoteNo
+                    decimal nextLineOrderNo = (await dbContext.Tbl40104PropertyQuoteChildren
+                        .Where(x => x.QuoteNo == request.QuoteNo)
+                        .MaxAsync(x => (decimal?)x.LineOrderNo)) ?? 0;
+
+                    nextLineOrderNo++; // increment
+
+                    // ➕ Insert new record
                     var newChild = new Tbl40104PropertyQuoteChild
                     {
                         QuoteNo = request.QuoteNo,
+                        LineOrderNo = nextLineOrderNo,   // ✅ sequential number
                         PropertyAddlDescription = request.DetailedDescription,
                         Certification = request.Certification,
                         Capacity = request.Capacity,
@@ -723,6 +729,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         MobRate = request.MobilizationRate,
                         DemobRate = request.DemobRate,
                         DeliveryDetails = request.DeliveryDetails,
+                        HasEquipmentDetails ="Yes"
+
                     };
 
                     await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(newChild);
@@ -732,7 +740,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 await _userActionLogger.LogAsync(
                     module: "ERM > Save Quotation Child",
-                    actionDetail: $"Saved Quotation Child: {request.QuoteNo}",
+                    actionDetail: $"Saved Quotation Child: {request.QuoteNo} - {request.LineOrderNo}",
                     documentNo: $"{request.QuoteNo}"
                 );
 
@@ -743,6 +751,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
+
+
 
 
 
@@ -810,37 +821,175 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
+        public class QuoteChildInsertRequest
+        {
+            public string QuoteNo { get; set; }          // Parent Quote Number (required)
+
+            // Core fields
+
+            public string PropertyAddlDescription { get; set; }
+
+
+            public string DetailedDescription { get; set; }
+            public decimal? QuotedQuantity { get; set; }
+            public string QuoteMethod { get; set; }
+            public decimal? UnitRateMethod { get; set; }
+
+            // Extra fields (map to your child table)
+            public string Certification { get; set; }
+            public string Capacity { get; set; }
+            public string Operator { get; set; }
+            public string Attachment { get; set; }
+            public string UnitRateMethod2 { get; set; }
+            public decimal? UnitRate2 { get; set; }
+            public string UnitRateMethod3 { get; set; }
+            public decimal? UnitRate3 { get; set; }
+            public string Notes { get; set; }
+            public string AdditionalNotes { get; set; }
+
+            // Mobilization/Demobilization
+            public decimal? MobilizationRate { get; set; }
+            public decimal? DemobRate { get; set; }
+
+            // Delivery details
+            public string DeliveryDetails { get; set; }
+
+            public string QuotedUom { get; set; }
+            public string EquipmentQuotedFor { get; set; }
+
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddQuoteChild([FromBody] QuoteChildInsertRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            if (request == null || string.IsNullOrEmpty(request.QuoteNo))
+                return BadRequest(new { success = false, message = "QuoteNo is required." });
+
+            try
+            {
+                // 1️⃣ Get max existing LineOrderNo for this quote
+                decimal nextLineOrderNo = 1;
+                var existingMax = await dbContext.Tbl40104PropertyQuoteChildren
+                    .Where(x => x.QuoteNo == request.QuoteNo && x.LineOrderNo > 0)
+                    .MaxAsync(x => (decimal?)x.LineOrderNo);
+
+                if (existingMax.HasValue)
+                    nextLineOrderNo = existingMax.Value + 1;
+
+                // 2️⃣ Get last row (highest LineOrderNo)
+                var lastRow = await dbContext.Tbl40104PropertyQuoteChildren
+                    .Where(x => x.QuoteNo == request.QuoteNo)
+                    .OrderByDescending(x => x.LineOrderNo)
+                    .FirstOrDefaultAsync();
+
+                Tbl40104PropertyQuoteChild targetRow;
+                bool didInsert;
+
+                // 3️⃣ Decide Insert or Update based on HasEquipmentDetails
+                if (lastRow != null && lastRow.HasEquipmentDetails == "Yes")
+                {
+                    // ✏️ Update last row if Equipment Details exist
+                    targetRow = lastRow;
+                    targetRow.EquipmentQuotedFor = request.PropertyAddlDescription;
+                    targetRow.QuotedQuantity = request.QuotedQuantity;
+                    targetRow.QuoteMethod = request.QuoteMethod;
+                    targetRow.UnitRateMethod = request.UnitRateMethod;
+                    targetRow.QuotedUom = request.QuotedUom;
+
+                    // mark that Equipment Details were updated
+                    targetRow.HasEquipmentDetails = "Updated";
+                    didInsert = false;
+                }
+                else
+                {
+                    // ➕ Insert a new row if no last row OR last row does not have Equipment Details
+                    targetRow = new Tbl40104PropertyQuoteChild
+                    {
+                        QuoteNo = request.QuoteNo,
+                        LineOrderNo = nextLineOrderNo,
+                        EquipmentQuotedFor = request.PropertyAddlDescription,
+                        QuotedQuantity = request.QuotedQuantity,
+                        QuoteMethod = request.QuoteMethod,
+                        UnitRateMethod = request.UnitRateMethod,
+                        QuotedUom = request.QuotedUom,
+                        HasEquipmentDetails = "No" // default for newly added without details
+                    };
+
+                    await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(targetRow);
+                    didInsert = true;
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                // 4️⃣ Prepare response
+                dynamic rowData = new ExpandoObject();
+                var dict = (IDictionary<string, object>)rowData;
+                dict["LineOrderNo"] = targetRow.LineOrderNo;
+                dict["DetailedDescription"] = targetRow.PropertyAddlDescription;
+                dict["MobRate"] = targetRow.MobRate;
+                dict["DemobRate"] = targetRow.DemobRate;
+
+                return Ok(new
+                {
+                    success = true,
+                    message = didInsert ? "Child row inserted successfully." : "Child row updated successfully.",
+                    rowData = rowData
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
         [HttpGet]
-        public async Task<ActionResult> GetQuoteChildDetails(string QuoteNo)
+        public async Task<ActionResult> GetQuoteChildDetails(string quoteNo, int lineOrderNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var resultWithDetails = new List<ExpandoObject>();
+                    var gridDetails = await dbContext.Tbl40104PropertyQuoteChildren
+                        .Where(x => x.QuoteNo == quoteNo && x.LineOrderNo == lineOrderNo)
+                        .FirstOrDefaultAsync();
 
-                    // Query Tbl40104PropertyQuoteChild by QuoteNo
-                    var result = await dbContext.Tbl40104PropertyQuoteChildren
-                        .Where(x => x.QuoteNo == QuoteNo)
-                        .ToListAsync();
+                    if (gridDetails == null)
+                        return Ok(null); // return null for easier frontend handling
 
-                    foreach (var gridDetails in result)
-                    {
-                        dynamic item = new ExpandoObject();
-                        var dict = (IDictionary<string, object>)item;
+                    dynamic item = new ExpandoObject();
+                    var dict = (IDictionary<string, object>)item;
 
-                        // Map only required fields
-                        dict["DetailedDescription"] = gridDetails.PropertyAddlDescription;
-                        dict["MobRate"] = gridDetails.MobRate;
-                        dict["DemobRate"] = gridDetails.DemobRate;
+                    // Map only required fields
+                    dict["DetailedDescription"] = gridDetails.PropertyAddlDescription;
+                    dict["MobRate"] = gridDetails.MobRate;
+                    dict["DemobRate"] = gridDetails.DemobRate;
 
-                        resultWithDetails.Add(item);
-                    }
-
-                    return Json(resultWithDetails);
+                    return Json(item);
                 }
                 catch (Exception ex)
                 {
@@ -850,6 +999,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
 
@@ -1106,5 +1256,81 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
+
+
+
+
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetClientDetailz(string clientCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var client = await dbContext.Tbl30101ClientMasters
+                        .Where(c => c.ClientCode == clientCode)
+                        .Select(c => new
+                        {
+                            contactPerson = c.ContactPerson,
+                            contactPersonTitle = c.ContactPersonTitle,
+                            contactEmail = c.ContactEmail,
+                            contactMobile1 = c.ContactMobile1
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound(new { message = "Client not found" });
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetailsById: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> CheckQuoteNo(string quoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var exists = await dbContext.Tbl40103PropertyQuoteMasters
+                        .AnyAsync(q => q.QuoteNo == quoteNo);
+
+                    if (!exists)
+                        return NotFound(new { message = "Quotation No not found", exists = false });
+
+                    return Ok(new { message = "Quotation No already exists", exists = true });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in CheckQuoteNo: {ex.Message}");
+                    return StatusCode(500, new { message = "Error checking quotation no", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+
+
+
+
+
+
+
+
+
     }
 }

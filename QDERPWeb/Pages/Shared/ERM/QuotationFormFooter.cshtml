@@ -10,6 +10,51 @@
         }
 
 
+        /* Save = Blue */
+        .btn-save {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+
+        /* Save and Close = Green */
+        .btn-saveclose {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        /* Verify = Yellow */
+        .btn-verify {
+            background-color: #ffc107 !important;
+            color: black !important;
+        }
+
+        /* Approve = Cyan/Teal */
+        .btn-approve {
+            background-color: #20c997 !important;
+            color: white !important;
+        }
+
+       
+        /* Delete Button Styling */
+        .btn-delete {
+            background-color: #ffe6e6 !important; /* light red inside */
+            color: #cc0000 !important; /* dark red text */
+            border: 1px solid #cc0000 !important; /* dark red outline */
+        }
+
+            .btn-delete .dx-icon {
+                color: #cc0000 !important; /* dark red icon */
+            }
+
+            /* Optional: hover effect */
+            .btn-delete:hover {
+                background-color: #ffcccc !important; /* slightly darker red on hover */
+            }
+
+
+
+
+
  </style>
 
     <div class="btn-container">
@@ -113,7 +158,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                //.ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-save" }) // 🔵
                 )
 
     </div>
@@ -125,7 +171,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+               // .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-saveclose" }) // 🟢
                 )
     </div>
     <div class="btn-container">
@@ -169,7 +216,8 @@
                 .ID("btnDelete")
                 .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                //.ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-delete" }) // 🔴
                 )
     </div>
 
@@ -257,7 +305,8 @@
                 .OnClick("onVerifyClickERM")
 
                 .Icon("check")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+               // .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .ElementAttr(new { @class = "btn-verify" }) // 🟡
                 )
     </div>
 
@@ -268,7 +317,8 @@
                 .Text(new JS("formatMessage('Approve')"))
                 .Icon("exportselected")
                 .OnClick("onApproveClickERM")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+               // .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .ElementAttr(new { @class = "btn-approve" }) // 🟢 tea
                 )
     </div>
 

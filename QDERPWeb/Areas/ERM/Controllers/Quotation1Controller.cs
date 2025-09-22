@@ -32,6 +32,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+
         [HttpGet]
         public async Task<IActionResult> GetQuotation(DateTime? fromDate, DateTime? toDate)
         {
@@ -41,48 +43,56 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 {
                     var query = dbContext.Qry40103PropertyQuoteMasterViews.AsQueryable();
 
-
                     // Default dates if not provided
                     if (!fromDate.HasValue)
                     {
-                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of current month
                     }
 
                     if (!toDate.HasValue)
                     {
-                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of current month
                     }
 
                     // Filtering by date range
                     query = query.Where(i => i.QuoteDate >= fromDate && i.QuoteDate <= toDate);
 
-                    // Fetching the data
-                    var data = await query.Select(i => new
-                    {
-                        i.QuoteNo,
-                        i.QuoteDate,
-                        i.ClientName,
-                        i.TotalNetAmount,
-                        i.SalesOrderNo,
-                        i.NoOfItems,
-                        i.DemobilizationAmount,
-                        i.MobilizationAmount,
-                        i.TotalGrossAmount,
-                    }).ToListAsync();
+                    // Fetching with child count
+                    var data = await query
+                        .GroupJoin(
+                            dbContext.Tbl40104PropertyQuoteChildren,
+                            master => master.QuoteNo,
+                            child => child.QuoteNo,
+                            (master, children) => new
+                            {
+                                master.QuoteNo,
+                                master.QuoteDate,
+                                master.ClientName,
+                                master.TotalNetAmount,
+                                master.SalesOrderNo,
+                                NoOfItems = children.Count(),  // ✅ count of child rows
+                                master.DemobilizationAmount,
+                                master.MobilizationAmount,
+                                master.TotalGrossAmount
+                            }
+                        )
+                        .ToListAsync();
 
                     return Json(data);
                 }
 
                 return Unauthorized(new { message = "Invalid tenant." });
-
             }
             catch (Exception ex)
             {
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
+                _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
-        	[HttpGet]
+
+
+
+        [HttpGet]
 		public async Task<IActionResult> GetQuotationDetails(DateTime? fromDate, DateTime? toDate)
 		{
 			try
@@ -346,10 +356,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         .Where(q => q.QuoteNo == originalQuoteNo)
         .Select(q => q.QuoteDate ?? DateTime.Now)
         .FirstOrDefault();
-
+                //sp400_22InsertDuplicateQuotation
                 // Call SP
                 dbContext.Database.ExecuteSqlRaw(
-                    "EXEC sp400_22InsertDuplicateQuotation @p0, @p1, @p2, @p3, @p4",
+                    "EXEC sp400_22InsertDuplicateQuotation  @p0, @p1, @p2, @p3, @p4",
                     originalQuoteNo, newQuoteNo, quoteDate, user, quoteDate
                 );
 

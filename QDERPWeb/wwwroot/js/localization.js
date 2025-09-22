@@ -5383,6 +5383,14 @@ var dictionary = {
         "Expected Rate": "Expected Rate",
         "Units Requested": "Units Requested",
         "Line Total": "Line Total",
+        "Detailed Description": "Detailed Description",
+        "Client PO Date": "Client PO Date",
+        "Client PO End Date": "Client PO End Date",
+        "Client PO Type": "Client PO Type",
+        "Client PO Value": "Client PO Value",
+       
+
+
         "XML": "XML",
         "Validations": "Validations",
         "Item Details": "Item Details",
@@ -10002,7 +10010,14 @@ var dictionary = {
         "Quotation for Equipment's Rental Services": "عرض أسعار لخدمات تأجير المعدات",
         "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "نأمل أن يكون عرضنا متوافقًا مع متطلباتكم. يرجى الإشارة في أمر الشراء إلى مرجع عرض الأسعار الخاص بنا والموافقة على الشروط والأحكام.",
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "بالإشارة إلى استفساركم بخصوص خدمات تأجير المعدات، نود أن نقدم لكم عرض الأسعار للاطلاع.",
+
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
+        "Client PO Date": "تاريخ أمر الشراء للعميل",
+        "Client PO End Date": "تاريخ انتهاء أمر الشراء للعميل",
+        "Client PO Type": "نوع أمر الشراء للعميل",
+        "Client PO Value": "قيمة أمر الشراء للعميل",
+
+
         "Is Balance Sheet Account": "هل هو حساب الميزانية العمومية",
         "Is Salary Payable": "هل الراتب مستحق الدفع",
         "Is Use In Reconciliation": "هل يستخدم في التسوية",
@@ -14310,6 +14325,10 @@ var dictionary = {
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "关于您对设备租赁服务的询价，我们特此提交报价供您参考。",
 
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "此外，如果您需要任何进一步的说明，请随时联系下方签名人。",
+        "Client PO Date": "客户采购订单日期",
+        "Client PO End Date": "客户采购订单结束日期",
+        "Client PO Type": "客户采购订单类型",
+        "Client PO Value": "客户采购订单金额",
 
 
         "Validations": "验证",
@@ -18715,6 +18734,11 @@ var dictionary = {
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "उपकरण किराया सेवाओं के संबंध में आपके प्रश्न के संदर्भ में, हम यहां आपका अवलोकन करने हेतु उद्धरण प्रस्तुत करते हैं।",
 
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "इसके अतिरिक्त, यदि आपको और किसी स्पष्टीकरण की आवश्यकता हो तो कृपया निःसंकोच नीचे हस्ताक्षरकर्ता से संपर्क करें।",
+        "Client PO Date": "क्लाइंट पीओ तिथि",
+        "Client PO End Date": "क्लाइंट पीओ समाप्ति तिथि",
+        "Client PO Type": "क्लाइंट पीओ प्रकार",
+        "Client PO Value": "क्लाइंट पीओ मूल्य",
+
 
 
         "Validations": "मान्यकरण",
@@ -23177,6 +23201,10 @@ var dictionary = {
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "آلات کرایہ کی خدمات کے حوالے سے آپ کی استفسار کے پیش نظر ہم یہ کوٹیشن آپ کے ملاحظے کے لیے پیش کرتے ہیں۔",
 
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "مزید یہ کہ اگر آپ کو کسی اور وضاحت کی ضرورت ہو تو بلا جھجک نیچے دستخط کنندہ کو کال کریں۔",
+        "Client PO Date": "کلائنٹ پی او کی تاریخ",
+        "Client PO End Date": "کلائنٹ پی او کی آخری تاریخ",
+        "Client PO Type": "کلائنٹ پی او کی قسم",
+        "Client PO Value": "کلائنٹ پی او ویلیو",
 
 
         "Validations": "تصدیق",
@@ -27435,6 +27463,11 @@ var dictionary = {
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "장비 임대 서비스에 대한 귀하의 문의에 따라 검토를 위해 견적을 제출드립니다.",
 
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "또한 추가 설명이 필요하시면 아래 서명자에게 언제든지 연락 주시기 바랍니다.",
+        "Client PO Date": "클라이언트 발주서 날짜",
+        "Client PO End Date": "클라이언트 발주서 종료일",
+        "Client PO Type": "클라이언트 발주서 유형",
+        "Client PO Value": "클라이언트 발주서 금액",
+
 
 
         "Validations": "검증",
