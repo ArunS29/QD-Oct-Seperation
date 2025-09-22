@@ -24,14 +24,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewClientRequest1Controller> _logger;
-        private readonly IUserActionLogger _userActionLogger;
 
 
-        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
-            _userActionLogger = userActionLogger;
 
 
         }
@@ -847,11 +845,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				dbContext.Tbl60601purchaseRequestMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-					module: "ERM > Delete Purchase Request",
-				   actionDetail: $"Deleted Purchase Request {Mprno}",
-					documentNo: $"{Mprno}"
-				);
+               
 
                 return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
 			}
@@ -935,11 +929,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
-            await _userActionLogger.LogAsync(
-				module: "ERM > Submit MPR",
-			   actionDetail: $"Submited MPR {mprNo}",
-				documentNo: $"{mprNo}"
-			);
+           
 
             return Ok(new { success = true, message = "MPR submitted successfully." });
 		}
@@ -988,11 +978,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				}
 
 				await dbContext.SaveChangesAsync();
-				   await _userActionLogger.LogAsync(
-					   module: "ERM > Verify MPR",
-					  actionDetail: $"Verify MPR {mprNo}",
-					   documentNo: $"{mprNo}"
-				   );
+				   
 
                 return Ok(new
 				{
@@ -1240,11 +1226,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 					dbContext.SaveChanges();
 
-                    await _userActionLogger.LogAsync(
-                      module: "ERM > Cancel MPR",
-                     actionDetail: $"Canceled MPR: {mprNo}",
-                      documentNo: $"{mprNo}"
-                    );
+                   
 
                     return Ok(new
 					{
