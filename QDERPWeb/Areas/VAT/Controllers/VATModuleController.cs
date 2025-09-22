@@ -39,6 +39,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         private readonly IUserActionLogger _userActionLogger;
 
         private readonly FcmService _fcmService;
+        private object _configuration;
 
         public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
@@ -46,6 +47,54 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSummary(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return BadRequest(new { message = "Unable to resolve tenant or DbContext." });
+
+                // Default date range: first day → last day of current month
+                fromDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+                var query = dbContext.Qry209004goodsCurrentQtyWtDetails002s.AsQueryable();
+
+                // Optional: apply date filter if table has a date column
+                // query = query.Where(i => i.CreatedOn >= fromDate && i.CreatedOn <= toDate);
+
+                var data = await query.Select(i => new
+                {
+                    i.Gscode,
+                    i.Gsdescrpition,
+                    i.GsgroupName,
+                    i.UnitDesc,
+                    i.OpeningBalance,
+                    i.PurchaseQty,
+                    i.PurchaseReturnedQty,
+                    i.SoldQty,
+                    i.SalesReturnedQty,
+                    ClosingBalance = i.GoodsCurrentClosingBalance,
+                    i.FixedCostPrice,
+                    i.FixedCostOfGoodsSold,
+                    i.FixedCostInventoryValue,
+                    i.TotalSalesValue,
+                    i.TotalSalesReturnValue,
+                    i.NetSalesValue,
+                    i.GrossProfitOnSales
+                }).ToListAsync();
+
+                _logger.LogInformation($"GetSummary returned {data.Count} rows for tenant {tenant.Name}.");
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in VATModule/GetSummary");
+                return StatusCode(500, new { message = "Error while fetching data.", error = ex.Message });
+            }
         }
 
         //[HttpGet]
@@ -164,7 +213,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         //        }
         //    }
         //}
-       
+
         public async Task<ActionResult> GetVatInvoices(
     string frmDate,
     string toDate,
