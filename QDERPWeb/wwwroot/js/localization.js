@@ -5383,6 +5383,14 @@ var dictionary = {
         "Expected Rate": "Expected Rate",
         "Units Requested": "Units Requested",
         "Line Total": "Line Total",
+        "Detailed Description": "Detailed Description",
+        "Client PO Date": "Client PO Date",
+        "Client PO End Date": "Client PO End Date",
+        "Client PO Type": "Client PO Type",
+        "Client PO Value": "Client PO Value",
+       
+
+
         "XML": "XML",
         "Validations": "Validations",
         "Item Details": "Item Details",
@@ -10009,6 +10017,14 @@ var dictionary = {
         "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "نأمل أن يكون عرضنا متوافقًا مع متطلباتكم. يرجى الإشارة في أمر الشراء إلى مرجع عرض الأسعار الخاص بنا والموافقة على الشروط والأحكام.",
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "بالإشارة إلى استفساركم بخصوص خدمات تأجير المعدات، نود أن نقدم لكم عرض الأسعار للاطلاع.",
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
+        "Client PO Date": "تاريخ أمر الشراء للعميل",
+        "Client PO End Date": "تاريخ انتهاء أمر الشراء للعميل",
+        "Client PO Type": "نوع أمر الشراء للعميل",
+        "Client PO Value": "قيمة أمر الشراء للعميل",
+
+
         "Is Balance Sheet Account": "هل هو حساب الميزانية العمومية",
         "Is Salary Payable": "هل الراتب مستحق الدفع",
         "Is Use In Reconciliation": "هل يستخدم في التسوية",

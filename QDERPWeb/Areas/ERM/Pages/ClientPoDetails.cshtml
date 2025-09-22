@@ -1,0 +1,194 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.ClientPoDetailsModel
+@{
+    ViewData["Title"] = "Client PO Details";
+}
+
+
+<style>
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .dx-button-text {
+        color: black;
+    }
+</style>
+
+<div class="p-3">
+
+    <h4>Client PO Details: </h4>
+
+    <div class="form-grid-2 mt-2">
+        <div>
+            @(Html.DevExtreme().TextBox()
+                .ID("ClientPONo")
+                .Label(new JS("formatMessage('Client PO No')"))
+                .LabelMode(EditorLabelMode.Floating)
+            )
+        </div>
+
+        <div>
+            @(Html.DevExtreme().TextBox()
+                .ID("SalesOrderNo")
+                .Label(new JS("formatMessage('Sales Order No')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .Value("ERP-ESO-2024-0002")
+                .ReadOnly(true)
+            )
+        </div>
+    </div>
+
+    <div class="form-grid-2 mt-2">
+        <div>
+            @(Html.DevExtreme().DateBox()
+                .ID("ClientPODate")
+                .Label(new JS("formatMessage('Client PO Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .Type(DateBoxType.Date)
+                .Value("2024-10-01")
+            )
+        </div>
+
+        <div>
+            @(Html.DevExtreme().DateBox()
+                .ID("ClientPOEndDate")
+                .Label(new JS("formatMessage('Client PO End Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .Type(DateBoxType.Date)
+                .Value("2025-10-01")
+            )
+        </div>
+    </div>
+
+    <div class="form-grid-2 mt-2">
+        <div>
+            @(Html.DevExtreme().SelectBox()
+                .ID("ClientPOType")
+                .Label(new JS("formatMessage('Client PO Type')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .DataSource(new[] { "Open PO", "Closed PO", "Standard PO", "Planned PO", "Contract PO" }) // Example types
+                .Width("100%")
+            )
+        </div>
+
+        <div>
+            @(Html.DevExtreme().NumberBox()
+                .ID("ClientPOValue")
+                .Label(new JS("formatMessage('Client PO Value')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .Format("#,##0.00")
+                .Value(0.00)
+                .ShowSpinButtons(true)
+                .Width("100%")
+            )
+        </div>
+    </div>
+
+    <div class="btn-container mt-2">
+        @(Html.DevExtreme().Button()
+            .ID("AddPO")
+            .Text(new JS("formatMessage('Add')"))
+            .Type(ButtonType.Success)
+            .Icon("plus")
+            .OnClick("addClientPO")
+        )
+    </div>
+
+    <div class="mt-3">
+        @(Html.DevExtreme().DataGrid()
+            .ID("ClientPOGrid")
+            .ShowBorders(true)
+            .Height(300)
+            .Columns(columns =>
+            {
+                columns.Add().DataField("ClientPONo").Caption("Client PO No");
+                columns.Add().DataField("ClientPODate").Caption("Client PO Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("ClientPOType").Caption("Client PO Type");
+                columns.Add().DataField("ClientPOEndDate").Caption("Client PO End Date").DataType(GridColumnDataType.Date);
+                columns.Add().DataField("ClientPOValue").Caption("Client PO Value").DataType(GridColumnDataType.Number).Format("#,##0.00");
+            })
+        )
+    </div>
+
+    <div class="btn-container mt-3">
+        @(Html.DevExtreme().Button()
+            .ID("UpdateBtn")
+            .Text(new JS("formatMessage('Update')"))
+            .Type(ButtonType.Default)
+            .OnClick("updateClientPO")
+        )
+        @(Html.DevExtreme().Button()
+            .ID("BackBtn")
+            .Text(new JS("formatMessage('Back')"))
+            .Type(ButtonType.Normal)
+            .OnClick("goBack")
+        )
+    </div>
+
+</div>
+
+<script>
+    function addClientPO() {
+        const po = {
+            ClientPONo: $("#ClientPONo").dxTextBox("instance").option("value"),
+            ClientPODate: $("#ClientPODate").dxDateBox("instance").option("value"),
+            ClientPOType: $("#ClientPOType").dxSelectBox("instance").option("value"),
+            ClientPOEndDate: $("#ClientPOEndDate").dxDateBox("instance").option("value"),
+            ClientPOValue: $("#ClientPOValue").dxNumberBox("instance").option("value")
+        };
+
+        const grid = $("#ClientPOGrid").dxDataGrid("instance");
+        const data = grid.option("dataSource") || [];
+        data.push(po);
+        grid.option("dataSource", data);
+    }
+
+        function updateClientPO() {
+        debugger;
+        // Collect values from DevExtreme inputs
+        var model = {
+            SlNo: 0, // 0 = new record, >0 = update
+            SalesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
+            ClientPONo: $("#ClientPONo").dxTextBox("instance").option("value"),
+            ClientPODate: $("#ClientPODate").dxDateBox("instance").option("value"),
+            ClientPOEndDate: $("#ClientPOEndDate").dxDateBox("instance").option("value"),
+            ClientPOType: $("#ClientPOType").dxSelectBox("instance").option("value"),
+            ClientPOValue: $("#ClientPOValue").dxNumberBox("instance").option("value")
+        };
+
+        // ✅ Call your API
+        $.ajax({
+            url: "/api/ERSalesOrders/SaveClientPO",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(model),
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    // Reload grid after saving
+                    $("#ClientPOGrid").dxDataGrid("instance").refresh();
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 3000);
+                }
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error: " + xhr.responseText, "error", 4000);
+            }
+        });
+    }
+
+    function goBack() {
+         window.location.href = '/ERM/PropertySalesOrderEdit';
+    }
+</script>
