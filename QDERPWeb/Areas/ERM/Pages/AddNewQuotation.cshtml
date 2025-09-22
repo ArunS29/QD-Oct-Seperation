@@ -1865,6 +1865,7 @@
 
 
 
+
 @using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
@@ -6335,13 +6336,16 @@ async function onFinalAddClick(e) {
 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ReferenceNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-                VATApplicableRate: $("#ddGetInventoryGroup").dxSelectBox("instance").option("value") || null,
+				VATApplicableRate: $("#ddGetInventoryGroup").dxSelectBox("instance").option("value") || null,
 				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
 				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
 				CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
 				CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || null,
-				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null
+				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
+				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null
 
 			};
 

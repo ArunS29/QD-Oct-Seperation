@@ -3404,7 +3404,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
-
+    public virtual DbSet<GetDataForGeneratingTimesheet> GetDataForGeneratingTimesheets { get; set; }
     public virtual DbSet<VATFinalReturnsSummary> VATFinalReturnsSummarys { get; set; }
 
     public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
@@ -3452,6 +3452,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey();
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<GetDataForGeneratingTimesheet>().HasNoKey().ToView(null);
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<JournalRegisterView>().HasNoKey();

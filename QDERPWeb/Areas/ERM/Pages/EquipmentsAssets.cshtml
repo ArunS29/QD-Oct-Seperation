@@ -1,6 +1,5 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
-@* @model QD.ERP.Web.Areas.IMS.Pages.SuppliersModel *@
 @{
 
 }
@@ -58,7 +57,7 @@
     <input id="formId" value="frm201LedgerView" type="hidden" />
 
     <div class="card blue shine compact">
-        <h2 class="title-slide">Quotation</h2>
+        <h2 class="title-slide">Equipment Assets</h2>
         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
         <h6 class="fade-in">QuickDice ERP Solutions</h6>
 
@@ -202,17 +201,17 @@
             @* });
             columns.Add().Caption(new JS("formatMessage('Hide the columns Details')")).Columns(subColumns =>
             { *@
-                subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('PropertyCategory')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('Property Category')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Specifications).Caption(new JS("formatMessage('Specifications')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Brand).Caption(new JS("formatMessage('Brand')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
-                subColumns.AddFor(m => m.DoorNo).Caption(new JS("formatMessage('DoorNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DoorNo).Caption(new JS("formatMessage('Door No')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
 
                 subColumns.AddFor(m => m.Color).Caption(new JS("formatMessage('Color')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Year).Caption(new JS("formatMessage('Year')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Ownership).Caption(new JS("formatMessage('Ownership')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
-                subColumns.AddFor(m => m.PurchaseDate).Caption(new JS("formatMessage('PurchaseDate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
-                subColumns.AddFor(m => m.PurchasedAs).Caption(new JS("formatMessage('PurchasedAs')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PurchaseDate).Caption(new JS("formatMessage('Purchase Date:')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.PurchasedAs).Caption(new JS("formatMessage('Purchased By')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
                 subColumns.AddFor(m => m.BuyingRatePerDay).Caption(new JS("formatMessage('BuyingRatePerDay')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
@@ -453,7 +452,6 @@
                     alert('An error occurred while fetching permissions. Please try again.');
                 }
             });
-
             console.log('End permission handling');
         });
 </script>

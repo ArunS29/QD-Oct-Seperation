@@ -107,25 +107,24 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    <div class="btn-container">
+  @*   <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnPurchaseOrderDetails")
-            .Icon("overflow")
-            .Text(new JS("formatMessage('Purchase Order Details')"))
-            .OnClick("btnPurchaseOrderDetails1")
+            .ID("btnRfqDetails")
+            .Icon("add")
+            .Text(new JS("formatMessage('RFQ Details')"))
+            .OnClick("AddNewRFQDetails")
             )
 
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnNewPurchaseOrder")
-            .Icon("plus")
-            .Text(new JS("formatMessage('Add New Purchase Order')"))
-            .OnClick("AddPurchaseOrder")
+            .ID("btnAddNewRFQ")
+            .Icon("add")
+            .Text(new JS("formatMessage('Add New RFQ')"))
+            .OnClick("AddNewRFQ")
             )
 
-    </div>
-
+    </div> *@
    
 </div>
 
@@ -151,10 +150,11 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-        function AddPurchaseOrder(){
-            window.location.href = `/${tenantName}/ERM/EquipmentPurchaseOrder`;
-        }
-    function btnPurchaseOrderDetails1(){
-            window.location.href = `/${tenantName}/ERM/PurchaseRequestItemDetails`;
-        }
+     
+        // function AddNewRFQ() {
+        //     window.location.href = `/${tenantName}/ERM/AddNewRFQ`;
+        // }
+        // function AddNewRFQDetails() {
+        //     window.location.href = `/${tenantName}/ERM/RFQwithItemDetails`;
+        // }
 </script>

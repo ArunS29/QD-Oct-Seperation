@@ -279,7 +279,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                            .Select(c => (DateTime?)c.PurchaseDate)
                            .FirstOrDefaultAsync();
 
-                        voucherDate = task1 ?? task2 ;
+                        DateTime? task3 = await dbContext.Tbl40136PropertyRequestMasters
+                          .Where(c => c.EqiupmentRequestNo == folderId)
+                          .Select(c => (DateTime?)c.RequestDate)
+                          .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3;
 
                     }
 

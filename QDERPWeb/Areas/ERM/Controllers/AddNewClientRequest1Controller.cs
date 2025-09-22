@@ -14,6 +14,7 @@ using SkiaSharp;
 using System.Data;
 using System.Dynamic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static QD.ERP.Web.Areas.ERM.Controllers.AddNewQuotation1Controller;
 
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
@@ -24,12 +25,14 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewClientRequest1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
 
-        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
 
 
         }
@@ -261,132 +264,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
 		[HttpGet]
-		public async Task<IActionResult> GetTax(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl20168VatpurchaseTaxSlabs.Select(i => new 
-					{
-						i.PurchaseTaxSlabCode,
-						i.PurchaseTaxSlab
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetCompany(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl901CompanyDetails.Select(i => new
-					{
-						i.CompanyId,
-						i.CompanyName
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetEnquiry(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl60603purchaseRequestStatusMasters.Select(i => new
-					{
-						i.PurchaseRequestStatusId,
-						i.PurchaseRequestStatus
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetInventoryGroup(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl60008inventoryMasterGroups.Select(i => new
-					{
-						i.InventoryMasterGroupId,
-						i.InventoryMasterGroup
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetRequesstingUnit(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					
-					var ClientCategory = dbContext.Tbl60604purchaseRequestProjectSubUnits.Select(i => new
-					{
-						i.ProjectSubUnitCode,
-						i.ProjectSubUnitName
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
 		public async Task<IActionResult> GetSignatory(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -476,7 +353,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // Remove and save
                 dbContext.Tbl40137PropertyRequestChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+               module: "ERM > Delete Request",
+              actionDetail: $"Delete Request{requestChildSlNo}",
+               documentNo: $"{requestChildSlNo}"
+           );
                 return Ok(new { message = "Child record deleted successfully." });
             }
             catch (Exception ex)
@@ -544,11 +425,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         public class PropertyRequestChildViewModel
         {
             public int PropertyTypeId { get; set; }
+            public long RequestChildSlNo { get; set; }
             public byte? UnitRateMethod { get; set; }
             public decimal QtyRequested { get; set; }
+            public string EquipmentRequestNo { get; set; }
             public decimal ExpectedUnitRate { get; set; }
             public decimal UnitsRequested { get; set; }
             public int LineOrderNo { get; set; }
+            public string PlanNo { get; set; }
+            public string ItemRemarks { get; set; }
+            public string AddlDescription { get; set; }
+            public string DeliveryPeriod { get; set; }
         }
 
         [HttpPost]
@@ -564,7 +451,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return BadRequest(new { success = false, message = "Equipment Request No is required." });
             }
 
-    // using var transaction = await dbContext.Database.BeginTransactionAsync();
             try
             {
                 // ===== MASTER TABLE =====
@@ -631,34 +517,62 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         .ToListAsync();
 
                     // Remove old children not in the new list
-                    dbContext.Tbl40137PropertyRequestChildren.RemoveRange(existingChildren);
+                   // dbContext.Tbl40137PropertyRequestChildren.RemoveRange(existingChildren);
 
                     // Ensure currency rate is available
                     var currencyRate = VM.CurrencyRate ?? 1;
 
                     // Add new children
-                    foreach (var child in VM.EquipmentPropertychild)
-                    {
-                        var newChild = new Tbl40137PropertyRequestChild
+                        foreach (var child in VM.EquipmentPropertychild)
                         {
-                            PropertyTypeId = child.PropertyTypeId,
-                            UnitRateMethod = child.UnitRateMethod,
-                            QtyRequested = child.QtyRequested,
-                            // ✅ Calculate ExpectedUnitRate * CurrencyRate
-                            ExpectedUnitRate = child.ExpectedUnitRate * currencyRate,
-                            UnitsRequested = child.UnitsRequested,
-                            LineOrderNo = child.LineOrderNo,
-                            EquipmentRequestNo = VM.EqiupmentRequestNo
-                        };
+                            // Check if child exists in DB by PropertyTypeId (or another key)
+                            var existingChild = existingChildren
+                                .FirstOrDefault(x => x.RequestChildSlNo == child.RequestChildSlNo);
 
-                        await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
-                    }
+                            if (existingChild == null)
+                            {
+                                // New child → insert
+                                var newChild = new Tbl40137PropertyRequestChild
+                                {
+                                    PropertyTypeId = child.PropertyTypeId,
+                                    UnitRateMethod = child.UnitRateMethod,
+                                    QtyRequested = child.QtyRequested,
+                                    ExpectedUnitRate = child.ExpectedUnitRate * currencyRate,
+                                    UnitsRequested = child.UnitsRequested,
+                                    LineOrderNo = child.LineOrderNo,
+                                    EquipmentRequestNo = VM.EqiupmentRequestNo,
+                                    PlanNo = child.PlanNo,
+                                    ItemRemarks = child.ItemRemarks,
+                                    AddlDescription = child.AddlDescription,
+                                    DeliveryPeriod = child.DeliveryPeriod
+                                };
+
+                                await dbContext.Tbl40137PropertyRequestChildren.AddAsync(newChild);
+                            }
+                            else
+                            {
+                                // Existing child → update
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
+                                existingChild.QtyRequested = child.QtyRequested;
+                                existingChild.ExpectedUnitRate = child.ExpectedUnitRate * currencyRate;
+                                existingChild.UnitsRequested = child.UnitsRequested;
+                                existingChild.LineOrderNo = child.LineOrderNo;
+                                existingChild.EquipmentRequestNo = VM.EqiupmentRequestNo;
+                                existingChild.PlanNo = child.PlanNo;
+                                existingChild.ItemRemarks = child.ItemRemarks;
+                                existingChild.AddlDescription = child.AddlDescription;
+                                existingChild.DeliveryPeriod = child.DeliveryPeriod;
+                            }
+                        }
                 }
 
-
                 await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "Property saved/updated successfully." });
+				await _userActionLogger.LogAsync(
+			  module: "ERM > Save Enquiry",
+			 actionDetail: $"Saved Enquiry Request{VM.EqiupmentRequestNo}",
+			  documentNo: $"{VM.EqiupmentRequestNo}"
+		  );
+				return Ok(new { success = true, message = "Property saved/updated successfully." });
             }
             catch (Exception ex)
             {
@@ -666,6 +580,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error. Please try again later." });
             }
         }
+
+        
         [HttpGet]
 		public async Task<IActionResult> GetEnquiryProperty(string EqiupmentRequestNo)
 		{
@@ -682,7 +598,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 						.FirstOrDefaultAsync();
 
 					if (RequestNo == null)
-						return NotFound("Client not found.");
+						return NotFound("Equipment No not found.");
 
 					return Ok(RequestNo);
 				}
@@ -752,7 +668,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					var resultWithDetails = new List<ExpandoObject>();
 
                     // Query the Tbl40137PropertyRequestChildren table for the given EquipmentRequestNo
-                    var result = dbContext.Tbl40137PropertyRequestChildren
+                    var result = dbContext.Qry40602propertyRequestChildren
                         .Where(x => x.EquipmentRequestNo == EquipmentRequestNo)
 						.ToList();
 
@@ -785,7 +701,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                          .Select(x => x.CurrencyRate)
                          .FirstOrDefaultAsync();
 
-                        dict["UnitDesc"] = unitDesc;
+                        dict["ExpectedUnitRate"] = gridDetails.ExpectedUnitRate;
                         dict["ExpectedUnitRate"] = gridDetails.ExpectedUnitRate / currencyRate;
 
                         resultWithDetails.Add(item);
@@ -802,15 +718,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-
-
-
-
-
-		
-
-
-
 		[HttpDelete]
 		public async Task<IActionResult> DeletePurchaseRequest([FromQuery] string Mprno)
 		{
@@ -845,7 +752,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				dbContext.Tbl60601purchaseRequestMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
-               
+                await _userActionLogger.LogAsync(
+					module: "ERM > Delete Purchase Request",
+				   actionDetail: $"Deleted Purchase Request {Mprno}",
+					documentNo: $"{Mprno}"
+				);
 
                 return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
 			}
@@ -868,7 +779,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					.FirstOrDefaultAsync();
 			}
 
-			// Tenant context is invalid; return null
 			return null;
 		}
 
@@ -894,7 +804,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			FirstOrDefaultAsync(x => x.EqiupmentRequestNo == EqiupmentRequestNo);
 			if (master == null)
 			{
-				return NotFound(new { success = false, message = "MPR not found." });
+				return NotFound(new { success = false, message = "Equipment No not found." });
 			}
 
 			// Retrieve session values
@@ -925,13 +835,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			}
 
 
-			master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
+			master.PurchaseRequestStatusId = 31; 
 
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
-           
+            await _userActionLogger.LogAsync(
+				module: "ERM > Submit MPR",
+			   actionDetail: $"Submited MPR {EqiupmentRequestNo}",
+				documentNo: $"{EqiupmentRequestNo}"
+			);
 
-            return Ok(new { success = true, message = "MPR submitted successfully." });
+            return Ok(new { success = true, message = "Equipment Enquiry submitted successfully." });
 		}
 
         [HttpPost]
@@ -954,7 +868,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 				if (voucher == null)
 				{
-					return NotFound(new { message = "Credit note not found." });
+					return NotFound(new { message = "Equipment Enquiry not found." });
 				}
 
 				var userName = HttpContext.Session.GetString("UserName");
@@ -978,12 +892,16 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				}
 
 				await dbContext.SaveChangesAsync();
-				   
+				   await _userActionLogger.LogAsync(
+					   module: "ERM > Verify MPR",
+					  actionDetail: $"Verify MPR {EqiupmentRequestNo}",
+					   documentNo: $"{EqiupmentRequestNo}"
+				   );
 
                 return Ok(new
 				{
-					message = "Material Purchase Request has been Verified and processed for Approval."
-				});
+					message = "Equipment Enquiry has been Verified and processed for Approval."
+                });
 			}
 			catch (Exception ex)
 			{
@@ -992,7 +910,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			}
 		}
         [HttpPost]
-      //  [RequirePermission("EquipmentClientRequest_btnApprove")]
+      //[RequirePermission("EquipmentClientRequest_btnApprove")]
         public async Task<ActionResult> ApproveMPR(string EqiupmentRequestNo)
 
         {
@@ -1037,8 +955,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // ✅ Step 2: Update approval fields
                 voucher.IsApproved = true;
                 voucher.ApprovedOn = DateTime.Now;
-                voucher.ApprovedBy = userName; // string value
-                voucher.PurchaseRequestStatusId = 33; // Approved status
+                voucher.ApprovedBy = userName; 
+                voucher.PurchaseRequestStatusId = 33; 
 
                 var signatoryId = await GetSignatoryIDfromUserID(userId);
                 if (signatoryId.HasValue)
@@ -1049,11 +967,15 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // ✅ Ensure EF tracks changes
                 dbContext.Tbl40136PropertyRequestMasters.Update(voucher);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                     module: "ERM > Approved MPR",
+                    actionDetail: $"Approved MPR {EqiupmentRequestNo}",
+                     documentNo: $"{EqiupmentRequestNo}"
+                 );
                 return Ok(new
                 {
                     success = true,
-                    message = "Enquiry has been Approved.",
+                    message = "Equipment Enquiry has been Approved.",
                     voucherApprovedBy = voucher.ApprovedBy
                 });
             }
@@ -1063,62 +985,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "Internal Server Error", detail = ex.Message });
             }
         }
-
-        //      [HttpPost]
-        //public async Task<ActionResult> ApproveMPR(string EqiupmentRequestNo)
-        //{
-        //	if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //	{
-        //		try
-        //		{
-        //			var userName = HttpContext.Session.GetString("UserName");
-        //			var userIdString = HttpContext.Session.GetString("UserId");
-        //			if (!int.TryParse(userIdString, out int userId))
-        //			{
-        //				return Unauthorized(new { message = "Invalid or missing UserId in session." });
-        //			}
-
-
-        //			if (string.IsNullOrEmpty(EqiupmentRequestNo))
-        //			{
-        //				return BadRequest(new { Message = "Eqiupment Request No is required." });
-        //			}
-
-        //			var voucher = dbContext.Tbl40136PropertyRequestMasters
-        //                                         .FirstOrDefault(v => v.EqiupmentRequestNo == EqiupmentRequestNo);
-
-        //			if (voucher == null)
-        //			{
-        //				return NotFound(new { Message = "CreditNoteNo not found." });
-        //			}
-
-        //			// Update approval details
-        //			voucher.IsApproved = true;
-        //			voucher.ApprovedOn = DateTime.Now;
-        //			voucher.ApprovedBy = userName;
-        //			voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-        //			var signatoryId = await GetSignatoryIDfromUserID(userId);
-        //			if (signatoryId.HasValue)
-        //			{
-        //				voucher.approvedSign = (byte)signatoryId.Value;
-        //			}
-        //			dbContext.SaveChanges();
-
-        //			return Ok(new
-        //			{
-        //				Message = "Material Property Request has been Approved.",
-        //				VoucherApprovedBy = userName
-        //			});
-        //		}
-        //		catch (Exception ex)
-        //		{
-        //			_logger.LogError($"Error in GetProject: {ex.Message}");
-        //			return BadRequest(new { Message = ex.Message });
-        //		}
-        //	}
-
-        //	return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-        //}
         [HttpPost]
         public async Task<IActionResult> UnlockPurchaseRequest([FromBody] PropertyRequestViewModel request)
         {
@@ -1170,25 +1036,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 mpr.RequestSignatory = 34; // Re-Initiated
 
                 await dbContext.SaveChangesAsync();
-                //await _userActionLogger.LogAsync(
-                //    module: "IMS > Unlock the MPR",
-                //    actionDetail: $"Unlock the MPR By Id: {request.Mprno}",
-                //   documentNo: $"{request.Mprno}"
-                //);
-                // ✅ Optional: Logging to stored procedure
-                //string logDetails = $"IMS Purchase Request Ref No. {request.Mprno} has been Unlocked by User ID: {currentUserId}, User Name: {userName}.";
+				await _userActionLogger.LogAsync(
+					module: "IMS > Unlock the MPR",
+					actionDetail: $"Unlock the MPR By Id: {request.EqiupmentRequestNo}",
+				   documentNo: $"{request.EqiupmentRequestNo}"
+				);
 
-                //await dbContext.Database.ExecuteSqlRawAsync(
-                //    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
-                //    new object[]
-                //    {
-                //"IMS Purchase Request", // @p0
-                //logDetails,             // @p1
-                //userName,               // @p2
-                //request.Mprno           // @p3
-                //    });
-
-                return Ok(new { success = true, message = "Enquiry has been unlocked." });
+				return Ok(new { success = true, message = "Enquiry has been unlocked." });
             }
             catch (Exception ex)
             {
@@ -1217,20 +1071,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					{
 						return NotFound(new { Message = "CreditNoteNo not found." });
 					}
-
-					// Update cancellation details
-					//voucher.IsCancelled = true;
-					//voucher.CancelledOn = DateTime.Now;
-					//voucher.CancelledBy = userName;
-					//voucher.PurchaseRequestStatusId = 35; // Status: Enquiry/Request Cancelled
-
 					dbContext.SaveChanges();
 
-                   
+                    await _userActionLogger.LogAsync(
+                      module: "ERM > Cancel MPR",
+                     actionDetail: $"Canceled MPR: {RequestNo}",
+                      documentNo: $"{RequestNo}"
+                    );
 
                     return Ok(new
 					{
-						Message = "Material Purchase Request has been Cancelled.",
+						Message = "Equipment Enquiry Request has been Cancelled.",
 						VoucherCancelledBy = userName
 					});
 				}
@@ -1243,64 +1094,5 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 		}
-		[HttpGet]
-		public IActionResult GetClientContactDetails(string clientCode)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				// Replace with your actual data retrieval logic
-				var client = dbContext.Tbl30101ClientMasters
-								 .FirstOrDefault(c => c.ClientCode == clientCode);
-
-			if (client != null)
-			{
-				return Json(new
-				{
-					ContactName = client.ContactPerson,
-					ContactEmail = client.ContactMobile1,
-					ContactMobile = client.ContactEmail
-				});
-			}
-			else
-			{
-				return NotFound();
-			}
-			}
-
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-
-		}
-
-
-        [HttpGet("{RequestNo}")]
-        public async Task<ActionResult> GetRequestNoteApprovalStatus(string RequestNo)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var requestNo = await dbContext.Tbl60601purchaseRequestMasters
-
-                        .Where(i => i.Mprno == RequestNo)
-                        .FirstOrDefaultAsync();
-
-                    if (requestNo == null)
-                    {
-                        return Ok(new { isApproved = false }); // Safe fallback
-                    }
-
-                    return Ok(new { isApproved = requestNo.IsApproved ?? false });
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error fetching approval status for RequestNo {RequestNo}: {ex.Message}");
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
-            }
-
-            return Unauthorized("Unable to fetch tenant information.");
-        }
-
-
     }
 }
