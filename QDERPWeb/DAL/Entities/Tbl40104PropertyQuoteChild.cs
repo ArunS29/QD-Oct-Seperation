@@ -19,7 +19,7 @@ public partial class Tbl40104PropertyQuoteChild
 
     public string QuotedUom { get; set; }
 
-    public byte? UnitRateMethod { get; set; }
+    public decimal? UnitRateMethod { get; set; }
 
     public decimal? UnitRatePerHour { get; set; }
 
@@ -66,5 +66,9 @@ public partial class Tbl40104PropertyQuoteChild
     public string Attachment { get; set; }         
     public string Notes { get; set; }
     public string DeliveryDetails { get; set; }
+    public string EquipmentQuotedFor { get; set; }
+    public string HasEquipmentDetails { get; set; }
+
+
 
 }
