@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using System.Globalization;
+using Azure.Storage.Blobs;
 using DevExpress.CodeParser;
 using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
@@ -10,8 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
-using System.Globalization;
+using static DevExpress.XtraPrinting.Native.ExportOptionsPropertiesNames;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -22,12 +24,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<LedgerDocumentsFController> _logger;
         private readonly IConfiguration _configuration; // ✅ Add this
-
-        public LedgerDocumentsFController(ILogger<LedgerDocumentsFController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
+        private readonly IUserActionLogger _userActionLogger;
+        public LedgerDocumentsFController(ILogger<LedgerDocumentsFController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _configuration = configuration;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -347,10 +350,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     dbContext.Tbl20116LedgerDocuments.Add(document);
                     uploadedDocs.Add(document);
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Attachments",
+                    actionDetail: $"Added: {docNo}",
+                    documentNo: docNo
+                    );
                 }
 
                 await dbContext.SaveChangesAsync();
-
+               
                 return Ok(new
                 {
                     success = true,
@@ -521,7 +529,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existing.ModifiedOn = DateTime.UtcNow;
 
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                   module: "Finance > Attachments",
+                   actionDetail: $"Updated: {doc.DocumentNo}",
+                   documentNo: doc.DocumentNo
+                   );
                 // ✅ Optional: Return file URL from AzurePath
                 var blobHelper = new AzureBlobHelper(
                     _configuration.GetConnectionString("AzureBlobStorage"),
@@ -583,7 +595,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok(result);
         }
 
-       
         [HttpDelete]
         public async Task<IActionResult> DeleteDocumentEntry([FromBody] DocumentDeleteRequest request)
         {
@@ -607,7 +618,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             dbContext.Tbl20116LedgerDocuments.Remove(doc);
             await dbContext.SaveChangesAsync();
-
+            await _userActionLogger.LogAsync(
+            module: "Finance > Attachments",
+            actionDetail: $"Deleted: {doc.DocumentNo}",
+            documentNo: doc.DocumentNo
+            );
             return Ok();
         }
 
@@ -648,6 +663,57 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 _logger.LogError($"Error in GetDocumentCount: {ex}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllVoucherEntry(string VoucherNo, string module)
+        {
+            try
+            {
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrWhiteSpace(VoucherNo) || string.IsNullOrWhiteSpace(module))
+                    return BadRequest("Both VoucherNo and module are required.");
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                // Get all documents under this voucher
+                var docs = await dbContext.Tbl20116LedgerDocuments
+                                .Where(d => d.LedgerNo == VoucherNo &&
+                                    !string.IsNullOrEmpty(d.AzurePath) &&
+                                    d.AzurePath.Contains(normalizedModule))
+                                .ToListAsync();
+
+                if (docs == null || !docs.Any())
+                    return NotFound("No documents found for this voucher.");
+
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
+
+                // Delete all blob files one by one
+                foreach (var doc in docs)
+                {
+                    if (!string.IsNullOrEmpty(doc.AzurePath))
+                    {
+                        await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+                    }
+                }
+
+                // Remove from DB
+                dbContext.Tbl20116LedgerDocuments.RemoveRange(docs);
+
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete DocumentCount: {ex}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
         }
         [HttpGet]
         public ActionResult LedgerDocuments(string ReferenceNo, string ModuleType, string isMaster)

@@ -260,19 +260,33 @@
                         .Columns(columns =>
                         {
                             columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('Document No')")).AllowEditing(false)
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-                            columns.AddFor(m => m.DocumentType)
-                           .Caption(new JS("formatMessage('Document Type')"))
-                            .Lookup(lookup => lookup
-                            .DataSource(d => d.WebApi()
-                            .Controller("LedgerDocuments1")
-                            .LoadAction("GetDocumentTypes")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("DocumentTypeId")
-                            )
-                            .ValueExpr("DocumentTypeId")    // This must match your model's field if it's storing the ID
-                            .DisplayExpr("DocumentType")
-                            );
+                           .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                                    columns.AddFor(m => m.DocumentType)
+                                    .Caption(new JS("formatMessage('Document Type')"))
+                                    .Width(250)
+                                    .Lookup(lookup => lookup
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("LedgerDocuments1")
+                                    .LoadAction("GetDocumentTypes")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("DocumentTypeId")
+                                    )
+                                    .ValueExpr("DocumentTypeId")
+                                    .DisplayExpr("DocumentType")
+                                    )
+                                    .EditCellTemplate(@<text>
+                        @(Html.DevExtreme().SelectBox()
+                                            .DataSource(d => d.WebApi()
+                                            .Controller("LedgerDocuments1")
+                                            .LoadAction("GetDocumentTypes")
+                                            .Key("DocumentTypeId")
+                                            )
+                                            .ValueExpr("DocumentTypeId")
+                                            .DisplayExpr("DocumentType")
+                                            .DropDownOptions(opt => opt.Width(300)) // 👈 Controls dropdown width
+                                            )
+                    </text>);
+
 
                             // columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
                             columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')"));

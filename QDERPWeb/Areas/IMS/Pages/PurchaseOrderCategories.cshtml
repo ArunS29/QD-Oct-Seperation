@@ -121,7 +121,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddpurStatus")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addQuotationStatus(); }")
                 .ElementAttr(new { @class = "custom-ui-button" })
@@ -155,10 +155,10 @@
             .OnRowUpdating("onpurchaseorderUpdating")// Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("PocategoryId").Caption("Code").Width(80).AllowEditing(false);
-            columns.Add().DataField("PocategoryName").Caption("PO Categories").Width(200);
+            columns.Add().DataField("PocategoryId").Caption(new JS("formatMessage('Code')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("PocategoryName").Caption(new JS("formatMessage('PO Categories')")).Width(200);
             columns.Add()
-            .Caption("Action").Width(100)
+            .Caption(new JS("formatMessage('Action')")).Width(100)
             .Type(GridCommandColumnType.Buttons)
             .Buttons(buttons =>
             {

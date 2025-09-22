@@ -229,10 +229,10 @@
                 .DropDownOptions(options => options.Width(350))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Receivables Reports')")).Option("color", "#4285F4").Icon("textdocument");
-                    items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Option("color", "#34A853").Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Reports')")).Option("color", "#4285F4").Option("reportName", "BillsRecivableReport1").Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Option("color", "#34A853").Option("reportName", "ReceivableReport(EffectiveDate)").Icon("textdocument");
                     items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").Option("color", "#EA4335").OnClick("showSubmenu1");
-                    items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Option("color", "#FBBC05").Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Option("reportName", "Summary").Option("color", "#FBBC05").Icon("textdocument");
 
                     items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").Option("color", "#AB47BC").OnClick("function() { ReportsByClient(0); }");
                     items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").Option("color", "#34A853").OnClick("function() { ReportsByClient(1); }");
@@ -240,9 +240,10 @@
 
 
 
+                    items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Option("reportName", "InvoiceCollectionReport").Option("color", "#EA4335").Icon("event");
                     @* items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Option("color", "#EA4335").Icon("event"); *@
                     items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')"))
-                    .Icon("optionsgear").Option("color", "#AB47BC")
+                    .Icon("optionsgear").Option("reportName", "ReceivablesUnmappedVouchersReport").Option("color", "#AB47BC")
                     .OnClick("function() { Mapping('Receivables with unmapped Vouchers'); }");
                 })
                 .ShowArrowIcon(true)
@@ -392,20 +393,18 @@
         "Receivables with Unmapped Vouchers": "ReceivablesUnmappedVouchersReport"
     };
 
-    function handleReportsClick(e) {
-        const selectedText = e.itemData.text;
-
-        // Check if report exists in mappings
-        if (reportMappings[selectedText]) {
-            const reportName = reportMappings[selectedText];
-            console.log(`Opening report: ${reportName}`);
-
-            // Open Document Viewer without parameters
-            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        } else {
-            console.warn('No report mapping found for:', selectedText);
-        }
+  function handleReportsClick(e) {
+    const reportName = e.itemData.reportName;
+    if (reportName) {
+        window.open(
+            `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    } else {
+        console.warn('No reportName found for selected item:', e.itemData.text);
     }
+}
 
 
 

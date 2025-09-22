@@ -1381,155 +1381,42 @@
 
 
 
-    //     function onCostAmountChanged(e) {
-    //     
+      $(document).ready(function () {
+         var voucherNo = '@voucherNo';
 
-    //     const grid = $("#costdataGrid").dxDataGrid("instance");
-    //     let dataSource = grid.option("dataSource");
+         // Call your API or controller action to check IsApproved
+         $.ajax({
+             url: '/api/CostAllocation/CheckVoucherApproval',
+             type: 'GET',
+             data: { voucherNo: voucherNo },
+             success: function (response) {
+                 if (response && response.isApproved) {
+                     disableEditingAndButtons();
+                 }
+             },
+             error: function () {
+                 console.error("Failed to check voucher approval status.");
+             }
+         });
 
-    //     const drCr = '@drCr';
-    //     const oldValue = parseFloat(e.previousValue) || 0;
-    //     const newValue = parseFloat(e.value);
-    //     const balance = oldValue - newValue;
+         function disableEditingAndButtons() {
+             // Disable editing and deleting in DataGrid
+             var gridInstance = $("#costdataGrid").dxDataGrid("instance");
+             if (gridInstance) {
+                 gridInstance.option("editing.allowUpdating", false);
+                 gridInstance.option("editing.allowDeleting", false);
+             }
 
-    //     if (newValue > oldValue) {
-    //         DevExpress.ui.notify("Allocated amount cannot exceed the voucher amount.", "error", 3000);
-    //         grid.cellValue(e.row.rowIndex, "VoucherAmount", oldValue);
-    //         return;
-    //     }
-
-    //     // ✅ Use visible rows and row.rowIndex to get actual row data
-    //     const visibleRows = grid.getVisibleRows();
-    //     const currentRow = visibleRows[e.row.rowIndex];
-    //     const rowData = currentRow?.data;
-
-    //     if (rowData) {
-    //         rowData.VoucherAmount = newValue;
-    //     }
-
-    //     // ✅ Add balance row if needed
-    //     if (balance > 0.01) {
-    //         const newRow = {
-    //             ...rowData,
-    //             DrCr: drCr,
-    //             CostAllocationUnit: "Common Overheads",
-    //             CostAllocationUnitId: "ADMIN-0001",
-    //             VoucherAmount: balance,
-    //             CostAllocationId: 0,
-    //             Remarks: null,
-    //             EffectiveDate: new Date()
-    //         };
-
-    //         dataSource.push(newRow);
-    //     }
-
-    //     // ✅ Rebind data and refresh
-    //     grid.option("dataSource", dataSource);
-    //     grid.refresh();
-    // }
-
-    // function onCostAllocationRowUpdating(e) {
-    //     
-    //         const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
-    //         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-    //         const drCr = '@drCr';
-    //         const accountHead = '@accountHead';
-    //         const voucherno = '@voucherNo'; // You declared this in your message
-    //         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
-    //     const oldData = e.oldData;
-    //     const newData = e.newData;
-
-    //     const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
-    //     const originalAmount = parseFloat(oldData.VoucherAmount);
-
-    //     // Check if VoucherAmount changed
-    //     const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
-
-    //     // Prevent increasing the amount
-    //     if (isVoucherAmountChanged && updatedAmount > originalAmount) {
-    //         DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
-    //         e.cancel = true;
-    //         return;
-    //     }
-
-    //     // Cancel default update — we'll do it manually
-    //     e.cancel = true;
-
-    //     // Case 1: Amount changed and is lower than original — split
-    //     if (isVoucherAmountChanged && updatedAmount < originalAmount) {
-    //         const remainingAmount = originalAmount - updatedAmount;
-
-    //         const adjustOldRow = {
-    //             CostAllocationId: oldData.CostAllocationId,
-    //             VoucherAmount: updatedAmount,
-    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
-    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
-    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
-    //         };
-
-    //                                 const newRow = {
-    //                                     CostAllocationId: 0,
-    //                                     CostAllocDrCr: drCr,
-    //                                     CostAllocationUnitId:  'ADMIN-0001',
-    //                                     EffectiveDate: new Date(),
-    //                                     AmountAllocated: remainingAmount.toFixed(2),
-    //                                     CostAllocRemarks: null,
-    //                                     VoucherEntryId: VoucherEntryId,
-    //                                     VoucherNo: voucherno
-    //                                 };
-
-    //         // Update old amount first
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
-    //             contentType: "application/json",
-    //             data: JSON.stringify(adjustOldRow),
-    //             success: function () {
-    //                 // Insert new row
-    //                 $.ajax({
-    //                     type: "POST",
-    //                     url: "/api/CostAllocation/InsertDefaultCostAllocation",
-    //                     contentType: "application/json",
-    //                     data: JSON.stringify(newRow),
-    //                     success: function (refreshedData) {
-    //                         costdataGrid.option('dataSource', refreshedData);
-    //                     },
-    //                     error: function () {
-    //                         DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
-    //                     }
-    //                 });
-    //             },
-    //             error: function () {
-    //                 DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
-    //             }
-    //         });
-    //     }
-    //     // Case 2: Other fields updated — update existing row directly
-    //     else {
-    //         const updateRow = {
-    //             CostAllocationId: oldData.CostAllocationId,
-    //             VoucherAmount: updatedAmount,
-    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
-    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
-    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
-    //         };
-
-    //         $.ajax({
-    //             type: "POST",
-    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
-    //             contentType: "application/json",
-    //             data: JSON.stringify(updateRow),
-    //             success: function (refreshedData) {
-    //                 DevExpress.ui.notify("Cost allocation updated.", "success", 3000);
-    //                costdataGrid.option('dataSource', refreshedData);
-    //             },
-    //             error: function () {
-    //                 DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
-    //             }
-    //         });
-    //     }
-    // }
-
+             // Disable all buttons except btncostBack
+             $(".dx-button").each(function () {
+                  const allowedButtons = ['btnBack','btnPrints', 'btnPrintp', 'btnAttach', 'btnPrint', 'btnAddAHead', 'btncostBack'];
+                 if (!allowedButtons.includes($(this).attr('id'))) {
+                     $(this).dxButton("instance").option("disabled", true);
+                 }
+             });
+              disableEditing();
+         }
+     });
 
 
 

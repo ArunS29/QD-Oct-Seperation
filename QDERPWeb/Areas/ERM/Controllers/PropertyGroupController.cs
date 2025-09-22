@@ -48,7 +48,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             }
         }
 
-        [HttpPost]
+    [HttpPost]
 public async Task<IActionResult> SaveOrUpdatePropertyGroup([FromBody] Tbl40108PropertyGroup model)
 {
     if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

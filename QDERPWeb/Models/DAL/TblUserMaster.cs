@@ -62,4 +62,5 @@ public partial class TblUserMaster
     public int? HrtimeSheetProjectGroup { get; set; }
 
     public bool? IsArabicVersion { get; set; }
+    public string? StoreId { get; set; }
 }

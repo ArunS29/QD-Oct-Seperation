@@ -44,7 +44,7 @@ namespace QD.ERP.Web.Pages
         public string requestedBy { get; private set; }
         public List<string> SelectedValues { get; private set; } = new List<string>();
         public bool UseEffectiveDate { get; private set; }
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy, string[] selectedValues, bool? useEffectiveDate)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy, string[] selectedValues, bool? useEffectiveDate, string selectionType)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -262,7 +262,7 @@ namespace QD.ERP.Web.Pages
                 switch (reportName)
                 {
                     case "XtraRecivableReport":
-                        Report = new XtraRecivableReport(SelectedValues.ToArray(), tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new XtraRecivableReport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     default:
                         return NotFound("Report not found.");
@@ -290,7 +290,7 @@ namespace QD.ERP.Web.Pages
                         Report = new BIllsPayable(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "Summary":
-                        Report = new Summary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new Summary(userName,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "BillsReceivableAgeingReport":
                         Report = new BillsReceivableAgeingReport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);

@@ -2484,11 +2484,11 @@
 		}
 	}
       function propergroupgridupdate() {
-        const dropdown = $("#PropertyGroup").dxDropDownBox("instance"); // ✅ need '#'
+        const dropdown = $("#PropertyGroup").dxDropDownBox("instance"); 
         if (dropdown) {
             const ds = dropdown.getDataSource();
             ds.reload().done(() => {
-                dropdown.repaint();   // optional, mostly reload is enough
+                dropdown.repaint();  
             });
         }
     }

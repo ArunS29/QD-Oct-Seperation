@@ -1144,8 +1144,7 @@
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
-			debugger;
-			console.log(e.row.data.IsCancelled);
+						console.log(e.row.data.IsCancelled);
 			if (e.row.data.IsCancelled) {
             e.items = [
                 {

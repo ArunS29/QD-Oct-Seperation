@@ -1037,6 +1037,16 @@
 									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).EditorOptions(new {value = 0});
 
 									columns.Add().DataField("LineTotal").Caption(new JS("formatMessage('Line Total')")).AllowEditing(false);
+									columns.Add()
+							.Type(GridCommandColumnType.Buttons)
+							.Width(60)
+							.Buttons(b =>
+							{
+								b.Add()
+								 .Hint("Delete")
+								 .Icon("remove")            
+								 .OnClick("deleteChild");
+							});
 					})
 					.ColumnAutoWidth(true)
 					.Width("100%")
@@ -2172,9 +2182,18 @@
 							url: `/api/AddNewClientRequest1/DeletePurchaseRequestChild/${encodeURIComponent(requestChildSlNo)}`,
 							type: "DELETE",
 							success: function (response) {
-								DevExpress.ui.notify(response.message, "success", 2000);
-								$("#itemGrid").dxDataGrid("instance").refresh();
-							},
+							DevExpress.ui.notify(response.message, "success", 2000);
+
+							const grid = $("#itemGrid").dxDataGrid("instance");
+							if (grid) {
+								const ds = grid.getDataSource();
+								if (ds) {
+									ds.reload();
+								} else {
+									grid.refresh();
+								}
+							}
+						},
 							error: function (xhr) {
 								DevExpress.ui.notify(
 									"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
@@ -2369,7 +2388,7 @@
 					    $("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
 						// Optional (if you decide to use later)
-						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.PreparedBy);
+						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.SubmittedBy);
 						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
 						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
 						 $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
@@ -4299,7 +4318,7 @@
 						}
 					}
 
-						$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", "Update");
 						// ✅ Populate master fields
 					$("#txtRequestNo").dxTextBox("instance").option("value", data.EqiupmentRequestNo ?? "");
 					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.RequestDate ?? null);
@@ -4314,7 +4333,7 @@
 					$("#txtRemarks").dxTextArea("instance").option("value", data.Remarks ?? "");
 					$("#ddRequestedBy").dxDropDownBox("instance").option("value", data.TypeOfMpr ?? "");
 					$("#ddGetCompany").dxDropDownBox("instance").option("value", data.CompanyBranch ?? "");
-					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.PreparedBy);
+					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
 					$("#ddApprovedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", data.CurrencyRate);
@@ -4675,7 +4694,7 @@
 
 				DevExpress.ui.dialog.custom({
 					title: "Confirm Submission",
-					message: "Are you sure you want to submit Material Purchase Request?",
+					message: "Are you sure you want to submit Enquiry Request?",
 					buttons: [
 						{ text: "Yes", onClick: () => true },
 						{ text: "No", onClick: () => false }
@@ -4693,7 +4712,7 @@
 								// ✅ Always pick success message (API or fallback)
 								const message = response && response.message
 									? response.message
-									: "Material Purchase Request has been submitted for Approval.";
+									: "Enquiry Request has been submitted for Approval.";
 
 								// ✅ Show success message
 								DevExpress.ui.notify(message, "success", 3000);
@@ -4744,8 +4763,8 @@
 							// Check if DataGrid contains rows
 							if (rowCount === 0) {
 								DevExpress.ui.dialog.custom({
-									title: "Material Purchase Request verification has failed.",
-							message: "Material Purchase Request has not been Verified. Please enter transactions to proceed with verification.",
+									title: "Enquiry Request verification has failed.",
+							message: "Enquiry Request has not been Verified. Please enter transactions to proceed with verification.",
 									buttons: [{ text: "Ok", onClick: () => false }],
 									showTitle: true
 								}).show();
@@ -4753,7 +4772,7 @@
 								DevExpress.ui.dialog.custom({
 									title: "Confirm Verification",
 									// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-									message: "Are you sure want to verify this Material Purchase Request?",
+									message: "Are you sure want to verify this Enquiry Request?",
 									buttons: [
 										{ text: "Yes", onClick: () => true },
 										{ text: "No", onClick: () => false }
@@ -5012,15 +5031,15 @@
 					// Check if DataGrid contains rows
 					if (rowCount === 0) {
 						DevExpress.ui.dialog.custom({
-							title: "Material Purchase Request cancellation has failed.",
-							message: "Material Purchase Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
+							title: "Enquiry Request cancellation has failed.",
+							message: "Enquiry Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
 							buttons: [{ text: "Ok", onClick: () => false }],
 							showTitle: true
 						}).show();
 					} else {
 						DevExpress.ui.dialog.custom({
 							title: "Confirm Cancellation",
-							message: "Are you sure you want to cancel this Material Purchase Request?",
+							message: "Are you sure you want to cancel this Enquiry Request?",
 							buttons: [
 								{ text: "Yes", onClick: () => true },
 								{ text: "No", onClick: () => false }

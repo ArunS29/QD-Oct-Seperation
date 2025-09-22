@@ -8,7 +8,7 @@
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
     .signatory-form-container {
-        padding: 20px;
+        padding: 10px;
     }
 
     .form-row {
@@ -89,10 +89,6 @@
         display: flex;
         justify-content: flex-start;
         background-color: var(--background-color);
-    }
-
-    .mainContainer {
-        margin-top: 1em;
     }
 
     .imagecontainer {
@@ -282,7 +278,7 @@
                 </div>
 
                 <div class="form-group">
-                    <div class="dx-fieldset" style="width: 375px;">
+                    <div style="width: 70%;margin: 10px 0px;">
                         <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
                             <div id="uploadsignature"></div>
                         </div>
@@ -308,7 +304,7 @@
             </div>
         </div>
     </div> *@
-    <div class="dx-field ledgerResult">
+    <div class="dx-field">
         @(Html.DevExtreme().DataGrid()
                 .ID("SignatoryGrid")
                 .KeyExpr("SignatoryID")
@@ -347,7 +343,7 @@
                 }
                 ")).Width(150);
                 })
-                .Height(500)
+                .Height(275)
                 .ColumnAutoWidth(true)
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
