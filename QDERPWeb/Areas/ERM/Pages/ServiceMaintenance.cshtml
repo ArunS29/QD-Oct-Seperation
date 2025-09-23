@@ -3,41 +3,6 @@
 @{
 }
 <style>
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1000;
-	}
-
-	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btntoggleGroupPanel,#btnColumnChooser,#btnAddSalesOrder,#btnSalesOrderDetails)) {
-		display: none !important
-	}
-
-	#overlay-frame {
-		width: 100%;
-		height: 100%;
-	}
-
-	
-
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -51,20 +16,6 @@
 		align-items: center;
 		gap: 10px;
 	}
-
-	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
-	}
-
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
 
 	.dx-texteditor {
 		background-color: transparent !important;
@@ -99,39 +50,6 @@
 		pointer-events: none;
 	}
 
-
-
-	.context-menu {
-		display: none;
-		position: relative;
-		background-color: white;
-		border: 1px solid #ccc;
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-		list-style: none;
-		padding: 8px 0;
-		z-index: 1000;
-	}
-
-		.context-menu li {
-			padding: 8px 16px;
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-		}
-
-			.context-menu li:hover {
-				background-color: #f0f0f0;
-			}
-
-	.ledgerResult {
-		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
-		width: 100%;
-	}
-
-	.mainContainer {
-		width: 100%;
-		overflow: hidden;
-	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -142,7 +60,8 @@
 </div>
 
 
-@await Html.PartialAsync("/Pages/Shared/ERM/StockAdjustmentFooter.cshtml")
+@await Html.PartialAsync("/Pages/Shared/ERM/ServiceMaintenanceFooter.cshtml")
+
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -281,8 +200,8 @@
 			subColumns.AddFor(m => m.Complaint).Caption("Complaint").Visible(true);
 			subColumns.AddFor(m => m.TotalCost).Caption("Total Service Cost").Visible(true);
 			});
-					})
-		.Height(680) // Fixed height for the grid
+				})
+		.Height("45vh")
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -293,7 +212,7 @@
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+		.Paging(p => p.PageSize(10))
 		.Pager(pager =>
 		{
 			pager.ShowPageSizeSelector(true);
@@ -387,8 +306,12 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
+
+			 frmDateBox.option("value", frmDate);
+			 toDateBox.option("value", toDate);
+
 				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 
 		$.ajax({
 		url: '/api/MaterialReceipts1/Getservicemaintance',
@@ -406,9 +329,6 @@
 			DevExpress.ui.notify("Error while loading data", "error", 2000);
 		}
 	});
-
-
-
 	}
 		function onContextMenuPreparing(e) {
 			if (e.target === "content" && e.row && e.row.data) {
@@ -418,23 +338,15 @@
 
 				e.items = [
 					{
-							text: "Edit Material Receipt",
+						text: "Edit Service Order",
 						icon: "edit",
 						onItemClick: function () {
-										const url = `/${tenantName}/ERM/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
-							window.location.href = url;
+						const url = `/${tenantName}/ERM/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
+						window.location.href = url;
 						}
 					},
 					{
-							text: "Preview Material Receipt",
-						icon: "doc",
-						onItemClick: function () {
-							const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-							window.location.href = url;
-						}
-					},
-					{
-							text: "Delete Material Receipt",
+						text: "Delete Sevice Order",
 						icon: "trash",
 						onItemClick: function () {
 							if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
@@ -458,37 +370,6 @@
 							}
 						}
 					},
-					{
-							text: "Unlock the Material Receipt",
-						icon: "unlock",
-						onItemClick: function () {
-							// Replace with your actual unlock logic, e.g., an AJAX call
-							fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
-								method: 'POST'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} unlocked successfully.`);
-										// Optionally refresh the DataGrid
-										e.component.refresh();
-									} else {
-										alert(`Failed to unlock RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error unlocking RFQ:', error);
-									alert('An error occurred while unlocking the RFQ.');
-								});
-						}
-					},
-					{
-							text: "Create a VAT Purchase Voucher",
-						icon: "add",
-						onItemClick: function () {
-							const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-							window.location.href = url;
-						}
-					}
 				];
 			}
 		}

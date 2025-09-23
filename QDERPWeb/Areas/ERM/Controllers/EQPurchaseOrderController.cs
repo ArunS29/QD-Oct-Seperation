@@ -605,6 +605,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 // Example: store average unit rate normalized by currency
                 if (children.Any())
                 {
+                    dict["CalcLineTotal"] = children.Average(c => c.CalcLineTotal) / currencyRate;
                     dict["UnitRate"] = children.Average(c => c.UnitRate) / currencyRate;
                 }
 
