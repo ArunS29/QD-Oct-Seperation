@@ -436,17 +436,17 @@
 
 
 
-    function quoteMethodSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#QuoteMethod2").dxDropDownBox("instance");
+    // function quoteMethodSelectionChanged(e) {
+    //         const selectedKey = e.selectedRowKeys[0]; Get the first selected key, if any
+    //         const ddbInstance = $("#QuoteMethod2").dxDropDownBox("instance");
 
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-            }
-    }
+    //         if (selectedKey) {
+    //             ddbInstance.option("value", selectedKey);
+    //             if (ddbInstance.option("opened")) {
+    //                 ddbInstance.close();
+    //             }
+    //         }
+    // }
 
 
     function quoteMethodSelectionChanged2(e) {
@@ -456,10 +456,10 @@
 
 
 
-            function onOpened(e) {
-        setTimeout(() => {
-            e.component.focus();
-        });
+        //     function onOpened(e) {
+        // setTimeout(() => {
+        //     e.component.focus();
+        // });
     }
 
 
@@ -483,33 +483,32 @@
 
 
 
-        function savePropertyQuoteChild() {
-        debugger;
+    // function savePropertyQuoteChild() {
+    //     debugger;
 
-        // get ?code=... from URL
-        const params = new URLSearchParams(window.location.search);
-        const quotationNo = params.get("code");
-    function quoteMethodSelectionChanged2(e) {
-            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#QuoteMethod3").dxDropDownBox("instance");
+    //     const params = new URLSearchParams(window.location.search);
+    //     const quotationNo = params.get("code");
+    //     function quoteMethodSelectionChanged2(e) {
+    //         const selectedKey = e.selectedRowKeys[0]; 
+    //         const ddbInstance = $("#QuoteMethod3").dxDropDownBox("instance");
 
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-            }
-    }
+    //     if (selectedKey) {
+    //             ddbInstance.option("value", selectedKey);
+    //           if (ddbInstance.option("opened")) {
+    //                 ddbInstance.close();
+    //             }
+    //     }
+    // }
 
 
-    function quoteMethodGridInitialized(e) {
-        dataGrid = e.component;
-    }
-
+    // function quoteMethodGridInitialized(e) {
+    //     dataGrid = e.component;
+    // }
 
 
 
-               function savePropertyQuoteChild() {
+
+    function savePropertyQuoteChild() {
         debugger;
 
         // get ?code=... from URL
