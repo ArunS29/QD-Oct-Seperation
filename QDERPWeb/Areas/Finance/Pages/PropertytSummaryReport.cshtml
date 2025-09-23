@@ -1,10 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.Finance.Pages.EmpSummaryReportModel
-@{
-    ViewData["Title"] = "Employee Summary Report";
-}
-
-
+@model QD.ERP.Web.Areas.Finance.Pages.PropertytSummaryReportModel
 <h2 id="employeesummaryreport"></h2>
 
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
@@ -152,7 +147,7 @@
                 if (fromDate) params.append("fromDate", fromDate);
                 if (toDate) params.append("toDate", toDate);
 
-                return fetch(`/api/EmployeeReport/GetEmployeeAllocations?${params}`)
+                return fetch(`/api/EmployeeReport/GetPropertyAllocations?${params}`)
                     .then(res => res.json());
             }
         });
@@ -160,7 +155,7 @@
         dataGrid.refresh();
     }
 
-         $(function () {
+    $(function () {
         dataGrid = $("#dataGrid").dxPivotGrid({
             showBorders: true,
             allowSorting: true,
@@ -173,11 +168,13 @@
             },
             dataSource: {
                 fields: [
-                    { dataField: "Department", area: "row", caption: formatMessage("Department") },
-                    { dataField: "EmployeeName", area: "row", caption: formatMessage("Employee Name") },
-                   {
+                   { dataField: "PropertyNo",area: "row", caption: formatMessage("Property No") },
+                    { dataField: "PropertyDescription",area: "row", caption: formatMessage("Property Description") },
+                    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
+                    { dataField: "VoucherEntryNo", caption: formatMessage("Voucher Entry No") },
+                    {
                         dataField: "AmountAllocated",
-                        area: "data",
+                      
                         summaryType: "sum",
                         caption: formatMessage("Amount Allocated"),
                         customizeText: function (cellInfo) {
@@ -190,37 +187,54 @@
                             return "";
                         }
                     },
-
-                    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
-                    { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
-                    { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
-                    { dataField: "EmpAllocDrCr", caption: formatMessage("Emp Alloc DrCr") },
-                    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
                     { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
                     { dataField: "AccountHead", caption: formatMessage("Account Head") },
-                    { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
-                    { dataField: "VoucherDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
-                    { dataField: "EffectiveDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
-                    { dataField: "CategoryTitle", caption: formatMessage("Category Title") },
-                    { dataField: "NationalityEn", caption: formatMessage("Nationality En") },
-                    { dataField: "VisaPositionTitle", caption: formatMessage("Visa Position Title") },
-                    { dataField: "WorkSite", caption: formatMessage("Work Site") },
-                    { dataField: "SponsorName", caption: formatMessage("Sponsor Name") },
-                    { dataField: "NationalId", caption: formatMessage("National ID") },
-                    { dataField: "IsDiscontinued", caption: formatMessage("Is Discontinued") },
-                    { dataField: "EmployeeGroup", caption: formatMessage("Employee Group") },
-                    { dataField: "JobTitle", caption: formatMessage("Job Title") },
-                    { dataField: "CostCentreCode", caption: formatMessage("Cost Centre Code") },
-                    { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") },
-                    { dataField: "DepartmentCode", caption: formatMessage("Department Code") },
-                    { dataField: "Department", caption: formatMessage("Department") },
-                    { dataField: "EmployeeReferenceId", caption: formatMessage("Employee Reference Id") },
-                    { dataField: "BankAccountNo", caption: formatMessage("Bank Account No") },
-                    { dataField: "BankName", caption: formatMessage("Bank Name") },
+                    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
+                    { dataField: "VoucherDate", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
+                    { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
+                    { dataField: "AccountGroup", caption: formatMessage("Account Group") },
+                    { dataField: "MasterGroup", caption: formatMessage("Master Group") },
+                    { dataField: "PlateNo", caption: formatMessage("Plate No") },
+                    { dataField: "DoorNo", caption: formatMessage("Door No") },
+                    { dataField: "ChassisNo", caption: formatMessage("Chassis No") },
+                    { dataField: "PropertyCategoryName", caption: formatMessage("Property Category Name") },
+                    { dataField: "PropertyGroup", caption: formatMessage("Property Group") },
+                    { dataField: "PropertyType", caption: formatMessage("Property Type") },
+                       {
+                        dataField: "RevenueAmount",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Revenue Amount"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+                        {
+                        dataField: "ExpenseAmount",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Expense Amount"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+                    { dataField: "CostAndRevenueClubbed", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
+                    { dataField: "CostCenterCode", caption: formatMessage("Cost Center Code") },
+                    { dataField: "CostCenterUnit", caption: formatMessage("Cost Center Unit") },
                     { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
-                    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"),area: "column",showTotals: false, showGrandTotals: false },
-                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
-                    { dataField: "BillRemarks", caption: formatMessage("Bill Remarks") }
+                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") }
 
                 ]
             },
@@ -243,7 +257,7 @@
 
             // Remove automatic totals & grand totals
             showColumnTotals: false,
-            showColumnGrandTotals: false,
+            showColumnGrandTotals: true,
             showRowTotals: false,
             showRowGrandTotals: false
         }).dxPivotGrid("instance");
@@ -316,7 +330,7 @@
                 if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
                 if (toDate) params.append("toDate", formatDateOnly(toDate));
 
-                return fetch(`/api/EmployeeReport/GetEmployeeAllocations?${params}`)
+                return fetch(`/api/EmployeeReport/GetPropertyAllocations?${params}`)
                     .then(res => res.json());
             }
         });

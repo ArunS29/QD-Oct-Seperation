@@ -2040,6 +2040,8 @@ var dictionary = {
         "Document Type": "Document Type",
         "Branch Name is required": "Branch Name is required",
         "Asset View": "Asset View",
+        "Revenue Amount": "Revenue Amount",
+        "Expense Amount": "Expense Amount",
         "Edit Asset Details": "Edit Asset Details",
         "UploadItems Form Excel":"UploadItems Form Excel",
         "Delete Asset Details": "Delete Asset Details",

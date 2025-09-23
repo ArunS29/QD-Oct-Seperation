@@ -68,7 +68,6 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
         width: 100%;
     }
 
@@ -107,7 +106,7 @@
             )
         </td>
    
-        <td style="padding-right: 10px;">
+        <td>
             @(Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('User Code')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -136,7 +135,7 @@
             )
         </td>
 
-        <td style="padding-left: 10px;">
+        <td>
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Email Address')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -151,7 +150,7 @@
     </tr>
 
     <tr>
-        <td style="padding-right: 10px;">
+        <td>
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Contact Number')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -160,7 +159,7 @@
             )
         </td>
 
-        <td style="padding-left: 10px;">
+        <td>
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -480,7 +479,7 @@
                     confirmButtonText: 'OK'
                 }); 
             },
-            height: "70vh",
+            height: "75vh",
             width: "100%"
         });
     });

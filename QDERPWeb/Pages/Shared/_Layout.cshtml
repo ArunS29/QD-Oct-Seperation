@@ -2656,7 +2656,7 @@
                     </div>
                 </div>
 
-                <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpSummaryReport')">
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('PropertytSummaryReport')">
                     <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
@@ -4956,6 +4956,7 @@
 
 
                 function handleCstReportClick(reportName) {
+                     $("#submenuContainer7").hide();
                     var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
                     var frmDateBox = $("#frmdateBox").dxDateBox("instance");
                     var toDateBox = $("#todateBox").dxDateBox("instance");

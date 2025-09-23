@@ -28,7 +28,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         /// Get all employee allocation entries from Qry20182EmpAllocationWtLedger.
         /// Optional filtering by EmployeeNo, Date range, CostCentreCode, etc.
         /// </summary>
-        public async Task<IActionResult> GetEmployeeAllocations([FromQuery] string accountHead, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
+        public async Task<IActionResult> GetEmployeeAllocations([FromQuery] string accountId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -36,8 +36,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var query = dbContext.Qry20182EmpAllocationWtLedgers.AsQueryable();
 
-                    if (!string.IsNullOrEmpty(accountHead))
-                        query = query.Where(x => x.AccountHead == accountHead);
+                    if (!string.IsNullOrEmpty(accountId))
+                        query = query.Where(x => x.AccountHead == accountId);
 
                     if (fromDate.HasValue)
                         query = query.Where(x => x.VoucherDate >= fromDate.Value);
