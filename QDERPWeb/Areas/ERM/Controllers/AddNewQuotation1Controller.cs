@@ -96,17 +96,17 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     // Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
                     int noOfDigits = dbContext.Tbl901CompanyDetails02s
-                                              .Where(c => c.CompanyId == company.CompanyId)
-                                              .Select(c => c.NoOfDigitsToEquipmentQuotation ?? 4)
-                                              .FirstOrDefault(); // Default to 4 if not found
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToEquipmentQuotation ?? 4)
+                    .FirstOrDefault(); // Default to 4 if not found
 
                     // Step 5: Extract values for quotation number
-                    string QuotationAbbrv = company.QuotationAbbrv;
+                    string EquipQuoteAbbrv = company.EquipQuoteAbbrv;
                     int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
                     bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
                     DateTime invoiceDate = DateTime.Now;
                     // Generate new debit note QuotationAbbrv
-                    string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
+                    string newDebitNoteNo = GetNewDebitNoteNo(EquipQuoteAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
 
 
 
@@ -126,7 +126,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
-        private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
+        private string GetNewDebitNoteNo(string EquipQuoteAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
         {
             try
             {
@@ -152,7 +152,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 else
                     strYear = "";
 
-                return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
+                return $"{EquipQuoteAbbrv}{strYear}-{strNewDebitNoteNo}";
             }
             catch (Exception)
             {
@@ -162,7 +162,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 else
                     strYear = "";
 
-                return $"{QuotationAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
+                return $"{EquipQuoteAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
             }
         }
 
@@ -296,10 +296,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public decimal? QuoteDiscount { get; set; }
             public byte? CompanyBranch { get; set; }
             public string ReferenceNo { get; set; }
-            public string VATApplicableRate { get; set; }
+            public byte? VATApplicableRate { get; set; }
             public string PreparedBy { get; set; }
-            public string VerifiedSignatory { get; set; }
-            public string ApprovedSignatory { get; set; }
+            public byte? VerifiedSignatory { get; set; }
+            public byte? ApprovedSignatory { get; set; }
 
             public decimal? CurrencyRate { get; set; }
             public int? BaseCurrencyId { get; set; }
@@ -499,7 +499,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         QuoteDate = VM.QuoteDate,
                         ClientCode = VM.ClientCode,
                         SalesPersonCode = VM.SalesPersonCode,
-                        ClientRefNo=VM.ClientRefNo,
+                        ClientRefNo = VM.ClientRefNo,
                         Attention = VM.Attention,
                         ClientContactEmail = VM.ClientContactEmail,
                         ClientContactNo = VM.ClientContactNo,
@@ -521,9 +521,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         DiscountsText = VM.DiscountsText,
                         QuoteDiscount = VM.QuoteDiscount,
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        ReferenceNo=VM.ReferenceNo,
-                        VatapplicableRate=VM.VATApplicableRate,
-                        PreparedBy=VM.PreparedBy,
+                        ReferenceNo = VM.ReferenceNo,
+                        VatapplicableRate = VM.VATApplicableRate,
+                        PreparedBy = VM.PreparedBy,
                         VerifiedSignatory = VM.VerifiedSignatory,
                         ApprovedSignatory = VM.ApprovedSignatory,
                         CurrencyId = VM.CurrencyId ?? 1,
@@ -729,7 +729,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         MobRate = request.MobilizationRate,
                         DemobRate = request.DemobRate,
                         DeliveryDetails = request.DeliveryDetails,
-                        HasEquipmentDetails ="Yes"
+                        HasEquipmentDetails = "Yes"
 
                     };
 
