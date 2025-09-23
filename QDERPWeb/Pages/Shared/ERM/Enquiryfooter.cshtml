@@ -109,30 +109,37 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("btnAddMaterialRequest")
-            .Icon("add")
-            .Width("100%")
-            .Text(new JS("formatMessage('Create New')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add New Client Request')")).Icon("user");
-                items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
-            })
-            @* .ItemTemplate(@<text>
-                <div class="custom-dropdown-item">
-                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                    <div class="item-content">
-                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                        <div>
-                            <div class="item-title"><%- text %></div>
-                        </div>
-                    </div>
+                .ID("btnAddMaterialRequest")
+                .Icon("add")
+                .Width("100%")
+                .Text(new JS("formatMessage('Create New')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Add New Client Request')"))
+                    .Icon("user")
+                    .Option("key", "client")
+                    .Option("color", "#FF7043");
+
+                    items.Add()
+                    .Text(new JS("formatMessage('Add New Project Request')"))
+                    .Icon("event")
+                    .Option("key", "project")
+                    .Option("color", "#00ACC1");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div class="side-bar" style="background-color:<%- color || '#808080' %>;"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div class="item-title"><%- text %></div>
                 </div>
-            </text>) *@
-            .OnItemClick("addNewMaterialRequest")
-            .ShowArrowIcon(false)
-            )
+            </div>
+        </text>)
+                .OnItemClick("addNewMaterialRequest")
+                .ShowArrowIcon(false)
+                )
     </div>
 
    

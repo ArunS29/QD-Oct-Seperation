@@ -2,6 +2,8 @@
 var dictionary = {
 
     "en": {
+        "Model Type":"Model Type",
+        "Add New Sevice":"Add New Sevice",
         "Request Type":"Request Type",
         "Po Status":"Po Status",
         "Supplier Ref No":"Supplier Ref No",
