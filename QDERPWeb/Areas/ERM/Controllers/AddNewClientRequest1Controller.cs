@@ -701,7 +701,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                          .Select(x => x.CurrencyRate)
                          .FirstOrDefaultAsync();
 
-                        dict["ExpectedUnitRate"] = gridDetails.ExpectedUnitRate;
+                        dict["LineTotal"] = gridDetails.LineTotal / currencyRate;
                         dict["ExpectedUnitRate"] = gridDetails.ExpectedUnitRate / currencyRate;
 
                         resultWithDetails.Add(item);

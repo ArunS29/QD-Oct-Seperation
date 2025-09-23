@@ -646,9 +646,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string Capacity { get; set; }
             public string Operator { get; set; }
             public string Attachment { get; set; }
-            public string UnitRateMethod2 { get; set; }
+            public byte? UnitRateMethod2 { get; set; }
             public decimal? UnitRate2 { get; set; }
-            public string UnitRateMethod3 { get; set; }
+            public byte? UnitRateMethod3 { get; set; }
             public decimal? UnitRate3 { get; set; }
             public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
@@ -833,16 +833,16 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string DetailedDescription { get; set; }
             public decimal? QuotedQuantity { get; set; }
             public string QuoteMethod { get; set; }
-            public decimal? UnitRateMethod { get; set; }
+            public byte? UnitRateMethod { get; set; }
 
             // Extra fields (map to your child table)
             public string Certification { get; set; }
             public string Capacity { get; set; }
             public string Operator { get; set; }
             public string Attachment { get; set; }
-            public string UnitRateMethod2 { get; set; }
+            public byte? UnitRateMethod2 { get; set; }
             public decimal? UnitRate2 { get; set; }
-            public string UnitRateMethod3 { get; set; }
+            public byte? UnitRateMethod3 { get; set; }
             public decimal? UnitRate3 { get; set; }
             public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
