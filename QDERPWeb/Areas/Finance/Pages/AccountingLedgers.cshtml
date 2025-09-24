@@ -1370,7 +1370,7 @@
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
 				// button.option("text", "Update");
-			    accgroupid = response.data.AccountGroupId;
+			  //  accgroupid = response.data.AccountGroupId;
 				// Fetch and bind data to form fields if CostAllocationUnitId is in the query string
 				$.ajax({
 					url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
@@ -1730,6 +1730,7 @@
 		}
 		// This function used to call API to get records for the selected values.
 		function ddBtnShowRecords_click(duration) {
+			debugger;
 			var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 			if (dropDownBox.option("value") === null) {
 				DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
