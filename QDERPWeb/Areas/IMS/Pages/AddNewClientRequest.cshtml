@@ -3797,8 +3797,8 @@ $("#btnAddNew").on("click", function (e) {
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
 					// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+				//var button = $("#btnSave").dxButton("instance");
+				//button.option("text", formatMessage("Update"));
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -3834,8 +3834,8 @@ $("#btnAddNew").on("click", function (e) {
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh();
-				const button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+				//const button = $("#btnSave").dxButton("instance");
+				//button.option("text", formatMessage("Update"));
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -6723,20 +6723,20 @@ function onUploadButtonClick() {
             icon.className = step.icon;
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });
@@ -6948,8 +6948,7 @@ function onIMSAttachmentButtonClick(e) {
       });
 	let currentResolver = null;
 	window.confirmDeleteWithPhrase = function(options){
-		debugger;
-		openDialog(options || {});
+				openDialog(options || {});
 		return new Promise(resolve => { currentResolver = resolve; });
 	}
 	window.handleUploadConfirm = async function (requestNo) {

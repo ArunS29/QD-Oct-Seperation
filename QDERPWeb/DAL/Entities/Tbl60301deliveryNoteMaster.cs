@@ -30,6 +30,17 @@ public partial class Tbl60301deliveryNoteMaster
     public string ClientProject { get; set; }
 
     public bool? IsVerified { get; set; }
+    public bool? IsSubmitted { get; set; }
+
+    public string SubmittedBy { get; set; }
+
+    public DateTime? SubmittedOn { get; set; }
+
+ 
+
+    public string VerifiedBy { get; set; }
+
+    public DateTime? VerifiedOn { get; set; }
 
     public bool? IsApproved { get; set; }
 

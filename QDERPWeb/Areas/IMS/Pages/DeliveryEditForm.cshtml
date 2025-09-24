@@ -239,7 +239,7 @@
         <div id="addNewDeliverytoClient" class="no-border-title"></div>
     </div>
 </div>
-<input id="formId" value="frm60106DeliveryNoteView" type="hidden" />
+<input id="formId" value="frm60106DeliveryNoteEdit" type="hidden" />
 <div class="form-container1">
     <div class="form-container">
         <!-- Tab Menu -->
@@ -415,7 +415,7 @@
                     <!-- Row 3 -->
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Stock Delivery From Store:")
+                        .Label("Stock From Store:")
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetStores")
@@ -437,6 +437,47 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("AddModeReq")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddModeReq")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
+                        )
+                    </div>
+                     <div class="col-md-3" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().DropDownBox()
+                        .Label("Stock by Store:")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetStores")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("StoreId")
+                        )
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("ddStockConsumedbyStore")
+                        .Width(900)
+                        .OpenOnFieldClick(false)//
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("StoreId")
+                        .DisplayExpr("StoreName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                        //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("GetModeOfRequest1ContentTemplate"))
                         .Buttons(buttons => {
                             buttons.Add()
                                 .Name("clear");
@@ -603,7 +644,7 @@
                                     .Controller("AddNewClientRequest")
                                     .LoadAction("GetSignatory")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SignatoryID")
+                                    .Key("SignatoryId")
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("Dnsignatory")
@@ -612,7 +653,7 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("SignatoryID")
+                                    .ValueExpr("SignatoryId")
                                     .DisplayExpr("SignatoryName")
                                     .OnInput("dropDownBoxOnInput")
                                     .OnOpened("onOpened")
@@ -1165,7 +1206,7 @@
                     .Controller("AddNewClientRequest")
                     .LoadAction("GetSignatory")
                     .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("SignatoryID")
+                    .Key("SignatoryId")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -1180,7 +1221,7 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
+                    columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('SignatoryID')")).Alignment(HorizontalAlignment.Center);
                     columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('SignatoryName')")).Alignment(HorizontalAlignment.Center);
                 })
             )
@@ -1202,6 +1243,40 @@
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                             .OnSelectionChanged("dataGridSelectionChanged2")
                             .OnInitialized("dataGridInitialized2")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                    columns.Add().DataField("StoreName");
+
+
+
+                            })
+                            )
+}
+@using (Html.DevExtreme().NamedTemplate("GetModeOfRequest1ContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetProject1-datagrid1")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest")
+                            .LoadAction("GetStores")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("StoreId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged21")
+                            .OnInitialized("dataGridInitialized21")
                             .HeaderFilter(p => p.Visible(true))
                             .ShowBorders(true)
                             .HoverStateEnabled(true)
@@ -1333,6 +1408,74 @@
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged10")
                         .OnInitialized("dataGridInitialized10")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                        })
+                        )
+}
+@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetVerifiedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged11")
+                        .OnInitialized("dataGridInitialized11")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                        })
+                        )
+}
+@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetApprovedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged12")
+                        .OnInitialized("dataGridInitialized12")
                         .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
@@ -1624,6 +1767,20 @@
             }
         }
     }
+    function dataGridInitialized21(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged21(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddStockConsumedbyStore").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
      function dataGridSelectionChanged6(e) {
 	const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 	const ddbInstance = $("#ddGetCompany").dxDropDownBox("instance");
@@ -1663,6 +1820,48 @@ function dataGridSelectionChanged8(e) {
 function dataGridInitialized8(e) {
 	dataGrid = e.component;
 }
+function dataGridSelectionChanged10(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized10(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged11(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized11(e) {
+        dataGrid = e.component;
+    }
+    function dataGridSelectionChanged12(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized12(e) {
+        dataGrid = e.component;
+    }
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
         const title = "Quotation Type Of Request";
@@ -1747,45 +1946,17 @@ function dataGridInitialized8(e) {
 
                 }
 
-                function dataGridPreparedByHeadSelectionChanged(e) {
+           function dataGridPreparedByHeadSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#Dnsignatory").dxDropDownBox("instance");
 
-                const selectedKey = e.selectedRowKeys[0];
-
-                const ddbInstance = $("#Dnsignatory").dxDropDownBox("instance");
-
-                acchead = selectedKey;
-
-                if (selectedKey) {
-
-                    ddbInstance.option("value", selectedKey);
-
-                    if (ddbInstance.option("opened")) {
-
-                        ddbInstance.close();
-
-                    }
-                        if(IsCurrent!="true")
-                    {
-                    var selectedRowData = $("#preparedby-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-                    // Get ReferenceNo from selected row
-
-                    if (selectedRowData.length > 0) {
-
-                                    SignatoryID = selectedRowData[0].SignatoryID;
-
-                    } else {
-
-                        DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-                        return;
-
-                    }
-                    }
-
-                }
-
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
             }
+        }
+    }
             function dataGridCheckedByHeadInitialized(e) {
 
                     dataGrid = e.component;
@@ -2759,8 +2930,7 @@ function dataGridInitialized8(e) {
         });
     }
             document.addEventListener("DOMContentLoaded", function () {
-                debugger;
-        const urlParams = new URLSearchParams(window.location.search);
+                        const urlParams = new URLSearchParams(window.location.search);
         const deliveryNoteNo = urlParams.get("DeliveryNoteNo");
         const mode = urlParams.get("mode");
 
@@ -2787,7 +2957,9 @@ function dataGridInitialized8(e) {
                             $("#ClientRefName").dxTextBox("instance").option("value", data.attention);
                             $("#ClientContactNo").dxTextBox("instance").option("value", data.clientContactNo);
                             $("#ClientEmail").dxTextBox("instance").option("value", data.clientContactEmail);
-                            $("#ddStockfromStore").dxDropDownBox("instance").option("value", data.StoreCode);
+                            $("#ddStockfromStore").dxDropDownBox("instance").option("value", data.StoreIssuedFrom);
+                            $("#ddStockConsumedbyStore").dxDropDownBox("instance").option("value", data.StoreCode);
+
                             $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", data.projectId);
                             $("#clientProject").dxTextBox("instance").option("value", data.clientProject);
                             $("#DeliveryNoteRemarks").dxTextArea("instance").option("value", data.deliveryNoteRemarks);
@@ -3247,4 +3419,311 @@ function dataGridInitialized8(e) {
             if (btn) btn.option("disabled", true);
         });
     }
+    $(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+		// Form ID
+		var formId = "frm60106DeliveryNoteEdit";
+
+		// Call the API to get permissions
+		$.ajax({	
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				console.log("API Response:", response); // Log the API response
+
+				if (response.success && response.permissions) {
+					// Default visibility and enable status for buttons
+					var controlStates = {
+                        "ddButtonLayout1": { "Visible": false, "Enabled": false },
+                        "btnMoveUp": { "Visible": false, "Enabled": false },
+                        "btnMoveDown": { "Visible": false, "Enabled": false },
+                        "btnPrint1": { "Visible": false, "Enabled": false },
+                        "btnSave": { "Visible": false, "Enabled": false },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnAddNewPayment": { "Visible": false, "Enabled": false },
+                        "btnDelete": { "Visible": false, "Enabled": false },
+                        "btnBack": { "Visible": false, "Enabled": false },
+                        "btnSubmit": { "Visible": false, "Enabled": false },
+                        "btnVerify": { "Visible": false, "Enabled": false },
+                        "btnApprove": { "Visible": false, "Enabled": false },
+                        "btnReceive": { "Visible": false, "Enabled": false },
+                        "btnAttach": { "Visible": false, "Enabled": false },
+                        "btnPostbooks": { "Visible": false, "Enabled": false },
+                    };
+
+
+					// Check for full access
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
+
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						// Grant full access: make all controls visible and enabled
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						// Update states based on specific permissions for each control
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
+
+					console.log("Control States:", controlStates);
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							// Handle visibility
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							// Handle enable/disable state
+							button.disabled = !controlStates[key].Enabled;
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+						} else {
+							console.warn(`Button with ID "${key}" not found in the DOM.`);
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {  
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+	});
+    function saveDeliveryNote(closeAfterSave = false) {
+            debugger;
+        var isUpdate = $("#btnSave").data("is-update");
+
+        if (window.edits===false) {
+            // New mode: generate number first
+            $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumber")
+                .done(function(res) {
+                    if (res.success && res.deliveryNoteNo) {
+                        console.log("getnewno",res.deliveryNoteNo);
+                        $("#deliveryNoteNo").dxTextBox("instance").option("value", res.deliveryNoteNo);
+                        // Now call save
+                        saveDeliveryNoteWithNumber(res.deliveryNoteNo, closeAfterSave, isUpdate);
+                    } else {
+                        DevExpress.ui.notify("Failed to generate Delivery Note number", "error", 3000);
+                    }
+                })
+                .fail(function() {
+                    DevExpress.ui.notify("Error generating Delivery Note number.", "error", 3000);
+                });
+        } else {
+            // Edit mode: use existing number
+            const existingNo = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+            saveDeliveryNoteWithNumber(existingNo, closeAfterSave, isUpdate);
+        }
+    }
+          function saveDeliveryNoteWithNumber(deliveryNoteNo, closeAfterSave = false, isUpdate) {
+        var isUpdate = $("#btnSave").data("is-update");
+        const model = {
+            deliveryNoteNo: deliveryNoteNo,
+            deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
+            clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+            salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
+            clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
+            clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
+            attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+            clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
+            clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+            StoreIssuedFrom: $("#ddStockfromStore").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ddStockConsumedbyStore").dxDropDownBox("instance").option("value"),
+            projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
+            clientProject: $("#clientProject").dxTextBox("instance").option("value"),
+            deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
+            salesman: $("#Salesman").dxTextBox("instance").option("value"),
+            transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
+            driversName: $("#DriverName").dxTextBox("instance").option("value"),
+            driversId: $("#DriverID").dxTextBox("instance").option("value"),
+            vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
+                companyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value"),
+                deliveryType: $("#DeliveryType").dxDropDownBox("instance").option("value"),
+                inventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value"),
+            salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
+            quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+            enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+        };
+     
+        // Get grid data (items)
+        const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+        const items = B2BdataGridInstance.getDataSource().items().map(row => ({
+            deliveryNoteSlNo: row.DeliveryNoteSlNo || null, // keep PK if exists
+            gscode: row.Gscode,
+            unitRateMethod: row.UnitRateMethod,
+            qty: row.Qty,
+            issuedUnitPrice: row.IssuedUnitPrice,
+            issuedQuoteUnitPrice: row.IssuedQuoteUnitPrice,
+            employeeNo: row.EmployeeNo,
+            propertyNo: row.PropertyNo,
+            addlDescription: row.AddlDescription,
+            deliveryRemarks: row.DeliveryRemarks
+        }));
+        // Call both APIs: 1) save delivery note, 2) save item details
+        const saveNote = $.ajax({
+            url: '/api/DeliveryNote/SaveDeliveryNote',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(model)
+        });
+         const saveItems = $.ajax({
+        url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            deliveryNoteNo: model.deliveryNoteNo,
+            items: items
+        })
+    });
+      Promise.all([saveNote, saveItems])
+    .then(function ([noteRes, itemRes]) {
+             if (noteRes.success) {
+        DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+            getWorkflowStatusFromFieldsisVoucherSaved = true; // Mark Updated step as done
+    updateWorkflowVisual(getWorkflowStatusFromFields());
+                const DeliveryNoteNo = noteRes.deliveryNoteNo;
+                window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
+        if (!isUpdate) {
+            $("#btnSave").dxButton("instance").option("text", "Update");
+            $("#btnSave").data("is-update", true);
+        }
+     
+            } else {
+            DevExpress.ui.notify(noteRes.message || "Failed to save", "error", 3000);
+        }
+    })
+    .catch(function (err) {
+        DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
+    });
+    }
+   
+ //SaveAndClose
+
+                 function onSaveAndCloseClicked(closeAfterSave = false) {
+            var isUpdate = $("#btnSave").data("is-update");
+            if (window.edits===false) {
+                // New mode: generate number first
+                $.get("/api/DeliveryNote/GetAutoGeneratedDeliveryNoteNumber")
+                    .done(function(res) {
+                        if (res.success && res.deliveryNoteNo) {
+                            console.log("getnewno",res.deliveryNoteNo);
+                            $("#deliveryNoteNo").dxTextBox("instance").option("value", res.deliveryNoteNo);
+                            // Now call save
+                            saveDeliveryNoteWithNumber1(res.deliveryNoteNo, closeAfterSave, isUpdate);
+                        } else {
+                            DevExpress.ui.notify("Failed to generate Delivery Note number", "error", 3000);
+                        }
+                    })
+                    .fail(function() {
+                        DevExpress.ui.notify("Error generating Delivery Note number.", "error", 3000);
+                    });
+            } else {
+                // Edit mode: use existing number
+                const existingNo = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+                saveDeliveryNoteWithNumber1(existingNo, closeAfterSave, isUpdate);
+            }
+        }
+              function saveDeliveryNoteWithNumber1(deliveryNoteNo, closeAfterSave = false, isUpdate) {
+            var isUpdate = $("#btnSave").data("is-update");
+            const model = {
+                deliveryNoteNo: deliveryNoteNo,
+                deliveryDate: $("#deliveryNoteDate").dxDateBox("instance").option("value"),
+                clientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+                salesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value"),
+                clientPono: $("#clientPOnumber").dxTextBox("instance").option("value"),
+                clientPodate: $("#ClientPODate").dxDateBox("instance").option("value"),
+                attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+                clientContactNo: $("#ClientContactNo").dxTextBox("instance").option("value"),
+                clientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+                StoreIssuedFrom: $("#ddStockfromStore").dxDropDownBox("instance").option("value"),
+                StoreCode: $("#ddStockConsumedbyStore").dxDropDownBox("instance").option("value"),
+                projectId: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value"),
+                clientProject: $("#clientProject").dxTextBox("instance").option("value"),
+                deliveryNoteRemarks: $("#DeliveryNoteRemarks").dxTextArea("instance").option("value"),
+                salesman: $("#Salesman").dxTextBox("instance").option("value"),
+                transportedBy: $("#DeliveredBy").dxTextBox("instance").option("value"),
+                driversName: $("#DriverName").dxTextBox("instance").option("value"),
+                driversId: $("#DriverID").dxTextBox("instance").option("value"),
+                vehicleNo: $("#VehicleNo").dxTextBox("instance").option("value"),
+                    companyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value"),
+                    deliveryType: $("#DeliveryType").dxDropDownBox("instance").option("value"),
+                    inventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value"),
+                salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
+                quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+                enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
+                Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                    CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                    BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                    CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+            };
+            // Get grid data (items)
+            const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+            const items = B2BdataGridInstance.getDataSource().items().map(row => ({
+                deliveryNoteSlNo: row.DeliveryNoteSlNo || null, // keep PK if exists
+                gscode: row.Gscode,
+                unitRateMethod: row.UnitRateMethod,
+                qty: row.Qty,
+                issuedUnitPrice: row.IssuedUnitPrice,
+                issuedQuoteUnitPrice: row.IssuedQuoteUnitPrice,
+                employeeNo: row.EmployeeNo,
+                propertyNo: row.PropertyNo,
+                addlDescription: row.AddlDescription,
+                deliveryRemarks: row.DeliveryRemarks
+            }));
+            // Call both APIs: 1) save delivery note, 2) save item details
+            const saveNote = $.ajax({
+                url: '/api/DeliveryNote/SaveDeliveryNote',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model)
+            });
+             const saveItems = $.ajax({
+            url: '/api/DeliveryNote/SaveOrUpdateDeliveryNoteItems',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                deliveryNoteNo: model.deliveryNoteNo,
+                items: items
+            })
+        });
+          Promise.all([saveNote, saveItems])
+        .then(function ([noteRes, itemRes]) {
+                 if (noteRes.success) {
+            DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+           
+                    window.history.back();
+             
+                  //  const DeliveryNoteNo = noteRes.deliveryNoteNo;
+                   // window.location.href = `/${tenantName}/IMS/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
+            if (!isUpdate) {
+                $("#btnSave").dxButton("instance").option("text", "Update");
+                $("#btnSave").data("is-update", true);
+            }
+             
+                } else {
+                DevExpress.ui.notify(noteRes.message || "Failed to save", "error", 3000);
+            }
+        })
+        .catch(function (err) {
+            DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
+        });
+        }
    </script>

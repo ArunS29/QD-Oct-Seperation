@@ -3014,7 +3014,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl40116PropertyIssuesMaster> Tbl40116PropertyIssuesMasters { get; set; }
 
-    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChildren { get; set; }
+    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChilds { get; set; }
 
     public virtual DbSet<Tbl40118PropertyInvoiceMaster> Tbl40118PropertyInvoiceMasters { get; set; }
 
@@ -3404,7 +3404,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
-
+    public virtual DbSet<GetDataForGeneratingTimesheet> GetDataForGeneratingTimesheets { get; set; }
     public virtual DbSet<VATFinalReturnsSummary> VATFinalReturnsSummarys { get; set; }
 
     public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
@@ -3429,6 +3429,12 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
     public DbSet<PostAvgCostDto> PostAvgCostDtos { get; set; }
     public DbSet<PostJournalDto> PostJournalDtos { get; set; }
+    public DbSet<PostJournalDtos> PostJournalDtoss { get; set; }
+    public DbSet<PostDeliveryNoteRequest> PostDeliveryNoteRequests { get; set; }
+    public DbSet<MaterialReceiptDto> MaterialReceiptDtos { get; set; }
+    public DbSet<MaterialReceiptChildDto> MaterialReceiptChildDtos { get; set; }
+
+
     public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
     public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
    
@@ -3446,6 +3452,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey();
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<GetDataForGeneratingTimesheet>().HasNoKey().ToView(null);
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<JournalRegisterView>().HasNoKey();
@@ -3461,6 +3468,10 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
         modelBuilder.Entity<PostAvgCostDto>().HasNoKey();
         modelBuilder.Entity<PostJournalDto>().HasNoKey();
+        modelBuilder.Entity<PostJournalDtos>().HasNoKey();
+        modelBuilder.Entity<PostDeliveryNoteRequest>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptDto>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptChildDto>().HasNoKey();
         modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
         modelBuilder.Entity<ApproveDeliveryNoteDto>().HasNoKey();
        // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();

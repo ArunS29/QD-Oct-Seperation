@@ -231,6 +231,14 @@
         .titleCard-toggle1 {
             display: none;
         }
+        #customContextMenu .ctx-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 15px;
+}
+#customContextMenu .ctx-item:hover {
+    background: #e6f0ff;
+}
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -594,13 +602,14 @@
 
 
                         </div>
-                        <div id="CompanyLogoPreview" class="preview-box" oncontextmenu="triggerUpload('CompanyLogoInput'); return false;">
-                            <span id="noimagedatalogo"></span>
+                        <div id="CompanyLogoPreview" class="preview-box">
+                             <span id="noimagedatalogo"></span>
                         </div>
                         <input type="file" id="CompanyLogoInput" style="display:none" accept="image/*" onchange="uploadImage('logo')">
 
-                        <div id="CompanySealPreview" class="preview-box" oncontextmenu="triggerUpload('CompanySealInput'); return false;">
-                            <span id="noimageforseal"></span>
+
+                        <div id="CompanySealPreview" class="preview-box">
+                           <span id="noimageforseal"></span>
                         </div>
                         <input type="file" id="CompanySealInput" style="display:none" accept="image/*" onchange="uploadImage('seal')">
 
@@ -663,6 +672,8 @@
                         rules.AddRequired()
                         .Message("VAT NO is required");
                         })
+                         .Mask("000000000000000") // 15 digits
+                        .MaxLength(15)
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
@@ -704,6 +715,7 @@
                         )
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+                         .DropDownOptions(d => d.Width(310))
                         .ContentTemplate(new TemplateName("IDDropDownTemplate"))
                         )
 
@@ -716,12 +728,14 @@
                         .Message("ID Number is required");
                         })
                         .LabelMode(EditorLabelMode.Floating)
+                        
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CRNumber")
                                                 .Label(new JS("formatMessage('Commercial Registration No')"))
                         .LabelMode(EditorLabelMode.Floating)
+                        .Mask("0000000000") 
                         .Width("100%"))
                     </div>
 
@@ -824,6 +838,10 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
+                            </div>
+                               <div style="flex: 1;">
+                               <div id="CompanyTextColor"></div>
+
                             </div>
                         </div>
 
@@ -1076,8 +1094,8 @@
                                             .Caption(new JS("formatMessage('Module')"))
                                             .GroupIndex(0)    // 👈 default group by VoucherModule
                                             .Visible(false);
-                                                columns.Add().DataField("VoucherTypeCode").Caption(new JS("formatMessage('Code')"));
-                                                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher // Entry Type')"));
+                                                columns.Add().DataField("VoucherTypeCode").Caption(new JS("formatMessage('Code')")).AllowEditing(false);
+                                                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher // Entry Type')")).AllowEditing(false).SortOrder(SortOrder.Asc);
                                                 columns.Add().DataField("VoucherDateLocked")
                                             .Caption(new JS("formatMessage('Voucher Date Locked')"))
                                             .DataType(GridColumnDataType.Date)
@@ -1224,6 +1242,15 @@
     </div>
 
 </div>
+<div id="customContextMenu" style="display:none; position:absolute; z-index:9999; background:#fff; border:1px solid #ccc; box-shadow:2px 2px 8px #aaa; border-radius:6px; min-width:120px;">
+    <div class="ctx-item" data-action="cut">✂️ Cut</div>
+    <div class="ctx-item" data-action="copy">📋 Copy</div>
+    <div class="ctx-item" data-action="paste">📄 Paste</div>
+    <div class="ctx-item" data-action="delete" style="color:red;">❌ Delete</div>
+    <hr style="margin:4px 0;">
+    <div class="ctx-item" data-action="load">📂 Load</div>
+    <div class="ctx-item" data-action="save">💾 Save</div>
+</div>
 @using (Html.DevExtreme().NamedTemplate("CodeDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1276,6 +1303,45 @@
     )
 }
 <script>
+
+    // $("#CompanyTextColor").dxColorBox({
+    //     value: "#000000",        // Default: black
+    //     editAlphaChannel: false, // true if you also want transparency
+    //     applyButtonText: "OK",
+    //     cancelButtonText: "Cancel",
+    //     width: 250,
+    //     placeholder: "Select company text color...",
+    //     onValueChanged: function(e) {
+    //         console.log("Selected Color HEX: ", e.value);
+    //         // if you want RGB format like (0,0,0):
+    //         const rgb = hexToRgb(e.value);
+    //         console.log("Selected Color RGB:", rgb);
+    //     }
+    // });
+
+    // Helper: Convert HEX -> RGB
+    function hexToRgb(hex) {
+        const bigint = parseInt(hex.slice(1), 16);
+        const r = (bigint >> 16) & 255;
+        const g = (bigint >> 8) & 255;
+        const b = bigint & 255;
+        return r + "," + g + "," + b;
+    }
+
+// Track last updated ShortName field
+ window.lastShortNameField = null;
+// if ($("#ShortName").dxTextBox("instance")) {
+//     $("#ShortName").dxTextBox("instance").on("valueChanged", function () {
+//         window.lastShortNameField = "ShortName";
+//     });
+// }
+// if ($("#ShortName1").dxTextBox("instance")) {
+//     $("#ShortName1").dxTextBox("instance").on("valueChanged", function () {
+//         window.lastShortNameField = "ShortName1";
+//     });
+// }
+
+
          const quotationReportMap = {
             "Preview Quotation": "PreviewQuotations",
             "Preview Quotation(W/O Discount Column)": "wtDiscount",
@@ -1427,12 +1493,12 @@ function renderLetterHeadImage() {
     if (base64) {
         $("#imgBox1").html(
             `<img src="data:image/png;base64,${base64}" style="max-width:100%; height:100%; object-fit:contain;">` +
-            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
+            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index=2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
         );
     } else {
         $("#imgBox1").html(
             `<span>No Image Data</span>` +
-            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index:2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
+            `<button id="deleteLetterHeadBtn" type="button" title="Remove" style="display:none; position:absolute; top:10px; right:10px; z-index=2; background:rgba(255,255,255,0.8); border:none; border-radius:50%; width:32px; height:32px; font-size:20px; cursor:pointer;">&times;</button>`
         );
     }
 }
@@ -1564,19 +1630,34 @@ $(function () {
 
 
             // English Fields
+            $("#ar_CompanyID").dxTextBox("instance").option("value", company.CompanyId);
             $("#CompanyID").dxTextBox("instance").option("value", company.CompanyId);
             $("#CompanyName").dxTextBox("instance").option("value", company.CompanyName);
-            $("#StreetName").dxTextBox("instance").option("value", company.CompanyAddress1);
-            $("#AdditionalAddress").dxTextBox("instance").option("value", company.CompanyAddress2);
+            $("#StreetName").dxTextBox("instance").option("value", company.SellerAddressStreet);
+            $("#AdditionalAddress").dxTextBox("instance").option("value", company.SellerAdditionalStreet);
             $("#BuildingNumber").dxTextBox("instance").option("value", company.SellerBuildingNumber);
-            $("#City").dxTextBox("instance").option("value", company.CompanyCity);
+            $("#City").dxTextBox("instance").option("value", company.SellerCity);
             $("#AdditionalNumber").dxTextBox("instance").option("value", company.SellerAdditionalNumber);
             $("#Province").dxTextBox("instance").option("value", company.SellerProvince);
             $("#PostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
             $("#District").dxTextBox("instance").option("value", company.SellerNeighborhood);
             $("#CountryCode").dxDropDownBox("instance").option("value", company.SellerCountryCode);
             $("#ShortName").dxTextBox("instance").option("value", company.CompanyNameShort);
+            $("#ShortName").dxTextBox("instance")
+    .off("valueChanged.shortname")
+    .on("valueChanged.shortname", function () {
+        window.lastShortNameField = "ShortName";
+    });
+            // Attach handler for ShortName1 if it exists (in case both widgets are present)
+            if ($("#ShortName1").dxTextBox("instance")) {
+                $("#ShortName1").dxTextBox("instance")
+                    .off("valueChanged.shortname1")
+                    .on("valueChanged.shortname1", function () {
+                        window.lastShortNameField = "ShortName1";
+                    });
+            }
             $("#FullAddress").dxTextBox("instance").option("value", company.CompanyFullAddress);
+            $("#FullAddressArabic").dxTextBox("instance").option("value", company.CompanyFullAddressAr);
             $("#ProductName").dxTextBox("instance").option("value", company.ProductName);
             $("#CompanySlogan").dxTextBox("instance").option("value", company.CompanySlogan);
             $("#Phone").dxTextBox("instance").option("value", company.CompanyPhone);
@@ -1588,6 +1669,7 @@ $(function () {
             $("#TIN").dxTextBox("instance").option("value", company.CompanyTin);
             $("#IDType").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
             $("#IDNumber").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+            $("#CRNumber").dxTextBox("instance").option("value", company.Crno);
 
             // Auditor, Backup, and Extra Fields (add the rest as above...)
             $("#AuditorName").dxTextBox("instance").option("value", company.AuditorName);
@@ -1609,12 +1691,16 @@ $(function () {
 
             // Arabic/RTL Fields
             $("#CompanyName_Ar, #ar_CompanyName").dxTextBox("instance").option("value", company.CompanyNameAr);
-            $("#StreetName_Ar, #ar_StreetName").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
-            $("#AdditionalAddress_Ar, #ar_AdditionalAddress").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
-            $("#ShortName_Ar, #ar_ShortName").dxTextBox("instance").option("value", company.CompanyShortNameAr);
-            $("#CompanyCity_Ar, #ar_City").dxTextBox("instance").option("value", company.CompanyCityAr);
+            $("#ar_StreetName").dxTextBox("instance").option("value", company.SellerAddressStreetAr);
+            $("#ar_AdditionalAddress").dxTextBox("instance").option("value", company.SellerAdditionalStreetAr);
+            $("#ar_ShortName").dxTextBox("instance").option("value", company.CompanyShortNameAr);
+            $("#CompanyCity_Ar").dxTextBox("instance").option("value", company.CompanyCityAr);
             $("#ar_Province").dxTextBox("instance").option("value", company.SellerProvinceAr);
             $("#ar_District").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
+            $("#ar_City").dxTextBox("instance").option("value", company.SellerCityAr);
+              $("#StreetName_Ar").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
+               $("#AdditionalAddress_Ar").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
+               $("#ShortName_Ar").dxTextBox("instance").option("value", company.CompanyShortNameAr);
 
            
 
@@ -1678,6 +1764,25 @@ $(function () {
                     $("#imgBox1").html('<span>No Image Data</span>');
                 }
             }
+
+            // Add this block for the "Other//آخر" tab
+    if (selectedTabText === "Other//آخر") {
+        // Render the color box if not already initialized
+        if (!$("#CompanyTextColor").hasClass("dx-colorbox")) {
+            $("#CompanyTextColor").dxColorBox({
+                value: "#000000",
+                editAlphaChannel: false,
+                applyButtonText: "OK",
+                cancelButtonText: "Cancel",
+                width: 250,
+                placeholder: "Select company text color...",
+                onValueChanged: function(e) {
+                    const rgb = hexToRgb(e.value);
+                    console.log("Selected Color RGB:", rgb);
+                }
+            });
+        }
+    }
         }
 
             //For data fetching to Obselete
@@ -1692,16 +1797,29 @@ $(function () {
                 
                 $("#CompanyID1").dxTextBox("instance").option("value", company.CompanyId);
                 $("#CompanyName1").dxTextBox("instance").option("value", company.CompanyName);
-                $("#StreetName1").dxTextBox("instance").option("value", company.StreetName);
-                $("#AdditionalAddress1").dxTextBox("instance").option("value", company.AdditionalAddress);
-                $("#ShortName1").dxTextBox("instance").option("value", company.ShortName);
+                $("#StreetName1").dxTextBox("instance").option("value", company.CompanyAddress1);
+                $("#AdditionalAddress1").dxTextBox("instance").option("value", company.CompanyAddress2);
+                $("#ShortName1").dxTextBox("instance").option("value", company.CompanyNameShort);
+                $("#ShortName1").dxTextBox("instance")
+    .off("valueChanged.shortname1")
+    .on("valueChanged.shortname1", function () {
+        window.lastShortNameField = "ShortName1";
+    });
+                // Attach handler for ShortName if it exists (in case both widgets are present)
+    if ($("#ShortName").dxTextBox("instance")) {
+        $("#ShortName").dxTextBox("instance")
+            .off("valueChanged.shortname")
+            .on("valueChanged.shortname", function () {
+                window.lastShortNameField = "ShortName";
+            });
+    }
                 $("#CompanyCity").dxTextBox("instance").option("value", company.CompanyCity);
 
-                $("#CompanyID_Ar").dxTextBox("instance").option("value", company.CompanyId_Ar);
+                $("#CompanyID_Ar").dxTextBox("instance").option("value", company.CompanyId);
                 $("#CompanyName_Ar").dxTextBox("instance").option("value", company.CompanyNameAr);
-                $("#StreetName_Ar").dxTextBox("instance").option("value", company.StreetName_Ar);
-                $("#AdditionalAddress_Ar").dxTextBox("instance").option("value", company.AdditionalAddress_Ar);
-                $("#ShortName_Ar").dxTextBox("instance").option("value", company.CompanyShortNameAr_);
+                $("#StreetName_Ar").dxTextBox("instance").option("value", company.CompanyAddress1Ar);
+                $("#AdditionalAddress_Ar").dxTextBox("instance").option("value", company.CompanyAddress2Ar);
+                $("#ShortName_Ar").dxTextBox("instance").option("value", company.CompanyShortNameAr);
                 $("#CompanyCity_Ar").dxTextBox("instance").option("value", company.CompanyCityAr);
 
             }).fail(function () {
@@ -1730,7 +1848,37 @@ function safeDxTextArea(id) {
     return inst ? inst.option("value") : "";
 }
 
+    function commitAllFields() {
+        // List all widget IDs from all tabs
+        var allWidgetIds = [
+            "CompanyName", "StreetName", "AdditionalAddress", "BuildingNumber", "City", "AdditionalNumber", "Province", "PostalCode", "District", "CountryCode", "ShortName",
+            "FullAddress", "ProductName", "CompanySlogan", "Phone", "Fax", "Email", "Website", "VAT", "GroupVAT", "TIN", "IDType", "IDNumber", "CRNumber",
+            "AuditorName", "AuditorFax", "AuditorAddress", "AuditorEmail", "ERPDBLocation", "DMSLocation", "AutoBackupLocation", "ReceivableLocation", "BackupEmail", "OnlineBackup",
+            "CompanyName_Ar", "ar_CompanyName", "ar_StreetName", "ar_AdditionalAddress", "ar_ShortName", "ar_City", "ar_Province", "ar_District", "FullAddressArabic",
+            "StreetName_Ar", "AdditionalAddress_Ar", "ShortName_Ar", "CompanyCity_Ar", "CompanyID1", "CompanyName1", "StreetName1", "AdditionalAddress1", "ShortName1", "CompanyCity",
+            "CompanyID_Ar"
+        ];
+        allWidgetIds.forEach(function(id) {
+            var $el = $("#" + id);
+            if ($el.length > 0) {
+                $el.blur(); // triggers value commit for textboxes
+            }
+        });
+    }
 
+function safeGetValue(selector, widget) {
+    var $el = $(selector);
+    if ($el.length === 0) return null;
+    // Auto-detect widget if not provided
+    if (!widget) {
+        if ($el.hasClass("dx-dropdownbox")) widget = "dxDropDownBox";
+        else if ($el.hasClass("dx-selectbox")) widget = "dxSelectBox";
+        else if ($el.hasClass("dx-textarea")) widget = "dxTextArea";
+        else widget = "dxTextBox";
+    }
+    var inst = $el[widget]("instance");
+    return inst ? inst.option("value") : null;
+}
     function highlightField(id, widget) {
         debugger;
         var $el = $("#" + id);
@@ -1745,6 +1893,7 @@ function safeDxTextArea(id) {
     // --- Save Handler ---
       function onSaveCompanyClick() {
           debugger;
+              commitAllFields();
         // List of required fields: [ID, widgetType]
         var requiredFields = [
             ["City", "dxTextBox"],
@@ -1769,89 +1918,113 @@ function safeDxTextArea(id) {
             return;
         }
 
-      const companyId = Number(companyIds[currentCompanyIndex]);
+    const companyId = Number(companyIds[currentCompanyIndex]);
     if (!companyId || isNaN(companyId)) {
         DevExpress.ui.notify("Company ID is missing or invalid. Please reload the page.", "error", 3000);
         return;
     }
-    const updatedCompany = {
 
-        CompanyId: companyId,
-        CompanyName: $("#CompanyName").dxTextBox("instance").option("value"),
-        CompanyAddress1: $("#StreetName").dxTextBox("instance").option("value"),
-        CompanyAddress2: $("#AdditionalAddress").dxTextBox("instance").option("value"),
-        SellerBuildingNumber: $("#BuildingNumber").dxTextBox("instance").option("value"),
-        CompanyCity: $("#City").dxTextBox("instance").option("value"),
-        SellerAdditionalNumber: $("#AdditionalNumber").dxTextBox("instance").option("value"),
-        SellerProvince: $("#Province").dxTextBox("instance").option("value"),
-        SellerPostalCode: $("#PostalCode").dxTextBox("instance").option("value"),
-        SellerNeighborhood: $("#District").dxTextBox("instance").option("value"),
-        SellerCountryCode: $("#CountryCode").dxDropDownBox("instance").option("value"),
-        CompanyNameShort: $("#ShortName").dxTextBox("instance").option("value"),
-        CompanyFullAddress: $("#FullAddress").dxTextBox("instance").option("value"),
-        ProductName: $("#ProductName").dxTextBox("instance").option("value"),
-        CompanySlogan: $("#CompanySlogan").dxTextBox("instance").option("value"),
-        CompanyPhone: $("#Phone").dxTextBox("instance").option("value"),
-        CompanyFax: $("#Fax").dxTextBox("instance").option("value"),
-        EmailAddress: $("#Email").dxTextBox("instance").option("value"),
-        Website: $("#Website").dxTextBox("instance").option("value"),
-        CompanyVatno: $("#VAT").dxTextBox("instance").option("value"),
-        SellerGroupVatnumber: $("#GroupVAT").dxTextBox("instance").option("value"),
-        CompanyTin: $("#TIN").dxTextBox("instance").option("value"),
-        SellerOtherIdtype: $("#IDType").dxDropDownBox("instance").option("value"),
-        SellerOtherSellerId: $("#IDNumber").dxTextBox("instance").option("value"),
-        CRNumber: $("#CRNumber").dxTextBox("instance").option("value"),
-        AuditorName: $("#AuditorName").dxTextBox("instance").option("value"),
-        AuditorFaxNo: $("#AuditorFax").dxTextBox("instance").option("value"),
-        AuditorAddress: $("#AuditorAddress").dxTextArea("instance").option("value"),
-        AuditorEmail: $("#AuditorEmail").dxTextBox("instance").option("value"),
-        ErpdatabaseLocation: $("#ERPDBLocation").dxTextBox("instance").option("value"),
-        Erpdmslocation: $("#DMSLocation").dxTextBox("instance").option("value"),
-        ErpAutoBackupLocation: $("#AutoBackupLocation").dxTextBox("instance").option("value"),
-        BillsReceivableLocation: $("#ReceivableLocation").dxTextBox("instance").option("value"),
-        BackupOperatorEmail: $("#BackupEmail").dxTextBox("instance").option("value"),
-        IsSendSuccessEmail: $("#SendSuccess").dxCheckBox("instance").option("value"),
-        IsSendFailedEmail: $("#SendFailed").dxCheckBox("instance").option("value"),
-        OnlineBackupLocation: $("#OnlineBackup").dxTextBox("instance").option("value"),
-        IsOnlineBackup: $("#CloudBackup").dxCheckBox("instance").option("value"),
-        IsBackupDatabaseOnly: $("#OnlyDB").dxCheckBox("instance").option("value"),
-        CompanyNameAr: $("#ar_CompanyName").dxTextBox("instance").option("value"),
-        CompanyAddress1Ar: $("#ar_StreetName").dxTextBox("instance").option("value"),
-        CompanyAddress2Ar: $("#ar_AdditionalAddress").dxTextBox("instance").option("value"),
-        CompanyShortNameAr: $("#ar_ShortName").dxTextBox("instance").option("value"),
-        CompanyCityAr: $("#ar_City").dxTextBox("instance").option("value"),
-        SellerProvinceAr: $("#ar_Province").dxTextBox("instance").option("value"),
-        SellerNeighborhoodAr: $("#ar_District").dxTextBox("instance").option("value"),
-        CompanyFullAddressAr: $("#FullAddressArabic").dxTextBox("instance").option("value"),
-        CompanyName_Ar: $("#CompanyName_Ar").dxTextBox("instance").option("value"),
-        CompanyAddress1_Ar: $("#StreetName_Ar").dxTextBox("instance").option("value"),
-        CompanyAddress2_Ar: $("#AdditionalAddress_Ar").dxTextBox("instance").option("value"),
-        CompanyShortName_Ar: $("#ShortName_Ar").dxTextBox("instance").option("value"),
-        CompanyCity_Ar: $("#CompanyCity_Ar").dxTextBox("instance").option("value"),
+    // Always collect values from both main and Obselete tab fields
+    var shortNameMain = safeGetValue("#ShortName");
+    var shortNameObselete = safeGetValue("#ShortName1");
+    var companyNameShortValue = null;
+
+    var tabPanel = $("#SupplierTabs").dxTabPanel("instance");
+var activeTabIndex = tabPanel.option("selectedIndex");
+var activeTabTitle = tabPanel.option("items")[activeTabIndex].title;
+
+var shortNameMain = safeGetValue("#ShortName");
+var shortNameObselete = safeGetValue("#ShortName1");
+var companyNameShortValue = null;
+
+if (activeTabTitle && activeTabTitle.toLowerCase().includes("obselete")) {
+    companyNameShortValue = shortNameObselete;
+} else {
+    companyNameShortValue = shortNameMain;
+}
+
+    // Collect all fields from all tabs (main, Obselete, Arabic)
+    const updatedCompany = {
+        CompanyId: safeGetValue("#CompanyID"),
+        CompanyName: safeGetValue("#CompanyName"),
+        SellerAddressStreet: safeGetValue("#StreetName"),
+        SellerAdditionalStreet: safeGetValue("#AdditionalAddress"),
+        SellerBuildingNumber: safeGetValue("#BuildingNumber"),
+        SellerCity: safeGetValue("#City"),
+        SellerAdditionalNumber: safeGetValue("#AdditionalNumber"),
+        SellerProvince: safeGetValue("#Province"),
+        SellerPostalCode: safeGetValue("#PostalCode"),
+        SellerNeighborhood: safeGetValue("#District"),
+        SellerCountryCode: safeGetValue("#CountryCode", "dxDropDownBox"),
+        CompanyNameShort: companyNameShortValue,
+        CompanyFullAddress: safeGetValue("#FullAddress"),
+        ProductName: safeGetValue("#ProductName"),
+        CompanySlogan: safeGetValue("#CompanySlogan"),
+        CompanyPhone: safeGetValue("#Phone"),
+        CompanyFax: safeGetValue("#Fax"),
+        EmailAddress: safeGetValue("#Email"),
+        Website: safeGetValue("#Website"),
+        CompanyVatno: safeGetValue("#VAT"),
+        SellerGroupVatnumber: safeGetValue("#GroupVAT"),
+        CompanyTin: safeGetValue("#TIN"),
+        SellerOtherIdtype: safeGetValue("#IDType", "dxDropDownBox"),
+        SellerOtherSellerId: safeGetValue("#IDNumber"),
+        Crno : safeGetValue("#CRNumber"),
+        AuditorName: safeGetValue("#AuditorName"),
+        AuditorFaxNo: safeGetValue("#AuditorFax"),
+        AuditorAddress: safeGetValue("#AuditorAddress", "dxTextArea"),
+        AuditorEmail: safeGetValue("#AuditorEmail"),
+        ErpdatabaseLocation: safeGetValue("#ERPDBLocation"),
+        Erpdmslocation: safeGetValue("#DMSLocation"),
+        ErpAutoBackupLocation: safeGetValue("#AutoBackupLocation"),
+        BillsReceivableLocation: safeGetValue("#ReceivableLocation"),
+        BackupOperatorEmail: safeGetValue("#BackupEmail"),
+        IsSendSuccessEmail: safeDxCheck("SendSuccess"),
+        IsSendFailedEmail: safeDxCheck("SendFailed"),
+        OnlineBackupLocation: safeGetValue("#OnlineBackup"),
+        IsOnlineBackup: safeDxCheck("CloudBackup"),
+        IsBackupDatabaseOnly: safeDxCheck("OnlyDB"),
+        // Arabic/Obselete tab fields (always collect)
+        CompanyNameAr: safeGetValue("#ar_CompanyName"),
+        SellerAddressStreetAr: safeGetValue("#ar_StreetName"),
+        SellerAdditionalStreetAr: safeGetValue("#ar_AdditionalAddress"),
+        CompanyShortNameAr: safeGetValue("#ar_ShortName"),
+        SellerCityAr: safeGetValue("#ar_City"),
+        SellerProvinceAr: safeGetValue("#ar_Province"),
+        SellerNeighborhoodAr: safeGetValue("#ar_District"),
+        CompanyFullAddressAr: safeGetValue("#FullAddressArabic"),
+        CompanyName_Ar: safeGetValue("#CompanyName_Ar"),
+        CompanyAddress1Ar: safeGetValue("#StreetName_Ar"),
+        CompanyAddress1: safeGetValue("#StreetName1"),
+        CompanyCity: safeGetValue("#CompanyCity"),
+        CompanyAddress2Ar: safeGetValue("#AdditionalAddress_Ar"),
+        CompanyShortNameAr: safeGetValue("#ShortName_Ar"),
+        CompanyCityAr: safeGetValue("#CompanyCity_Ar"),
+        CompanyAddress2: safeGetValue("#AdditionalAddress1"),
         CompanyLogoBase64: (uploadedLogoBase64 && uploadedLogoBase64.length > 50 ? uploadedLogoBase64 : null),
         CompanySealBase64: (uploadedSealBase64 && uploadedSealBase64.length > 50 ? uploadedSealBase64 : null),
         LetterHeadBase64: (
             uploadedLetterHeadBase64 && uploadedLetterHeadBase64.length > 50
-                    ? uploadedLetterHeadBase64
-                    : (lastLoadedLetterHeadBase64 && lastLoadedLetterHeadBase64.length > 50
-                        ? lastLoadedLetterHeadBase64
-                        : null)
-            )
-        };
+                ? uploadedLetterHeadBase64
+                : (lastLoadedLetterHeadBase64 && lastLoadedLetterHeadBase64.length > 50
+                    ? lastLoadedLetterHeadBase64
+                    : null)
+        )
+    };
 
-        $.ajax({
-            url: '/api/CompanyDetails/UpdateCompanyDetails',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedCompany),
-            success: function () {
-                DevExpress.ui.notify("Company details updated successfully.", "success", 3000);
-            },
-            error: function (xhr) {
-                DevExpress.ui.notify("Failed to update company details.", "error", 3000);
-            }
-        });
-    }
+    $.ajax({
+        url: '/api/CompanyDetails/UpdateCompanyDetails',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(updatedCompany),
+        success: function () {
+            DevExpress.ui.notify("Company details updated successfully.", "success", 3000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Failed to update company details.", "error", 3000);
+        }
+    });
+}
 
     function onBackClick() { window.history.back(); }
 
@@ -1860,7 +2033,7 @@ function safeDxTextArea(id) {
         // Fetch all company IDs for navigation
         $.getJSON("/api/CompanyDetails/GetAllCompanyIds", function (ids) {
             companyIds = ids || [];
-            if (companyIds.length === 0) {
+            if ( companyIds.length === 0) {
                 DevExpress.ui.notify("No company records found.", "error", 3000);
                 return;
             }
@@ -1876,6 +2049,7 @@ function safeDxTextArea(id) {
             } else {
                 DevExpress.ui.notify("Already at first record.", "info", 1500);
             }
+       
         });
         $("#btnNext").on("click", function () {
             if (currentCompanyIndex < companyIds.length - 1) {
@@ -1930,4 +2104,102 @@ function safeDxTextArea(id) {
                            $(function () {
                 $("#clearAllNotifications").text(formatMessage("Clear All"));
             });
+   // } 
+let imageClipboard = null;
+$(function () {
+    let contextTarget = null;
+
+    // Show menu on right-click
+    $("#CompanyLogoPreview, #CompanySealPreview").on("contextmenu", function (e) {
+        e.preventDefault();
+        contextTarget = this;
+        $("#customContextMenu").css({
+            top: e.pageY + "px",
+            left: e.pageX + "px"
+        }).show();
+    });
+
+    // Hide menu on click elsewhere
+    $(document).on("click", function () {
+        $("#customContextMenu").hide();
+    });
+
+    // Handle menu actions
+    $("#customContextMenu .ctx-item").on("click", function (e) {
+        e.stopPropagation();
+        const action = $(this).data("action");
+        $("#customContextMenu").hide();
+
+        if (!contextTarget) return;
+
+        switch (action) {
+            case "cut":
+    const cutImg = $(contextTarget).find("img")[0];
+    if (cutImg) {
+        imageClipboard = cutImg.src;
+        $(contextTarget).find("img").remove();
+        // Clear the base64 variable
+        if ($(contextTarget).is("#CompanyLogoPreview")) {
+            uploadedLogoBase64 = null;
+        } else if ($(contextTarget).is("#CompanySealPreview")) {
+            uploadedSealBase64 = null;
+        }
+    }
+    break;
+           case "copy":
+    const copyImg = $(contextTarget).find("img")[0];
+    if (copyImg) {
+        imageClipboard = copyImg.src;
+        // Also update the base64 variable for saving
+        if ($(contextTarget).is("#CompanyLogoPreview")) {
+            uploadedLogoBase64 = copyImg.src.split(",")[1];
+        } else if ($(contextTarget).is("#CompanySealPreview")) {
+            uploadedSealBase64 = copyImg.src.split(",")[1];
+        }
+    }
+    break;
+           case "paste":
+    if (imageClipboard) {
+        $(contextTarget).html(`<img src="${imageClipboard}" style="max-width:100%; height:auto;">`);
+        // Update the base64 variable for saving
+        if ($(contextTarget).is("#CompanyLogoPreview")) {
+            uploadedLogoBase64 = imageClipboard.split(",")[1]; // Remove "data:image/png;base64,"
+        } else if ($(contextTarget).is("#CompanySealPreview")) {
+            uploadedSealBase64 = imageClipboard.split(",")[1];
+        }
+    }
+    break;
+           case "delete":
+    $(contextTarget).find("img").remove();
+    if ($(contextTarget).is("#CompanyLogoPreview")) {
+        uploadedLogoBase64 = null;
+    } else if ($(contextTarget).is("#CompanySealPreview")) {
+        uploadedSealBase64 = null;
+    }
+    break;
+            case "load":
+                // Trigger file input for loading image
+                if ($(contextTarget).is("#CompanyLogoPreview")) {
+                    $("#CompanyLogoInput").click();
+                } else if ($(contextTarget).is("#CompanySealPreview")) {
+                    $("#CompanySealInput").click();
+                }
+                break;
+            case "save":
+                // Download image
+                const img = $(contextTarget).find("img")[0];
+                if (img) {
+                    const a = document.createElement("a");
+                    a.href = img.src;
+                    a.download = "image.png";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+                break;
+        }
+    });
+});
+
 </script>
+

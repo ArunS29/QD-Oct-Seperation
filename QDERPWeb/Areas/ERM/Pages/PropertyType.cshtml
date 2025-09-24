@@ -2,124 +2,10 @@
 @model QD.ERP.Web.Areas.ERM.Pages.PropertyTypeModel
 
 <style type="text/css">
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5); /* Transparent background */
-		z-index: 1000;
+	.dx-fieldset {
+		margin: 0px 20px;
+		padding: 0;
 	}
-	/* Ensure word wrap and center alignment for grid headers */
-	.header-wrap {
-		white-space: normal !important; /* Enable word wrap */
-		text-align: center !important; /* Center align text */
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-weight: bold;
-	}
-
-	/* Ensure text in grid headers is always centered */
-
-
-	/* Ensure column headers text aligns to center */
-	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
-		text-align: center !important;
-	}
-
-	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	#overlay-frame {
-		width: 100%;
-		height: 100%;
-	}
-
-	.Maincontainer.Maincontainer {
-		background-color: white;
-	}
-
-	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 20px;
-		font-size: 30px;
-		cursor: pointer;
-	}
-
-
-
-
-	/* Toolbar Styling */
-	.custom-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
-	}
-
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
-
-	/* Text Editor Styling */
-	.dx-texteditor {
-		background-color: #909ead00 !important; /* Light background */
-		border: 1px solid #d6e4f0 !important; /* Soft border */
-		border-radius: 4px !important; /* Smaller rounded corners */
-
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-		font-size: 14px !important; /* Slightly smaller font */
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important; /* Fixed height */
-	}
-
-		/* Hover and Focus States */
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-			border-color: #86b7fe !important; /* Highlight border */
-		}
-
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-			border-color: #508ae1 !important;
-		}
-
-	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none; /* Prevents hover and click effects */
-	}
-
 	.dx-button-mode-contained.dx-button-default {
 		color: black;
 	}
@@ -174,20 +60,20 @@
 			<div>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-										.ID("propertytype")
-										.Label(new JS("formatMessage('Type a New Property & Add to the Existing List')"))
-										.LabelMode(EditorLabelMode.Floating)
-										.Width("70%")
-										)
+							.ID("propertytype")
+							.Label(new JS("formatMessage('Type a New Property & Add to the Existing List')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("70%")
+							)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-												.ID("Addproperty")
-												.Text(new JS("formatMessage('Add')"))
-												.Type(ButtonType.Success)
-												.ElementAttr(new { @class = "custom-ui-button" })
-												.Icon("plus")
-												.Width("100%")
-												)
+									.ID("Addproperty")
+									.Text(new JS("formatMessage('Add')"))
+									.Type(ButtonType.Success)
+									.ElementAttr(new { @class = "custom-ui-button" })
+									.Icon("plus")
+									.Width("100%")
+									)
 					</div>
 				</div>
 			</div>
@@ -207,7 +93,7 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.Controller("ERStockInventory")
+				.Controller("AddNewProperty")
 				.LoadAction("GetAllPropertyTypes")
 				.UpdateAction("UpdatePropertyType")
 				.UpdateMethod("PUT")
@@ -224,13 +110,13 @@
 				.Columns(columns =>
 				{
 					columns.Add().DataField("PropertyTypeId")
-					.Caption("ID")
+					.Caption(new JS("formatMessage('ID')"))
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
 
 					columns.Add().DataField("PropertyType")
-					.Caption("Property Type")
+					.Caption(new JS("formatMessage('Property Type')"))
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);
@@ -255,9 +141,6 @@
 				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
-
-
-
 	</div>
 	<br />
 	<!-- Buttons -->
@@ -291,7 +174,7 @@
 				}
 
 				$.ajax({
-					url: '/api/ERStockInventory/AddPropertyType',
+					url: '/api/AddNewProperty/AddPropertyType',
 					type: 'POST',
 					contentType: 'application/json',
 					data: JSON.stringify({ PropertyType: newProperty }),
@@ -301,6 +184,12 @@
 						$("#propertytype").dxTextBox("instance").option("value", "");
 						// Refresh the grid
 						$("#storeGrid").dxDataGrid("instance").refresh();
+						// Refresh parent dropdown
+						setTimeout(() => {
+							if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+								window.parent.refreshTypeOfRequestDropDown('PropertyType');
+							}
+						}, 300);
 					},
 					error: function () {
 						DevExpress.ui.notify("Failed to add Property Type.", "error", 3000);
@@ -329,11 +218,16 @@
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/ERStockInventory/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
+						url: '/api/AddNewProperty/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
 						type: 'DELETE',
 						success: function () {
 							DevExpress.ui.notify("Property Type deleted successfully!", "success", 2000);
 							$("#storeGrid").dxDataGrid("instance").refresh();
+							 setTimeout(() => {
+                    if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+                        window.parent.refreshTypeOfRequestDropDown('PropertyType');
+                    }
+                }, 300);
 						},
 						error: function () {
 							DevExpress.ui.notify("Failed to delete Property Type.", "error", 2000);

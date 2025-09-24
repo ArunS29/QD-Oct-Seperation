@@ -431,7 +431,6 @@
 
 	.titleCard-card .header {
 		position: relative;
-
 	}
 
 	.value-slider span {
@@ -499,9 +498,6 @@
 			<div class="value-block">
 
 				<h2 id="accountingLedgerss"></h2>
-				<h2 id="accountingbalance"></h2>
-				<h2 id="TotalsDebit"></h2>
-				<h2 id="TotalsCredit"></h2>
 				<h6 id="QuickDiceERPSolutions2"></h6>
 
 			</div>
@@ -1178,7 +1174,9 @@
 											)
 }
 
-<script>function onToolbarPreparing(e) {
+<script>
+	
+	function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
 		e.toolbarOptions.items = e.toolbarOptions.items.filter(function(item) {
 			return item.name !== "columnChooserButton";
@@ -1200,9 +1198,6 @@
 
 
 		$(document).ready(function () {
-
-
-
 	   $("#btnCreateNew").css("display", "none");
 
 			console.log('Start permission handling AccountingLedgers');
@@ -1370,11 +1365,12 @@
 			// alert(AccountId);
 
 			if (AccountId) {
+				
 				// Change the Save button to Update
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
 				// button.option("text", "Update");
-					
+			  //  accgroupid = response.data.AccountGroupId;
 				// Fetch and bind data to form fields if CostAllocationUnitId is in the query string
 				$.ajax({
 					url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
@@ -1394,6 +1390,13 @@
 
 							if(IsChartOfAccounts=="true")
 							{
+								acchedid = response.data.AccountId;
+                                accheadname = response.data.AccountHead;
+                                refno = response.data.ReferenceNo;
+                                accgroup = response.data.AccountGroup;
+                                accgroupid = response.data.AccountGroupId;
+                                accheadar = response.data.AccountHeadArabic;
+								
 								ddBtnShowRecords_click("fullmonth")
 							}
 
@@ -1727,6 +1730,7 @@
 		}
 		// This function used to call API to get records for the selected values.
 		function ddBtnShowRecords_click(duration) {
+			debugger;
 			var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 			if (dropDownBox.option("value") === null) {
 				DevExpress.ui.notify("Please select a ledger account.", "error", 3000);

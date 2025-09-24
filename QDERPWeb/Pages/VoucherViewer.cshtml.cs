@@ -59,10 +59,12 @@ namespace QD.ERP.Web.Pages
         public string deliveryNoteNo { get; private set; }
         public string rfqNo { get; private set; }
         public string purchaseOrderNo { get; private set; }
+        public string claimer { get; private set; }
+        public bool ShowDesignerButton { get; private set; } = true;
 
-        public IActionResult OnGet(string reportName, string voucherNo, string CompanyId, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
+        public IActionResult OnGet(string reportName, string claimer,string voucherNo, string CompanyId, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
             bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false,bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false,
-            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false )
+            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false)
         {
             // Set the properties for Razor
             ReportName = reportName;
@@ -72,7 +74,30 @@ namespace QD.ERP.Web.Pages
             this.deliveryNoteNo = deliveryNoteNo;
             this.rfqNo = rfqNo;
             this.purchaseOrderNo = purchaseOrderNo;
+  var hideDesignerReports = new[]
+        {
+            "journalEntryForm1",
+            "employeecostJournalRegister",
+            "cashPaymentformat2",
+            "SalesReport2",
+            "SalesVoucherReport",
+            "cashPayments",
+            "PreviewClaimRequestForm",
+            "ClaimDetailed",
+            "ClaimEntryCheck",
+            "PreviewClaimRequestForm_wtVAT_",
+            "PaymentsAdviceSupplierPayments",
+            "CompanyDetail1"
+        };
 
+        if (hideDesignerReports.Contains(reportName))
+        {
+            ShowDesignerButton = false;
+        }
+        else
+        {
+            ShowDesignerButton = true;
+        }
 
             if (string.IsNullOrEmpty(reportName))
             {
@@ -716,7 +741,23 @@ namespace QD.ERP.Web.Pages
                 return Page();
             }
 
+            if(string.IsNullOrEmpty(claimer))
+            {
+                return BadRequest("claimer is required.");
+            }
+            claimer = claimer;
+            switch(reportName)
+            {
+                case "printExpensesClaimBydateSimplified":
+                    Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
+                //case "printClaimReportBydate_Detailed":
+                //    Report = new printClaimReportBydate_Detailed(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                //    break;
 
+                default:
+                    return NotFound("Report not found.");
+            }
 
             // 👉 Existing CASE 1: Old voucher reports
             if (string.IsNullOrEmpty(voucherNo))

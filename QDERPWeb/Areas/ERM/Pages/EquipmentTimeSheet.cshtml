@@ -3,6 +3,25 @@
 @{
 }
 <style>
+	.month-btn {
+		background-color: #444;
+		color: white;
+		padding: 10px;
+		border-radius: 6px;
+		cursor: pointer;
+		text-align: center;
+		font-weight: 500;
+		transition: background 0.2s ease-in-out;
+	}
+
+		.month-btn:hover {
+			background-color: #666;
+		}
+
+		.month-btn.selected {
+			outline: 2px solid #fff;
+			background-color: #222;
+		}
 	.overlay {
 		display: none;
 		position: fixed;
@@ -143,115 +162,218 @@
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="EquipmentTimeSheet" class="no-border-input"></div>
+@* <div class="title" id="kpiCarousel" style="width:43% !important">
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide" id="EquipmentTimeSheet"></h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in" id="quickrfq"></h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
+			</div>
+		</div>
 	</div>
-</div>
 
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;" id="rfqnoofitems"></h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4 id="rfqtotalbefore"></h4>
+				<h1 id="Totalbeforetaxcount" style="color: white;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4 id="rfqtotalafter"></h4>
+				<h1 id="totalafterdiscount" style="color: white;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M35.1094 18.375H23.625C22.5377 18.375 21.6096 17.9906 20.8408 17.2217C20.0719 16.4529 19.6875 15.5248 19.6875 14.4375V2.95312C19.6875 2.86252 19.6555 2.78518 19.5914 2.72111C19.5273 2.65704 19.45 2.625 19.3594 2.625H11.8125C10.3628 2.625 9.12532 3.13756 8.10019 4.16269C7.07506 5.18782 6.5625 6.42525 6.5625 7.875V34.125C6.5625 35.5747 7.07506 36.8122 8.10019 37.8373C9.12532 38.8624 10.3628 39.375 11.8125 39.375H30.1875C31.6372 39.375 32.8747 38.8624 33.8998 37.8373C34.9249 36.8122 35.4375 35.5747 35.4375 34.125V18.7031C35.4375 18.6125 35.4055 18.5352 35.3414 18.4711C35.2773 18.407 35.2 18.375 35.1094 18.375ZM27.5625 31.5H14.4375C14.0751 31.5 13.7657 31.3719 13.5094 31.1156C13.2531 30.8593 13.125 30.5499 13.125 30.1875C13.125 29.8251 13.2531 29.5157 13.5094 29.2594C13.7657 29.0031 14.0751 28.875 14.4375 28.875H27.5625C27.9249 28.875 28.2343 29.0031 28.4906 29.2594C28.7469 29.5157 28.875 29.8251 28.875 30.1875C28.875 30.5499 28.7469 30.8593 28.4906 31.1156C28.2343 31.3719 27.9249 31.5 27.5625 31.5ZM27.5625 24.9375H14.4375C14.0751 24.9375 13.7657 24.8094 13.5094 24.5531C13.2531 24.2968 13.125 23.9874 13.125 23.625C13.125 23.2626 13.2531 22.9532 13.5094 22.6969C13.7657 22.4406 14.0751 22.3125 14.4375 22.3125H27.5625C27.9249 22.3125 28.2343 22.4406 28.4906 22.6969C28.7469 22.9532 28.875 23.2626 28.875 23.625C28.875 23.9874 28.7469 24.2968 28.4906 24.5531C28.2343 24.8094 27.9249 24.9375 27.5625 24.9375Z" fill="white" fill-opacity="0.301961" />
+				<path d="M34.3891 15.4702L22.5922 3.67332C22.5688 3.65001 22.5408 3.63514 22.5084 3.62873C22.4759 3.62231 22.4444 3.62543 22.4139 3.63806C22.3833 3.6507 22.3588 3.67074 22.3404 3.6982C22.3219 3.72565 22.3126 3.75591 22.3125 3.78899V14.4375C22.3125 14.7999 22.4406 15.1093 22.6969 15.3655C22.9532 15.6218 23.2626 15.75 23.625 15.75H34.2735C34.3066 15.7498 34.3368 15.7405 34.3643 15.7221C34.3917 15.7037 34.4118 15.6792 34.4244 15.6486C34.437 15.618 34.4402 15.5865 34.4337 15.5541C34.4273 15.5216 34.4125 15.4937 34.3891 15.4702Z" fill="white" fill-opacity="0.301961" />
+			</svg>
 
-@await Html.PartialAsync("/Pages/Shared/ERM/RFQFooter.cshtml")
-
-@* 
-<div class="dx-fieldset horizontal-container">
-	@(Html.DevExtreme().DateBox()
-		.ID("frmdateBox")
-		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(2)
-		)
-
-	@(Html.DevExtreme().DateBox()
-		.ID("todateBox")
-		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(3)
-		)
-
-	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecords")
-		.Text(new JS("formatMessage('Show Records')"))
-		.Icon("smalliconslayout")
-		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
-		.TabIndex(4)
-		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
-				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-				})
-				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
-		)
-
-
+		</div>
+	</div>
 </div> *@
+@await Html.PartialAsync("/Pages/Shared/ERM/TimeSheetFooter.cshtml")
+
+
+<div class="dx-fieldset horizontal-container" style="display:flex; align-items:end;">
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnYearMonth")
+		.Text("Select Period")
+		.Icon("event")
+		.Width(220)
+		.SplitButton(false)
+		.DataSource(new[] { new { id = 1, text = "dummy" } }) 
+		.DisplayExpr("text")
+		 .DropDownOptions(o => o.Width(360).Height(420).CloseOnOutsideClick(false)) // keep open until cancel
+		.ItemTemplate(@<text>
+        <div id="month-year-container" style="padding:10px; text-align:center;">
+
+            <!-- Cancel Button -->
+            <div style="text-align:right; margin-bottom:10px;">
+                <span id="closeDropdown" 
+                      style="cursor:pointer; font-size:18px; font-weight:bold; color:#d00;">✖</span>
+            </div>
+
+            <!-- Months Grid -->
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-bottom:15px;">
+                <div class="month-btn" data-month="1">January</div>
+                <div class="month-btn" data-month="2">February</div>
+                <div class="month-btn" data-month="3">March</div>
+                <div class="month-btn" data-month="4">April</div>
+                <div class="month-btn" data-month="5">May</div>
+                <div class="month-btn" data-month="6">June</div>
+                <div class="month-btn" data-month="7">July</div>
+                <div class="month-btn" data-month="8">August</div>
+                <div class="month-btn" data-month="9">September</div>
+                <div class="month-btn" data-month="10">October</div>
+                <div class="month-btn" data-month="11">November</div>
+                <div class="month-btn" data-month="12">December</div>
+            </div>
+
+            <!-- Year Selector -->
+				  <select id="yearSelect"
+				style="width:100%; padding:10px; font-size:20px; font-weight:600;
+					   text-align:center; background:#444; color:white;
+					   border:none; border-radius:5px;"
+				onchange="toggleYearInput(this)">
+			@{
+				int currentYear = DateTime.Now.Year;
+				for (int i = currentYear - 5; i <= currentYear + 5; i++)
+				{
+					if (i == currentYear)
+					{
+						<option value="@i" selected>@i</option>
+					}
+					else
+					{
+						<option value="@i">@i</option>
+					}
+				}
+			}
+						<option value="custom">Other...</option>
+		</select>
+
+				<input type="number" id="yearInput" 
+					   style="display:none; margin-top:10px; width:100%; padding:10px;
+							  font-size:20px; font-weight:600; text-align:center;
+						  background:#444; color:white; border:none; border-radius:5px;" />
+					</div>
+    </text>)
+)
+
+
+	<div style="width:400px; margin:20px;">
+		<!-- DropDownBox (just clickable trigger, no content inside) -->
+		@(Html.DevExtreme().DropDownBox()
+				.ID("ddGridTrigger")
+				.ValueExpr("ID")
+				.DisplayExpr("Name")
+				.Placeholder("Click to open DataGrid popover")
+				.OnFocusIn("showPopover")
+				)
+	</div>
+</div> 
+
 <div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60704rfqviewMaster>()
-		.ID("dataGrid")
-		.RemoteOperations(false)
-		.DataSource(new JS("[]"))
-		.Columns(columns =>
-		{
-			columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.Rfqno).Caption(new JS("formatMessage('RFQ No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Rfqdate).Caption(new JS("formatMessage('RFQ Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR NO')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SupplierQuotationNo).Caption(new JS("formatMessage('Supplier Quotation No')")).Alignment(HorizontalAlignment.Center);
-				subColumns.AddFor(m => m.QuoteHasItemsToPo).Caption(new JS("formatMessage('Quote Has Items To Po')")).Alignment(HorizontalAlignment.Center).CellTemplate(@<text>
-																																									  		<div class="dx-icon">
-																																									  			<%= data.QuoteHasItemsToPo ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-																																									  		</div>
-																																									  	</text>
-			);
-				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center);
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry40305equipmentTsmasterView>()
+					.ID("dataGrid")
+					.RemoteOperations(false)
+					.DataSource(new JS("[]"))
+					.Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+					.Paging(p => p.Enabled(false))
+					.Scrolling(s => s.Mode(GridScrollingMode.Standard))
+					.ColumnAutoWidth(true)
+					.AllowColumnResizing(true)
+					.RowAlternationEnabled(true)
+					.Columns(columns =>
+					{
+						columns.AddFor(m => m.PropertyGroup).Caption("Property Group");
 
+						columns.AddFor(m => m.ClientName).Caption("Client Name");
 
-			});
-			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-			});
+						columns.AddFor(m => m.ClientPono).Caption("Client PONo");
 
+						columns.AddFor(m => m.PropertyNo).Caption("Property No");
 
+						columns.AddFor(m => m.PropertyDescription).Caption("Property Description");
+
+						columns.AddFor(m => m.SupplierTotalHours).Caption("Total Hours").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.ClientRatePerHour2).Caption("Client Rate/Hour").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.ClientTotalAmount).Caption("Total Client Amount").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.SupplierRatePerHour).Caption("Supplier Rate/Hour").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.SupplierTotalAmount).Caption("Supplier Amount").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.PropertySummInvoiceNo).Caption("Property Summary Invoice No");
+
+						columns.AddFor(m => m.SupplierTssummaryNo).Caption("Supp. Timesheet Summary No");
+
+						columns.AddFor(m => m.Deductions).Caption("Deductions").DataType(GridColumnDataType.Number);
+
+						columns.AddFor(m => m.TimeSheetMasterId).Caption("TimeSheet Master Id").Visible(false);
+
+						columns.AddFor(m => m.TimeSheetMonthId).Caption("Timesheet Month Id").Visible(false);
+
+						columns.AddFor(m => m.TimeSheetMonth).Caption("Timesheet Month").Visible(false);
+
+						columns.AddFor(m => m.PropertyType).Caption("Property Type").Visible(false);
+
+						columns.AddFor(m => m.PropertySuppliedBy).Caption("Property Supplier").Visible(false);
+
+						columns.AddFor(m => m.OperatorName).Caption("Operator Name").Visible(false);
+
+						columns.AddFor(m => m.OperatorRate).Caption("Operator Rate").DataType(GridColumnDataType.Number).Visible(false);
+
+						columns.AddFor(m => m.HiredOn).Caption("Hired On").DataType(GridColumnDataType.Date).Visible(false);
+
+						columns.AddFor(m => m.PropertyCategoryName).Caption("Property Category").Visible(false);
+
+						columns.AddFor(m => m.Brand).Caption("Brand").Visible(false);
+
+						columns.AddFor(m => m.PlateNo).Caption("Plate No").Visible(false);
+
+						columns.AddFor(m => m.TotalRentAmount).Caption("Total Rent Amount").DataType(GridColumnDataType.Number).Visible(false);
+
+						columns.AddFor(m => m.TotalHoursWorked).Caption("Total Hours Worked").DataType(GridColumnDataType.Number).Visible(false);
+
+						columns.AddFor(m => m.ClientTotalHours).Caption("Client Total Hours").DataType(GridColumnDataType.Number).Visible(false);
+
+						columns.AddFor(m => m.ClientOtratePerHour).Caption("Client OTRate/Hour").DataType(GridColumnDataType.Number).Visible(false);
+
+						columns.AddFor(m => m.Project).Caption("Project").Visible(false);
+
+						columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
+
+						columns.AddFor(m => m.ClientAccountLedgerNo).Caption("Client Account Ledger").Visible(false);
+
+						columns.AddFor(m => m.SupplierAccountLedgerNo).Caption("Supplier Account Ledger").Visible(false);
+
+						columns.AddFor(m => m.GatePassNo).Caption("Gate Pass No").Visible(false);
+						@* columns.AddFor(m => m.) *@
+
+					columns.AddFor(m => m.ClientSite).Caption("Client Site").Visible(false);
 		})
-		.Height(680) // Fixed height for the grid
+		.Height("65vh")
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
+		.WordWrapEnabled(false)
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
@@ -262,6 +384,7 @@
 		.Pager(pager => pager.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnContextMenuPreparing("onContextMenuPreparing")
 		.ShowRowLines(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -274,128 +397,241 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
-		.OnContextMenuPreparing("onContextMenuPreparing")
+		.Summary(s => s
+		.TotalItems(t =>
+		{
+			t.AddFor(m => m.PropertyNo)
+			.SummaryType(SummaryType.Count)
+			.DisplayFormat("Item of: {0}");
+
+			t.AddFor(m => m.SupplierTotalHours)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("{0.00}");
+
+			t.AddFor(m => m.ClientTotalAmount)
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("{0.00}");
+		})
+		)
 		)
 
 </div>
-<div id="invoiceErrorPopup"></div>
 
+
+
+
+<!-- Popover container -->
+<div id="gridPopover">
+    @(Html.DevExtreme().DataGrid()
+        .ID("gridInsidePopover")
+        .DataSource(d => d.WebApi()
+            .Controller("ERRequestforQuotationList")
+            .LoadAction("GenerateTimeGrid")
+        )
+		.Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+        .Columns(columns => {
+            columns.Add().DataField("PropertyNo");
+            columns.Add().DataField("PlateNo");
+            columns.Add().DataField("Location");
+            columns.Add().DataField("ClientName");
+            columns.Add().DataField("ClientratePerHours");
+            columns.Add().DataField("SupplierName");
+            columns.Add().DataField("PropertyIssueNo").Visible(false);
+            columns.Add().DataField("PropertyIssuedDate").Visible(false);
+        })
+        .Height(250)
+    )
+       
+       <div style="padding:10px; display:flex; gap:10px; justify-content:flex-end;">
+				@(Html.DevExtreme().Button()
+					.ID("BtnGenerate")
+					.Text("Generate Timesheet")
+					.Type(ButtonType.Success)
+					.Icon("plus")
+				)
+				@(Html.DevExtreme().Button()
+					.ID("BtnPrint")
+					.Text("Print")
+					.Type(ButtonType.Default)
+					.Icon("print")
+				)
+			</div>
+</div>
+
+@section scripts {
+    <script>
+        var popover;
+
+         $(function () {
+        // Initialize Popover
+        popover = $("#gridPopover").dxPopover({
+            target: "#ddGridTrigger",
+            showEvent: null,
+            hideEvent: null,
+            width: 600,
+            height: 400,
+            shading: true,
+            position: "bottom"
+        }).dxPopover("instance");
+
+        // Select Button
+        $("#btnSelect").dxButton({
+            text: "Select",
+            type: "success",
+            onClick: function () {
+                var grid = $("#gridInsidePopover").dxDataGrid("instance");
+                var selected = grid.getSelectedRowsData();
+                if (selected.length > 0) {
+                    $("#ddGridTrigger").dxDropDownBox("instance").option("value", selected[0].ID);
+                    popover.hide();
+                    DevExpress.ui.notify("You selected: " + selected[0].Name, "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Please select a row first!", "warning", 2000);
+                }
+            }
+        });
+    });
+
+        function showPopover() {
+            popover.show();
+        }
+    </script>
+}
 <script>
-		 $(function () {
-	$("#EquipmentTimeSheet").dxTextBox({
-	text: formatMessage("Equipment TimeSheet"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
-	$(function () {
-			var now = new Date();
-			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
-			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
-			ddBtnShowRecords_click('range');
-	});
-		function ddBtnShowRecords_click(duration) {
-		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-			var toDateBox = $("#todateBox").dxDateBox("instance");
-			var frmDate = new Date(frmDateBox.option("value"));
-			var toDate = new Date(toDateBox.option("value"));
-			var currentDate = new Date();
-			switch (duration) {
-				case 'today':
-					frmDate = toDate = currentDate;
-					break;
-				case 'yesterday':
-					var dateObj = new Date();
-					// Subtract one day from current time
-					dateObj.setDate(dateObj.getDate() - 1);
-					frmDate = toDate = dateObj;
-					break;
-				case 'week':
-					var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+	
+	 $(function () {
+        const dd = $("#ddBtnYearMonth").dxDropDownButton("instance");
 
-					// Calculate the start of the week (Saturday)
-					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+        // Cancel (X) closes dropdown
+        $(document).on("click", "#closeDropdown", function () {
+            dd.close();
+        });
 
-					// Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
-				frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
-					toDate = new Date(currentDate.setDate(startOfWeek + 6));
-					break;
-				case 'tillmonth':
-					// Get the first and last day of the current month
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
-					toDate = currentDate; //Today
-					break;
-				case 'fullmonth':
-					// Get the first and last day of the current month
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
-					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
-					break;
-				case 'tillyear':
-					// Get the first and last day of the current year
-					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-					toDate = currentDate;// Today
-					break;
-					// Get the first and last day of the current year
-					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
-					break;
-				case 'lastyear':
-					// Get the first and last day of the last year
-					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
-					toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
-					break;
-				case 'lastmonth':
-					// Get the first and last day of the current month
-					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
-					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
-					break;
-			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+        // Month click
+        $(document).on("click", ".month-btn", function () {
+            $(".month-btn").removeClass("selected");
+            $(this).addClass("selected");
 
-				$.ajax({
-		url: '/api/ERRequestforQuotationList/GetRFQRequest',
-		type: 'GET',
-		data: {
-			fromDate: frmDate,
-			toDate: toDate
-		},
-		success: function (data) {
-			console.log("Returned Data: ", data); // debug
-			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		},
-		error: function (xhr) {
-			console.log("AJAX Error", xhr.responseText); // debug
-			DevExpress.ui.notify("Error while loading data", "error", 2000);
-		}
-	});
+            var month = parseInt($(this).data("month"));
+            var year = parseInt($("#yearSelect").val());
 
+            updatePeriod(month, year, $(this).text());
+        });
 
+        // Year change
+        $("#yearSelect").on("change", function () {
+            var year = parseInt($(this).val());
+            var selectedMonthBtn = $(".month-btn.selected");
 
-	}
+            if (selectedMonthBtn.length > 0) {
+                var month = parseInt(selectedMonthBtn.data("month"));
+                updatePeriod(month, year, selectedMonthBtn.text());
+            } else {
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", []);
+                dd.option("text", "Select Period");
+            }
+        });
 
+        // Common update function
+        function updatePeriod(month, year, monthName) {
+            var fromDate = new Date(year, month - 1, 1);
+            var toDate = new Date(year, month, 0);
+
+            var frmDateStr = fromDate.toISOString().split("T")[0];
+            var toDateStr = toDate.toISOString().split("T")[0];
+
+            dd.option("text", monthName + " " + year);
+
+            loadData(frmDateStr, toDateStr);
+            loadPopoverData(frmDateStr, toDateStr); // your extra function
+        }
+
+        // Load API data into grid
+        function loadData(frmDate, toDate) {
+            $.ajax({
+                url: '/api/ERRequestforQuotationList/GetGenarateTimeGrid',
+                type: 'GET',
+                data: { fromDate: frmDate, toDate: toDate },
+                success: function (data) {
+                    console.log("Returned Data: ", data);
+
+                    var records = [];
+                    if (Array.isArray(data) && data.length > 0) {
+                        records = data[0].Records || [];
+                    }
+
+                    var grid = $("#dataGrid").dxDataGrid("instance");
+                    grid.option("dataSource", records);
+                    grid.refresh();
+                },
+                error: function (xhr) {
+                    console.log("AJAX Error", xhr.responseText);
+                    DevExpress.ui.notify("Error while loading data", "error", 2000);
+                }
+            });
+        }
+    });
+
+	function loadPopoverData(frmDate, toDate) {
+    function formatDateToMMDDYYYY(dateStr) {
+        var d = new Date(dateStr);
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        var yyyy = d.getFullYear();
+        return mm + '/' + dd + '/' + yyyy;
+    }
+
+    var frmDateFormatted = formatDateToMMDDYYYY(frmDate);
+    var toDateFormatted = formatDateToMMDDYYYY(toDate);
+
+    $.ajax({
+        url: '/api/ERRequestforQuotationList/GenerateTimeGrid',
+        type: 'GET',
+        data: { frmDate: frmDateFormatted, toDate: toDateFormatted },
+        success: function (data) {
+            console.log("Popover Grid Data: ", data);
+
+            var grid = $("#gridInsidePopover").dxDataGrid("instance");
+            grid.option("dataSource", data || []);
+            grid.refresh();
+
+            // 🔹 Show the popover after loading
+            popover.show();
+        },
+        error: function (xhr) {
+            console.log("AJAX Error", xhr.responseText);
+            DevExpress.ui.notify("Error while loading popover data", "error", 2000);
+
+            var grid = $("#gridInsidePopover").dxDataGrid("instance");
+            grid.option("dataSource", []);
+            grid.refresh();
+
+            popover.show(); // still show empty grid
+        }
+    });
+}
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row && e.row.data) {
 			const rowData = e.row.data;
-			const Rfqno = encodeURIComponent(rowData.Rfqno);
+		    const PropertyNo = encodeURIComponent(rowData.PropertyNo);
+			const PropertyDescription = encodeURIComponent(rowData.PropertyDescription);
+			const PlateNo = encodeURIComponent(rowData.PlateNo);
+			const Deducation = encodeURIComponent(rowData.Deducation);
+			const TimeSheetMasterId = encodeURIComponent(rowData.TimeSheetMasterId);
 			const tenantName = window.tenantName || "defaultTenant";
 
 			e.items = [
 				{
-					text: "Edit Request",
+					text: "Edit Timesheet",
 					icon: "edit",
 					onItemClick: function () {
-						const url = `/${tenantName}/ERM/AddNewRFQ?Rfqno=${Rfqno}`;
-						window.location.href = url;
+				    const url = `/${tenantName}/ERM/EquipmentTimeSheetData?PropertyNo=${PropertyNo}&PropertyDescription=${PropertyDescription}&PlateNo=${PlateNo}&Deducation=${Deducation}&TimeSheetMasterId=${TimeSheetMasterId}`;
+                    window.location.href = url;
 					}
 				},
 				{
-					text: "Delete RFQ",
+					text: "Delete Timesheet",
 					icon: "trash",
 					onItemClick: function () {
 						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
@@ -420,7 +656,7 @@
 					}
 				},
 				{
-					text: "Unlock the RFQ",
+					text: "Edit Property",
 					icon: "unlock",
 					onItemClick: function () {
 						// Replace with your actual unlock logic, e.g., an AJAX call
@@ -443,7 +679,39 @@
 					}
 				},
 				{
-					text: "Create Purchase Order",
+					text: "Print TimeSheet (Client)",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Print TimeSheet (Supplier)",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Print TimeSheet (Supplier) With Deducations",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Create Client Invoice Summary",
+					icon: "add",
+					onItemClick: function () {
+						//const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Create Supplier Timesheet Summary",
 					icon: "add",
 					onItemClick: function () {
 						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
@@ -454,5 +722,48 @@
 		}
 	}
 
+	function toggleYearInput(select) {
+    let input = document.getElementById("yearInput");
+    if (select.value === "custom") {
+        input.style.display = "block";
+        input.focus();
+    } else {
+        input.style.display = "none";
+    }
+}
 
+	 $(function () {
+				$("#quickrfq").text(formatMessage("Quick Dice ERP Solutions"));
+			 });
+			 $(function () {
+				$("#rfqtotalbefore").text(formatMessage("Total Before Tax"));
+			 });
+			 $(function () {
+				$("#rfqtotalafter").text(formatMessage("Total After Discount"));
+			 });
+			 $(function () {
+				$("#rfqnoofitems").text(formatMessage("No of Items"));
+			 });
+
+
+
+
+			 $(function () {
+	$("#EquipmentTimeSheet").dxTextBox({
+	text: formatMessage("Equipment TimeSheet"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
+
+	 $(document).on("click", "#closeDropdown", function () {
+        dd.close();
+    });
+
+    // Optional: prevent auto-close when clicking inside
+    dd.option("dropDownOptions", {
+        closeOnOutsideClick: false
+    });
 </script>

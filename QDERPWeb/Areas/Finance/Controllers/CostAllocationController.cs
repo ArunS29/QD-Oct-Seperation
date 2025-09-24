@@ -279,7 +279,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
 
-            
+
 
             var allocations = dbContext.Tbl201CostAllocationMasters
                 .Where(x => x.CostAllocationId == costAllocationId)
@@ -295,6 +295,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
         }
+        [HttpGet]
+        public IActionResult CheckVoucherApproval(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Json(new { isApproved = false });
+
+            var voucher = dbContext.Tbl201VoucherMasters
+                .Where(v => v.VoucherNo == voucherNo)
+                .Select(v => new { v.IsApproved })
+                .FirstOrDefault();
+
+            return Json(new { isApproved = voucher?.IsApproved ?? false });
+        }
+
 
     }
 }

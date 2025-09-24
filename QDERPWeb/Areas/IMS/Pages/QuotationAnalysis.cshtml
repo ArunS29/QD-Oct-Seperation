@@ -537,8 +537,7 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
 
 
     function CreateQuotation(){
-        debugger;
-        const tenantName = window.tenantName || "defaultTenant";
+                const tenantName = window.tenantName || "defaultTenant";
         if (!currentPivotRawData || currentPivotRawData.length === 0) {
             DevExpress.ui.notify("No data loaded in PivotGrid.", "error", 3000);
             return;

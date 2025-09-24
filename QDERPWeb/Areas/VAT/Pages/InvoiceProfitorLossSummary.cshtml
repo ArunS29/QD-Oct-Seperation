@@ -96,6 +96,9 @@
 		pointer-events: none;
 	}
 
+	.titleCard-toggle1 {
+		display: none;
+	}
 	.context-menu {
 		position: absolute;
 		background: #fff;
@@ -161,7 +164,11 @@
 </div>
 
 
-
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("/Pages/Shared/VAT/InvoiceProfitorLossSummaryfooter.cshtml")
+	</div>
+</div>
 
 
 <div class="horizontal-container">
@@ -180,6 +187,7 @@
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(3)
+		.Disabled(true)
 		)
 
 
@@ -348,11 +356,7 @@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 </div>
-<div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
-</div>
+
 
 
 <div id="overlay" class="overlay">

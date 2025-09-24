@@ -263,6 +263,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5 ?? task6 ?? task7 ?? task8;
                     }
+
+
+                    else if (menuType == "ERM")
+                    {
+
+
+                        DateTime? task1 = await dbContext.Tbl40103PropertyQuoteMasters
+                            .Where(c => c.QuoteNo == folderId)
+                            .Select(c => (DateTime?)c.QuoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl40101PropertyMasters
+                           .Where(c => c.PropertyNo == folderId)
+                           .Select(c => (DateTime?)c.PurchaseDate)
+                           .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl40136PropertyRequestMasters
+                          .Where(c => c.EqiupmentRequestNo == folderId)
+                          .Select(c => (DateTime?)c.RequestDate)
+                          .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3;
+
+                    }
+
+
                 }
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
@@ -309,9 +335,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         DocumentNo = docNo,
                         LedgerNo = form["LedgerNo"],
-                        DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
+                        DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,//
                         DocumentRefNo = form["DocumentRefNo"],
-                        DocumentRemarks = form["DocumentRemarks"],
+                        DocumentRemarks = form["DocumentRemarks"],//
                         DocumentExpDate = expDate,
                         DocumentNotificationDate = notificationDate,
                         DocumentExpDateAr = hijriDate,
@@ -637,6 +663,57 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 _logger.LogError($"Error in GetDocumentCount: {ex}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAllVoucherEntry(string VoucherNo, string module)
+        {
+            try
+            {
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (string.IsNullOrWhiteSpace(VoucherNo) || string.IsNullOrWhiteSpace(module))
+                    return BadRequest("Both VoucherNo and module are required.");
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                // Get all documents under this voucher
+                var docs = await dbContext.Tbl20116LedgerDocuments
+                                .Where(d => d.LedgerNo == VoucherNo &&
+                                    !string.IsNullOrEmpty(d.AzurePath) &&
+                                    d.AzurePath.Contains(normalizedModule))
+                                .ToListAsync();
+
+                if (docs == null || !docs.Any())
+                    return NotFound("No documents found for this voucher.");
+
+                var blobHelper = new AzureBlobHelper(
+                    _configuration.GetConnectionString("AzureBlobStorage"),
+                    "client-files"
+                );
+
+                // Delete all blob files one by one
+                foreach (var doc in docs)
+                {
+                    if (!string.IsNullOrEmpty(doc.AzurePath))
+                    {
+                        await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+                    }
+                }
+
+                // Remove from DB
+                dbContext.Tbl20116LedgerDocuments.RemoveRange(docs);
+
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete DocumentCount: {ex}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
         }
         [HttpGet]
         public ActionResult LedgerDocuments(string ReferenceNo, string ModuleType, string isMaster)

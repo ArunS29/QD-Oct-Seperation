@@ -220,12 +220,12 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Custom Report Designs").Icon("print").Option("color", "#4285F4");
-                    items.Add().Text("Preview Purchase Order").Icon("file").Option("color", "#34A853");
-                    items.Add().Text("Preview Purchase Order(Wt VAT)").Icon("file").Option("color", "#EA4335");
-                    items.Add().Text("Preview Purchase Order(Wt VAT / Wo Total Price)").Icon("file").Option("color", "#FBBC05");
-                    items.Add().Text("Preview Purchase Order(Foreign Currency)").Icon("file").Option("color", "#AB47BC");
-                    items.Add().Text("Distribute Discount Amount").Icon("file").Option("color", "#00ACC1");
+                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("print").Option("color", "#4285F4");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order')")).Icon("file").Option("color", "#34A853");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT)')")).Icon("file").Option("color", "#EA4335");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT / Wo Total Price)')")).Icon("file").Option("color", "#FBBC05");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Foreign Currency)')")).Icon("file").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Distribute Discount Amount')")).Icon("file").Option("color", "#00ACC1");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">

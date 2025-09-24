@@ -1566,6 +1566,26 @@ VALUES
 	(540,'Delivery Note Journal Posting', 'frm60107DeliveryNoteJournalPosting_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (541,'Delivery Note Edit Form','frm60106DeliveryNoteEdit_ddButtonLayout1','Layout',1,1,null,'IMS',null,null,null,null), 
+	(542,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (543,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (544,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (545,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (546,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (547,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnPrint1','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (548,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAddNewPayment','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (549,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (550,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (551,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (552,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (553,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (554,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnReceive','Receive', 1, 1,null, 'IMS',null,null,null,null),
+    (555,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnPostbooks','Post', 1, 1,null, 'IMS',null,null,null,null),
+    (556,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (557,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 ---------------------------Cheque---------------------------  
 alter table Aicon.tbl20113ChequeMaster   
@@ -2563,6 +2583,19 @@ GO
 ALTER TABLE Aicon.tbl602_01SalesOrderMaster 
 ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
 GO
+---Sudhir DB-----
+--IMS  currency changes
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD CurrencyId INT NOT NULL DEFAULT 1;
+GO
+-- Add CurrencyRate with default
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+-- Add BaseCurrencyId with default
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
 
 
 Alter view [Aicon].[qry602_01SalesOrderView] as SELECT Aicon.tbl602_01SalesOrderMaster.SalesOrderNo, Aicon.tbl602_01SalesOrderMaster.SalesOrderDate, Aicon.tbl602_01SalesOrderMaster.ClientPONo, Aicon.tbl602_01SalesOrderMaster.ClientPODate, Aicon.tbl602_01SalesOrderMaster.QuoteNo, 
@@ -3379,7 +3412,7 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
 ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
 ------------------------------
-//IMS New field
+//IMS New field (KOWSALYA)
 IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
 BEGIN
     ALTER TABLE Aicon.tbl20101SalesPersonMaster
@@ -3389,6 +3422,123 @@ END
 ELSE
 BEGIN
     PRINT 'Column already exists: TargetPerMonth';
+
+--DeliveryNote New field added ---
+-- Add IsSubmitted
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD IsSubmitted BIT NULL;
+
+    PRINT 'Added column: IsSubmitted';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: IsSubmitted';
+
+END
+ 
+-- Add SubmittedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: SubmittedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedBy';
+
+END
+ 
+-- Add SubmittedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedOn DATETIME NULL;
+
+    PRINT 'Added column: SubmittedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedOn';
+
+END
+ 
+-- Add VerifiedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: VerifiedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedBy';
+
+END
+ 
+-- Add VerifiedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedOn DATETIME NULL;
+
+    PRINT 'Added column: VerifiedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedOn';
+
+END
+
+ 
+ALTER TABLE Aicon.tbl901CompanyDetails02
+
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ 
 
 ---------IMS Currency Implement---------
 
@@ -3515,7 +3665,141 @@ UPDATE Aicon.tbl901CompanyDetails02
 SET NoOfDigitsToInventoryQuotation = 5
 WHERE CompanyID = 2;
 
+---AiconDB---
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
  
+---Sudhir DB---
+ALTER TABLE Sudhir.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ ----IMS DeliveryNote Submit,Verify script-----
+ -- Add IsSubmitted
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
+---AiconDB---
+-- Add IsSubmitted
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
 --------IMS Report---------
 
  
@@ -4175,4 +4459,490 @@ VALUES
 (228, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_DeleteJournal', 'Delete Journal', 1, 1,  'Finance'),
 
 (229, 'Finance Journal Register Main', 'frm20128JournalRegisterMain_CloneJournal', 'Clone Journal', 1, 1,  'Finance')
+
+Equipment Rental
+================
+Equipment Asset Property 	
+========================
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+	VALUES
+    (1001,'Equipment Asset Main View Screen','frmERMPropertyMaster_btnRefresh','Refresh',1,1,null,'ERM',null,null,null,null), 
+    (1002'Equipment Asset Main View Screen','frmERMPropertyMaster_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+    (1003,'Equipment Asset Main View Screen','frmERMPropertyMaster_rowHeightProperties','Row Height Properties',1,1,null,'ERM',null,null,null,null), 
+    (1004,'Equipment Asset Main View Screen','frmERMPropertyMaster_btnPrint','Print',1,1,null,'ERM',null,null,null,null), 
+    (1005,'Equipment Asset Main View Screen','frmERMPropertyMaster_btnToggleSearch','Toggle Search',1,1,null,'ERM',null,null,null,null), 
+    (1006,'Equipment Asset Main View Screen','frmERMPropertyMaster_btntoggleGroupPanel','Toggle Group Panel',1,1,null,'ERM',null,null,null,null), 
+    (1007,'Equipment Asset Main View Screen','frmERMPropertyMaster_btnColumnChooser','Column Chooser',1,1,null,'ERM',null,null,null,null), 
+    (1008,'Equipment Asset Main View Screen','frmERMPropertyMaster_ddButtonShow','Show Options',1,1,null,'ERM',null,null,null,null), 
+    (1009,'Equipment Asset Main View Screen','frmERMPropertyMaster_ddReports','Reports',1,1,null,'ERM',null,null,null,null), 
+    (1010,'Equipment Asset Main View Screen','frmERMPropertyMaster_btnAddNewProperty','Add New Property',1,1,null,'ERM',null,null,null,null),
+    (1011,'Equipment Asset Main View Screen','frmERMPropertyMaster_FullAccess','Full Access',1,1,null,'ERM',null,null,null,null);
+
+Quotation Main View
+===================
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1012,'Equipment Quotation View', 'QuotationView_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+    (1013,'Equipment Quotation View', 'QuotationView_rowHeightProperties','Row Height Properties',1, 1,null,'ERM',null,null,null,null), 
+    (1014,'Equipment Quotation View', 'QuotationView_btnMoveUp','Move Up', 1, 1,null, 'ERM',null,null,null,null), 
+    (1015,'Equipment Quotation View', 'QuotationView_btnMoveDown','Move Down', 1, 1,null, 'ERM',null,null,null,null), 
+    (1016,'Equipment Quotation View', 'QuotationView_btnSave','Save',1, 1,null, 'ERM',null,null,null,null), 
+    (1017,'Equipment Quotation View', 'QuotationView_btnSaveAndClose','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+    (1018,'Equipment Quotation View', 'QuotationView_btnPrint','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1019,'Equipment Quotation View', 'QuotationView_btnDelete','Delete', 1, 1,null, 'ERM',null,null,null,null),
+    (1020,'Equipment Quotation View', 'QuotationView_btnTerms','Terms', 1, 1,null, 'ERM',null,null,null,null),
+    (1021,'Equipment Quotation View', 'QuotationView_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null),
+    (1022,'Equipment Quotation View', 'QuotationView_btnAttach','Attach', 1, 1,null, 'ERM',null,null,null,null),
+    (1023,'Equipment Quotation View', 'QuotationView_btnSubmit','Submit', 1, 1,null, 'ERM',null,null,null,null),
+    (1024,'Equipment Quotation View', 'QuotationView_btnVerify','Verify', 1, 1,null, 'ERM',null,null,null,null),
+    (1025,'Equipment Quotation View', 'QuotationView_btnApprove','Approve', 1, 1,null, 'ERM',null,null,null,null),
+    (1026,'Equipment Quotation View', 'QuotationView_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+Equipment Quotation Edit 
+========================
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1027,'Equipment Quotation','equipmentquotation_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+    (1028,'Equipment Quotation', 'equipmentquotation_rowHeightProperties','Row Height Properties',1, 1,null,'ERM',null,null,null,null), 
+    (1029,'Equipment Quotation', 'equipmentquotation_btnMoveUp','Move Up', 1, 1,null, 'ERM',null,null,null,null), 
+    (1030,'Equipment Quotation', 'equipmentquotation_btnMoveDown','Move Down', 1, 1,null, 'ERM',null,null,null,null), 
+    (1031,'Equipment Quotation', 'equipmentquotation_btnSave','Save',1, 1,null, 'ERM',null,null,null,null), 
+    (1032,'Equipment Quotation', 'equipmentquotation_btnSaveAndClose','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+    (1033,'Equipment Quotation', 'equipmentquotation_btnPrint','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1034,'Equipment Quotation', 'equipmentquotation_btnDelete','Delete', 1, 1,null, 'ERM',null,null,null,null),
+    (1035,'Equipment Quotation', 'equipmentquotation_btnTerms','Terms', 1, 1,null, 'ERM',null,null,null,null),
+    (1036,'Equipment Quotation', 'equipmentquotation_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null),
+    (1037,'Equipment Quotation', 'equipmentquotation_btnAttach','Attach', 1, 1,null, 'ERM',null,null,null,null),
+    (1038,'Equipment Quotation', 'equipmentquotation_btnSubmit','Submit', 1, 1,null, 'ERM',null,null,null,null),
+    (1039,'Equipment Quotation', 'equipmentquotation_btnVerify','Verify', 1, 1,null, 'ERM',null,null,null,null),
+    (1040,'Equipment Quotation', 'equipmentquotation_btnApprove','Approve', 1, 1,null, 'ERM',null,null,null,null),
+    (1041,'Equipment Quotation', 'equipmentquotation_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+EQ Enquiry
+=========
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1042,'Enquiry Client Request Form','EquipmentEnquiryEdit_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+    (1043,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_rowHeightProperties','Row Height Properties',1, 1,null,'ERM',null,null,null,null), 
+    (1044,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnMoveUp','Move Up', 1, 1,null, 'ERM',null,null,null,null), 
+    (1045,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnMoveDown','Move Down', 1, 1,null, 'ERM',null,null,null,null), 
+    (1046,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnSave','Save',1, 1,null, 'ERM',null,null,null,null), 
+    (1047,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnSaveAndClose','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+    (1048,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnPrint1','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1049,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnAddNew','Add New Item', 1, 1,null, 'ERM',null,null,null,null),
+    (1050,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnDelete','Delete', 1, 1,null, 'ERM',null,null,null,null),
+    (1051,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null),
+    (1052,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnSubmit','Submit', 1, 1,null, 'ERM',null,null,null,null),
+    (1053,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnVerify','Verify', 1, 1,null, 'ERM',null,null,null,null),
+    (1054,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnApprove','Approve', 1, 1,null, 'ERM',null,null,null,null),
+    (1055,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnCancel','Cancel', 1, 1,null, 'ERM',null,null,null,null),
+    (1056,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnAttach','Attach', 1, 1,null, 'ERM',null,null,null,null),
+    (1057,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_btnUpload','Upload', 1, 1,null, 'ERM',null,null,null,null),
+    (1058,'Enquiry Client Request Form', 'EquipmentEnquiryEdit_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+EQ Enquiry Main screen 
+======================
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1059,'Equipment Enquiry Main View Screen','EquipmentEnquiryMainScreen_ddBtnShowRecords','Show Recorrds',1,1,null,'ERM',null,null,null,null), 
+    (1060,'Equipment Enquiry Main View Screen','EquipmentEnquiryMainScreen_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+    (1061,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_rowHeightProperties','Row Height Properties',1,1,null,'ERM',null,null,null,null), 
+    (1062,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_btnPrint','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1063,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_btnToggleSearch','Toggle Search', 1, 1,null, 'ERM',null,null,null,null), 
+    (1064,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_btntoggleGroupPanel','Toggle Group Panel',1, 1,null, 'ERM',null,null,null,null), 
+    (1065,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_btnColumnChooser','Column Chooser',1, 1,null,'ERM',null,null,null,null), 
+    (1066,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_btnAddMaterialRequest','Create New', 1, 1,null, 'ERM',null,null,null,null),
+    (1067,'Equipment Enquiry Main View Screen', 'EquipmentEnquiryMainScreen_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+EQ Purchase Order Edit Form
+===========================
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1068,'Equipment Edit Purchase Order','EQPurchaseOrderEdit_btnSave','Save',1,1,null,'ERM',null,null,null,null), 
+    (1069,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnSaveAndClose','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+    (1070,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnDelete','Delete', 1, 1,null, 'ERM',null,null,null,null), 
+    (1071,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null), 
+    (1072,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnSubmit','Submit',1, 1,null, 'ERM',null,null,null,null), 
+    (1073,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnVerify','Verify',1, 1,null,'ERM',null,null,null,null), 
+    (1074,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnApprove','Approve', 1, 1,null, 'ERM',null,null,null,null),
+    (1075,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnAttach','Attach', 1, 1,null, 'ERM',null,null,null,null),
+    (1076,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnAddNew','Add New Item', 1, 1,null, 'ERM',null,null,null,null),
+    (1077,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_btnPrint4','Print', 1, 1,null, 'ERM',null,null,null,null),
+    (1078,'Equipment Edit Purchase Order', 'EQPurchaseOrderEdit_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+EQ Purchase Order Main Screen
+=============================
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1079,'Equipment PO Main view Screen', 'EQPurchaseOrder_ddButtonLayout','Save',1,1,null,'ERM',null,null,null,null), 
+    (1080,'Equipment PO Main view Screen', 'EQPurchaseOrder_rowHeightProperties','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+    (1081,'Equipment PO Main view Screen', 'EQPurchaseOrder_ddBtnShowRecords','Delete', 1, 1,null, 'ERM',null,null,null,null), 
+    (1082,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnSearch','Back', 1, 1,null, 'ERM',null,null,null,null), 
+    (1083,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnToggleSearch','Submit',1, 1,null, 'ERM',null,null,null,null), 
+    (1084,'Equipment PO Main view Screen', 'EQPurchaseOrder_btntoggleGroupPanel','Verify',1, 1,null,'ERM',null,null,null,null), 
+    (1085,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnPrint','Approve', 1, 1,null, 'ERM',null,null,null,null),
+    (1086,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnColumnChooser','Attach', 1, 1,null, 'ERM',null,null,null,null),
+    (1087,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnPurchaseOrderDetails','Add New Item', 1, 1,null, 'ERM',null,null,null,null),
+    (1088,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnNewPurchaseOrder','Print', 1, 1,null, 'ERM',null,null,null,null),
+    (1089,'Equipment PO Main view Screen', 'EQPurchaseOrder_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+
+    -- tbl40126_PropertyPOMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40126_PropertyPOMaster' 
+                 AND COLUMN_NAME = 'CurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40126_PropertyPOMaster 
+    ADD CurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40126_PropertyPOMaster' 
+                 AND COLUMN_NAME = 'CurrencyRate')
+BEGIN
+    ALTER TABLE Aicon.tbl40126_PropertyPOMaster 
+    ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40126_PropertyPOMaster' 
+                 AND COLUMN_NAME = 'BaseCurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40126_PropertyPOMaster 
+    ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+
+-- tbl40136_PropertyRequestMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'CurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD CurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'CurrencyRate')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'BaseCurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'IsSubmitted')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD IsSubmitted bit NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'SubmittedBy')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD SubmittedBy varchar(MAX) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'SubmittedOn')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD SubmittedOn datetime NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'ERVerifiedSign')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD ERVerifiedSign tinyint NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'ERApprovedSign')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD ERApprovedSign tinyint NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'IsVerified')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD IsVerified bit NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'VerifiedBy')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD VerifiedBy varchar(MAX) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'VerifiedOn')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD VerifiedOn datetime NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40136_PropertyRequestMaster' 
+                 AND COLUMN_NAME = 'PurchaseRequestStatusID')
+BEGIN
+    ALTER TABLE Aicon.tbl40136_PropertyRequestMaster 
+    ADD PurchaseRequestStatusID tinyint NULL;
+END
+GO
+
+Equipment Qutation New Column and change data type
+---------------------------------------------------
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'VerifiedOn')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD VerifiedOn DATETIME NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'VerifiedBy')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD VerifiedBy VARCHAR(50) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'IsSubmitted')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD IsSubmitted BIT NOT NULL DEFAULT (0);
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'SubmittedBy')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD SubmittedBy VARCHAR(50) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'SubmittedOn')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD SubmittedOn DATETIME NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'CurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD CurrencyId INT NOT NULL DEFAULT (1);
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'CurrencyRate')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT (1.00);
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40103PropertyQuoteMaster' 
+                 AND COLUMN_NAME = 'BaseCurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40103PropertyQuoteMaster ADD BaseCurrencyId INT NOT NULL DEFAULT (1);
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'Certification')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD Certification NVARCHAR(100) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'Capacity')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD Capacity NVARCHAR(50) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'Operator')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD Operator NVARCHAR(100) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'Attachment')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD Attachment NVARCHAR(100) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'Notes')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD Notes NVARCHAR(500) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'DeliveryDetails')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD DeliveryDetails NVARCHAR(250) NULL;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'Tbl40104PropertyQuoteChild' 
+                 AND COLUMN_NAME = 'QuoteMethod')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ADD QuoteMethod VARCHAR(50) NULL;
+END
+GO
+
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+           WHERE TABLE_SCHEMA = 'Aicon'
+             AND TABLE_NAME = 'Tbl40104PropertyQuoteChild'
+             AND COLUMN_NAME = 'UnitRateMethod2'
+             AND IS_NULLABLE = 'Yes')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ALTER COLUMN UnitRateMethod2 VARCHAR(50) NULL;
+END
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+           WHERE TABLE_SCHEMA = 'Aicon'
+             AND TABLE_NAME = 'Tbl40104PropertyQuoteChild'
+             AND COLUMN_NAME = 'UnitRateMethod3'
+             AND IS_NULLABLE = 'Yes')
+BEGIN
+    ALTER TABLE Aicon.Tbl40104PropertyQuoteChild ALTER COLUMN UnitRateMethod3 VARCHAR(50) NULL;
+END
+GO
+
+=======Equipment Enquiry=======
+ALTER VIEW [Aicon].[qry406_01PropertyRequestView]
+AS
+SELECT     Aicon.tbl40136_PropertyRequestMaster.EqiupmentRequestNo, Aicon.tbl40136_PropertyRequestMaster.RequestDate, Aicon.tbl40136_PropertyRequestMaster.TypeOfMPR, 
+Aicon.tbl40135_PropertyRequestTypes.RequestType, Aicon.tbl40136_PropertyRequestMaster.ClientCode, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl30103ModeOfRequestMaster.ModeOfRequestID, 
+Aicon.tbl30103ModeOfRequestMaster.ModeOfRequest, Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID, Aicon.tbl30104TypeOfRequestMaster.TypeOfRequest, 
+Aicon.tbl40136_PropertyRequestMaster.IsApproved, Aicon.tbl40136_PropertyRequestMaster.PreparedBy, Aicon.tbl40136_PropertyRequestMaster.PreparedOn, 
+Aicon.tbl40136_PropertyRequestMaster.ApprovedBy, Aicon.tbl40136_PropertyRequestMaster.ApprovedOn, Aicon.tbl40136_PropertyRequestMaster.AddedBy, 
+Aicon.tbl40136_PropertyRequestMaster.AddedOn, Aicon.tbl40136_PropertyRequestMaster.ModifiedBy, Aicon.tbl40136_PropertyRequestMaster.ModifiedOn, Aicon.tbl901CompanyDetails.CompanyID, 
+Aicon.tbl901CompanyDetails.CompanyName, Aicon.tbl40136_PropertyRequestMaster.RequestedBy, Aicon.tbl40136_PropertyRequestMaster.RequesterContact, 
+Aicon.tbl40136_PropertyRequestMaster.RequesterContactEmail, Aicon.tbl40136_PropertyRequestMaster.RequestSignatory, Aicon.tbl40136_PropertyRequestMaster.ClientRefNo, 
+Aicon.tbl40136_PropertyRequestMaster.PurposeOfRequest, Aicon.tbl40136_PropertyRequestMaster.Priority, Aicon.tbl40136_PropertyRequestMaster.ExpectedDate, 
+Aicon.tbl40136_PropertyRequestMaster.Remarks, Aicon.tbl40136_PropertyRequestMaster.ProjectMasterCode, Aicon.tbl700_01ProjectMaster.ProjectDescription, 
+Aicon.qry406_03EquipmentRequestChildWtTotal.TotalRequestCost, Aicon.qry406_03EquipmentRequestChildWtTotal.NoOfItems,Aicon.tbl40136_PropertyRequestMaster.IsVerified,
+Aicon.tbl40136_PropertyRequestMaster.IsSubmitted,Aicon.tbl40136_PropertyRequestMaster.SubmittedBy,Aicon.tbl40136_PropertyRequestMaster.VerifiedBy,
+Aicon.tbl40136_PropertyRequestMaster.SubmittedOn,Aicon.tbl40136_PropertyRequestMaster.VerifiedOn,Aicon.tbl40136_PropertyRequestMaster.ERverifiedSign,
+Aicon.tbl40136_PropertyRequestMaster.ERapprovedSign
+FROM   Aicon.tbl40136_PropertyRequestMaster LEFT OUTER JOIN
+Aicon.qry406_03EquipmentRequestChildWtTotal ON 
+Aicon.tbl40136_PropertyRequestMaster.EqiupmentRequestNo = Aicon.qry406_03EquipmentRequestChildWtTotal.EquipmentRequestNo LEFT OUTER JOIN
+Aicon.tbl901CompanyDetails ON Aicon.tbl40136_PropertyRequestMaster.CompanyBranch = Aicon.tbl901CompanyDetails.CompanyID LEFT OUTER JOIN
+Aicon.tbl30104TypeOfRequestMaster ON Aicon.tbl40136_PropertyRequestMaster.TypeOfRequest = Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID LEFT OUTER JOIN
+Aicon.tbl30103ModeOfRequestMaster ON Aicon.tbl40136_PropertyRequestMaster.ModeOfRequest = Aicon.tbl30103ModeOfRequestMaster.ModeOfRequestID LEFT OUTER JOIN
+Aicon.tbl700_01ProjectMaster ON Aicon.tbl40136_PropertyRequestMaster.ProjectMasterCode = Aicon.tbl700_01ProjectMaster.ProjectID LEFT OUTER JOIN
+Aicon.tbl30101ClientMaster ON Aicon.tbl40136_PropertyRequestMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode LEFT OUTER JOIN
+Aicon.tbl40135_PropertyRequestTypes ON Aicon.tbl40136_PropertyRequestMaster.TypeOfMPR = Aicon.tbl40135_PropertyRequestTypes.EquipmentRequestTypeCode
+GO
+
+
+ALTER VIEW [Aicon].[qry406_04PropertyRequestViewMaster]
+AS
+SELECT     EqiupmentRequestNo, RequestDate, TypeOfMPR, RequestType, ClientCode, ClientName, ModeOfRequestID, ModeOfRequest, TypeOfRequestID, TypeOfRequest, IsApproved, PreparedBy, 
+ERapprovedSign,ERverifiedSign,VerifiedOn,SubmittedOn,VerifiedBy,SubmittedBy,IsVerified,IsSubmitted,
+PreparedOn, ApprovedBy, ApprovedOn, AddedBy, AddedOn, ModifiedBy, ModifiedOn, CompanyID, CompanyName, RequestedBy, RequesterContact, RequesterContactEmail, RequestSignatory, 
+ClientRefNo, PurposeOfRequest, Priority, ExpectedDate, Remarks, ProjectMasterCode, ProjectDescription, TotalRequestCost, NoOfItems
+FROM   Aicon.qry406_01PropertyRequestView
+GO
+
 
