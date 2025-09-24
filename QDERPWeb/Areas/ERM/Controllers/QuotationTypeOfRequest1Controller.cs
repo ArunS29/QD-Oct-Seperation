@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<QuotationTypeOfRequest1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public QuotationTypeOfRequest1Controller(ILogger<QuotationTypeOfRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public QuotationTypeOfRequest1Controller(ILogger<QuotationTypeOfRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -80,6 +84,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                          module: "ERM > Save Signatory",
+                         actionDetail: $"Saved Signatory {model}",
+                          documentNo: $"{model}"
+                    );
 
                     return Ok(new { success = true, message = "Saved successfully", id = model.TypeOfRequestId });
                 }
@@ -105,6 +114,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl30104TypeOfRequestMasters.Remove(record);
                     dbContext.SaveChanges();
+                     _userActionLogger.LogAsync(
+                          module: "ERM > Delete",
+                         actionDetail: $"Deleted {key}",
+                          documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 

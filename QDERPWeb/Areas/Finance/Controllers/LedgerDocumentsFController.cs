@@ -263,6 +263,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5 ?? task6 ?? task7 ?? task8;
                     }
+
+
+                    else if (menuType == "ERM")
+                    {
+
+
+                        DateTime? task1 = await dbContext.Tbl40103PropertyQuoteMasters
+                            .Where(c => c.QuoteNo == folderId)
+                            .Select(c => (DateTime?)c.QuoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl40101PropertyMasters
+                           .Where(c => c.PropertyNo == folderId)
+                           .Select(c => (DateTime?)c.PurchaseDate)
+                           .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl40136PropertyRequestMasters
+                          .Where(c => c.EqiupmentRequestNo == folderId)
+                          .Select(c => (DateTime?)c.RequestDate)
+                          .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3;
+
+                    }
+
+
                 }
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
@@ -309,9 +335,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         DocumentNo = docNo,
                         LedgerNo = form["LedgerNo"],
-                        DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
+                        DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,//
                         DocumentRefNo = form["DocumentRefNo"],
-                        DocumentRemarks = form["DocumentRemarks"],
+                        DocumentRemarks = form["DocumentRemarks"],//
                         DocumentExpDate = expDate,
                         DocumentNotificationDate = notificationDate,
                         DocumentExpDateAr = hijriDate,

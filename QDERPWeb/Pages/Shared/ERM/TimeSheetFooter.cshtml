@@ -107,40 +107,29 @@
             .OnClick("showColumnChooser")
             )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnAddMaterialRequest")
+  @*   <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnRfqDetails")
             .Icon("add")
-            .Width("100%")
-            .Text(new JS("formatMessage('Create New')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Add New Client Request')")).Icon("user");
-                items.Add().Text(new JS("formatMessage('Add New Store Request')")).Icon("cart");
-                items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
-            })
-            .ItemTemplate(@<text>
-                <div class="custom-dropdown-item">
-                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                    <div class="item-content">
-                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                        <div>
-                            <div class="item-title"><%- text %></div>
-                        </div>
-                    </div>
-                </div>
-            </text>)
-            .OnItemClick("addNewMaterialRequest")
-            .ShowArrowIcon(false)
+            .Text(new JS("formatMessage('RFQ Details')"))
+            .OnClick("AddNewRFQDetails")
             )
-    </div>
 
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddNewRFQ")
+            .Icon("add")
+            .Text(new JS("formatMessage('Add New RFQ')"))
+            .OnClick("AddNewRFQ")
+            )
+
+    </div> *@
    
 </div>
 
 <script>
-    
+        
         function showSubmenu(e) {
             e.event.stopPropagation();
             var $submenu = $('#submenuContainer');
@@ -161,24 +150,11 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-             function addNewMaterialRequest(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/ERM/AddNewClientRequest`;
-                    break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/ERM/MRAddNewStoreRequest`;
-                    break;
-                case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/ERM/MRAddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
      
+        // function AddNewRFQ() {
+        //     window.location.href = `/${tenantName}/ERM/AddNewRFQ`;
+        // }
+        // function AddNewRFQDetails() {
+        //     window.location.href = `/${tenantName}/ERM/RFQwithItemDetails`;
+        // }
 </script>

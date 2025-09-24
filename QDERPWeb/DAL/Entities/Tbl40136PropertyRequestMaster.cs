@@ -58,4 +58,26 @@ public partial class Tbl40136PropertyRequestMaster
     public string Remarks { get; set; }
 
     public string ProjectMasterCode { get; set; }
+
+    public bool? IsSubmitted { get; set; }
+
+    public string SubmittedBy { get; set; }
+
+    public DateTime? SubmittedOn { get; set; }
+
+    public bool? IsVerified { get; set; }
+
+    public string VerifiedBy { get; set; }
+
+    public DateTime? VerifiedOn { get; set; }
+
+    public byte? ERverifiedSign { get; set; }
+
+    public byte? ERapprovedSign { get; set; }
+
+    public byte? PurchaseRequestStatusId { get; set; }
+
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

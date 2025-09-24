@@ -1,8 +1,7 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
 using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -82,197 +81,188 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 }
         }
         //RFQ Item Details form
-		[HttpGet]
-		 public async Task<IActionResult> GetRFQwithItemDetails(DateTime? fromDate, DateTime? toDate)
+        [HttpGet]
+        public async Task<IActionResult> GetGenarateTimeGrid(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry40305equipmentTsmasterViews.AsQueryable();
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                    if (!toDate.HasValue)
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
+                                  DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+                    // Filter by date
+                    query = query.Where(i => i.TimeSheetMonth >= fromDate && i.TimeSheetMonth <= toDate);
+
+                    // Group by Year + Month
+                    var rawData = await query
+					.Where(i => i.TimeSheetMonth >= fromDate && i.TimeSheetMonth <= toDate)
+					.ToListAsync(); // materialize first
+
+                    var data = rawData
+                        .GroupBy(i => new { Year = i.TimeSheetMonth.Value.Year, Month = i.TimeSheetMonth.Value.Month })
+                        .Select(g => new
+                        {
+                            g.Key.Year,
+                            g.Key.Month,
+                            Records = g.Select(i => new
+                            {
+                                i.PropertyGroup,
+                                i.ClientName,
+                                i.ClientPono,
+                                i.PropertyNo,
+                                i.PropertyDescription,
+                                i.SupplierTotalHours,
+                                i.ClientRatePerHour2,
+                                i.ClientTotalAmount,
+                                i.SupplierRatePerHour,
+                                i.SupplierTotalAmount,
+                                i.PropertySummInvoiceNo,
+                                i.SupplierTssummaryNo,
+                                i.Deductions,
+                                i.TimeSheetMasterId,
+                                i.TimeSheetMonthId,
+                                i.TimeSheetMonth,
+                                i.PropertyType,
+                                i.PropertySuppliedBy,
+                                i.OperatorName,
+                                i.OperatorRate,
+                                i.HiredOn,
+                                i.PropertyCategoryName,
+                                i.Brand,
+                                i.PlateNo,
+                                i.TotalRentAmount,
+                                i.TotalHoursWorked,
+                                i.ClientTotalHours,
+                                i.ClientOtratePerHour,
+                                i.Project,
+                                i.ProjectDescription,
+                                i.ClientAccountLedgerNo,
+                                i.SupplierAccountLedgerNo,
+                                i.GatePassNo,
+                                i.ClientSite
+								
+                            }).ToList()
+                        })
+                        .OrderBy(x => x.Year)
+                        .ThenBy(x => x.Month)
+                        .ToList();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetTimeSheetReq: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetTimesheetGrid(DataSourceLoadOptions loadOptions, string propertyNo, int? timeSheetMaster)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var query = dbContext.Qry60706rfqdetails.AsQueryable();
-
-
-                // Default dates if not provided
-                if (!fromDate.HasValue)
+                try
                 {
-                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    var query = dbContext.Qry40125PropertyTimeSheetDatesEdits
+				   .Where(x => x.PropertyNo == propertyNo);
+
+                    if (timeSheetMaster.HasValue)
+                        query = query.Where(x => x.TimeSheetMasterId == timeSheetMaster.Value);
+
+                    // 🔹 Project only required fields
+                    var projectedQuery = query.Select(x => new
+                    {
+                        x.PropertyNo,
+                        x.TimeSheetDate,
+                        x.WorkStatus,
+                        x.ClientName,
+                        x.ClientRegHours,
+                        x.ClientOthours,
+                        x.TotalHoursM,
+                        x.ClientRatePerHour,
+                        x.ClientOtratePerHour
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(projectedQuery, loadOptions));
                 }
-
-                if (!toDate.HasValue)
+                catch (Exception ex)
                 {
-                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    _logger.LogError($"Error in GetTimesheetGrid: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
                 }
-
-                // Filtering by date range
-                query = query.Where(i => i.Rfqdate >= fromDate && i.Rfqdate <= toDate);
-
-                // Fetching the data
-                var data = await query.Select(i => new
-                {
-                    i.Rfqno,
-                    i.Rfqdate,
-                    i.Mprno,
-                    i.SupplierName,
-                    i.SupplierQuotationNo,
-                    i.QuoteHasItemsToPo,
-                    i.Pono,
-                    i.NoOfItems,
-                    i.TotalBeforeTax,
-                    i.TotalDiscount,
-                    i.TotalAfterDiscount,
-                    i.Gscode,
-                    i.Gsdescrpition,
-                    i.QuotedQuantity,
-                    i.UnitDesc,
-                    i.UnitPrice,
-                    i.ItemDiscount,
-                    i.IsWonForPo,
-                    i.LineTotalBeforeTax,
-                    i.LineTotalAfterDisc
-				}).ToListAsync();
-
-                return Json(data);
             }
 
-            return Unauthorized(new { message = "Invalid tenant." });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-		//Add New RFQ Form
-		
-		[HttpGet]
-		public ActionResult<string> GetNewDebitNoteNoApi()
-		{
-			try
-			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
 
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+        [HttpGet]
+        public async Task<ActionResult> GenerateTimeGrid(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Parse input dates
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
-					if (company == null)
-					{
-						return NotFound("Company not found.");
-					}
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
 
-					string Rfqabbrv = company.Rfqabbrv;
-					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-					DateTime invoiceDate = DateTime.Now;
+                    // Call SP with correct params (use from & to)
+                    var allData = await dbContext.GetDataForGeneratingTimesheets
+					 .FromSqlRaw("EXEC [dbo].[stpro401_20GetDataForGeneratingTimesheet] @StartDate={0}, @EndDate={1}", from, to)
+					 .ToListAsync();
 
-					// Generate new debit note number
-					string newDebitNoteNo = GetNewDebitNoteNo(Rfqabbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+                    // Ensure not null
+                    if (allData == null || allData.Count == 0)
+                        return Json(new List<object>());   // Return empty array []
 
-					return Ok(newDebitNoteNo);
-				}
-				else
-				{
-					return BadRequest("Tenant or DB Context not found.");
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
-				return StatusCode(500, "Internal server error: " + ex.Message);
-			}
-		}
+                    // Filter by PropertyIssuedDate
+                    var filteredData = allData
+                        .Where(i => i.PropertyIssuedDate >= from && i.PropertyIssuedDate <= to)
+                        .ToList();
 
+                    // If still empty after filtering
+                    if (filteredData.Count == 0)
+                        return Json(new List<object>());   // Return empty array []
 
+                    return Json(filteredData);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-		private string GetNewDebitNoteNo(string Rfqabbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
-		{
-			try
-			{
-				
-				// Retrieve MPR numbers into memory
-				var mprNumbers = dbContext.Tbl60701rfqmasters
-					.Where(d => d.Rfqno != null && d.Rfqno.Length >= 5 &&
-								(!isResetByYear || (d.Rfqdate.HasValue && d.Rfqdate.Value.Year == invoiceDate.Year)))
-					.Select(d => d.Rfqno)
-					.ToList();
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
-				// Extract numeric parts and determine the maximum
-				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
-					.DefaultIfEmpty(0)
-					.Max();
-
-				maxRunningNumber += 1;
-
-				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
-
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
-
-				return $"{Rfqabbrv}{strYear}-{strNewDebitNoteNo}";
-			}
-			catch (Exception)
-			{
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
-
-				return $"{Rfqabbrv}{strYear}-00001";
-			}
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
+        [HttpGet]
+		public async Task<IActionResult> GetWorkStatus(DataSourceLoadOptions loadOptions)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
 			{
 				try
 				{
-					var ClientCategory = dbContext.Tbl30199SupplierMasters.Select(i => new
+					var WorkDay = dbContext.Tbl40123TimeSheetDayStatuses.Select(i => new
 					{
-						i.SupplierCode,
-						i.SupplierName
+						i.DayCode,
+						i.DayDescription
 
-					});
+                    });
 
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetProject: {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<IActionResult> GetSignatory(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var ClientCategory = dbContext.Tbl90104DocumentSignatories.Select(i => new
-					{
-						i.SignatoryId,
-						i.SignatoryName
-
-					});
-
-					return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
+					return Json(await DataSourceLoader.LoadAsync(WorkDay, loadOptions));
 				}
 				catch (Exception ex)
 				{

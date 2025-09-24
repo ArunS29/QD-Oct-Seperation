@@ -1,5 +1,61 @@
 ﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+<style>
 
+        .icon-green.dx-icon-attach::before {
+            color: green !important;
+        }
+
+        .icon-red.dx-icon-attach::before {
+            color: red !important;
+        }
+
+
+        /* Save = Blue */
+        .btn-save {
+            background-color: #007bff !important;
+            color: white !important;
+        }
+
+        /* Save and Close = Green */
+        .btn-saveclose {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        /* Verify = Yellow */
+        .btn-verify {
+            background-color: #ffc107 !important;
+            color: black !important;
+        }
+
+        /* Approve = Cyan/Teal */
+        .btn-approve {
+            background-color: #20c997 !important;
+            color: white !important;
+        }
+
+       
+        /* Delete Button Styling */
+        .btn-delete {
+            background-color: #ffe6e6 !important; /* light red inside */
+            color: #cc0000 !important; /* dark red text */
+            border: 1px solid #cc0000 !important; /* dark red outline */
+        }
+
+            .btn-delete .dx-icon {
+                color: #cc0000 !important; /* dark red icon */
+            }
+
+            /* Optional: hover effect */
+            .btn-delete:hover {
+                background-color: #ffcccc !important; /* slightly darker red on hover */
+            }
+
+
+
+
+
+ </style>
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -102,7 +158,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                //.ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-save" }) // 🔵
                 )
 
     </div>
@@ -114,7 +171,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+               // .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-saveclose" }) // 🟢
                 )
     </div>
     <div class="btn-container">
@@ -158,27 +216,11 @@
                 .ID("btnDelete")
                 .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                //.ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "btn-delete" }) // 🔴
                 )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-    </div>
- 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnTerms")
-                .Text(new JS("formatMessage('Terms')"))
-                .Icon("file")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-                )
-    </div>
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
@@ -190,48 +232,146 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnAttach")
-                .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
+                .ID("btnTerms")
+                .Text(new JS("formatMessage('Terms')"))
+                .Icon("file")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
                 )
     </div>
+
+
+    @* <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnproposal")
+                .Text(new JS("formatMessage('Proposal')"))
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div> *@
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnSubmit")
                 .Text(new JS("formatMessage('Submit')"))
                 .Icon("check")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnVerify")
                 .Text(new JS("formatMessage('Verify')"))
+                .OnClick("onVerifyClickERM")
+
                 .Icon("check")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
+               // .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .ElementAttr(new { @class = "btn-verify" }) // 🟡
                 )
-
     </div>
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnApprove")
                 .Text(new JS("formatMessage('Approve')"))
                 .Icon("exportselected")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .OnClick("onApproveClickERM")
+               // .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .ElementAttr(new { @class = "btn-approve" }) // 🟢 tea
                 )
-
     </div>
 
+    
    
-
-
 </div>
 
 <script>
+
        
+
+       
+
+    async  function onERMAttachmentButtonClick(e) {
+        debugger;
+
+         let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let children = grid.getDataSource().items();   // gets current visible data
+
+                 if (!children || children.length === 0) {
+                       DevExpress.ui.notify("Data Not found  within the Grid", "Can't Enable Attachment", "error", 3000);
+                      return;
+                 }
+
+        
+        // Get Voucher No safely
+        const invoiceNoBox = $("#txtQuotationNo").dxTextBox("instance");
+        const QuoteNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+        var menuType = "ERM";
+        var formType = "Equipment Quotation";
+        // const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+        // const invoiceData = await invoiceRes.json();
+        // let folderId2 = "";
+        // if (invoiceData) {
+        //     folderId2 = [
+        //             invoiceData.SalesOrderNo,
+        //             invoiceData.QuotationNo,
+        //             invoiceData.DeliveryNoteNos,
+        //             invoiceData.ProformaInvoiceNo
+        //     ]
+        //     .filter(Boolean)   remove null/empty
+        //     .join(",");
+        // }
+        // Log and build URL
+       
+
+        const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(QuoteNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
   
         function showSubmenu(e) {
             e.event.stopPropagation();
