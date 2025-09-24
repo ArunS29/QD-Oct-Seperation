@@ -721,7 +721,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
                                 join u in dbContext.Tbl40111PropertyUnitCodes
-                                    on g.GspackingUnit equals u.UnitCode into gj
+                                    on g.GsuoM equals u.UnitCode into gj
                                 from unit in gj.DefaultIfEmpty()
                                 orderby g.Gscode
                                 select new
@@ -1319,7 +1319,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public async Task<ActionResult> SaveGoodsAndServices([FromBody] Tbl20164GoodsAndServicesMaster model)
+        public async Task<ActionResult> SaveGoodsAndServices([FromBody] Tbl20164GoodsAndServicesMaster model,int InvoiceChildSLNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -1417,7 +1417,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         model.CreatedOn = now;
                         model.CreatedBy = "User"; // TODO: Replace with actual user identity
 
+                        var query = from c in dbContext.Tbl20162VatinvoiceChildren
+                                    where c.InvoiceChildSlNo == InvoiceChildSLNo
+                                    select c;
+
+                        var child = query.FirstOrDefault();
+                        if (child != null)
+                        {
+                            child.DetailedDescription = model.Gsdescrpition;
+                            child.ItemCode = model.Gscode;
+                        }
+
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
+
+
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -4902,8 +4915,11 @@ documentNo: InvoiceNo
                     var result = await dbContext.Tbl20170VatcreditNoteMasters
                     .Select(g => new
                     {
-                        g.InvoiceNo,
-
+                        g.InvoiceNo
+                        //g.InvoiceDate,
+                        //g.InvoicedAmount,
+                        //g.Received,
+                        //g.Balance
 
                     })
                     .ToListAsync();
