@@ -2583,6 +2583,19 @@ GO
 ALTER TABLE Aicon.tbl602_01SalesOrderMaster 
 ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
 GO
+---Sudhir DB-----
+--IMS  currency changes
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD CurrencyId INT NOT NULL DEFAULT 1;
+GO
+-- Add CurrencyRate with default
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+-- Add BaseCurrencyId with default
+ALTER TABLE Sudhir.tbl602_01SalesOrderMaster 
+ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
 
 
 Alter view [Aicon].[qry602_01SalesOrderView] as SELECT Aicon.tbl602_01SalesOrderMaster.SalesOrderNo, Aicon.tbl602_01SalesOrderMaster.SalesOrderDate, Aicon.tbl602_01SalesOrderMaster.ClientPONo, Aicon.tbl602_01SalesOrderMaster.ClientPODate, Aicon.tbl602_01SalesOrderMaster.QuoteNo, 
@@ -3399,7 +3412,7 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
 ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
 ------------------------------
-//IMS New field
+//IMS New field (KOWSALYA)
 IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
 BEGIN
     ALTER TABLE Aicon.tbl20101SalesPersonMaster
@@ -3409,6 +3422,123 @@ END
 ELSE
 BEGIN
     PRINT 'Column already exists: TargetPerMonth';
+
+--DeliveryNote New field added ---
+-- Add IsSubmitted
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD IsSubmitted BIT NULL;
+
+    PRINT 'Added column: IsSubmitted';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: IsSubmitted';
+
+END
+ 
+-- Add SubmittedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: SubmittedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedBy';
+
+END
+ 
+-- Add SubmittedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedOn DATETIME NULL;
+
+    PRINT 'Added column: SubmittedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedOn';
+
+END
+ 
+-- Add VerifiedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: VerifiedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedBy';
+
+END
+ 
+-- Add VerifiedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedOn DATETIME NULL;
+
+    PRINT 'Added column: VerifiedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedOn';
+
+END
+
+ 
+ALTER TABLE Aicon.tbl901CompanyDetails02
+
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ 
 
 ---------IMS Currency Implement---------
 
@@ -3535,7 +3665,141 @@ UPDATE Aicon.tbl901CompanyDetails02
 SET NoOfDigitsToInventoryQuotation = 5
 WHERE CompanyID = 2;
 
+---AiconDB---
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
  
+---Sudhir DB---
+ALTER TABLE Sudhir.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ ----IMS DeliveryNote Submit,Verify script-----
+ -- Add IsSubmitted
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
+---AiconDB---
+-- Add IsSubmitted
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
 --------IMS Report---------
 
  
