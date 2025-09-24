@@ -237,7 +237,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     return Ok(new
                     {
                         success = true,
-                        message = $"Property Operator saved successfully. Rows affected: {rowsAffected}",
+                        message = $"Property Operator saved successfully.{rowsAffected}",
                         rowsAffected = rowsAffected,
                         propertyOperatorTypeId = entity.PropertyOperatorTypeId
                     });

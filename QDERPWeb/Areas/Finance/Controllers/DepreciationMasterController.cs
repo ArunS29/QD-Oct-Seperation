@@ -1,4 +1,7 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -7,9 +10,7 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -19,11 +20,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<DepreciationMasterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public DepreciationMasterController(ILogger<DepreciationMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public DepreciationMasterController(ILogger<DepreciationMasterController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -206,7 +209,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     userId,
                     createdOn
                 );
-
+                await _userActionLogger.LogAsync(
+                module: "Finance > Depreciation",
+                actionDetail: $"Generated: {request.DocumentNo}",
+                documentNo: request.DocumentNo
+                );
                 return Ok(new { success = true, message = "Depreciation generated successfully." });
             }
             catch (Exception ex)
@@ -362,7 +369,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     "@VoucherNarration, @AddedBy, @AddedOn, @TotalAmount, @JustAddedVoucherEntryNo", parameters);
 
                 string returnedVoucherEntryNo = (string)parameters[1].Value;
-
+                await _userActionLogger.LogAsync(
+                module: "Finance > Depreciation",
+                actionDetail: $"Depreciation Posted: {request.DepreciationDocNo}",
+                documentNo: request.DepreciationDocNo
+                );
                 return Ok(new
                 {
                     success = true,

@@ -104,8 +104,8 @@ namespace QD.ERP.Web.Areas.General.Controllers
         {
             public int CompanyId { get; set; }
             public string CompanyName { get; set; }
-            public string CompanyAddress1 { get; set; }
-            public string CompanyAddress2 { get; set; }
+            public string SellerAddressStreet { get; set; }
+            public string SellerAdditionalStreet { get; set; }
 
            // [Required]
             public string CompanyCity { get; set; }
@@ -162,10 +162,18 @@ namespace QD.ERP.Web.Areas.General.Controllers
             public string CompanyID_Ar { get; set; }
             // Arabic Fields (add these)
             public string CompanyNameAr { get; set; }
-            public string CompanyAddress1Ar { get; set; }
-            public string CompanyAddress2Ar { get; set; }
+            public string SellerAddressStreetAr { get; set; }
+            public string SellerAdditionalStreetAr { get; set; }
             public string CompanyCityAr { get; set; }
             public string CompanyShortNameAr { get; set; }
+             public string SellerCityAr { get; set; }
+              public string SellerCity { get; set; }
+              public string CompanyAddress1 { get; set; }
+              public string CompanyAddress1Ar { get; set; }
+               public string CompanyAddress2 { get; set; }
+               public string CompanyAddress2Ar { get; set; }
+                public string Crno { get; set; }
+
 
         }
 
@@ -209,19 +217,26 @@ namespace QD.ERP.Web.Areas.General.Controllers
                 var projection = matchingCompanyQuery.Select(c => new
                 {
                     c.CompanyId,
-                    c.CompanyAddress1Ar,
+                    c.SellerAddressStreetAr,
                     c.CompanyNameAr,
-                    c.CompanyFullAddressAr,
                     c.CompanyAddress2Ar,
+                    c.CompanyAddress2,
+                    c.Crno,
+                    c.CompanyAddress1Ar,
+                    c.SellerCity,
+                    c.SellerCityAr,
+                    c.CompanyFullAddressAr,
+                    c.SellerAdditionalStreetAr,
                     c.CompanyName,
                     c.CompanyCityAr,
                     c.SellerNeighborhoodAr,
-                    c.CompanyAddress1,
-                    c.CompanyAddress2,
+                    c.SellerAddressStreet,
+                    c.SellerAdditionalStreet,
                     c.CompanyCity,
                     c.CompanyPhone,
                     c.CompanyNameShort,
                     c.CompanyFax,
+                    c.CompanyAddress1,
                     c.SellerCountryCode,
                     c.CompanyVatno,
                     c.SellerBuildingNumber,
@@ -232,6 +247,7 @@ namespace QD.ERP.Web.Areas.General.Controllers
                     c.SellerNeighborhood,
                     c.EmailAddress,
                     c.Website,
+                    c.AuditorEmail,
                     c.CurrencyAbbr,
                     c.CompanyFullAddress,
                     c.ProductName,
@@ -291,10 +307,14 @@ namespace QD.ERP.Web.Areas.General.Controllers
 
                 // Core Company Info
                 company.CompanyName = updatedCompany.CompanyName;
-                company.CompanyAddress1 = updatedCompany.CompanyAddress1;
-                company.CompanyAddress2 = updatedCompany.CompanyAddress2;
-                company.CompanyCity = updatedCompany.CompanyCity;
+            
+                company.SellerCity = updatedCompany.SellerCity;
+                company.SellerCityAr = updatedCompany.SellerCityAr;
+                company.SellerAddressStreet = updatedCompany.SellerAddressStreet;
+                company.SellerAdditionalStreet = updatedCompany.SellerAdditionalStreet;
+             
                 company.CompanyPhone = updatedCompany.CompanyPhone;
+                company.Crno = updatedCompany.Crno;
                 company.CompanyNameShort = updatedCompany.CompanyNameShort;
                 company.CompanyFax = updatedCompany.CompanyFax;
                 company.EmailAddress = updatedCompany.EmailAddress;
@@ -306,6 +326,8 @@ namespace QD.ERP.Web.Areas.General.Controllers
                 company.CompanyFullAddressAr = updatedCompany.CompanyFullAddressAr;
                 company.ProductName = updatedCompany.ProductName;
                 company.CompanySlogan = updatedCompany.CompanySlogan;
+
+
 
                 // VAT & Identification
                 company.CompanyVatno = updatedCompany.CompanyVatno;
@@ -323,6 +345,15 @@ namespace QD.ERP.Web.Areas.General.Controllers
                 company.SellerNeighborhood = updatedCompany.SellerNeighborhood;
                 company.SellerNeighborhoodAr = updatedCompany.SellerNeighborhoodAr;
                 company.SellerCountryCode = updatedCompany.SellerCountryCode;
+                company.CompanyAddress1Ar = updatedCompany.CompanyAddress1Ar;
+                            if (updatedCompany.CompanyAddress1 != null)
+                company.CompanyAddress1 = updatedCompany.CompanyAddress1;
+            if (updatedCompany.CompanyAddress2 != null)
+                company.CompanyAddress2 = updatedCompany.CompanyAddress2;
+
+            if (updatedCompany.CompanyCity != null)
+                company.CompanyCity = updatedCompany.CompanyCity;
+                            company.CompanyAddress2Ar = updatedCompany.CompanyAddress2Ar;
 
                 // Auditor Info
                 company.AuditorName = updatedCompany.AuditorName;
@@ -342,19 +373,25 @@ namespace QD.ERP.Web.Areas.General.Controllers
                 company.IsOnlineBackup = updatedCompany.IsOnlineBackup;
 
                 company.CompanyNameAr = updatedCompany.CompanyNameAr;
-                company.CompanyAddress1Ar = updatedCompany.CompanyAddress1Ar;
-                company.CompanyAddress2Ar = updatedCompany.CompanyAddress2Ar;
+                company.SellerAddressStreetAr = updatedCompany.SellerAddressStreetAr;
+                company.SellerAdditionalStreetAr = updatedCompany.SellerAdditionalStreetAr;
                 company.CompanyCityAr = updatedCompany.CompanyCityAr;
                 company.CompanyShortNameAr = updatedCompany.CompanyShortNameAr;
 
                 // Company Logo
-                if (!string.IsNullOrEmpty(updatedCompany.CompanyLogoBase64))
+                if (updatedCompany.CompanyLogoBase64 == null || updatedCompany.CompanyLogoBase64 == "")
+                    company.CompanyLogo = null;
+                else
                     company.CompanyLogo = Convert.FromBase64String(updatedCompany.CompanyLogoBase64);
 
-                if (!string.IsNullOrEmpty(updatedCompany.CompanySealBase64))
+                if (updatedCompany.CompanySealBase64 == null || updatedCompany.CompanySealBase64 == "")
+                    company.CompanySeal = null;
+                else
                     company.CompanySeal = Convert.FromBase64String(updatedCompany.CompanySealBase64);
 
-                if (!string.IsNullOrEmpty(updatedCompany.LetterHeadBase64))
+                if (updatedCompany.LetterHeadBase64 == null || updatedCompany.LetterHeadBase64 == "")
+                    company.LetterHead = null;
+                else
                     company.LetterHead = Convert.FromBase64String(updatedCompany.LetterHeadBase64);
 
                 await dbContext.SaveChangesAsync();
@@ -538,8 +575,47 @@ namespace QD.ERP.Web.Areas.General.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> SetAllVoucherDates([FromBody] DateTime? lockedDate)
+        {
+if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
 
+            if (lockedDate == null)
+                return BadRequest("Date is required.");
 
+            var allRows = dbContext.Tbl90117VoucherDateLockings.ToList();
+            foreach (var row in allRows)
+            {
+                row.VoucherDateLocked = lockedDate;
+            }
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucherDateLockedRow([FromBody] Tbl90117VoucherDateLocking model)
+        {
+if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            if (model == null || string.IsNullOrEmpty(model.VoucherTypeCode))
+                return BadRequest("Invalid data.");
+
+            var row = await dbContext.Tbl90117VoucherDateLockings
+                .FirstOrDefaultAsync(x => x.VoucherTypeCode == model.VoucherTypeCode);
+
+            if (row == null)
+                return NotFound();
+
+            row.VoucherDateLocked = model.VoucherDateLocked;
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
+      
     }
 
 

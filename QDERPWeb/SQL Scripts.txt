@@ -1566,6 +1566,26 @@ VALUES
 	(540,'Delivery Note Journal Posting', 'frm60107DeliveryNoteJournalPosting_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (541,'Delivery Note Edit Form','frm60106DeliveryNoteEdit_ddButtonLayout1','Layout',1,1,null,'IMS',null,null,null,null), 
+	(542,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_rowHeightProperties','Row Height Properties',1, 1,null,'IMS',null,null,null,null), 
+    (543,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveUp','Move Up', 1, 1,null, 'IMS',null,null,null,null), 
+    (544,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (545,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSave','Save',1, 1,null, 'IMS',null,null,null,null), 
+    (546,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSaveAndClose','Save and Close',1, 1,null,'IMS',null,null,null,null), 
+    (547,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnPrint1','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (548,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAddNewPayment','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (549,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (550,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (551,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (552,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (553,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+    (554,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnReceive','Receive', 1, 1,null, 'IMS',null,null,null,null),
+    (555,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnPostbooks','Post', 1, 1,null, 'IMS',null,null,null,null),
+    (556,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (557,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
 ---------------------------Cheque---------------------------  
 alter table Aicon.tbl20113ChequeMaster   

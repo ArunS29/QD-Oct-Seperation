@@ -86,14 +86,14 @@
     <table class="form-table">
         <tr>
             <td>
-                <h6 class="highlight"><u>Copy User Access Permissions From One User Account to Other User Account</u></h6>
+                <h6 class="highlight"><u id="copyusers"></u></h6>
             </td>
         </tr>
         <tr>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("ReplicateUserPermissions")
-                    .Label("Replicate User Access Permissions From the User")
+                    .Label(new JS("formatMessage('Replicate User Access Permissions From the User')"))
                     .DataSource(ds => ds.WebApi()
                     .Controller("Utility")
                     .LoadAction("Getuserdetails")
@@ -103,7 +103,7 @@
                     .SearchEnabled(true)
                     .ShowClearButton(true)
                     .Placeholder("Select User")
-                    .Label("User")
+                    @* .Label("User") *@
                     .LabelMode(EditorLabelMode.Floating)
                     .Width(400)
                     )
@@ -113,7 +113,7 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("ToThisUserAccount")
-                    .Label("To This User Account")
+                     .Label(new JS("formatMessage('To This User Account')"))
                     .DataSource(ds => ds.WebApi()
                     .Controller("Utility")
                     .LoadAction("Getuserdetails")
@@ -123,7 +123,7 @@
                     .SearchEnabled(true)
                     .ShowClearButton(true)
                     .Placeholder("Select User")
-                    .Label("User")
+                    @* .Label("User") *@
                     .LabelMode(EditorLabelMode.Floating)
                     .Width(400)
                     )
@@ -132,7 +132,7 @@
         <tr>
             <td>
                 @(Html.DevExtreme().Button()
-                    .Text("Replicate User Account")
+                .Text(new JS("formatMessage('Replicate User Account')"))
                     .Icon("key")
                     .Width("250px")
                     .OnClick("function(e) { ReplicateUserAccountOnClick(); }") // ✅ Fixed binding
@@ -218,6 +218,8 @@
             }
         });
     }
-
+       $(function () {
+                            $("#copyusers").text(formatMessage("Copy User Access Permissions From One User Account to Other User Account"));
+                     });
 
 </script>

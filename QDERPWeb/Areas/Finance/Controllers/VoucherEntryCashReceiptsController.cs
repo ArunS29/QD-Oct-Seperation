@@ -920,7 +920,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 				// Add entries to the database
 				dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+                   module: "Finance > Cash Payment",
+                   actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                   documentNo: voucherEntries[0].VoucherNo
+               );
                 //SaveVoucher(voucherEntries);
 
 
@@ -1124,7 +1128,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     //  _context.Tbl201VoucherMasters.Remove(masterrecord);
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                   module: "Finance > Cash Payment",
+                   actionDetail: $"Delete voucher: {VoucherNo}, Entries: {voucherEntryNo}, AccountHead: {PaymentAccoutHeadName}",
+                   documentNo: VoucherNo
+               );
 
                 }
 

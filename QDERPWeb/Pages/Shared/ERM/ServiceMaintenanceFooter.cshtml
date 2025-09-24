@@ -1,0 +1,76 @@
+﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Text(new JS("formatMessage('Save and Close')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Icon("close")
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
+
+                )
+    </div>
+    <div class="btn-container">
+     @(Html.DevExtreme().DropDownButton()
+                .ID("btnPrint4")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" })
+     )
+</div>
+</div>
+
+<script>
+        
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+  
+        function addNewstockAdjustment(){
+            window.location.href = `/${tenantName}/ERM/StockAdjustmentEntry`;
+        }
+</script>

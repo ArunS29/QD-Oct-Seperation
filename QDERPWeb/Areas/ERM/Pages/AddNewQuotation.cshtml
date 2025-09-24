@@ -332,6 +332,7 @@
     .HoverStateEnabled(true)
     .ValueExpr("ClientCode")
     .DisplayExpr("ClientName")
+    .OnValueChanged("onClientSelected")   // ✅ add this
     .OnInput("dropDownBoxOnInput")
     .OnOpened("onOpened")
     .TabIndex(1)
@@ -345,14 +346,8 @@
     })
     .Buttons(buttons =>
     {
-        // Keep dropdown arrow
-        buttons.Add()
-            .Name("dropDown");  
-
-        // Edit button
-        buttons.Add()
-            .Name("editClient")
-            .Location(TextEditorButtonLocation.After)
+        buttons.Add().Name("dropDown");  
+        buttons.Add().Name("editClient").Location(TextEditorButtonLocation.After)
             .Widget(w => w.Button()
                 .Type(ButtonType.Default)
                 .Icon("edit")
@@ -368,11 +363,7 @@
                     openModal(url, 'Client Master');
                 }")
             );
-
-        // Add button
-        buttons.Add()
-            .Name("addClient")
-            .Location(TextEditorButtonLocation.After)
+        buttons.Add().Name("addClient").Location(TextEditorButtonLocation.After)
             .Widget(w => w.Button()
                 .Type(ButtonType.Default)
                 .Icon("plus")
@@ -381,6 +372,7 @@
             );
     })
 )
+
 
 
 
@@ -451,22 +443,38 @@
                         )
                     </div>
                          <div class="col-md-2">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("ClientEmail")
-                        .Mode(TextBoxMode.Email)
-						.Label(new JS("formatMessage('Client Email:')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
+											@(Html.DevExtreme().TextBox()
+							.ID("ClientEmail")
+							.Mode(TextBoxMode.Email) // helps mobile devices show email keyboard
+							.Label(new JS("formatMessage('Client Email:')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("100%")
+							.ValidationRules(rules => {
+								
+								rules.AddEmail()
+									 .Message("Please enter a valid email address");
+							}))
+
                     </div>
-                         <div class="col">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("ClientContactNo")
-						.Label(new JS("formatMessage('Client Contact No:')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
-                    </div>
+							 <div class="col">
+														@(Html.DevExtreme().TextBox()
+														.ID("ClientContactNo")
+														.Label(new JS("formatMessage('Client Contact No:')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.Width("100%")
+														.ValidationRules(rules => {
+															rules.AddCustom()
+																 .IgnoreEmptyValue(true)   // ✅ Skip validation if empty
+																 .ValidationCallback("validateContactNo")
+																 .Message("Only numbers are allowed");
+														})
+													)
+
+
+
+
+
+                        </div>
 
                    </div>
 
@@ -517,45 +525,44 @@
 
                     </div>
                          <div class="col-md-3" style="display:flex; align-items:end;">
-                       @(Html.DevExtreme().DropDownBox()
-    .Label(new JS("formatMessage('Type of Request:')"))
-    .DataSource(d => d.WebApi()
-        .Controller("AddNewClientRequest1")
-        .LoadAction("GetTypeOfRequest")
-        .LoadMode(DataSourceLoadMode.Raw)
-        .Key("TypeOfRequestId")
-    )
-    .LabelMode(EditorLabelMode.Floating)
-    .ID("ddGetTypeOfRequest")
-    .Width(900)
-    .OpenOnFieldClick(false)
-    .ValueChangeEvent("input")
-    .HoverStateEnabled(true)
-    .ValueExpr("TypeOfRequestId")
-    .DisplayExpr("TypeOfRequest")
-    .OnInput("dropDownBoxOnInput")
-    .OnOpened("onOpened")
-    .TabIndex(1)
-    .OnKeyDown("onKeyDown")
-    .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-    .Buttons(buttons =>
-    {
-        // Keep dropdown arrow
-        buttons.Add()
-            .Name("dropDown");
-
-        // Add "Add Type of Request" button inside textbox
-        buttons.Add()
-            .Name("addTypeReq")
-            .Location(TextEditorButtonLocation.After)
-            .Widget(w => w.Button()
-                .Type(ButtonType.Default)
-                .Icon("plus")
-                .Hint("Add Description")
-                .OnClick("AddTypeReq")
-            );
-    })
-)
+                     @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                        .Label(new JS("formatMessage('Type of Request:')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetTypeOfRequest")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("TypeOfRequestId")
+                        )
+						  .Option("ddGetTypeOfRequest", "GetTypeOfRequest-datagrid")  
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("ddGetTypeOfRequest")
+                        .Width(900)
+                        .OpenOnFieldClick(false)//
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("TypeOfRequestId")
+                        .DisplayExpr("TypeOfRequest")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                        //.OnValueChanged("dropDownBoxValueChanged")
+						.DropDownOptions(d => d.Width(350))
+                        .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
+						.Buttons(buttons =>
+							{
+								 buttons.Add()
+								 .Name("AddTypeReq")
+								 .Location(TextEditorButtonLocation.After)
+								 .Widget(w => w.Button()
+								 .Type(ButtonType.Default)
+								 .Icon("plus")
+								 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+								 .OnClick("AddTypeReq"));
+								 buttons.Add()
+								 .Name("dropDown");
+							}))
 
                     </div>
 					     <div class="col-md-2">
@@ -727,13 +734,12 @@
                     <!-- Column 2 -->
                     <div class="col-md-4 me-5">
                         <div>
-                            @(Html.DevExtreme().TextBox()
-                            .ID("SubmittedBy")
-                            .Value("Administrator")
-							.Label(new JS("formatMessage('Quote Submitted By:')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                            )
+											 @(Html.DevExtreme().TextBox()
+											.ID("SubmittedBy")
+											.Label(new JS("formatMessage('Quote Submitted By:')"))
+											.LabelMode(EditorLabelMode.Floating)
+											.Width("100%"))
+
 
 
                             <div class="row mt-3">
@@ -1098,13 +1104,7 @@
 								</td>
 
 								<!-- Approved By Checkboxes -->
-								<td>
-									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text(new JS("formatMessage('Print Item Code with Description')")) )
-									<br />
-									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text(new JS("formatMessage('Print Item Part No with Description')")) )
-									<br />
-									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
-								</td>
+								
                             </tr>
                         </tbody>
                     </table>
@@ -1948,6 +1948,170 @@
 
 <script>
 
+
+	function validateContactNo(e) {
+    const regex = /^[0-9]+$/;  
+    return regex.test(e.value); // ✅ only digits
+}
+
+
+
+
+
+
+function disableFirstTabControls() {
+    const controlIds = [
+        "TrnScope",
+        "Jobsite",
+        "Project",
+        "ddGetTypeOfRequest",
+        "ddGetModeOfRequest",
+        "ClientContactNo",
+        "ClientEmail",
+        "ClientRefName",
+        "MprNumber",
+        "GetProjectDropDown",
+        "QuotationDate",
+        "txtRevisionNo",
+        "txtQuotationNo",
+		"ddGetSalesPerson",
+		"btnApprove",
+		"btnVerify",
+		"btnSubmit",
+		"btnAttach",
+		"btnDelete",
+		"btnSave",
+       "btnSaveAndClose",
+	   "Detlz",
+	   "btnFinalAdd",
+	   "UnitRate",
+	   "Quantity",
+	   "UOM",
+	   "QuoteMethod",
+	   "EquipmentQuotedFor",
+	   "Subject",
+	   "QuoteSummary",
+	   "QuoteIntro",
+	   "QuoteThanks",
+	   "Addreset",
+	   "tnxreset",
+	   "SubmittedBy",
+	   "SubmittedOn",
+	   "BidClosingDate",
+	   "ddGetQuoteStatus",
+	   "txtAdditions",
+	   "QuoteTransport",
+	   "txtDeductions",
+	   "QuoteDiscount",
+	   "ddGetCompany",
+	   "ReferenceNo",
+	   "ddGetInventoryGroup",
+	   "ddPreparedby",
+	   "ddVerifiedby",
+	   "ddApprovedby",
+	   "ddlGoodsGroup4",
+	   "ddlGoodsGroup3",
+	   "currencyexchangerate",
+	   "B2BdataGrid"
+
+	  
+
+
+    ];
+
+    controlIds.forEach(function (id) {
+        const $el = $("#" + id);
+        if (!$el.length) {
+            console.warn("Element not found:", id);
+            return;
+        }
+
+        const widget = $el.data("dxComponents"); // gives array of widget names
+        if (!widget || !widget.length) {
+            console.warn("No DevExtreme widget attached for:", id);
+            return;
+        }
+
+        const widgetName = widget[0];
+        const instance = $el[widgetName]("instance");
+
+        if (!instance) return;
+
+        if (["dxTextBox","dxTextArea", "dxDateBox", "dxNumberBox"].includes(widgetName)) {
+            instance.option("readOnly", true);
+        } else if (["dxDropDownBox", "dxSelectBox"].includes(widgetName)) {
+            instance.option("disabled", true);
+        } else if (widgetName === "dxButton") {
+            instance.option("disabled", true); // ✅ disable button
+        } else if (widgetName === "dxDataGrid") {
+            instance.option({
+                editing: {
+                    allowUpdating: false,
+                    allowAdding: false,
+                    allowDeleting: false
+                },
+                selection: { mode: "none" }
+            });
+        } else {
+            console.warn("Unhandled widget type:", widgetName, "for", id);
+        }
+    });
+}
+
+
+
+
+
+	function validateContactNo(e) {
+    if (!e.value) return false; 
+    return /^\d{10}$/.test(e.value); // must be exactly 10 digits
+}
+
+
+function onClientSelected(e) {
+    var clientCode = e.value;
+    if (!clientCode) return;
+
+    $.ajax({
+        type: "GET",
+        url: `/api/AddNewQuotation1/GetClientDetailz?clientCode=${encodeURIComponent(clientCode)}`,
+        contentType: "application/json",
+        success: function (response) {
+            if (response) {
+                // Build ClientRefName from ContactPerson + Title
+                let refName = "";
+                if (response.contactPerson) {
+                    refName += response.contactPerson.trim();
+                }
+                if (response.contactPersonTitle) {
+                    if (refName) refName += ", "; // add comma only if contactPerson exists
+                    refName += response.contactPersonTitle.trim();
+                }
+
+                // Autofill target textboxes
+                $("#ClientRefName").dxTextBox("instance").option("value", refName || "");
+                $("#ClientEmail").dxTextBox("instance").option("value", response.contactEmail || "");
+                $("#ClientContactNo").dxTextBox("instance").option("value", response.contactMobile1 || "");
+                $("#ClientTitle").dxTextBox("instance").option("value", response.contactPersonTitle || "");
+
+                DevExpress.ui.notify("Client details loaded successfully.", "success", 2000);
+            } else {
+                DevExpress.ui.notify("No client details found.", "warning", 2000);
+            }
+        },
+        error: function (xhr) {
+            const msg = xhr.responseJSON?.message || "Failed to fetch client details.";
+            DevExpress.ui.notify(msg, "error", 3000);
+        }
+    });
+}
+
+
+
+
+
+
+
 	function onOpened(e) {
 		setTimeout(() => {
 			e.component.focus();
@@ -2037,8 +2201,9 @@ const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 	function dataGridInitialized1(e) {
 		dataGrid = e.component;
 	}
+
 	function AddModeReq() {
-		const url = `/${tenantName}/ERM/QuotationModeOfRequest`;
+		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
 		const title = "";
 		openModal(url, title);
 	}
@@ -2089,15 +2254,19 @@ function quoteMethodSelectionChanged(e) {
 	}
 
 
-
-
-
-
-	function AddTypeReq() {
-		const url = `/${tenantName}/ERM/QuotationTypeOfRequest`;
-		const title = "";
+// 	function AddTypeReq() {
+// 	const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+//     const title = "Quotation Type Of Request";
+//     openModal(url, title);
+// }
+function AddTypeReq() {
+		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
+
+
+	
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/ERM/AddNewQuotationStatus`;
 		const title = "";
@@ -2105,7 +2274,7 @@ function quoteMethodSelectionChanged(e) {
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/IMS/SalesPersonMaster`;
-		const title = "";
+		const title = "Sales Person Master";
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
@@ -2494,12 +2663,14 @@ function onApproveClickERM(e) {
                // syncWorkflowFromFields();
                 DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
 
-                hideAllButtonsExcept([
-                    "btnPrint",
-                    "ddButtonLayout",
-                    "btnBack",
-                    "btnAttach"
-                ]);
+				disableFirstTabControls();
+
+                // hideAllButtonsExcept([
+                //     "btnPrint",
+                //     "ddButtonLayout",
+                //     "btnBack",
+                //     "btnAttach"
+                // ]);
 
                 // ✅ Disable DataGrid after approval
                 const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2813,8 +2984,10 @@ function hideAllButtonsExcept(exceptions) {
 
 
 	
-				if (response) {
+				if (response) { 
 					debugger;
+					
+
 					console.log("res", response);
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
@@ -2892,6 +3065,11 @@ function hideAllButtonsExcept(exceptions) {
 					});
 
 					getDocumentCount();
+					if (response.IsApproved === true) {
+							disableFirstTabControls();
+				    }
+
+
 
 				} else {
 					console.warn("No Quotation details found in the response.");
@@ -2914,11 +3092,10 @@ function hideAllButtonsExcept(exceptions) {
 
 
 	
-function onFinalAddClick(e) {
+async function onFinalAddClick(e) {
     debugger;
 
     const quoteNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
-
     if (!quoteNo) {
         DevExpress.ui.notify("QuoteNo is missing!", "error", 2000);
         return;
@@ -2926,52 +3103,73 @@ function onFinalAddClick(e) {
 
     const eqQuotedFor = $("#EquipmentQuotedFor").dxDropDownBox("instance");
     const description = eqQuotedFor.option("text");
-
     const qty        = $("#Quantity").dxNumberBox("instance").option("value");
     const unitMethod = $("#QuoteMethod").dxDropDownBox("instance").option("text");
     const rate1      = $("#UnitRate").dxNumberBox("instance").option("value");
+    const quotedUOM  = $("#UOM").dxTextBox("instance").option("value");
 
-    // get grid instance
     let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-    // current data
     let data = grid.option("dataSource") || [];
-    if (!Array.isArray(data)) {
-        data = data.items ? data.items : [];
-    }
+    if (!Array.isArray(data)) data = data.items ? data.items : [];
 
-    // ✅ Call API to get balance columns
-    $.get(`/api/AddNewQuotation1/GetQuoteChildDetails`, { QuoteNo: quoteNo })
-        .done(function (apiData) {
-            if (apiData && apiData.length > 0) {
-                // take first row from API (or loop if you want multiple)
-                let baseRow = apiData[0];
-
-                // enrich API row with form values
-                let newRow = {
-                    ...baseRow,                         // keep API-provided columns
-                    LineOrderNo: data.length + 1,       // serial no
-                    Description: description,
-                    Qty: qty,
-                    UnitMethod: unitMethod,
-                    Rate1: rate1
-                };
-
-                // push new row
-                data.push(newRow);
-
-                // refresh grid
-                grid.option("dataSource", data);
-
-                DevExpress.ui.notify("Row added successfully", "success", 2000);
-            } else {
-                DevExpress.ui.notify("No data returned from API", "warning", 2000);
-            }
-        })
-        .fail(function (xhr) {
-            DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+    try {
+        // ✅ Step 1: Call POST API to add/update child row
+        const apiResponse = await $.ajax({
+            url: "/api/AddNewQuotation1/AddQuoteChild",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                QuoteNo: quoteNo,
+                PropertyAddlDescription: description,
+                QuotedQuantity: qty,
+                QuoteMethod: unitMethod,
+                UnitRateMethod: rate1,
+                QuotedUOM: quotedUOM
+            })
         });
+
+        if (apiResponse && apiResponse.success) {
+            const lineOrderNo = apiResponse.rowData.LineOrderNo;
+
+            // ✅ Step 2: Fetch extra details from second API
+            const detailResponse = await $.ajax({
+                url: `/api/AddNewQuotation1/GetQuoteChildDetails?quoteNo=${quoteNo}&lineOrderNo=${lineOrderNo}`,
+                method: "GET"
+            });
+
+            // ✅ Step 3: Build new row combining both responses
+            const newRow = {
+                LineOrderNo: lineOrderNo,
+                Description: description || "",
+                Qty: qty || 0,
+                UnitMethod: unitMethod || "",
+                Rate1: rate1 || 0,
+                UOM: quotedUOM || "",
+                DetailedDescription: detailResponse?.DetailedDescription || "",
+                MobRate: detailResponse?.MobRate || 0,
+                DemobRate: detailResponse?.DemobRate || 0
+            };
+
+            // Replace if updated, else push
+            const existingIndex = data.findIndex(x => x.LineOrderNo === newRow.LineOrderNo);
+            if (existingIndex > -1) {
+                data[existingIndex] = newRow;
+            } else {
+                data.push(newRow);
+            }
+
+            grid.option("dataSource", data);
+            DevExpress.ui.notify(apiResponse.message, "success", 2000);
+        } else {
+            DevExpress.ui.notify("Failed to add/update child row.", "error", 3000);
+        }
+    } catch (err) {
+        console.error(err);
+        DevExpress.ui.notify("Error: " + (err.responseText || err.message), "error", 3000);
+    }
 }
+
+
 
 
 
@@ -6019,7 +6217,7 @@ function onFinalAddClick(e) {
 			let mappedChildren = children.map(row => ({
 				QuoteChildId: row.QuoteChildId || 0, 
 				LineOrderNo: row.LineOrderNo,
-				EquipmentQuotedFor: row.Description,     // <-- maps to EquipmentQuotedFor
+				AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
 				PropertyAddlDescription: row.DetailedDescription,
 				QuotedQuantity: row.Qty,
 				QuoteMethod: row.UnitMethod,
@@ -6151,18 +6349,41 @@ function onFinalAddClick(e) {
 
 			};
 
-			 let grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+
+
+
+
+           let grid = $("#B2BdataGrid").dxDataGrid("instance");
             let children = grid.getDataSource().items();   // gets current visible data
 
                  if (!children || children.length === 0) {
                        DevExpress.ui.notify("No child records to save.", "error", 3000);
                       return;
                  }
+			
+			// map grid rows to exactly the 8 fields API expects
+			let mappedChildren = children.map(row => ({
+				QuoteChildId: row.QuoteChildId || 0, 
+				LineOrderNo: row.LineOrderNo,
+				AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
+				PropertyAddlDescription: row.DetailedDescription,
+				QuotedQuantity: row.Qty,
+				QuoteMethod: row.UnitMethod,
+				UnitRate1: row.Rate1,
+				MobRate: row.MobRate,
+				DemobRate: row.DemobRate
+			}));
+
+
+
 
 			const model = {
 				...master,
-				QuotationDetailses: children
+				QuotationDetailses: mappedChildren
 			};
+
+
 
 			$.ajax({
 				type: "POST",
@@ -7148,16 +7369,16 @@ function onFinalAddClick(e) {
 		const title = "";
 		openModal(url, title);
 	}
-	function AddModeReq() {
-		const url = `/${tenantName}/ERM/QuotationModeOfRequest`;
-		const title = "";
-		openModal(url, title);
-	}
-	function AddTypeReq() {
-		const url = `/${tenantName}/ERM/QuotationTypeOfRequest`;
-		const title = "";
-		openModal(url, title);
-	}
+	// function AddModeReq() {
+	// 	const url = `/${tenantName}/ERM/QuotationModeOfRequest`;
+	// 	const title = "";
+	// 	openModal(url, title);
+	// }
+	// function AddTypeReq() {
+	// 	const url = `/${tenantName}/ERM/QuotationTypeOfRequest`;
+	// 	const title = "";
+	// 	openModal(url, title);
+	// }
 	$(function () {
 		$("#AddNewQuotation1").dxTextBox({
 			text: formatMessage("Add New Quotation"),

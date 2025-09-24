@@ -107,15 +107,24 @@
             .OnClick("showColumnChooser")
             )
     </div>
+  @*   <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnRfqDetails")
+            .Icon("add")
+            .Text(new JS("formatMessage('RFQ Details')"))
+            .OnClick("AddNewRFQDetails")
+            )
+
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnAddNewJobOrder")
+            .ID("btnAddNewRFQ")
             .Icon("add")
-            .Text(new JS("formatMessage('Add New Job Order')"))
-            .OnClick("addNewJobOrder")
+            .Text(new JS("formatMessage('Add New RFQ')"))
+            .OnClick("AddNewRFQ")
             )
-    </div>
 
+    </div> *@
    
 </div>
 
@@ -141,9 +150,11 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-        
-  
-        function addNewJobOrder(){
-            window.location.href = `/${tenantName}/ERM/EditJobOrderDetails`;
-        }
+     
+        // function AddNewRFQ() {
+        //     window.location.href = `/${tenantName}/ERM/AddNewRFQ`;
+        // }
+        // function AddNewRFQDetails() {
+        //     window.location.href = `/${tenantName}/ERM/RFQwithItemDetails`;
+        // }
 </script>

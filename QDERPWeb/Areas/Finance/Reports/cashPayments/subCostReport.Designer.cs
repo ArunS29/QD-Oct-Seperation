@@ -151,6 +151,7 @@
             // 
             // tableCell6
             // 
+            this.tableCell6.CanGrow = false;
             this.tableCell6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[CostAllocationUnit]")});
             this.tableCell6.Name = "tableCell6";

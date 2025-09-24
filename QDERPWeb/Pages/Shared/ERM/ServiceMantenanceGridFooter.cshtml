@@ -109,13 +109,14 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnAddNewStockAdjustment")
+            .ID("btnAddNewJobOrder")
             .Icon("add")
-            .Text(new JS("formatMessage('Add New Stock Adjustment Entry')"))
-            .OnClick("addNewstockAdjustment")
+            .Text(new JS("formatMessage('Add New Sevice')"))
+            .OnClick("addNewJobOrder")
             )
-
     </div>
+
+   
 </div>
 
 <script>
@@ -140,8 +141,9 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
+        
   
-        function addNewstockAdjustment(){
-            window.location.href = `/${tenantName}/ERM/StockAdjustmentEntry`;
+        function addNewJobOrder(){
+              window.location.href = `/${tenantName}/ERM/SevicemaintenaceEdit`;
         }
 </script>

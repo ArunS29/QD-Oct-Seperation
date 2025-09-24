@@ -996,7 +996,7 @@
 						columns.Add()
 						.DataField("PropertyTypeId") 
 						.Caption(new JS("formatMessage('Description')"))
-						.Width(400)
+						.Width(350)
 						.EditCellTemplate(new JS("descriptionDropDownTemplate"))
 						.CellTemplate(new JS(@"
 						function(container, options) {
@@ -1005,23 +1005,17 @@
 						}
 						"));
 						columns.Add()
-						.DataField("Descriptions")
-						.Caption("...")
-						.CssClass("center-header")
-						.Width(90)
-						.AllowEditing(false)
-						.CellTemplate(@<text>
-							<div style="text-align:center">
-								<a href="javascript:void(0)" 
-								   onclick="openDescriptionEditor('<%= data.RequestChildSlNo %>')">
-									<i class="dx-icon dx-icon-edit"></i>
-								</a>
-							</div>
-						</text>);
+					.DataField("Descriptions")
+					.Caption("...")
+					.CssClass("center-header")
+					.Width(60)
+					.AllowEditing(false)
+					.CellTemplate(new JS("descriptionCellTemplate"));
+
 						columns.Add()
 						.DataField("UnitRateMethod")
 						.Caption(new JS("formatMessage('Unit Rate Method')"))
-						.Width(400)
+						.Width(150)
 						.EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
 						.CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 						columns.Add()
@@ -1032,11 +1026,21 @@
 										.EditorOptions(new {
 											maxLength = 8
 										});
-									columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Rate')")).EditorOptions(new {value = 0});
+									columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Rate')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).EditorOptions(new {value = 0});
+									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("LineTotal").Caption(new JS("formatMessage('Line Total')")).AllowEditing(false);
+									columns.Add().DataField("LineTotal").Caption(new JS("formatMessage('Line Total')")).DataType(GridColumnDataType.Number).AllowEditing(false);
+									columns.Add()
+							.Type(GridCommandColumnType.Buttons)
+							.Width(60)
+							.Buttons(b =>
+							{
+								b.Add()
+								 .Hint("Delete")
+								 .Icon("remove")            
+								 .OnClick("deleteChild");
+							});
 					})
 					.ColumnAutoWidth(true)
 					.Width("100%")
@@ -1871,115 +1875,7 @@
 
 	</div>
 </div>
-<div id="descPopup"></div>
 	<script>
-
-
-		    $(function () {
-        $("#descPopup").dxPopup({
-            title: "Enquiry Detail Description",
-            width: 800,
-            height: 600,
-            showTitle: true,
-            visible: false, // hidden by default
-            dragEnabled: true,
-            closeOnOutsideClick: true,
-            contentTemplate: function (contentElement) {
-                contentElement.append(`
-                    <div class="p-3">
-                        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px;">
-                            <div id="btnUseDetailedDescription"></div>
-                            <div id="btnUseItemDesc"></div>
-                        </div>
-
-                        <div id="DetailedDescription"></div>
-                        <div id="Remarks"></div>
-
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
-                            <div id="Size"></div>
-                            <div id="Manufacturer"></div>
-                            <div id="Brand"></div>
-                            <div id="PartNo"></div>
-                            <div id="DeliveryPeriod"></div>
-                            <div id="PlanNo"></div>
-                        </div>
-                    </div>
-                `);
-
-                // init DevExtreme widgets inside popup
-                $("#btnUseDetailedDescription").dxButton({
-                    text: "Use Detailed Description",
-                    icon: "info",
-                    stylingMode: "outlined"
-                });
-
-                $("#btnUseItemDesc").dxButton({
-                    text: "Use Item Desc.",
-                    icon: "info",
-                    stylingMode: "outlined"
-                });
-
-                $("#DetailedDescription").dxTextArea({
-                    label: "Detailed Description / Specification",
-                    labelMode: "floating",
-                    height: 80,
-                    width: "100%"
-                });
-
-                $("#Remarks").dxTextBox({
-                    label: "Remarks",
-                    labelMode: "floating",
-                    width: "100%"
-                });
-
-                $("#Size").dxTextBox({
-                    label: "Size",
-                    labelMode: "floating",
-                    disabled: true
-                });
-
-                $("#Manufacturer").dxTextBox({
-                    label: "Manufacturer",
-                    labelMode: "floating",
-                    disabled: true
-                });
-
-                $("#Brand").dxTextBox({
-                    label: "Brand",
-                    labelMode: "floating",
-                    disabled: true
-                });
-
-                $("#PartNo").dxTextBox({
-                    label: "Part No",
-                    labelMode: "floating",
-                    disabled: true
-                });
-
-                $("#DeliveryPeriod").dxTextBox({
-                    label: "Delivery Period",
-                    labelMode: "floating"
-                });
-
-                $("#PlanNo").dxTextBox({
-                    label: "Plan No",
-                    labelMode: "floating"
-                });
-            }
-        });
-    });
-
-    // Function to open popup
-    function openDescriptionEditor(RequestChildSlNo) {
-        var popup = $("#descPopup").dxPopup("instance");
-        popup.show();
-
-        // optional: load row data into popup fields using requestNo
-        // e.g. make ajax call and set dxTextBox values here
-    } 
-
-
-
 
 		 let unitCodesList = [];
 
@@ -2006,7 +1902,7 @@
 				deferRendering: false,
 				showClearButton: true,
 				showDropDownButton: true,
-				width: 250,
+				width: 290,
 			dataSource: () => unitCodesList,   
 				dropDownOptions: { width: 300 },
 				contentTemplate: function(e) {
@@ -2116,12 +2012,6 @@
             var rowIndex = grid.getVisibleRows().length - 1;
             grid.editCell(rowIndex, 0);
         });
-
-        // ✅ Reset fields inside popup
-        $("#DetailedDescription").dxTextArea("instance")?.option("value", "");
-        $("#Remarks").dxTextBox("instance")?.option("value", "");
-        $("#DeliveryPeriod").dxTextBox("instance")?.option("value", "");
-        $("#PlanNo").dxTextBox("instance")?.option("value", "");
     });
 });
 
@@ -2172,9 +2062,18 @@
 							url: `/api/AddNewClientRequest1/DeletePurchaseRequestChild/${encodeURIComponent(requestChildSlNo)}`,
 							type: "DELETE",
 							success: function (response) {
-								DevExpress.ui.notify(response.message, "success", 2000);
-								$("#itemGrid").dxDataGrid("instance").refresh();
-							},
+							DevExpress.ui.notify(response.message, "success", 2000);
+
+							const grid = $("#itemGrid").dxDataGrid("instance");
+							if (grid) {
+								const ds = grid.getDataSource();
+								if (ds) {
+									ds.reload();
+								} else {
+									grid.refresh();
+								}
+							}
+						},
 							error: function (xhr) {
 								DevExpress.ui.notify(
 									"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
@@ -2215,7 +2114,7 @@
 				showClearButton: true,
 				showDropDownButton: true,
 				deferRendering: false,
-				width: 270,
+				width: 335,
 				dropDownOptions: { width: 340 },
 				contentTemplate: function (e) {
 					const dataGrid = $("<div>").dxDataGrid({
@@ -2369,7 +2268,7 @@
 					    $("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
 						// Optional (if you decide to use later)
-						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.PreparedBy);
+						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.SubmittedBy);
 						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
 						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
 						 $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
@@ -3592,557 +3491,7 @@
 						});
 
 
-							$(function () {
-								$("#branch").dxTextBox({
-									text: formatMessage("Division / Branch:"),
-									readOnly: true
-
-
-								});
-							});
-							$(function () {
-								$("#Subgroup").dxTextBox({
-									text: formatMessage("Sub Group:"),
-									readOnly: true
-
-
-								});
-							});
-							$(function () {
-								$("#Sales").dxTextBox({
-									text: formatMessage("Sales Person:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ContactPerson").dxTextBox({
-									text: formatMessage("Contact Person:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#PersonTitle").dxTextBox({
-									text: formatMessage("Person Title:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#Email").dxTextBox({
-									text: formatMessage("Email:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#Remarks").dxTextBox({
-									text: formatMessage("Remarks"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BankAccountName").dxTextBox({
-									text: formatMessage("Account Name:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ConvertAccountName").dxTextBox({
-									text: formatMessage("Account Name(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BankName").dxTextBox({
-									text: formatMessage("Bank Name:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ConvertBankName").dxTextBox({
-									text: formatMessage("Bank Name(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BankBranch").dxTextBox({
-									text: formatMessage("Bank Branch:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ConvertBankBranch").dxTextBox({
-									text: formatMessage("Bank Branch(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BankAccountNo").dxTextBox({
-									text: formatMessage("Bank AccountNo:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BankIBAN").dxTextBox({
-									text: formatMessage("Bank IBAN:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SwiftCode").dxTextBox({
-									text: formatMessage("Swift Code:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#Email").dxTextBox({
-									text: formatMessage("Email:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientBilling").dxTextBox({
-									text: formatMessage("Client Billing Name: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientBillingAr").dxTextBox({
-									text: formatMessage("Client Billing Name(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientVATNo").dxTextBox({
-									text: formatMessage("Client VAT Number: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#OtherType").dxTextBox({
-									text: formatMessage("Other ID Type: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupOtherType").dxTextBox({
-									text: formatMessage("Other ID Type: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientCountryCode").dxTextBox({
-									text: formatMessage("Country Code: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupCountryCode").dxTextBox({
-									text: formatMessage("Country Code: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientAddress").dxTextBox({
-									text: formatMessage("Client Address - Street Name: *"),
-									readOnly: true
-
-
-								});
-							});
-							$(function () {
-								$("#ClientAdditionalAddress").dxTextBox({
-									text: formatMessage("Client Address - Additional Address:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BuildingNo").dxTextBox({
-									text: formatMessage("Building No: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#OtherId").dxTextBox({
-									text: formatMessage("Client Other ID: *"),
-									readOnly: true
-
-								});
-							});
-
-
-							$(function () {
-								$("#GrouptVATNo").dxTextBox({
-									text: formatMessage("Group VAT Number:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientAddressAr").dxTextBox({
-									text: formatMessage("Client Address - Street Name (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientCityAr").dxTextBox({
-									text: formatMessage("Client City(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientAdditionalAddressAr").dxTextBox({
-									text: formatMessage("Client Address - Additional Address (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientCity").dxTextBox({
-									text: formatMessage("Client City: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#AdditionalNo").dxTextBox({
-									text: formatMessage("Additional Number: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#State").dxTextBox({
-									text: formatMessage("Province/State:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#StateAr").dxTextBox({
-									text: formatMessage("Province/State(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#PostalCode").dxTextBox({
-									text: formatMessage("Postal Code: *"),
-									readOnly: true
-
-								});
-
-							});
-							$(function () {
-								$("#District").dxTextBox({
-									text: formatMessage("District/Neighbourhood: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#DistrictAr").dxTextBox({
-									text: formatMessage("District/Neighborhood (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupBilling").dxTextBox({
-									text: formatMessage("Supplier Billing Name:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupBillingAr").dxTextBox({
-									text: formatMessage("Supplier Billing Name(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupVATNo").dxTextBox({
-									text: formatMessage("Supplier VAT Number: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupGroupVATNo").dxTextBox({
-									text: formatMessage("Group VAT Number:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SuprOtherId").dxTextBox({
-									text: formatMessage("Supplier Other ID: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupAddress").dxTextBox({
-									text: formatMessage("Supplier Address - Street Name: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupAddress1").dxTextBox({
-									text: formatMessage("Supplier Address-Street Name (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupAdditionalAddress").dxTextBox({
-									text: formatMessage("Supplier Address - Additional Address:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupAdditionalAddress1").dxTextBox({
-									text: formatMessage("Address-Additional Address (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupBuildingNo").dxTextBox({
-									text: formatMessage("Building No: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupState").dxTextBox({
-									text: formatMessage("Province/State:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupState1").dxTextBox({
-									text: formatMessage("Province/State(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupPostalCode").dxTextBox({
-									text: formatMessage("Postal Code: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupDistrict").dxTextBox({
-									text: formatMessage("District/Neighbourhood: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupDistrict1").dxTextBox({
-									text: formatMessage("Neighborhood (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientBillingName").dxTextBox({
-									text: formatMessage("Client Billing Name: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingAddressArabic").dxTextBox({
-									text: formatMessage("Client Billing Address (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ClientBillingNameArabic").dxTextBox({
-									text: formatMessage("Client Billing Name(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingAddress").dxTextBox({
-									text: formatMessage("Client Billing Address:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingAddressArabic").dxTextBox({
-									text: formatMessage("Client Billing Address(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingVATRegNo").dxTextBox({
-									text: formatMessage("Client VAT Registration Number:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingVATRegNoArabic").dxTextBox({
-									text: formatMessage("Client VAT Registration Number(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingTIN").dxTextBox({
-									text: formatMessage("Client TIN:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingContactPerson").dxTextBox({
-									text: formatMessage("Billing Contact Person:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingContactNumber").dxTextBox({
-									text: formatMessage("Billing Contact Number:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingFaxNo").dxTextBox({
-									text: formatMessage("Billing Fax Number:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingVendorNo").dxTextBox({
-									text: formatMessage("Vendor No:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingContactPersonTitle").dxTextBox({
-									text: formatMessage("Billing Contact Person Title:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#BillingPayment").dxTextBox({
-									text: formatMessage("Bank Account for Receiving Payment:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ObsSupAddress").dxTextBox({
-									text: formatMessage("Supplier Address - Street Name: *"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#ObsSupRegNo").dxTextBox({
-									text: formatMessage("Supplier VAT Registration No:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ObsSupRegNoArabic").dxTextBox({
-									text: formatMessage("Supplier VAT Registration No (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupCity").dxTextBox({
-									text: formatMessage("Client City: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupState").dxTextBox({
-									text: formatMessage("Province/State:"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupDistrict1").dxTextBox({
-									text: formatMessage("Neighborhood (Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupAdditionalNo").dxTextBox({
-									text: formatMessage("Additional Number: *"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#SupCity1").dxTextBox({
-									text: formatMessage("Client City(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#ArabObsSupAddress").dxTextBox({
-									text: formatMessage("Supplier Address(Arabic):"),
-									readOnly: true
-
-								});
-							});
-							$(function () {
-								$("#MobileNo").dxTextBox({
-									text: formatMessage("Mobile No:"),
-									readOnly: true
-
-								});
-							});
+					
 
 							//Tab events
 							let acgid, accgrp = "", accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = "";
@@ -4299,7 +3648,7 @@
 						}
 					}
 
-						$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", "Update");
 						// ✅ Populate master fields
 					$("#txtRequestNo").dxTextBox("instance").option("value", data.EqiupmentRequestNo ?? "");
 					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.RequestDate ?? null);
@@ -4314,7 +3663,7 @@
 					$("#txtRemarks").dxTextArea("instance").option("value", data.Remarks ?? "");
 					$("#ddRequestedBy").dxDropDownBox("instance").option("value", data.TypeOfMpr ?? "");
 					$("#ddGetCompany").dxDropDownBox("instance").option("value", data.CompanyBranch ?? "");
-					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.PreparedBy);
+					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
 					$("#ddApprovedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", data.CurrencyRate);
@@ -4675,7 +4024,7 @@
 
 				DevExpress.ui.dialog.custom({
 					title: "Confirm Submission",
-					message: "Are you sure you want to submit Material Purchase Request?",
+					message: "Are you sure you want to submit Enquiry Request?",
 					buttons: [
 						{ text: "Yes", onClick: () => true },
 						{ text: "No", onClick: () => false }
@@ -4693,7 +4042,7 @@
 								// ✅ Always pick success message (API or fallback)
 								const message = response && response.message
 									? response.message
-									: "Material Purchase Request has been submitted for Approval.";
+									: "Enquiry Request has been submitted for Approval.";
 
 								// ✅ Show success message
 								DevExpress.ui.notify(message, "success", 3000);
@@ -4744,8 +4093,8 @@
 							// Check if DataGrid contains rows
 							if (rowCount === 0) {
 								DevExpress.ui.dialog.custom({
-									title: "Material Purchase Request verification has failed.",
-							message: "Material Purchase Request has not been Verified. Please enter transactions to proceed with verification.",
+									title: "Enquiry Request verification has failed.",
+							message: "Enquiry Request has not been Verified. Please enter transactions to proceed with verification.",
 									buttons: [{ text: "Ok", onClick: () => false }],
 									showTitle: true
 								}).show();
@@ -4753,7 +4102,7 @@
 								DevExpress.ui.dialog.custom({
 									title: "Confirm Verification",
 									// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-									message: "Are you sure want to verify this Material Purchase Request?",
+									message: "Are you sure want to verify this Enquiry Request?",
 									buttons: [
 										{ text: "Yes", onClick: () => true },
 										{ text: "No", onClick: () => false }
@@ -5012,15 +4361,15 @@
 					// Check if DataGrid contains rows
 					if (rowCount === 0) {
 						DevExpress.ui.dialog.custom({
-							title: "Material Purchase Request cancellation has failed.",
-							message: "Material Purchase Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
+							title: "Enquiry Request cancellation has failed.",
+							message: "Enquiry Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
 							buttons: [{ text: "Ok", onClick: () => false }],
 							showTitle: true
 						}).show();
 					} else {
 						DevExpress.ui.dialog.custom({
 							title: "Confirm Cancellation",
-							message: "Are you sure you want to cancel this Material Purchase Request?",
+							message: "Are you sure you want to cancel this Enquiry Request?",
 							buttons: [
 								{ text: "Yes", onClick: () => true },
 								{ text: "No", onClick: () => false }
@@ -5870,4 +5219,100 @@
 					}
 				});
 			}
+
+			 function descriptionCellTemplate(container, options) {
+        const buttonId = "popover-btn-" + options.rowIndex;
+
+        $("<div>")
+            .attr("id", buttonId)
+            .appendTo(container)
+            .dxButton({
+                icon: "user",
+                hint: "View Details",
+                onClick: function () {
+                    const popover = $("#rowPopover").dxPopover("instance");
+                    popover.option("rowIndex", options.rowIndex);
+                    popover.show("#" + buttonId);
+                }
+            });
+    }
+
+			$("<div id='rowPopover'>")
+    .appendTo("body")
+    .dxPopover({
+        width: 900,
+        height: "auto",
+        position: "bottom",
+        showTitle: true,
+        title: "Detailed Description",
+        closeOnOutsideClick: true,
+        contentTemplate: function () {
+            return $("<div id='popoverFormContainer'>");
+        },
+        onShown: function (e) {
+            const rowIndex = e.component.option("rowIndex");
+            renderPopoverForm(rowIndex);
+        }
+    });
+
+
+
+	function renderPopoverForm(rowIndex) {
+    const grid = $("#itemGrid").dxDataGrid("instance");
+    const rowData = grid.getVisibleRows()[rowIndex]?.data || {};
+    const $container = $("#popoverFormContainer").empty();
+
+    const formInstance = $container.dxForm({
+        formData: rowData,
+        colCount: 3,
+        labelLocation: "top",
+        items: [
+            {
+                colSpan: 3,
+                template: function() {
+                    return $("<div>")
+                        .addClass("form-header")
+                        .append(`<label class="form-label">Detailed Description / Specification:</label>`)
+                        .append(`<a href="#" class="use-item-link">Use Item Description</a>`)
+                        .append(`<span class="add-icon">➕</span>`);
+                }
+            },
+            {
+                dataField: "PropertyAddlDescription",
+                colSpan: 3,
+                editorType: "dxTextArea",
+                editorOptions: {
+                    height: 100,
+                    width: "100%"
+                }
+            },
+            { dataField: "Purpose", colSpan: 1, label: { text: "Purpose of Request:", labelMode: "floating"  }},
+            { 
+                dataField: "Priority", colSpan: 1, editorType: "dxSelectBox", 
+                label: { text: "Priority of Request:" } ,labelMode: "floating", 
+                editorOptions: { items: ["Low","Medium","High"], placeholder: "Select..." } 
+            },
+            {
+                dataField: "ExpectedDate", colSpan: 1, editorType: "dxDateBox", 
+                label: { text: "Expected Date:" , labelMode: "floating"}, 
+                editorOptions: { displayFormat: "dd/MM/yyyy" }
+            },
+            { dataField: "Remarks", colSpan: 3, editorType: "dxTextBox", label: { text: "Remarks:" } },
+            { dataField: "Size", colSpan: 1, editorType: "dxTextBox" ,  editorOptions: {
+				disabled: true   
+			}},
+            { dataField: "Manufacturer", colSpan: 1, editorType: "dxTextBox", labelMode: "floating", editorOptions: {
+				disabled: true   
+			} },
+					{ dataField: "Brand", colSpan: 1, editorType: "dxTextBox" , labelMode: "floating", editorOptions: {
+				disabled: true  
+			}},
+            { dataField: "PartNo", colSpan: 1, editorType: "dxTextBox", label: { text: "Part No" , labelMode: "floating", editorOptions: {
+				disabled: true   
+			}}},
+            { dataField: "DeliveryPeriod", colSpan: 1, editorType: "dxTextBox",labelMode: "floating" },
+            { dataField: "PlanNo", colSpan: 1, editorType: "dxTextBox" ,labelMode: "floating"},
+        ]
+    }).dxForm("instance");
+}
  </script>
