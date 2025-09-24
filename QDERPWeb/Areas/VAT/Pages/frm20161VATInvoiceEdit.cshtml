@@ -1258,7 +1258,7 @@
 
 						<td colspan="2">
 							<div style="display: flex; gap: 4px; align-items: end;">
-								@(Html.DevExtreme().TextBox()
+								@(Html.DevExtreme().TextArea()
 																.Label(new JS("formatMessage('Notes in Arabic')"))
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("txtNotesinArabic")
@@ -1267,18 +1267,15 @@
 																.Width("100%") // You can adjust width as needed to fit
 																.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 																.MaxLength(2147483647)
-																.Buttons(buttons =>
-																{
-																	buttons.Add()
-																	.Name("InvoiceNotesconvertToArabic")
-																	.Location(TextEditorButtonLocation.After)
-																	.Widget(w => w.Button()
-																	.Type(ButtonType.Default)
-																	.Icon("fas fa-language") // Use "plus" or any other if needed
-																	.Hint("Edit Description")
-																	.ElementAttr(new { @class = "custom-hover-button add-hover" })
-																	.OnClick("function() { convertToArabic(); }")); // 👈 your existing handler
-																})
+																)
+
+								@(Html.DevExtreme().Button()
+																.ID("InvoiceNotesconvertToArabic")
+																.Width(40)
+																.Height(40)
+																.Icon("fas fa-language") // Ensure this is linked to FontAwesome if used
+																.ElementAttr("style", "margin-bottom: 2px;") // optional fine-tune alignment
+																.OnClick("function() { convertToArabic(); }")
 																)
 							</div>
 						</td>
@@ -5039,7 +5036,7 @@ $("#btnAddNew").on("click", function (e) {
     // Helper to format number with decimals
     const formatAmount = (val) => Number(val).toFixed(currencyDecimals);
 	$(".tab-content").hide();
-	$("#tab-content-3").show();
+	$("#tab-content-4").show();
     const newRow = {
         SNo: nextSNo,
         ItemCode: "", 
@@ -7263,7 +7260,7 @@ if (popover.option("visible")) {
 						showTitle: true
 					}).show();
 				 $(".tab-content").hide();
-                 $("#tab-content-3").show();
+                 $("#tab-content-2").show();
 			}
 			}
 		});
