@@ -100,4 +100,7 @@ public partial class Tbl40126PropertyPomaster
     public DateTime? SubmittedOn { get; set; }
 
     public string CancellationRemarks { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

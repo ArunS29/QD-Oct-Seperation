@@ -1,6 +1,5 @@
 ﻿@page
 @using QD.ERP.Web.DAL.Entities
-@* @model QD.ERP.Web.Areas.IMS.Pages.SuppliersModel *@
 @{
 
 }
@@ -58,7 +57,7 @@
     <input id="formId" value="frm201LedgerView" type="hidden" />
 
     <div class="card blue shine compact">
-        <h2 class="title-slide">Quotation</h2>
+        <h2 class="title-slide">Equipment Assets</h2>
         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
         <h6 class="fade-in">QuickDice ERP Solutions</h6>
 
@@ -105,10 +104,11 @@
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
 </div> *@
+<input id="formId" value="frmERMPropertyMaster" type="hidden" />
 <div class="Footer">
     @await Html.PartialAsync("/Pages/Shared/ERM/StockInventoryFooter.cshtml")
 </div>
-<div>
+<div style="padding:10px;">
     @(
         Html.DevExtreme().DataGrid<Qry40102PropertyMasterView2>()
         .ID("dataGrid")
@@ -121,11 +121,12 @@
         .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
         .AllowColumnReordering(true)
         .ColumnAutoWidth(true)
-        .WordWrapEnabled(true)
+        .WordWrapEnabled(false)
+        .Height("70vh")
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(false))
-        .Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+        .Paging(p => p.PageSize(20)) // Set desired page size (e.g., 10 rows per page)
         .Pager(pager =>
         {
             pager.ShowPageSizeSelector(true);
@@ -197,20 +198,20 @@
                 subColumns.AddFor(m => m.EquipmentOperatorName).Caption(new JS("formatMessage('Equipment Operator Name')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                 subColumns.AddFor(m => m.OperatorWorkStartDate).Caption(new JS("formatMessage('Operator Work Start Date')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 
-            });
+            @* });
             columns.Add().Caption(new JS("formatMessage('Hide the columns Details')")).Columns(subColumns =>
-            {
-                subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('PropertyCategory')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+            { *@
+                subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('Property Category')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Specifications).Caption(new JS("formatMessage('Specifications')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Brand).Caption(new JS("formatMessage('Brand')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
-                subColumns.AddFor(m => m.DoorNo).Caption(new JS("formatMessage('DoorNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DoorNo).Caption(new JS("formatMessage('Door No')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
 
                 subColumns.AddFor(m => m.Color).Caption(new JS("formatMessage('Color')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Year).Caption(new JS("formatMessage('Year')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Ownership).Caption(new JS("formatMessage('Ownership')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
-                subColumns.AddFor(m => m.PurchaseDate).Caption(new JS("formatMessage('PurchaseDate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
-                subColumns.AddFor(m => m.PurchasedAs).Caption(new JS("formatMessage('PurchasedAs')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PurchaseDate).Caption(new JS("formatMessage('Purchase Date:')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.PurchasedAs).Caption(new JS("formatMessage('Purchased By')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
                 subColumns.AddFor(m => m.BuyingRatePerDay).Caption(new JS("formatMessage('BuyingRatePerDay')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
@@ -327,44 +328,132 @@
         )
 
 </div>
-
-<!-- Bottom Toolbar -->
-
-
 <script>
-
-               function onAssetsGridContextMenu
+        function onAssetsGridContextMenu
                (e) {
         if (e.target === "content" && e.row) {
-            const supplierCode = e.row.data.SupplierCode;
-            const tenantName = window.tenantName || "defaultTenant"; // Dynamic tenant logic
+            const PropertyNo = e.row.data.PropertyNo;
+            const tenantName = window.tenantName || "defaultTenant"; 
 
             e.items = [
                 {
-                    text: "Edit Supplier",
+                    text: "Edit Property",
                     icon: "edit",
                     onItemClick: function () {
-                        const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
-                        const title = `Edit Supplier - ${supplierCode}`;
-                        openModal(url, title);
+                        debugger;
+                       const url = `/${tenantName}/ERM/AddNewProperty?code=${PropertyNo}&mode=edit`;
+                         window.location.href = url;
                     }
                 },
-                {
-                    text: "Delete Supplier",
-                    icon: "trash",
-                    onItemClick: function () {
-                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this supplier?", "Confirm Delete")
-                            .done(function (dialogResult) {
-                                if (dialogResult) {
-                                    deleteSupplier(supplierCode);
+                   {
+        text: "Delete Property",
+        icon: "trash",
+        onItemClick: function () {
+            DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property?", "Confirm Delete")
+                .done(function (dialogResult) {
+                    if (dialogResult) {
+                        // 🔥 Call the delete API
+                        $.ajax({
+                            url: "/api/AddNewProperty/DeletePropertyMaster/" + PropertyNo,
+                            type: "DELETE",
+                            success: function (res) {
+                                if (res.success) {
+                                    DevExpress.ui.notify(res.message, "success", 2000);
+                                    // refresh dxDataGrid after delete
+                                    $("#dataGrid").dxDataGrid("instance").refresh();
+                                } else {
+                                    DevExpress.ui.notify(res.message, "error", 3000);
                                 }
-                            });
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.notify("Delete failed: " + xhr.responseText, "error", 3000);
+                            }
+                        });
                     }
+                });
+        }
                 }
             ];
         }
     }
 
+       $(document).ready(function () {
+            console.log('Start permission handling AccountingLedgers');
+            // Form ID
+            var formId = "frmERMPropertyMaster";
+
+            $.ajax({
+                url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log("API Response:", response); // Log the API response
+
+                    if (response.success && response.permissions) {
+                        // Default visibility and enable status for buttons
+                        var controlStates = {
+                            "btnRefresh": { "Visible": false, "Enabled": false },
+                            "ddButtonLayout": { "Visible": false, "Enabled": false },
+                            "rowHeightProperties": { "Visible": false, "Enabled": false },
+                            "btnPrint": { "Visible": false, "Enabled": false },
+                            "btnToggleSearch": { "Visible": false, "Enabled": false },
+                            "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+                            "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+                            "ddButtonShow": { "Visible": false, "Enabled": false },
+                            "ddReports": { "Visible": false, "Enabled": false },
+                            "btnAddNewProperty": { "Visible": false, "Enabled": false },
+                            "btnColumnChooser": { "Visible": false, "Enabled": false },
+                        };
+
+                        // Check for full access
+                        var fullAccess = response.permissions.find(p =>
+                            p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                        );
+
+                        if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                            // Grant full access: make all controls visible and enabled
+                            Object.keys(controlStates).forEach(key => {
+                                controlStates[key] = { "Visible": true, "Enabled": true };
+                            });
+                        } else {
+                            // Update states based on specific permissions for each control
+                            Object.keys(controlStates).forEach(key => {
+                                var controlPermission = response.permissions.find(p =>
+                                    p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                );
+                                if (controlPermission) {
+                                    controlStates[key] = {
+                                        "Visible": controlPermission.ItemVisible || false,
+                                        "Enabled": controlPermission.ItemEnabled || false
+                                    };
+                                }
+                            });
+                        }
+
+                        console.log("Control States:", controlStates);
+                        Object.keys(controlStates).forEach(key => {
+                            var button = document.getElementById(key);
+                            if (button) {
+                                // Handle visibility
+                                button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                                // Handle enable/disable state
+                                button.disabled = !controlStates[key].Enabled;
+                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            } else {
+                                console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                    } else {
+                        console.warn("Failed to fetch permissions or no permissions available.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching permissions:", error);
+                    alert('An error occurred while fetching permissions. Please try again.');
+                }
+            });
+            console.log('End permission handling');
+        });
 </script>
 
 

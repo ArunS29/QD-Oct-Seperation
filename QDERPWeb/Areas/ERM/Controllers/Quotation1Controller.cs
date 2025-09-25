@@ -1,8 +1,7 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,11 +24,16 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<Quotation1Controller> _logger;
-        public Quotation1Controller(ILogger<Quotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+
+        public Quotation1Controller(ILogger<Quotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+
+
         [HttpGet]
         public async Task<IActionResult> GetQuotation(DateTime? fromDate, DateTime? toDate)
         {
@@ -38,48 +43,56 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 {
                     var query = dbContext.Qry40103PropertyQuoteMasterViews.AsQueryable();
 
-
                     // Default dates if not provided
                     if (!fromDate.HasValue)
                     {
-                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of current month
                     }
 
                     if (!toDate.HasValue)
                     {
-                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of current month
                     }
 
                     // Filtering by date range
                     query = query.Where(i => i.QuoteDate >= fromDate && i.QuoteDate <= toDate);
 
-                    // Fetching the data
-                    var data = await query.Select(i => new
-                    {
-                        i.QuoteNo,
-                        i.QuoteDate,
-                        i.ClientName,
-                        i.TotalNetAmount,
-                        i.SalesOrderNo,
-                        i.NoOfItems,
-                        i.DemobilizationAmount,
-                        i.MobilizationAmount,
-                        i.TotalGrossAmount,
-                    }).ToListAsync();
+                    // Fetching with child count
+                    var data = await query
+                        .GroupJoin(
+                            dbContext.Tbl40104PropertyQuoteChildren,
+                            master => master.QuoteNo,
+                            child => child.QuoteNo,
+                            (master, children) => new
+                            {
+                                master.QuoteNo,
+                                master.QuoteDate,
+                                master.ClientName,
+                                master.TotalNetAmount,
+                                master.SalesOrderNo,
+                                NoOfItems = children.Count(),  // ✅ count of child rows
+                                master.DemobilizationAmount,
+                                master.MobilizationAmount,
+                                master.TotalGrossAmount
+                            }
+                        )
+                        .ToListAsync();
 
                     return Json(data);
                 }
 
                 return Unauthorized(new { message = "Invalid tenant." });
-
             }
             catch (Exception ex)
             {
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
+                _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
         }
-        	[HttpGet]
+
+
+
+        [HttpGet]
 		public async Task<IActionResult> GetQuotationDetails(DateTime? fromDate, DateTime? toDate)
 		{
 			try
@@ -215,6 +228,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                                  module: "ERM > Save Quoted Cost item",
+                                 actionDetail: $"Saved Quoted Cost item {model}",
+                                  documentNo: $"{model}"
+                        );
+
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.QuoteCostSlNo });
                     }
@@ -233,6 +252,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                         dbContext.Tbl60104quotationItemCosts.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                                  module: "ERM > Save Quoted Cost item",
+                                 actionDetail: $"Saved Quoted Cost item {model}",
+                                  documentNo: $"{model}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.QuoteCostSlNo });
                     }
@@ -263,6 +287,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60104quotationItemCosts.Remove(record);
                     dbContext.SaveChanges();
+                     _userActionLogger.LogAsync(
+                                  module: "ERM > Delete",
+                                 actionDetail: $"Deleted {key}",
+                                  documentNo: $"{key}"
+                     );
                     return Ok();
                 }
 
@@ -274,7 +303,112 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
-       
+
+
+        [HttpPost]
+        public async Task<IActionResult> DuplicateQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                // Get digit config
+                int digits = dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                    .FirstOrDefault();
+
+                // Generate new QuoteNo
+                string newQuoteNo = GetNewQuoteNo(
+                    company.QuotationAbbrv,
+                    company.InvoiceYearDigits ?? 0,
+                    DateTime.Now,
+                    company.IsResetInvoiceInYear ?? false,
+                    digits,
+                    dbContext
+                );
+
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+                DateTime quoteDate = dbContext.Tbl40103PropertyQuoteMasters
+        .Where(q => q.QuoteNo == originalQuoteNo)
+        .Select(q => q.QuoteDate ?? DateTime.Now)
+        .FirstOrDefault();
+                //sp400_22InsertDuplicateQuotation
+                // Call SP
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp400_22InsertDuplicateQuotation  @p0, @p1, @p2, @p3, @p4",
+                    originalQuoteNo, newQuoteNo, quoteDate, user, quoteDate
+                );
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "ERM > Duplicate Quotation View ",
+                    actionDetail: $"Duplicated Quotation View {originalQuoteNo}",
+                    documentNo: $"{originalQuoteNo}"
+                );
+
+                return Ok(new { success = true, message = "Quotation duplicated successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error duplicating quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Internal error", detail = ex.Message });
+            }
+        }
+
+        // Helper Method
+        private string GetNewQuoteNo(string abbr, int yearDigits, DateTime date, bool resetByYear, int digits, ERPMasterWtDataContext db)
+        {
+            try
+            {
+                var existing = db.Tbl40103PropertyQuoteMasters
+                    .Where(q => q.QuoteNo != null &&
+                                q.QuoteNo.Length >= digits &&
+                                (!resetByYear || (q.QuoteDate.HasValue && q.QuoteDate.Value.Year == date.Year)))
+                    .Select(q => q.QuoteNo)
+                    .ToList();
+
+                int max = existing
+                    .Select(no => int.TryParse(no.Substring(no.Length - digits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{max.ToString().PadLeft(digits, '0')}";
+            }
+            catch
+            {
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{"1".PadLeft(digits, '0')}";
+            }
+        }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateStatus([FromBody] Tbl60105quotationCostMaster model)
         {
@@ -330,6 +464,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                              module: "ERM > Save Status",
+                             actionDetail: $"Saved Status {model}",
+                              documentNo: $"{model}"
+                    );
 
                     return Ok(new
                     {
@@ -348,6 +487,130 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
 
+        [HttpPost]
+        public IActionResult DeleteQuotationView(string QuoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Json(new { success = false, message = "Invalid tenant context." });
+
+            try
+            {
+                var quotation = dbContext.Tbl40103PropertyQuoteMasters.FirstOrDefault(q => q.QuoteNo == QuoteNo);
+                if (quotation == null)
+                    return Json(new { success = false, message = "Quotation not found." });
+
+                // ✅ Check if approved
+                if (quotation.IsApproved == true)
+                    return Json(new { success = false, message = "Quotation is already approved. You cannot delete the approved Quotation." });
+
+                // ✅ Check if Sales Order exists
+                var linkedSalesOrder = dbContext.Tbl40129PropertySalesOrderMasters
+                    .FirstOrDefault(q => q.QuoteNo == QuoteNo && q.SalesOrderNo != null);
+                if (linkedSalesOrder != null)
+                    return Json(new
+                    {
+                        success = false,
+                        message = "You cannot delete this Quotation. A Sales Order has been generated. Please remove the Sales Order to unlock this Quotation and try again."
+                    });
+
+                // ✅ Delete child records
+                var childRows = dbContext.Tbl40104PropertyQuoteChildren.Where(x => x.QuoteNo == QuoteNo);
+                dbContext.Tbl40104PropertyQuoteChildren.RemoveRange(childRows);
+
+                
+
+                // ✅ Remove Quotation master
+                dbContext.Tbl40103PropertyQuoteMasters.Remove(quotation);
+
+             
+
+                dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
+                  actionDetail: $"Deleted Quotation View  {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
+
+                // ✅ Log Deletion
+                //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
+                //string userName = HttpContext.Session.GetString("UserName") ?? "Unknown";
+
+                //InsertUserEntryLogSheet(
+                //    "IMS Quotation",
+                //    $"IMS Quotation No. {QuoteNo} has been deleted by User ID: {userId} User Name: {userName}.",
+                //    userName,
+                //    QuoteNo
+                //);
+
+                return Json(new { success = true, message = "Quotation has been successfully removed from the database." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting quotation.");
+                return Json(new { success = false, message = "An error occurred while deleting the Quotation." });
+            }
+        }
+
+
+
+
+        [HttpPost]
+        public IActionResult ReviseQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+
+            {
+                // Step 1: Trim quote base (remove -(R1) etc.)
+                string quoteBase = originalQuoteNo;
+                int bracketIndex = quoteBase.IndexOf("-(R");
+                if (bracketIndex > -1)
+                    quoteBase = quoteBase.Substring(0, bracketIndex);
+
+                // Step 2: Get latest revision number
+                int currentRevision = dbContext.Tbl40103PropertyQuoteMasters
+                    .Where(q => q.QuoteNo.StartsWith(quoteBase))
+                    .Max(q => q.RevisionNo ?? 0);
+
+                int nextRevision = currentRevision + 1;
+                string newQuoteNo = $"{quoteBase}-(R{nextRevision})";
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // Step 3: Call stored procedure to duplicate with revision
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp400_23CreateNewRevisedQuotation @p0, @p1, @p2, @p3",
+                    originalQuoteNo, newQuoteNo, nextRevision, user
+                );
+
+                // Step 4: Update status of old quotation (to 'Revised' = 5)
+                var oldQuote = dbContext.Tbl40103PropertyQuoteMasters
+                    .FirstOrDefault(q => q.QuoteNo == originalQuoteNo);
+                if (oldQuote != null)
+                {
+                    oldQuote.QuoteType = "Revised";
+                    dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Revise Quotation ",
+                     actionDetail: $":Revised Quotation  {originalQuoteNo}",
+                     documentNo: $"{originalQuoteNo}"
+                    );
+                }
+
+                return Ok(new { success = true, message = "Quotation revised successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revising quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
+            }
+        }
+
+
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCostItem(String id)
         {
@@ -365,6 +628,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60105quotationCostMasters.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                              module: "ERM > Delete CostItem",
+                             actionDetail: $"Deleted CostItem {id}",
+                              documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }

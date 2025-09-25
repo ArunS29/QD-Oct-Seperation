@@ -96,14 +96,14 @@
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
             <div class="add-btn">
-                @(Html.DevExtreme().Button().Icon("plus").Text("Add").Type(ButtonType.Default))
+                @(Html.DevExtreme().Button().Icon("plus").Text("Add").Type(ButtonType.Default).OnClick("AddOnclick"))
             </div>
         </div>
 
         <div class="calc-row">
             <div class="calc-input">
                 @(Html.DevExtreme().NumberBox()
-                        .ID("TotalCost").Label("Total Cost of the Item:")
+                        .ID("TotalCostItem").Label("Total Cost of the Item:")
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(1.00)
                         .Format("#,##0.00")
@@ -125,22 +125,26 @@
             <div class="calc-input">
                 @(Html.DevExtreme().NumberBox()
                         .ID("ProfitMargin")
-                        .Value(25.00)
-                        .Format("#0.00'%")
+                        .ShowSpinButtons(true)
+                        .Value(25)
+                                .Format("#0.00%")
+
                         .Width("100%"))
             </div>
-            <div class="calc-label" style="text-align: right;"></div>
-            <div class="calc-input">
-                @(Html.DevExtreme().NumberBox()
+           
+           
+        </div>
+        <div class="calc-row">
+        <div class="calc-input">
+            @(Html.DevExtreme().NumberBox()
                         .ID("UnitPriceProfit")
                         .Label("Unit Price with Profit:")
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(1.00)
                         .Format("#,##0.00")
                         .Width("100%"))
-            </div>
         </div>
-
+        </div>
         <div class="calc-row">
             <div class="calc-input">
                 @(Html.DevExtreme().NumberBox()
@@ -188,22 +192,50 @@
     </div>
 </div>
 <script>
-    $(function() {
-      const params = new URLSearchParams(window.location.search);
+    let quoteNo = null;let gsCode=null;let costPrice=null;let totalCost=null; let discount=null;let QuotedQuantity=null;let QuoteChildId=null;
+       $(function () {
+        const params = new URLSearchParams(window.location.search);
+          gsCode = params.get("GsCode") || "";
+     quoteNo = params.get("QuoteNos") || "";
+      QuoteChildId = params.get("quoteChildId") || "";
+     gsDesc1 = params.get("GSDesc1") || "";
+      QuotedQuantity = params.get("QuotedQuantity") || "";
 
-      const unitPrice = parseFloat(params.get("unitPriceProfit"))|| 0;
-      const totalCost = parseFloat(params.get("totalCost"))|| 0;
-      const profitOrLoss = parseFloat(params.get("profitOrLoss"))|| 0;
-       const discount = parseFloat(params.get("discount"))|| 0;
-       const QuotedItemTotalPrice = profitOrLoss - totalCost;
-      $("#ItemCost").dxNumberBox("instance").option("value", totalCost);
-       $("#TotalCost").dxNumberBox("instance").option("value", totalCost);
-      $("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
-   
-      $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
-      $("#Discount").dxNumberBox("instance").option("value", discount);
-       $("#QuotedPrice").dxNumberBox("instance").option("value", QuotedItemTotalPrice);
+    console.log("GS Code:", gsCode);
+    console.log("Quotation No:", quoteNo);
+    console.log("GS Desc1:", gsDesc1);
+        const unitPrice = parseFloat(params.get("UnitPrice")) || 0;
+         totalCost = parseFloat(params.get("TotalCost")) || 0;
+        const profitOrLoss = parseFloat(params.get("ProfitLoss")) || 0;
+         discount =params.get("Discount") || 0;
+         costPrice = params.get("CostPrice") || 0;
+        const total = parseFloat(params.get("Total")) || 0;
+        const VAT = parseFloat(params.get("VAT")) || 0;
+
+        const QuotedItemTotalPrice = total - VAT - discount;
+ 
+        $("#ItemCost").dxNumberBox("instance").option("value", totalCost);
+        $("#TotalCostItem").dxNumberBox("instance").option("value", totalCost);
+        $("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
+        $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
+        $("#Discount").dxNumberBox("instance").option("value", discount);
+        $("#QuotedPrice").dxNumberBox("instance").option("value", QuotedItemTotalPrice);
     });
+        function AddOnclick() {
+      
+        const url = `/${tenantName}/IMS/AdditionalCostOnItems`
+            + `?CostPrice=${encodeURIComponent(costPrice)}`
+            + `&Discount=${encodeURIComponent(discount)}`
+            + `&TotalCost=${encodeURIComponent(totalCost)}`
+            + `&GsCode=${encodeURIComponent(gsCode)}`
+           + `&QuotedQuantity=${encodeURIComponent(QuotedQuantity)}`
+            + `&QuoteNos=${encodeURIComponent(quoteNo)}`
+             + `&QuoteChildId=${encodeURIComponent(QuoteChildId)}`;
+
+        console.log("🔗 Navigation URL:", url);
+        openModal(url, "Quoted:Cost Items","100%","80%");
+    }
+
 </script>
 
     

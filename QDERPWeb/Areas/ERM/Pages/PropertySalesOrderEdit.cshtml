@@ -6,6 +6,23 @@
 <style>
     
 
+    /* Only affects Delivery & Checklist section */
+    .delivery-checklist-section {
+        display: flex;
+        gap: 20px; /* space between the two cards */
+        align-items: flex-start; /* align them at the top */
+    }
+
+        /* Each card inside should take equal width */
+        .delivery-checklist-section .form-card {
+            flex: 1;
+            background-color: #f8fbff;
+            border: 1px solid #c5c5c5;
+            border-radius: 4px;
+            padding: 12px;
+        }
+
+
     .ledgerResult {
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
         width: 100%;
@@ -235,6 +252,24 @@
         border-color: red !important;
         border-width: 2px;
     }
+
+
+
+    #BranchDivisionsTab .dx-label-has-text .dx-label span {
+        color: #003366 !important;
+        font-weight: bold;
+    }
+
+    #BranchDivisionsTab .dx-texteditor.dx-editor-outlined,
+    #BranchDivisionsTab .dx-dropdowneditor.dx-editor-outlined,
+    #BranchDivisionsTab .dx-datebox.dx-editor-outlined {
+        background-color: #f9fbff;
+        border-radius: 8px;
+        border: 1px solid #d0d7e5;
+    }
+
+
+
 </style>
 
 <meta charset="UTF-8">
@@ -299,41 +334,55 @@
                         </td>
                         <td>
                             <div style="display: flex; align-items: flex-end;">
-                                <div style="flex: 1;">
-                                    @(Html.DevExtreme().DropDownBox()
-                                    .ID("ClientNames")
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("ClientNamesDropDown")
+                                                                    .Label("Client Name")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("ERSalesOrders")
+                                                                    .LoadAction("GetClientNames")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("ClientCode")
+                                                                    )
+                                                                    .ValueExpr("ClientCode")
+                                                                    .DisplayExpr("ClientName")
+                                                                    .Width("100%")
+                                                                    .ValidationRules(rules =>
+                                                                    {
+                                                                        rules.AddRequired()
+                                                                    .Message("Client Name is required");
+                                                                    })
+                                                                    .Buttons(buttons =>
+                                                                    {
+                                                                      // dropdown arrow
+                                                                        buttons.Add().Name("dropDown");
 
-                                    .ValueExpr("ClientCode")
-                                    .DisplayExpr("ClientName")
-                                    .DataSource(ds => ds
-                                    .Mvc()
-                                    .Controller("ERSalesOrders")
-                                    .LoadAction("GetClientNames")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("ClientCode")
-                                    )
-                                    .Label("Client Name")
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    .ValidationRules(rules =>
-                                    {
-                                    rules.AddRequired()
-                                    .Message("Client Name is required");
-                                    })
-                                    .ContentTemplate(new TemplateName("ClientDropDownTemplate"))
+                                                                        // edit button
+                                                                        buttons.Add()
+                                                                    .Name("editClient")
+                                                                    .Location(TextEditorButtonLocation.After)
+                                                                    .Widget(w => w.Button()
+                                                                    .Type(ButtonType.Default)
+                                                                    .Icon("edit")
+                                                                    .Hint("Edit Client")
+                                                                    .OnClick("EditClient")
+                                                                    );
 
-                                    )
+                                                                        // add button
+                                                                        buttons.Add()
+                                                                    .Name("addClient")
+                                                                    .Location(TextEditorButtonLocation.After)
+                                                                    .Widget(w => w.Button()
+                                                                    .Type(ButtonType.Default)
+                                                                    .Icon("plus")
+                                                                    .Hint("Add Client")
+                                                                    .OnClick("AddClients")
+                                                                    );
+                                                                    })
+                                                                    )
 
 
-                                </div>
-                                <div style="margin-left: 5px;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddClient")
-                                    .Icon("plus")
-                                    .Hint("Add Client")
-                                    .OnClick("AddClients")
-                                    )
-                                </div>
+
                             </div>
                         </td>
                     </tr>
@@ -366,15 +415,7 @@
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
-                                <div class="col-md-4" >
-                                    @(Html.DevExtreme().TextBox()
-                                    .ID("ClientEmail")
-                                    .Label("Client Email:")
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Mode(TextBoxMode.Email)
-                                    .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
-                                </div>
+                               
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
@@ -390,18 +431,36 @@
                     <!-- Row 3 -->
                     <tr>
                             <td style="display: flex; align-items: flex-end;">
-                            @(Html.DevExtreme().TextBox()
-                            .ID("ClientPoNo")
-                            .Label("Client PO No:")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .StylingMode(EditorStylingMode.Outlined)
-                            .Width("100%"))
-                             @(Html.DevExtreme().Button()
-                                .ID("AddProject")
-                                .Icon("plus")
-                                .Hint("Add Project")
-                                .OnClick("AddProject")
-                                )
+                                @(Html.DevExtreme().SelectBox()
+                                                            .ID("ClientPoNo")
+                                                            .DataSource(d => d.WebApi()
+                                                            .Controller("ERSalesOrders")   // Controller Name
+                                                            .LoadAction("GetClientPONos") // API Method
+                                                            .Key("SlNo")                  // Primary key
+                                                            )
+                                                            .ValueExpr("ClientPono")                // Bind value as SlNo
+                                                            .DisplayExpr("ClientPono")        // Show text as ClientPono
+                                                            .Label("Client PO No:")
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .StylingMode(EditorStylingMode.Outlined)
+                                                            .Width("100%")
+                                                            .Buttons(b =>
+                                                            {
+                                                              // Default dropdown button
+                                                                b.Add().Name("dropDown");
+
+                                                                // Custom Add Button
+                                                                b.Add()
+                                                            .Name("add")
+                                                            .Location(TextEditorButtonLocation.After)
+                                                            .Widget(w => w.Button()
+                                                            .Icon("plus")
+                                                            .Hint("Add Client PO")
+                                                            .OnClick("ClientPoDetails")   // JS function
+                                                            );
+                                                            })
+                                                            )
+
                         </td>
                         <td>
                             @(Html.DevExtreme().DateBox()
@@ -414,7 +473,7 @@
                         <td style="display:flex;">
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
-                                    .ID("ReferenceNo")
+                                    .ID("ClientEmail")
                                     .Label("Client Email")
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
@@ -447,136 +506,277 @@
             </div>
         </text>);
                     item.Add().Title("Delivery & CheckList").Icon("detailslayout").Text("Delivery & CheckList").Template(@<text>
-                <div class="form-section">
+                          <div class="delivery-checklist-section">
+
 
                     <!-- Left Section: Delivery Details -->
                     <div class="form-card">
-                        <div class="form-title">Delivery Details:</div>
+                        <div class="form-title">Delivery Details</div>
+                        <table style="table-layout: fixed; width:100%;">
+                            <tr>
+                                <td>
+                                    @(Html.DevExtreme().TextBox()
+                                                                    .ID("SiteContactPerson")
+                                                                    .Label("Site Contact Person:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%"))
+                                                                               </td>
+                                                                               <td>
+                                    @(Html.DevExtreme().TextBox()
+                                                                    .ID("MobileNo")
+                                                                    .Label("Mobile No:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%"))
+                                                                               </td>
+                                                                           </tr>
+                                                                           <tr>
+                                                                               <td>
+                                    @(Html.DevExtreme().TextBox()
+                                                                    .ID("Email")
+                                                                    .Label("Email address:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%"))
+                                                                               </td>
+                                                                               <td>
+                                    @(Html.DevExtreme().TextBox()
+                                                                    .ID("SiteLocation")
+                                                                    .Label("Site Location:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%"))
+                                                                               </td>
+                                                                           </tr>
+                                                                           <tr>
+                                                                               <td colspan="2">
+                                                                                @(Html.DevExtreme().SelectBox()
+                                                                                    .ID("SiteRegion")
+                                                                                    .Label("Site Region:")
+                                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                                    .Width("100%")
+                                                                                    .DataSource(new[] {
+                                                                                      "Dammam Region",
+                                                                                      "HASA",
+                                                                                      "Jezan Region",
+                                                                                      "Khobar Region"}))
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Site Contact Person:</label>
-                                @(Html.DevExtreme().TextBox().ID("SiteContactPerson").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Mobile No:</label>
-                                @(Html.DevExtreme().TextBox().ID("MobileNo").Width("100%"))
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Email address:</label>
-                                @(Html.DevExtreme().TextBox().ID("Email").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Site Location:</label>
-                                @(Html.DevExtreme().TextBox().ID("SiteLocation").Width("100%"))
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Site Region:</label>
-                                @(Html.DevExtreme().SelectBox().ID("SiteRegion").Width("100%"))
-                            </div>
-                        </div>
-                    </div>
+                                                                               </td>
+                                                                           </tr>
+                                                                       </table>
+                                                                   </div>
 
                     <!-- Right Section: Terms & Checklist -->
                     <div class="form-card">
                         <div class="form-title">Terms & Checklist</div>
+                        <table style="table-layout: fixed; width:100%;">
+                            <tr>
+                                <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("Duration")
+                                                                    .Label("Duration:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%")
+                                                                    .DataSource(new[] {
+                                                                        "1 Month",
+                                                                        "2 Months",
+                                                                        "3 Months",
+                                                                        "4 Months",
+                                                                        "5 Months",
+                                                                        "6 Months",
+                                                                        "7 Months",
+                                                                        "8 Months",
+                                                                        "9 Months",
+                                                                        "10 Months",
+                                                                        "11 Months",
+                                                                        "1 Year",
+                                                                        "2 Years",
+                                                                        "3 Years"
+                                                                            }))
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Duration:</label>
-                                @(Html.DevExtreme().SelectBox().ID("Duration").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Payment Mode:</label>
-                                @(Html.DevExtreme().SelectBox().ID("PaymentMode").Width("100%"))
-                            </div>
-                        </div>
+                                                                               </td>
+                                                                               <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("PaymentMode")
+                                                                    .Label("Payment Mode:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%")
+                                                                                 .DataSource(new[] {
+                                                                                    "Cash Payment",
+                                                                                    "Credit"
+                                                                                 }))
+                                                                               </td>
+                                                                           </tr>
+                                                                           <tr>
+                                                                               <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("MobDemobBy")
+                                                                    .Label("Mob. & Demob. By:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%")
+                                                                                .DataSource(new[] {
+                                                                                   "BY Client"
+                                                                                }))
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Mob. & Demob. By:</label>
-                                @(Html.DevExtreme().SelectBox().ID("MobDemobBy").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Advance Amount:</label>
-                                @(Html.DevExtreme().TextBox().ID("AdvanceAmount").Width("100%"))
-                            </div>
-                        </div>
+                                                                               </td>
+                                                                               <td>
+                                    @(Html.DevExtreme().NumberBox()
+                                                                                .ID("AdvanceAmount")
+                                                                                .Label("Advance Amount:")
+                                                                                .LabelMode(EditorLabelMode.Floating)
+                                                                                .StylingMode(EditorStylingMode.Outlined)
+                                                                                .Width("100%")
+                                                                                .ShowSpinButtons(true)   
+                                                                                .Min(0)                  
+                                                                                .Step(1)                 
+                                                                                )
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Customs / Other Charges:</label>
-                                @(Html.DevExtreme().SelectBox().ID("CustomsCharges").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Credit Period:</label>
-                                @(Html.DevExtreme().SelectBox().ID("CreditPeriod").Width("100%"))
-                            </div>
-                            <div class="form-group">
-                                <label>Credit Limit:</label>
-                                @(Html.DevExtreme().TextBox().ID("CreditLimit").Width("100%"))
-                            </div>
-                        </div>
-                    </div>
+                                                                               </td>
+                                                                           </tr>
+                                                                           <tr>
+                                                                               <td>
+                                    @(Html.DevExtreme().SelectBox()
+                                                                    .ID("CustomsCharges")
+                                                                    .Label("Customs / Other Charges:")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                    .Width("100%")
+
+                                                                                 .DataSource(new[] {
+                                                                                    "By Client"
+                                                                                 }))
+                                                                               </td>
+                                                                               <td>
+                                                                                   <div style="display:flex; gap:10px; width:100%;">
+                                                                                       <div style="flex:1;">
+                                            @(Html.DevExtreme().SelectBox()
+                                                                                            .ID("CreditPeriod")
+                                                                                            .Label("Credit Period:")
+                                                                                            .LabelMode(EditorLabelMode.Floating)
+                                                                                            .StylingMode(EditorStylingMode.Outlined)
+                                                                                            .Width("100%")
+                                                                                            .DataSource(new[] {
+                                                                                                "30 Days",
+                                                                                                "40 Days",
+                                                                                                "45 Days",
+                                                                                                "60 Days"
+                                                                                            }))
+
+                                                                                               </div>
+                                                                                               <div style="flex:1;">
+                                            @(Html.DevExtreme().NumberBox()
+                                                                                    .ID("CreditLimit")
+                                                                                    .Label("Credit Limit:")
+                                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                                    .StylingMode(EditorStylingMode.Outlined)
+                                                                                    .Width("100%")
+                                                                                    .ShowSpinButtons(true)   
+                                                                                    .Min(0)                  
+                                                                                    .Step(1))
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
-            </text>);
-                    item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
-
-            <div class="dx-card p-3" style="padding:10px;">
-                <table style="width: 100%; vertical-align: top;">
-                    <tr>
-                        <!-- LEFT SIDE -->
-                        <td class="pe-2" style="width: 30%; vertical-align: top;">
-                            <div class="mt-3" >
-                                @(Html.DevExtreme().DropDownBox()
-                                .ID("SalesPerson")
-                                .Label("Company Branch / Division")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
-                               )
-                            </div>
-                          <td style="display:flex; align-items:end; gap:10px;">
-                            <!-- Inventory Group Master -->
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("InventoryGroup")
-                            .Label("Sales Person")    
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                          )
-                            @(Html.DevExtreme().DropDownBox()
-                            .ID("CostCenter")
-                            .Label("Reference No")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                            .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
-
-                            @(Html.DevExtreme().Button()
-                            .Icon("plus")
-                            .ID("AddSalesPerson")
-                            .Width("12%")
-                                )
-                        </td>
-                        <td>
-                        <div>
-                            @(Html.DevExtreme().DateBox()
-                                .ID("OrderExpirydate")
-                                .Label("Order Expiry Date")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
-                                )
                         </div>
-                        </td>
-                    </tr>
-                </table>
+                    </text>);
+
+
+
+
+
+                    item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
+                    <div id="BranchDivisionsTab">
+                      <div class="dx-card p-3" style="padding:10px; width: 700px;">
+
+                        <!-- Company Branch / Division -->
+                        @(Html.DevExtreme().DropDownBox()
+                                            .ID("CompanyBranch")
+                                            .Label("Company Branch / Division:")
+                                            .LabelMode(EditorLabelMode.Floating)
+                                            .StylingMode(EditorStylingMode.Outlined)
+                                            .DataSource(d => d.WebApi()
+                                            .Controller("AddNewClientRequest1")
+                                            .LoadAction("GetCompany")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("CompanyId")
+                                            )
+                                            .Width("100%")
+                                            .ValueExpr("CompanyId")
+                                            .DisplayExpr("CompanyName")
+                                            .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
+                                            )
+
+                        <div style="display:flex; gap:15px; margin-top:15px;">
+                            <!-- Sales Person -->
+                            <div style="flex:1;">
+                                @(Html.DevExtreme().DropDownBox()
+                                                            .ID("SalesPerson")
+                                                            .Label("Sales Person:")
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .StylingMode(EditorStylingMode.Outlined)
+                                                            .DataSource(d => d.WebApi()
+                                                            .Controller("AddNewClientRequest1")
+                                                            .LoadAction("GetSalesPerson")
+                                                            .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("TypeOfRequestId")
+                                                            )
+                                                            .Width("100%")
+                                                            .ValueExpr("SalesPersonCode")
+                                                            .DisplayExpr("SalesPersonName")
+                                                            .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                                                            .Buttons(buttons =>
+                                                            {
+                                                                buttons.Add().Name("dropDown");
+                                                                buttons.Add().Name("addSalesPerson")
+                                                            .Location(TextEditorButtonLocation.After)
+                                                            .Widget(w => w.Button()
+                                                            .Type(ButtonType.Default)
+                                                            .Icon("plus")
+                                                            .Hint("Add Sales Person")
+                                                            .OnClick("redirecttosalespersonmaster"));
+                                                            })
+                                                            )
+                            </div>
+
+                            <!-- Reference No -->
+                            <div style="flex:1; ">
+                               
+
+                                @(Html.DevExtreme().TextBox()
+                                                            .ID("ReferenceNo")
+                                                            .Label("Reference No:")
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .StylingMode(EditorStylingMode.Outlined)
+                                                            .Width("100%"))
+
+                            </div>
+
+
+                        </div>
+
+                        <!-- Order Expiry Date -->
+                        @(Html.DevExtreme().DateBox()
+                                            .ID("OrderExpiryDate")
+                                            .Label("Order Expiry Date:")
+                                            .LabelMode(EditorLabelMode.Floating)
+                                            .StylingMode(EditorStylingMode.Outlined)
+                                            .Width("100%")
+                                            )
+
+                </div>
             </div>
         </text>);
+
+
                     item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
             <div class="dx-card p-3">
                 <table style="width: 100%; vertical-align: top;">
@@ -584,23 +784,86 @@
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top;">
                             <div class="mb-3" style="display:flex; gap:10px;">
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                                                    .Label(new JS("formatMessage('Prepared By:')"))
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("AddNewClientRequest1")
+                                                                    .LoadAction("GetSignatory")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("SignatoryName")
+                                                                    )
+                                                                    .Option("ddPreparedby", "GetPreparedby-datagrid")
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .ID("ddPreparedby")
+                                                                    .Width(900)
+                                                                    .OpenOnFieldClick(false)
+                                                                    .ValueChangeEvent("input")
+                                                                    .HoverStateEnabled(true)
+                                                                    .ValueExpr("SignatoryName")
+                                                                    .DisplayExpr("SignatoryName")
+                                                                    .OnInput("dropDownBoxOnInput")
+                                                                    .OnOpened("onOpened")
+                                                                    .TabIndex(1)
+                                                                    .Width("100%")
+                                                                    .OnKeyDown("onKeyDown")
+                                                                    .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+                                                                    .Buttons(buttons =>
+                                                                    {
+                                                                        buttons.Add().Name("dropDown");  // ✅ keep only the dropdown
+                                                                    })
+                                                                    )
+
                                     @(Html.DevExtreme().DropDownBox()
-                                        .ID("preparedBy")
-                                        .Label("Prepared By:")
-                                        .LabelMode(EditorLabelMode.Floating)
-                                        .Width("100%")
-                                      )
-                                        @(Html.DevExtreme().DropDownBox()
-                                            .ID("Verifiedby")
-                                            .Label("Verified By:")
-                                            .LabelMode(EditorLabelMode.Floating)
-                                            .Width("100%") )
-                                        @(Html.DevExtreme().DropDownBox()
-                                            .ID("Approvedby")
-                                            .Label("Approved By:")
-                                            .LabelMode(EditorLabelMode.Floating)
-                                            .Width("100%")
-                                            )
+                                                                    .Label(new JS("formatMessage('Verified By:')"))
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("AddNewClientRequest1")
+                                                                    .LoadAction("GetSignatory")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("SignatoryName")
+                                                                    )
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .ID("ddVerifiedby")
+                                                                    .Width(900)
+                                                                    .OpenOnFieldClick(false)//
+                                                                    .ValueChangeEvent("input")
+                                                                    .HoverStateEnabled(true)
+                                                                    .ValueExpr("SignatoryName")
+                                                                    .DisplayExpr("SignatoryName")
+                                                                    .OnInput("dropDownBoxOnInput")
+                                                                    .OnOpened("onOpened")
+                                                                    .TabIndex(1)
+                                                                    .Width("100%")
+                                                                    .OnKeyDown("onKeyDown")
+                                                                                            //.OnValueChanged("dropDownBoxValueChanged")
+                                                                    .ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+                                                                    )
+
+
+                                    @(Html.DevExtreme().DropDownBox()
+                                                                    .Label(new JS("formatMessage('Approved By:')"))
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("AddNewClientRequest1")
+                                                                    .LoadAction("GetSignatory")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("SignatoryName")
+                                                                    )
+                                                                    .LabelMode(EditorLabelMode.Floating)
+                                                                    .ID("ddApprovedby")
+                                                                    .Width(900)
+                                                                    .OpenOnFieldClick(false)//
+                                                                    .ValueChangeEvent("input")
+                                                                    .HoverStateEnabled(true)
+                                                                    .ValueExpr("SignatoryName")
+                                                                    .DisplayExpr("SignatoryName")
+                                                                    .OnInput("dropDownBoxOnInput")
+                                                                    .OnOpened("onOpened")
+                                                                    .TabIndex(1)
+                                                                    .Width("100%")
+                                                                    .OnKeyDown("onKeyDown")
+                                                                    .ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+                                                                    )
+
+
                                 </div>  
                             <div>
                                 @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))<br />
@@ -632,13 +895,32 @@
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
             columns.Add().Caption("#").Width(60).CellTemplate(new JS("serialTemplate"));
 
-            columns.Add().DataField("Gscode").Caption("Property Type Ordered");
+            //columns.Add().DataField("PropertyTypeOrdered").Caption("Property Type Ordered");
 
             columns.Add()
-            .DataField("Gsdescrpition")
-            .Caption("Description")
-            .Width(400)
-            .EditCellTemplate(new JS("descriptionDropDownTemplate"));
+            .DataField("PropertyTypeOrdered")
+            .Caption("Property Type Ordered")
+            .Lookup(lookup => lookup
+            .DataSource(d => d.WebApi()
+            .Controller("AddNewProperty")
+            .LoadAction("GetAllPropertyTypes")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("PropertyTypeId")   // unique key from API
+            )
+            .ValueExpr("PropertyType")   // field value to bind to PropertyTypeOrdered
+            .DisplayExpr("PropertyType") // field to display in dropdown
+            )
+            .AllowEditing(true);
+
+
+
+                   columns.Add()
+            .DataField("DetailedDescription")
+            .Caption("...")
+            .Width(50) // 👈 make it narrow
+            .Alignment(HorizontalAlignment.Center) // center the button
+            .EditCellTemplate(new JS("EquipmentDetails"));
+
 
             columns.Add()
             .DataField("UnitRateMethod")
@@ -651,12 +933,97 @@
         container.text(unit ? unit.UnitDesc : options.value);
         }
         "));
-            columns.Add().DataField("QuotedQuantity").Caption("Qty");
-            columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
-            columns.Add().DataField("CostPrice").Caption("Gross Amount");
-            columns.Add().DataField("QuotedDiscount").Caption("Mob Rate");
-            columns.Add().DataField("QuotedDiscount").Caption("Demob Rate");
-            columns.Add().DataField("LineTaxAmount").Caption("Net Total").AllowEditing(false);
+            //columns.Add().DataField("QuotedQuantity").Caption("Qty");
+            //columns.Add().DataField("QuotedUnitPrice").Caption("Unit Price");
+
+
+
+                            columns.Add()
+                    .DataField("QuotedQuantity")
+                    .Caption("Qty")
+                    .DataType(GridColumnDataType.Number) // makes it numeric
+                    .EditorOptions(new {
+                        showSpinButtons = true,  // enables up/down arrows
+                        min = 0,                 // optional: set minimum
+                        format = "#,##0.##"      // optional: formatting
+                    });
+
+                columns.Add()
+                    .DataField("QuotedUnitPrice")
+                    .Caption("Unit Price")
+                    .DataType(GridColumnDataType.Number)
+                    .EditorOptions(new {
+                        showSpinButtons = true,
+                        min = 0,
+                        format = "#,##0.00" // two decimals for currency
+                    });
+
+
+
+
+            //columns.Add().DataField("GrossAmt").Caption("Gross Amount");
+
+                    columns.Add()
+            .DataField("GrossAmt")
+            .Caption("Gross Amount")
+            .DataType(GridColumnDataType.Number)
+            .Format("#,##0.00")
+            .AllowEditing(false)
+            .CalculateCellValue(@"function(rowData) { 
+                return (rowData.QuotedQuantity || 0) * (rowData.QuotedUnitPrice || 0); 
+            }");
+
+              //columns.Add().DataField("MobRate").Caption("Mob Rate"); 
+             //columns.Add().DataField("DemobRate").Caption("Demob Rate");
+
+
+
+                         columns.Add()
+                .DataField("MobRate")
+                .Caption("Mob Rate")
+                .DataType(GridColumnDataType.Number)
+                .EditorOptions(new {
+                    showSpinButtons = true,
+                    min = 0,
+                    format = "#,##0.00"
+                });
+
+            // DemobRate (editable number box)
+            columns.Add()
+                .DataField("DemobRate")
+                .Caption("Demob Rate")
+                .DataType(GridColumnDataType.Number)
+                .EditorOptions(new {
+                    showSpinButtons = true,
+                    min = 0,
+                    format = "#,##0.00"
+                });
+
+
+
+
+
+
+
+
+
+
+           // columns.Add().DataField("NetTotal").Caption("Net Total").AllowEditing(false);
+
+
+                                  columns.Add()
+                .DataField("NetTotal")
+                .Caption("Net Total")
+                .DataType(GridColumnDataType.Number)
+                .Format("#,##0.00")
+                .AllowEditing(false)
+                .CalculateCellValue(@"function(rowData) { 
+                    var gross = (rowData.QuotedQuantity || 0) * (rowData.QuotedUnitPrice || 0);
+                    return gross + (rowData.MobRate || 0) + (rowData.DemobRate || 0);
+                }");
+
+
+
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -690,8 +1057,10 @@
 
 </div>
 <div class="Head">
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+    <div class="footer-fixed">
+
+        @await Html.PartialAsync("/Pages/Shared/ERM/PropertySalesOrderEDitFooter.cshtml")
+
     </div>
 </div>
 <div id="lineItemContextMenu" style="display:none; position:absolute; z-index:9999;">
@@ -754,6 +1123,189 @@
                     )
 }
 
+
+@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetApprovedby-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest1")
+                            .LoadAction("GetSignatory")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("SignatoryName")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged12")
+                            .OnInitialized("dataGridInitialized12")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            })
+                            )
+}
+
+
+
+
+
+@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetVerifiedby-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest1")
+                        .LoadAction("GetSignatory")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("SignatoryName")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged11")
+                        .OnInitialized("dataGridInitialized11")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                        })
+                        )
+}
+
+
+@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetPreparedby-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest1")
+                            .LoadAction("GetSignatory")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("SignatoryName")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)                                              
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged10")
+                            .OnInitialized("dataGridInitialized10")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+
+                            })
+                            )
+}
+
+
+
+
+
+
+
+
+@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetSalesPerson-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest1")
+                    .LoadAction("GetSalesPerson")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SalesPersonCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)                                      
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged4")
+                    .OnInitialized("dataGridInitialized4")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(false))//
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SalesPersonName");
+
+
+
+                    })
+                    )
+}
+
+
+
+@using (Html.DevExtreme().NamedTemplate("GetCompanyContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("GetCompany-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("AddNewClientRequest1")
+                .LoadAction("GetCompany")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("CompanyId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .OnSelectionChanged("dataGridSelectionChanged6")
+            .OnInitialized("dataGridInitialized6")
+            .HeaderFilter(p => p.Visible(true))
+            .FilterRow(fr => fr.Visible(true))
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().Caption("Branch Code").DataField("CompanyId");
+                columns.Add().Caption("Branch/Division Name").DataField("CompanyName");
+            })
+        )
+}
+
+
 @using (Html.DevExtreme().NamedTemplate("ProjectDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -802,6 +1354,7 @@
                         .OnSelectionChanged("onCodeSelected1")
                     )
 }
+
 
 @using (Html.DevExtreme().NamedTemplate("SignatoriesDropDownTemplate")) // ✅ Corrected name
 {
@@ -1012,7 +1565,143 @@
             closeGenerateJobOrderModal();
         });
 
-        function showGenerateJobOrderModal(event) {
+        function dataGridSelectionChanged4(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#SalesPerson").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized4(e) {
+        dataGrid = e.component;
+    }
+
+function EquipmentDetails(cellElement, cellInfo) {
+    $("<div>")
+        .dxButton({
+            icon: "chevrondown",   // 🔽 down arrow icon
+            stylingMode: "text",   // no big box, just icon
+            type: "default",
+            onClick: function () {
+                const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+                const url = `/${tenantName}/ERM/EQDetailedDescriptionSalesOrder?SalesOrderNo=${salesOrderNo}`;
+                openModal(url, "Equipment Details", "70%", "60%");
+            }
+        })
+        .appendTo(cellElement);
+}
+
+
+
+
+
+
+
+    function dataGridSelectionChanged6(e) {
+        const selectedRow = e.selectedRowsData[0]; // full row
+        const ddbInstance = $("#CompanyBranch").dxDropDownBox("instance");
+
+        if (selectedRow) {
+            ddbInstance.option("value", selectedRow.CompanyId); // still binds by ID
+            ddbInstance.option("displayValue", selectedRow.CompanyName); // show branch name
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+
+    function dataGridSelectionChanged10(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized10(e) {
+        dataGrid = e.component;
+    }
+
+
+
+    function dataGridSelectionChanged12(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+        function dataGridInitialized12(e) {
+        dataGrid = e.component;
+    }
+
+
+
+    function dataGridSelectionChanged11(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+
+    function dataGridInitialized11(e) {
+        dataGrid = e.component;
+    }
+
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dataGridInitialized6(e) {
+            dataGrid = e.component;
+    }
+
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+
+    function redirecttosalespersonmaster() {
+            const url = `/${tenantName}/IMS/SalesPersonMaster`;
+            const title = "";
+            openModal(url, title);
+    }
+
+
+
+    function showGenerateJobOrderModal(event) {
         const modal = $("#generateJobOrderModal");
 
         if (event) {
@@ -1403,25 +2092,49 @@
             }
             });
         });
-       
+
+
+    function EditClient() {
+        var dropDownBox = $("#ClientNamesDropDown").dxDropDownBox("instance");
+        var selectedValue = dropDownBox.option("value");
+
+        if (!selectedValue) {
+            DevExpress.ui.notify("Please select a client.", "warning", 2000);
+            return;
+        }
+
+        var url = "/" + tenantName + "/IMS/ClientLeadMaster?clientCode=" + encodeURIComponent(selectedValue);
+        openModal(url, "Client Master");
+    }
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
          function AddClients(){
                 const url = `/${tenantName}/ERM/ClientLeadMaster`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
             ////AddnewProject
-         function AddProject(){
-                const url = `/${tenantName}/ERM/Projects`;
+         function ClientPoDetails(){
+                const url = `/${tenantName}/ERM/ClientPoDetails`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
 
               ////Addnewsignatory
          function Signatorynew(){
                 const url = `/${tenantName}/ERM/Signatories`;
                 const title = "";
                     openModal(url, title);
-            }
+         }
 
 
             $(function () {
@@ -1572,7 +2285,7 @@
 
 
 
-            $("#btnSave").on("click", function (e) {
+        $("#btnSave").on("click", function (e) {
             e.preventDefault();
 
             const gridInstance = $("#itemGrid").dxDataGrid("instance");
@@ -1588,97 +2301,101 @@
 
             function validateAndSave() {
                 // ✅ Validate required DropDown fields
-                const requiredFields = [
-                    { id: "#ClientNames", label: "Client Name" },
-                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                    // { id: "#CompanyBranch", label: "Company Branch" },
-                    // Add more if needed
-                ];
+                           const clientDropdown = $("#ClientNamesDropDown").dxSelectBox("instance");
+                const clientValue = clientDropdown ? clientDropdown.option("value") : null;
 
-                let allValid = true;
-                let missingLabels = [];
-
-                requiredFields.forEach(field => {
-                    const $el = $(field.id);
-                    const inst = $el.dxDropDownBox("instance");
-
-                    if (inst) {
-                        const value = inst.option("value");
-                        if (!value) {
-                            allValid = false;
-                            missingLabels.push(field.label);
-                            $el.addClass("dx-invalid");
-                        } else {
-                            $el.removeClass("dx-invalid");
-                        }
-                    } else {
-                        console.warn("Instance not found:", field.id);
-                    }
-                });
-
-                if (!allValid) {
+                if (!clientValue) {
                     DevExpress.ui.dialog.alert(
-                        "Please fill the required field(s): " + missingLabels.join(", "),
+                        "Please select a Client Name.",
                         "Validation Failed"
                     );
-                    return;
+                    return; // ⛔ Stop here if not valid
                 }
 
-                // ✅ Helper to extract date in yyyy-MM-dd format
-                   function getDateOnlyValue(dateBoxId) {
-        var val = $(dateBoxId).dxDateBox("instance").option("value");
-        if (!val) return null;
-        // Format as yyyy-MM-dd (local date, no time)
-        return val instanceof Date
-            ? val.getFullYear() + '-' +
-              String(val.getMonth() + 1).padStart(2, '0') + '-' +
-              String(val.getDate()).padStart(2, '0')
-            : val;
-    }
+                                // ✅ Helper to extract date in yyyy-MM-dd format
+                    function getDateOnlyValue(dateBoxId) {
+                        var val = $(dateBoxId).dxDateBox("instance").option("value");
+                        if (!val) return null;
+                        // Format as yyyy-MM-dd (local date, no time)
+                        return val instanceof Date
+                            ? val.getFullYear() + '-' +
+                              String(val.getMonth() + 1).padStart(2, '0') + '-' +
+                              String(val.getDate()).padStart(2, '0')
+                            : val;
+                    }
 
-                // ✅ Collect children grid data
-                const children = gridInstance.getDataSource().items().map(row => ({
-                    SalesOrderChildId: row.SalesOrderChildId ?? 0,
-                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                    QuotedQuantity: row.QuotedQuantity ?? null,
-                    UnitRateMethod: row.UnitRateMethod ?? null,
-                    Gscode: row.Gscode ?? "",
-                    QuotedUnitPrice: row.QuotedUnitPrice ?? null,
-                    QuotedDiscount: row.QuotedDiscount ?? null,
-                    QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-                    CostPrice: row.CostPrice ?? null
-                }));
+
+
+
+
+                // const children = gridInstance.getDataSource().items().map(row => ({
+                //     SalesOrderChildId: row.SalesOrderChildId ?? 0,
+                //     SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+                //     PropertyOrdered: row.PropertyTypeOrdered ?? null,
+                //     UnitRateMethod: row.UnitRateMethod ?? null,
+                //     QuotedQuantity: row.QuotedQuantity ?? null,
+                //     UnitRate: row.QuotedUnitPrice ?? null,
+                //     MobRate: row.MobRate ?? null ,
+                //     DemobRate: row.DemobRate ?? null
+
+                    
+                // }));
+
+
+
+
+
+
+               // ✅ Collect children grid data
+                const children = gridInstance.getDataSource().items().map(row => {
+                    // Find the dropdown object based on the numeric value
+                    const unit = unitCodesList.find(u => u.UnitCode === row.UnitRateMethod);
+
+                    return {
+                        SalesOrderChildId: row.SalesOrderChildId ?? 0,
+                        SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+                        PropertyOrdered: row.PropertyTypeOrdered ?? null,
+                        UnitRateMethod: unit ? unit.UnitDesc : null,   // ✅ Save description, not code
+                        QuotedQuantity: row.QuotedQuantity ?? null,
+                        UnitRate: row.QuotedUnitPrice ?? null,
+                        MobRate: row.MobRate ?? null,
+                        DemobRate: row.DemobRate ?? null
+                    };
+                });
+
 
                 // ✅ Prepare full model for submission
                 const model = {
                     SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
                     SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-                    ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-                    ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+                    ClientName: $("#ClientNamesDropDown").dxSelectBox("instance").option("text"),
                     QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
                     QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-                    OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-                    ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-                    Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-                    ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-                    SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+                    ClientRefNo: $("#ClientRefName").dxTextBox("instance").option("value"),
                     ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-                    TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-                    ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-                        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-                                    ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-                    QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-                    SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-                    AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-                    DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-                    QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-                    QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-                    CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+                    ClientPono: $("#ClientPoNo").dxSelectBox("instance").option("value"),
+                    ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+                    ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+                    Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+                    DeliveryContactPerson: $("#SiteContactPerson").dxTextBox("instance").option("value"),
+                    DeliveryContactMobile: $("#MobileNo").dxTextBox("instance").option("value"),
+                    DeliveryLocation: $("#SiteLocation").dxTextBox("instance").option("value"),
+                    DeliveryRegion: $("#SiteRegion").dxSelectBox("instance").option("value"),
+                    OrderDuration: $("#Duration").dxSelectBox("instance").option("value"),
+                    PaymentMode: $("#PaymentMode").dxSelectBox("instance").option("value"),
+                    MobChargesBy: $("#MobDemobBy").dxSelectBox("instance").option("value"),
+                    AdvanceAmount: $("#AdvanceAmount").dxNumberBox("instance").option("value"),
+                    CustomsChargesBy: $("#CustomsCharges").dxSelectBox("instance").option("value"),
+                    CreditPeriod: $("#CreditPeriod").dxSelectBox("instance").option("value"),
+                    CreditLimit: $("#CreditLimit").dxNumberBox("instance").option("value"),
                     CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-                    InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                    SalesOrderChildren: children
+                    SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+                    RefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
+                    OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+                    PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
+                    VerifiedBy: $("#ddVerifiedby").dxDropDownBox("instance").option("value"),
+                    ApprovedBy: $("#ddApprovedby").dxDropDownBox("instance").option("value"),
+                    SalesOrderChildren: children  
                 };
 
                 console.log("Saving model:", model);
@@ -1798,9 +2515,9 @@
 
             $("#btnBack").on("click", function (e) {
                 history.back();
-                    });
+            });
 
-                          $("#btnSaveAndClose").on("click", function (e) {
+            $("#btnSaveAndClose").on("click", function (e) {
                       e.preventDefault();
 
                 const gridInstance = $("#itemGrid").dxDataGrid("instance");
@@ -1815,98 +2532,80 @@
                 }
 
                 function validateAndSave() {
-                    // ✅ Validate required DropDown fields
-                    const requiredFields = [
-                        { id: "#ClientNames", label: "Client Name" },
-                        // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                        // { id: "#CompanyBranch", label: "Company Branch" },
-                        // Add more if needed
-                    ];
+                            // ✅ Validate required DropDown fields
+                        const clientDropdown = $("#ClientNamesDropDown").dxSelectBox("instance");
+                        const clientValue = clientDropdown ? clientDropdown.option("value") : null;
 
-                    let allValid = true;
-                    let missingLabels = [];
-
-                    requiredFields.forEach(field => {
-                        const $el = $(field.id);
-                        const inst = $el.dxDropDownBox("instance");
-
-                        if (inst) {
-                            const value = inst.option("value");
-                            if (!value) {
-                                allValid = false;
-                                missingLabels.push(field.label);
-                                $el.addClass("dx-invalid");
-                            } else {
-                                $el.removeClass("dx-invalid");
-                            }
-                        } else {
-                            console.warn("Instance not found:", field.id);
+                        if (!clientValue) {
+                            DevExpress.ui.dialog.alert(
+                                "Please select a Client Name.",
+                                "Validation Failed"
+                            );
+                            return; // ⛔ Stop here if not valid
                         }
-                    });
-
-                    if (!allValid) {
-                        DevExpress.ui.dialog.alert(
-                            "Please fill the required field(s): " + missingLabels.join(", "),
-                            "Validation Failed"
-                        );
-                        return;
-                    }
 
                     // ✅ Helper to extract date in yyyy-MM-dd format
-                       function getDateOnlyValue(dateBoxId) {
-            var val = $(dateBoxId).dxDateBox("instance").option("value");
-            if (!val) return null;
-            // Format as yyyy-MM-dd (local date, no time)
-            return val instanceof Date
-                ? val.getFullYear() + '-' +
-                  String(val.getMonth() + 1).padStart(2, '0') + '-' +
-                  String(val.getDate()).padStart(2, '0')
-                : val;
-        }
+                   function getDateOnlyValue(dateBoxId) {
+                        var val = $(dateBoxId).dxDateBox("instance").option("value");
+                        if (!val) return null;
+                        // Format as yyyy-MM-dd (local date, no time)
+                        return val instanceof Date
+                            ? val.getFullYear() + '-' +
+                              String(val.getMonth() + 1).padStart(2, '0') + '-' +
+                              String(val.getDate()).padStart(2, '0')
+                            : val;
+                   }
 
-                    // ✅ Collect children grid data
-                    const children = gridInstance.getDataSource().items().map(row => ({
-                        SalesOrderChildId: row.SalesOrderChildId ?? 0,
-                        SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                        QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                        QuotedQuantity: row.QuotedQuantity ?? null,
-                        UnitRateMethod: row.UnitRateMethod ?? null,
-                        Gscode: row.Gscode ?? "",
-                        QuotedUnitPrice: row.QuotedUnitPrice ?? null,
-                        QuotedDiscount: row.QuotedDiscount ?? null,
-                         QuotedTaxSlab: row.QuotedTaxSlab ?? null,
-                        CostPrice: row.CostPrice ?? null
-                    }));
+                    
+                        // ✅ Collect children grid data
+                        const children = gridInstance.getDataSource().items().map(row => {
+                            // Find the dropdown object based on the numeric value
+                            const unit = unitCodesList.find(u => u.UnitCode === row.UnitRateMethod);
+
+                            return {
+                                SalesOrderChildId: row.SalesOrderChildId ?? 0,
+                                SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+                                PropertyOrdered: row.PropertyTypeOrdered ?? null,
+                                UnitRateMethod: unit ? unit.UnitDesc : null,   // ✅ Save description, not code
+                                QuotedQuantity: row.QuotedQuantity ?? null,
+                                UnitRate: row.QuotedUnitPrice ?? null,
+                                MobRate: row.MobRate ?? null,
+                                DemobRate: row.DemobRate ?? null
+                            };
+                        });
+
 
                     // ✅ Prepare full model for submission
                     const model = {
                         SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
                         SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-                        ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-                        ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
                         QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
                         QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-                        OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-                        ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-                        Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-                        ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-                        SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+                        ClientRefNo: $("#ClientRefName").dxTextBox("instance").option("value"),
                         ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-                        TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-                        ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-                            Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-                            ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-                                        ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-                        QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-                        SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-                        AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-                        DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-                        QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-                        QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-                        CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+                        ClientPono: $("#ClientPoNo").dxSelectBox("instance").option("value"),
+                        ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+                        ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+                        DeliveryContactPerson: $("#SiteContactPerson").dxTextBox("instance").option("value"),
+                        DeliveryContactMobile: $("#MobileNo").dxTextBox("instance").option("value"),
+                        DeliveryLocation: $("#SiteLocation").dxTextBox("instance").option("value"),
+                        DeliveryRegion: $("#SiteRegion").dxSelectBox("instance").option("value"),
+                        OrderDuration: $("#Duration").dxSelectBox("instance").option("value"),
+                        PaymentMode: $("#PaymentMode").dxSelectBox("instance").option("value"),
+                        MobChargesBy: $("#MobDemobBy").dxSelectBox("instance").option("value"),
+                        AdvanceAmount: $("#AdvanceAmount").dxNumberBox("instance").option("value"),
+                        CustomsChargesBy: $("#CustomsCharges").dxSelectBox("instance").option("value"),
+                        CreditPeriod: $("#CreditPeriod").dxSelectBox("instance").option("value"),
+                        CreditLimit: $("#CreditLimit").dxNumberBox("instance").option("value"),
                         CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-                        InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                        SalesOrderChildren: children
+                        SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+                        RefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
+                        OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+                        PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
+                        VerifiedBy: $("#ddVerifiedby").dxDropDownBox("instance").option("value"),
+                        ApprovedBy: $("#ddApprovedby").dxDropDownBox("instance").option("value"),
+                        SalesOrderChildren: children  
                     };
 
                     console.log("Saving model:", model);
