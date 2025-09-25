@@ -1113,6 +1113,7 @@ var dictionary = {
         "Cost Allocation UnitID": "Cost Allocation Unit ID",
         "Add New Cost Center": "Add New Cost Center",
         "Cost Allocated (Projects/Jobs)": "Cost Allocated (Projects/Jobs)",
+        "Projects/Jobs": "Projects/Jobs",
         "Total Book Value": "Total Book Value",
         "Total Depreciation Amount": "Total Depreciation Amount",
         "Accumulated Closing Balance": "Accumulated Closing Balance",

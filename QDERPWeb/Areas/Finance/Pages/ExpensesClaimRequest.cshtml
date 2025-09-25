@@ -408,7 +408,7 @@
                     @(Html.DevExtreme().Button()
                                     .Icon("card")
                                     .Type(ButtonType.Default)
-                                    .OnClick("onCardClick").Disabled(new JS("Isapproved === true")))
+                                    .OnClick("onCardClick").Disabled(new JS("Ispaid === true")))
             </div>
         </text>).Alignment(HorizontalAlignment.Center);
 
@@ -615,7 +615,7 @@
                                 .Icon("money")
                                 .ElementAttr(new { @class = "bold-button" })
                                 .Height(100)
-                                .OnClick("generateVoucherNo"))
+                                .OnClick("savePostdetails"))
             </div>
             </div>
         </div>
@@ -706,27 +706,38 @@
                 </div>
                 </div>
             </div>
+        </div>
+        <div class="col-3 d-flex justify-content-center gap-3 align-items-start" style="padding-left: 15px;">
+            <div class="form-group" style="margin-top: 7.5px;">
+                @(Html.DevExtreme().CheckBox().ID("IsPaid").ReadOnly(true))
+            </div>
 
-            <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
-                <div class="form-group" style="margin-top: 7.5px;">
-                @(Html.DevExtreme().CheckBox().ID("IsPaid").Disabled(true))
+            <!-- Wrap Paid By & Paid On side by side -->
+            <div class="w-100 d-flex align-items-start">
+                <!-- Paid By -->
+                <div class="form-group flex-grow-1">
+                    @(Html.DevExtreme().TextBox()
+                                        .Label("Paid By")
+                                        .ID("paidBytext")
+                                        .Value(null)
+                                        .Disabled(true)
+                                        .LabelMode(EditorLabelMode.Floating))
                 </div>
-                <div class="w-100">
-                <div>
-                    <div class="form-group w-100 d-flex justify-content-start align-items-center gap-2">
-                <label>Paid By:</label>
-                @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true))
-            </div>
-                </div>
-                <div>
-                            <div class="form-group w-100 d-flex justify-content-start align-items-center gap-2">
-                <label>Paid On:</label>
-                @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true))
-            </div>
-                </div>
+
+                <!-- Paid On -->
+                <div class="form-group flex-grow-1" style="padding-left: 15px;">
+                    @(Html.DevExtreme().DateBox()
+                                        .Label("Paid On")
+                                        .ID("paidOntext")
+                                        .Disabled(false)
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DisplayFormat("dd-MMM-yyyy")
+                                        .ElementAttr("class", "dynamicFormatDateBox"))
                 </div>
             </div>
         </div>
+
+        
     </div>
 
     <input id="formId" value="ExpenseClaimEdit" type="hidden" />
@@ -844,8 +855,8 @@
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit ID')")).Alignment(HorizontalAlignment.Center);
-                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Center);
+                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Project Code')")).Alignment(HorizontalAlignment.Center);
+                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Projects/Jobs')")).Alignment(HorizontalAlignment.Center);
                                   
 
 
@@ -1355,6 +1366,9 @@
                 if (!Array.isArray(dataSource)) {
                     return;
                 }
+                if (Issubmitted || Isverified || Isapproved) {
+                    return;
+                }
 
                 if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
                     dataSource.push({
@@ -1535,7 +1549,9 @@
         let claimproject = null;
         let Accountname = null;
         let Isapproved = null ;
-
+        let Issubmitted = null ;
+        let Isverified = null ;
+        let Ispaid = null ;
         $(document).ready(function () {
             claimRefNo = getUrlParameter('claimRefNo');
             var button = $("#btnSave").dxButton("instance");
@@ -1555,20 +1571,23 @@
                             Accountname = entry.PaymentAccount || null;
                             claimproject = entry.Claimedproject || null;
                                 Isapproved = entry.IsApproved || null;
+                                Issubmitted = entry.IsSubmittedToFinance || null;
+                                Isverified = entry.IsVerified || null;
+                                Ispaid = entry.IsPaid || null;
                             $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
                             $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                             $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                             $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
                              $("#Priorityclaim").dxSelectBox("instance").option("value", entry.Priority);
                             $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
-                            $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccount);
+                           
                             let radioGroup = $("#radioGroup").dxRadioGroup("instance");
                             radioGroup.option("value", entry.PaymentType);
 
                             if (entry.PaymentType) {
                                 onRadioGroupValueChanged({ value: entry.PaymentType });
                             }
-
+                             $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccount);
                             $("#IsSubmitted").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
                             $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
                             $("#IsVerified").dxCheckBox("instance").option("value", entry.IsVerified || false);
@@ -1600,27 +1619,57 @@
                                 ? postedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                                 : "";
 
-                            $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
+                                $("#paidOntext").dxDateBox("instance").option("value", formattedPostedDate);
                             $("#GenerateVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
                             // Disable DevExtreme buttons based on submission and verification date
                             const btnSubmit = $("#btnSubmit").dxButton("instance");
                             const btnVerify = $("#btnExpenseVerify").dxButton("instance");
                             const btnPostJournal = $("#btnPaytheClaim").dxButton("instance");
+                            const btnSave = $("#btnSave").dxButton("instance");
+                            const btnSaveAndClose = $("#btnSaveAndClose").dxButton("instance");
+                             const btnApprove = $("#btnExpenseApprove").dxButton("instance");
                             const btnPreview = $("#btnPrintnew").dxDropDownButton("instance");
 
                             if (formattedsubmittedDate) {
                                 btnSubmit.option("disabled", true);
+                                btnSave.option("disabled", true);
+                                btnSaveAndClose.option("disabled", true);
                                 btnPostJournal.option("disabled", true);
+                                $("#paidOntext").dxDateBox("instance").option("disabled", false);
+                                     // ✅ Disable editing only for ClaimedAmount column
+                                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                                if (dataGrid) {
+                                    dataGrid.columnOption("ClaimedAmount", "allowEditing", false);
+                                }
                             }
 
                             if (formattedDate) {
                                 btnSubmit.option("disabled", true);
                                 btnVerify.option("disabled", true);
+                                btnSave.option("disabled", true);
+                                btnSaveAndClose.option("disabled", true);
                                 btnPostJournal.option("disabled", true);
+                                 $("#paidOntext").dxDateBox("instance").option("disabled", false);
+                                  var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                                if (dataGrid) {
+                                    dataGrid.columnOption("ClaimedAmount", "allowEditing", false);
+                                }
+
                             }
                             if (formattedApprovedDate) {
-                                disableclaim();
+                                 btnSubmit.option("disabled", true);
+                                btnVerify.option("disabled", true);
+                                btnSave.option("disabled", true);
+                                btnSaveAndClose.option("disabled", true);
+                                 btnApprove.option("disabled", true);
                                 btnPostJournal.option("disabled", false);
+                                 $("#txtEntryNarration").dxTextArea("instance").option("disabled", true);
+                                  $("#claimerdate").dxDateBox("instance").option("disabled", true);
+                                 $("#paidOntext").dxDateBox("instance").option("disabled", false);
+                                  var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                                if (dataGrid) {
+                                    dataGrid.columnOption("ClaimedAmount", "allowEditing", false);
+                                }
                             }
                             if (formattedPostedDate) {
                                 disableclaim();
@@ -1673,7 +1722,7 @@
                                         const gridInstance = $("#dataGrid").dxDataGrid("instance");
                                       
                                         gridInstance.option("dataSource", data);
-                                             if (!Isapproved) {
+                                             if (!Isapproved && !Isverified && !Issubmitted) {
                                                       const dataSource = gridInstance.option("dataSource") || [];
                                                        dataSource.push({
                                                     ClaimedAmount: 0.00,
@@ -2100,8 +2149,64 @@
             }
         });
     }
+        function savePostdetails(){
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var rowCount = dataGrid.getVisibleRows().length;
 
+            if (rowCount !== 0) {
+                var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+                var VM = {
+                    ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                    ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                    ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                    ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                    ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                    PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                    PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                    Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
+                    FundRequestTypeId: 1,
+                    ExpenseDetails: gridData  // 🔁 Add the grid rows here
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/ExpenseClaim/UpdateVoucher",
+                    contentType: "application/json",
+                    data: JSON.stringify(VM),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+
+                             generateVoucherNo();
+
+                        } else {
+                            alert("Update failed: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has no line items to be saved, please enter transaction to save.!",
+                            "No Line Items"
+                        );
+                    }
+                });
+            } else {
+                if (IsNotification === true) {
+                    DevExpress.ui.dialog.alert(
+                        "Cannot continue saving with errors, please clear the errors and continue.",
+                        "Clear Errors"
+                    );
+                } else {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            }
+            }
     function generateVoucherNo() {
+           
             const radioGroupInstance = $("#radioGroup").dxRadioGroup("instance");
             const selectedPaymentType = radioGroupInstance.option("value");
         const grid = $("#dataGrid").dxDataGrid("instance");
@@ -2111,13 +2216,13 @@
             const selectedAccountHead = accheadId;
 
 
-        const hasValidAmounts = data.some(row => {
+        const hasValidAmounts = data.every(row => {
             return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
         });
-        const hasValidAccount = data.some(row => {
+        const hasValidAccount = data.every(row => {
             return (row.AccountId);
         });
-        const hasValidCost = data.some(row => {
+        const hasValidCost = data.every(row => {
             return (row.CostCenterCode);
         });
         if (!hasValidAccount) {
@@ -2193,6 +2298,7 @@
             const totalApproved      = grid.getTotalSummaryValue("ApprovedAmount") || 0;
             const claimRefNo         = $("#VoucherNo").dxTextBox("instance").option("value");
             const effectiveDate      = $("#claimerEffectiveDate").dxDateBox("instance").option("value");
+             const paidon      = $("#paidOntext").dxDateBox("instance").option("value");
             const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
             const selectedAccountHead = accountHeadInstance.option("value");
             const selectedPaymentType = radioGroupInstance.option("value");
@@ -2209,6 +2315,7 @@
                     TotalAmount:       totalApproved,
                     EffectiveDate:     effectiveDate.toISOString(),
                     TypeOfClaim:1,
+                    PaidOn: paidon ? paidon.toISOString() : new Date().toISOString(),
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
@@ -2216,7 +2323,7 @@
                     //  Update UI fields with result
                         $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
                         $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
-                        $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
+                        $("#paidOntext").dxDateBox("instance").option("value", result.PaidOn);
                         disableclaim();
 
                         // Bind Attachments from Expense to Voucher 
@@ -2304,7 +2411,7 @@
             $("#claimerdate").dxDateBox("instance").option("disabled", true);
             $("#claimerEffectiveDate").dxDateBox("instance").option("disabled", true);
             $("#txtEntryNarration").dxTextArea("instance").option("disabled", true);
-
+             $("#paidOntext").dxDateBox("instance").option("disabled", true);
             // 🔒 Disable DataGrid editing
             $("#dataGrid").dxDataGrid("instance").option("editing", {
                 allowUpdating: false,
@@ -2313,16 +2420,25 @@
                 useIcons: true
             });
 
-            // 🔒 Disable all buttons except #btnjournalBack
-            $("button").not("#btnExpenceBack").prop("disabled", true);
+               // 🔒 Disable all native <button> except specific ones
+                $("button").not("#btnExpenceBack, #btnDelete, #btnAttach").prop("disabled", true);
 
-            // If your DevExtreme buttons are not native <button> elements, use this instead:
-            $(".dx-button").each(function () {
-                const $btn = $(this);
-                if (!$btn.closest("#btnExpenceBack").length) {
-                    $btn.dxButton("instance").option("disabled", true);
-                }
-            });
+                // 🔒 Disable all DevExtreme buttons except the three allowed
+                $(".dx-button").each(function () {
+                    const $btn = $(this);
+                    const isAllowed =
+                        $btn.closest("#btnExpenceBack").length ||
+                        $btn.closest("#btnDelete").length ||
+                        $btn.closest("#btnAttach").length;
+
+                    if (!isAllowed) {
+                        const instance = $btn.dxButton("instance");
+                        if (instance) {
+                            instance.option("disabled", true);
+                        }
+                    }
+                });
+
             // 🔒 Wait for grid content to be rendered and disable cell buttons
             setTimeout(function () {
                 $("#dataGrid").find(".dx-button").each(function () {
@@ -2971,6 +3087,63 @@
             }
         });
     }
+            // Prevent non-digit keys and prevent typing beyond 15 digits
+    function suppliervatno_onKeyDown(e) {
+        const k = e.event.key;
+
+        // allow editing/navigation keys
+        const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
+        if (allowed.indexOf(k) !== -1) return;
+
+        // allow Ctrl/Cmd combos (copy/paste/select all)
+        if (e.event.ctrlKey || e.event.metaKey) return;
+
+        // only digits allowed
+        if (!/^\d$/.test(k)) {
+            e.event.preventDefault();
+            return;
+        }
+
+        // block if value length would exceed 15 (consider selection replacement)
+        const input = e.element.querySelector('input');
+        if (!input) return;
+        const current = input.value || "";
+        const selStart = input.selectionStart;
+        const selEnd = input.selectionEnd;
+        const newLength = current.length - (selEnd - selStart) + 1; // +1 for the new digit
+        if (newLength > 15) {
+            e.event.preventDefault();
+        }
+    }
+
+    // Handle paste: clean non-digits and trim to 15, then insert
+    function suppliervatno_onPaste(e) {
+        e.event.preventDefault();
+        const pasted = (e.event.clipboardData || window.clipboardData).getData('text') || "";
+        const digits = pasted.replace(/\D/g, "").slice(0, 15);
+
+        const input = e.element.querySelector('input');
+        const current = input ? input.value || "" : "";
+        const selStart = input ? input.selectionStart : 0;
+        const selEnd = input ? input.selectionEnd : 0;
+
+        const newVal = (current.slice(0, selStart) + digits + current.slice(selEnd))
+                         .replace(/\D/g, "")
+                         .slice(0, 15);
+
+        e.component.option('value', newVal);
+    }
+
+    // Ensure programmatic changes / other events also keep only digits and max length
+    function suppliervatno_onValueChanged(e) {
+        const v = e.value || "";
+        const cleaned = String(v).replace(/\D/g, "").slice(0, 15);
+        if (cleaned !== String(v)) {
+            // update only if changed (avoids infinite loop)
+            e.component.option("value", cleaned);
+        }
+    }
+
         function saveapprovedetails(){
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                 var rowCount = dataGrid.getVisibleRows().length;
