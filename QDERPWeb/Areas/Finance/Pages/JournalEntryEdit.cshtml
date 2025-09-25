@@ -376,6 +376,7 @@
         showSpinButtons = true,
         format = "#,##0.00",
         max = 99999999, // Allows up to 8 digits before decimal
+        min = 0,
         onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
     });
 
@@ -385,6 +386,7 @@
         showSpinButtons = true,
         format = "#,##0.00",
         max = 99999999, // Allows up to 8 digits before decimal
+        min = 0,
         onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
     });
                     columns.Add().DataField("CostAllocationDescription").Caption(new JS("formatMessage('Cost Allocation')")).Width(200);
@@ -798,17 +800,22 @@
         const voucherNoFromUrl = getUrlParameter('journalRefNo');
 
         if (voucherNoFromUrl) {
-            // ✅ Bind voucher number from URL
+            // ✅ Use voucher number from URL
             voucherNoField.option("value", voucherNoFromUrl);
-                getDocumentCount();
+            getDocumentCount();
         } else {
-            // ❌ If not available, generate new one
+            // ❌ No voucher number in URL — generate a new one only once
             $.ajax({
                 url: '@Url.Action("GetNewVoucherNo", "JournalEntryEdit")',
                 type: 'GET',
                 success: function (data) {
                     voucherNoField.option("value", data);
-                        Savedetailsonload();
+                    Savedetailsonload();
+                   
+                    const newUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(data)}`;
+                    window.history.replaceState({}, "", newUrl);
+
+                    
                     getDocumentCount();
                 },
                 error: function () {
@@ -825,6 +832,7 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
     });
+
 
 
     $("#btnSave").on("click", function (e) {

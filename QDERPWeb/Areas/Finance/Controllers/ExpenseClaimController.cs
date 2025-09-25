@@ -1376,7 +1376,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     master.IsPaid = true;
                     master.PaidBy = HttpContext.Session.GetString("UserName") ?? "System";
-                    master.PaidOn = DateTime.Now;
+                    master.PaidOn = dto.PaidOn;
                     master.PaymentAccount = dto.SelectedAccountHead;
                     master.PaymentVoucherNo = dto.PaymentVoucherNo;
                     master.PaymentType = dto.SelectedPaymentType;
@@ -1402,7 +1402,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     IsPaid = true,
                     PaidBy = HttpContext.Session.GetString("UserName") ?? "System",
-                    PaidOn = DateTime.Now.ToString("dd-MMM-yyyy")
+                    PaidOn = dto.PaidOn.ToString("dd-MMM-yyyy")
                 });
             }
             catch (Exception ex)

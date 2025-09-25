@@ -93,7 +93,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
 
-            ConfigureDataSource(accountId, frmDate, toDate);
+            ConfigureDataSource(accountId);
         }
 
         private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
@@ -116,7 +116,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
             }
         }
 
-        private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime toDate)
+        private void ConfigureDataSource(string accountId)
         {
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
@@ -124,10 +124,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                 sqlDataSource1 = new SqlDataSource(connectionParams);
 
                 var querySql = @"
-                    SELECT * 
-                    FROM qry205_027AgeingBillsReceivableWtColumns  
-                    WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                    AND VoucherDate BETWEEN @StartDate AND @EndDate";
+            SELECT * 
+            FROM qry205_027AgeingBillsReceivableWtColumns  
+            WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)";
 
                 var customQuery = new CustomSqlQuery
                 {
@@ -135,12 +134,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                     Sql = querySql
                 };
 
-                customQuery.Parameters.AddRange(new[]
-                {
-                    new QueryParameter("@AccountID", typeof(string), accountId ?? ""),
-                    new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-                    new QueryParameter("@EndDate", typeof(DateTime), toDate)
-                });
+                customQuery.Parameters.Add(
+                    new QueryParameter("@AccountID", typeof(string), string.IsNullOrEmpty(accountId) ? (object)DBNull.Value : accountId)
+                );
 
                 sqlDataSource1.Queries.Clear();
                 sqlDataSource1.Queries.Add(customQuery);
