@@ -122,6 +122,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
         }
 
         private void AddSqlQueryParameters(string accountId)
+        
         {
             var sqlQuery = new CustomSqlQuery
             {

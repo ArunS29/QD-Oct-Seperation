@@ -740,24 +740,25 @@ namespace QD.ERP.Web.Pages
 
                 return Page();
             }
+            if (reportName == "printExpensesClaimBydateSimplified" )
+            {
+                if (string.IsNullOrEmpty(salesOrderNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
 
-            if(string.IsNullOrEmpty(claimer))
-            {
-                return BadRequest("claimer is required.");
-            }
-            claimer = claimer;
-            switch(reportName)
-            {
-                case "printExpensesClaimBydateSimplified":
+                claimer = claimer;
+
+                if (reportName == "printExpensesClaimBydateSimplified")
+
+                {
                     Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                    break;
-                //case "printClaimReportBydate_Detailed":
-                //    Report = new printClaimReportBydate_Detailed(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                //    break;
+                }
 
-                default:
-                    return NotFound("Report not found.");
+
+                return Page();
             }
+
 
             // 👉 Existing CASE 1: Old voucher reports
             if (string.IsNullOrEmpty(voucherNo))
@@ -808,7 +809,10 @@ namespace QD.ERP.Web.Pages
 
 
 
+
             return Page();
         }
+
+
     }
 }
