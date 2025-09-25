@@ -4588,31 +4588,57 @@
 },
 
 
-					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'),cssClass: "center-header", width: 150,
-					editorOptions: {
-                            onInput: function(e) {
-                            let maxLength = 8; // Example: allow max 5 digits
+					  {
+                    dataField: "QuantityInvoiced",
+                    caption: formatMessage('Qty'),
+                    cssClass: "center-header",
+                    width: 150,
+                    alignment: "right",
+                    editorOptions: {
+                        onInput: function (e) {
+                            let maxLength = 8;
                             let value = e.event.target.value;
                             if (value.length > maxLength) {
                                 e.event.target.value = value.slice(0, maxLength);
                             }
                         }
-                    } },
-
-					{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150,
-					editorOptions: {
-                            onInput: function(e) {
-                            let maxLength = 8; // Example: allow max 5 digits
-                            let value = e.event.target.value;
-                            if (value.length > maxLength) {
-                                e.event.target.value = value.slice(0, maxLength);
-                            }
+                    },
+                    onCellValueChanged: function (e) {
+                        if (e.value !== e.oldValue) {
+                            updateInvoiceChildren();
                         }
-                    }},
+                    }
+                },
 
-						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
+						{
+    dataField: "UnitRate",
+    caption: formatMessage('Unit Price'),
+    cssClass: "center-header",
+    width: 150,
+    alignment: "right",
+    format: getDecimalFormat(currencyDecimals),
+
+    editorOptions: {
+        onInput: function (e) {
+            let maxLength = 8; 
+            let value = e.event.target.value;
+            if (value.length > maxLength) {
+                e.event.target.value = value.slice(0, maxLength);
+            }
+        }
+    },
+
+    onCellValueChanged: function (e) {
+        if (e.value !== e.oldValue) {
+            updateInvoiceChildren();
+        }
+    }
+},
+
+						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185,format: getDecimalFormat(currencyDecimals)},
 
 						{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150,
+						format: getDecimalFormat(currencyDecimals),
 						editorOptions: {
                             onInput: function(e) {
                             let maxLength = 8; // Example: allow max 5 digits
@@ -4621,7 +4647,13 @@
                                 e.event.target.value = value.slice(0, maxLength);
                             }
                         }
-                    }},
+                    },
+					 onCellValueChanged: function (e) {
+        if (e.value !== e.oldValue) {
+            updateInvoiceChildren();
+        }
+    }
+					},
 
 					//{ dataField: "DiscountDetails", caption: "...", width: 50 },
 		{
@@ -4638,13 +4670,13 @@
 					width: 60,
 					onClick: function (e) {
 						showCalcPopover(options.rowIndex, e.element);
-						//onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+						
 					}
 				}).appendTo(container);
 			}
 		},
 
-					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: getDecimalFormat(currencyDecimals)},
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -4668,12 +4700,14 @@
 											cellInfo.setValue(selectedItem.TaxCodeToDisplay);
 											let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 											let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-											let TaxSlabCode = selectedItem.TaxSlabCode;
-
-											VATPercentage(selectedItem.TaxRate, rowIndex, `${formatMessage('TaxSlabCode')}`) 
-
-
+											 TaxSlabCode = selectedItem.TaxSlabCode;
+											 VATPercentage(selectedItem.TaxRate, rowIndex, TaxSlabCode)
+											  dataGrid.saveEditData();	
+										     if (e.previousValue !== e.value) {
+                                                 updateInvoiceChildren();
+                                             }
 										}
+										
 									},
 									contentTemplate: function (e) {
 										return $("<div>").dxDataGrid({
@@ -4695,6 +4729,7 @@
 													e.component.close();
 												}
 											}
+										
 										});
 									}
 								});
@@ -4797,9 +4832,9 @@
   }
 },
 
-						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150,format: getDecimalFormat(currencyDecimals) },
 
-						{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150,format: getDecimalFormat(currencyDecimals) },
 
 						{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -4832,19 +4867,20 @@
 		});
 
 
-
-				$("#btnAddNew").on("click", function (e) {
+		$("#btnAddNew").on("click", function (e) {
     const grid = $("#B2BdataGrid").dxDataGrid("instance");
     const store = grid.getDataSource().store();
     const currentData = grid.getDataSource().items();
-
+	 const InvoiceNo = $('#InvoiceNo').dxTextBox("instance")?.option("value");
+	debugger;
     const nextSNo = currentData.length > 0
         ? Math.max(...currentData.map(row => row.SNo || 0)) + 1
         : 1;
 
     // Helper to format number with decimals
     const formatAmount = (val) => Number(val).toFixed(currencyDecimals);
-
+	// $(".tab-content").hide();
+	// $("#tab-content-4").show();
     const newRow = {
         SNo: nextSNo,
         ItemCode: "", 
@@ -4865,6 +4901,53 @@
         .then(() => {
             grid.refresh();
             $(".action-buttons-container").show();
+
+            // ✅ Wrap newRow in array for .map()
+            let updatedDataSource = [newRow].map(item => ({
+                ...item,
+                InvoiceNo: InvoiceNo          // Make sure this variable exists
+               // UnitRateMethod: UnitCode || "",  // Provide default if not declared
+               // TaxAmount: amt || 0              // Provide default if not declared
+            }));
+
+            $.ajax({
+                type: "POST",
+                url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+                contentType: "application/json",
+                data: JSON.stringify(updatedDataSource),
+                success: function () {
+                    $.ajax({
+                        type: "GET",
+                        url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+                        dataType: 'json',
+                        success: function (response) {
+                            let rowData = response.map((item, index) => ({
+                                SNo: index + 1,
+                                ...item
+                            }));
+
+                            let grid = $("#B2BdataGrid").dxDataGrid("instance");
+                            grid.option("dataSource", rowData);
+                            grid.refresh();
+
+                            getDocumentCount();
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching grid data:", error);
+                            document.getElementById('loadingSpinner').style.display = 'none';
+                        }
+                    });
+
+                    // isVoucherSaved = true;
+                    // updateWorkflowVisual(getWorkflowStatusFromFields());
+                    // DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                }
+            });
         })
         .catch(error => {
             DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -4885,18 +4968,6 @@
 				}
 			}
 
-				function onCalCardClick(cellElement) {
-					const popover = $("#CalcardPopover").dxPopover("instance");
-
-				// Set the new target element for the popover
-				popover.option("target", cellElement);
-
-				if (popover.option("visible")) {
-					popover.hide();
-				} else {
-					popover.show();
-				}
-			}
 
 				function onexemptionCodeClick(cellElement) {
 			const $popover = $("#ExcemptioncodePopover");
@@ -4947,41 +5018,7 @@
 					}
 				});
 			});
-	// 			$(function () {
-	// 	$("#CalcardPopover").dxPopover({
-	// 		width: 550,
-	// 		position: "bottom",
-	// 		showEvent: "", // Manual control
-	// 		hideEvent: "", // Manual control
-	// 		hideOnOutsideClick: true,
-	// 		contentTemplate: function (contentElement) {
-	// 			contentElement.empty();
-	// 					   debugger;
-	// 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
-	// 	// Get required values from grid for the specific row
-	// 	const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
-	// 	const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
-
-
-	// 	// Calculate the raw amount
-	// 	let amount = qty * unitPrice;
-
-
-	// 			$.ajax({
-
-	// 				url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
-	// 				type: 'GET',
-	// 				success: function (data) {
-	// 					contentElement.html(data);
-	// 				},
-	// 				error: function () {
-	// 					contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-	// });
 
 	$(function () {
 
@@ -5008,11 +5045,11 @@ function showCalcPopover(rowIndex, targetElement) {
     const amount = qty * unitPrice;
 	debugger;
 
-		const popover = $("#CalcardPopover").dxPopover("instance");
-		 popover.option("target", targetElement);
+    const popover = $("#CalcardPopover").dxPopover("instance");
+    popover.option("target", targetElement);
 
-// Dynamically update the popover contentTemplate with row-specific URL
-popover.option("contentTemplate", function (contentElement) {
+    // Dynamically update the popover contentTemplate with row-specific URL
+    popover.option("contentTemplate", function (contentElement) {
     contentElement.empty();
 
     $.ajax({
@@ -6713,7 +6750,7 @@ SaveAndClosebtn.option("disabled", false);
                     grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
                     grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
                     grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
-                    grid.cellValue(rowIndex, `${formatMessage('TaxSlabCode')}`, TaxSlabCode);
+                    grid.cellValue(rowIndex, 'TaxSlabCode', TaxSlabCode);
 					 grid.saveEditData();
 				  
 }		
@@ -8719,6 +8756,66 @@ function getExemptionCode(rowIndex, callback) {
       callback([]);
     }
   });
+}
+
+
+function updateInvoiceChildren() {
+    let grid = $("#B2BdataGrid").dxDataGrid("instance");
+    let InvoiceChildren = grid.option("dataSource") || [];
+
+	const InVoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+
+    // prepare updated datasource
+    let updatedDataSource = InvoiceChildren.map(item => ({
+        ...item,
+        InvoiceNo: InVoiceNo
+		//,
+        // UnitRateMethod: UnitCode,
+        // TaxAmount: amt
+    }));
+
+    // show spinner if you want
+    document.getElementById('loadingSpinner').style.display = 'block';
+
+    $.ajax({
+        type: "POST",
+        url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+        contentType: "application/json",
+        data: JSON.stringify(updatedDataSource),
+        success: function () {
+            // after update -> refresh grid data
+            $.ajax({
+                type: "GET",
+                url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+                dataType: 'json',
+                success: function (response) {
+                    let rowData = response.map((item, index) => ({
+                        SNo: index + 1,
+                        ...item
+                    }));
+
+                    grid.option("dataSource", rowData);
+                    grid.refresh();
+
+                    getDocumentCount();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching grid data:", error);
+                },
+                complete: function () {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                }
+            });
+
+            // isVoucherSaved = true; // Mark Updated step as done
+            // updateWorkflowVisual(getWorkflowStatusFromFields());
+            ///DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
+    });
 }
 				
 </script>
