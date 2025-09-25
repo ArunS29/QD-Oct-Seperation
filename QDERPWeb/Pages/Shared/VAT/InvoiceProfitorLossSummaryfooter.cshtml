@@ -1,4 +1,5 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+﻿
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
 
     /* Button Styling */
@@ -167,62 +168,8 @@
                 .ShowArrowIcon(false)
                 )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-                .ID("rowHeightProperties")
-                .Icon("") // fallback to standard icon if "rowproperties" not working
-                .Width("100%")
-                .Text(new JS("formatMessage('Set Row Height')"))
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-                    items.Add()
-                    .Text("Short (1 Line)")
-                    .Template(@<text>
-                                   <svg width="20" height="20" viewBox="0 0 20 20">
-                                       <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-                                   </svg> Short
-                               </text>)
-                    .OnClick("function() { ChangeRowHeight('30'); }");
+   
 
-                    items.Add()
-                    .Text("Medium (2 Lines)")
-                    .Template(@<text>
-                                   <svg width="20" height="20" viewBox="0 0 20 20">
-                                       <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                                       <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                   </svg> Medium
-                               </text>)
-                    .OnClick("function() { ChangeRowHeight('60'); }");
-
-                    items.Add()
-                    .Text("Tall (4 Lines)")
-                    .Template(@<text>
-                                   <svg width="20" height="20" viewBox="0 0 20 20">
-                                       <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                                       <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                                       <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                       <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-                                   </svg> Tall
-                               </text>)
-                    .OnClick("function() { ChangeRowHeight('90'); }");
-
-                    items.Add()
-                    .Text("Extra Tall (8 Lines)")
-                    .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                @for (var i = 1; i <= 8; i++)
-                            {
-                                var y = 1 + (i - 1) * 2;
-                                <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                            }
-            </svg> Extra Tall
-        </text>)
-                .OnClick("function() { ChangeRowHeight('130'); }");
-                })
-                .ShowArrowIcon(false)
-                )
-    </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnPrint")
@@ -257,13 +204,28 @@
                 .OnClick("toggleGroupPanel")
                 )
     </div>
+    <div class="btn-containerIvoiceEdit">
+        @(Html.DevExtreme().Button()
+                .ID("btngetcostofgoodssold")
+                .Text(new JS("formatMessage('Get Cost Of Goods Sold')"))
+                .Icon("card")
+                .Width(150)
+        @* .OnClick("navigateToInvoiceEdit") *@
+                )
 
+    </div>
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
 
     <!-- Submenu placeholder -->
     <div id="additionalFormatsSubmenu"></div>
+
+
+
+
 </div>
+
+
 
 <script type="text/javascript">
 
@@ -1397,6 +1359,8 @@
               showColumnChooser();
               console.log('End permission handling');
           });
+
+
                           function setDefaultLayoutClick(e) {
           const grid = $("#dataGrid").dxDataGrid("instance");
           const form = $('#formId').val();

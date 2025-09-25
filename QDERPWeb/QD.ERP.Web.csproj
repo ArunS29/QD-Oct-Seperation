@@ -49,7 +49,7 @@
 		<PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
 		<PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
 		<PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
-		<PackageReference Include="chilkat-x64" Version="11.1.0" />
+		<PackageReference Include="chilkat-x64" Version="9.5.0.94" />
 		<PackageReference Include="DevExpress.AspNetCore.Reporting" Version="24.1.6" />
 		<PackageReference Include="DevExpress.AspNetCore.RichEdit" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Document.Processor" Version="24.1.6" />
@@ -83,11 +83,12 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="Svg" Version="3.4.7" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-		 		    <PackageReference Include="Azure.Identity" Version="1.13.2" />
+		 <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />
-    <PackageReference Include="System.Net.Primitives" Version="4.3.0" />	
+    <PackageReference Include="System.Net.Primitives" Version="4.3.0" />
+	
 		
 	</ItemGroup>
 
@@ -110,6 +111,12 @@
 	<ItemGroup>
 		<None Include="efpt.config.json.user" />
 		<None Include="wwwroot\images\sar 1.svg" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="ChilkatDotNet46">
+	    <HintPath>ReferenceDLL\ChilkatDotNet46.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>

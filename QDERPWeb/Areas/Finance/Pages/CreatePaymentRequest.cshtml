@@ -515,6 +515,11 @@
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                         totalItems.Add().Column("ApprovedAmount").SummaryType(SummaryType.Sum)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                        totalItems.Add()
+                    .Name("ExpenseDescriptionCount")
+                    .SummaryType(SummaryType.Custom)
+                    .ShowInColumn("ExpenseDescription")
+                    .CustomizeText("function(e) { return (e.value || 0) > 0 ? e.value + ' Bills' : ''; }");
                     });
                 })
                 .OnRowRemoving("onexpenserowremoving")
@@ -717,7 +722,7 @@
                          .DataSource(Enumerable.Empty<object>())
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
-                        .FocusedRowEnabled(true)
+                        .FocusedRowEnabled(false)
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
                         .OnInitialized("dataGridAccountHeadInitialized")
@@ -1047,28 +1052,25 @@
             function dataGridAccountHeadInitialized(e) {
                accountHeadGrid = e.component;
             }
-              function dataGridAccountHeadSelectionChanged(e) {
-                  debugger;
-            const selectedRowData = e.selectedRowsData[0]; // get selected row
-            const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+                   function dataGridAccountHeadSelectionChanged(e) {
+        const selectedRowData = e.selectedRowsData[0];
+        const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
 
-            if (selectedRowData) {
-                // Store value as AccountId
-                ddbInstance.option("value", selectedRowData.AccountId);
+        if (selectedRowData) {
+            // ✅ Just set value; displayExpr will take care of showing AccountHead
+            ddbInstance.option("value", selectedRowData.AccountId);
 
-                 // Manually set the visible text in the input field
-                ddbInstance.element().find(".dx-texteditor-input").val(selectedRowData.AccountHead);
+            // No need to manually change input value — DevExtreme will use DisplayExpr
 
-                // Close dropdown after selection
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-
-                // Save globally if needed
-                accheadId = selectedRowData.AccountId;
-                accheadname = selectedRowData.AccountHead;
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
             }
+
+            accheadId = selectedRowData.AccountId;
+            accheadname = selectedRowData.AccountHead;
         }
+    }
+
 
             function dataGridAccountHeadInitialized1(e) {
                 dataGrid = e.component;
@@ -1427,6 +1429,45 @@
                             addEmptyRowIfNeeded();
 
                     });
+                    dataGrid.option("summary", {
+                            totalItems: [
+                                     {
+                                        column: "ClaimedAmount",
+                                        summaryType: "sum",
+                                        customizeText: function (e) {
+                                            return e.value != null ? e.value.toFixed(2) : "";
+                                        }
+                                    },
+                                    {
+                                        column: "ApprovedAmount",
+                                        summaryType: "sum",
+                                        customizeText: function (e) {
+                                            return e.value != null ? e.value.toFixed(2) : "";
+                                        }
+                                    },
+                                {
+                                    name: "ExpenseDescriptionCount",
+                                    showInColumn: "ExpenseDescription",
+                                    summaryType: "custom",
+                                    customizeText: function (e) {
+                                        return (e.value || 0) > 0 ? e.value + " Bills" : "";
+                                    }
+                                }
+                            ],
+                            calculateCustomSummary: function (options) {
+                                if (options.name === "ExpenseDescriptionCount") {
+                                    if (options.summaryProcess === "start") {
+                                        options.totalValue = 0;
+                                    }
+                                    if (options.summaryProcess === "calculate") {
+                                        if (options.value && typeof options.value.ExpenseDescription === "string" &&
+                                            options.value.ExpenseDescription.trim() !== "") {
+                                            options.totalValue++;
+                                        }
+                                    }
+                                }
+                            }
+                        });
 
                     dataGrid.option("onCellPrepared", function (e) {
                         if (e.rowType === "data") {
@@ -1684,44 +1725,59 @@
         // }
 
         // RadioGroup change: just update the current value
-          function onRadioGroupValueChanged(e) {
+            function onRadioGroupValueChanged(e) {
         currentRadioValue = e.value;
         const accountHeadGrid = $("#accounthead-datagrid").dxDataGrid("instance");
         const dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
 
         // Clear selection
         dropDownBox.option("value", null);
-        dropDownBox.element().find(".dx-texteditor-input").val("");
 
-        // Reload both DropDownBox + DataGrid with correct data
-        const newStore = getAccountHeadData(currentRadioValue);
-        dropDownBox.option("dataSource", newStore);
+        const newData = getAccountHeadData(currentRadioValue);
 
         if (accountHeadGrid) {
-            accountHeadGrid.option("dataSource", newStore);
+            accountHeadGrid.option("dataSource", newData);
             accountHeadGrid.option("focusedRowKey", null);
             accountHeadGrid.clearSelection();
         }
+
+        // ✅ Reload DropDownBox dataSource as well
+        dropDownBox.option("dataSource", newData);
     }
 
+    function getAccountHeadData(type) {
+        let loadAction = type === "Cash Payment"
+            ? "GetCPPaymentAccounts"
+            : "GetBPPaymentAccounts";
+
+        return DevExpress.data.AspNet.createStore({
+            key: "AccountId",
+            loadUrl: "/api/ExpenseClaim/" + loadAction
+        });
+    }
 
         // DropDownBox opened: always ensure grid shows correct data
-        function onPaymentOpened(e) {
-            if (!currentRadioValue) return; // nothing selected
-            updateAccountHeadGrid();
-            setTimeout(() => {
-                    e.component.focus();
-                });
-                const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+           function onPaymentOpened(e) {
+        if (!currentRadioValue) return; // nothing selected
+        updateAccountHeadGrid();
+        const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+           setTimeout(() => {
+            if (grid) {
+                const ds = grid.getDataSource();
+                const items = ds ? ds.items() : [];
 
-                // Wait for content template rendering
-                setTimeout(() => {
-                    if (grid && Accountname) {
-                        grid.selectRows([Accountname], false);
-                         grid.option("focusedRowKey", Accountname);
-                    }
-                }, 1000);
-        }
+                // ✅ Only try to focus/select if data exists and Accountname is valid
+                if (items.length > 0 && Accountname) {
+                    grid.selectRows([Accountname], false);
+                    grid.option("focusedRowKey", Accountname);
+                } else {
+                    // Disable row focusing if no data to avoid E1042
+                    grid.option("focusedRowEnabled", false);
+                }
+            }
+        }, 1000);
+    }
+
 
         // Function to update the DataGrid's data based on current radio selection
         function updateAccountHeadGrid() {
@@ -1869,45 +1925,52 @@
             }
         });
 
-               function onClaimedAmountChanged(e) {
+                    function onClaimedAmountChanged(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
 
-            const grid = $("#dataGrid").dxDataGrid("instance");
+        // Find the row element and key safely
+        const $rowElement = $(e.element).closest(".dx-row");
+        const rowKey = grid.getKeyByRowIndex($rowElement.index());
+        const rowIndex = grid.getRowIndexByKey(rowKey);
 
-            // Find the row index of the cell being edited
-            const $rowElement = $(e.element).closest(".dx-row");
-            const rowIndex = $rowElement.index();
+        const claimedValue = e.value || 0;
 
-            const rowData = grid.getVisibleRows()[rowIndex]?.data;
-            if (!rowData) return;
+        grid.cellValue(rowIndex, "ClaimedAmount", claimedValue);
+        grid.cellValue(rowIndex, "ApprovedAmount", claimedValue);
+    }
 
-            const claimedValue = e.value || 0;
-            rowData.ClaimedAmount = claimedValue;
-            rowData.ApprovedAmount = claimedValue;
+    function onApprovedAmountChanged(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
 
-            grid.refresh();
+        const $rowElement = $(e.element).closest(".dx-row");
+        const rowKey = grid.getKeyByRowIndex($rowElement.index());
+        const rowIndex = grid.getRowIndexByKey(rowKey);
+
+        const approvedValue = e.value || 0;
+        const claimedValue = grid.cellValue(rowIndex, "ClaimedAmount") || 0;
+
+        if (approvedValue > claimedValue) {
+            DevExpress.ui.notify("Approved Amount Cannot be more than Claimed Amount", "error", 3000);
+            grid.cellValue(rowIndex, "ApprovedAmount", claimedValue);
+        } else {
+            grid.cellValue(rowIndex, "ApprovedAmount", approvedValue);
         }
+    }
 
-        function onApprovedAmountChanged(e) {
-            const grid = $("#dataGrid").dxDataGrid("instance");
+    function onPurchaserOpened(e) {
+                 setTimeout(() => {
+                     e.component.focus();
+                 });
+                 // Select row in the inner data grid
+                 const grid = $("#purchasername-datagrid").dxDataGrid("instance");
 
-            const $rowElement = $(e.element).closest(".dx-row");
-            const rowIndex = $rowElement.index();
-
-            const rowData = grid.getVisibleRows()[rowIndex]?.data;
-            if (!rowData) return;
-
-            const approvedValue = e.value || 0;
-            const claimedValue = rowData.ClaimedAmount || 0;
-
-            if (approvedValue > claimedValue) {
-                DevExpress.ui.notify("Approved Amount Cannot be more than Claimed Amount", "error", 3000);
-                rowData.ApprovedAmount = claimedValue;
-            } else {
-                rowData.ApprovedAmount = approvedValue;
-            }
-
-            grid.refresh();
-        }
+                 // Make sure grid is ready and tax code is defined
+                 setTimeout(() => {
+                     if (grid && purchaserName) {
+                             grid.selectRows([purchaserName], false);
+                     }
+                 }, 400);
+             }
         $("#btnSubmit").on("click", function (e) {
             e.preventDefault();
 
@@ -2051,6 +2114,14 @@
             const hasValidCost = data.some(row => {
                 return (row.CostCenterCode);
             });
+             if (!hasValidAccount) {
+            DevExpress.ui.dialog.alert("Please check your Claim Request, Ledger is not Selected", "Ledger Invalid");
+            return;
+        }
+        if (!hasValidCost) {
+            DevExpress.ui.dialog.alert("Please check your Claim Request, Cost Center is not Selected", "Cost Center Invalid");
+            return;
+        }
             if (!hasValidAmounts) {
                 DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
                 return;

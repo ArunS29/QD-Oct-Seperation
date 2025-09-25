@@ -832,6 +832,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         x.ClaimDate,
                                         x.ProjectClaimedFor,
                                         x.Priority,
+                                        x.ClaimEffectiveDate,
                                         x.ClaimRemarks,
                                         x.IsSubmittedToFinance,
                                         x.SubmittedBy,
@@ -984,23 +985,65 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSupplierName()
+        public async Task<IActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var data = dbContext.Tbl30199SupplierMasters
-                    .Select(c => new
-                    {
-                        c.SupplierName,
-                        c.SupplierVatno
-                    }).ToList();
+                try
+                {
+                    var supplierDataQuery = dbContext.Tbl20103ExpenseClaimChildren
+                        // Remove null/empty/whitespace supplier names first
+                        .Where(i => i.SupplierName != null && i.SupplierName.Trim() != "")
+                        // Group by trimmed name so " ABC " and "ABC" are treated the same
+                        .GroupBy(i => i.SupplierName.Trim())
+                        .Select(g => new
+                        {
+                            SupplierName = g.Key,
+                            SupplierVATNo = g.Select(x => x.SupplierVatno).FirstOrDefault()
+                        });
 
-                return Ok(data);
+                    return Json(await DataSourceLoader.LoadAsync(supplierDataQuery, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSupplierName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
+        public async Task<IActionResult> GetPurchaserNames(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var supplierDataQuery = dbContext.Tbl20103ExpenseClaimChildren
+                        // Remove null/empty/whitespace supplier names first
+                        .Where(i => i.PurchaserName != null && i.PurchaserName.Trim() != "")
+                        // Group by trimmed name so " ABC " and "ABC" are treated the same
+                        .GroupBy(i => i.PurchaserName.Trim())
+                        .Select(g => new
+                        {
+                            PurchaserName = g.Key,
+                            SupplierVATNo = g.Select(x => x.SupplierVatno).FirstOrDefault()
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(supplierDataQuery, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSupplierName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
         public IActionResult GetCostEmployees()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

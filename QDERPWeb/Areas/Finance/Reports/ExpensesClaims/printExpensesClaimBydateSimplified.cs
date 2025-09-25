@@ -10,17 +10,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 {
 	public partial class printExpensesClaimBydateSimplified : DevExpress.XtraReports.UI.XtraReport
 	{	
-		public printExpensesClaimBydateSimplified(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+		public printExpensesClaimBydateSimplified(string claimer, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,TenantDbContextHelper tenantDbContextHelper)
         {
 			InitializeComponent();
-            SetReportParameters(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
-            LoadReportData(voucherNo);
+            SetReportParameters(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            LoadReportData(claimer);
         }
         public printExpensesClaimBydateSimplified()
         {
             InitializeComponent();
         }
-        private void SetReportParameters(string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private void SetReportParameters(string claimer, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -41,7 +41,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
                 }
             }
 
-            AddOrUpdateParameter("VoucherNo", voucherNo, typeof(string));
+            AddOrUpdateParameter("claimer", claimer, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
@@ -68,9 +68,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
                 logoPictureBox.Image = logoImage;
         }
 
-        private void LoadReportData(string voucherNo)
+        private void LoadReportData(string claimer)
         {
-            DataTable dt = GetReportData(voucherNo);
+            DataTable dt = GetReportData(claimer);
 
             if (dt.Rows.Count == 0)
             {
@@ -84,7 +84,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
             }
         }
 
-        private DataTable GetReportData(string voucherNo)
+        private DataTable GetReportData(string claimer)
         {
             DataTable dt = new DataTable();
 
@@ -102,7 +102,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
                     using (SqlCommand cmd = new SqlCommand("spGetClaimDetailedByVoucher", conn)) // Use your actual SP here
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@VoucherNo", voucherNo);
+                        cmd.Parameters.AddWithValue("@claimer", claimer);
 
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         conn.Open();

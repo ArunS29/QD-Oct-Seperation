@@ -461,12 +461,12 @@
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("UserId")
             )
-            
+            .AcceptCustomValue(false)
             .LabelMode(EditorLabelMode.Floating)
             .ID("Claimer")
             .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(false)
+           
+            .OpenOnFieldClick(true)
             .ValueChangeEvent("input")
             .HoverStateEnabled(true)
             .ValueExpr("UserId")
@@ -565,7 +565,7 @@
                     <%- data.ClaimRefNo %>
                 </a>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
 
                     
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -815,7 +815,7 @@ columns.Add()
                 .LoadAction("GetUser")
                 .LoadMode(DataSourceLoadMode.Raw)
                 ///   .Key("AccountHead") //salary paid entry
-                .Key("UserName")
+                .Key("UserId")
 
                 )
                 
@@ -1321,9 +1321,8 @@ columns.Add()
                 toDate = currentDate;// Today
                 break;
             case 'fullyear':
-                // Get the first and last day of the current year
-                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                frmDate = new Date(currentDate.getFullYear(), 0, 1);   // ✅ FIXED
+                toDate = new Date(currentDate.getFullYear(), 11, 31);  // ✅ FIXED
                 break;
             case 'lastyear':
                 // Get the first and last day of the last year
@@ -1441,29 +1440,29 @@ columns.Add()
             dataGrid.focus(dataGrid.getRowElement(focusedIndex));
         }
     }
-    function dataGridAccountHeadSelectionChanged(e) {
+       function dataGridAccountHeadSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#Claimer").dxDropDownBox("instance");
         acchead = selectedKey;
+
         if (selectedKey) {
-            ddbInstance.option("value", selectedKey);
+            ddbInstance.option("value", selectedKey); // ✅ selectedKey = UserId
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
-            // Get ReferenceNo from selected row
-            debugger
+
+            const selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
             if (selectedRowData.length > 0) {
                 accheadid = selectedRowData[0].UserId;
                 accheadname = selectedRowData[0].UserName;
-                
-
             } else {
                 DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
                 return;
             }
         }
     }
+
 
 
     function dataGridAccountHeadInitialized(e) {

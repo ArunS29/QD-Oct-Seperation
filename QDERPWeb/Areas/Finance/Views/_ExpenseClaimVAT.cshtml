@@ -25,6 +25,31 @@
     }
 }
 <style>
+    /* Common style for both buttons */
+    .custom-btn {
+        color: white !important; /* Text color */
+        border: none;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 8px; /* Rounded corners */
+    }
+
+    /* Calculate VAT button */
+    .calculate-vat-btn {
+        background-color: #ff9800 !important; /* Attractive orange */
+    }
+
+    /* Save Entry button */
+    .save-entry-btn {
+        background-color: #03a9f4 !important; /* Light blue */
+    }
+
+    /* Ensure icons inside buttons are white */
+    .custom-btn .dx-icon,
+    .custom-btn .dx-button-text {
+        color: white !important;
+    }
+
     .dx-card {
         border: 1px solid #ccc;
         border-radius: 12px;
@@ -47,7 +72,7 @@
                                 .Text(new JS("formatMessage('Calculate VAT')"))
                                 .Icon("fa fa-calculator")
                                 .Type(ButtonType.Default)
-                                .ElementAttr("style", "color: black;"))
+                                .ElementAttr("style", "color: black;").ElementAttr("class", "custom-btn calculate-vat-btn"))
                         </td>
                         <td>
                             @(Html.DevExtreme().Button()
@@ -55,7 +80,8 @@
                                 .Text(new JS("formatMessage('Save Entry')"))
                                 .Icon("save")
                                 .Type(ButtonType.Success)
-                                .ElementAttr("style", "color: black;"))
+                                                        .ElementAttr("style", "color: black;")
+                                                        .ElementAttr("class", "custom-btn save-entry-btn"))
                                 
                         </td>
                         <td colspan="2">
@@ -297,9 +323,12 @@
                                         .Columns(columns =>
                                         {
                                          columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
-                                         columns.Add().DataField("SupplierVATNo").Caption(new JS("formatMessage('Supplier VAT No')")).Visible(false)
+                                                                        columns.Add().DataField("SupplierVATNo") // <- fix casing
+                                                                    .Caption(new JS("formatMessage('Supplier VAT No')"))
+                                                                    .Visible(false)
+                                                                    .Alignment(HorizontalAlignment.Center);
 
-                                            .Alignment(HorizontalAlignment.Center);
+                                           
 
 
                                         })
@@ -345,13 +374,69 @@
                         </td>
                         <td colspan="2">
                             <div class="input-group">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("purchaserName")
-                                    .Label(new JS("formatMessage('Purchaser Name:')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%")
-                                    )
+                                @(Html.DevExtreme().DropDownBox()
+                                                                .ID("purchaserName")
+                                                                .DataSource(d => d.WebApi()
+                                                                .Controller("ExpenseClaim")
+                                                                .LoadAction("GetPurchaserNames")
+                                                                .LoadMode(DataSourceLoadMode.Raw)
+                                                                .Key("PurchaserName")
+                                                                )
+                                                                .ValueExpr("PurchaserName")
+                                                                .DisplayExpr("PurchaserName")
+                                                                .Label(new JS("formatMessage('Purchaser Name:')"))
+                                                                .LabelMode(EditorLabelMode.Floating)
+                                                                .ShowClearButton(true)
+                                                                .AcceptCustomValue(false)
+                                                                .OpenOnFieldClick(false)
+                                                                .ValueChangeEvent("change")
+                                                                .HoverStateEnabled(true)
+                                                                .Width(400)
+                                                                .TabIndex(1)
+                                                                .DropDownOptions(o => o.Width(500).DeferRendering(false))
+                                                                .OnInput("dropDownBoxOnInput")
+                                                                .OnOpened("onPurchaserOpened")
+                                                                .OnKeyDown("onKeyDown")
+                                                                .ContentTemplate(new TemplateName("PurchaserContentTemplate"))
+                                                                )
+
+                                @using (Html.DevExtreme().NamedTemplate("PurchaserContentTemplate"))
+                                {
+                                    @(
+                                                                    Html.DevExtreme().DataGrid()
+                                                                    .ID("purchasername-datagrid")
+                                                                    .DataSource(d => d.WebApi()
+                                                                    .Controller("ExpenseClaim")
+                                                                    .LoadAction("GetPurchaserNames")
+                                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                                    .Key("PurchaserName")
+                                                                    )
+                                                                    .WordWrapEnabled(true)
+                                                                    .ShowBorders(true)
+                                                                    .HeaderFilter(hf => hf.Visible(true))
+                                                                    .HoverStateEnabled(true)
+                                                                    .Paging(p => p.PageSize(15))
+                                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                                    .FilterRow(f => f.Visible(false))
+                                                                    .SearchPanel(sp => sp.Visible(false)
+                                                                    .HighlightSearchText(true)
+                                                                    .SearchVisibleColumnsOnly(false))
+                                                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                                    .OnSelectionChanged("dataGridPurchaserSelectionChanged")
+                                                                    .OnInitialized("dataGridInitialized")
+                                                                    .OnToolbarPreparing("accountHeadToolbarPreparing")
+                                                                    .Columns(columns =>
+                                                                    {
+                                                                        columns.Add().DataField("PurchaserName")
+                                                                    .Caption(new JS("formatMessage('Purchaser Name')"))
+                                                                    .Alignment(HorizontalAlignment.Center);
+                                                                    })
+                                                                    .Height(400)
+                                                                    )
+                                                                }
+
+
                             </div>
                         </td>
                     </tr>
@@ -689,6 +774,7 @@
         }
     }
 
+
     function ontaxOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -701,7 +787,7 @@
             if (grid && taxCode) {
                 grid.selectRows([taxCode], false);
             }
-        }, 1000);
+        }, 500);
     }
     function onsupplierOpened(e) {
         setTimeout(() => {
@@ -717,6 +803,20 @@
             }
         }, 400);
     }
+     function onPurchaserOpened(e) {
+         setTimeout(() => {
+             e.component.focus();
+         });
+         // Select row in the inner data grid
+         const grid = $("#purchasername-datagrid").dxDataGrid("instance");
+
+         // Make sure grid is ready and tax code is defined
+         setTimeout(() => {
+             if (grid && purchaserName) {
+                  grid.selectRows([purchaserName], false);
+             }
+         }, 400);
+     }
     function onemployeeOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -767,16 +867,20 @@
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            var selectedRowData = $("#percentage-datagrid").dxDataGrid("instance").getSelectedRowsData();
-            // Get ReferenceNo from selected row
-            if (selectedRowData.length > 0) {
-                paymentaccheadId = selectedRowData[0].CostAllocationUnitId;
-                paymentaccheadname = selectedRowData[0].CostAllocationUnit;
+           const selectedRowData = $("#percentage-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
+         if (selectedRowData.length > 0) {
+             const selectedTaxSlab = selectedRowData[0].PurchaseTaxSlab;
 
-
-
-            }
+             // ✅ Check if it contains "5%" and show warning
+              if (selectedTaxSlab && selectedTaxSlab.trim().startsWith("5%")) {
+                 DevExpress.ui.notify(
+                     "VAT you have selected is no more applicable in Saudi Arabia, Please review the VAT percentage and Continue",
+                     "warning",
+                     5000
+                 );
+             }
+         }
         }
 
     }
@@ -809,29 +913,38 @@
 
         }
     }
-    function dataGridsupplierSelectionChanged(e) {
+       function dataGridsupplierSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#suppliername").dxDropDownBox("instance");
         spentry = selectedKey;
+
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
-            // Get ReferenceNo from selected row
+
+            const selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
             if (selectedRowData.length > 0) {
-                
-                const supplierVatNo = selectedRowData[0].SupplierVatno;
-
-                // Set the Supplier VAT No into the textbox
+                const supplierVatNo = selectedRowData[0].SupplierVATNo; // FIX: Correct casing
                 $("#suppliervatno").dxTextBox("instance").option("value", supplierVatNo);
-
-
             }
         }
-
     }
+      function dataGridPurchaserSelectionChanged(e) {
+         const selectedKey = e.selectedRowKeys[0];
+         const ddbInstance = $("#purchaserName").dxDropDownBox("instance");
+         spentry = selectedKey;
+
+         if (selectedKey) {
+             ddbInstance.option("value", selectedKey);
+             if (ddbInstance.option("opened")) {
+                 ddbInstance.close();
+             }
+
+            
+         }
+     }
     // Fetch translated Arabic text using MyMemory API
  
     // Translate value from one DevExtreme TextBox to another
@@ -963,7 +1076,13 @@
         });
         $("#saveEntry").dxButton("instance").option("onClick", function () {
             var voucherEntryNo = parseInt('@voucherEntryNo'.trim(), 10);
+             const vatRate = $("#taxpercentage").dxDropDownBox("instance").option("value");
 
+     // ✅ Validation before proceeding
+     if (vatRate === null || vatRate === "" || vatRate === undefined) {
+         DevExpress.ui.notify("Please select the VAT Percentage", "warning", 3000);
+         return; // Stop execution, don't call API
+     }
             const data = {
                 ClaimChildNo: voucherEntryNo, // Pass this explicitly
                 TaxableAmount: $("#taxableamount").dxNumberBox("instance").option("value"),
@@ -972,9 +1091,9 @@
                 SupplierName: $("#suppliername").dxDropDownBox("instance").option("value"),
                 SupplierVATNo: $("#suppliervatno").dxTextBox("instance").option("value"),
                 SupplierNameAr: $("#ar_supplierName").dxTextBox("instance").option("value"),
-                PurchaserName: $("#purchaserName").dxTextBox("instance").option("value"),
+                 PurchaserName: $("#purchaserName").dxDropDownBox("instance").option("value"),
                 LineNarration: $("#linenarration").dxTextArea("instance").option("value"),
-                VATApplicableRate: parseInt($("#taxpercentage").dxDropDownBox("instance").option("value"), 10),
+                 VATApplicableRate: parseInt(vatRate, 10), // ✅ Safe to parse now
                 EmployeeNo: $("#costemployees").dxDropDownBox("instance").option("value"),
                 PropertyNo: $("#costproperty").dxDropDownBox("instance").option("value"),
                 IsTaxIncluded: true
@@ -997,7 +1116,13 @@
     });
     function saveExpenseClaimEntry() {
         var voucherEntryNo = parseInt('@voucherEntryNo'.trim(), 10);
+         const vatRate = $("#taxpercentage").dxDropDownBox("instance").option("value");
 
+     // ✅ Validation before proceeding
+     if (vatRate === null || vatRate === "" || vatRate === undefined) {
+         DevExpress.ui.notify("Please select the VAT Percentage", "warning", 3000);
+         return; // Stop execution, don't call API
+     }
         const data = {
             ClaimChildNo: voucherEntryNo, // Pass this explicitly
             TaxableAmount: $("#taxableamount").dxNumberBox("instance").option("value"),
@@ -1006,9 +1131,9 @@
             SupplierName: $("#suppliername").dxDropDownBox("instance").option("value"),
             SupplierVATNo: $("#suppliervatno").dxTextBox("instance").option("value"),
             SupplierNameAr: $("#ar_supplierName").dxTextBox("instance").option("value"),
-            PurchaserName: $("#purchaserName").dxTextBox("instance").option("value"),
+            PurchaserName: $("#purchaserName").dxDropDownBox("instance").option("value"),
             LineNarration: $("#linenarration").dxTextArea("instance").option("value"),
-            VATApplicableRate: $("#taxpercentage").dxDropDownBox("instance").option("value"),
+              VATApplicableRate: parseInt(vatRate, 10), // ✅ Safe to parse now
             EmployeeNo: $("#costemployees").dxDropDownBox("instance").option("value"),
             PropertyNo: $("#costproperty").dxDropDownBox("instance").option("value"),
             IsTaxIncluded: true
@@ -1031,6 +1156,7 @@
     var suppliername = null;
     var employeename = null;
     var propertyname = null;
+     var purchaserName = null;
     $(document).ready(function () {
         var claimchildno = parseInt('@voucherEntryNo'.trim(), 10);
         $.ajax({
@@ -1048,7 +1174,8 @@
                      suppliername = entry.SupplierName || null;
                      employeename = entry.EmployeeNo || null;
                      propertyname = entry.PropertyNo || null;
-                    $("#taxpercentage").dxDropDownBox("instance").option("value", entry.TaxRate || null);
+                        purchasername = entry.PurchaserName || null;
+                    $("#taxpercentage").dxDropDownBox("instance").option("value", entry.VatapplicableRate || null);
                     $("#taxableamount").dxNumberBox("instance").option("value", entry.TaxableAmount || 0);
                     $("#vatAmount").dxNumberBox("instance").option("value", entry.TaxAmount || 0);
                     $("#roundoff").dxNumberBox("instance").option("value", entry.RoundOff || null);
@@ -1056,10 +1183,10 @@
                     $("#suppliername").dxDropDownBox("instance").option("value", suppliername);
                     $("#suppliervatno").dxTextBox("instance").option("value", entry.SupplierVatno || null);
                     $("#ar_supplierName").dxTextBox("instance").option("value", entry.SupplierNameAr || null);
-                    $("#purchaserName").dxTextBox("instance").option("value", entry.PurchaserName || null);
+                    $("#purchaserName").dxDropDownBox("instance").option("value", purchasername || null);
                     $("#linenarration").dxTextArea("instance").option("value", entry.LineNarration || null);
-                    $("#costemployees").dxDropDownBox("instance").option("value", entry.EmployeeName || null);
-                    $("#costproperty").dxDropDownBox("instance").option("value", entry.propertyname || null);
+                    $("#costemployees").dxDropDownBox("instance").option("value", entry.EmployeeNo || null);
+                    $("#costproperty").dxDropDownBox("instance").option("value", entry.PropertyNo || null);
 
                     
                     
