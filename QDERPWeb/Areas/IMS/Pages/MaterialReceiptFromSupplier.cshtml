@@ -1817,37 +1817,38 @@
 		const ReceiptNos = urlParams.get('ReceiptNo');
 		const ReceiptNo = ReceiptNos ? ReceiptNos.split("?")[0] : null;
 		getDefaultCompany("ddCompany");
-		//getSalesPersonByUser();
+	
 		loadClientDetails(ReceiptNo);
 
 		if (ReceiptNo) {
-			// If Mprno is present, load client details
+			
 			loadClientDetails(ReceiptNo);
 			edit=true;
-		} else {
-			NewNoGeneration();
-		}
+		} 
+		// else {
+		// 	NewNoGeneration();
+		// }
 	});
-	function NewNoGeneration(){
-					$.ajax({
-				url: "/api/MaterialReceipt/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
+	// function NewNoGeneration(){
+	// 				$.ajax({
+	// 			url: "/api/MaterialReceipt/GetNewDebitNoteNoApi",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-					const invoiceBox = $("#txtMaterialReceiptNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load ReceiptNo details.", "Error");
-				}
-			});
-	}
+	// 				const invoiceBox = $("#txtMaterialReceiptNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load ReceiptNo details.", "Error");
+	// 			}
+	// 		});
+	// }
 	//For concurrency
 
 	function NewNoGeneration1() {
@@ -3307,9 +3308,7 @@
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+					
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5265,11 +5264,11 @@ function saveQuotation(receiptNoNew,$btn) {
 
 			
 					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-          if (!children || children.length === 0) {
-	DevExpress.ui.notify("No child records to save.", "error", 3000);
-	$btn.option("disabled", false); // Re-enable the button
-	return;
-}
+//           if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -5285,20 +5284,13 @@ function saveQuotation(receiptNoNew,$btn) {
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
-		        
+		        $btn.option("disabled", false);
 
-				 const receiptno = response.receiptno;
-				window.location.href=`/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${receiptno}`;
+				 const Receiptno = response.receiptno;
+				loadClientDetails(Receiptno);
+			     edit=true;
 				
-						// loadChildDataAndBindGrid(receiptno);
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
-
-
+					
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
@@ -5384,13 +5376,12 @@ function saveAndCloseQuotation(receiptNoNew,$btn) {
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
 			};
 
-			//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 					const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-if (!children || children.length === 0) {
-	DevExpress.ui.notify("No child records to save.", "error", 3000);
-	$btn.option("disabled", false); // Re-enable the button
-	return;
-}
+// if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -5421,45 +5412,7 @@ if (!children || children.length === 0) {
 		
 }
 
-			function loadChildDataAndBindGrid(receiptno) {
-			
-			if (!receiptno) {
-				console.warn("No Receipt number provided.");
-			return;
-		}
-
-		$.ajax({
-			type: "GET",
-			url: `/api/MaterialReceipt/GetMaterialReceiptChildren?ReceiptNo=${encodeURIComponent(receiptno)}`,
-			dataType: "json",
-			success: function (gridResponse) {
-				if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-					console.warn("No child details found in the response.");
-					return;
-				}
-
-				console.log("Grid Response:", gridResponse);
-
-				const rowData = gridResponse.map((item, index) => ({
-					SNo: index + 1,
-					...item
-				}));
-
-				// ✅ Bind data to existing B2B grid
-				const grid = $("#B2BdataGrid").dxDataGrid("instance");
-				if (grid) {
-					grid.option("dataSource", rowData);
-				} else {
-					console.error("B2B DataGrid instance not found.");
-				}
-			},
-			error: function (xhr, status, error) {
-				const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-				DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-				console.error("Error fetching grid data:", errorMsg);
-			}
-		});
-	}
+	
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();

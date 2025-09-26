@@ -461,20 +461,24 @@
             });
         }
     });
-        function onDeleteButtonClicks(e) {
-            e.event.preventDefault(); // prevent default delete
+       
+            function onDeleteButtonClicks(e) {
+        e.event.preventDefault(); // prevent default delete
 
-                var grid = $("#storeGrid").dxDataGrid("instance");
-            var key = e.row.data.StoreId; // get the ID of the row
+        var grid = $("#storeGrid").dxDataGrid("instance");
+        var key = e.row.data.StoreId; // get the ID of the row
 
-
-            if (confirm("Are you sure you want to delete this row?")) {
+        // Use DevExtreme confirmation dialog
+        DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Confirm Delete"
+        ).done(function (result) {
+            if (result) { // if user clicks Yes
                 $.ajax({
                     url: '/api/StockInventory/Delete1?key=' + key,
                     type: 'DELETE',
                     success: function () {
-                        // Refresh the grid after delete
-                        grid.refresh();
+                        grid.refresh(); // Refresh the grid
                         DevExpress.ui.notify("Deleted successfully", "success", 2000);
                     },
                     error: function () {
@@ -482,6 +486,7 @@
                     }
                 });
             }
-        }
+        });
+    }
 
 </script>
