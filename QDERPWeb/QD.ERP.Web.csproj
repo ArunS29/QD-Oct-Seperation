@@ -25,6 +25,8 @@
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Dashboard.cshtml.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
+		<!--<Compile Remove="Pages\RichTextEditor.cshtml.cs" />-->
+		
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,6 +50,7 @@
 		<Content Remove="Areas\VAT\Pages\VATSalesCOGSPosting.cshtml" />
 		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
+		<Content Remove="Pages\RichTextEditor.cshtml" />
 	</ItemGroup>
 
 

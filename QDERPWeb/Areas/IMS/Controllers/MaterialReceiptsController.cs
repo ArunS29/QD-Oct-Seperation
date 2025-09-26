@@ -76,6 +76,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
+                        i.ModeOfReceiptId
 
                     }).ToListAsync();
 

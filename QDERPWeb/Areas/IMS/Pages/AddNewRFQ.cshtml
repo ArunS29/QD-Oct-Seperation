@@ -1610,32 +1610,9 @@
 			// If Mprno is present, load client details
 			loadClientDetails(Rfqno);
 			edit=true;
-		} else  {
-		NewNoGeneration();
 		}
 	});
-function NewNoGeneration(){
-			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
-			$.ajax({
-				url: "/api/RequestforQuotationList/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
 
-					const invoiceBox = $("#RFQNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load RFQNo details.", "Error");
-				}
-			});
-	}
-	//For concurrency
 
 	function NewNoGeneration1() {
     return $.ajax({
@@ -2754,9 +2731,8 @@ $(document).ready(function () {
 			store.insert(newRow)
 				.then(() => {
 					grid.refresh(); // Ensure the UI updates with the new row
-						// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+					
+				
 				})
 				.catch(error => {
 					DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -4631,11 +4607,11 @@ function saveQuotation(rfqNoNew, $btn) {
 			
 	
 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			RFQDetailses: children
@@ -4647,11 +4623,13 @@ function saveQuotation(rfqNoNew, $btn) {
 			contentType: "application/json",
 			data: JSON.stringify(model),
 			success: function (response) {
-				DevExpress.ui.notify(response.message, "success", 3000);
 				isVoucherSaved = true;
             	updateWorkflowVisual(getWorkflowStatusFromFields());
-				const rfqno = response.rfqno;
-				window.location.href=`/${tenantName}/IMS/AddNewRFQ?Rfqno=${rfqno}`;
+				DevExpress.ui.notify(response.message, "success", 3000);
+				$btn.option("disabled", false);
+				const Rfqno = response.rfqno;
+				loadClientDetails(Rfqno);
+			    edit=true;
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
@@ -4723,11 +4701,11 @@ function saveAndCloseQuotation(rfqNoNew, $btn) {
 			
 	
 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			RFQDetailses: children
@@ -4739,11 +4717,11 @@ function saveAndCloseQuotation(rfqNoNew, $btn) {
 			contentType: "application/json",
 			data: JSON.stringify(model),
 			success: function (response) {
-				DevExpress.ui.notify(response.message, "success", 3000);
 				isVoucherSaved = true;
             	updateWorkflowVisual(getWorkflowStatusFromFields());
+					DevExpress.ui.notify(response.message, "success", 3000);
 				history.back();
-				const rfqno = response.rfqno;
+				
 				
 			},
 			error: function (xhr) {
@@ -4752,45 +4730,7 @@ function saveAndCloseQuotation(rfqNoNew, $btn) {
 		});
 		
 }
-	function loadChildDataAndBindGrid(rfqno) {
-		
-    if (!rfqno) {
-        console.warn("rfqno number not provided.");
-        return;
-    }
-
-    $.ajax({
-        type: "GET",
-		url: `/api/RequestforQuotationList/GetRFQChildren?RFQno=${encodeURIComponent(rfqno)}`,
-        dataType: "json",
-        success: function (gridResponse) {
-            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-                console.warn("No child details found in the response.");
-                return;
-            }
-
-            console.log("Grid Response:", gridResponse);
-
-            const rowData = gridResponse.map((item, index) => ({
-                SNo: index + 1,
-                ...item
-            }));
-
-            // ✅ Bind data to existing B2B grid
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            if (grid) {
-                grid.option("dataSource", rowData);
-            } else {
-                console.error("B2B DataGrid instance not found.");
-            }
-        },
-        error: function (xhr, status, error) {
-            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-            console.error("Error fetching grid data:", errorMsg);
-        }
-    });
-}
+	
 
 	 $("#btnDelete").on("click", function (e) {
         e.preventDefault();

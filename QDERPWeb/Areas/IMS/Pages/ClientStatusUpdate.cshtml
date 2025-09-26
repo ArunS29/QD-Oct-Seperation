@@ -342,11 +342,9 @@
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
     }
-  
+    
     });
-       $(document).ready(function () {
-                 getReportedBy();
-                 });
+    
     function bindClientStatusById(clientStatusNo) {
      
         $.ajax({
@@ -370,23 +368,29 @@
         });
     }
 
-  function  getReportedBy() {
+    $(document).ready(function () {
+        
         $.ajax({
-            type: "GET",
-            url: "/api/ClientStatusUpdate/GetReportedByvalue",
-            success: function (data) {
-                const userName = data.userName ?? data;
+             url: "/api/ClientStatusUpdate/GetReportedByValue",
 
-      if (userName) {
-        $("#reportedBy").dxTextBox("instance")
-          .option("value", userName);
-      }
+              type: "GET",
+            success: function (data) {
+                if (data.success && data.reportedBy) {
+                    console.log("reportby:",data.reportedBy);
+                    $("#reportedBy").dxTextBox("instance")
+                        .option("value", data.reportedBy);
+                } else {
+                    DevExpress.ui.notify("Could not fetch Reported By name", "error", 2000);
+                }
             },
             error: function (xhr) {
-                console.log("ReportedBy fetch failed:", xhr.responseText);
+                console.error("ReportedBy fetch failed:", xhr.responseText);
+                DevExpress.ui.notify("Error fetching Reported By", "error", 2000);
             }
         });
-    }
+    
+    });
+
     $(function () {
         $("#ClientStatusUpdate").dxTextBox({
             text: formatMessage("Client Status Update"),
