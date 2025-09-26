@@ -1,0 +1,1380 @@
+﻿CREATE TABLE dbo.tblBillsReceivableAgeing
+(
+    AccountHeadNo              VARCHAR(10) NULL,
+    AccountHead                VARCHAR(200) NULL,
+    ReferenceNo                VARCHAR(50) NULL,
+    VoucherDate                DATETIME NULL,
+    VoucherRefNo               VARCHAR(MAX) NULL,
+    VoucherNarration           NVARCHAR(MAX) NULL,
+    ReceivableAmount           MONEY NOT NULL,
+    ConvertedReceivableAmount  DECIMAL(38,6) NULL,
+    ConvertedReceived          DECIMAL(38,6) NULL,
+    ConvertedBalance           DECIMAL(38,6) NULL,
+    Received                   MONEY NOT NULL,
+    Balance                    MONEY NULL,
+    AccountGroup               VARCHAR(200) NULL,
+    InvoiceDueDate             DATETIME NULL,
+    OverdueDays                INT NOT NULL,
+    NotOverdue                 MONEY NULL,
+    Less30                     MONEY NULL,
+    Less30to60                 MONEY NULL,
+    Less60to90                 MONEY NULL,
+    Less90to180                MONEY NULL,
+    More180                    MONEY NULL,
+    Less180to365               MONEY NULL,
+    More365                    MONEY NULL,
+    SalesPersonName            VARCHAR(MAX) NULL,
+    Inv_SalesMan               VARCHAR(MAX) NULL,
+    CostAllocationUnit         VARCHAR(MAX) NULL,
+    CostAllocationGroup        VARCHAR(MAX) NULL,
+    CostAllocationMasterGroup  VARCHAR(MAX) NULL,
+    CompanyBranch              VARCHAR(MAX) NULL,
+    DivisionName               VARCHAR(MAX) NULL,
+    SubGroupName               VARCHAR(MAX) NULL,
+    LedgerSubGroupCode         VARCHAR(20) NULL,
+    AccountHeadArabic          NVARCHAR(MAX) NULL,
+    VATRegistrationNo          VARCHAR(MAX) NULL,
+    ClientOtherID              VARCHAR(50) NULL,
+    NoOfDaysCreditPeriod       SMALLINT NULL,
+    AccountsContactName        VARCHAR(MAX) NULL,
+    AccountsContactMobile      VARCHAR(50) NULL,
+    AccountsContactTitle       VARCHAR(MAX) NULL,
+    CurrencyName               VARCHAR(MAX) NULL,
+    TransactionCurrencySymbol  VARCHAR(30) NULL
+);
+ 
+
+
+
+TRUNCATE TABLE dbo.tblBillsReceivableAgeing;
+
+INSERT INTO dbo.tblBillsReceivableAgeing
+SELECT *
+FROM dbo.qry20105BillsReceivableAgeingView;
+
+
+-- Common lookup filters
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_AccountHeadNo 
+    ON dbo.tblBillsReceivableAgeing (AccountHeadNo);
+
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_InvoiceDueDate 
+    ON dbo.tblBillsReceivableAgeing (InvoiceDueDate);
+
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_OverdueDays 
+    ON dbo.tblBillsReceivableAgeing (OverdueDays);
+
+-- If you group by SalesPerson often
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_SalesPersonName
+    ON dbo.tblBillsReceivableAgeing (SalesPersonName);
+
+
+
+
+CREATE TABLE dbo.tbl201SubLedgerReceivablesMaster
+(
+    AccountHeadNo               VARCHAR(10)      NULL,
+    AccountHead                 VARCHAR(200)     NULL,
+    ReferenceNo                 VARCHAR(50)      NULL,
+    VoucherDate                 DATETIME         NULL,
+    VoucherRefNo                VARCHAR(MAX)     NULL,
+    VoucherNarration             NVARCHAR(MAX)   NULL,
+    ReceivableAmount            MONEY            NOT NULL,
+    Received                    MONEY            NOT NULL,
+    Balance                     MONEY            NULL,
+    ConvertedReceivableAmount   DECIMAL(38,6)    NULL,
+    ConvertedReceived           DECIMAL(38,6)    NULL,
+    ConvertedBalance            DECIMAL(38,6)    NULL,
+    AccountGroup                VARCHAR(200)     NULL,
+    InvoiceDueDate              DATETIME         NULL,
+    SalesPersonCode             VARCHAR(50)      NULL,
+    SalesPersonName             VARCHAR(MAX)     NULL,
+    NoOfDaysCreditPeriod        SMALLINT         NULL,
+    OverdueDays                 INT              NULL,
+    VoucherType                 VARCHAR(50)      NULL,
+    AccountGroupID              VARCHAR(10)      NULL,
+    VoucherEffectiveDate        DATETIME         NULL,
+    AccountBranch               VARCHAR(20)      NULL,
+    CostAllocationUnit          VARCHAR(MAX)     NULL,
+    CostAllocationGroup         VARCHAR(MAX)     NULL,
+    CostAllocationMasterGroup   VARCHAR(MAX)     NULL,
+    VATRegistrationNo           VARCHAR(MAX)     NULL,
+    BillingName                 VARCHAR(MAX)     NULL,
+    CompanyBranch               VARCHAR(MAX)     NULL,
+    TransactionDateCr           DATETIME         NULL,
+    DivisionName                VARCHAR(MAX)     NULL,
+    Inv_SalesMan                VARCHAR(MAX)     NULL,
+    SubGroupName                VARCHAR(MAX)     NULL,
+    LedgerSubGroupCode          VARCHAR(20)      NULL,
+    VoucherEffectiveMonth       DATETIME         NULL,
+    BranchCode                  VARCHAR(20)      NULL,
+    BranchName                  VARCHAR(MAX)     NULL,
+    InvoiceAmountBeforeRetention MONEY           NULL,
+    TotalReceivableAmount       MONEY            NULL,
+    BalanceDueWithOutRetention  MONEY            NULL,
+    RetentionReceivable         MONEY            NULL,
+    BalanceDueWithRetention     MONEY            NULL,
+    RetentionAmount             MONEY            NOT NULL,
+    SESReferenceNo              NVARCHAR(MAX)    NULL,
+    ProjectOrContractNo         NVARCHAR(MAX)    NULL,
+    CurrencyRate                DECIMAL(18,2)    NULL,
+    Currencyid                  INT              NULL,
+    basecurrencyid              INT              NULL,
+    CurrencyName                VARCHAR(MAX)     NULL,
+    TransactionCurrencySymbol   NVARCHAR(60)     NULL
+);
+
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo);
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo_VoucherDate
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo, VoucherDate);
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_ReferenceNo
+ON dbo.tbl201SubLedgerReceivablesMaster (ReferenceNo);
+
+
+DROP INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster;
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo)
+INCLUDE (Balance, VoucherDate);
+
+
+
+
+
+
+-- Useful for overdue & credit period reports
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_InvoiceDueDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (InvoiceDueDate);
+
+-- For joins & reporting by sales
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_SalesPersonCode
+    ON dbo.tbl201SubLedgerReceivablesMaster (SalesPersonCode);
+
+-- For financial grouping
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_AccountGroupID
+    ON dbo.tbl201SubLedgerReceivablesMaster (AccountGroupID);
+
+-- For date-based reporting
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_VoucherDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (VoucherDate);
+
+INSERT INTO dbo.tbl201SubLedgerReceivablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerReceivablesMaster;
+
+
+
+CREATE TABLE dbo.tbl20105BillsReceivableAgeing
+(
+    AccountHeadNo              VARCHAR(10)        NULL,
+    AccountHead                VARCHAR(200)       NULL,
+    ReferenceNo                VARCHAR(50)        NULL,
+    VoucherDate                DATETIME           NULL,
+    VoucherRefNo               VARCHAR(MAX)       NULL,
+    VoucherNarration           NVARCHAR(MAX)      NULL,
+    ReceivableAmount           MONEY              NOT NULL,
+    ConvertedReceivableAmount  DECIMAL(38,6)      NULL,
+    ConvertedReceived          DECIMAL(38,6)      NULL,
+    ConvertedBalance           DECIMAL(38,6)      NULL,
+    Received                   MONEY              NOT NULL,
+    Balance                    MONEY              NULL,
+    AccountGroup               VARCHAR(200)       NULL,
+    InvoiceDueDate             DATETIME           NULL,
+    OverdueDays                INT                NOT NULL,
+    NotOverdue                 MONEY              NULL,
+    Less30                     MONEY              NULL,
+    Less30to60                 MONEY              NULL,
+    Less60to90                 MONEY              NULL,
+    Less90to180                MONEY              NULL,
+    More180                    MONEY              NULL,
+    Less180to365               MONEY              NULL,
+    More365                    MONEY              NULL,
+    SalesPersonName            VARCHAR(MAX)       NULL,
+    Inv_SalesMan               VARCHAR(MAX)       NULL,
+    CostAllocationUnit         VARCHAR(MAX)       NULL,
+    CostAllocationGroup        VARCHAR(MAX)       NULL,
+    CostAllocationMasterGroup  VARCHAR(MAX)       NULL,
+    CompanyBranch              VARCHAR(MAX)       NULL,
+    DivisionName               VARCHAR(MAX)       NULL,
+    SubGroupName               VARCHAR(MAX)       NULL,
+    LedgerSubGroupCode         VARCHAR(20)        NULL,
+    AccountHeadArabic          NVARCHAR(MAX)      NULL,
+    VATRegistrationNo          VARCHAR(MAX)       NULL,
+    ClientOtherID              VARCHAR(50)        NULL,
+    NoOfDaysCreditPeriod       SMALLINT           NULL,
+    AccountsContactName        VARCHAR(MAX)       NULL,
+    AccountsContactMobile      VARCHAR(50)        NULL,
+    AccountsContactTitle       VARCHAR(MAX)       NULL,
+    CurrencyName               VARCHAR(MAX)       NULL,
+    TransactionCurrencySymbol  VARCHAR(30)        NULL
+);
+
+
+INSERT INTO dbo.tbl20105BillsReceivableAgeing
+SELECT *
+FROM dbo.qry20105BillsReceivableAgeingView;
+
+
+-- By account (client-wise reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_AccountHeadNo
+    ON dbo.tbl20105BillsReceivableAgeing (AccountHeadNo);
+
+-- By invoice due date (ageing buckets)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_InvoiceDueDate
+    ON dbo.tbl20105BillsReceivableAgeing (InvoiceDueDate);
+
+-- By overdue days (faster ageing filter)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_OverdueDays
+    ON dbo.tbl20105BillsReceivableAgeing (OverdueDays);
+
+-- By salesperson (collection reports)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_SalesPersonName
+    ON dbo.tbl20105BillsReceivableAgeing (SalesPersonName);
+
+-- By branch/division (regional reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_BranchDivision
+    ON dbo.tbl20105BillsReceivableAgeing (CompanyBranch, DivisionName);
+
+
+
+
+-- billspayable
+
+CREATE TABLE dbo.Tbl201SubLedgerPayablesMaster
+(
+    AccountHeadNo varchar(10) NULL,
+    AccountHead varchar(200) NULL,
+    ReferenceNo varchar(50) NULL,
+    VoucherDate datetime NULL,
+    VoucherRefNo varchar(MAX) NULL,
+    PayableAmount money NOT NULL,
+    Paid money NOT NULL,
+    Balance money NULL,
+    ConvertedInvoiceAmountBeforeRetention decimal(38,6) NULL,
+    ConvertedPaid decimal(38,6) NULL,
+    ConvertedBalance decimal(38,6) NULL,
+    CurrencyRate decimal(18,2) NULL,
+    Currencyid int NULL,
+    basecurrencyid int NULL,
+    VoucherNarration nvarchar(MAX) NULL,
+    AccountGroup varchar(200) NULL,
+    InvoiceDueDate datetime NULL,
+    NoOfDaysCreditPeriod smallint NULL,
+    OverdueDays int NULL,
+    VoucherEffectiveDate datetime NULL,
+    InvoiceSubmittedDate datetime NULL,
+    VoucherType varchar(50) NULL,
+    BankAccountNo varchar(25) NULL,
+    BankIBAN varchar(30) NULL,
+    BankName varchar(100) NULL,
+    BankBranch varchar(100) NULL,
+    LedgerRemarks nvarchar(MAX) NULL,
+    AccountHeadArabic nvarchar(MAX) NULL,
+    AccountGroupID varchar(10) NULL,
+    AccountBranch varchar(20) NULL,
+    SalesPersonCode varchar(50) NULL,
+    BranchName nvarchar(MAX) NULL,
+    CostCenterCode varchar(50) NULL,
+    CostAllocationUnit nvarchar(MAX) NULL,
+    CostAllocationGroup nvarchar(MAX) NULL,
+    CostAllocationMasterGroup nvarchar(MAX) NULL,
+    AccountSubGroup varchar(20) NULL,
+    SubGroupName nvarchar(MAX) NULL,
+    BankAccountName varchar(200) NULL,
+    RetentionAmount money NOT NULL,
+    InvoiceAmountBeforeRetention money NULL,
+    TotalPayableAmount money NULL,
+    BalanceDueWithOutRetention money NULL,
+    RetentionPayable money NULL,
+    BalanceDueWithRetention money NULL,
+    ReferenceNote varchar(MAX) NULL,
+    PurchaseBillNo nvarchar(100) NULL,
+    PurchaseBillDate datetime NULL,
+    PurchaseOrderNo nvarchar(MAX) NULL,
+    MaterialReceiptNo nvarchar(MAX) NULL,
+    Expr1 nvarchar(MAX) NULL,
+    CurrencyName varchar(MAX) NULL,
+    TransactionCurrencySymbol nvarchar(60) NULL,
+    CurrencyImage nvarchar(60) NULL
+);
+
+
+INSERT INTO dbo.Tbl201SubLedgerPayablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerPayablesMaster;
+
+CREATE TABLE dbo.tbl201SubLedgerReceivablesMaster
+(
+    AccountHeadNo               VARCHAR(10)      NULL,
+    AccountHead                 VARCHAR(200)     NULL,
+    ReferenceNo                 VARCHAR(50)      NULL,
+    VoucherDate                 DATETIME         NULL,
+    VoucherRefNo                VARCHAR(MAX)     NULL,
+    VoucherNarration             NVARCHAR(MAX)   NULL,
+    ReceivableAmount            MONEY            NOT NULL,
+    Received                    MONEY            NOT NULL,
+    Balance                     MONEY            NULL,
+    ConvertedReceivableAmount   DECIMAL(38,6)    NULL,
+    ConvertedReceived           DECIMAL(38,6)    NULL,
+    ConvertedBalance            DECIMAL(38,6)    NULL,
+    AccountGroup                VARCHAR(200)     NULL,
+    InvoiceDueDate              DATETIME         NULL,
+    SalesPersonCode             VARCHAR(50)      NULL,
+    SalesPersonName             VARCHAR(MAX)     NULL,
+    NoOfDaysCreditPeriod        SMALLINT         NULL,
+    OverdueDays                 INT              NULL,
+    VoucherType                 VARCHAR(50)      NULL,
+    AccountGroupID              VARCHAR(10)      NULL,
+    VoucherEffectiveDate        DATETIME         NULL,
+    AccountBranch               VARCHAR(20)      NULL,
+    CostAllocationUnit          VARCHAR(MAX)     NULL,
+    CostAllocationGroup         VARCHAR(MAX)     NULL,
+    CostAllocationMasterGroup   VARCHAR(MAX)     NULL,
+    VATRegistrationNo           VARCHAR(MAX)     NULL,
+    BillingName                 VARCHAR(MAX)     NULL,
+    CompanyBranch               VARCHAR(MAX)     NULL,
+    TransactionDateCr           DATETIME         NULL,
+    DivisionName                VARCHAR(MAX)     NULL,
+    Inv_SalesMan                VARCHAR(MAX)     NULL,
+    SubGroupName                VARCHAR(MAX)     NULL,
+    LedgerSubGroupCode          VARCHAR(20)      NULL,
+    VoucherEffectiveMonth       DATETIME         NULL,
+    BranchCode                  VARCHAR(20)      NULL,
+    BranchName                  VARCHAR(MAX)     NULL,
+    InvoiceAmountBeforeRetention MONEY           NULL,
+    TotalReceivableAmount       MONEY            NULL,
+    BalanceDueWithOutRetention  MONEY            NULL,
+    RetentionReceivable         MONEY            NULL,
+    BalanceDueWithRetention     MONEY            NULL,
+    RetentionAmount             MONEY            NOT NULL,
+    SESReferenceNo              NVARCHAR(MAX)    NULL,
+    ProjectOrContractNo         NVARCHAR(MAX)    NULL,
+    CurrencyRate                DECIMAL(18,2)    NULL,
+    Currencyid                  INT              NULL,
+    basecurrencyid              INT              NULL,
+    CurrencyName                VARCHAR(MAX)     NULL,
+    TransactionCurrencySymbol   NVARCHAR(60)     NULL
+);
+
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo);
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo_VoucherDate
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo, VoucherDate);
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_ReferenceNo
+ON dbo.tbl201SubLedgerReceivablesMaster (ReferenceNo);
+
+
+DROP INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster;
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo)
+INCLUDE (Balance, VoucherDate);
+
+
+
+
+
+
+-- Useful for overdue & credit period reports
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_InvoiceDueDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (InvoiceDueDate);
+
+-- For joins & reporting by sales
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_SalesPersonCode
+    ON dbo.tbl201SubLedgerReceivablesMaster (SalesPersonCode);
+
+-- For financial grouping
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_AccountGroupID
+    ON dbo.tbl201SubLedgerReceivablesMaster (AccountGroupID);
+
+-- For date-based reporting
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_VoucherDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (VoucherDate);
+
+INSERT INTO dbo.tbl201SubLedgerReceivablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerReceivablesMaster;
+
+
+
+CREATE TABLE dbo.tbl20105BillsReceivableAgeing
+(
+    AccountHeadNo              VARCHAR(10)        NULL,
+    AccountHead                VARCHAR(200)       NULL,
+    ReferenceNo                VARCHAR(50)        NULL,
+    VoucherDate                DATETIME           NULL,
+    VoucherRefNo               VARCHAR(MAX)       NULL,
+    VoucherNarration           NVARCHAR(MAX)      NULL,
+    ReceivableAmount           MONEY              NOT NULL,
+    ConvertedReceivableAmount  DECIMAL(38,6)      NULL,
+    ConvertedReceived          DECIMAL(38,6)      NULL,
+    ConvertedBalance           DECIMAL(38,6)      NULL,
+    Received                   MONEY              NOT NULL,
+    Balance                    MONEY              NULL,
+    AccountGroup               VARCHAR(200)       NULL,
+    InvoiceDueDate             DATETIME           NULL,
+    OverdueDays                INT                NOT NULL,
+    NotOverdue                 MONEY              NULL,
+    Less30                     MONEY              NULL,
+    Less30to60                 MONEY              NULL,
+    Less60to90                 MONEY              NULL,
+    Less90to180                MONEY              NULL,
+    More180                    MONEY              NULL,
+    Less180to365               MONEY              NULL,
+    More365                    MONEY              NULL,
+    SalesPersonName            VARCHAR(MAX)       NULL,
+    Inv_SalesMan               VARCHAR(MAX)       NULL,
+    CostAllocationUnit         VARCHAR(MAX)       NULL,
+    CostAllocationGroup        VARCHAR(MAX)       NULL,
+    CostAllocationMasterGroup  VARCHAR(MAX)       NULL,
+    CompanyBranch              VARCHAR(MAX)       NULL,
+    DivisionName               VARCHAR(MAX)       NULL,
+    SubGroupName               VARCHAR(MAX)       NULL,
+    LedgerSubGroupCode         VARCHAR(20)        NULL,
+    AccountHeadArabic          NVARCHAR(MAX)      NULL,
+    VATRegistrationNo          VARCHAR(MAX)       NULL,
+    ClientOtherID              VARCHAR(50)        NULL,
+    NoOfDaysCreditPeriod       SMALLINT           NULL,
+    AccountsContactName        VARCHAR(MAX)       NULL,
+    AccountsContactMobile      VARCHAR(50)        NULL,
+    AccountsContactTitle       VARCHAR(MAX)       NULL,
+    CurrencyName               VARCHAR(MAX)       NULL,
+    TransactionCurrencySymbol  VARCHAR(30)        NULL
+);
+
+
+INSERT INTO dbo.tbl20105BillsReceivableAgeing
+SELECT *
+FROM dbo.qry20105BillsReceivableAgeingView;
+
+
+-- By account (client-wise reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_AccountHeadNo
+    ON dbo.tbl20105BillsReceivableAgeing (AccountHeadNo);
+
+-- By invoice due date (ageing buckets)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_InvoiceDueDate
+    ON dbo.tbl20105BillsReceivableAgeing (InvoiceDueDate);
+
+-- By overdue days (faster ageing filter)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_OverdueDays
+    ON dbo.tbl20105BillsReceivableAgeing (OverdueDays);
+
+-- By salesperson (collection reports)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_SalesPersonName
+    ON dbo.tbl20105BillsReceivableAgeing (SalesPersonName);
+
+-- By branch/division (regional reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_BranchDivision
+    ON dbo.tbl20105BillsReceivableAgeing (CompanyBranch, DivisionName);
+
+
+
+
+-- billspayable
+
+CREATE TABLE dbo.Tbl201SubLedgerPayablesMaster
+(
+    AccountHeadNo varchar(10) NULL,
+    AccountHead varchar(200) NULL,
+    ReferenceNo varchar(50) NULL,
+    VoucherDate datetime NULL,
+    VoucherRefNo varchar(MAX) NULL,
+    PayableAmount money NOT NULL,
+    Paid money NOT NULL,
+    Balance money NULL,
+    ConvertedInvoiceAmountBeforeRetention decimal(38,6) NULL,
+    ConvertedPaid decimal(38,6) NULL,
+    ConvertedBalance decimal(38,6) NULL,
+    CurrencyRate decimal(18,2) NULL,
+    Currencyid int NULL,
+    basecurrencyid int NULL,
+    VoucherNarration nvarchar(MAX) NULL,
+    AccountGroup varchar(200) NULL,
+    InvoiceDueDate datetime NULL,
+    NoOfDaysCreditPeriod smallint NULL,
+    OverdueDays int NULL,
+    VoucherEffectiveDate datetime NULL,
+    InvoiceSubmittedDate datetime NULL,
+    VoucherType varchar(50) NULL,
+    BankAccountNo varchar(25) NULL,
+    BankIBAN varchar(30) NULL,
+    BankName varchar(100) NULL,
+    BankBranch varchar(100) NULL,
+    LedgerRemarks nvarchar(MAX) NULL,
+    AccountHeadArabic nvarchar(MAX) NULL,
+    AccountGroupID varchar(10) NULL,
+    AccountBranch varchar(20) NULL,
+    SalesPersonCode varchar(50) NULL,
+    BranchName nvarchar(MAX) NULL,
+    CostCenterCode varchar(50) NULL,
+    CostAllocationUnit nvarchar(MAX) NULL,
+    CostAllocationGroup nvarchar(MAX) NULL,
+    CostAllocationMasterGroup nvarchar(MAX) NULL,
+    AccountSubGroup varchar(20) NULL,
+    SubGroupName nvarchar(MAX) NULL,
+    BankAccountName varchar(200) NULL,
+    RetentionAmount money NOT NULL,
+    InvoiceAmountBeforeRetention money NULL,
+    TotalPayableAmount money NULL,
+    BalanceDueWithOutRetention money NULL,
+    RetentionPayable money NULL,
+    BalanceDueWithRetention money NULL,
+    ReferenceNote varchar(MAX) NULL,
+    PurchaseBillNo nvarchar(100) NULL,
+    PurchaseBillDate datetime NULL,
+    PurchaseOrderNo nvarchar(MAX) NULL,
+    MaterialReceiptNo nvarchar(MAX) NULL,
+    Expr1 nvarchar(MAX) NULL,
+    CurrencyName varchar(MAX) NULL,
+    TransactionCurrencySymbol nvarchar(60) NULL,
+    CurrencyImage nvarchar(60) NULL
+);
+
+
+INSERT INTO dbo.Tbl201SubLedgerPayablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerPayablesMaster;
+
+CREATE TABLE dbo.tblBillsReceivableAgeing
+(
+    AccountHeadNo              VARCHAR(10) NULL,
+    AccountHead                VARCHAR(200) NULL,
+    ReferenceNo                VARCHAR(50) NULL,
+    VoucherDate                DATETIME NULL,
+    VoucherRefNo               VARCHAR(MAX) NULL,
+    VoucherNarration           NVARCHAR(MAX) NULL,
+    ReceivableAmount           MONEY NOT NULL,
+    ConvertedReceivableAmount  DECIMAL(38,6) NULL,
+    ConvertedReceived          DECIMAL(38,6) NULL,
+    ConvertedBalance           DECIMAL(38,6) NULL,
+    Received                   MONEY NOT NULL,
+    Balance                    MONEY NULL,
+    AccountGroup               VARCHAR(200) NULL,
+    InvoiceDueDate             DATETIME NULL,
+    OverdueDays                INT NOT NULL,
+    NotOverdue                 MONEY NULL,
+    Less30                     MONEY NULL,
+    Less30to60                 MONEY NULL,
+    Less60to90                 MONEY NULL,
+    Less90to180                MONEY NULL,
+    More180                    MONEY NULL,
+    Less180to365               MONEY NULL,
+    More365                    MONEY NULL,
+    SalesPersonName            VARCHAR(MAX) NULL,
+    Inv_SalesMan               VARCHAR(MAX) NULL,
+    CostAllocationUnit         VARCHAR(MAX) NULL,
+    CostAllocationGroup        VARCHAR(MAX) NULL,
+    CostAllocationMasterGroup  VARCHAR(MAX) NULL,
+    CompanyBranch              VARCHAR(MAX) NULL,
+    DivisionName               VARCHAR(MAX) NULL,
+    SubGroupName               VARCHAR(MAX) NULL,
+    LedgerSubGroupCode         VARCHAR(20) NULL,
+    AccountHeadArabic          NVARCHAR(MAX) NULL,
+    VATRegistrationNo          VARCHAR(MAX) NULL,
+    ClientOtherID              VARCHAR(50) NULL,
+    NoOfDaysCreditPeriod       SMALLINT NULL,
+    AccountsContactName        VARCHAR(MAX) NULL,
+    AccountsContactMobile      VARCHAR(50) NULL,
+    AccountsContactTitle       VARCHAR(MAX) NULL,
+    CurrencyName               VARCHAR(MAX) NULL,
+    TransactionCurrencySymbol  VARCHAR(30) NULL
+);
+ 
+
+
+
+TRUNCATE TABLE dbo.tblBillsReceivableAgeing;
+
+INSERT INTO dbo.tblBillsReceivableAgeing
+SELECT *
+FROM dbo.qry20105BillsReceivableAgeingView;
+
+
+-- Common lookup filters
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_AccountHeadNo 
+    ON dbo.tblBillsReceivableAgeing (AccountHeadNo);
+
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_InvoiceDueDate 
+    ON dbo.tblBillsReceivableAgeing (InvoiceDueDate);
+
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_OverdueDays 
+    ON dbo.tblBillsReceivableAgeing (OverdueDays);
+
+-- If you group by SalesPerson often
+CREATE NONCLUSTERED INDEX IX_BillsReceivable_SalesPersonName
+    ON dbo.tblBillsReceivableAgeing (SalesPersonName);
+
+
+
+
+CREATE TABLE dbo.tbl201SubLedgerReceivablesMaster
+(
+    AccountHeadNo               VARCHAR(10)      NULL,
+    AccountHead                 VARCHAR(200)     NULL,
+    ReferenceNo                 VARCHAR(50)      NULL,
+    VoucherDate                 DATETIME         NULL,
+    VoucherRefNo                VARCHAR(MAX)     NULL,
+    VoucherNarration             NVARCHAR(MAX)   NULL,
+    ReceivableAmount            MONEY            NOT NULL,
+    Received                    MONEY            NOT NULL,
+    Balance                     MONEY            NULL,
+    ConvertedReceivableAmount   DECIMAL(38,6)    NULL,
+    ConvertedReceived           DECIMAL(38,6)    NULL,
+    ConvertedBalance            DECIMAL(38,6)    NULL,
+    AccountGroup                VARCHAR(200)     NULL,
+    InvoiceDueDate              DATETIME         NULL,
+    SalesPersonCode             VARCHAR(50)      NULL,
+    SalesPersonName             VARCHAR(MAX)     NULL,
+    NoOfDaysCreditPeriod        SMALLINT         NULL,
+    OverdueDays                 INT              NULL,
+    VoucherType                 VARCHAR(50)      NULL,
+    AccountGroupID              VARCHAR(10)      NULL,
+    VoucherEffectiveDate        DATETIME         NULL,
+    AccountBranch               VARCHAR(20)      NULL,
+    CostAllocationUnit          VARCHAR(MAX)     NULL,
+    CostAllocationGroup         VARCHAR(MAX)     NULL,
+    CostAllocationMasterGroup   VARCHAR(MAX)     NULL,
+    VATRegistrationNo           VARCHAR(MAX)     NULL,
+    BillingName                 VARCHAR(MAX)     NULL,
+    CompanyBranch               VARCHAR(MAX)     NULL,
+    TransactionDateCr           DATETIME         NULL,
+    DivisionName                VARCHAR(MAX)     NULL,
+    Inv_SalesMan                VARCHAR(MAX)     NULL,
+    SubGroupName                VARCHAR(MAX)     NULL,
+    LedgerSubGroupCode          VARCHAR(20)      NULL,
+    VoucherEffectiveMonth       DATETIME         NULL,
+    BranchCode                  VARCHAR(20)      NULL,
+    BranchName                  VARCHAR(MAX)     NULL,
+    InvoiceAmountBeforeRetention MONEY           NULL,
+    TotalReceivableAmount       MONEY            NULL,
+    BalanceDueWithOutRetention  MONEY            NULL,
+    RetentionReceivable         MONEY            NULL,
+    BalanceDueWithRetention     MONEY            NULL,
+    RetentionAmount             MONEY            NOT NULL,
+    SESReferenceNo              NVARCHAR(MAX)    NULL,
+    ProjectOrContractNo         NVARCHAR(MAX)    NULL,
+    CurrencyRate                DECIMAL(18,2)    NULL,
+    Currencyid                  INT              NULL,
+    basecurrencyid              INT              NULL,
+    CurrencyName                VARCHAR(MAX)     NULL,
+    TransactionCurrencySymbol   NVARCHAR(60)     NULL
+);
+
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo);
+
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo_VoucherDate
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo, VoucherDate);
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_ReferenceNo
+ON dbo.tbl201SubLedgerReceivablesMaster (ReferenceNo);
+
+
+DROP INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster;
+
+CREATE NONCLUSTERED INDEX IX_Tbl201SubLedgerReceivablesMaster_AccountHeadNo
+ON dbo.Tbl201SubLedgerReceivablesMaster (AccountHeadNo)
+INCLUDE (Balance, VoucherDate);
+
+
+
+
+
+
+-- Useful for overdue & credit period reports
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_InvoiceDueDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (InvoiceDueDate);
+
+-- For joins & reporting by sales
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_SalesPersonCode
+    ON dbo.tbl201SubLedgerReceivablesMaster (SalesPersonCode);
+
+-- For financial grouping
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_AccountGroupID
+    ON dbo.tbl201SubLedgerReceivablesMaster (AccountGroupID);
+
+-- For date-based reporting
+CREATE NONCLUSTERED INDEX IX_tbl201SubLedgerReceivablesMaster_VoucherDate
+    ON dbo.tbl201SubLedgerReceivablesMaster (VoucherDate);
+
+INSERT INTO dbo.tbl201SubLedgerReceivablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerReceivablesMaster;
+
+
+
+CREATE TABLE dbo.tbl20105BillsReceivableAgeing
+(
+    AccountHeadNo              VARCHAR(10)        NULL,
+    AccountHead                VARCHAR(200)       NULL,
+    ReferenceNo                VARCHAR(50)        NULL,
+    VoucherDate                DATETIME           NULL,
+    VoucherRefNo               VARCHAR(MAX)       NULL,
+    VoucherNarration           NVARCHAR(MAX)      NULL,
+    ReceivableAmount           MONEY              NOT NULL,
+    ConvertedReceivableAmount  DECIMAL(38,6)      NULL,
+    ConvertedReceived          DECIMAL(38,6)      NULL,
+    ConvertedBalance           DECIMAL(38,6)      NULL,
+    Received                   MONEY              NOT NULL,
+    Balance                    MONEY              NULL,
+    AccountGroup               VARCHAR(200)       NULL,
+    InvoiceDueDate             DATETIME           NULL,
+    OverdueDays                INT                NOT NULL,
+    NotOverdue                 MONEY              NULL,
+    Less30                     MONEY              NULL,
+    Less30to60                 MONEY              NULL,
+    Less60to90                 MONEY              NULL,
+    Less90to180                MONEY              NULL,
+    More180                    MONEY              NULL,
+    Less180to365               MONEY              NULL,
+    More365                    MONEY              NULL,
+    SalesPersonName            VARCHAR(MAX)       NULL,
+    Inv_SalesMan               VARCHAR(MAX)       NULL,
+    CostAllocationUnit         VARCHAR(MAX)       NULL,
+    CostAllocationGroup        VARCHAR(MAX)       NULL,
+    CostAllocationMasterGroup  VARCHAR(MAX)       NULL,
+    CompanyBranch              VARCHAR(MAX)       NULL,
+    DivisionName               VARCHAR(MAX)       NULL,
+    SubGroupName               VARCHAR(MAX)       NULL,
+    LedgerSubGroupCode         VARCHAR(20)        NULL,
+    AccountHeadArabic          NVARCHAR(MAX)      NULL,
+    VATRegistrationNo          VARCHAR(MAX)       NULL,
+    ClientOtherID              VARCHAR(50)        NULL,
+    NoOfDaysCreditPeriod       SMALLINT           NULL,
+    AccountsContactName        VARCHAR(MAX)       NULL,
+    AccountsContactMobile      VARCHAR(50)        NULL,
+    AccountsContactTitle       VARCHAR(MAX)       NULL,
+    CurrencyName               VARCHAR(MAX)       NULL,
+    TransactionCurrencySymbol  VARCHAR(30)        NULL
+);
+
+
+INSERT INTO dbo.tbl20105BillsReceivableAgeing
+SELECT *
+FROM dbo.qry20105BillsReceivableAgeingView;
+
+
+-- By account (client-wise reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_AccountHeadNo
+    ON dbo.tbl20105BillsReceivableAgeing (AccountHeadNo);
+
+-- By invoice due date (ageing buckets)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_InvoiceDueDate
+    ON dbo.tbl20105BillsReceivableAgeing (InvoiceDueDate);
+
+-- By overdue days (faster ageing filter)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_OverdueDays
+    ON dbo.tbl20105BillsReceivableAgeing (OverdueDays);
+
+-- By salesperson (collection reports)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_SalesPersonName
+    ON dbo.tbl20105BillsReceivableAgeing (SalesPersonName);
+
+-- By branch/division (regional reporting)
+CREATE NONCLUSTERED INDEX IX_tbl20105BillsReceivableAgeing_BranchDivision
+    ON dbo.tbl20105BillsReceivableAgeing (CompanyBranch, DivisionName);
+
+
+
+
+-- billspayable
+
+CREATE TABLE dbo.Tbl201SubLedgerPayablesMaster
+(
+    AccountHeadNo varchar(10) NULL,
+    AccountHead varchar(200) NULL,
+    ReferenceNo varchar(50) NULL,
+    VoucherDate datetime NULL,
+    VoucherRefNo varchar(MAX) NULL,
+    PayableAmount money NOT NULL,
+    Paid money NOT NULL,
+    Balance money NULL,
+    ConvertedInvoiceAmountBeforeRetention decimal(38,6) NULL,
+    ConvertedPaid decimal(38,6) NULL,
+    ConvertedBalance decimal(38,6) NULL,
+    CurrencyRate decimal(18,2) NULL,
+    Currencyid int NULL,
+    basecurrencyid int NULL,
+    VoucherNarration nvarchar(MAX) NULL,
+    AccountGroup varchar(200) NULL,
+    InvoiceDueDate datetime NULL,
+    NoOfDaysCreditPeriod smallint NULL,
+    OverdueDays int NULL,
+    VoucherEffectiveDate datetime NULL,
+    InvoiceSubmittedDate datetime NULL,
+    VoucherType varchar(50) NULL,
+    BankAccountNo varchar(25) NULL,
+    BankIBAN varchar(30) NULL,
+    BankName varchar(100) NULL,
+    BankBranch varchar(100) NULL,
+    LedgerRemarks nvarchar(MAX) NULL,
+    AccountHeadArabic nvarchar(MAX) NULL,
+    AccountGroupID varchar(10) NULL,
+    AccountBranch varchar(20) NULL,
+    SalesPersonCode varchar(50) NULL,
+    BranchName nvarchar(MAX) NULL,
+    CostCenterCode varchar(50) NULL,
+    CostAllocationUnit nvarchar(MAX) NULL,
+    CostAllocationGroup nvarchar(MAX) NULL,
+    CostAllocationMasterGroup nvarchar(MAX) NULL,
+    AccountSubGroup varchar(20) NULL,
+    SubGroupName nvarchar(MAX) NULL,
+    BankAccountName varchar(200) NULL,
+    RetentionAmount money NOT NULL,
+    InvoiceAmountBeforeRetention money NULL,
+    TotalPayableAmount money NULL,
+    BalanceDueWithOutRetention money NULL,
+    RetentionPayable money NULL,
+    BalanceDueWithRetention money NULL,
+    ReferenceNote varchar(MAX) NULL,
+    PurchaseBillNo nvarchar(100) NULL,
+    PurchaseBillDate datetime NULL,
+    PurchaseOrderNo nvarchar(MAX) NULL,
+    MaterialReceiptNo nvarchar(MAX) NULL,
+    Expr1 nvarchar(MAX) NULL,
+    CurrencyName varchar(MAX) NULL,
+    TransactionCurrencySymbol nvarchar(60) NULL,
+    CurrencyImage nvarchar(60) NULL
+);
+
+
+INSERT INTO dbo.Tbl201SubLedgerPayablesMaster
+SELECT *
+FROM dbo.qry201SubLedgerPayablesMaster;
+
+
+
+CREATE TABLE dbo.tbl001CostAnalysis (
+    CostAllocationID bigint NOT NULL,
+    VoucherEntryID bigint NOT NULL,
+    CostAllocationUnitID varchar(50) NULL,
+    CostAllocDrCr varchar(50) NULL,
+    AmountAllocated money NULL,
+    EffectiveDate datetime NULL,
+    CostAllocRemarks varchar(MAX) NULL,
+    CostAllocationUnit varchar(MAX) NULL,
+    CostAllocationGroup varchar(MAX) NULL,
+    CostAllocationMasterGroup varchar(MAX) NULL,
+    IsDisabled bit NULL,
+    AccountHead varchar(200) NULL,
+    AccountGroup varchar(200) NULL,
+    MasterGroup varchar(200) NULL,
+    Expenses money NULL,
+    Income money NULL,
+    PL varchar(8) NOT NULL,
+    CostAmount money NULL,
+    AccountID varchar(10) NULL,
+    VoucherNo varchar(50) NULL,
+    VoucherType varchar(50) NULL,
+    VoucherTypeAndNo varchar(102) NULL,
+    CostCenterIncharge varchar(MAX) NULL,
+    EntryNarration nvarchar(MAX) NULL,
+    SysRemarks nvarchar(MAX) NULL,
+    VoucherDate datetime NULL,
+    VoucherMonth datetime NULL,
+    VoucherYear datetime NULL,
+    EffectiveMonth datetime NULL,
+    EffectiveYear datetime NULL,
+    AllocationEffectiveDate datetime NULL,
+    AllocationEffectiveMonth datetime NULL,
+    AllocationEffectiveYear datetime NULL,
+    ProjectMasterCode varchar(25) NULL,
+    BranchCode varchar(20) NULL,
+    BranchName varchar(MAX) NULL,
+    VoucherNarration nvarchar(MAX) NULL,
+    VoucherRefNo varchar(MAX) NULL,
+    ConvertedIncome decimal(38,6) NULL,
+    ConvertedExpenses decimal(38,6) NULL,
+    ConvertedCostAmount decimal(38,6) NULL
+);
+
+
+INSERT INTO dbo.tbl001CostAnalysis (
+    CostAllocationID, VoucherEntryID, CostAllocationUnitID, CostAllocDrCr,
+    AmountAllocated, EffectiveDate, CostAllocRemarks, CostAllocationUnit,
+    CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, AccountHead,
+    AccountGroup, MasterGroup, Expenses, Income, PL, CostAmount, AccountID,
+    VoucherNo, VoucherType, VoucherTypeAndNo, CostCenterIncharge,
+    EntryNarration, SysRemarks, VoucherDate, VoucherMonth, VoucherYear,
+    EffectiveMonth, EffectiveYear, AllocationEffectiveDate,
+    AllocationEffectiveMonth, AllocationEffectiveYear, ProjectMasterCode,
+    BranchCode, BranchName, VoucherNarration, VoucherRefNo,
+    ConvertedIncome, ConvertedExpenses, ConvertedCostAmount
+)
+SELECT
+    CostAllocationID, VoucherEntryID, CostAllocationUnitID, CostAllocDrCr,
+    AmountAllocated, EffectiveDate, CostAllocRemarks, CostAllocationUnit,
+    CostAllocationGroup, CostAllocationMasterGroup, IsDisabled, AccountHead,
+    AccountGroup, MasterGroup, Expenses, Income, PL, CostAmount, AccountID,
+    VoucherNo, VoucherType, VoucherTypeAndNo, CostCenterIncharge,
+    EntryNarration, SysRemarks, VoucherDate, VoucherMonth, VoucherYear,
+    EffectiveMonth, EffectiveYear, AllocationEffectiveDate,
+    AllocationEffectiveMonth, AllocationEffectiveYear, ProjectMasterCode,
+    BranchCode, BranchName, VoucherNarration, VoucherRefNo,
+    ConvertedIncome, ConvertedExpenses, ConvertedCostAmount
+FROM dbo.qry20106CostAnalysis;
+
+
+
+
+
+
+--ALTER TABLE dbo.tbl001CostAnalysis
+--ADD CONSTRAINT PK_tbl001CostAnalysis PRIMARY KEY (CostAllocationID);
+
+
+CREATE NONCLUSTERED INDEX IX_tbl001CostAnalysis_VoucherEntryID ON dbo.tbl001CostAnalysis(VoucherEntryID);
+CREATE NONCLUSTERED INDEX IX_tbl001CostAnalysis_AccountHead ON dbo.tbl001CostAnalysis(AccountHead);
+CREATE NONCLUSTERED INDEX IX_tbl001CostAnalysis_VoucherDate ON dbo.tbl001CostAnalysis(VoucherDate);
+
+
+CREATE CLUSTERED COLUMNSTORE INDEX CCI_tbl001CostAnalysis
+ON dbo.tbl001CostAnalysis;
+
+
+
+
+
+CREATE TABLE dbo.TrialBalanceResults
+(
+    VoucherNo              NVARCHAR(20),   -- Max 17 → rounded to 20
+    VoucherDate            DATETIME,
+    VoucherEntryNo         INT,
+    AccountHead             NVARCHAR(50),
+    AccountHeadName        NVARCHAR(120),  -- Max 114 → rounded to 120
+    DrCr                   NVARCHAR(5),    -- Max 2 → safe with 5
+    DrAmount               DECIMAL(18,2),
+    CrAmount               DECIMAL(18,2),
+    VoucherAmountFormatted DECIMAL(18,2),
+    AccountGroup           NVARCHAR(50),   -- Max 41 → rounded to 50
+    MasterGroup            NVARCHAR(30),   -- Max 23 → rounded to 30
+    VoucherType            NVARCHAR(50),   -- Max 39 → rounded to 50
+    Transactions           NVARCHAR(20),   -- Max 12 → rounded to 20
+    MonthYear              NVARCHAR(20),   -- Max 14 → rounded to 20
+    MonthNumber            INT,
+    Category               NVARCHAR(50),   -- Max 27 → rounded to 50
+    VoucherRefNo           NVARCHAR(600),  -- Max 522 → rounded to 600
+    VoucherNarration       NVARCHAR(MAX),  -- Max 9177 → use MAX
+    EntryNarration         NVARCHAR(MAX),  -- Max 9347 → use MAX
+    SysRemarks             NVARCHAR(1200)  -- Max 1000 → rounded to 1200
+);
+
+
+INSERT INTO dbo.TrialBalanceResults
+(
+    VoucherNo, VoucherDate, VoucherEntryNo, AccountHead, AccountHeadName, DrCr,
+    DrAmount, CrAmount, VoucherAmountFormatted, AccountGroup, MasterGroup,
+    VoucherType, Transactions, MonthYear, MonthNumber, Category,
+    VoucherRefNo, VoucherNarration, EntryNarration, SysRemarks
+)
+
+SELECT 
+       v.VoucherNo, 
+       CAST(v.VoucherDate AS DATE) AS VoucherDate, 
+       v.VoucherEntryNo, 
+       v.AccountHead, 
+       v.AccountHeadName, 
+       v.DrCr, 
+       v.DrAmount, 
+       v.CrAmount, 
+       v.VoucherAmountFormatted, 
+       ag.AccountGroup, 
+       mg.MasterGroup, 
+       v.VoucherType, 
+       'Transactions' AS Transactions, 
+       DATENAME(m, v.VoucherDate) + ' ' + CAST(DATEPART(yyyy, v.VoucherDate) AS varchar) AS MonthYear, 
+       DATEPART(mm, v.VoucherDate) AS MonthNumber, 
+       mg.MasterGroupCategory, 
+       v.VoucherRefNo, 
+       v.VoucherNarration, 
+       v.EntryNarration, 
+       v.SysRemarks
+FROM dbo.tbl201MasterGroup mg
+RIGHT JOIN dbo.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder  
+RIGHT JOIN dbo.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID  
+RIGHT JOIN dbo.qry201MainVoucherEntriesWithMaster v ON ca.AccountID = v.AccountHead
+
+
+
+
+
+
+
+
+CREATE   PROCEDURE dbo.StProTrialBalance_New  
+(  
+    @StartDate DATETIME,  
+    @EndDate   DATETIME  
+)  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+  
+    -----------------------------------------------------------------  
+    -- 1. Opening Balance (all data before @StartDate)  
+    -----------------------------------------------------------------  
+    SELECT  
+        '.Opening Balance' AS VoucherNo,  
+        @StartDate AS VoucherDate,  
+        0 AS VoucherEntryNo,  
+        t.AccountHead,  
+        t.AccountHeadName,  
+        '' AS DrCr,  
+        SUM(t.DrAmount) AS DrAmount,  
+        SUM(t.CrAmount) AS CrAmount,  
+        SUM(t.VoucherAmountFormatted) AS VoucherAmountFormatted,  
+        t.AccountGroup,  
+        t.MasterGroup,  
+        'Opening Balance' AS VoucherType,  
+        'Opening Balance' AS Transactions,  
+        'Opening Balance' AS MonthYear,  
+        0 AS MonthNumber,  
+        t.Category,  
+        '' AS VoucherRefNo,  
+        '' AS VoucherNarration,  
+        '' AS EntryNarration,  
+        '' AS SysRemarks  
+    FROM dbo.TrialBalanceResults t  
+    WHERE t.VoucherDate < @StartDate  
+        
+    GROUP BY t.AccountHead, t.AccountHeadName, t.AccountGroup, t.MasterGroup, t.Category  
+  
+    UNION ALL  
+  
+    -----------------------------------------------------------------  
+    -- 2. Transactions (between @StartDate and @EndDate)  
+    -----------------------------------------------------------------  
+    SELECT  
+        t.VoucherNo,  
+        CAST(t.VoucherDate AS DATE) AS VoucherDate,  
+        t.VoucherEntryNo,  
+        t.AccountHead,  
+        t.AccountHeadName,  
+        t.DrCr,  
+        t.DrAmount,  
+        t.CrAmount,  
+        t.VoucherAmountFormatted,  
+        t.AccountGroup,  
+        t.MasterGroup,  
+        t.VoucherType,  
+        'Transactions' AS Transactions,  
+        DATENAME(m, t.VoucherDate) + ' ' + CAST(YEAR(t.VoucherDate) AS NVARCHAR) AS MonthYear,  
+        MONTH(t.VoucherDate) AS MonthNumber,  
+        t.Category,  
+        t.VoucherRefNo,  
+        t.VoucherNarration,  
+        t.EntryNarration,  
+        t.SysRemarks  
+    FROM dbo.TrialBalanceResults t  
+    WHERE t.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate) -- end of day  
+  
+    ORDER BY AccountHead, VoucherDate, VoucherEntryNo;  
+END  
+
+
+ALTER TABLE dbo.TrialBalanceResults
+ADD IsCalculateOpeningBalance BIT NULL;
+
+UPDATE t
+SET t.IsCalculateOpeningBalance = v.IsCalculateOpeningBalance
+FROM dbo.TrialBalanceResults t
+INNER JOIN dbo.qry201MainVoucherEntriesWithMaster v
+    ON t.AccountHead = v.AccountHead
+   AND t.VoucherNo = v.VoucherNo
+   AND t.VoucherEntryNo = v.VoucherEntryNo
+   AND CAST(t.VoucherDate AS DATE) = CAST(v.VoucherDate AS DATE);
+
+
+
+CREATE INDEX IX_TrialBalanceResults_VoucherDate ON dbo.TrialBalanceResults(VoucherDate);
+CREATE INDEX IX_TrialBalanceResults_AccountHead ON dbo.TrialBalanceResults(AccountHead);
+CREATE INDEX IX_TrialBalanceResults_AccountGroup ON dbo.TrialBalanceResults(AccountGroup);
+
+UPDATE STATISTICS dbo.TrialBalanceResults;
+    ALTER INDEX ALL ON dbo.TrialBalanceResults REBUILD;
+
+------------------------------------------------------------
+-- Step 1: Setup temp tables
+------------------------------------------------------------
+IF OBJECT_ID('tempdb..#OldResults') IS NOT NULL DROP TABLE #OldResults;
+IF OBJECT_ID('tempdb..#NewResults') IS NOT NULL DROP TABLE #NewResults;
+
+CREATE TABLE #OldResults
+(
+    VoucherNo              NVARCHAR(20),
+    VoucherDate            DATETIME,
+    VoucherEntryNo         INT,
+    AccountHead            NVARCHAR(50),
+    AccountHeadName        NVARCHAR(120),
+    DrCr                   NVARCHAR(5),
+    DrAmount               DECIMAL(18,2),
+    CrAmount               DECIMAL(18,2),
+    VoucherAmountFormatted DECIMAL(18,2),
+    AccountGroup           NVARCHAR(50),
+    MasterGroup            NVARCHAR(30),
+    VoucherType            NVARCHAR(50),
+    Transactions           NVARCHAR(20),
+    MonthYear              NVARCHAR(20),
+    MonthNumber            INT,
+    Category               NVARCHAR(50),
+    VoucherRefNo           NVARCHAR(600),
+    VoucherNarration       NVARCHAR(MAX),
+    EntryNarration         NVARCHAR(MAX),
+    SysRemarks             NVARCHAR(1200)
+);
+
+CREATE TABLE #NewResults
+(
+    VoucherNo              NVARCHAR(20),
+    VoucherDate            DATETIME,
+    VoucherEntryNo         INT,
+    AccountHead            NVARCHAR(50),
+    AccountHeadName        NVARCHAR(120),
+    DrCr                   NVARCHAR(5),
+    DrAmount               DECIMAL(18,2),
+    CrAmount               DECIMAL(18,2),
+    VoucherAmountFormatted DECIMAL(18,2),
+    AccountGroup           NVARCHAR(50),
+    MasterGroup            NVARCHAR(30),
+    VoucherType            NVARCHAR(50),
+    Transactions           NVARCHAR(20),
+    MonthYear              NVARCHAR(20),
+    MonthNumber            INT,
+    Category               NVARCHAR(50),
+    VoucherRefNo           NVARCHAR(600),
+    VoucherNarration       NVARCHAR(MAX),
+    EntryNarration         NVARCHAR(MAX),
+    SysRemarks             NVARCHAR(1200)
+);
+
+------------------------------------------------------------
+-- Step 2: Capture SP results
+------------------------------------------------------------
+INSERT INTO #OldResults
+EXEC stprotrialbalance '2025-01-01','2025-02-02',0;
+
+INSERT INTO #NewResults
+EXEC StProTrialBalance_New '2025-01-01','2025-02-02';
+
+------------------------------------------------------------
+-- Step 3: Show counts
+------------------------------------------------------------
+SELECT 'OldResults' AS Source, COUNT(*) AS TotalRows FROM #OldResults
+UNION ALL
+SELECT 'NewResults', COUNT(*) FROM #NewResults;
+
+------------------------------------------------------------
+-- Step 4: Summary by VoucherType & Transactions
+------------------------------------------------------------
+SELECT 'OldResults' AS Source, VoucherType, Transactions, COUNT(*) AS [RowCount]
+FROM #OldResults
+GROUP BY VoucherType, Transactions
+UNION ALL
+SELECT 'NewResults', VoucherType, Transactions, COUNT(*) AS [RowCount]
+FROM #NewResults
+GROUP BY VoucherType, Transactions
+ORDER BY VoucherType, Transactions, Source;
+
+------------------------------------------------------------
+-- Step 5: Find rows in Old but not in New
+------------------------------------------------------------
+SELECT * 
+FROM #OldResults
+EXCEPT
+SELECT * 
+FROM #NewResults;
+
+------------------------------------------------------------
+-- Step 6: Find rows in New but not in Old
+------------------------------------------------------------
+SELECT * 
+FROM #NewResults
+EXCEPT
+SELECT * 
+FROM #OldResults;
+
+
+CREATE OR ALTER PROCEDURE [dbo].[StProTrialBalance_New]   
+(  
+    @StartDate datetime,  
+    @EndDate datetime  
+)  
+AS  
+BEGIN  
+    SET NOCOUNT ON;  
+
+    -------------------------------------------------------------------
+    -- Opening Balance Section
+    -------------------------------------------------------------------
+    SELECT  
+        '.Opening Balance' AS VoucherNo,  
+        @StartDate AS VoucherDate,  
+        0 AS VoucherEntryNo,  
+        t.AccountHead,  
+        t.AccountHeadName,  
+        '' AS DrCr,  
+        SUM(t.DrAmount) AS DrAmount,  
+        SUM(t.CrAmount) AS CrAmount,  
+        SUM(t.VoucherAmountFormatted) AS VoucherAmountFormatted,  
+        t.AccountGroup,  
+        t.MasterGroup,  
+        'Opening Balance' AS VoucherType,  
+        'Opening Balance' AS Transactions,  
+        'Opening Balance' AS MonthYear,  
+        0 AS MonthNumber,  
+        --t.MasterGroupCategory,  
+        '' AS VoucherRefNo,  
+        '' AS VoucherNarration,  
+        '' AS EntryNarration,  
+        '' AS SysRemarks  
+    FROM dbo.tbl201DailyTransactions t
+    WHERE t.VoucherDate < @StartDate  
+      AND ISNULL(t.IsCalculateOpeningBalance, 0) = 1  
+    GROUP BY  
+        t.AccountHead,  
+        t.AccountHeadName,  
+        t.AccountGroup,  
+        t.MasterGroup
+       -- t.MasterGroupCategory  
+
+    UNION ALL  
+
+    -------------------------------------------------------------------
+    -- Transaction Section
+    -------------------------------------------------------------------
+    SELECT  
+        v.VoucherNo,  
+        CAST(v.VoucherDate AS date) AS VoucherDate,  
+        v.VoucherEntryNo,  
+        v.AccountHead,  
+        v.AccountHeadName,  
+        v.DrCr,  
+        v.DrAmount,  
+        v.CrAmount,  
+        v.VoucherAmountFormatted,  
+        v.AccountGroup,  
+        v.MasterGroup,  
+        v.VoucherType,  
+        'Transactions' AS Transactions,  
+        DATENAME(m, v.VoucherDate) + ' ' + CAST(DATEPART(yyyy, v.VoucherDate) AS varchar) AS MonthYear,  
+        DATEPART(mm, v.VoucherDate) AS MonthNumber,  
+        --ISNULL(v.MasterGroupCategory, '') AS MasterGroupCategory,  
+        v.VoucherRefNo,  
+        v.VoucherNarration,  
+        v.EntryNarration,  
+        v.SysRemarks  
+    FROM dbo.tbl201VoucherEntriesWithMasterAndOB v  
+    WHERE v.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate);  
+END  
+GO
+
+
+
+                          ┌───────────────────────────┐
+                          │   StProTrialBalance       │
+                          │--(StartDate, EndDate,     │
+                          │   IsUseEffectiveDate)     │
+                          └─────────────┬─────────────┘
+                                        │
+                       ┌────────────────┴────────────────┐
+                       │                                 │
+      IsUseEffectiveDate = 0                 IsUseEffectiveDate = 1
+         (Use VoucherDate)                       (Use VoucherEffectiveDate)
+                       │                                 │
+          ┌────────────┴─────────────┐        ┌──────────┴────────────┐
+          │                          │        │                       │
+   ┌──────▼──────┐            ┌──────▼──────┐ ┌───────▼───────┐ ┌─────▼─────--┐
+   │ Opening     │            │ Transactions│ │ Opening       │ │Transactions │
+   │ Balance     │            │ (VoucherDate│ │ Balance       │ │ (VoucherEff │ 
+   │ Before      │            │ BETWEEN     │ │ Before        │ │ Date BETWEEN│
+   │ StartDate   │            │ Start & End │ │ StartDate     │ │ Start & End │
+   └──────┬──────┘            └──────┬──────┘ └───────┬───────┘ └─────┬─────--┘
+          │                          │                │               │
+   SUM(DrAmount, CrAmount)    Voucher & Account  SUM(DrAmount,  Voucher & Account
+   Group by Account, etc.     Details + Month    CrAmount)      Details + Month
+   Mark as "Opening Balance"  Year, Narration    Mark "Opening" Year, Narration
+
+
+-- =============================================  
+-- Author:  <Author,,Name>  
+-- Create date: <Create Date,,>  
+-- Description: <Description,,>  
+-- =============================================  
+CREATE PROCEDURE [dbo].[StProTrialBalance]   
+ (  
+ @StartDate datetime,  
+ @EndDate datetime,  
+ @IsUseEffectiveDate bit  
+ )  
+AS  
+BEGIN  
+ -- SET NOCOUNT ON added to prevent extra result sets from  
+ -- interfering with SELECT statements.  
+ SET NOCOUNT ON;  
+  
+IF (@IsUseEffectiveDate = 0)  
+ BEGIN  
+  
+   SELECT     '.Opening Balance' AS VoucherNo, @StartDate AS VoucherDate, 0 AS VoucherEntryNo, AccountHead, AccountHeadName, '' AS DrCr, SUM(DrAmount) AS DrAmount, SUM(CrAmount) AS CrAmount,  
+          SUM(VoucherAmountFormatted) AS VoucherAmountFormatted, AccountGroup, MasterGroup, 'Opening Balance' AS VoucherType, 'Opening Balance' AS Transactions, 'Opening Balance' AS MonthYear, 0 as MonthNumber,  
+   MasterGroupCategory AS Category, '' as VoucherRefNo, '' as VoucherNarration, '' as EntryNarration, '' as SysRemarks  
+   FROM         dbo.qry201MainVoucherEntriesWithMaster  
+   WHERE     (VoucherDate < @StartDate) AND (ISNULL(IsCalculateOpeningBalance, 0) = 1)  
+   GROUP BY AccountHead, AccountHeadName, AccountGroup, MasterGroup, MasterGroupCategory  
+   UNION ALL  
+   SELECT     qry201MainVoucherEntriesWithMaster_1.VoucherNo, DATEADD(dd, DATEDIFF(dd, 0, qry201MainVoucherEntriesWithMaster_1.VoucherDate), 0) as VoucherDate, qry201MainVoucherEntriesWithMaster_1.VoucherEntryNo,   
+          qry201MainVoucherEntriesWithMaster_1.AccountHead, qry201MainVoucherEntriesWithMaster_1.AccountHeadName, qry201MainVoucherEntriesWithMaster_1.DrCr,   
+          qry201MainVoucherEntriesWithMaster_1.DrAmount, qry201MainVoucherEntriesWithMaster_1.CrAmount, qry201MainVoucherEntriesWithMaster_1.VoucherAmountFormatted,   
+          dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, qry201MainVoucherEntriesWithMaster_1.VoucherType, 'Transactions' AS Transactions,   
+    DATENAME(m, qry201MainVoucherEntriesWithMaster_1.VoucherDate) + ' ' + CAST(DATEPART(yyyy, qry201MainVoucherEntriesWithMaster_1.VoucherDate) AS varchar) AS MonthYear, DATEPART(mm, VoucherDate) as MonthNumber  
+   , dbo.tbl201MasterGroup.MasterGroupCategory, VoucherRefNo, VoucherNarration, EntryNarration, SysRemarks  
+   FROM         dbo.tbl201MasterGroup RIGHT OUTER JOIN  
+          dbo.tbl201AccountGroups ON dbo.tbl201MasterGroup.MasterGroupID = dbo.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN  
+          dbo.tbl201ChartOfAccounts ON dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN  
+          dbo.qry201MainVoucherEntriesWithMaster AS qry201MainVoucherEntriesWithMaster_1 ON dbo.tbl201ChartOfAccounts.AccountID = qry201MainVoucherEntriesWithMaster_1.AccountHead  
+   WHERE     (qry201MainVoucherEntriesWithMaster_1.VoucherDate BETWEEN @StartDate AND DATEADD(hh, 23, DATEADD(mi, 59, DATEADD(ss, 59, @EndDate))));  
+  
+ END   
+ELSE  
+ BEGIN  
+     
+   SELECT     '.Opening Balance' AS VoucherNo, @StartDate AS VoucherDate, 0 AS VoucherEntryNo, AccountHead, AccountHeadName, '' AS DrCr, SUM(DrAmount) AS DrAmount, SUM(CrAmount) AS CrAmount,  
+          SUM(VoucherAmountFormatted) AS VoucherAmountFormatted, AccountGroup, MasterGroup, 'Opening Balance' AS VoucherType, 'Opening Balance' AS Transactions, 'Opening Balance' AS MonthYear, 0 as MonthNumber,  
+   'Balance Sheet' AS Category, '' as VoucherRefNo, '' as VoucherNarration, '' as EntryNarration, '' as SysRemarks  
+   FROM         dbo.qry201MainVoucherEntriesWithMaster  
+   WHERE     (VoucherEffectiveDate < @StartDate) AND (ISNULL(IsCalculateOpeningBalance, 0) = 1)  
+   GROUP BY AccountHead, AccountHeadName, AccountGroup, MasterGroup  
+   UNION ALL  
+   SELECT     qry201MainVoucherEntriesWithMaster_1.VoucherNo, DATEADD(dd, DATEDIFF(dd, 0, qry201MainVoucherEntriesWithMaster_1.VoucherDate), 0) as VoucherDate, qry201MainVoucherEntriesWithMaster_1.VoucherEntryNo,   
+          qry201MainVoucherEntriesWithMaster_1.AccountHead, qry201MainVoucherEntriesWithMaster_1.AccountHeadName, qry201MainVoucherEntriesWithMaster_1.DrCr,   
+          qry201MainVoucherEntriesWithMaster_1.DrAmount, qry201MainVoucherEntriesWithMaster_1.CrAmount, qry201MainVoucherEntriesWithMaster_1.VoucherAmountFormatted,   
+          dbo.tbl201AccountGroups.AccountGroup, dbo.tbl201MasterGroup.MasterGroup, qry201MainVoucherEntriesWithMaster_1.VoucherType, 'Transactions' AS Transactions,   
+    DATENAME(m, qry201MainVoucherEntriesWithMaster_1.VoucherEffectiveDate) + ' ' + CAST(DATEPART(yyyy, qry201MainVoucherEntriesWithMaster_1.VoucherEffectiveDate) AS varchar) AS MonthYear, DATEPART(mm, VoucherEffectiveDate) as MonthNumber  
+   , dbo.tbl201MasterGroup.MasterGroupCategory, VoucherRefNo, VoucherNarration, EntryNarration, SysRemarks  
+   FROM         dbo.tbl201MasterGroup RIGHT OUTER JOIN  
+          dbo.tbl201AccountGroups ON dbo.tbl201MasterGroup.MasterGroupID = dbo.tbl201AccountGroups.AccountGroupUnder RIGHT OUTER JOIN  
+          dbo.tbl201ChartOfAccounts ON dbo.tbl201AccountGroups.AccountGroupID = dbo.tbl201ChartOfAccounts.AccountGroupID RIGHT OUTER JOIN  
+          dbo.qry201MainVoucherEntriesWithMaster AS qry201MainVoucherEntriesWithMaster_1 ON dbo.tbl201ChartOfAccounts.AccountID = qry201MainVoucherEntriesWithMaster_1.AccountHead  
+   WHERE     (qry201MainVoucherEntriesWithMaster_1.VoucherEffectiveDate BETWEEN @StartDate AND DATEADD(hh, 23, DATEADD(mi, 59, DATEADD(ss, 59, @EndDate))));  
+  
+ END  
+  
+  
+END
