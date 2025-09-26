@@ -602,7 +602,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(result);
         }
+        [HttpGet]
+        public IActionResult GetPropertyAllocationByJournalChildNo(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+            var result = (from alloc in dbContext.Tbl20130JournalRegisterPropertyAllocations
+                          join unit in dbContext.Qry40102PropertyMasterView2s
+                              on alloc.PropertyNo equals unit.PropertyNo
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              PropNo = alloc.PropertyNo,
+                              PropertyNo = unit.PropertyDescription,
+                              VoucherAmount = alloc.AmountAllocated,
+                              DrCr = alloc.PropertyAllocDrCr
+                          }).ToList();
+
+            return Json(result);
+        }
         [HttpGet]
         public IActionResult GetCostAllocationsBydatagrid(long voucherEntryId)
         {
