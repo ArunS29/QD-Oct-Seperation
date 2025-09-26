@@ -57,18 +57,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             {
                 Name = "qry20105BillsReceivableAgeingView",
                 Sql = @"
-                    SELECT * 
-                    FROM qry20105BillsReceivableAgeingView 
-                    WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                    AND VoucherDate BETWEEN @StartDate AND @EndDate"
+            SELECT * 
+            FROM qry20105BillsReceivableAgeingView 
+            WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)"
             };
 
-            query.Parameters.AddRange(new[]
-            {
-                new QueryParameter("@AccountID", typeof(string), accountId ?? ""),
-                new QueryParameter("@StartDate", typeof(DateTime), Parameters["StartDate"].Value),
-                new QueryParameter("@EndDate", typeof(DateTime), Parameters["EndDate"].Value),
-            });
+            query.Parameters.Add(
+                new QueryParameter("@AccountID", typeof(string), string.IsNullOrEmpty(accountId) ? (object)DBNull.Value : accountId)
+            );
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(query);
@@ -78,6 +74,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.DataSource = sqlDataSource1;
             this.DataMember = "qry20105BillsReceivableAgeingView";
         }
+
 
         private void ExecuteAgeingStoredProcedure(DateTime endDate)
         {

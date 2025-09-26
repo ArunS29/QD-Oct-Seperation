@@ -12,6 +12,36 @@ var dictionary = {
         "Add New Purchase Order": "Add New Purchase Order",
         "Cancellation Remarks": "Cancellation Remarks",
         "Cancellation": "Cancellation",
+        "Client Code": "Client Code",
+        "Client Name": "Client Name",
+        "MPR No": "MPR No",
+        "RFQ No": "RFQ No",
+        "Supplier Quotation No": "Supplier Quotation No",
+        "Job Code": "Job Code",
+        "Issue Remarks": "Issue Remarks",
+        "Prepared By": "Prepared By",
+        "Prepared On": "Prepared On",
+        "Approved By": "Approved By",
+        "Approved On": "Approved On",
+        "Added By": "Added By",
+        "Added On": "Added On",
+        "Modified By": "Modified By",
+        "Modified On": "Modified On",
+        "Company Branch": "Company Branch",
+        "Company Name": "Company Name",
+        "Inventory Master Group Id": "Inventory Master Group Id",
+        "Inventory Master Group": "Inventory Master Group",
+        "Sales Person Code": "Sales Person Code",
+        "Sales Person Name": "Sales Person Name",
+        "Sales Person User Id": "Sales Person User Id",
+        "Submitted By": "Submitted By",
+        "Submitted On": "Submitted On",
+        "Verified By": "Verified By",
+        "Verified On": "Verified On",
+        "Store Received In": "Store Received In",
+        "Store Name": "Store Name",
+
+        "Mode of ReceiptId": "Mode of ReceiptId",
         "Item Description:":"Item Description:",
         "Receipt No": "Receipt No",
         "Description": "Description",
@@ -1115,6 +1145,7 @@ var dictionary = {
         "Cost Allocation UnitID": "Cost Allocation Unit ID",
         "Add New Cost Center": "Add New Cost Center",
         "Cost Allocated (Projects/Jobs)": "Cost Allocated (Projects/Jobs)",
+        "Projects/Jobs": "Projects/Jobs",
         "Total Book Value": "Total Book Value",
         "Total Depreciation Amount": "Total Depreciation Amount",
         "Accumulated Closing Balance": "Accumulated Closing Balance",
@@ -5402,9 +5433,6 @@ var dictionary = {
         "Client PO End Date": "Client PO End Date",
         "Client PO Type": "Client PO Type",
         "Client PO Value": "Client PO Value",
-       
-
-
         "XML": "XML",
         "Validations": "Validations",
         "Item Details": "Item Details",
@@ -5413,6 +5441,13 @@ var dictionary = {
         "Quote Child Id":"Quote Child Id",
         "Invoice Master": " Invoice Master", 
         "Main": "Main",
+        "Other Buyer ID": "Other Buyer ID",
+        "Standard rated Sales 10%": "Standard rated Sales 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7a - Standard rated Domestic Purchase 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8a - Imports subject to VAT Paid at Customer 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9a - Imports Subject to VAT - thru RCM 10%",
+        "VAT on Sales (BH)": "VAT on Sales (BH)",
+        "VAT on Purchase (BH)": "VAT on Purchase (BH)",
         "Other Buyer ID":"Other Buyer ID",
         "Line Total": "Line Total",
         
@@ -10074,6 +10109,12 @@ var dictionary = {
         "Is Salary Payable": "هل الراتب مستحق الدفع",
         "Is Use In Reconciliation": "هل يستخدم في التسوية",
         "Total Purchase Amount": "إجمالي مبلغ الشراء"
+        "Standard rated Sales 10%": "المبيعات الخاضعة للضريبة القياسية 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7أ - المشتريات المحلية الخاضعة للضريبة القياسية 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8أ - الواردات الخاضعة لضريبة القيمة المضافة المدفوعة عند العميل 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9أ - الواردات الخاضعة لضريبة القيمة المضافة - عبر آلية الاحتساب العكسي 10%",
+        "VAT on Sales (BH)": "ضريبة القيمة المضافة على المبيعات (البحرين)",
+        "VAT on Purchase (BH)": "ضريبة القيمة المضافة على المشتريات (البحرين)"
     },
              
                 // Mandrian Chinese Languange Translations
@@ -14395,7 +14436,15 @@ var dictionary = {
         "Seller & Buyer Details": "卖方和买方明细",
         "Invoice Master": "发票主档",
         "Main": "主页面",
-        "Other Buyer ID": "其他买方编号"
+        "Other Buyer ID": "其他买方编号",
+        "Standard rated Sales 10%": "표준 세율 판매 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7a - 표준 세율 국내 구매 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8a - 고객이 납부한 부가세 대상 수입 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM을 통한 부가세 대상 수입 10%",
+        "VAT on Sales (BH)": "판매에 대한 VAT (BH)",
+        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)"
+
+
 
     },
 
@@ -18817,7 +18866,13 @@ var dictionary = {
         "Seller & Buyer Details": "विक्रेता और खरीदार विवरण",
         "Invoice Master": "चालान मास्टर",
         "Main": "मुख्य",
-        "Other Buyer ID": "अन्य खरीदार आईडी"
+        "Other Buyer ID": "अन्य खरीदार आईडी",
+        "Standard rated Sales 10%": "मानक दर की बिक्री 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7a - मानक दर की घरेलू खरीद 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8a - ग्राहक द्वारा भुगतान किए गए VAT के अधीन आयात 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM के माध्यम से VAT के अधीन आयात 10%",
+        "VAT on Sales (BH)": "बिक्री पर VAT (BH)",
+        "VAT on Purchase (BH)": "खरीद पर VAT (BH)"
     },
 
                  // Urdu Language Translation
@@ -23295,7 +23350,13 @@ var dictionary = {
         "Seller & Buyer Details": "فروخت کنندہ اور خریدار کی تفصیلات",
         "Invoice Master": "انوائس ماسٹر",
         "Main": "مین",
-        "Other Buyer ID": "دیگر خریدار کی شناخت"
+        "Other Buyer ID": "دیگر خریدار کی شناخت",
+        "Standard rated Sales 10%": "معیاری شرح فروخت 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7ا - معیاری شرح گھریلو خریداری 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8ا - وہ درآمدات جن پر گاہک نے VAT ادا کیا 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9ا - درآمدات VAT کے تحت - RCM کے ذریعے 10%",
+        "VAT on Sales (BH)": "فروخت پر VAT (بحرین)",
+        "VAT on Purchase (BH)": "خریداری پر VAT (بحرین)"
     },
 
                // Korean Language Translation
@@ -27567,7 +27628,13 @@ var dictionary = {
         "Seller & Buyer Details": "판매자 및 구매자 세부사항",
         "Invoice Master": "송장 마스터",
         "Main": "메인",
-        "Other Buyer ID": "기타 구매자 ID"
+        "Other Buyer ID": "기타 구매자 ID",
+        "Standard rated Sales 10%": "표준 세율 판매 10%",
+        "7a - Standard rated Domestic Purchase 10%": "7a - 표준 세율 국내 구매 10%",
+        "8a - Imports subject to VAT Paid at Customer 10%": "8a - 고객이 납부한 부가세 대상 수입 10%",
+        "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM을 통한 부가세 대상 수입 10%",
+        "VAT on Sales (BH)": "판매에 대한 VAT (BH)",
+        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)"
 
         
     }

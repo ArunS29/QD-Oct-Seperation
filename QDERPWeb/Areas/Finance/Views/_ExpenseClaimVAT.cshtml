@@ -369,6 +369,10 @@
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
+                                     .OnKeyDown("suppliervatno_onKeyDown")
+                                    .OnValueChanged("suppliervatno_onValueChanged")
+                                    .OnPaste("suppliervatno_onPaste")
+                                    .ElementAttr(new { inputmode = "numeric", pattern = "[0-9]*" }) // mobile numeric keyboard
                                     )
                             </div>
                         </td>
@@ -1204,6 +1208,63 @@
     
     
     });
+           // Prevent non-digit keys and prevent typing beyond 15 digits
+    function suppliervatno_onKeyDown(e) {
+        const k = e.event.key;
+
+        // allow editing/navigation keys
+        const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "Home", "End"];
+        if (allowed.indexOf(k) !== -1) return;
+
+        // allow Ctrl/Cmd combos (copy/paste/select all)
+        if (e.event.ctrlKey || e.event.metaKey) return;
+
+        // only digits allowed
+        if (!/^\d$/.test(k)) {
+            e.event.preventDefault();
+            return;
+        }
+
+        // block if value length would exceed 15 (consider selection replacement)
+        const input = e.element.querySelector('input');
+        if (!input) return;
+        const current = input.value || "";
+        const selStart = input.selectionStart;
+        const selEnd = input.selectionEnd;
+        const newLength = current.length - (selEnd - selStart) + 1; // +1 for the new digit
+        if (newLength > 15) {
+            e.event.preventDefault();
+        }
+    }
+
+    // Handle paste: clean non-digits and trim to 15, then insert
+    function suppliervatno_onPaste(e) {
+        e.event.preventDefault();
+        const pasted = (e.event.clipboardData || window.clipboardData).getData('text') || "";
+        const digits = pasted.replace(/\D/g, "").slice(0, 15);
+
+        const input = e.element.querySelector('input');
+        const current = input ? input.value || "" : "";
+        const selStart = input ? input.selectionStart : 0;
+        const selEnd = input ? input.selectionEnd : 0;
+
+        const newVal = (current.slice(0, selStart) + digits + current.slice(selEnd))
+                         .replace(/\D/g, "")
+                         .slice(0, 15);
+
+        e.component.option('value', newVal);
+    }
+
+    // Ensure programmatic changes / other events also keep only digits and max length
+    function suppliervatno_onValueChanged(e) {
+        const v = e.value || "";
+        const cleaned = String(v).replace(/\D/g, "").slice(0, 15);
+        if (cleaned !== String(v)) {
+            // update only if changed (avoids infinite loop)
+            e.component.option("value", cleaned);
+        }
+    }
+
 
    $(function () {
             // Get the description from Razor

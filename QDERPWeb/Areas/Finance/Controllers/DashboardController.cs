@@ -363,7 +363,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     .Where(b => b.Balance > 0) // Only bills with outstanding balance
                     .OrderByDescending(b => b.Balance) // Highest balance first
                     .ThenByDescending(b => b.OverdueDays) // Highest overdue days next
-                    
+
                     .AsQueryable();
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
@@ -607,7 +607,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var data = dbContext.Qry20115BillsOutStandings
+                    var data = dbContext.tbl20115BillsOutStanding
                         .Where(b => b.Balance > 0) // Only bills with outstanding balance
                         .GroupBy(b => new { b.AccountHeadNo, b.AccountHead }) // Correct grouping
                         .Select(g => new
