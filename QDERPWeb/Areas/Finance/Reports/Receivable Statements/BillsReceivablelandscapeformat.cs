@@ -93,7 +93,7 @@ private void SetReportParameters(string accountId, DateTime frmDate, DateTime to
     if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
         addressArbLabel.Text = companyAddressArb;
 
-    ConfigureDataSource(accountId, frmDate, toDate);
+    ConfigureDataSource(accountId);
 }
 
 private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
@@ -116,7 +116,7 @@ private void AddOrUpdateParameter(string paramName, object paramValue, Type para
     }
 }
 
-private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime toDate)
+private void ConfigureDataSource(string accountId)
 {
     sqlDataSource1.Queries.Clear();
 
@@ -126,7 +126,7 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
 
         string querySql = @"SELECT * FROM qry201SubLedgerReceivablesMaster 
                                 WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                                AND VoucherDate BETWEEN @StartDate AND @EndDate";
+                                ";
 
         var customQuery = new CustomSqlQuery
         {
@@ -137,8 +137,7 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
         customQuery.Parameters.AddRange(new[]
         {
                 new QueryParameter("@AccountID", typeof(string), accountId),
-                new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-                new QueryParameter("@EndDate", typeof(DateTime), toDate)
+               
             });
 
         sqlDataSource1.Queries.Add(customQuery);

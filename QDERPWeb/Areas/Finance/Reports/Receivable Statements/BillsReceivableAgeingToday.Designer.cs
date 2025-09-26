@@ -112,7 +112,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel11 = new DevExpress.XtraReports.UI.XRLabel();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
-            this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel23 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel40 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrPictureBox1 = new DevExpress.XtraReports.UI.XRPictureBox();
@@ -247,24 +246,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // ReportHeader
             // 
             this.ReportHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrLabel1,
             this.xrLabel23,
             this.xrLabel40,
             this.xrPictureBox1,
             this.xrLabel22});
             this.ReportHeader.HeightF = 99.83336F;
             this.ReportHeader.Name = "ReportHeader";
-            // 
-            // xrLabel1
-            // 
-            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Cambria", 10F);
-            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(515.7856F, 76.83334F);
-            this.xrLabel1.Multiline = true;
-            this.xrLabel1.Name = "xrLabel1";
-            this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel1.SizeF = new System.Drawing.SizeF(308.3606F, 23.00001F);
-            this.xrLabel1.StylePriority.UseFont = false;
-            this.xrLabel1.Text = "as on[?EndDate!dd-MMM-yyyy](as per Ledger)";
             // 
             // xrLabel23
             // 
@@ -622,7 +609,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // xrLabel20
             // 
             this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(834.5629F, 36.67672F);
+            this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(824.1462F, 36.67672F);
             this.xrLabel20.Multiline = true;
             this.xrLabel20.Name = "xrLabel20";
             this.xrLabel20.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1094,6 +1081,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel37});
             this.Detail.HeightF = 28F;
             this.Detail.Name = "Detail";
+            this.Detail.SortFields.AddRange(new DevExpress.XtraReports.UI.GroupField[] {
+            new DevExpress.XtraReports.UI.GroupField("InvoiceDueDate", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending)});
             // 
             // xrLabel21
             // 
@@ -1231,7 +1220,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel28.StylePriority.UsePadding = false;
             this.xrLabel28.StylePriority.UseTextAlignment = false;
             this.xrLabel28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel28.TextFormatString = "{0:0.00}";
+            this.xrLabel28.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel29
             // 
@@ -1262,7 +1251,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel29.StylePriority.UseTextAlignment = false;
             this.xrLabel29.Text = "xrTableCell1";
             this.xrLabel29.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel29.TextFormatString = "{0:0.00}";
+            this.xrLabel29.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel30
             // 
@@ -1291,7 +1280,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel30.StylePriority.UsePadding = false;
             this.xrLabel30.StylePriority.UseTextAlignment = false;
             this.xrLabel30.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel30.TextFormatString = "{0:0.00}";
+            this.xrLabel30.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel31
             // 
@@ -1351,7 +1340,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel32.StylePriority.UseTextAlignment = false;
             this.xrLabel32.Text = "xrTableCell2";
             this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel32.TextFormatString = "{0:0.00}";
+            this.xrLabel32.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel33
             // 
@@ -1382,7 +1371,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel33.StylePriority.UsePadding = false;
             this.xrLabel33.StylePriority.UseTextAlignment = false;
             this.xrLabel33.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel33.TextFormatString = "{0:0.00}";
+            this.xrLabel33.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel34
             // 
@@ -1411,7 +1400,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel34.StylePriority.UsePadding = false;
             this.xrLabel34.StylePriority.UseTextAlignment = false;
             this.xrLabel34.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel34.TextFormatString = "{0:0.00}";
+            this.xrLabel34.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel35
             // 
@@ -1440,7 +1429,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel35.StylePriority.UsePadding = false;
             this.xrLabel35.StylePriority.UseTextAlignment = false;
             this.xrLabel35.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel35.TextFormatString = "{0:0.00}";
+            this.xrLabel35.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel36
             // 
@@ -1467,7 +1456,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel36.StylePriority.UsePadding = false;
             this.xrLabel36.StylePriority.UseTextAlignment = false;
             this.xrLabel36.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel36.TextFormatString = "{0:0.00}";
+            this.xrLabel36.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel37
             // 
@@ -1494,7 +1483,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel37.StylePriority.UsePadding = false;
             this.xrLabel37.StylePriority.UseTextAlignment = false;
             this.xrLabel37.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel37.TextFormatString = "{0:0.00}";
+            this.xrLabel37.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // sqlDataSource1
             // 
@@ -1769,7 +1758,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel24.StylePriority.UseTextAlignment = false;
             this.xrLabel24.Text = "xrLabel11";
             this.xrLabel24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel24.TextFormatString = "{0:0.00}";
+            this.xrLabel24.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel13
             // 
@@ -1794,7 +1783,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel13.StylePriority.UseTextAlignment = false;
             this.xrLabel13.Text = "xrLabel11";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel13.TextFormatString = "{0:0.00}";
+            this.xrLabel13.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel10
             // 
@@ -1819,7 +1808,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel10.StylePriority.UseTextAlignment = false;
             this.xrLabel10.Text = "xrLabel10";
             this.xrLabel10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel10.TextFormatString = "{0:0.00}";
+            this.xrLabel10.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel3
             // 
@@ -1832,7 +1821,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel3.Multiline = true;
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel3.SizeF = new System.Drawing.SizeF(279.3152F, 23.00002F);
+            this.xrLabel3.SizeF = new System.Drawing.SizeF(286.9402F, 23.00002F);
             this.xrLabel3.StylePriority.UseBackColor = false;
             this.xrLabel3.StylePriority.UseBorderColor = false;
             this.xrLabel3.StylePriority.UseBorders = false;
@@ -1864,7 +1853,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel4.StylePriority.UseTextAlignment = false;
             this.xrLabel4.Text = "xrLabel4";
             this.xrLabel4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel4.TextFormatString = "{0:0.00}";
+            this.xrLabel4.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel12
             // 
@@ -1889,7 +1878,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel12.StylePriority.UseTextAlignment = false;
             this.xrLabel12.Text = "xrLabel12";
             this.xrLabel12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel12.TextFormatString = "{0:0.00}";
+            this.xrLabel12.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel9
             // 
@@ -1914,7 +1903,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel9.StylePriority.UseTextAlignment = false;
             this.xrLabel9.Text = "xrLabel9";
             this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel9.TextFormatString = "{0:0.00}";
+            this.xrLabel9.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel8
             // 
@@ -1939,7 +1928,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel8.StylePriority.UseTextAlignment = false;
             this.xrLabel8.Text = "xrLabel8";
             this.xrLabel8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel8.TextFormatString = "{0:0.00}";
+            this.xrLabel8.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel7
             // 
@@ -1964,7 +1953,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel7.StylePriority.UseTextAlignment = false;
             this.xrLabel7.Text = "xrLabel7";
             this.xrLabel7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel7.TextFormatString = "{0:0.00}";
+            this.xrLabel7.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel6
             // 
@@ -1989,7 +1978,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel6.StylePriority.UseTextAlignment = false;
             this.xrLabel6.Text = "xrLabel6";
             this.xrLabel6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel6.TextFormatString = "{0:0.00}";
+            this.xrLabel6.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // xrLabel5
             // 
@@ -2002,11 +1991,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([ReceivableAmount])")});
             this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(365.1853F, 0.06754557F);
+            this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(372.8104F, 0.06754557F);
             this.xrLabel5.Multiline = true;
             this.xrLabel5.Name = "xrLabel5";
             this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel5.SizeF = new System.Drawing.SizeF(100.9583F, 22.93244F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(93.33316F, 22.93244F);
             this.xrLabel5.StylePriority.UseBackColor = false;
             this.xrLabel5.StylePriority.UseBorderColor = false;
             this.xrLabel5.StylePriority.UseBorders = false;
@@ -2014,7 +2003,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel5.StylePriority.UseTextAlignment = false;
             this.xrLabel5.Text = "xrLabel5";
             this.xrLabel5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel5.TextFormatString = "{0:0.00}";
+            this.xrLabel5.TextFormatString = "{0:#,##0.00;(#,##0.00)}";
             // 
             // BillsReceivableAgeingToday
             // 
@@ -2101,7 +2090,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         private DevExpress.XtraReports.UI.XRLabel xrLabel37;
         private DevExpress.XtraReports.UI.XRLabel xrLabel14;
         private DevExpress.XtraReports.UI.XRPageInfo xrPageInfo1;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel1;
         private DevExpress.XtraReports.UI.XRLabel xrLabel38;
         private DevExpress.XtraReports.UI.XRLabel xrLabel39;
         private DevExpress.XtraReports.UI.XRLabel xrLabel41;

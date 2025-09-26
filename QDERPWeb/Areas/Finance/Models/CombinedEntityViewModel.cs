@@ -1117,7 +1117,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal TotalAmount { get; set; }
         public DateTime EffectiveDate { get; set; }
         public byte TypeOfClaim { get; set; }
-
+        public DateTime PaidOn { get; set; }
         public string SelectedAccountHead { get; set; }
         public string SelectedPaymentType { get; set; }
     }
