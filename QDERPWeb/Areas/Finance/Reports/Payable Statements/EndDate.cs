@@ -128,13 +128,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
                 var querySql = @"
             SELECT * 
-            FROM qry205_027AgeingBillsReceivableWtColumns 
+            FROM qry205_017AgeingBillsPayableWtColumns 
             WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
             AND VoucherDate BETWEEN @StartDate AND @EndDate";
 
                 var customQuery = new CustomSqlQuery
                 {
-                    Name = "qry205_027AgeingBillsReceivableWtColumns",
+                    Name = "qry205_017AgeingBillsPayableWtColumns",
                     Sql = querySql
                 };
 
@@ -152,7 +152,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 sqlDataSource1.RebuildResultSchema();
 
                 this.DataSource = sqlDataSource1;
-                this.DataMember = "qry205_027AgeingBillsReceivableWtColumns";
+                this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
             }
             else
             {
@@ -165,7 +165,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 sqlDataSource1.Fill();
                 
                 // Check if data exists
-                var data = sqlDataSource1.Result["qry205_027AgeingBillsReceivableWtColumns"];
+                var data = sqlDataSource1.Result["qry205_017AgeingBillsPayableWtColumns"];
                 if (data == null || !data.Cast<object>().Any())
                 {
                     this.DataSource = null;
