@@ -1087,20 +1087,26 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
-									<br />
-									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
-									<br />
-									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
+                                    <br />
+                                       @(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+									<br />        
+                                   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
 								</td>
 
 								<!-- Verified By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+										@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text(new JS("formatMessage('Page Break after Terms')")) )
-									<br />
-									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text(new JS("formatMessage('Print Client Acknowledgement')")) )
+									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
+									<input type="hidden" id="hdnPageAfterBefore" name="hdnPageAfterBefore" value="false" />
+                                    <br />
+									 @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text(new JS("formatMessage('Print Client Acknowledgement')")))
+                                    <input type="hidden" id="hdnclientAcknowledgement" name="hdnclientAcknowledgement" value="false" />
 								</td>
 
 								<!-- Approved By Checkboxes -->
@@ -1948,7 +1954,56 @@
 
 <script>
 
-
+	 $(function() {
+        $("#pageBreakBefore").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageBreakBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+  
+	  $(function() {
+        $("#pageBreakAfter").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageAfterBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	 
+   
+	
+   
+	  $(function() {
+        $("#clientAcknowledgement").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnclientAcknowledgement").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	 
+	
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
 	function validateContactNo(e) {
     const regex = /^[0-9]+$/;  
     return regex.test(e.value); // ✅ only digits
@@ -7409,23 +7464,23 @@ async function onFinalAddClick(e) {
 								 formatMessage("Subject:"));
 				});
 
-		 $(function() {
-	  const tenantName = window.tenantName || "defaultTenant";
-	  const dd = $("#btnPrint").dxDropDownButton("instance");
+	// 	 $(function() {
+	//   const tenantName = window.tenantName || "defaultTenant";
+	//   const dd = $("#btnPrint").dxDropDownButton("instance");
 
-	  dd.option("onItemClick", function(e) {
-		if (e.itemData.text === "Prepare Cost Sheet") {
-		  const quotationNo = $('#txtQuotationNo').dxTextBox("instance")
-								.option("value");
-		  if (!quotationNo) {
-			DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
-			return;
-		  }
-		  const url = `/${tenantName}/ERM/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
-		  window.location.href = url;
-		}
-	  });
-	});
+	//   dd.option("onItemClick", function(e) {
+	// 	if (e.itemData.text === "Prepare Cost Sheet") {
+	// 	  const quotationNo = $('#txtQuotationNo').dxTextBox("instance")
+	// 							.option("value");
+	// 	  if (!quotationNo) {
+	// 		DevExpress.ui.notify("QuotationNo not found!", "error", 3000);
+	// 		return;
+	// 	  }
+	// 	  const url = `/${tenantName}/ERM/QuotedCostSummary?quotationNo=${encodeURIComponent(quotationNo)}`;
+	// 	  window.location.href = url;
+	// 	}
+	//   });
+	// });
 
 
  $(document).ready(function () {
