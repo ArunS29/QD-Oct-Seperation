@@ -732,7 +732,7 @@
             this.xrLabel44.StylePriority.UsePadding = false;
             this.xrLabel44.StylePriority.UseTextAlignment = false;
             this.xrLabel44.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.xrLabel44.TextFormatString = "{0:}";
+            this.xrLabel44.TextFormatString = "{0:MMM yyyy}";
             // 
             // xrLabel45
             // 
