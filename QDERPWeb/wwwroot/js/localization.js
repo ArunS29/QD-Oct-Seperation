@@ -2,6 +2,8 @@
 var dictionary = {
 
     "en": {
+        "Model Type":"Model Type",
+        "Add New Sevice":"Add New Sevice",
         "Request Type":"Request Type",
         "Po Status":"Po Status",
         "Supplier Ref No":"Supplier Ref No",
@@ -5411,8 +5413,14 @@ var dictionary = {
         "Invoice Master": " Invoice Master", 
         "Main": "Main",
         "Other Buyer ID":"Other Buyer ID",
-        "Line Total": "Line Total"
+        "Line Total": "Line Total",
         
+        "Client PO Date": "Client PO Date",
+        "Client PO End Date": "Client PO End Date",
+        "Client PO Type": "Client PO Type",
+        "Client PO Value": "Client PO Value"
+       
+
 
     },
                 //Arabic Language Translations
@@ -10032,6 +10040,7 @@ var dictionary = {
         "Quotation for Equipment's Rental Services": "عرض أسعار لخدمات تأجير المعدات",
         "We hope that our offer is in line with your requirements. Please indicate in your purchase order our Quotation Reference and acceptance to the terms & conditions.": "نأمل أن يكون عرضنا متوافقًا مع متطلباتكم. يرجى الإشارة في أمر الشراء إلى مرجع عرض الأسعار الخاص بنا والموافقة على الشروط والأحكام.",
         "With reference to your enquiry regarding Equipment Rental Services, we hereby submit our Quotation for your perusal.": "بالإشارة إلى استفساركم بخصوص خدمات تأجير المعدات، نود أن نقدم لكم عرض الأسعار للاطلاع.",
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
 
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
         "Client PO Date": "تاريخ أمر الشراء للعميل",
@@ -10051,6 +10060,18 @@ var dictionary = {
         "Invoice Master": "رئيس الفاتورة",
         "Main": "الرئيسي",
         "Other Buyer ID": "معرّف المشتري الآخر",
+
+        "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
+        "Client PO Date": "تاريخ أمر الشراء للعميل",
+        "Client PO End Date": "تاريخ انتهاء أمر الشراء للعميل",
+        "Client PO Type": "نوع أمر الشراء للعميل",
+        "Client PO Value": "قيمة أمر الشراء للعميل",
+
+
+        "Is Balance Sheet Account": "هل هو حساب الميزانية العمومية",
+        "Is Salary Payable": "هل الراتب مستحق الدفع",
+        "Is Use In Reconciliation": "هل يستخدم في التسوية",
+        "Total Purchase Amount": "إجمالي مبلغ الشراء"
     },
              
                 // Mandrian Chinese Languange Translations
@@ -14362,6 +14383,7 @@ var dictionary = {
         "Client PO End Date": "客户采购订单结束日期",
         "Client PO Type": "客户采购订单类型",
         "Client PO Value": "客户采购订单金额",
+
 
 
         "Validations": "验证",
@@ -27533,9 +27555,6 @@ var dictionary = {
         "Client PO End Date": "클라이언트 발주서 종료일",
         "Client PO Type": "클라이언트 발주서 유형",
         "Client PO Value": "클라이언트 발주서 금액",
-
-
-
         "Validations": "검증",
         "Item Details": "항목 세부사항",
         "Payment Details": "결제 세부사항",

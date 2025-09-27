@@ -787,5 +787,15 @@
 			   showColumnChooser();
 			   console.log('End permission handling');
 		   });
+			   function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
+	}
 </script>
