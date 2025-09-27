@@ -195,7 +195,7 @@
                             .Alignment(HorizontalAlignment.Center)
                             .Format(format => format
                             .Type(Format.ShortDate)
-                            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+                            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }") )
                             .Width(140); // Fixed width, change to auto for dynamic sizing
 
                                 // Invoice Due Date column
@@ -204,52 +204,16 @@
                             .Alignment(HorizontalAlignment.Center)
                             .Format(format => format
                             .Type(Format.ShortDate)
-                            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
+                            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }") )
                             .Width(140); // Fixed width, change to auto for dynamic sizing
                             });
 
                             // Grid Band: Amount
                             columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
                             {
-                              @* // Receivable Amount column
-                    band.AddFor(m => m.ReceivableAmount)
-                .Caption(new JS("formatMessage('Trans Invoice Amount')"))
-                .Alignment(HorizontalAlignment.Right)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Ensure positive values
-        return positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        ")
-                    .CellTemplate(@<text>
-                                       <div class="credit-pill">
-                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-                                           <%- data.Received != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-                                       </div>
-                                   </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing *@
-
                                 band.AddFor(m => m.ReceivableAmount)
                             .Caption(new JS("formatMessage('Invoice Amount')"))
                             .Alignment(HorizontalAlignment.Right)
-                                                                  @* .CustomizeText(@"
-                function(e) {
-                if (e.value === null || e.value === undefined) {
-                return ''; // Return empty string for null values
-                }
-                let positiveValue = Math.abs(e.value); // Ensure positive values
-                return positiveValue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-                });
-                }
-                ") *@
                             .HeaderCellTemplate(@<text>
                                                      <div class="invoice-header" style="font-weight: bold;">
                                                          <%= column.caption %>
@@ -272,48 +236,9 @@
                                            </text>)
                             .Width(160); // Fixed width, change to auto for dynamic sizing
 
-                                @*  // Paid Amount column
-                    band.AddFor(m => m.Received)
-                .Caption(new JS("formatMessage('Trans Received')"))
-                .Alignment(HorizontalAlignment.Right)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Convert to positive
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')'; // Add parentheses around the value
-        }
-        ")
-                    .CellTemplate(@<text>
-                                       <div class="received-pill">
-                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-                                           <%- data.Received != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-                                       </div>
-                                   </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing *@
-
-
                                 band.AddFor(m => m.Received)
                             .Caption(new JS("formatMessage('Received')"))
                             .Alignment(HorizontalAlignment.Right)
-                                                                  @*  .CustomizeText(@"
-                function(e) {
-                if (e.value === null || e.value === undefined) {
-                return ''; // Return empty string for null values
-                }
-                let positiveValue = Math.abs(e.value); // Convert to positive
-                let formattedValue = positiveValue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-                });
-                return '(' + formattedValue + ')'; // Add parentheses around the value
-                }
-                ") *@
                             .HeaderCellTemplate(@<text>
                                                      <div class="received-header" style="font-weight: bold;">
                                                          <%= column.caption %>
@@ -336,45 +261,9 @@
                                            </text>)
                             .Width(140); // Fixed width, change to auto for dynamic sizing
 
-                                @* // Balance Amount column
-                    band.AddFor(m => m.Balance)
-                .Caption(new JS("formatMessage('Trans Balance')"))
-                .Alignment(HorizontalAlignment.Right)
-                .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        let positiveValue = Math.abs(e.value); // Ensure positive values
-        return positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        ")
-                    .CellTemplate(@<text>
-                                       <div class="debit-pill">
-                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-                                           <%- data.Received != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-                                       </div>
-                                   </text>) .Visible(false)
-                .Width(160); // Fixed width, change to auto for dynamic sizing *@
-
                                 band.AddFor(m => m.Balance)
                             .Caption(new JS("formatMessage('Balance')"))
                             .Alignment(HorizontalAlignment.Right)
-                                                                  @*    .CustomizeText(@"
-                function(e) {
-                if (e.value === null || e.value === undefined) {
-                return ''; // Return empty string for null values
-                }
-                let positiveValue = Math.abs(e.value); // Ensure positive values
-                return positiveValue.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-                });
-                }
-                ") *@
                             .HeaderCellTemplate(@<text>
                                                      <div class="balance-header" style="font-weight: bold;">
                                                          <%= column.caption %>
@@ -544,6 +433,8 @@
     </div>
 </div>
 
+<div id="dataModePopup"></div>
+
 
 <script>
     $(function () {
@@ -563,41 +454,6 @@
     function dataGridInitialized(e) {
         dataGrid = e.component;
     }
-
-    // function switchButtons(buttonId) {
-
-    //     let hideBtn, showBtn, filterType;
-
-    //     // Determine which buttons to toggle and set the filter type
-    //     if (buttonId === "btnBillsWithBalance") {
-    //         showBtn = "btnBillsFullyReceived";
-    //         hideBtn = "btnBillsWithBalance";
-    //         filterType = "WithBalance"; // Filter: Balance > 0
-    //     } else if (buttonId === "btnBillsFullyReceived") {
-    //         showBtn = "btnBillsWithBalance";
-    //         hideBtn = "btnBillsFullyReceived";
-    //         filterType = "FullyReceived"; // Filter: Balance = 0
-    //     }
-
-    //     // Use DevExtreme APIs to toggle button visibility
-    //     const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
-    //     const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
-
-    //     hideButtonInstance.option("visible", false);
-    //     showButtonInstance.option("visible", true);
-
-    //     // Reload the DataGrid with the appropriate filter based on the button clicked
-    //     if (dataGrid) {
-    //         dataGrid.option("dataSource", {
-    //             load: function () {
-    //                 return $.getJSON(`/api/BillsReceivable/Get`, { filterType: filterType });
-
-    //             }
-    //         });
-    //         dataGrid.refresh();
-    //     }
-    // }
-
 
     function onContextMenuPreparing(e) {
         if (e.row && e.row.rowType === "data") { // Only for data rows
@@ -829,51 +685,166 @@
             }
         });
     }
-      $(function () {
-        // On page load: show FullyReceived, hide WithBalance
-        $("#btnBillsFullyReceived").dxButton("instance").option("visible", true);
-        $("#btnBillsWithBalance").dxButton("instance").option("visible", false);
 
+    // Online/Offline selection (mirror BillsPayable)
+    let selectedMode = "online"; // default
+    let allowDataMode = false;
 
+    $(function () {
+        $.getJSON('/api/TrialBalance/GetAllowDataModeSelection', function (res) {
+            if (res && res.allowDataMode === true) {
+                allowDataMode = true;
+                showDataModePopup(function (mode) {
+                    selectedMode = mode || 'online';
+                    initializeDataGridForMode();
+                });
+            } else {
+                initializeDataGridForMode();
+            }
+        });
     });
+
+    function initializeDataGridForMode() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        if (!grid) return;
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        const loadUrl = isOffline ? '/api/BillsReceivable/Getoffline' : '/api/BillsReceivable/Get';
+        grid.option('dataSource', DevExpress.data.AspNet.createStore({
+            key: 'ReferenceNo',
+            loadUrl: loadUrl,
+            loadMode: 'raw'
+        }));
+        // After initial full load, show WithBalance toggle
+        $("#btnBillsFullyReceived").dxButton("instance").option("visible", false);
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
+        grid.refresh();
+    }
+
     function loadBillsWithBalance() {
         const grid = $("#dataGrid").dxDataGrid("instance");
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        const loadUrl = isOffline ? '/api/BillsReceivable/Getoffline' : '/api/BillsReceivable/Get';
         grid.option("dataSource", DevExpress.data.AspNet.createStore({
-            key: "ReferenceNo", // Replace with actual primary key
-            loadUrl: "/api/BillsReceivable/Get",
+            key: "ReferenceNo",
+            loadUrl: loadUrl,
+            loadParams: { filterType: 'WithBalance' },
             loadMode: "raw"
         }));
-        // Show btnBillsFullyReceived, hide btnBillsWithBalance
         $("#btnBillsWithBalance").dxButton("instance").option("visible", false);
         $("#btnBillsFullyReceived").dxButton("instance").option("visible", true);
     }
 
     function loadAllBills() {
         const grid = $("#dataGrid").dxDataGrid("instance");
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        const loadUrl = isOffline ? '/api/BillsReceivable/Getoffline' : '/api/BillsReceivable/Get';
         grid.option("dataSource", DevExpress.data.AspNet.createStore({
-            key: "ReferenceNo", // Replace with actual primary key
-            loadUrl: "/api/BillsReceivable/GetAll",
+            key: "ReferenceNo",
+            loadUrl: loadUrl,
             loadMode: "raw"
         }));
-          // Show btnBillsWithBalance, hide btnBillsFullyReceived
         $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
         $("#btnBillsFullyReceived").dxButton("instance").option("visible", false);
     }
-         $(function () {
+
+     $(function () {
+        // Initialize default texts
         $("#totalreceivedbills").text(formatMessage("Total Received"));
-    });
-         $(function () {
         $("#totalinvoicedbills").text(formatMessage("Total Invoiced"));
-    });
-         $(function () {
         $("#totalbalancebills").text(formatMessage("Total Balance"));
-    });
-         $(function () {
         $("#billsreceivablefinance").text(formatMessage("Bills Receivable"));
-    });
-        $(function () {
         $("#QuickDiceERPSolutionsbills").text(formatMessage("Quick Dice ERP Solutions"));
     });
 
+    // Popup (same as BillsPayable)
+    function showDataModePopup(callback) {
+        const playSound = () => {
+            const audio = new Audio("/tones/mixkit-correct-answer-tone-2870.wav");
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+        };
+
+        $("#dataModePopup").dxPopup({
+            title: "? Select Data Mode",
+            contentTemplate: function (contentElement) {
+                const container = $("<div>").css({
+                    padding: "20px",
+                    fontFamily: "'Segoe UI', sans-serif",
+                    fontSize: "14px",
+                    lineHeight: "1.6",
+                    background: "#fdfdfd",
+                    borderRadius: "12px",
+                    boxShadow: "inset 0 0 3px rgba(0,0,0,0.05)"
+                }).appendTo(contentElement);
+
+                $("<div>").html(`
+                    <h3 style="margin: 0 0 10px; font-size: 18px; color: #333;">
+                        ?? <span style="font-weight:600;">How do you want to load data?</span>
+                    </h3>
+                `).appendTo(container);
+
+                const messageBox = $("<div>").css({
+                    backgroundColor: "#e0f3ff",
+                    border: "2px dashed #4bb3fd",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    color: "#01579b",
+                    fontSize: "14px",
+                    display: "none",
+                    marginTop: "12px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                }).appendTo(container);
+
+                const radioGroup = $("<div>").dxRadioGroup({
+                    items: ["Online", "Offline"],
+                    layout: "horizontal",
+                    stylingMode: "outlined",
+                    value: null,
+                    onValueChanged: function (e) {
+                        selectedMode = e.value.toLowerCase();
+                        const msg = selectedMode === "online"
+                            ? "? You’ve selected <strong>Online Mode</strong>. Real-time data will load."
+                            : "?? You’ve selected <strong>Offline Mode</strong>. Using snapshot data (Getoffline).";
+                        messageBox.html(msg).slideDown(200);
+                    }
+                }).css({
+                    marginTop: "20px",
+                    textAlign: "center"
+                });
+
+                $("<div>").addClass("dx-field-value").append(radioGroup).appendTo(container);
+            },
+            showCloseButton: true,
+            showTitle: true,
+            width: 500,
+            height: "auto",
+            dragEnabled: false,
+            shadingColor: "rgba(0,0,0,0.15)",
+            animation: {
+                show: { type: "slide", from: { top: -150, opacity: 0 }, to: { top: 0, opacity: 1 }, duration: 400 },
+                hide: { type: "fade", duration: 100 }
+            },
+            visible: true,
+            toolbarItems: [
+                {
+                    toolbar: "bottom",
+                    location: "after",
+                    widget: "dxButton",
+                    options: {
+                        text: "?? Confirm",
+                        type: "success",
+                        elementAttr: { style: "border-radius: 8px; font-weight: 600; min-width: 100px;" },
+                        onClick: function () {
+                            playSound();
+                            setTimeout(() => {
+                                $("#dataModePopup").dxPopup("instance").hide();
+                                callback(selectedMode);
+                            }, 150);
+                        }
+                    }
+                }
+            ]
+        });
+    }
 </script>
 

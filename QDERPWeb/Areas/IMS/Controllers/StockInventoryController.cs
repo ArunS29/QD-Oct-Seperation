@@ -37,7 +37,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         //[HttpGet]
-        //public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
+        //public async Task<IActionResult> GetInventory1(DataSourceLoadOptions loadOptions, string filterType = null)
         //{
         //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
         //    {
@@ -848,8 +848,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     // set default value
                     model.CreatedBy = addedBy;
                     model.CreatedOn = DateTime.Now;
-                    model.ModifiedBy = addedBy;
-                    model.ModifiedOn = DateTime.Now;
+                   // model.ModifiedBy = addedBy;
+                   // model.ModifiedOn = DateTime.Now;
                     model.IsDiscontinued = (model.IsDiscontinued == true) ? true : false;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
@@ -866,10 +866,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 else
                 {
                     // Update fields
-                    if (existingItem.CreatedBy == "" || string.IsNullOrEmpty(existingItem.CreatedBy))
-                    {
-                        existingItem.CreatedBy = addedBy;
-                    }
+                    //if (existingItem.CreatedBy == "" || string.IsNullOrEmpty(existingItem.CreatedBy))
+                    //{
+                    //    existingItem.CreatedBy = addedBy;
+                    //}
                     existingItem.Gsdescrpition = model.Gsdescrpition;
                     existingItem.GsdescriptionAr = model.GsdescriptionAr;
                     existingItem.GsgroupId = model.GsgroupId;
