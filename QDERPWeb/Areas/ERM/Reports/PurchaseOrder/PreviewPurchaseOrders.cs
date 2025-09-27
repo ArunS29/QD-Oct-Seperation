@@ -202,14 +202,14 @@ namespace QD.ERP.Web.Areas.ERM.Reports.PurchaseOrder
         
           
             // Show/hide xrPanel1 based on ShowFullSupplierAcceptance
-            if (FindControl("xrPanel1", true) is XRPanel panel1)
-                panel1.Visible = ShowFullSupplierAcceptance;
+            if (FindControl("panelAcceptance", true) is XRPanel panelAcceptance)
+                panelAcceptance.Visible = ShowFullSupplierAcceptance;
 
             // Show/hide panelAcceptance02 based on ShowSimpleSuppilerAcceptance
            
 
             // Hide or show xrPanel2, xrPanel3, xrPanel4 based on ShowSignatoryPositionOnly
-            foreach (string panelName in new[] { "xrPanel2", "xrPanel3", "xrPanel4" })
+            foreach (string panelName in new[] { "panelPreparedBy", "panelVerifiedBy", "panelApprovedBy" })
             {
                 if (FindControl(panelName, true) is XRPanel panel)
                     panel.Visible = !ShowSignatoryPositionOnly;
@@ -283,9 +283,9 @@ namespace QD.ERP.Web.Areas.ERM.Reports.PurchaseOrder
 
             this.DataSource = dt;
             this.DataMember = "";
-            decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(GrandTotal)", ""));
+            decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(NetAmount)", ""));
 
-            if (FindControl("xrLabel44", true) is XRLabel labelEnglish)
+            if (FindControl("xrLabel8", true) is XRLabel labelEnglish)
                 labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
 
             // Get currencyId from the first row
@@ -296,7 +296,7 @@ namespace QD.ERP.Web.Areas.ERM.Reports.PurchaseOrder
 
                 if (!string.IsNullOrEmpty(svgXml))
                 {
-                    foreach (string pictureBoxName in new[] { "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12" })
+                    foreach (string pictureBoxName in new[] {  "xrPictureBox6", "xrPictureBox7", "xrPictureBox5", "xrPictureBox4", "xrPictureBox3", "xrPictureBox2", "xrPictureBox1" })
                     {
                         if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
                         {

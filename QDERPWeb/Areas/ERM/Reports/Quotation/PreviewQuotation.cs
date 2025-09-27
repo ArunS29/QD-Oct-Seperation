@@ -71,16 +71,16 @@ namespace QD.ERP.Web.Areas.ERM.Reports.Quotation
             SetReportParameters(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
 
             LoadReportData(quotationNo);
-        //    LoadSubreport(quotationNo);
+            //    LoadSubreport(quotationNo);
 
-           // xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
+            // xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
 
 
 
-            //if (pageBreakBefore || pageBreakAfter)
-            //    this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
-            //else
-            //    this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
+            if (pageBreakBefore || pageBreakAfter)
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.BeforeBand;
+            else
+                this.ReportFooter.PageBreak = DevExpress.XtraReports.UI.PageBreak.None;
 
 
             ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
@@ -331,7 +331,7 @@ namespace QD.ERP.Web.Areas.ERM.Reports.Quotation
 
                 if (!string.IsNullOrEmpty(svgXml))
                 {
-                    foreach (string pictureBoxName in new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox2", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15" })
+                    foreach (string pictureBoxName in new[] { "xrPictureBox6", "xrPictureBox7", "xrPictureBox5", "xrPictureBox4", "xrPictureBox3", "xrPictureBox2", "xrPictureBox1" })
                     {
                         if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
                         {

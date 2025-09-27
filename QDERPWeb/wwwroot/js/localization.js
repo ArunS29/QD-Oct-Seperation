@@ -10108,7 +10108,7 @@ var dictionary = {
         "Is Balance Sheet Account": "هل هو حساب الميزانية العمومية",
         "Is Salary Payable": "هل الراتب مستحق الدفع",
         "Is Use In Reconciliation": "هل يستخدم في التسوية",
-        "Total Purchase Amount": "إجمالي مبلغ الشراء"
+        "Total Purchase Amount": "إجمالي مبلغ الشراء",
         "Standard rated Sales 10%": "المبيعات الخاضعة للضريبة القياسية 10%",
         "7a - Standard rated Domestic Purchase 10%": "7أ - المشتريات المحلية الخاضعة للضريبة القياسية 10%",
         "8a - Imports subject to VAT Paid at Customer 10%": "8أ - الواردات الخاضعة لضريبة القيمة المضافة المدفوعة عند العميل 10%",

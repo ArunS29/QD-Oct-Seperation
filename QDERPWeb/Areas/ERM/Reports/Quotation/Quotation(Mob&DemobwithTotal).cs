@@ -327,7 +327,7 @@ namespace QD.ERP.Web.Areas.ERM.Reports.Quotation
 
                 if (!string.IsNullOrEmpty(svgXml))
                 {
-                    foreach (string pictureBoxName in new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox2", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15" })
+                    foreach (string pictureBoxName in new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox2", "xrPictureBox5" })
                     {
                         if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
                         {
