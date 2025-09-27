@@ -221,7 +221,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error saving delivery note: " + ex.Message, success = false });
+                return StatusCode(500, new
+                {
+                    message = "Error saving delivery note: " + ex.Message,
+                    success = false
+                });
             }
         }
         [HttpPost]
