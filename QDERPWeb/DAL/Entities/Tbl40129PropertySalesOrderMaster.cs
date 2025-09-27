@@ -130,10 +130,12 @@ public partial class Tbl40129PropertySalesOrderMaster
 
     public byte? SoapprovedSign { get; set; }
 
-    public string RefNo { get; set; }
 
     public string VerifiedBy { get; set; }
-    public string ClientName { get; set; }
+    public string ClientRefName { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 
 
 
