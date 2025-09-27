@@ -15,10 +15,6 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
-    public DbSet<tbl20115BillsOutStanding> tbl20115BillsOutStanding { get; set; }
-    public DbSet<tbl001CostAnalysis> tbl001CostAnalysis { get; set; }
-    public virtual DbSet<TrialBalanceofflineResult> TrialBalanceofflineResult { get; set; }
-    public DbSet<Tbl201SubLedgerReceivablesMaster> Tbl201SubLedgerReceivablesMaster { get; set; }
 
     public DbSet<SupplierOutstanding> SupplierOutstandings { get; set; }
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
@@ -3410,9 +3406,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
     public virtual DbSet<GetDataForGeneratingTimesheet> GetDataForGeneratingTimesheets { get; set; }
     public virtual DbSet<VATFinalReturnsSummary> VATFinalReturnsSummarys { get; set; }
-    public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
 
-    public virtual DbSet<TrialBalanceofflineResult> TrialBalanceofflineResults { get; set; }
+    public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
@@ -3461,7 +3456,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<JournalRegisterView>().HasNoKey();
-        modelBuilder.Entity<TrialBalanceofflineResult>().HasNoKey();
+        modelBuilder.Entity<TrialBalanceResult>().HasNoKey();
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
         modelBuilder.Entity<DashBoardBankAccount>().HasNoKey();// Mark as keyless
@@ -52007,31 +52002,6 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.SupervisorContactNo).IsUnicode(false);
             entity.Property(e => e.SupervisorMobileNo).IsUnicode(false);
             entity.Property(e => e.SupervisorName).IsUnicode(false);
-        });
-        modelBuilder.Entity<tbl20115BillsOutStanding>(entity =>
-        {
-            entity.ToTable("tbl20115BillsOutStanding"); // map to your SQL table
-
-            entity.HasKey(e => new { e.AccountHeadNo, e.AccountGroupId });
-
-            entity.Property(e => e.AccountHeadNo)
-                  .HasColumnType("varchar(10)");
-
-            entity.Property(e => e.AccountHead)
-                  .HasColumnType("varchar(200)");
-
-            entity.Property(e => e.Balance)
-                  .HasColumnType("money");
-
-            entity.Property(e => e.AccountGroupId)
-                  .HasColumnType("varchar(10)");
-
-            entity.Property(e => e.OverdueDays)
-                  .HasColumnType("int");
-
-            // Optional: index for performance
-            entity.HasIndex(e => e.OverdueDays);
-            entity.HasIndex(e => e.Balance);
         });
 
         modelBuilder.Entity<Tbl101EmployeeAsset>(entity =>

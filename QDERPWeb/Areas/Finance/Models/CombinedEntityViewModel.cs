@@ -1,7 +1,7 @@
 ﻿
-using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.DAL.Entities;
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
+﻿using QD.ERP.Web.DAL.Entities;
 
 namespace QD.ERP.Web.Areas.Finance.Models
 {
@@ -209,36 +209,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VoucherModifiedOn { get; set; }
 
     }
-    [Keyless]
+
     public class TrialBalanceResult
     {
         public string VoucherNo { get; set; }
         public DateTime? VoucherDate { get; set; }
         public long? VoucherEntryNo { get; set; }
-        public string AccountHead { get; set; }
-        public string AccountHeadName { get; set; }
-        public string DrCr { get; set; }
-        public decimal? DrAmount { get; set; }
-        public decimal? CrAmount { get; set; }
-        public decimal? VoucherAmountFormatted { get; set; }
-        public string AccountGroup { get; set; }
-        public string MasterGroup { get; set; }
-        public string VoucherType { get; set; }
-        public string Transactions { get; set; }
-        public string MonthYear { get; set; }
-        public int? MonthNumber { get; set; }
-        public string Category { get; set; }
-        public string VoucherRefNo { get; set; }
-        public string VoucherNarration { get; set; }
-        public string EntryNarration { get; set; }
-        public string SysRemarks { get; set; }
-    }
-    [Keyless]
-    public class TrialBalanceofflineResult
-    {
-        public string VoucherNo { get; set; }
-        public DateTime? VoucherDate { get; set; }
-        public int? VoucherEntryNo { get; set; }
         public string AccountHead { get; set; }
         public string AccountHeadName { get; set; }
         public string DrCr { get; set; }

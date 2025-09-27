@@ -17,7 +17,7 @@ namespace QD.ERP.Web.DAL.Entities
 
             optionsBuilder.UseSqlServer(connectionString, sqlOptions =>
             {
-                sqlOptions.CommandTimeout(1200); // Set timeout to 1200 seconds
+                sqlOptions.CommandTimeout(120); // Set timeout to 120 seconds
                 sqlOptions.EnableRetryOnFailure(
                     maxRetryCount: 5,
                     maxRetryDelay: TimeSpan.FromSeconds(80),
