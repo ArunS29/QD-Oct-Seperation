@@ -1192,20 +1192,21 @@
             // xrLabel41
             // 
             this.xrLabel41.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([calculatedField1])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([calculatedField1]-[calculatedField2])")});
             this.xrLabel41.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel41.ForeColor = System.Drawing.Color.Red;
-            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(416.6715F, 106.6669F);
+            this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(419.5674F, 106.6669F);
             this.xrLabel41.Multiline = true;
             this.xrLabel41.Name = "xrLabel41";
             this.xrLabel41.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel41.SizeF = new System.Drawing.SizeF(134.1666F, 30.49985F);
+            this.xrLabel41.SizeF = new System.Drawing.SizeF(131.2707F, 30.49982F);
             this.xrLabel41.StylePriority.UseFont = false;
             this.xrLabel41.StylePriority.UseForeColor = false;
             this.xrLabel41.StylePriority.UseTextAlignment = false;
             xrSummary1.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel41.Summary = xrSummary1;
             this.xrLabel41.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrLabel41.TextFormatString = "{0:N2}";
             // 
             // xrLine3
             // 
@@ -1712,7 +1713,6 @@
             // 
             this.GroupFooter1.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.xrLabel57,
-            this.xrLabel29,
             this.xrLine2,
             this.xrPageInfo1,
             this.xrLabel34,
@@ -1743,7 +1743,8 @@
             this.xrLabel11,
             this.xrLabel12,
             this.xrLabel13,
-            this.xrLabel1});
+            this.xrLabel1,
+            this.xrLabel29});
             this.GroupFooter1.HeightF = 345.7506F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
