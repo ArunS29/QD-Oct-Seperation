@@ -19,7 +19,7 @@ public partial class Tbl40130PropertySalesOrderChild
 
     public string QuotedUom { get; set; }
 
-    public string UnitRateMethod { get; set; }
+    public byte? UnitRateMethod { get; set; }
 
     public decimal? LineOrderNo { get; set; }
 
@@ -43,11 +43,11 @@ public partial class Tbl40130PropertySalesOrderChild
 
     public decimal? UnitRate1 { get; set; }
 
-    public string UnitRateMethod2 { get; set; }
+    public byte? UnitRateMethod2 { get; set; }
 
     public decimal? UnitRate2 { get; set; }
 
-    public string UnitRateMethod3 { get; set; }
+    public byte? UnitRateMethod3 { get; set; }
 
     public decimal? UnitRate3 { get; set; }
 
