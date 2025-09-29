@@ -214,7 +214,7 @@
             // xrLabel17
             // 
             this.xrLabel17.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", " \'As on \' + FormatString(\'{0:dd-MMM-yyyy}\', ?EndDate)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'As on \' + FormatString(\'{0:dd-MMM-yyyy}\', LocalDateTimeToday())\n")});
             this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Times New Roman", 11F);
             this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(451.4167F, 91.39135F);
             this.xrLabel17.Multiline = true;
