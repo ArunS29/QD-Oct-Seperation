@@ -107,34 +107,46 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(int key)
+        public async Task<IActionResult> Delete(int key)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var record = dbContext.Tbl30103ModeOfRequestMasters.FirstOrDefault(x => x.ModeOfRequestId == key);
-                    if (record == null)
-                        return NotFound();
-
-                    dbContext.Tbl30103ModeOfRequestMasters.Remove(record);
-                    dbContext.SaveChanges();
-                    _userActionLogger.LogAsync(module: "IMS > Delete",
-                     actionDetail: $"Deleted {key}",
-                     documentNo: $"{key}"
-                   );
-                    return Ok();
+                    return Unauthorized(new { success = false, message = "Invalid tenant" });
                 }
 
-                return Unauthorized(new { success = false, message = "Invalid tenant" });
+                var record = await dbContext.Tbl30103ModeOfRequestMasters
+                    .FirstOrDefaultAsync(x => x.ModeOfRequestId == key);
+
+                if (record == null)
+                {
+                    return NotFound(new { success = false, message = "Record not found" });
+                }
+
+                dbContext.Tbl30103ModeOfRequestMasters.Remove(record);
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete",
+                    actionDetail: $"Deleted ModeOfRequestId: {key}",
+                    documentNo: $"{key}"
+                );
+
+                return Ok(new { success = true, message = "Deleted successfully" });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error in Delete: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "An error occurred while deleting the record.",
+                    error = ex.Message
+                });
             }
         }
+
 
     }
 }

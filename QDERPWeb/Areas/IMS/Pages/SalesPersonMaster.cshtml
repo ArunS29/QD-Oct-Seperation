@@ -380,38 +380,52 @@
                 { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true, },
                 { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },
                 { dataField: "TargetPerMonth", caption: formatMessage("Sales Target"), allowFiltering: true },
-                {
-                    type: "buttons",
-                    buttons: [
-                        "edit",
-                        {
-                            icon: "trash",
-                            hint: "Delete",
-                            onClick: function (e) {
-                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                                var selectedData = e.row.data;
-                                var salesPersonCode = selectedData.SalesPersonCode;
+          {
+        type: "buttons",
+        buttons: [
+            "edit",
+            {
+                icon: "trash",
+                hint: "Delete",
+                onClick: function (e) {
+                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                    var salesPersonCode = e.row.data.SalesPersonCode;
 
-                                // Send delete request to the API
-                                $.ajax({
-                                    type: "DELETE",
-                                    url: "/api/Master/DeleteSalesPerson/" + salesPersonCode,
-                                    success: function (response) {
-                                        if (response.success) {
-                                            dataGrid.refresh();
-                                            DevExpress.ui.notify("Sales person deleted successfully.", "success", 2000);
-                                        } else {
-                                            DevExpress.ui.notify(response.message, "error", 2000);
-                                        }
-                                    },
-                                    error: function (xhr) {
-                                        DevExpress.ui.notify(xhr.responseText, "error", 2000);
+                    // 🔹 Show confirmation dialog
+                    var result = DevExpress.ui.dialog.confirm(
+                        "Are you sure you want to delete this Sales Person?",
+                        "Confirm Delete"
+                    );
+
+                    result.done(function (dialogResult) {
+                        if (dialogResult) {
+                            // User confirmed → delete
+                            $.ajax({
+                                type: "DELETE",
+                                url: "/api/Master/DeleteSalesPerson/" + salesPersonCode,
+                                success: function (response) {
+                                    if (response.success) {
+                                        dataGrid.refresh();
+                                        DevExpress.ui.notify("Sales person deleted successfully.", "success", 2000);
+                                    } else {
+                                        DevExpress.ui.notify(response.message || "Delete failed.", "error", 2000);
                                     }
-                                });
-                            }
+                                },
+                                error: function (xhr) {
+                                    let msg = xhr.responseJSON?.message || xhr.responseText || "Error occurred.";
+                                    DevExpress.ui.notify(msg, "error", 3000);
+                                }
+                            });
+                        } else {
+                            // Cancel notify
+                            DevExpress.ui.notify("Delete cancelled", "info", 2000);
                         }
-                    ]
+                    });
                 }
+            }
+        ]
+    }
+
             ],
             showBorders: true,
             paging: {
@@ -589,6 +603,18 @@
                     success: function (response) {
                         DevExpress.ui.notify("Sales Person Added Successfully", "success", 2000);
                         $("#gridContainer").dxDataGrid("instance").refresh();
+
+                           $("#txtSalesPersonName").dxTextBox("instance").option("value","");
+                           $("#DDlUserId").dxDropDownBox("instance").option("value","");
+                           $("#txtEmailAddress").dxTextBox("instance").option("value","");
+                           $("#txtSalesPersonContactNo").dxTextBox("instance").option("value","");
+                           $("#txtSalesPersonCode").dxTextBox("instance").option("value","");
+                            $("#txtTargetPerMonth").dxNumberBox("instance").option("value","");
+                             $("#txtSalesPersonName").dxValidator("instance").reset();
+                             $("#txtEmailAddress").dxValidator("instance").reset();
+                             $("#txtSalesPersonCode").dxValidator("instance").reset();
+                             $("#txtSalesPersonContactNo").dxValidator("instance").reset();
+                              $("#DDlUserId").dxValidator("instance").reset();
                     },
                     error: function (xhr) {
                         var errorMessage = xhr.status === 500
