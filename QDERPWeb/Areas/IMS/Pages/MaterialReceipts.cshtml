@@ -446,6 +446,7 @@
 				subColumns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('Supplier Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ModeOfReceiptId).Caption(new JS("formatMessage('Mode of ReceiptId')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.OurPurchaseOrderNo).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 				subColumns.AddFor(m => m.VatpurchaseBillNo).Caption(new JS("formatMessage('VAT purchase Bill No')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -465,6 +466,36 @@
 			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
 		</div>
 	</text>).Visible(true);
+
+
+			subColumns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
+				subColumns.AddFor(m => m.Mprno).Caption("MPR No").Visible(false);
+				subColumns.AddFor(m => m.Rfqno).Caption("RFQ No").Visible(false);
+				subColumns.AddFor(m => m.SupplierQuotationNo).Caption("Supplier Quotation No").Visible(false);
+				subColumns.AddFor(m => m.JobCode).Caption("Job Code").Visible(false);
+				subColumns.AddFor(m => m.IssueRemarks).Caption("Issue Remarks").Visible(false);
+				subColumns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
+				subColumns.AddFor(m => m.PreparedOn).Caption("Prepared On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+				subColumns.AddFor(m => m.ApprovedOn).Caption("Approved On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+				subColumns.AddFor(m => m.AddedOn).Caption("Added On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+				subColumns.AddFor(m => m.ModifiedOn).Caption("Modified On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
+				subColumns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group Id").Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
+				subColumns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
+				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+				subColumns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User Id").Visible(false);
+				subColumns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+				subColumns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+				subColumns.AddFor(m => m.VerifiedOn).Caption("Verified On").Format("dd-MMM-yyyy").Visible(false);
+				subColumns.AddFor(m => m.StoreReceivedIn).Caption("Store Received In").Visible(false);
+				subColumns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
 
 			});
 				columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(subColumns =>
@@ -950,17 +981,29 @@
 			if (e.target === "content" && e.row && e.row.data) {
 				const rowData = e.row.data;
 						const ReceiptNo = encodeURIComponent(rowData.ReceiptNo);
+							const ModeOfReceiptId = rowData.ModeOfReceiptId;
 				const tenantName = window.tenantName || "defaultTenant";
 
 				e.items = [
-					{
-							text: formatMessage("Edit Material Receipt"),
-						icon: "edit",
-						onItemClick: function () {
-										const url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
-							window.location.href = url;
+						{
+					text: formatMessage("Edit Material Receipt"),
+					icon: "edit",
+					onItemClick: function () {
+						let url = "";
+						switch (ModeOfReceiptId) {
+							case 1: // Supplier
+								url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
+								break;
+							case 3: // Project
+								url = `/${tenantName}/IMS/MaterialReceiptFromProject?ReceiptNo=${ReceiptNo}`;
+								break;
+							default:
+								DevExpress.ui.notify("Unsupported Mode of Receipt", "warning", 2000);
+								return;
 						}
-					},
+						window.location.href = url;
+					}
+				},
 					
 					{
 					text: formatMessage("Delete Material Receipt"),

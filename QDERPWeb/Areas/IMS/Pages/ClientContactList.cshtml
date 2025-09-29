@@ -224,7 +224,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Mobile Number (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -237,7 +238,8 @@
                 .Width("100%")
                   .Label(new JS("formatMessage('Phone No. (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -252,7 +254,8 @@
                 .Width("100%")
                  .Label(new JS("formatMessage('Mobile Number (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -265,7 +268,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Phone No. (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -293,7 +297,7 @@
                 .ID("email")
                 .Value("")
                 .Width("100%")
-               
+                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Label(new JS("formatMessage('Email')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("class", "white-bg"))

@@ -2279,32 +2279,33 @@
 			// If Mprno is present, load client details
 			loadClientDetails(QuoteNo);
 			edit=true;
-		} else {
-		NewNoGeneration();
-		}
+		} 
+		// else {
+		// NewNoGeneration();
+		// }
 	});
 
-	function NewNoGeneration(){
-			// If QuoteNo is not present and IsCurrent is not "true", generate a Autogenerate request number
-			$.ajax({
-				url: "/api/AddNewQuotation/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
+	// function NewNoGeneration(){
+	// 		// If QuoteNo is not present and IsCurrent is not "true", generate a Autogenerate request number
+	// 		$.ajax({
+	// 			url: "/api/AddNewQuotation/GetNewDebitNoteNoApi",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
 
-					const invoiceBox = $("#txtQuotationNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
-				}
-			});
-	}
+	// 				const invoiceBox = $("#txtQuotationNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
+	// 			}
+	// 		});
+	// }
 	//For concurrency
 
 	function NewNoGeneration1() {
@@ -5832,11 +5833,11 @@ function saveQuotation(quotationNoNew, $btn) {
 			};
 
 				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-if (!children || children.length === 0) {
-	DevExpress.ui.notify("No child records to save.", "error", 3000);
-	$btn.option("disabled", false); // Re-enable the button
-	return;
-}
+// if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -5849,18 +5850,15 @@ if (!children || children.length === 0) {
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					isVoucherSaved = true; 
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					$btn.option("disabled", false);
-					
-              // ✅ Update textbox with final number from API
+				
 					const quoteno = response.quoteno;
 				loadClientDetails(quoteno);
                   edit=true;
-				
-	
-
-					  isVoucherSaved = true; // Mark Updated step as done
-                      updateWorkflowVisual(getWorkflowStatusFromFields());
+				  
 				},
 				error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
@@ -5949,11 +5947,11 @@ function saveAndCloseQuotation(quotationNoNew, $btn) {
 			};
 
 				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-if (!children || children.length === 0) {
-	DevExpress.ui.notify("No child records to save.", "error", 3000);
-	$btn.option("disabled", false); // Re-enable the button
-	return;
-}
+// if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -5966,26 +5964,13 @@ if (!children || children.length === 0) {
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					  isVoucherSaved = true; // Mark Updated step as done
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					history.back();
 					
-              // ✅ Update textbox with final number from API
-					const quoteno = response.quoteno;
-			
-                  
-				
-				 // loadChildDataAndBindGrid(quoteno);
-					// // Refresh parent DataGrid (ensure the correct selector is used)
-					// if (window.parent && window.parent.$("#dataGrid").length) {
-					// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					// 	if (dataGrid) {
-					// 		dataGrid.refresh();
-					// 	}
-					// }
-
-					  isVoucherSaved = true; // Mark Updated step as done
-                      updateWorkflowVisual(getWorkflowStatusFromFields());
-				},
+             
+					},
 				error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
 				$btn.option("disabled", false); // Re-enable on error
