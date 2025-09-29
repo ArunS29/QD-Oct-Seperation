@@ -1049,6 +1049,38 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
             }
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetCompany(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var ClientCategory = dbContext.Tbl901CompanyDetails.Select(i => new
+                    {
+                        i.CompanyId,
+                        i.CompanyName
+
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+
+
+
         [HttpPost]
 		public async Task<ActionResult> CancelMPR(string RequestNo)
 		{
