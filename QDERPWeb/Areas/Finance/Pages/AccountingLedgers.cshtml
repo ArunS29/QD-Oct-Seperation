@@ -487,6 +487,11 @@
 		font-size: 1.4rem;
 		color: #000;
 	}
+	.narration-cell {
+    white-space: normal;   /* Allow wrapping */
+    word-break: break-word; /* Break long words if needed */
+}
+
 
 </style>
 
@@ -1006,7 +1011,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(true)
     .CellTemplate(@<text>
-        <div title="<%- data.SysRemarks %>" class="narration-cell max-lines-1">
+        <div title="<%- data.SysRemarks %>" class="narration-cell">
             <%- data.SysRemarks %>
         </div>
     </text>);
@@ -1018,7 +1023,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(false)
     .CellTemplate(@<text>
-        <div title="<%- data.EntryNarration %>" class="narration-cell max-lines-1">
+        <div title="<%- data.EntryNarration %>" class="narration-cell">
             <%- data.EntryNarration %>
         </div>
     </text>);
@@ -1039,7 +1044,7 @@
 						columns.AddFor(m => m.VoucherNarration)
 					.Caption(new JS("formatMessage('Narration')"))
 					.CellTemplate(@<text>
-			<div title="<%- data.VoucherNarration %>" class="narration-cell max-lines-1">
+			<div title="<%- data.VoucherNarration %>" class="narration-cell">
 				<%- data.VoucherNarration %>
 			</div>
 		</text>)
