@@ -309,7 +309,7 @@
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Item Store')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("ERStockInventory")
+                                                .Controller("StockInventory")
                             .LoadAction("GetStores")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("StoreId")
@@ -383,7 +383,7 @@
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Item Classification')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("ERStockInventory")
+                                                .Controller("StockInventory")
                             .LoadAction("GetItemClassifications")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("StockClassId")
@@ -2748,7 +2748,7 @@
     @(Html.DevExtreme().DataGrid()
                 .ID("GetItemStore-datagrid")
                 .DataSource(d => d.WebApi()
-                .Controller("ERStockInventory")
+                    .Controller("StockInventory")
                 .LoadAction("GetStores")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("StoreId")
@@ -2784,7 +2784,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("GetItemClassification-datagrid")
         .DataSource(d => d.WebApi()
-        .Controller("ERStockInventory")
+            .Controller("StockInventory")
         .LoadAction("GetItemClassifications")
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("StockClassId")
@@ -3121,6 +3121,7 @@
         const description = descriptionInstance.option("value") || '';
         const openingBalance = $("#OpeningBalance").dxNumberBox("instance").option("value");
         const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
+        const unitCode =  $("#UnitOfMeasure").dxDropDownBox("instance").option("value");
         // Encode the parameters to ensure URL safety
         const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&UnitCode=${encodeURIComponent(unitCode)}&modal=true`;
         openModal(url, formatMessage("Opening Balance Entries"));

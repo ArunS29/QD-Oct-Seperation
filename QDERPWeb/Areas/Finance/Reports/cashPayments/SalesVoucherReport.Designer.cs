@@ -556,6 +556,7 @@
             // 
             this.xrSubreport3.LocationFloat = new DevExpress.Utils.PointFloat(446.3658F, 90.45832F);
             this.xrSubreport3.Name = "xrSubreport3";
+            this.xrSubreport3.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.Subledger1();
             this.xrSubreport3.SizeF = new System.Drawing.SizeF(465.6345F, 23F);
             // 
             // xrSubreport2

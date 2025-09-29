@@ -325,7 +325,7 @@
 														.ID("txtRequestNo")
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
-								
+								                        .ReadOnly(true)
 														)
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -2449,30 +2449,31 @@ let edit=false;
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
 				edit=true;
-			} else  {
-		    NewNoGeneration();
-			}
+			} 
+			// else  {
+		 //    NewNoGeneration();
+			// }
 		});
-		function NewNoGeneration(){
-					// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
-				$.ajax({
-					url: "/api/AddNewClientRequest/GetNewRequestNoApi",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
-						const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
-					}
-				});
-	}
+	// 	function NewNoGeneration(){
+	// 				// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
+	// 			$.ajax({
+	// 				url: "/api/AddNewClientRequest/GetNewRequestNoApi",
+	// 				type: "GET",
+	// 				success: function (data) {
+	// 					console.log("Success:", data);
+	// 					const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
+	// 					if (invoiceBox) {
+	// 						invoiceBox.option("value", data || "");
+	// 					} else {
+	// 						console.warn("Invoice TextBox not initialized.");
+	// 					}
+	// 				},
+	// 				error: function (xhr, status, error) {
+	// 					console.error("Error loading Payment Accounts:", error);
+	// 					DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
+	// 				}
+	// 			});
+	// }
 	//For concurrency
 	function NewNoGeneration1() {
     return $.ajax({
@@ -3796,9 +3797,7 @@ $("#btnAddNew").on("click", function (e) {
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				//var button = $("#btnSave").dxButton("instance");
-				//button.option("text", formatMessage("Update"));
+					
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -3834,8 +3833,7 @@ $("#btnAddNew").on("click", function (e) {
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh();
-				//const button = $("#btnSave").dxButton("instance");
-				//button.option("text", formatMessage("Update"));
+				
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5404,11 +5402,11 @@ function saveQuotation(mprNoNew, $btn) {
 		// ✅ Step 4: Get child records
 		
 			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			PurchaseRequestDetails: children
@@ -5423,16 +5421,11 @@ function saveQuotation(mprNoNew, $btn) {
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
+				$btn.option("disabled", false);
 				 const mprno = response.mprno;
-                window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${mprno}`				
-				// loadChildDataAndBindGrid(mprno);
-				// // Refresh parent DataGrid if present
-				// if (window.parent && window.parent.$("#dataGrid").length) {
-				// 	const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				// 	if (dataGrid) {
-				// 		dataGrid.refresh();
-				// 	}
-				// }
+                loadClientDetails(mprno);
+				edit=true;			
+				
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
@@ -5509,11 +5502,11 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 		// ✅ Step 4: Get child records
 		//const children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			PurchaseRequestDetails: children
@@ -5529,16 +5522,8 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
 				  history.back();
-				 const mprno = response.mprno;
-              	
-				// loadChildDataAndBindGrid(mprno);
-				// // Refresh parent DataGrid if present
-				// if (window.parent && window.parent.$("#dataGrid").length) {
-				// 	const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				// 	if (dataGrid) {
-				// 		dataGrid.refresh();
-				// 	}
-				// }
+				               	
+				
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
@@ -5548,42 +5533,6 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 }
 
 
-	
-	function loadChildDataAndBindGrid(mprno) {
-		//
-    if (!mprno) {
-        console.warn("No MPR number provided.");
-        return;
-    }
-    $.ajax({
-        type: "GET",
-        url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
-        dataType: "json",
-        success: function (gridResponse) {
-            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-                console.warn("No child details found in the response.");
-                return;
-            }
-            console.log("Grid Response:", gridResponse);
-            const rowData = gridResponse.map((item, index) => ({
-                SNo: index + 1,
-                ...item
-            }));
-            // ✅ Bind data to existing B2B grid
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            if (grid) {
-                grid.option("dataSource", rowData);
-            } else {
-                console.error("B2B DataGrid instance not found.");
-            }
-        },
-        error: function (xhr, status, error) {
-            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-            console.error("Error fetching grid data:", errorMsg);
-        }
-    });
-}
 	
 		 $("#btnDelete").on("click", function (e) {
 			e.preventDefault();
