@@ -12,7 +12,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -25,7 +28,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -142,7 +148,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+            if (fromDate) {
+                $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+            }
+            if (toDate) {
+                $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+            }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -350,7 +361,7 @@
                     }
                 },
                 { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
-                { dataField: "EntryNarration", caption: formatMessage("Bill Remarks") }
+                { dataField: "BillRemarks", caption: formatMessage("Bill Remarks") }
             ],
             onCellPrepared: function (e) {
                 if (e.rowType === "groupFooter" && e.column.dataField === "CostAndRevenueClubbed" && e.cellElement.hasClass("dx-datagrid-summary-item")) {

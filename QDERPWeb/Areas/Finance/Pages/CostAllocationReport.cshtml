@@ -18,7 +18,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -31,7 +34,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -146,6 +152,13 @@
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
 
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
+
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -256,7 +269,7 @@
                 dataType: "date",
                 format: "dd-MMM-yyyy"
             },
-                { dataField: "SysRemarks", caption: formatMessage("Remarks") }
+                { dataField: "CostAllocRemarks", caption: formatMessage("Remarks") }
             ]
         }).dxDataGrid("instance");
 
