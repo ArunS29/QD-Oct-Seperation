@@ -16,7 +16,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -29,7 +32,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -146,7 +152,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -179,24 +190,33 @@
                 visible: false,
                 emptyPanelText: "Drag a column here to group"
             },
-            summary: {
+               summary: {
                 totalItems: [
                     {
-                         column: "AmountAllocated",
+                        column: "AmountAllocated",
                         summaryType: "sum",
                         valueFormat: {
-                            type: "fixedPoint",  // ensures numeric formatting
-                            precision: 2         // always shows .00
+                            type: "fixedPoint",
+                            precision: 2
                         },
-                        displayFormat: "{0}"
+                        displayFormat: "{0}",
+                        customizeText: function (e) {
+                            if (e.value < 0) {
+                                // Format negative number with parentheses and remove the minus sign
+                                return "(" + Math.abs(e.value).toFixed(2) + ")";
+                            }
+                            return e.value.toFixed(2);
+                        }
                     }
                 ]
             },
+
             filterRow: { visible: false },
             searchPanel: { visible: false },
             paging: { pageSize: 100 },
             pager: { visible: false },
             columns: [
+                { dataField: "Department", caption: formatMessage("Department"), groupIndex: 0 },
                 { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
                 { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
                 { dataField: "NationalId", caption: formatMessage("National ID") },

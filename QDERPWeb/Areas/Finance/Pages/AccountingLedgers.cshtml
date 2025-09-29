@@ -829,6 +829,8 @@
 						columns.AddFor(m => m.VoucherDate)
 					.Caption(new JS("formatMessage('VoucherDate')"))
 					.Alignment(HorizontalAlignment.Center)
+					 .SortOrder(SortOrder.Desc) // 👈 Add this line (Desc for newest first, Asc for oldest first)
+                     .SortIndex(0)    
 					.Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
 					.Visible(true);
@@ -2580,7 +2582,7 @@ function dropDownBoxValueChanged(e) {
             // ✅ Row right-click → Edit Voucher
             if (e.target === "content" && e.row && e.row.rowType === "data") {
                 e.items.push({
-                    text: "Edit Voucher",
+                    text: formatMessage("Edit Voucher"),
                     icon: "edit",
                     onItemClick: function () {
                         const rowData = e.row.data;

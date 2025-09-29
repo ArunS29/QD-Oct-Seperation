@@ -487,6 +487,7 @@
             })
             .OnRowUpdating("onLedgerRowUpdating")
             .OnRowRemoving("onjournalrowremoving")
+            .OnRowUpdated("onLedgerRowUpdated")
             )
     </div>
   <div class="col-md-2 col-sm-6 d-flex align-items-center journal-container">
@@ -2682,6 +2683,45 @@
                 }
             }
         }
+        function onLedgerRowUpdated(e) {
+            debugger;
+             // Get JournalRefNo from the VoucherNo TextBox instead of relying on e.key
+            const journalRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            if (!journalRefNo) {
+                DevExpress.ui.notify("Journal Reference No is missing. Cannot update.", "error", 3000);
+                return;
+            } // Assuming JournalRefNo is the key
+
+            e.data.JournalRefNo = journalRefNo;
+
+            // Call backend API to update Tbl20127JournalRegisterChild
+            $.ajax({
+                url: '/api/JournalEntryEdit/UpdateJournalChild', // Controller action
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(e.data),
+                success: function () {
+                    // After update, refresh grid with latest data
+                    $.ajax({
+                        url: '/api/JournalEntryEdit/GetJournalRegisterChildren', // Controller action to get data by JournalRefNo
+                        type: 'GET',
+                        data: { voucherNo: journalRefNo },
+                        success: function (result) {
+                            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                            dataGrid.option("dataSource", result);
+                        },
+                        error: function (err) {
+                            console.error("Error fetching updated data:", err);
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error("Error updating data:", err);
+                }
+            });
+        }
+
          function checkVoucherDateLock(voucherDate) {
      $.ajax({
          type: "GET",

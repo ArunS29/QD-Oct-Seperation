@@ -1447,6 +1447,11 @@ public class InvoiceRequest
         public string PaymentStatus { get; set; }
     }
 
+    public class UpdateJournalChildDto
+    {
+        public string JournalRefNo { get; set; }
+        public Dictionary<string, object> UpdatedFields { get; set; }
+    }
 
 
 
