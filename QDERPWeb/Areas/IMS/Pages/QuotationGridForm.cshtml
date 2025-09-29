@@ -126,10 +126,10 @@
                 @(Html.DevExtreme().NumberBox()
                         .ID("ProfitMargin")
                         .ShowSpinButtons(true)
-                        .Value(25)
-                                .Format("#0.00%")
+                        .Value(25.00)
+                                .Format("#0.00' %'")
 
-                        .Width("100%"))
+                                .Width("100%"))
             </div>
            
            
@@ -185,9 +185,10 @@
 
         <div class="calc-row" style="justify-content: flex-end;">
             @(Html.DevExtreme().Button()
-                        .Text("Save")
+                        .ID("ApplyClose")
+                        .Text("Apply&Close")
                         .Type(ButtonType.Success)
-                        .Icon("save"))
+                        .OnClick("applyProfitAndClose"))
         </div>
     </div>
 </div>
@@ -204,6 +205,7 @@
     console.log("GS Code:", gsCode);
     console.log("Quotation No:", quoteNo);
     console.log("GS Desc1:", gsDesc1);
+      console.log("childid:", QuoteChildId);
         const unitPrice = parseFloat(params.get("UnitPrice")) || 0;
          totalCost = parseFloat(params.get("TotalCost")) || 0;
         const profitOrLoss = parseFloat(params.get("ProfitLoss")) || 0;
@@ -213,13 +215,13 @@
         const VAT = parseFloat(params.get("VAT")) || 0;
 
         const QuotedItemTotalPrice = total - VAT - discount;
- 
-        $("#ItemCost").dxNumberBox("instance").option("value", totalCost);
-        $("#TotalCostItem").dxNumberBox("instance").option("value", totalCost);
+   
+        $("#ItemCost").dxNumberBox("instance").option("value", costPrice);
+        $("#TotalCostItem").dxNumberBox("instance").option("value", costPrice);
         $("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
-        $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
+        $("#QuotedPrice").dxNumberBox("instance").option("value", unitPrice);
+         $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
         $("#Discount").dxNumberBox("instance").option("value", discount);
-        $("#QuotedPrice").dxNumberBox("instance").option("value", QuotedItemTotalPrice);
     });
         function AddOnclick() {
       
@@ -235,6 +237,70 @@
         console.log("🔗 Navigation URL:", url);
         openModal(url, "Quoted:Cost Items","100%","80%");
     }
+           $(function () {
+        $("#AddMargin").dxButton("instance").option("onClick", function () {
+            try {
+                const totalCost = $("#TotalCostItem").dxNumberBox("instance").option("value") || 0;
+                const qty = parseFloat(QuotedQuantity) || 1;
+                const profitPercentage = $("#ProfitMargin").dxNumberBox("instance").option("value") || 0;
+
+                if (qty <= 0) {
+                    DevExpress.ui.notify("Quantity must be greater than 0", "error", 3000);
+                    return;
+                }
+
+                // Convert entered percentage (25) to 0.25
+                const profitFactor = profitPercentage / 100;
+
+                // Apply same VB formula
+                const unitPriceWtProfit = (totalCost / qty) * (1 + profitFactor);
+
+                // Round to 2 decimals like VB
+                const roundedValue = Math.round(unitPriceWtProfit * 100) / 100;
+
+                $("#UnitPriceProfit").dxNumberBox("instance").option("value", roundedValue);
+
+                DevExpress.ui.notify("Unit Price with Profit calculated successfully", "success", 2000);
+
+            } catch (ex) {
+                console.error("Calculation error:", ex);
+                DevExpress.ui.notify("Error in calculation. Please try again.", "error", 3000);
+            }
+        });
+    });
+    // Collect modal fields
+    function collectModalFields() {
+        return {
+            QuotedUnitPrice:  $("#UnitPriceProfit").dxNumberBox("instance").option("value")
+        };
+    }
+
+    // Send data to parent when modal is closing (optional)
+    window.onbeforeunload = function () {
+        if (window.opener && typeof window.opener.receiveModalFieldData3 === "function") {
+            const fieldValues = collectModalFields();
+            window.opener.receiveModalFieldData3(fieldValues);
+        }
+    };
+
+
+    // Apply discount and close modal
+    function applyProfitAndClose() {
+        const modalData3 = {
+            QuotedUnitPrice:  $("#UnitPriceProfit").dxNumberBox("instance").option("value")
+        };
+
+        console.log("📤 Sending to parent:", modalData3);
+
+        if (window.parent && typeof window.parent.receiveModalFieldData3 === "function") {
+            window.parent.receiveModalFieldData3(modalData3);
+            window.parent.closeModal(); // your custom modal close logic
+        } else {
+            alert("❌ Could not send costPrice data to parent.");
+        }
+    }
+
+
 
 </script>
 
