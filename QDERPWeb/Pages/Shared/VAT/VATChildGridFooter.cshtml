@@ -13,147 +13,219 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("ddButtonLayout1r")
+                .ID("ddButtonLayout")
                 .Icon("smalliconslayout")
                 .Width("100%")
                 .Text(new JS("formatMessage('Layout')"))
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
+                    items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
                     items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                     items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
                     items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
                     items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                   
                 })
                 .ShowArrowIcon(false)
                 )
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnMoveUps")
+            .ID("btnMoveUp")
             .Text(new JS("formatMessage('Move Up')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("spinup") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
+            .OnClick("function() { moveRow('up'); }")   // ✅ directly bind here
             )
     </div>  
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnMoveDowns")
+            .ID("btnMoveDown")
             .Text(new JS("formatMessage('Move Down')"))
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("spindown") // Change the icon to an up/down arrow option
             .ElementAttr(new { @class = "bold-button" })
+            .OnClick("function() { moveRow('down'); }") // ✅ directly bind here
             )
     </div>
 </div>
 <script>
-    function setDefaultLayoutClick(e) {
-    const grid = $("#B2BdataGrid").dxDataGrid("instance");
-    const form = $('#formId').val();
+   
 
-    if (!grid) {
-        DevExpress.ui.notify("Grid not found", "error", 2000);
-        return;
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+            var elementHeight = $target.outerHeight();
+
+            // Position the submenu to the right of the dropdown item
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth, // Position to the right of the item
+                'display': 'block' // Show the submenu
+            });
+        }
+
+               function setDefaultLayoutClick(e) {
+                 const grid = $("#B2BdataGrid").dxDataGrid("instance");
+             const form = $('#formId').val();
+
+             if (!grid) {
+                 DevExpress.ui.notify("Grid not found", "error", 2000);
+                 return;
+             }
+
+             const layout = grid.state();
+             const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
+
+             $.ajax({
+                 url: '/api/Utility/SaveLayout',
+                 type: 'POST',
+                 contentType: 'application/json',
+                 data: JSON.stringify({
+                     layout: layoutJson,
+                     form: form
+                 }),
+                 success: function (data) {
+                     DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                 },
+                 error: function (xhr) {
+                     console.error("SaveLayout error:", xhr.responseText);
+                     DevExpress.ui.notify("Error while saving data", "error", 2000);
+                 }
+             });
+         }
+                  function resetLayoutClick(e) {
+                 const grid = $("#B2BdataGrid").dxDataGrid("instance");
+             const form = $('#formId').val();
+
+             $.ajax({
+                 url: '/api/Utility/SaveLayout',
+                 type: 'POST',
+                 contentType: 'application/json',
+                 data: JSON.stringify({
+                     layout: null, // 👈 this will trigger the backend to delete or reset
+                     form: form
+                 }),
+                 success: function (data) {
+                     DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                     grid.state(null); // 👈 clear client-side layout too
+                 },
+                 error: function (xhr) {
+                     console.error(xhr.responseText);
+                     DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+                 }
+             });
+         }
+
+                      function openLayoutClick(e) {
+                 // Create an input element dynamically
+                 const input = document.createElement("input");
+                 input.type = "file";
+                 input.accept = "application/json";
+
+                 // When a file is selected
+                 input.addEventListener("change", function (event) {
+                     const file = event.target.files[0];
+                     if (!file) return;
+
+                     const reader = new FileReader();
+                     reader.onload = function (e) {
+                         try {
+                             const layout = JSON.parse(e.target.result);
+                                 const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                             grid.state(layout);
+                             //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                         } catch (error) {
+                             DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                         }
+                     };
+
+                     reader.readAsText(file);
+                 });
+
+                 // Trigger the file input click event
+                 input.click();
+             }
+
+                          function saveLayoutClick(e) {
+                     var grid = $("#B2BdataGrid").dxDataGrid("instance");
+                 var layout = grid.state();
+                 const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+                 //console.log(layoutJson);
+                 // Create a Blob from the JSON string
+                 const blob = new Blob([layoutJson], { type: "application/json" });
+                 // Create a URL for the Blob
+                 const url = URL.createObjectURL(blob);
+                 // Create a link element
+                 const a = document.createElement("a");
+                 a.href = url;
+                 a.download = "grid-layout.json"; // Set the file name for download
+                 // Append the link to the body (needed for Firefox)
+                 document.body.appendChild(a);
+                 // Programmatically click the link to trigger the download
+                 a.click();
+                 // Clean up by removing the link and revoking the Object URL
+                 document.body.removeChild(a);
+                 URL.revokeObjectURL(url);
+                 //DevExpress.ui.notify("Layout", "success", 600);
+             }
+
+    //           $(function () {
+    //     $("#btnMoveUp").dxButton("instance").option("onClick", function () {
+    //         moveRow("up");
+    //     });
+
+    //     $("#btnMoveDown").dxButton("instance").option("onClick", function () {
+    //         moveRow("down");
+    //     });
+    // });
+
+        function moveRow(direction) {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const dataSource = grid.getDataSource();
+        const items = dataSource.items();
+        const selectedKey = grid.option("selectedRowKeys")[0];
+
+        if (selectedKey === undefined) return;
+
+        const currentIndex = items.findIndex(item => item.SNo === selectedKey);
+        if (currentIndex === -1) return;
+
+        const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+
+        // Boundary check
+        if (targetIndex < 0 || targetIndex >= items.length) return;
+
+        // Swap data
+        [items[currentIndex], items[targetIndex]] = [items[targetIndex], items[currentIndex]];
+
+        // Optional: Swap SNo for consistent display
+        const tempSno = items[currentIndex].SNo;
+        items[currentIndex].SNo = items[targetIndex].SNo;
+        items[targetIndex].SNo = tempSno;
+
+        // Replace array to trigger re-render
+        dataSource.store()._array = items;
+        grid.refresh();
+
+        // Reselect moved row
+        const newSelectedKey = items[targetIndex].SNo;
+        grid.selectRows([newSelectedKey], true);
+
+        // Scroll to the newly selected row
+        grid.navigateToRow(newSelectedKey);
     }
 
-    const layout = grid.state();
-    const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
+   
 
-    $.ajax({
-        url: '/api/Utility/SaveLayout',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            layout: layoutJson,
-            form: form
-        }),
-        success: function (data) {
-            DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-        },
-        error: function (xhr) {
-            console.error("SaveLayout error:", xhr.responseText);
-            DevExpress.ui.notify("Error while saving data", "error", 2000);
-        }
-    });
-}
-
-
-function resetLayoutClick(e) {
-    const grid = $("#B2BdataGrid").dxDataGrid("instance");
-    const form = $('#formId').val();
-
-    $.ajax({
-        url: '/api/Utility/SaveLayout',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            layout: null, // 👈 this will trigger the backend to delete or reset
-            form: form
-        }),
-        success: function (data) {
-            DevExpress.ui.notify("Layout reset successful", "success", 2000);
-            grid.state(null); // 👈 clear client-side layout too
-        },
-        error: function (xhr) {
-            console.error(xhr.responseText);
-            DevExpress.ui.notify("Error while resetting layout", "error", 2000);
-        }
-    });
-}
-
-function saveLayoutClick(e) {
-    var grid = $("#B2BdataGrid").dxDataGrid("instance");
-    var layout = grid.state();
-    const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-    //console.log(layoutJson);
-    // Create a Blob from the JSON string
-    const blob = new Blob([layoutJson], { type: "application/json" });
-    // Create a URL for the Blob
-    const url = URL.createObjectURL(blob);
-    // Create a link element
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "grid-layout.json"; // Set the file name for download
-    // Append the link to the body (needed for Firefox)
-    document.body.appendChild(a);
-    // Programmatically click the link to trigger the download
-    a.click();
-    // Clean up by removing the link and revoking the Object URL
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    //DevExpress.ui.notify("Layout", "success", 600);
-}
-function openLayoutClick(e) {
-    // Create an input element dynamically
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "application/json";
-
-    // When a file is selected
-    input.addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const layout = JSON.parse(e.target.result);
-                const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                grid.state(layout);
-                //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-            } catch (error) {
-                DevExpress.ui.notify("Invalid layout file!", "error", 600);
-            }
-        };
-
-        reader.readAsText(file);
-    });
-
-    // Trigger the file input click event
-    input.click();
-}
 
 </script>
