@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.UnitConversion;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
@@ -73,6 +74,22 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalBeforeTax,
                         i.TotalDiscount,
                         i.TotalAfterDiscount,
+                        i.Rfqsignatory,
+                        i.SignatoryName,
+                        i.SignatoryPosition,
+                        i.SignatoryContact,
+                        i.SignatoryEmail,
+                        i.SignatureImage,
+                        i.Project,
+                        i.ClientRefNo,
+                        i.InventoryMasterGroupId,
+                        i.InventoryMasterGroup,
+                        i.ProjectMasterCode,
+                        i.ProjectDescription,
+                        i.SalesPersonCode,
+                        i.SalesPersonName,
+                        i.UserCode
+
 
                     }).ToListAsync();
 
@@ -132,8 +149,52 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     i.ItemDiscount,
                     i.IsWonForPo,
                     i.LineTotalBeforeTax,
-                    i.LineTotalAfterDisc
-				}).ToListAsync();
+                    i.LineTotalAfterDisc,
+                    i.SupplierCode,
+                    i.IsQuoted,
+                    i.IsWon,
+                    i.ReasonWon,
+                    i.DeliveryPeriod,
+                    i.PaymentTerms,
+                    i.QuoteValidTo,
+                    i.QuoteValidDate,
+                    i.SupplierQuotationDt,
+                    i.PreparedBy,
+                    i.PreparedOn,
+                    i.AddedBy,
+                    i.AddedOn,
+                    i.ModifiedBy,
+                    i.ModifiedOn,
+                    i.CompanyName,
+                    i.UnitRateMethod,
+                    i.QuotationRemarks,
+                    i.LineOrderNo,
+                    i.UnitType,
+                    i.AddlDescription,
+                    i.Attention,
+                    i.SupplierContactNo,
+                    i.SupplierContactEmail,
+                    i.RfqchildSlNo,
+                    i.IsWonUpdatedBy,
+                    i.IsWonUpdatedDate,
+                    i.Project,
+                    i.PlanNo,
+                    i.ItemSize,
+                    i.ItemPartNo,
+                    i.ItemBrand,
+                    i.ItemMake,
+                    i.InventoryMasterGroupId,
+                    i.InventoryMasterGroup,
+                    i.ClientRefNo,
+                    i.ReasonForSelection,
+                    i.ProjectMasterCode,
+                    i.ProjectDescription,
+                    i.SalesPersonCode,
+                    i.SalesPersonName,
+                    i.UserCode
+
+
+                }).ToListAsync();
 
                 return Json(data);
             }

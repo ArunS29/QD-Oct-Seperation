@@ -61,7 +61,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
 
                     // Fetching the data
-                    var cost = 0;
+                    //var cost = 0;
                     var data = await query.Select(i => new
                     {
                         i.SalesOrderNo,
@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
-                        cost = i.TotalWithTax / i.CurrencyRate,
+                        //cost = i.TotalWithTax / i.CurrencyRate,
                     }).ToListAsync();
 
                     return Json(data);
