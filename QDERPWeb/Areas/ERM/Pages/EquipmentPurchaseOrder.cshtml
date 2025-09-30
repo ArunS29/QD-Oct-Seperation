@@ -1992,6 +1992,7 @@ function disableSpecificControls() {
 $("#btnSave").on("click", function () {
     const btn = $("#btnSave").dxButton("instance");
     btn.option("text", "Update");
+    btn.option("disabled", true); // prevent double-click saves
 
     const supplier = $("#SupplierName").dxSelectBox("instance")?.option("value");
     if (!supplier) {
@@ -2033,6 +2034,7 @@ $("#btnSave").on("click", function () {
         CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
     };
 
+    // 🔹 Validate PO number
     if (!master.Pono) {
         DevExpress.ui.notify("PO number is missing. Please refresh and try again.", "error", 3000);
         btn.option("disabled", false);
@@ -2046,40 +2048,39 @@ $("#btnSave").on("click", function () {
         return;
     }
 
-    grid.saveEditData().done(() => {
-        const children = grid.getVisibleRows().map(r => r.data);
+    // Save pending edits
+    grid.saveEditData();
 
-        if (!children.length) {
-            DevExpress.ui.notify("No child records to save.", "error", 3000);
-            btn.option("disabled", false);
-            return;
-        }
+    // 🔹 Get children WITH PropertyPochildNo (don’t strip it away!)
+    let children = grid.getDataSource()?.items() || [];
 
-        $.ajax({
-            url: '/api/EQPurchaseOrder/SavePurchaseOrder',
-            type: 'POST',
-            data: JSON.stringify({ master, children }),
-            contentType: 'application/json',
-            success: function (res) {
-                if (res.success) {
-                    DevExpress.ui.notify(res.message, "success", 3000);
+    $.ajax({
+        url: '/api/EQPurchaseOrder/SavePurchaseOrder',
+        type: 'POST',
+        data: JSON.stringify({ master, children }),
+        contentType: 'application/json',
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 3000);
 
-                    grid.cancelEditData();
-                    grid.option("dataSource", new DevExpress.data.ArrayStore({
+                const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+                if (itemGridInstance) {
+                    itemGridInstance.cancelEditData();
+                    itemGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
                         key: "PropertyPochildNo",
                         data: res.children || []
                     }));
-                    grid.refresh();
-                } else {
-                    DevExpress.ui.notify(res.message, "error", 3000);
+                    itemGridInstance.refresh();
                 }
-                btn.option("disabled", false);
-            },
-            error: function (xhr) {
-                DevExpress.ui.notify("Failed to save: " + (xhr.responseText || xhr.statusText), "error", 3000);
-                btn.option("disabled", false);
+            } else {
+                DevExpress.ui.notify(res.message, "error", 3000);
             }
-        });
+            btn.option("disabled", false);
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Failed to save: " + (xhr.responseText || xhr.statusText), "error", 3000);
+            btn.option("disabled", false);
+        }
     });
 });
 

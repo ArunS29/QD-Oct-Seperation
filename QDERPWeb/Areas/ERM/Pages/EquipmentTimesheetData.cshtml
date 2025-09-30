@@ -5,7 +5,7 @@
 
 <style>
     .timesheet-container {
-        margin: 1px 3px 9px 10px;
+        padding: 15px;
     }
 
     .footer-section {
@@ -27,8 +27,8 @@
             margin-right: 0;
         }
 
-    .titleCard-toggle1 {
-        display: none;
+    .timesheet-container {
+        padding: 15px;
     }
 
     .footer-section {
@@ -53,42 +53,33 @@
 </style>
 <div class="timesheet-container">
 
+
     <!-- ================= Header Section ================= -->
-    <table class="header-grid" style="width:100%;">
+    <table class="header-grid" style="width:100%; border-collapse:separate; border-spacing:15px;">
         <tr>
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("txtPropertyNo")
-                                .Value("AR29-00001") // sample value
-                                .Label(new JS("formatMessage('Property No:')"))
+                                .Label("Property No:")
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width(200)
+                                .Width(250)
                                 )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("txtPropertyDesc")
-                                .Value("Mobile Use") // sample value
-                                .Label(new JS("formatMessage('Property Description:')"))
+                                .Label("Property Description:")
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width(250)
-                                )
-            </td>
-            <td colspan="2">
-                @(Html.DevExtreme().TextArea()
-                                .ID("txtComments")
-                                .Label(new JS("formatMessage('Comments:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width(400)
-                                .ElementAttr("style", "height:60px !important;")
+                                .Width(300)
                                 )
             </td>
             <td>
-                @(Html.DevExtreme().TextBox()
-                                .ID("txtMonthId")
-                                .Value("1") // sample value
-                                .Disabled(true)
-                                .Width(60)
+                @(Html.DevExtreme().TextArea()
+                                .ID("txtComments")
+                                .Label("Comments:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(400)
+                                .ElementAttr("style", "height:60px !important;")
                                 )
             </td>
         </tr>
@@ -96,24 +87,24 @@
         <tr>
             <td>
                 @(Html.DevExtreme().TextBox()
-                                .ID("txtPlateNo")
-                                .Label(new JS("formatMessage('Plate No:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width(200)
-                                )
+                        .ID("txtPlateNo")
+                        .Label("Plate No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(200)
+                        )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
-                                .ID("txtSerialNo")
-                                .Label(new JS("formatMessage('Serial No:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width(200)
-                                )
+                        .ID("txtSerialNo")
+                        .Label("Serial No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(200)
+                        )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("txtDoorNo")
-                                .Label(new JS("formatMessage('Door No:')"))
+                                .Label("Door No:")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width(200)
                                 )
@@ -121,9 +112,16 @@
             <td>
                 @(Html.DevExtreme().NumberBox()
                                 .ID("txtSupplierDeduction")
-                                .Step(1)
-                                .ShowSpinButtons(true)
-                                .Label(new JS("formatMessage('Supplier Deductions:')"))
+                                .Label("Supplier Deductions:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("txtMonthId")
+                                .Label("")
+                                .Disabled(true)
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width(200)
                                 )
@@ -131,13 +129,12 @@
         </tr>
     </table>
 
-
     <!-- Header (dxForm for alignment) -->
-    @* <h4 style="margin-top:20px;">Time Sheet Entries:</h4> *@
+
+    <h4 style="margin-top:20px;">Time Sheet Entries:</h4>
     <div>
         <!-- Timesheet DataGrid -->
-        @(
-                Html.DevExtreme().DataGrid()
+        @(Html.DevExtreme().DataGrid()
                 .ID("timesheetGrid")
                 .ShowBorders(true)
                 .DataSource(d => d.WebApi()
@@ -152,15 +149,15 @@
                 {
                   // Equipment columns with dynamic caption
                     columns.Add()
-                    .Caption(new JS("formatMessage('Equipment TimeSheet Details')")).Alignment(HorizontalAlignment.Center)
+                    .Caption(new JS("formatMessage('Equipment TimeSheet Details')"))
                     .Columns(subColumns =>
                     {
-                        subColumns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')")).Width(120);
-                        subColumns.Add().DataField("TimeSheetDate").Caption(new JS("formatMessage('Date')")).DataType(GridColumnDataType.Date).Alignment(HorizontalAlignment.Center);
+                        subColumns.Add().DataField("PropertyNo").Caption("Property No").Width(120);
+                        subColumns.Add().DataField("TimeSheetDate").Caption("Date").DataType(GridColumnDataType.Date);
                         subColumns.Add()
                     .DataField("WorkStatus")
-                    .Caption(new JS("formatMessage('Status')"))
-                    .Width(200).Alignment(HorizontalAlignment.Center)
+                    .Caption("Status")
+                    .Width(200)
                     .EditCellTemplate(new JS("function(cellElement, cellInfo){ workStatusDropDownEditor(cellElement, cellInfo); }"))
                     .CellTemplate(new JS("function(container, options) { " +
                     "if (Array.isArray(workStatusList)) { " +
@@ -174,52 +171,23 @@
 
                     // Client columns with dynamic caption
                     columns.Add()
-                    .Caption(new JS("formatMessage('Client TimeSheet Details')")).Alignment(HorizontalAlignment.Center)
+                    .Caption(new JS("formatMessage('Client TimeSheet Details')"))
                     .Columns(subColumns =>
                     {
-                        subColumns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')")).Width(200);
-                                                                                                                             // ClientRegHours
-                                                                                                                             // ClientRegHours
-                        subColumns.Add()
-                    .DataField("ClientRegHours")
-                    .Caption(new JS("formatMessage('Reg Hours (C)')"))
-                    .Format("fixedPoint")
-                    .Alignment(HorizontalAlignment.Center)
-
-                    .EditCellTemplate(new JS("function(cellElement, cellInfo){ timeSlotDropDownEditor(cellElement, cellInfo); }"))
-                    .CellTemplate(new JS(
-                    "function(container, options) { " +
-                    "container.text(options.value || ''); " +
-                    "}"
-                    ));
-
-                        // ClientOthours
-                        subColumns.Add()
-                    .DataField("ClientOthours")
-                    .Caption(new JS("formatMessage('OT Hours (C)')"))
-                    .Alignment(HorizontalAlignment.Center)
-
-                    .EditCellTemplate(new JS("function(cellElement, cellInfo){ timeSlotDropDownEditor(cellElement, cellInfo); }"))
-                    .CellTemplate(new JS(
-                    "function(container, options) { " +
-                    "container.text(options.value || ''); " +
-                    "}"
-                    ));
-
-
-
-                        subColumns.Add().DataField("TotalHoursM").Caption(new JS("formatMessage('Total Hours (C)')")).Format("fixedPoint").Alignment(HorizontalAlignment.Center);
-                        subColumns.Add().DataField("ClientRatePerHour").Caption(new JS("formatMessage('Rate/Hour (C)')")).Format("fixedPoint").Alignment(HorizontalAlignment.Center);
-                        subColumns.Add().DataField("ClientOtratePerHour").Caption(new JS("formatMessage('OT Rate/Hour (C)')")).Format("fixedPoint").Alignment(HorizontalAlignment.Center);
+                        subColumns.Add().DataField("ClientName").Caption("Client Name").Width(200);
+                        subColumns.Add().DataField("ClientRegHours").Caption("Reg Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientOthours").Caption("OT Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("TotalHoursM").Caption("Total Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientRatePerHour").Caption("Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientOtratePerHour").Caption("OT Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
                     });
-
 
                 })
                 .Height("60vh")
                 .Width("100%")
                 .ColumnFixing(fixing => fixing.Enabled(true))
-                .HeaderFilter(filter => filter.Visible(true))
-                .FilterRow(f => f.Visible(true))
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(f => f.Visible(false))
                 .ShowRowLines(true)
                 )
 
@@ -256,7 +224,7 @@
         </div>
     </div>
 </div>
-<div class="footer-fixed">
+<div class="">
     @await Html.PartialAsync("/Pages/Shared/ERM/EquipmentTimeSheetDatafooter.cshtml")
 </div>
 
@@ -265,13 +233,11 @@
 
         // utility to read query string params
         function getQueryParam(name) {
-            debugger;
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name) || "";
         }
 
         $(document).ready(function () {
-            debugger;
             // initial load of work status lookup
             $.get("/api/ERRequestforQuotationList/GetWorkStatus")
                 .done(function (data) {
@@ -336,78 +302,73 @@
         window.workStatusDropDownEditor = function (cellElement, cellInfo) {
         var $container = $("<div>").css({ width: "100%" }).appendTo(cellElement);
 
-      function initWithList(list) {
-        var $dd = $("<div>").appendTo($container).dxDropDownBox({
-            dataSource: list,
-            valueExpr: "DayCode",
-            displayExpr: "DayDescription",
-            value: cellInfo.value,
-            showClearButton: true,
-            openOnFieldClick: true,   // 👈 important
-            dropDownOptions: { width: 520 },
-            placeholder: "Select Work Status",
+        function initWithList(list) {
+            var $dd = $("<div>").appendTo($container).dxDropDownBox({
+                dataSource: list,
+                valueExpr: "DayCode",
+                displayExpr: "DayDescription",
+                value: cellInfo.value,
+                showClearButton: true,
+                dropDownOptions: { width: 520 },
+                placeholder: "Select Work Status",
 
-            contentTemplate: function (e) {
-                var dropDownBoxInstance = e.component;
+                contentTemplate: function (e) {
+                    var dropDownBoxInstance = e.component;
+                    var $grid = $("<div>").dxDataGrid({
+                        dataSource: list,
+                        keyExpr: "DayCode",
+                        selection: { mode: "single" },
+                        height: 300,
+                        scrolling: { mode: "virtual" },
+                        searchPanel: {
+                            visible: true,
+                            placeholder: "Search...",
+                            width: 200
+                        },
+                        columns: [
+                            { dataField: "DayCode", caption: "Code", width: 120 },
+                            { dataField: "DayDescription", caption: "Description" }
+                        ],
+                        onSelectionChanged: function (selArgs) {
+                            var selectedItem = selArgs.selectedRowsData[0];
+                            if (!selectedItem) return;
 
-                var $grid = $("<div>").dxDataGrid({
-                    dataSource: list,
-                    keyExpr: "DayCode",
-                    selection: { mode: "single" },
-                    height: 300,
-                    scrolling: { mode: "virtual" },
-                    searchPanel: {
-                        visible: true,
-                        placeholder: "Search...",
-                        width: 200
-                    },
-                    columns: [
-                            { dataField: "DayCode", caption: formatMessage("Code"), width: 120,  alignment: "center"},
-                            { dataField: "DayDescription", caption: formatMessage("Description"),  alignment: "center" }
-                    ],
-                    onSelectionChanged: function (selArgs) {
-                        var selectedItem = selArgs.selectedRowsData[0];
-                        if (!selectedItem) return;
+                            dropDownBoxInstance.option("value", selectedItem.DayCode);
+                            cellInfo.setValue(selectedItem.DayCode);
 
-                        dropDownBoxInstance.option("value", selectedItem.DayCode);
-                        cellInfo.setValue(selectedItem.DayCode);
-
-                        try {
-                            var mainGrid = $("#timesheetGrid").dxDataGrid("instance");
-                            if (mainGrid) {
-                                var rowIndex = mainGrid.getRowIndexByKey(cellInfo.key);
-                                if (rowIndex !== -1) {
-                                    mainGrid.cellValue(rowIndex, "WorkStatus", selectedItem.DayCode);
-                                    mainGrid.cellValue(rowIndex, "DayDescription", selectedItem.DayDescription);
+                            try {
+                                var mainGrid = $("#timesheetGrid").dxDataGrid("instance");
+                                if (mainGrid) {
+                                    var rowIndex = mainGrid.getRowIndexByKey(cellInfo.key);
+                                    if (rowIndex !== -1) {
+                                        mainGrid.cellValue(rowIndex, "WorkStatus", selectedItem.DayCode);
+                                        mainGrid.cellValue(rowIndex, "DayDescription", selectedItem.DayDescription);
+                                    }
                                 }
+                            } catch (err) {
+                                console.warn("Could not update main grid cell:", err);
                             }
-                        } catch (err) {
-                            console.warn("Could not update main grid cell:", err);
+
+                            dropDownBoxInstance.close();
                         }
+                    }).dxDataGrid("instance");
 
-                        dropDownBoxInstance.close();
-                    }
-                });
+                    // pre-select current value
+                    setTimeout(function () {
+                        if (cellInfo.value) {
+                            try { $grid.selectRows([cellInfo.value], false); } catch (ignore) {}
+                        }
+                    }, 0);
 
-                // pre-select current value
-                setTimeout(function () {
-                    if (cellInfo.value) {
-                        try {
-                            $grid.dxDataGrid("instance").selectRows([cellInfo.value], false);
-                        } catch (ignore) {}
-                    }
-                }, 0);
+                    return $grid;
+                }
+            });
 
-                return $grid;  // ✅ return element, not instance
-            }
-        });
-
-        return $dd.dxDropDownBox("instance");
-    }
+            return $dd.dxDropDownBox("instance");
+        }
 
         // Initialize immediately if list exists, otherwise fetch
         if (Array.isArray(workStatusList) && workStatusList.length > 0) {
-            debugger;
             initWithList(workStatusList);
         } else {
             $container.text("Loading statuses...");
@@ -422,94 +383,5 @@
                 });
         }
     };
-          var timeSlotList = [];
-
-        window.timeSlotDropDownEditor = function (cellElement, cellInfo) {
-            var $container = $("<div>").css({ width: "100%" }).appendTo(cellElement);
-
-            function initWithList(list) {
-                var $dd = $("<div>").appendTo($container).dxDropDownBox({
-                    dataSource: list,
-                    valueExpr: "TimeSlot",       // value field from your API
-                    displayExpr: "TimeSlot",     // display field
-                    value: cellInfo.value,
-                    showClearButton: true,
-                    openOnFieldClick: true,
-                    dropDownOptions: { width: 150 },
-                    placeholder: "Select Time Slot",
-
-                    contentTemplate: function (e) {
-                        var dropDownBoxInstance = e.component;
-
-                        var $grid = $("<div>").dxDataGrid({
-                            dataSource: list,
-                            keyExpr: "TimeSlot",
-                            selection: { mode: "single" },
-                            height: 300,
-                            scrolling: { mode: "virtual" },
-                            searchPanel: {
-                                visible: true,
-                                placeholder: "Search...",
-                                width: 200
-                            },
-                            columns: [
-                                    { dataField: "TimeSlot", caption: formatMessage("Time Slot"), width: 215,  alignment: "center" }
-                            ],
-                            onSelectionChanged: function (selArgs) {
-                                var selectedItem = selArgs.selectedRowsData[0];
-                                if (!selectedItem) return;
-
-                                dropDownBoxInstance.option("value", selectedItem.TimeSlot);
-                                cellInfo.setValue(selectedItem.TimeSlot);
-
-                                try {
-                                    var mainGrid = $("#timesheetGrid").dxDataGrid("instance");
-                                    if (mainGrid) {
-                                        var rowIndex = mainGrid.getRowIndexByKey(cellInfo.key);
-                                        if (rowIndex !== -1) {
-                                            mainGrid.cellValue(rowIndex, "TimeSlot", selectedItem.TimeSlot);
-                                        }
-                                    }
-                                } catch (err) {
-                                    console.warn("Could not update main grid cell:", err);
-                                }
-
-                                dropDownBoxInstance.close();
-                            }
-                        });
-
-                        // Preselect current value
-                        setTimeout(function () {
-                            if (cellInfo.value) {
-                                try {
-                                    $grid.dxDataGrid("instance").selectRows([cellInfo.value], false);
-                                } catch (ignore) {}
-                            }
-                        }, 0);
-
-                        return $grid;
-                    }
-                });
-
-                return $dd.dxDropDownBox("instance");
-            }
-
-            // Load from API if list is empty
-            if (Array.isArray(timeSlotList) && timeSlotList.length > 0) {
-                initWithList(timeSlotList);
-            } else {
-                $container.text("Loading timeslots...");
-                $.get("/api/ERRequestforQuotationList/GetTimeSlots")
-                    .done(function (data) {
-                        timeSlotList = data || [];
-                        $container.empty();
-                        initWithList(timeSlotList);
-                    })
-                    .fail(function () {
-                        $container.text("Failed to load timeslots");
-                    });
-            }
-        };
-
 
 </script>

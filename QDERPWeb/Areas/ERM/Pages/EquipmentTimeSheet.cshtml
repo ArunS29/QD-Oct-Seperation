@@ -218,7 +218,11 @@
 		.SplitButton(false)
 		.DataSource(new[] { new { id = 1, text = "dummy" } })
 		.DisplayExpr("text")
-		.DropDownOptions(o => o.Width(360).Height(420).CloseOnOutsideClick(false)) // keep open until cancel
+		.DropDownOptions(o => o
+			.Width(360)
+			.Height(420)
+			.CloseOnOutsideClick(false)
+			) 
 		.ItemTemplate(@<text>
 		<div id="month-year-container" style="padding:10px; text-align:center;">
 
@@ -246,9 +250,7 @@
 
 			<!-- Year Selector -->
 			<select id="yearSelect"
-					style="width:100%; padding:10px; font-size:20px; font-weight:600;
-					   text-align:center; background:#444; color:white;
-					   border:none; border-radius:5px;"
+					class="year-select"
 					onchange="toggleYearInput(this)">
 				@{
 					int currentYear = DateTime.Now.Year;
@@ -256,7 +258,7 @@
 					{
 						if (i == currentYear)
 						{
-							<option value="@i" selected>@i</option>
+							<option value="@i" selected="selected">@i</option>
 						}
 						else
 						{
@@ -266,6 +268,7 @@
 				}
 				<option value="custom">Other...</option>
 			</select>
+
 
 			<input type="number" id="yearInput"
 				   style="display:none; margin-top:10px; width:100%; padding:10px;
@@ -368,7 +371,6 @@
 			columns.AddFor(m => m.SupplierAccountLedgerNo).Caption("Supplier Account Ledger").Visible(false);
 
 			columns.AddFor(m => m.GatePassNo).Caption("Gate Pass No").Visible(false);
-																				  	@* columns.AddFor(m => m.) *@
 
 			columns.AddFor(m => m.ClientSite).Caption("Client Site").Visible(false);
 		})
@@ -553,7 +555,7 @@
 			columns.Add().DataField("AgreementHours").Visible(false);
 			columns.Add().DataField("CordinatorName").Visible(false);
 		})
-		.Height("70vh") // <<< fixed height
+		.Height("45vh") // <<< fixed height
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.ColumnAutoWidth(true)
 		.Width("98%")
@@ -602,7 +604,7 @@
 				target: "#ddGridTrigger",
 				showEvent: null,
 				hideEvent: null,
-				width: 600,
+				width: 900,
 				height: 400,
 				shading: true,
 				position: "bottom"
@@ -632,8 +634,25 @@
 	</script>
 }
 <script>
+			$(function () {
+			$("#yearSelect").on("change", function () {
+				const val = $(this).val();
+				if (val === "custom") {
+					toggleYearInput(this); // your existing custom handler
+				} else {
+					// ✅ Only after user selects a year, run your update
+					const year = parseInt(val, 10);
+					const selectedMonthBtn = $(".month-btn.selected");
 
-	$(function () {
+					if (selectedMonthBtn.length > 0) {
+						const month = parseInt(selectedMonthBtn.data("month"));
+						updatePeriod(month, year, selectedMonthBtn.text());
+					}
+				}
+			});
+		});
+
+		$(function () {
 		const dd = $("#ddBtnYearMonth").dxDropDownButton("instance");
 
 		// Cancel (X) closes dropdown
@@ -668,7 +687,6 @@
 
 		// Common update function
 		function updatePeriod(month, year, monthName) {
-
 			var fromDate = new Date(year, month - 1, 1);
 			var toDate = new Date(year, month, 0);
 
@@ -683,7 +701,6 @@
 
 		// Load API data into grid
 		function loadData(frmDate, toDate) {
-			debugger;
 			$.ajax({
 				url: '/api/ERRequestforQuotationList/GetGenarateTimeGrid',
 				type: 'GET',
@@ -705,6 +722,21 @@
 					DevExpress.ui.notify("Error while loading data", "error", 2000);
 				}
 			});
+		}
+
+		// ✅ Default selection: this month + year
+		const now = new Date();
+		const defaultMonth = now.getMonth() + 1; // JS months are 0-based
+		const defaultYear = now.getFullYear();
+
+		// set year dropdown
+		$("#yearSelect").val(defaultYear);
+
+		// highlight month button
+		const $defaultMonthBtn = $(".month-btn[data-month='" + defaultMonth + "']");
+		if ($defaultMonthBtn.length > 0) {
+			$defaultMonthBtn.addClass("selected");
+			updatePeriod(defaultMonth, defaultYear, $defaultMonthBtn.text());
 		}
 	});
 

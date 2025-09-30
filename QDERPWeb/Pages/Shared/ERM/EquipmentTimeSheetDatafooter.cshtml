@@ -323,7 +323,7 @@
 </div>
 
 <script>
-        function handleShowTimesheet(e) {
+     function handleShowTimesheet() {
         switch(e.itemData.text) {
             case "Show All Timesheet":
                 showAllTimesheet();
@@ -345,7 +345,6 @@
         }
     }
 
-
     // === Grid Column Change Functions ===
      function showAllTimesheet() {
         var grid = $("#timesheetGrid").dxDataGrid("instance");
@@ -361,9 +360,9 @@
                         dataField: "WorkStatus",
                         caption: formatMessage("Status"),
                         width: 200,
-                          alignment: "center",
+                        alignment: "center",
                         editCellTemplate: function(cellElement, cellInfo) {
-                            workStatusDropDownEditor(cellElement, cellInfo);
+                        workStatusDropDownEditor(cellElement, cellInfo);
                         },
                         cellTemplate: function(container, options) {
                             if (Array.isArray(workStatusList)) {
