@@ -3886,9 +3886,7 @@ AddlDescription: null,
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				//var button = $("#btnSave").dxButton("instance");
-				//button.option("text", formatMessage("Update"));
+			
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
