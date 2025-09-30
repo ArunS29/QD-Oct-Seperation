@@ -1122,5 +1122,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
+        //Calculator code
+        [HttpGet]
+        public IActionResult IMSPercentageCal(decimal amount, string quoteChildId = null)
+        {
+            ViewBag.Amount = amount;
+            ViewBag.QuoteChildId = quoteChildId; // Send to Razor page for modal
+            return PartialView("~/Areas/IMS/Pages/IMSPercentageCal.cshtml");
+        }
+
     }
 }
