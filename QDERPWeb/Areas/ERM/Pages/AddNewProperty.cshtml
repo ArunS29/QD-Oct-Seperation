@@ -2053,7 +2053,18 @@
             });
         });
     }
-  
+    function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
 
           function onTabSelectionChanged(e) {
               // Hide all main tab content

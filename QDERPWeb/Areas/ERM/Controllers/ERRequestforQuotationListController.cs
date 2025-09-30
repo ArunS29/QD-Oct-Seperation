@@ -1,8 +1,15 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Data;
+using System.Dynamic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -10,11 +17,8 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Dynamic;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
 {
@@ -24,11 +28,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ERRequestforQuotationListController> _logger;
+        private readonly IDbConnection _db;
 
-        public ERRequestforQuotationListController(ILogger<ERRequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ERRequestforQuotationListController(ILogger<ERRequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration config)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _db = new SqlConnection(config.GetConnectionString("DefaultConnection"));
         }
         [HttpGet]
         public async Task<IActionResult> GetRFQRequest(DateTime? fromDate, DateTime? toDate)
@@ -167,6 +173,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> GetTimesheetGrid(DataSourceLoadOptions loadOptions, string propertyNo, int? timeSheetMaster)
         {
@@ -175,23 +182,56 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 try
                 {
                     var query = dbContext.Qry40125PropertyTimeSheetDatesEdits
-                   .Where(x => x.PropertyNo == propertyNo);
+                        .Where(x => x.PropertyNo == propertyNo);
 
                     if (timeSheetMaster.HasValue)
                         query = query.Where(x => x.TimeSheetMasterId == timeSheetMaster.Value);
 
-                    // 🔹 Project only required fields
+                    // 🔹 Project all fields
                     var projectedQuery = query.Select(x => new
                     {
+                        x.TimeSheetId,
                         x.PropertyNo,
+                        x.TimeSheetMasterId,
                         x.TimeSheetDate,
+                        x.StartTimeShift1,
+                        x.EndTimeShift1,
+                        x.StartTimeShift2,
+                        x.EndTimeShift2,
+                        x.BasicWorkHours,
                         x.WorkStatus,
+                        x.BasicWorkMinutes,
+                        x.ProjectId,
+                        x.BonusMinutes,
+                        x.TotalHoursM,
+                        x.ClientCode,
                         x.ClientName,
+                        x.ClientRatePerHour,
+                        x.PropertyIssueNo,
+                        x.ClientOtratePerHour,
                         x.ClientRegHours,
                         x.ClientOthours,
-                        x.TotalHoursM,
-                        x.ClientRatePerHour,
-                        x.ClientOtratePerHour
+                        x.SupplierCode,
+                        x.SuppRatePerHour,
+                        x.SuppOtratePerHour,
+                        x.SuppRegHoursInMin,
+                        x.SuppOthoursInMin,
+                        x.OperatorCode,
+                        x.OprtRatePerHour,
+                        x.OprtOtratePerHour,
+                        x.OprtRegHoursInMin,
+                        x.OprtOthoursInMin,
+                        x.SupplierName,
+                        x.EmployeeName,
+                        x.SupplierTotalHours,
+                        x.OprtTotalHours,
+                        x.NightOprtCode,
+                        x.NightOprtRatePerHour,
+                        x.NightOprtOtratePerHour,
+                        x.NightOprtRegHours,
+                        x.NightOprtOthours,
+                        x.NightOprtTotalHours,
+                        x.NightOperatorName
                     });
 
                     return Json(await DataSourceLoader.LoadAsync(projectedQuery, loadOptions));
@@ -206,48 +246,285 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
         [HttpGet]
-        public async Task<ActionResult> GenerateTimeGrid(string frmDate, string toDate)
+        public IActionResult GenerateTimeGrid(string frmDate, string toDate)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
             {
-                try
-                {
-                    // Parse input dates
-                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
-                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+                // Parse input dates
+                if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                    return BadRequest("Select the date");
 
-                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
-                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+                if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                    return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
 
-                    // Call SP with correct params (use from & to)
-                    var allData = await dbContext.GetDataForGeneratingTimesheets
-                     .FromSqlRaw("EXEC [dbo].[stpro401_20GetDataForGeneratingTimesheet] @StartDate={0}, @EndDate={1}", from, to)
-                     .ToListAsync();
+                // Fetch data directly from the view and filter by PropertyIssuedDate
+                var filteredData = dbContext.Qry40102PropertyMasterView2s
+                    .Select(c => new
 
-                    // Ensure not null
-                    if (allData == null || allData.Count == 0)
-                        return Json(new List<object>());   // Return empty array []
+                    {
 
-                    // Filter by PropertyIssuedDate
-                    var filteredData = allData
-                        .Where(i => i.PropertyIssuedDate >= from && i.PropertyIssuedDate <= to)
-                        .ToList();
+                        c.PropertyNo,
+                        c.PlateNo,
+                        c.Location,
+                        c.ClientRatePerHour,
+                        c.SupplierName,
+                        c.PropertyDescription,
+                        c.PropertyCategory,
+                        c.Specifications,
+                        c.Brand,
+                        c.DoorNo,
+                        c.ChassisNo,
+                        c.Color,
+                        c.Capacity,
+                        c.Model,
+                        c.Year,
+                        c.Ownership,
+                        c.PurchaseDate,
+                        c.PurchasedAs,
+                        c.BuyingRatePerHour,
+                        c.BuyingRatePerDay,
+                        c.BuyingRatePerMonth,
+                        c.SellingRatePerHour,
+                        c.SellingRatePerDay,
+                        c.SellingRatePerMonth,
+                        c.PropertyCondition,
+                        c.IsFinanced,
+                        c.FinancedFrom,
+                        c.ValueOfProperty,
+                        c.InitialDownPayment,
+                        c.InitialDocCharges,
+                        c.MonthlyInstallment,
+                        c.NoOfInstallments,
+                        c.InstallmentStartDate,
+                        c.InstallmentEndDate,
+                        c.FinalInstallment,
+                        c.DepreciationMethod,
+                        c.LifeSpanOfProperty,
+                        c.ScrapValueOfProperty,
+                        c.CreatedBy,
+                        c.CreatedOn,
+                        c.ModifiedBy,
+                        c.ModifiedOn,
+                        c.IsDiscontinued,
+                        c.PropertyCategoryName,
+                        c.DiscontinuedOn,
+                        c.DiscontinuedRemarks,
+                        c.ModelType,
+                        c.Weight,
+                        c.LxWxH,
+                        c.PlatformHeight,
+                        c.OperatingCapacity,
+                        c.OperatingWeight,
+                        c.AddlSpec1,
+                        c.AddlSpec2,
+                        c.AddlSpec3,
+                        c.AddlField1,
+                        c.AddlField2,
+                        c.AddlField3,
+                        c.PurchasedFrom,
+                        c.PurchasedAs2,
+                        c.PropertyCondition2,
+                        c.HiringMode,
+                        c.HiredOn,
+                        c.HiredFrom,
+                        c.IsOperatorIncluded,
+                        c.OperatorCode,
+                        c.OperatorRate,
+                        c.IsReturned,
+                        c.ReturnedOn,
+                        c.ReturnedRemarks,
+                        c.FinancingCompanyName,
+                        c.OperatorName,
+                        c.PropertySuppliedBy,
+                        c.PropertyGroupId,
+                        c.Operator,
+                        c.PropertyGroup,
+                        c.PropertyGroupCode,
+                        c.FinancedBy2,
+                        c.PropertyType,
 
-                    // If still empty after filtering
-                    if (filteredData.Count == 0)
-                        return Json(new List<object>());   // Return empty array []
+                        c.OperatorContactMobile,
+                        c.OperatorContactMobile2,
 
-                    return Json(filteredData);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
+                        c.EngineNo,
+                        c.AlternatorNo,
+
+                        c.CurrentStatus,
+                        c.MobilizedTo,
+                        c.IsBreakDown,
+                        c.OwnershipText,
+                        c.IsNeededTimesheet,
+                        c.PropertyRemarks,
+                        c.PropertyCertification,
+                        c.PropertyAttachment,
+                        c.EquipmentOperatorName,
+                        c.OperatorWorkStartDate,
+
+                        c.BuyingRatePerWeek,
+
+                        c.SupplierRefNo,
+                        c.ProjectMasterCode,
+                        c.ProjectDescription,
+                        c.SupplierAccountLedgerNo,
+                        c.MobilizedOn,
+                        c.ClientOvertimeRatePerHour,
+                        c.UnitRate,
+                        c.DeliveryNoteMobilizationRate,
+                        c.DeliveryNoteDemobilizationRate,
+                        c.ClientUnitMethod,
+                        c.SupplierMobRate,
+                        c.SupplierDemobRate,
+                        c.AgreementHours,
+                        c.CordinatorName
+
+
+                    }).ToList();
+
+
+                return Json(filteredData);
             }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+        public class TimesheetRequestbutton
+        {
+            public string PropertyNo { get; set; }
+            public int MonthId { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public decimal? ClientRate { get; set; }
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerateTimesheetbutton(
+    [FromBody] TimesheetRequestbutton request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            await using var connection = dbContext.Database.GetDbConnection();
+            if (connection.State == ConnectionState.Closed)
+                await connection.OpenAsync();
+
+            await using var transaction = await connection.BeginTransactionAsync();
+
+            try
+            {
+                // 1️⃣ Create/Reset Master Timesheet
+                long masterId;
+                await using (var command = connection.CreateCommand())
+                {
+                    command.Transaction = transaction;
+                    command.CommandText = "stpro401_01UpdatePropertyTimesheet";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@PropertyNo", request.PropertyNo));
+                    command.Parameters.Add(new SqlParameter("@MonthID", request.MonthId));
+                    command.Parameters.Add(new SqlParameter("@StartDate", request.StartDate));
+                    command.Parameters.Add(new SqlParameter("@EndDate", request.EndDate));
+                    command.Parameters.Add(new SqlParameter("@JustInsertedTimeSheetMasterID", 0));
+                    command.Parameters.Add(new SqlParameter("@RatePerHour", request.ClientRate));
+
+                    var result = await command.ExecuteScalarAsync();
+                    masterId = Convert.ToInt64(result);
+                }
+
+                // 2️⃣ Update Child Timesheet for Billing Codes
+                for (int billingCode = 3; billingCode <= 8; billingCode++)
+                {
+                    await using (var command = connection.CreateCommand())
+                    {
+                        command.Transaction = transaction;
+                        command.CommandText = "stpro401_03UpdateTbl40122PropertyTimeSheetChild";
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        command.Parameters.Add(new SqlParameter("@PropertyNo", request.PropertyNo));
+                        command.Parameters.Add(new SqlParameter("@BillingCode", billingCode));
+                        command.Parameters.Add(new SqlParameter("@StartDate", request.StartDate));
+                        command.Parameters.Add(new SqlParameter("@EndDate", request.EndDate));
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+
+                // 3️⃣ Update Day Shift Operators
+                await using (var command = connection.CreateCommand())
+                {
+                    command.Transaction = transaction;
+                    command.CommandText = "stpro401_15UpdateDayShiftOperatorToTimesheet";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@PropertyNo", request.PropertyNo));
+                    command.Parameters.Add(new SqlParameter("@StartDate", request.StartDate));
+                    command.Parameters.Add(new SqlParameter("@EndDate", request.EndDate));
+
+                    await command.ExecuteNonQueryAsync();
+                }
+
+                // 4️⃣ Update Night Shift Operators
+                await using (var command = connection.CreateCommand())
+                {
+                    command.Transaction = transaction;
+                    command.CommandText = "stpro401_16UpdateNightShiftOperatorToTimesheet";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@PropertyNo", request.PropertyNo));
+                    command.Parameters.Add(new SqlParameter("@StartDate", request.StartDate));
+                    command.Parameters.Add(new SqlParameter("@EndDate", request.EndDate));
+
+                    await command.ExecuteNonQueryAsync();
+                }
+
+                await transaction.CommitAsync();
+
+                return Ok(new { success = true, message = "Timesheet generated successfully." });
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        //   [HttpGet]
+        //   public async Task<IActionResult> GetBillingData(
+        //string propertyNo,
+        //string frmDate,
+        //string toDate,
+        //int billingCode)
+        //   {
+        //       if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //           return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+        //       try
+        //       {
+        //           // Parse dates in MM/dd/yyyy format
+        //           if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate))
+        //               return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+        //           if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
+        //               return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+        //           // Execute stored procedure and map results to TimesheetBillingData
+        //           var billingData = await dbContext.Set<TimesheetBillingData>()
+        //               .FromSqlRaw("EXEC stpro401_02GetDataForUpdatingTimeSheet @PropertyNo={0}, @StartDate={1}, @EndDate={2}, @BillingCode={3}",
+        //                           propertyNo, startDate, endDate, billingCode)
+        //               .ToListAsync();
+
+        //           return Ok(new { success = true, data = billingData });
+        //       }
+        //       catch (Exception ex)
+        //       {
+        //           return StatusCode(500, new { success = false, message = ex.Message });
+        //       }
+        //   }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetWorkStatus(DataSourceLoadOptions loadOptions)

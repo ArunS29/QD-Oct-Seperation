@@ -12,7 +12,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -25,7 +28,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -138,7 +144,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -187,19 +198,19 @@
                             return "";
                         }
                     },
-                    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
-                    { dataField: "AccountHead", caption: formatMessage("Account Head") },
-                    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
-                    { dataField: "VoucherDate", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
-                    { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
-                    { dataField: "AccountGroup", caption: formatMessage("Account Group") },
-                    { dataField: "MasterGroup", caption: formatMessage("Master Group") },
-                    { dataField: "PlateNo", caption: formatMessage("Plate No") },
-                    { dataField: "DoorNo", caption: formatMessage("Door No") },
-                    { dataField: "ChassisNo", caption: formatMessage("Chassis No") },
-                    { dataField: "PropertyCategoryName", caption: formatMessage("Property Category Name") },
-                    { dataField: "PropertyGroup", caption: formatMessage("Property Group") },
-                    { dataField: "PropertyType", caption: formatMessage("Property Type") },
+                    { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
+                    { dataField: "AccountHead",area: "filter", caption: formatMessage("Account Head") },
+                    { dataField: "AccountHeadName", area: "filter",caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
+                    { dataField: "VoucherDate",area: "filter", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
+                    { dataField: "EntryNarration",area: "filter", caption: formatMessage("Entry Narration") },
+                    { dataField: "AccountGroup",area: "filter", caption: formatMessage("Account Group") },
+                    { dataField: "MasterGroup", area: "filter",caption: formatMessage("Master Group") },
+                    { dataField: "PlateNo", area: "filter",caption: formatMessage("Plate No") },
+                    { dataField: "DoorNo", area: "filter",caption: formatMessage("Door No") },
+                    { dataField: "ChassisNo",area: "filter", caption: formatMessage("Chassis No") },
+                    { dataField: "PropertyCategoryName",area: "filter", caption: formatMessage("Property Category Name") },
+                    { dataField: "PropertyGroup",area: "filter", caption: formatMessage("Property Group") },
+                    { dataField: "PropertyType",area: "filter", caption: formatMessage("Property Type") },
                        {
                         dataField: "RevenueAmount",
                         area: "data",
@@ -230,11 +241,11 @@
                             return "";
                         }
                     },
-                    { dataField: "CostAndRevenueClubbed", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
-                    { dataField: "CostCenterCode", caption: formatMessage("Cost Center Code") },
-                    { dataField: "CostCenterUnit", caption: formatMessage("Cost Center Unit") },
-                    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
-                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") }
+                    { dataField: "CostAndRevenueClubbed",area: "filter", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
+                    { dataField: "CostCenterCode", area: "filter",caption: formatMessage("Cost Center Code") },
+                    { dataField: "CostCenterUnit",area: "filter", caption: formatMessage("Cost Center Unit") },
+                    { dataField: "VoucherType", area: "filter",caption: formatMessage("Voucher Type") },
+                    { dataField: "VoucherNarration", area: "filter",caption: formatMessage("Voucher Narration") }
 
                 ]
             },
@@ -259,7 +270,7 @@
             showColumnTotals: false,
             showColumnGrandTotals: true,
             showRowTotals: false,
-            showRowGrandTotals: false
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
         // Load data

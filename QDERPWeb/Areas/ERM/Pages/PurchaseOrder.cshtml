@@ -324,7 +324,6 @@
 		.WordWrapEnabled(true)
 		.OnInitialized("onStatusCardReady")
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
@@ -798,7 +797,4 @@
 			dataGrid.showColumnChooser();
 		}
 	}					
-		$("#btnColumnChooser").on("click", function () {
-		showColumnChooser();
-	});
 </script>

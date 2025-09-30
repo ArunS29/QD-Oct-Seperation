@@ -487,6 +487,11 @@
 		font-size: 1.4rem;
 		color: #000;
 	}
+	.narration-cell {
+    white-space: normal;   /* Allow wrapping */
+    word-break: break-word; /* Break long words if needed */
+}
+
 
 </style>
 
@@ -829,6 +834,8 @@
 						columns.AddFor(m => m.VoucherDate)
 					.Caption(new JS("formatMessage('VoucherDate')"))
 					.Alignment(HorizontalAlignment.Center)
+					 .SortOrder(SortOrder.Desc) // 👈 Add this line (Desc for newest first, Asc for oldest first)
+                     .SortIndex(0)    
 					.Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
 					.Visible(true);
@@ -1004,7 +1011,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(true)
     .CellTemplate(@<text>
-        <div title="<%- data.SysRemarks %>" class="narration-cell max-lines-1">
+        <div title="<%- data.SysRemarks %>" class="narration-cell">
             <%- data.SysRemarks %>
         </div>
     </text>);
@@ -1016,7 +1023,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(false)
     .CellTemplate(@<text>
-        <div title="<%- data.EntryNarration %>" class="narration-cell max-lines-1">
+        <div title="<%- data.EntryNarration %>" class="narration-cell">
             <%- data.EntryNarration %>
         </div>
     </text>);
@@ -1037,7 +1044,7 @@
 						columns.AddFor(m => m.VoucherNarration)
 					.Caption(new JS("formatMessage('Narration')"))
 					.CellTemplate(@<text>
-			<div title="<%- data.VoucherNarration %>" class="narration-cell max-lines-1">
+			<div title="<%- data.VoucherNarration %>" class="narration-cell">
 				<%- data.VoucherNarration %>
 			</div>
 		</text>)
@@ -2580,7 +2587,7 @@ function dropDownBoxValueChanged(e) {
             // ✅ Row right-click → Edit Voucher
             if (e.target === "content" && e.row && e.row.rowType === "data") {
                 e.items.push({
-                    text: "Edit Voucher",
+                    text: formatMessage("Edit Voucher"),
                     icon: "edit",
                     onItemClick: function () {
                         const rowData = e.row.data;

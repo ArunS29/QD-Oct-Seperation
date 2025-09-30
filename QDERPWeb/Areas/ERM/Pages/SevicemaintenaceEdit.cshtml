@@ -685,11 +685,11 @@
                             
 						        
                     </div>
-                    </div>
-            @*  <div>
-                @await Html.PartialAsync("/Pages/RichTextEditor.cshtml")
-                </div> *@
+                 </div>
+             <div>
+                     Hiii   @* @await Html.PartialAsync("/Pages/RichTextEditor.cshtml") *@
                 </div>
+             </div>
                 <div id="tabContent_2" style="display:none;">
                   <div style="display:flex; width: 450px; align-items: end; column-gap:40px;">
                       <div>
@@ -735,7 +735,7 @@
 					        {
 						        columns.Add().DataField("SpareSlNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")).Visible(false);
 						        columns.Add()
-                                .DataField("Gscode")
+                                .DataField("Gsdescrpition")
                                 .Caption(new JS("formatMessage('Item Code')"))
                                 .Width(120)
                                 .AllowEditing(false)
@@ -746,7 +746,7 @@
                                 "));
 					                                        // ✅ Always show GSDescrpition from row data
                                 columns.Add()
-                                    .DataField("Gsdescrpition") // must match the field we set in row above
+                                    .DataField("Gscode") // must match the field we set in row above
                                     .Caption(new JS("formatMessage('Item Description')"))
                                     .Width(400)
                                     .EditCellTemplate(new JS("descriptionDropDownTemplate"))
@@ -765,14 +765,15 @@
 						        columns.Add()
 						        .DataField("QtyUsed")
 						        .Caption(new JS("formatMessage('Qty Used')"))
-						        .DataType(GridColumnDataType.Number)  
+						        .DataType(GridColumnDataType.Number) 
+                                .EditorOptions(new {value = 0})
 						        .Width(150)
 						        .EditorOptions(new {
 							        maxLength = 8
 							        });
 						        columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
 
-						        columns.Add().DataField("TotalCost").Caption(new JS("formatMessage('Total Cost')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+						        columns.Add().DataField("TotalCost").Caption(new JS("formatMessage('Total Cost')")).DataType(GridColumnDataType.Number).AllowEditing(false).EditorOptions(new {value = 0});
 
 						        columns.Add()
 							        .Type(GridCommandColumnType.Buttons)
@@ -1175,7 +1176,7 @@ $("#btnSaveAndClose").on("click", function () {
 });
 
 
-   function descriptionDropDownTemplate(cellElement, cellInfo) {
+  function descriptionDropDownTemplate(cellElement, cellInfo) {
     let $container = $("<div>").css({
         display: "flex",
         alignItems: "center",
@@ -1189,17 +1190,21 @@ $("#btnSaveAndClose").on("click", function () {
             const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
             const pageSize = loadOptions.take;
             return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", { pageNumber, pageSize })
-                .then(response => ({ data: response.data, totalCount: response.totalCount }));
+                .then(response => ({
+                    data: response.data,
+                    totalCount: response.totalCount
+                }));
         },
         byKey: function (key) {
             return $.getJSON("/api/GoodsandServices/GetGoodsAndServiceByCode?code=" + key);
         }
     });
 
+    // ✅ Main DropDownBox
     $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-        valueExpr: "Gsdescrpition",
-        displayExpr: "GSDescrpition",
-        value: cellInfo.value,
+        valueExpr: "GSCode",         // use the primary key
+        displayExpr: "GSDescrpition", // show description
+        value: cellInfo.value,        // current cell value
         dataSource: dropdownStore,
         searchEnabled: true,
         searchExpr: ["GSDescrpition", "ItemPartNo"],
@@ -1207,6 +1212,7 @@ $("#btnSaveAndClose").on("click", function () {
         minSearchLength: 3,
         deferRendering: true,
         dropDownOptions: { width: 800 },
+
         contentTemplate: function (e) {
             return $("<div>").dxDataGrid({
                 dataSource: dropdownStore,
@@ -1227,11 +1233,13 @@ $("#btnSaveAndClose").on("click", function () {
                     const selectedItem = selectedItems.selectedRowsData[0];
                     if (!selectedItem) return;
 
+                    // ✅ update grid cell value via editor context
+                    cellInfo.setValue(selectedItem.GSCode);
+
+                    // ✅ also update extra fields in the same row
                     const dataGrid = $("#itemGrid").dxDataGrid("instance");
                     const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
                     if (rowIndex !== -1) {
-                        // ✅ Populate BOTH columns in the row
-                        dataGrid.cellValue(rowIndex, "Gscode", selectedItem.GSCode);
                         dataGrid.cellValue(rowIndex, "GSDescrpition", selectedItem.GSDescrpition || '');
                         dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || 0);
                         dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
@@ -1245,30 +1253,16 @@ $("#btnSaveAndClose").on("click", function () {
         }
     });
 
-        // Add button
-        $("<div>").dxButton({
-            icon: "plus",
-            hint: "Add new item",
-            onClick: function () {
-                openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
-            }
-        }).appendTo($container);
-    }
+    // ✅ Add button
+    $("<div>").dxButton({
+        icon: "plus",
+        hint: "Add new item",
+        onClick: function () {
+            openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+        }
+    }).appendTo($container);
+}
 
-    	function dataGridInitialized1(e) {
-					dataGrid = e.component;
-				}
-					function dataGridSelectionChanged2(e) {
-					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-					const ddbInstance = $("#ddlVehicleDescription").dxDropDownBox("instance");
-
-					if (selectedKey) {
-						ddbInstance.option("value", selectedKey);
-						if (ddbInstance.option("opened")) {
-							ddbInstance.close();
-						}
-					}
-				}
     	function dataGridInitialized1(e) {
 					dataGrid = e.component;
 				}
@@ -1684,7 +1678,18 @@ $("#btnSaveAndClose").on("click", function () {
             e.component.focus();
         });
     }
+      function onOpened(e) {
+      const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+      const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
 
+      if (grid) {
+          grid.getDataSource().reload(); // refresh data
+      }
+
+      setTimeout(() => {
+          e.component.focus();
+      });
+  }
     function onKeyDown(e) {
         const ddbInstance = e.component;
         if (e.event.keyCode !== 40) return;
@@ -1839,6 +1844,7 @@ $("#btnSaveAndClose").on("click", function () {
                     }
                 });
             });
+
 </script>
 
 <link href="~/node_modules/devextreme-dist/css/dx.light.css" rel="stylesheet" />

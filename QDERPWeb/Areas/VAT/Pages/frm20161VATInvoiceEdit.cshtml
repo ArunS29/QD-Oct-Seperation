@@ -4316,15 +4316,22 @@
 
     // Action buttons
     const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
+
+        // Get the grid instance
+    let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
     
-    let InvoiceChildSLNo = rowData.InvoiceChildSlNo || null;
-	console.log("InvoiceChildSlNo",InvoiceChildSLNo);
-	let grid = $("#B2BdataGrid").dxDataGrid("instance");
+    // Make sure we have a valid rowIndex (e.g., from cellInfo)
+    let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+    
+    if (rowIndex >= 0) {
+        // Fetch the value from the grid
+        let InvoiceChildSLNo = dataGrid.cellValue(rowIndex, "InvoiceChildSlNo");
+        console.log("InvoiceChildSLNo", InvoiceChildSLNo);
+    } else {
+        console.warn("Row index not found for key:", cellInfo.key);
+    }
 
-        // Get the selected row key
-        let selectedRowKey = grid.option("selectedRowKeys")[0];
 
-     let rowIndex = grid.getRowIndexByKey(selectedRowKey);
     $("<div>").dxButton({
         icon: "plus",
         hint: "Add new item",
@@ -5109,6 +5116,8 @@ $("#btnAddNew").on("click", function (e) {
                             grid.option("dataSource", rowData);
                             grid.refresh();
 
+							console.log("rowData",rowData);
+
                             getDocumentCount();
                         },
                         error: function (xhr, status, error) {
@@ -5325,10 +5334,11 @@ if (popover.option("visible")) {
 			});
 		}
 				$(document).ready(function () {
+
 				const urlParams = new URLSearchParams(window.location.search);
 				const invoiceNoFromUrl = urlParams.get("invoiceNo");
 				const isCreateMode = urlParams.get("mode") === "create";
-
+				debugger;
 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
 
 				if (isCreateMode && invoiceNoFromUrl) {
@@ -5376,7 +5386,7 @@ if (popover.option("visible")) {
 			var InvoiceMaster = {
 
 				InvoiceNo: data,
-				InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
+				//InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,

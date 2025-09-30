@@ -117,6 +117,56 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             }
         }
         [HttpGet]
+        public async Task<IActionResult> Getservicemaintance(DateTime? fromDate, DateTime? toDate)
+
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Qry40501propertyServiceViews.AsQueryable();
+
+
+                    // Default dates if not provided
+                    if (!fromDate.HasValue)
+                    {
+                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                    }
+
+                    if (!toDate.HasValue)
+                    {
+                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                    }
+
+                    // Filtering by date range
+                    query = query.Where(i => i.ServiceDate >= fromDate && i.ServiceDate <= toDate);
+
+                    // Fetching the data
+                    var data = await query.Select(i => new
+                    {
+                        i.ServiceSheetNo,
+                        i.ServiceDate,
+                        i.ServiceStatus,
+                        i.PropertyDescription,
+                        i.ServicedBy,
+                        i.OperatorName,
+                        i.Complaint,
+                        i.TotalCost
+
+                    }).ToListAsync();
+
+                    return Json(data);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> GetpropertyVehicle()
         {
             try
@@ -266,6 +316,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         public class ServiceRequestDto
                 {
                     public decimal? CurrencyRate { get; set; }
+
+                    public decimal? CostPrice { get; set; }
                     public List<Tbl40132PropertyServiceMaster> Master { get; set; }
                     public List<Tbl40134PropertyServiceSpareUsed> Children { get; set; }
                 }
@@ -348,49 +400,52 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                                 await dbContext.Tbl40132PropertyServiceMasters.AddAsync(newMaster);
                             }
 
-                            // ===== CHILDREN =====
-                            var childrenForMaster = VM.Children?.Where(c => c.ServiceSheetNo == master.ServiceSheetNo).ToList();
-                            if (childrenForMaster != null && childrenForMaster.Any())
-                            {
-                                var existingChildren = await dbContext.Tbl40134PropertyServiceSpareUseds
-                                    .Where(c => c.ServiceSheetNo == master.ServiceSheetNo)
-                                    .ToListAsync();
+                    // ===== CHILDREN =====
+                    var childrenForMaster = VM.Children?.ToList();
+                    if (childrenForMaster != null && childrenForMaster.Any())
+                    {
+                        var existingChildren = await dbContext.Tbl40134PropertyServiceSpareUseds
+                            .Where(c => c.ServiceSheetNo == master.ServiceSheetNo)
+                            .ToListAsync();
 
-                              var currencyRate = VM.CurrencyRate ?? 1;
+                        var currencyRate = master.CurrencyRate ?? 1; // use master-level rate
 
                         foreach (var child in childrenForMaster)
-                                {
-                                    var existingChild = existingChildren.FirstOrDefault(c => c.SpareSlNo == child.SpareSlNo);
-                                    if (existingChild != null)
-                                    {
-                                        // Update existing child
-                                        existingChild.Gscode = child.Gscode; 
-                                        existingChild.QtyUsed = child.QtyUsed;
-                                        existingChild.CostPrice = child.CostPrice * currencyRate;
-                                        existingChild.GsuoM = child.GsuoM;   
-                            }
-                                    else
-                                    {
-                                        // Insert new child
-                                        var newChild = new Tbl40134PropertyServiceSpareUsed
-                                        {
-                                            SpareSlNo = child.SpareSlNo,
-                                            ServiceSheetNo = master.ServiceSheetNo,
-                                            Gscode = child.Gscode,
-                                            QtyUsed = child.QtyUsed,
-                                            GsuoM = child.GsuoM,
-                                            CostPrice = child.CostPrice * currencyRate ,
-                                            AddedBy = child.AddedBy,
-                                            AddedOn = child.AddedOn ?? DateTime.UtcNow,
-                                            ModifiedBy = "System",
-                                            ModifiedOn = DateTime.UtcNow
-                                        };
+                        {
+                            // 🔑 ensure ServiceSheetNo is set here
+                            child.ServiceSheetNo = master.ServiceSheetNo;
 
-                                        await dbContext.Tbl40134PropertyServiceSpareUseds.AddAsync(newChild);
-                                    }
-                                }
+                            var existingChild = existingChildren.FirstOrDefault(c => c.SpareSlNo == child.SpareSlNo);
+                            if (existingChild != null)
+                            {
+                                existingChild.Gscode = child.Gscode;
+                                existingChild.QtyUsed = child.QtyUsed;
+                                existingChild.CostPrice = child.CostPrice * currencyRate;
+                                existingChild.GsuoM = child.GsuoM;
+                                existingChild.ModifiedBy = "System";
+                                existingChild.ModifiedOn = DateTime.UtcNow;
+                            }
+                            else
+                            {
+                                var newChild = new Tbl40134PropertyServiceSpareUsed
+                                {
+                                    SpareSlNo = child.SpareSlNo,
+                                    ServiceSheetNo = master.ServiceSheetNo,
+                                    Gscode = child.Gscode,
+                                    QtyUsed = child.QtyUsed,
+                                    GsuoM = child.GsuoM,
+                                    CostPrice = child.CostPrice * currencyRate,
+                                    AddedBy = child.AddedBy,
+                                    AddedOn = child.AddedOn ?? DateTime.UtcNow,
+                                    ModifiedBy = "System",
+                                    ModifiedOn = DateTime.UtcNow
+                                };
+
+                                await dbContext.Tbl40134PropertyServiceSpareUseds.AddAsync(newChild);
                             }
                         }
+                    }
+                }
 
                         // ===== SAVE ALL CHANGES =====
                         await dbContext.SaveChangesAsync();
@@ -411,35 +466,35 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
                 }
        [HttpDelete("{SpareSlNo}")]
-public async Task<IActionResult> DeleteServiceChild(int SpareSlNo)
-{
-    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        return Unauthorized("Invalid tenant");
+            public async Task<IActionResult> DeleteServiceChild(int SpareSlNo)
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant");
 
-    try
-    {
-        // ✅ Call the stored procedure directly
-        var rowsAffected = await dbContext.Database.ExecuteSqlInterpolatedAsync(
-            $"EXEC sp40106DeleteSpareItems @SpareSlNo = {SpareSlNo}"
-        );
+                try
+                {
+                    // ✅ Call the stored procedure directly
+                    var rowsAffected = await dbContext.Database.ExecuteSqlInterpolatedAsync(
+                        $"EXEC sp40106DeleteSpareItems @SpareSlNo = {SpareSlNo}"
+                    );
 
-        if (rowsAffected == 0)
-            return NotFound(new { error = "Child record not found or already deleted." });
+                    if (rowsAffected == 0)
+                        return NotFound(new { error = "Child record not found or already deleted." });
 
-        // ✅ Log action
-        await _userActionLogger.LogAsync(
-            module: "ERM > Delete Request",
-            actionDetail: $"Deleted Spare Item with SpareSlNo {SpareSlNo}",
-            documentNo: SpareSlNo.ToString()
-        );
+                    // ✅ Log action
+                    await _userActionLogger.LogAsync(
+                        module: "ERM > Delete Request",
+                        actionDetail: $"Deleted Spare Item with SpareSlNo {SpareSlNo}",
+                        documentNo: SpareSlNo.ToString()
+                    );
 
-        return Ok(new { message = "Child record deleted successfully." });
-    }
-    catch (Exception ex)
-    {
-        return BadRequest(new { error = ex.Message });
-    }
-}
+                    return Ok(new { message = "Child record deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { error = ex.Message });
+                }
+            }
 
     }
 }
