@@ -503,30 +503,6 @@
 		}
 		}
 		"));
-subColumns.Add().DataField("cost")
-					.Caption(new JS("formatMessage('Total With Tax')"))
-					.CellTemplate(new JS(@"
-					function(cellElement, cellInfo) {
-					if (cellInfo.value != null) {
-					const formattedValue = new Intl.NumberFormat('en-US', {
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
-					}).format(cellInfo.value);
-					$('<span>')
-					.text(formattedValue)
-					.css({
-					display: 'inline-block',
-					backgroundColor: '#fff9cc',
-					color: '#b58900',
-					fontWeight: 'bold',
-					padding: '4px 10px',
-					borderRadius: '20px'
-					})
-					.appendTo(cellElement);
-		
-					}
-					}
-					")); 
 	});
 		})
 		//.ElementAttr("style", "height: 444px !important;")
