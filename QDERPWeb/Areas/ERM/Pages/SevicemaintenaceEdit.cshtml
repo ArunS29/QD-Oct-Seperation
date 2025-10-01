@@ -733,7 +733,7 @@
 					        {
 						        columns.Add().DataField("SpareSlNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")).Visible(false);
 						        columns.Add()
-                                .DataField("Gscode")
+                                .DataField("Gsdescrpition")
                                 .Caption(new JS("formatMessage('Item Code')"))
                                 .Width(120)
                                 .AllowEditing(false)
@@ -743,7 +743,7 @@
                                     }
                                 "));
                               columns.Add()
-                                .DataField("Gsdescrpition")
+                                .DataField("Gscode")
                                 .Caption(new JS("formatMessage('Item Description')"))
                                 .Width(400)
                                 .EditCellTemplate(new JS("descriptionDropDownTemplate"))
