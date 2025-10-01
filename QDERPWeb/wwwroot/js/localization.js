@@ -2,6 +2,11 @@
 var dictionary = {
 
     "en": {
+        "Property Complaint":"Property Complaint",
+        "Service Template":"Service Template",
+        "Qty Used": "Qty Used",
+        "IsApprove": "IsApprove",
+        "IsVerify": "IsVerify",
         "Model Type": "Model Type",
         "Add New Sevice": "Add New Sevice",
         "Request Type": "Request Type",
@@ -6856,6 +6861,11 @@ var dictionary = {
         "Requester Email": "البريد الإلكتروني للطالب",
         "Client Contact Name:": "اسم جهة الاتصال بالعميل:",
         "Requested On": "تاريخ الطلب",
+        "Property Complaint": "شكوى الممتلكات",
+        "Service Template": "قالب الخدمة",
+        "Qty Used": "الكمية المستخدمة",
+        "IsApprove": "تمت الموافقة؟",
+        "IsVerify": "تم التحقق؟",
         "Department Requested By:": "القسم الطالب:",
         "Request / Enquiry Details": "تفاصيل الطلب / الاستفسار",
         "Net Quoted With Tax": "إجمالي السعر مع الضريبة",
@@ -10296,6 +10306,11 @@ var dictionary = {
 
     // Mandrian Chinese Languange Translations
     zh: {
+        "Property Complaint": "财产投诉",
+        "Service Template": "服务模板",
+        "Qty Used": "使用数量",
+        "IsApprove": "已批准？",
+        "IsVerify": "已验证？",
         "Mobilization Details": "动员详情",
         "Add New Property": "添加新财产",
         "Equipment/Assets": "设备/资产",
@@ -14698,6 +14713,11 @@ var dictionary = {
 
     // Hindi Language Translation
     hi: {
+        "Property Complaint": "संपत्ति शिकायत",
+        "Service Template": "सेवा टेम्पलेट",
+        "Qty Used": "उपयोग की गई मात्रा",
+        "IsApprove": "स्वीकृत है?",
+        "IsVerify": "सत्यापित है?",
         "Mobilization Details": "गतिविधि विवरण",
         "Add New Property": "नई संपत्ति जोड़ें",
         "Equipment/Assets": "उपकरण/संपत्ति",
@@ -19190,6 +19210,11 @@ var dictionary = {
 
     // Urdu Language Translation
     ur: {
+        "Property Complaint": "پراپرٹی کی شکایت",
+        "Service Template": "سروس ٹیمپلیٹ",
+        "Qty Used": "استعمال شدہ مقدار",
+        "IsApprove": "کیا منظور ہوا؟",
+        "IsVerify": "کیا تصدیق ہوئی؟",
         "Mobilization Details": "تفصیلات تحویل",
         "Add New Property": "نئی پراپرٹی شامل کریں",
         "Equipment/Assets": "آلات/اثاثے",
@@ -23744,6 +23769,11 @@ var dictionary = {
 
     // Korean Language Translation
     ko: {
+        "Property Complaint": "자산 불만",
+        "Service Template": "서비스 템플릿",
+        "Qty Used": "사용 수량",
+        "IsApprove": "승인 여부",
+        "IsVerify": "검증 여부",
         "Mobilization Details": "동원 세부사항",
         "Add New Property": "새 자산 추가",
         "Equipment/Assets": "장비/자산",
