@@ -303,7 +303,7 @@
                         padding: 0 2px;
                     }
                     #SupplierTabs{
-                        height:200px;
+                        height:250px;
                     }
    </style>
 <meta charset="UTF-8">
@@ -347,48 +347,46 @@
                         </div>
 
                       <div class="col-md-4" style="display:flex; align-items:end;">
-                @(Html.DevExtreme().DropDownBox()
-                            .ID("ddlVehicleDescription")
-                            .Label("Property / Vehicle Description:")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .DataSource(d => d.WebApi()
-                            .Controller("ServiceMaintenance")
-                            .LoadAction("GetpropertyVehicle")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("PropertyNo")
+                            @(Html.DevExtreme().DropDownBox()
+                                .ID("ddlVehicleDescription")
+                                .Label("Property / Vehicle Description:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .DataSource(d => d.WebApi()
+                                    .Controller("ServiceMaintenance")
+                                    .LoadAction("GetpropertyVehicle")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("PropertyNo")
+                                )
+                                .ValueExpr("PropertyNo")
+                                .DisplayExpr("PropertyDescription")
+                                .Width("100%")
+                                .HoverStateEnabled(true)
+                                .OnValueChanged("onPropertyChanged")
+                                .OnOpened("onOpened")
+                                .OnKeyDown("onKeyDown")
+                                .TabIndex(1)
+                                .ContentTemplate(new TemplateName("GetPropertyContentTemplate"))
+                                .ElementAttr(new { dataGridId = "GetProject-datagrid" }) // <-- Add this line
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                        .Message(new JS("formatMessage('Property should be entered')"));
+                                })
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                        .Name("AddPreparedBy")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("plus")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                        );
+                                    buttons.Add()
+                                        .Name("dropDown");
+                                })
                             )
-                            .ValueExpr("PropertyNo")
-                            .DisplayExpr("PropertyDescription")
-                            .Width("100%")
-                            .ValueChangeEvent("input")
-                            .HoverStateEnabled(true)
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .TabIndex(1)
-                            .Width("100%")
-                            .OnKeyDown("onKeyDown")
-                            .ContentTemplate(new TemplateName("GetPropertyContentTemplate"))
-                            .ValidationRules(rules =>
-							{
-								rules.AddRequired()
-									.Message(new JS("formatMessage('Property should be entered')"));
-							})
-                            .Buttons(buttons =>
-                            {
-                            buttons.Add()
-                            .Name("AddPreparedBy")
-                            .Location(TextEditorButtonLocation.After)
-                            .Widget(w => w.Button()
-                            .Type(ButtonType.Default)
-                            .Icon("plus")
-                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                            );
 
-                            // Default dropdown button
-                            buttons.Add()
-                            .Name("dropDown");
-                    })
-                )
             </div>
 
 
@@ -693,27 +691,27 @@
                 <div id="tabContent_2" style="display:none;">
                   <div style="display:flex; width: 450px; align-items: end; column-gap:40px;">
                       <div>
-                            @(Html.DevExtreme().DropDownBox()
-                                .ID("dditemfromstore")
-                                .Label("Item Issued From Store:")
-                                .DataSource(d => d.WebApi()
+                         @(Html.DevExtreme().DropDownBox()
+                            .ID("dditemfromstore")
+                            .Label("Item Issued From Store:")
+                            .LabelMode(EditorLabelMode.Floating)
+                            .DataSource(d => d.WebApi()
                                 .Controller("ServiceMaintenance")
                                 .LoadAction("GetStoreItem")
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("StoreId")
-                                )
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("120%")
-                                .ValueExpr("StoreId")
-                                .DisplayExpr("StoreName")
-                                .ValueChangeEvent("input")
-                                .HoverStateEnabled(true)
-                                .OnInput("dropDownBoxOnInput")
-                                .OnOpened("onOpened")
-                                .TabIndex(1)
-                                .OnKeyDown("onKeyDown")
-                                .ContentTemplate(new TemplateName("GetstoreContentTemplate"))
-                                    )
+                            )
+                            .ValueExpr("StoreId")
+                            .DisplayExpr("StoreName")
+                            .Width("100%")
+                            .HoverStateEnabled(true)
+                            .OnValueChanged("onStoreChanged")
+                            .OnOpened("onOpened")
+                            .OnKeyDown("onKeyDown")
+                            .TabIndex(1)
+                            .ContentTemplate(new TemplateName("GetstoreContentTemplate"))
+                            .ElementAttr(new { dataGridId = "GetProject-datagrid" }) // <-- Add this line
+                        )
                                      </div>
 
                        <div>                        
@@ -744,24 +742,28 @@
                                         container.text(options.data?.Gscode || '');
                                     }
                                 "));
-					                                        // ✅ Always show GSDescrpition from row data
-                                columns.Add()
-                                    .DataField("Gscode") // must match the field we set in row above
-                                    .Caption(new JS("formatMessage('Item Description')"))
-                                    .Width(400)
-                                    .EditCellTemplate(new JS("descriptionDropDownTemplate"))
-                                    .CellTemplate(new JS(@"
-                                        function (container, options) {
-                                            $('<span>').text(options.data?.Gsdescrpition || '').appendTo(container);
-                                        }
-                                    "));
+                              columns.Add()
+                                .DataField("Gscode")
+                                .Caption(new JS("formatMessage('Item Description')"))
+                                .Width(400)
+                                .EditCellTemplate(new JS("descriptionDropDownTemplate"))
+                                .CellTemplate(new JS(@"
+                                    function (container, options) {
+                                        $('<span>').text(options.data?.Gsdescrpition || '').appendTo(container);
+                                    }
+                                "));
 
-						        columns.Add()
-						        .DataField("UnitDesc")
-						        .Caption(new JS("formatMessage('Unit')"))
-						        .Width(400)
-						        .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
-						        .CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
+                              columns.Add()
+                            .DataField("UnitCode") // ✅ use code for binding
+                            .Caption(new JS("formatMessage('Unit')"))
+                            .Width(200)
+                            .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
+                            .CellTemplate(new JS(@"
+                                function (container, options) {
+                                    const unit = unitCodesList.find(u => u.UnitCode === options.value);
+                                    container.text(unit ? unit.UnitDesc : options.value);
+                                }
+                            "));
 						        columns.Add()
 						        .DataField("QtyUsed")
 						        .Caption(new JS("formatMessage('Qty Used')"))
@@ -855,7 +857,7 @@
                  @using (Html.DevExtreme().NamedTemplate("GetServiceContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
-					.ID("GetProject-datagrid")
+					.ID("GetServietem-datagrid")
 					.DataSource(d => d.WebApi()
 					.Controller("ServiceMaintenance")
 					.LoadAction("GetServiceTemplate")
@@ -880,14 +882,14 @@
 					.Columns(columns =>
 					{
 						columns.Add().DataField("ServiceTemplateCode").Caption(new JS("formatMessage('Tempalate Code')"));
-						columns.Add().DataField("ServiceTemplateText").Caption(new JS("formatMessage('Tempalate Name')"));
+						columns.Add().DataField("TemplateType").Caption(new JS("formatMessage('Tempalate Name')"));
 					})
 					)
 				}
                   @using (Html.DevExtreme().NamedTemplate("GetstoreContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
-					.ID("GetProject-datagrid")
+					.ID("GetStore-datagrid")
 					.DataSource(d => d.WebApi()
 					.Controller("ServiceMaintenance")
 					.LoadAction("GetStoreItem")
@@ -991,6 +993,14 @@
 
 
 <script>
+
+                function onPropertyChanged(e) {
+                console.log("Property selected:", e.value);
+            }
+
+            function onStoreChanged(e) {
+                console.log("Store selected:", e.value);
+            }
                 function Gridchild(e) {
                 const storeValue = $("#dditemfromstore").dxDropDownBox("instance")?.option("value");
 
@@ -1096,7 +1106,7 @@ $("#btnSaveAndClose").on("click", function () {
     const $btn = $(this).dxButton("instance");
     $btn.option("disabled", true); // prevent double clicks
 
-     // ✅ Step 1: Validate required field
+    // ✅ Step 1: Validate required field
     const PropertyValidator = $("#ddlVehicleDescription").dxValidator("instance");
     const PropertyValidation = PropertyValidator.validate();
 
@@ -1109,7 +1119,7 @@ $("#btnSaveAndClose").on("click", function () {
         return;
     }
 
-    // ✅ Step 1: Build master object
+    // ✅ Step 2: Build master object
     const master = {
         ServiceSheetNo: $("#txtServiceOrderNo").dxTextBox("instance")?.option("value"),
         ServiceDate: $("#ServiceEntryDate").dxDateBox("instance")?.option("value"),
@@ -1121,19 +1131,16 @@ $("#btnSaveAndClose").on("click", function () {
         Location: $("#txtLocation").dxTextBox("instance")?.option("value"),
         Project: $("#txtProject").dxTextBox("instance")?.option("value"),
         ServiceStatus: $("#ddlServiceStatus").dxSelectBox("instance")?.option("value"),
+        StoreIssuedFrom: $("#dditemfromstore").dxDropDownBox("instance")?.option("value"),
         ServiceOrderType: $("#ddlServiceType").dxSelectBox("instance")?.option("value"),
-        Complaint : $("#ddlPropertyComplaint").dxtextArea("instance")?.option("value"),
-        CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-        BaseCurrencyId : $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value"),
-        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
-        AddedBy: "CurrentUser", // optional, replace with logged in user
+        CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value"),
+        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
+        AddedBy: "CurrentUser",
         AddedOn: new Date()
     };
 
-        const base64Content = "UEsDB..."; 
-        RichEdit.get("ServiceEditword").document.loadDocument(base64Content, DevExpress.RichEdit.DocumentFormat.OpenXml);
-
-    // ✅ Step 2: Get children from DataGrid
+    // ✅ Step 3: Get children from DataGrid
     const gridInstance = $("#itemGrid").dxDataGrid("instance");
     const children = gridInstance?.getDataSource()?.items() || [];
 
@@ -1143,13 +1150,13 @@ $("#btnSaveAndClose").on("click", function () {
         return;
     }
 
-    // ✅ Step 3: Build DTO payload
+    // ✅ Step 4: Build DTO payload
     const model = {
-        Master: [master],  // wrap master in array
+        Master: [master],
         Children: children
     };
 
-    // ✅ Step 4: AJAX call to save data
+    // ✅ Step 5: AJAX call to save data
     $.ajax({
         type: "POST",
         url: "/api/ServiceMaintenance/SaveOrUpdateServiceRequest",
@@ -1158,13 +1165,17 @@ $("#btnSaveAndClose").on("click", function () {
         success: function (response) {
             DevExpress.ui.notify(response.message || "Saved successfully.", "success", 3000);
 
-            // ✅ Step 5: Close form/modal after saving
-            if (window.parent && window.parent.closeModal) {
-                window.parent.closeModal(); // if parent has a closeModal function
-            } else {
-                // fallback: go back to previous page
-                window.history.back();
+            // Optional: refresh parent grid
+            if (window.parent && window.parent.$("#dataGrid").length) {
+                const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                if (dataGrid) dataGrid.refresh();
             }
+
+            // ✅ After save, navigate back or close form
+            setTimeout(() => {
+                history.back(); // goes back to previous page
+                // OR: window.location.href = "/ERM/ServiceMaintenanceList"; // hard redirect if needed
+            }, 1500);
 
             $btn.option("disabled", false);
         },
@@ -1174,6 +1185,7 @@ $("#btnSaveAndClose").on("click", function () {
         }
     });
 });
+
 
 
   function descriptionDropDownTemplate(cellElement, cellInfo) {
@@ -1263,9 +1275,10 @@ $("#btnSaveAndClose").on("click", function () {
     }).appendTo($container);
 }
 
-    	function dataGridInitialized1(e) {
-					dataGrid = e.component;
-				}
+    // 	function dataGridInitialized1(e) {
+				// 	dataGrid = e.component;
+				// }
+
 					function dataGridSelectionChanged22(e) {
 					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 					const ddbInstance = $("#dditemfromstore").dxDropDownBox("instance");
@@ -1288,6 +1301,9 @@ $("#btnSaveAndClose").on("click", function () {
 							ddbInstance.close();
 						}
 					}
+				}
+                function dataGridInitialized1(e) {
+					dataGrid = e.component;
 				}
     function dataGridSelectionChanged29(e) {
 					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -1558,7 +1574,8 @@ $("#btnSaveAndClose").on("click", function () {
 						selection: { mode: "single" },
 						columns: [
 							{ dataField: "UnitCode", caption: "Code" },
-							{ dataField: "UnitType", caption: "Type" }
+							{ dataField: "UnitType", caption: "Type" },
+							{ dataField: "UnitDesc", caption: "UnitDesc",visible:false }
 						],
 						searchPanel: {
 							visible: true,
@@ -1673,12 +1690,22 @@ $("#btnSaveAndClose").on("click", function () {
         }
         });
     });
-    function onOpened(e) {
-        setTimeout(() => {
-            e.component.focus();
-        });
-    }
+   
+
+
       function onOpened(e) {
+      const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+      const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+      if (grid) {
+          grid.getDataSource().reload(); // refresh data
+      }
+
+      setTimeout(() => {
+          e.component.focus();
+      });
+  }
+      function onOpened1(e) {
       const gridId = e.component.option("dataGridId"); // 👈 Get common ID
       const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
 
@@ -1762,15 +1789,20 @@ $("#btnSaveAndClose").on("click", function () {
 							success: function (response) {
 							DevExpress.ui.notify(response.message, "success", 2000);
 
-							const grid = $("#itemGrid").dxDataGrid("instance");
-							if (grid) {
-								const ds = grid.getDataSource();
-								if (ds) {
-									ds.reload();
-								} else {
-									grid.refresh();
-								}
-							}
+							 const grid = $("#itemGrid").dxDataGrid("instance");
+                                if (grid) {
+                                    const ds = grid.getDataSource();
+
+                                    if (ds && typeof ds.reload === "function") {
+                                        // ✅ For remote or array store
+                                        ds.reload().done(() => grid.refresh());
+                                    } else {
+                                        // ✅ Fallback: force fetch again
+                                        grid.option("dataSource", new DevExpress.data.DataSource({
+                                            load: () => $.getJSON("/api/ServiceMaintenance/GetChildren")
+                                        }));
+                                    }
+                                }
 						},
 							error: function (xhr) {
 								DevExpress.ui.notify(
@@ -1844,6 +1876,41 @@ $("#btnSaveAndClose").on("click", function () {
                     }
                 });
             });
+
+  function ServiceDelete() {
+      debugger;
+    const serviceSheetNo = $("#txtServiceOrderNo").dxTextBox("instance")?.option("value");
+
+    if (!serviceSheetNo) {
+        DevExpress.ui.notify("Service Sheet No is missing.", "error", 3000);
+        return;
+    }
+
+    DevExpress.ui.dialog.confirm(
+        "Do you really want to delete this Service Sheet?",
+        "Delete Confirmation"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            $.ajax({
+                url: `/api/ServiceMaintenance/DeleteServiceMaster/${serviceSheetNo}`, // ✅ pass value to API
+                type: "DELETE",
+                success: function (response) {
+                    DevExpress.ui.notify(response.message || "Deleted successfully.", "success", 3000);
+
+                    // ✅ reload your DataGrid if it exists
+                    setTimeout(function () {
+                        history.back();   // goes to the last visited page
+                    }, 1500);
+                },
+                error: function (xhr) {
+                    const msg = xhr.responseJSON?.error || "Failed to delete record.";
+                    DevExpress.ui.notify(msg, "error", 4000);
+                }
+            });
+        }
+    });
+}
+
 
 </script>
 

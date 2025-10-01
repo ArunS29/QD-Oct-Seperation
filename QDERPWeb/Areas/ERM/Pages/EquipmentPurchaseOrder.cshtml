@@ -1994,6 +1994,7 @@ $("#btnSave").on("click", function () {
     btn.option("text", "Update");
     btn.option("disabled", true); // prevent double-click saves
 
+    // 🔹 Validate Supplier selection
     const supplier = $("#SupplierName").dxSelectBox("instance")?.option("value");
     if (!supplier) {
         DevExpress.ui.notify("Please select a Supplier.", "error", 3000);
@@ -2002,6 +2003,7 @@ $("#btnSave").on("click", function () {
         return;
     }
 
+    // 🔹 Collect Master data
     const master = {
         Pono: $("#PurchaseOrderNo").dxTextBox("instance")?.option("value"),
         Podate: $("#PoDate").dxDateBox("instance")?.option("value"),
@@ -2041,6 +2043,7 @@ $("#btnSave").on("click", function () {
         return;
     }
 
+    // 🔹 Validate grid
     const grid = $("#itemGrid").dxDataGrid("instance");
     if (!grid) {
         console.warn("itemGrid is not initialized");
@@ -2048,17 +2051,16 @@ $("#btnSave").on("click", function () {
         return;
     }
 
-    // Save pending edits
     grid.saveEditData();
-
-    // 🔹 Get children WITH PropertyPochildNo (don’t strip it away!)
     let children = grid.getDataSource()?.items() || [];
+    children = children.map(({ PropertyPochildNo, ...rest }) => rest); // remove ID if needed
 
+    // 🔹 Send AJAX request
     $.ajax({
-        url: '/api/EQPurchaseOrder/SavePurchaseOrder',
-        type: 'POST',
+        url: "/api/EQPurchaseOrder/SavePurchaseOrder",
+        type: "POST",
         data: JSON.stringify({ master, children }),
-        contentType: 'application/json',
+        contentType: "application/json",
         success: function (res) {
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 3000);
