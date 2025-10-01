@@ -364,9 +364,8 @@
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
-							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Material Requests/Enquiry Details')"));
-							items.Add().Icon("accountbox").Text(new JS("formatMessage('Request Details')"));
-							items.Add().Icon("card").Text(new JS("formatMessage('Branch/Divisions')"));
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Invoice Details')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
 							items.Add().Icon("attach").Text(new JS("formatMessage('Signatories')"));
 							items.Add().Icon("doller").Text(new JS("formatMessage('Deductions & Currency Details')"));
 						})
@@ -486,7 +485,7 @@
 					</td>
 					<td style="width:25%;">
 						
-						<td colspan="2" style="width:100%; display:flex; align-items:end;">
+						<td style="width: 25%;">
 							@(Html.DevExtreme().TextBox()
 								.Label(new JS("formatMessage('Client Ref Name / Attention To')"))
 								.ID("txtContactName")
@@ -592,8 +591,6 @@
 					</td>
 				</tr>
 			</table>
-
-
 			</div>
 			<!-- Tab 2 -->
 <div id="tab-content-2" class="tab-content" style="height: 150px;">
@@ -605,8 +602,7 @@
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
 							.Buttons(buttons =>
-							{
-							
+							{							
 								buttons.Add().Name("clear");
 								
 								buttons.Add()
@@ -693,260 +689,130 @@
 									@* .OnClick("function() { /* your font button logic */ }") *@
 								);
 						})
-
                         )
                     </div>
                 </div>
 </div>
 
 <!-- Tab 3 -->
-<div id="tab-content-3" class="tab-content" style="height: 150px;">
-				 <div style="padding: 10px; flex: 1;">
 
-					 <div>
-                            @(Html.DevExtreme().SelectBox()
-                                .ID("preparedBy2")
-                                .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
-                                .LoadAction("GetDocumentSignatories")
-                                )
-                                .ValueExpr("SignatoryName")
+	<div id="tab-content-3" class="tab-content" style="height: 180px;">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-4">
+            <!-- Signatory Dropdown -->
+            @(Html.DevExtreme().DropDownBox()
+                .Label(new JS("formatMessage('Signatory:')"))
+                .DataSource(d => d.WebApi()
+                    .Controller("AddNewClientRequest")
+                    .LoadAction("GetSignatory")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SignatoryId")
+                )
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("ddPreparedby")
+                .ValueExpr("SignatoryId")
+                .DisplayExpr("SignatoryName")
+                .Width("100%")
+                .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+            )
 
-                                .DisplayExpr("SignatoryName")
-                                .ShowClearButton(true)
-                                .ShowDropDownButton(true)
-                                .Label(new JS("formatMessage('Prepared By:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
-                                .SearchEnabled(true)
-                                .SearchExpr("SignatoryName")
-                                .OnOpened("onSelectBoxOpened")
-                                .Buttons(buttons =>
-                                {
-                                buttons.Add()
-                                .Name("dropDown");
-                                buttons.Add()
-                                .Name("AddProject")
-                                .Location(TextEditorButtonLocation.After)
-                                .Widget(w => w.Button()
-                                .Type(ButtonType.Default)
-                                .Icon("plus")
-                                .OnClick("AddSignatory")
-                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                );
-                            })
+            <!-- Checkboxes -->
+            <div class="mt-2">
+                @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text("Show Company Seal"))
+            </div>
+            <div class="mt-2">
+                @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text("Print in Letter Head"))
+            </div>
+            <div class="mt-2">
+                @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text("Show VAT in Summary Report"))
+            </div>
+            <div class="mt-2">
+                @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text("Show Operator Names With Description"))
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-8">
+            @* <div class="card p-2"> *@
+                @* <h6>Additions & Deductions</h6> *@
+
+                <!-- Invoice Notes -->
+                @(Html.DevExtreme().TextArea()
+                    .ID("txtInvoiceNotes")
+                    .Label(new JS("formatMessage('Invoice Summary Notes:')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Height(80)
+                    .Width("100%")
+                )
+
+                <!-- VAT Dropdown -->
+                @(Html.DevExtreme().DropDownBox()
+                    .Label(new JS("formatMessage('VAT Applicable %')"))
+                    .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest1")
+                        .LoadAction("GetTax")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PurchaseTaxSlabCode")
+                    )
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddGetTax")
+                    .ValueExpr("PurchaseTaxSlabCode")
+                    .DisplayExpr("PurchaseTaxSlab")
+                    .Width("100%")
+                    .ContentTemplate(new TemplateName("GetTaxContentTemplate"))
+                )
+
+                <!-- Additions -->
+                <div class="row mt-2">
+                    <div class="col-6">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("txtAdditionLabel")
+                            .Label(new JS("formatMessage('Additions in Invoice:')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Value("Add: Mob & Demob Charges")
+                            .Width("100%")
                         )
-                                 </div>
-                               
-								  <div>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text(new JS("formatMessage('Show VAT IN summary Report')")))
-                                    <br />
-									 @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text(new JS("formatMessage('Show Operator Name With Description')")))
-                              </div>
-                                <!-- Tax Slab -->
-                                <div style="flex: 2; margin-bottom: 10px;">
-                                    @(Html.DevExtreme().DropDownBox()
-										.Label(new JS("formatMessage('Expected VAT %')"))
-										.DataSource(d => d.WebApi()
-										.Controller("AddNewClientRequest1")
-										.LoadAction("GetTax")
-										.LoadMode(DataSourceLoadMode.Raw)
-										.Key("PurchaseTaxSlabCode")
-										)
-										.LabelMode(EditorLabelMode.Floating)
-										.ID("ddGetTax")
-										.Width(900)
-										.OpenOnFieldClick(false)
-										.ValueChangeEvent("input")
-										.HoverStateEnabled(true)
-										.ValueExpr("PurchaseTaxSlabCode")
-										.DisplayExpr("PurchaseTaxSlab")
-										.OnInput("dropDownBoxOnInput")
-										.OnOpened("onOpened")
-										.TabIndex(1)
-										.Width("100%")
-										.OnKeyDown("onKeyDown")
-										.ContentTemplate(new TemplateName("GetTaxContentTemplate"))
-										)
-                                </div>
+                    </div>
+                    <div class="col-4">
+                        @(Html.DevExtreme().NumberBox()
+                            .ID("txtAdditionAmount")
+                            .Min(0)
+                            .Label(new JS("formatMessage('Amount')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Width("100%")
+                        )
+                    </div>
+                </div>
 
-										<!-- Shipments & Handling -->
-										<div style="display: flex; gap: 10px; margin-bottom: 10px;">
-											<div style="flex: 2;">
-												@(Html.DevExtreme().TextBox()
-													.ID("ShipmentHandling")
-													//.Placeholder("(+) Shipments & Handling:")
-													.Value("Add: Mob & Demob Charges:")
-													.LabelMode(EditorLabelMode.Hidden)
-													.Width("100%")
-												)
-											</div>
-											<div style="flex: 1;">
-												@(Html.DevExtreme().NumberBox()
-													.ID("ShipmentHandlingMethod")
-													.LabelMode(EditorLabelMode.Hidden)
-													.Value(0.00)
-													.Min(0)
-													.Max(99999999)
-													.Placeholder("0.00")
-													.Format("#,##0.00")
-													.TabIndex(11)
-													.InputAttr(new
-													{
-														 type = "number",
-														step = "0.01",
-														style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-														maxLength = 16,
-														autocomplete = "off"
-													})
-													.Width("100%")
-												)
-											</div>
-										</div>
-
-										<!-- Discount -->
-										<div style="display: flex; gap: 10px;">
-											<div style="flex: 2;">
-												@(Html.DevExtreme().TextBox()
-													.ID("Discount")
-													//.Placeholder("(-) Discount")
-													.Value("Less: Discount")
-													.LabelMode(EditorLabelMode.Hidden)
-													.Width("100%")
-												)
-											</div>
-											<div style="flex: 1;">
-												@(Html.DevExtreme().NumberBox()
-													.ID("DiscountMethod")
-													.LabelMode(EditorLabelMode.Hidden)
-													.Value(0.00)
-													.Min(0)
-													.Max(99999999)
-													.Placeholder("0.00")
-													.Format("#,##0.00")
-													.TabIndex(11)
-													.InputAttr(new
-													{
-														type = "number",
-														step = "0.01",
-														style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-														maxLength = 16,
-														autocomplete = "off"
-													})
-														.Width("100%")
-													)
-											</div>
-										</div>
-									</div>
+                <!-- Deductions -->
+                <div class="row mt-2">
+                    <div class="col-6">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("txtDeductionLabel")
+                            .Label(new JS("formatMessage('Deductions in Invoice:')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Value("Less: Discount")
+                            .Width("100%")
+                        )
+                    </div>
+                    <div class="col-4">
+                        @(Html.DevExtreme().NumberBox()
+                            .ID("txtDeductionAmount")
+                            .Min(0)
+                            .Label(new JS("formatMessage('Amount')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Width("100%")
+                        )
+                    </div>
+                </div>
+            @* </div> *@
+        </div>
+    </div>
 </div>
 
-			<div id="tab-content-4" class="tab-content" style="height: 180px;">
-
-
-				<div class="row">
-					<!-- Add margin bottom to separate rows -->
-					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-												.Label(new JS("formatMessage('Prepared By:')"))
-												.DataSource(d => d.WebApi()
-												.Controller("AddNewClientRequest")
-												.LoadAction("GetSignatory")
-												.LoadMode(DataSourceLoadMode.Raw)
-												.Key("SignatoryId")
-												)
-												.LabelMode(EditorLabelMode.Floating)
-												.ID("ddPreparedby")
-												.Width(900)
-												.OpenOnFieldClick(false)
-												.ValueChangeEvent("input")
-												.HoverStateEnabled(true)
-												.ValueExpr("SignatoryId")
-												.DisplayExpr("SignatoryName")
-												.OnInput("dropDownBoxOnInput")
-												.OnOpened("onOpened")
-												.TabIndex(1)
-												.Width("100%")
-												.OnKeyDown("onKeyDown")
-												.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
-												.Buttons(buttons =>
-												{
-													buttons.Add()
-													.Name("AddPreparedBy")
-													.Location(TextEditorButtonLocation.After)
-													.Widget(w => w.Button()
-													.Type(ButtonType.Default)
-													.Icon("plus")
-													.ElementAttr(new { @class = "custom-hover-button add-hover" })
-													.OnClick("AddPreparedBy"));
-													buttons.Add()
-													.Name("dropDown");
-												})
-												)
-
-					</div>
-					<div class="col-3" >
-						 @(Html.DevExtreme().DropDownBox()
-					.Label(new JS("formatMessage('Expected VAT %')"))
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest1")
-					.LoadAction("GetTax")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("PurchaseTaxSlabCode")
-					)
-					.LabelMode(EditorLabelMode.Floating)
-					.ID("ddGetTax")
-					.Width(900)
-					.OpenOnFieldClick(false)
-					.ValueChangeEvent("input")
-					.HoverStateEnabled(true)
-					.ValueExpr("PurchaseTaxSlabCode")
-					.DisplayExpr("PurchaseTaxSlab")
-					.OnInput("dropDownBoxOnInput")
-					.OnOpened("onOpened")
-					.TabIndex(1)
-					.Width("100%")
-					.OnKeyDown("onKeyDown")
-					.ContentTemplate(new TemplateName("GetTaxContentTemplate"))
-					)
-					</div>
-				</div>
-
-				<!-- Row 2: CheckBox 1 -->
-				<div class="row">
-					<div class="col-3">
-						   @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
-					</div>
-				</div>
-
-				<!-- Row 3: CheckBox 2 -->
-				<div class="row">
-					<div class="col-3">
-						   @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
-					</div>
-				</div>
-
-				<!-- Row 4: CheckBox 3 -->
-				<div class="row">
-					<div class="col-3">
-					  @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text(new JS("formatMessage('Show VAT IN summary Report')")))
-					</div>
-
-				</div>
-				<div class="row">
-					<div class="col-3">
-					  @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text(new JS("formatMessage('Show Operator Name With Description')")))
-					</div>
-
-				</div>
-
-			</div>
-
 <!-- Tab 4 -->
-<div id="tab-content-5" class="tab-content" style="height: 150px;">
+<div id="tab-content-4" class="tab-content" style="height: 150px;">
     <div class="p-3">
         <table style="width:100%; font-size:14px; margin:5px;">
             <tr>
@@ -2303,7 +2169,7 @@
 					} else  {
 						// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
 						$.ajax({
-							url: "/api/AddNewClientRequest1/GetNewRequestNoApi",
+							url: "/api/AddNewClientRequest1/GetNewInvoiceNo",
 							type: "GET",
 							success: function (data) {
 								console.log("Success:", data);
@@ -2324,9 +2190,9 @@
 				});
 
 
-			function loadClientDetails(EqiupmentRequestNo) {
+			function loadClientDetails(InvoiceNo) {
 				$.ajax({
-					url: `/api/AddNewClientRequest1/GetNewDebitNoteNo?EqNo=${encodeURIComponent(EqiupmentRequestNo )}`,
+					url: `/api/AddNewClientRequest1/GetNewInvoiceNoteNo?EqNo=${encodeURIComponent(InvoiceNo )}`,
 					type: 'GET',
 					dataType: 'json',
 					success: function (response) {
@@ -5326,7 +5192,7 @@
 							3000
 						);
 					}
-				});
+				});                           
 			}
 
 			 function descriptionCellTemplate(container, options) {
@@ -5363,85 +5229,45 @@
             renderPopoverForm(rowIndex);
         }
     });
+		$(document).ready(function () {
+				const urlParams = new URLSearchParams(window.location.search);
+				const invoiceNoFromUrl = urlParams.get("invoiceNo");
+				const isCreateMode = urlParams.get("mode") === "create";
 
+				const invoiceBox = $("#txtBillingRefNo").dxTextBox("instance");
 
+				if (isCreateMode && invoiceNoFromUrl) {
+					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
+					if (invoiceBox) {
+						invoiceBox.option("value", invoiceNoFromUrl);
+						getDocumentCount();
+					}
+				} else {
+					// 🔄 Otherwise, get default auto-generated invoice from API
+					if (IsCurrent !== "true") {
+						$.ajax({
+							url: "/api/MaterialReceipt1/GetEquipmentInvoiceNo",	
+							type: "GET",
+							success: function (data) {
+								if (invoiceBox) {
+									
+									InvoiceOPenToSave(data)
+									invoiceBox.option("value", data || "");
+										getDocumentCount();
+									
+								} else {
+									console.warn("Invoice TextBox not initialized.");
+								}
+							},
+							error: function (xhr, status, error) {
+								console.error("Error fetching invoice number:", error);
+								DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
+							}
+						});
+					}
+				}
+			});
 
-	function renderPopoverForm(rowIndex) {
-    const grid = $("#itemGrid").dxDataGrid("instance");
-    const rowData = grid.getVisibleRows()[rowIndex]?.data || {};
-    const $container = $("#popoverFormContainer").empty();
-
-    const formInstance = $container.dxForm({
-        formData: rowData,
-        colCount: 3,
-        labelLocation: "top",
-        items: [
-            {
-                colSpan: 3,
-                template: function() {
-                    return $("<div>")
-                        .addClass("form-header")
-                        .append(`<label class="form-label">Detailed Description / Specification:</label>`)
-                        .append(`<a href="#" class="use-item-link">Use Item Description</a>`)
-                        .append(`<span class="add-icon">➕</span>`);
-                }
-            },
-            {
-                dataField: "PropertyAddlDescription",
-                colSpan: 3,
-                editorType: "dxTextArea",
-                editorOptions: {
-                    height: 100,
-                    width: "100%"
-                }
-            },
-            { dataField: "Purpose", colSpan: 1, label: { text: "Purpose of Request:", labelMode: "floating"  }},
-            { 
-                dataField: "Priority", colSpan: 1, editorType: "dxSelectBox", 
-                label: { text: "Priority of Request:" } ,labelMode: "floating", 
-                editorOptions: { items: ["Low","Medium","High"], placeholder: "Select..." } 
-            },
-            {
-                dataField: "ExpectedDate", colSpan: 1, editorType: "dxDateBox", 
-                label: { text: "Expected Date:" , labelMode: "floating"}, 
-                editorOptions: { displayFormat: "dd/MM/yyyy" }
-            },
-            { dataField: "Remarks", colSpan: 3, editorType: "dxTextBox", label: { text: "Remarks:" } },
-            { dataField: "Size", colSpan: 1, editorType: "dxTextBox" ,  editorOptions: {
-				disabled: true   
-			}},
-            { dataField: "Manufacturer", colSpan: 1, editorType: "dxTextBox", labelMode: "floating", editorOptions: {
-				disabled: true   
-			} },
-					{ dataField: "Brand", colSpan: 1, editorType: "dxTextBox" , labelMode: "floating", editorOptions: {
-				disabled: true  
-			}},
-            { dataField: "PartNo", colSpan: 1, editorType: "dxTextBox", label: { text: "Part No" , labelMode: "floating", editorOptions: {
-				disabled: true   
-			}}},
-            { dataField: "DeliveryPeriod", colSpan: 1, editorType: "dxTextBox",labelMode: "floating" },
-            { dataField: "PlanNo", colSpan: 1, editorType: "dxTextBox" ,labelMode: "floating"},
-        ]
-    }).dxForm("instance");
-}
-
-
- $(function () {
-    $.ajax({
-        url: "/api/PurchaseOrders/GetReportAttributes?reportNo=EQP-QTN-01", // ✅ fixed missing quote
-        type: "GET",
-        success: function (data) {
-            console.log("Loaded:", data);
-
-            $("#Subject").dxTextBox("instance")?.option("value", data.ReportSubject || "");
-            $("#QuoteSummary").dxTextArea("instance")?.option("value", data.ReportSummary || "");
-            $("#QuoteIntro").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
-        },
-        error: function (xhr, status, error) {
-            console.error("Error loading report data:", error);
-        }
-    });
-});
   function AddSignatory(){
              var selectBox = $("#preparedBy2").dxSelectBox("instance");
               selectBox.close();
