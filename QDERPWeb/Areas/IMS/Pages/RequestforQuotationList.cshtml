@@ -350,6 +350,21 @@
 		// else: do nothing (no span rendered)
 		}
 		"));
+				subColumns.AddFor(m => m.Rfqsignatory).Caption(new JS("formatMessage('RFQ Signatory')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SignatoryName).Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SignatoryPosition).Caption(new JS("formatMessage('Signatory Position')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SignatoryContact).Caption(new JS("formatMessage('Signatory Contact')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SignatoryEmail).Caption(new JS("formatMessage('Signatory Email')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SignatureImage).Caption(new JS("formatMessage('Signature Image')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.Project).Caption(new JS("formatMessage('Project')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroupId).Caption(new JS("formatMessage('Inventory Master Group Id')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Master Group')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonCode).Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center).Visible(false);
+				subColumns.AddFor(m => m.UserCode).Caption(new JS("formatMessage('User Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
 
 
 			});

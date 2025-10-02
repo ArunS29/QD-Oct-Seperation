@@ -173,26 +173,26 @@
             @* <label for="VoucherDate" class="form-label">Voucher Date</label> *@
             @(Html.DevExtreme().DateBox()
                 .ID("VoucherDate")
-                .Value(DateTime.Now)
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Label(new JS("formatMessage('Voucher Date')"))
-                        .OnValueChanged("onVoucherDateChanged")
-                .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
-                .UseMaskBehavior(true) // Ensures proper date input handling
-                .ElementAttr("class", "dynamicFormatDateBox"))
+                  .Label(new JS("formatMessage('Voucher Date')"))
+                   .LabelMode(EditorLabelMode.Floating)
+                     .Type(DateBoxType.Date)
+                     .DisplayFormat("dd-MMM-yyyy")
+                     .Value(DateTime.Now)
+                     .ElementAttr("class", "dynamicFormatDateBox")
+                     .OnValueChanged("onVoucherDateChanged"))
         </div>
 
         <div class="form-group me-3">
             @* <label for="EffectiveDate" class="form-label">Effective Date</label> *@
             @(Html.DevExtreme().DateBox()
                 .ID("EffectiveDate")
-                .Value(DateTime.Now)
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Label(new JS("formatMessage('Effective Date')"))
-                .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
-                .UseMaskBehavior(true)
-                .OnValueChanged("onVoucherDateChanged")
-                .ElementAttr("class", "dynamicFormatDateBox"))
+                 .Label(new JS("formatMessage('Effective Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                 .Type(DateBoxType.Date)
+                 .DisplayFormat("dd-MMM-yyyy")
+                 .Value(DateTime.Now)
+                 .ElementAttr("class", "dynamicFormatDateBox")
+                 .OnValueChanged("onVoucherDateChanged"))
         </div>
 
        
@@ -204,7 +204,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CostAllocationUnitId")
                         )
-                        .Label(new JS("formatMessage('Claim Name:')"))
+                        .Label(new JS("formatMessage('Claimed for Project/Jobs:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
@@ -255,8 +255,8 @@
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit Id')"));
-                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Left);
+                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Project Code')"));
+                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Projects/Jobs')")).Alignment(HorizontalAlignment.Left);
                             })
 
                             )
@@ -390,7 +390,7 @@
         onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
     });
                     columns.Add().DataField("CostAllocationDescription").Caption(new JS("formatMessage('Cost Allocation')")).Width(200);
-                    columns.Add().DataField("TotalCostAllocated").Caption(new JS("formatMessage('Total Cost Allocated')")).Width(150).AllowEditing(false);
+                    columns.Add().DataField("TotalCostAllocated").Caption(new JS("formatMessage('Total Cost Allocated')")).Width(150).AllowEditing(false).CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                     columns.Add().Caption("...").Width(100).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -406,7 +406,7 @@
             <div class="headerBolder">...</div>
         </text>);
                     columns.Add().DataField("EmployeeCostDescription").Caption(new JS("formatMessage('Employees Allocation')")).Width(150);
-                    columns.Add().DataField("TotalEmpAllocated").Caption(new JS("formatMessage('Total Employee Allocation')")).Width(150).Visible(true).AllowEditing(false);
+                    columns.Add().DataField("TotalEmpAllocated").Caption(new JS("formatMessage('Total Employee Allocation')")).Width(150).Visible(true).AllowEditing(false).CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                     columns.Add().Caption("...").Width(100).Visible(true).CellTemplate(@<text>
             <div class="text-center">
                 @(Html.DevExtreme().Button()
@@ -427,9 +427,23 @@
                     
                     columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account ID')")).Width(150).Visible(false);
 
-                    columns.Add().DataField("PropertyCostDescription").Caption(new JS("formatMessage('Property Cost Desc')")).Width(200).Visible(false);
+                    columns.Add().DataField("PropertyCostDescription").Caption(new JS("formatMessage('Property Allocation')")).Width(200).Visible(false);
                     columns.Add().DataField("FormattedAmount").Caption(new JS("formatMessage('Formatted Amount')")).Format("currency").Width(150).Alignment(HorizontalAlignment.Right).Visible(false);
-                    columns.Add().DataField("TotalEqpAllocted").Caption(new JS("formatMessage('Total Equipment Allocated')")).Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false);
+                    columns.Add().DataField("TotalEqpAllocted").Caption(new JS("formatMessage('Total Eqp Allocated')")).Format("currency").Width(180).Alignment(HorizontalAlignment.Right).Visible(false).CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                     columns.Add().Caption("...").Width(100).Visible(false).CellTemplate(@<text>
+            <div class="text-center">
+                @(Html.DevExtreme().Button()
+
+                .Type(ButtonType.Default)
+                .Icon("property")
+                .ElementAttr("class", "card-button")
+                .OnClick("onGridPropertyButtonClick")
+                )
+            </div>
+        </text>)
+        .HeaderCellTemplate(@<text>
+            <div class="headerBolder">...</div>
+        </text>);
                 })
             .DataSource(new List<object>())
                 .AllowColumnReordering(true)
@@ -473,6 +487,7 @@
             })
             .OnRowUpdating("onLedgerRowUpdating")
             .OnRowRemoving("onjournalrowremoving")
+            .OnRowUpdated("onLedgerRowUpdated")
             )
     </div>
   <div class="col-md-2 col-sm-6 d-flex align-items-center journal-container">
@@ -644,7 +659,7 @@
                     columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
                     columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
                     columns.Add().Caption(new JS("formatMessage('Account Group')")).DataField("AccountGroup");
-                    columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+                    columns.Add().Caption(new JS("formatMessage('Account Head (Ar)')")).DataField("AccountHeadArabic");
                     columns.Add().Caption(new JS("formatMessage('Reference No')")).DataField("ReferenceNo");
                     columns.Add().DataField("IsLedgerObselete")
 
@@ -1367,22 +1382,42 @@
                         const btnPrint = $("#btnPreview2").dxDropDownButton("instance");
                         const btnmoveup = $("#btnMoveUp").dxButton("instance");
                         const btnmovedown = $("#btnMoveDown").dxButton("instance");
+                        const btnsave = $("#btnSave").dxButton("instance");
+                        const btnsaveandclose = $("#btnSaveAndClose").dxButton("instance");
                         const btnlayout = $("#journaleditButtonLayout1").dxDropDownButton("instance");
                         const btnattach = $("#btnAttach").dxButton("instance");
 
                         if (formattedsubmittedDate) {
                             btnSubmit.option("disabled", true);
                             btnPostJournal.option("disabled", true);
+                            btnsave.option("disabled", false);
+                            btnsaveandclose.option("disabled", false);
+                            btnlayout.option("disabled", false);
+                            btnlayout.repaint();
+                            btnmoveup.option("disabled", false);
+                            btnmovedown.option("disabled", false);
                         }
 
                         if (formattedDate) {
                             btnSubmit.option("disabled", true);
                             btnVerify.option("disabled", true);
                             btnPostJournal.option("disabled", true);
+                            btnsave.option("disabled", false);
+                            btnsaveandclose.option("disabled", false);
+                            btnlayout.option("disabled", false);
+                            btnlayout.repaint();
+                            btnmoveup.option("disabled", false);
+                            btnmovedown.option("disabled", false);
                         }
                         if (formattedApprovedDate) {
                             disable();
                             btnPostJournal.option("disabled", false);
+                            btnsave.option("disabled", false);
+                            btnsaveandclose.option("disabled", false);
+                            btnlayout.option("disabled", false);
+                            btnlayout.repaint();
+                            btnmoveup.option("disabled", false);
+                            btnmovedown.option("disabled", false);
                         }
                         if (formattedPostedDate) {
                             disable();
@@ -1986,6 +2021,65 @@
             ]
         });
     }
+     function onGridPropertyButtonClick(e) {
+        const button = $(e.element);
+        const $dataRow = button.closest(".dx-data-row");
+        const $dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        const rowIndex = $dataRow.index();
+        const rowData = $dataGrid.getVisibleRows()[rowIndex].data;
+        const journalChildNo = rowData.JournalChildNo;
+
+        // Remove any existing dropdown
+        $(".floating-dropdown").remove();
+
+        // Create dropdown container
+        const $dropdown = $(`
+            <div class="floating-dropdown shadow">
+                <div class="inline-detail-grid" style="padding: 10px;"></div>
+            </div>
+        `).appendTo("body");
+
+        // Set position (left offset)
+        const offset = button.offset();
+        const height = button.outerHeight();
+        const dropdownWidth = 650;
+        const screenWidth = $(window).width();
+
+        const leftPosition = Math.max(0, offset.left - dropdownWidth + button.outerWidth());
+
+        $dropdown.css({
+            top: offset.top + height + 4,
+            left: leftPosition,
+            width: dropdownWidth,
+            zIndex: 1500
+        });
+
+        // Close on outside click
+        $(document).on("mousedown.dropdownClose", function (event) {
+            if (!$(event.target).closest(".floating-dropdown, .dx-button").length) {
+                $(".floating-dropdown").remove();
+                $(".dx-button").removeClass("active");
+                $(document).off("mousedown.dropdownClose");
+            }
+        });
+
+        // Render nested DataGrid
+        $dropdown.find(".inline-detail-grid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                loadUrl: `/api/JournalEntryEdit/GetPropertyAllocationByJournalChildNo`,
+                loadParams: { journalChildNo: journalChildNo }
+            }),
+            showBorders: true,
+            height: 250,
+            columns: [
+                { dataField: "PropNo", caption: "Property No", width: 150 },
+                { dataField: "PropertyNo", caption: "Property Description", width: 300 },
+                { dataField: "VoucherAmount", caption: "Amount", format: "#,##0.00", width: 100, alignment: "right" },
+                { dataField: "DrCr", caption: "Dr/Cr", width: 80, alignment: "center" }
+            ]
+        });
+    }
 
     function onjournalrowremoving(e) {
         const journalChildNo = e.data.JournalChildNo;
@@ -2034,16 +2128,23 @@
         // ⛔ Disable the context menu
         dataGrid.option("onContextMenuPreparing", null); // Or: () => {}
 
-        // 🔒 Disable all buttons except #btnjournalBack
-        $("button").not("#btnjournalBack").prop("disabled", true);
+        $("button").not("#btnjournalBack, #btnDelete, #btnAttach").prop("disabled", true);
 
-        // 🔒 Disable DevExtreme buttons except #btnjournalBack
-        $(".dx-button").each(function () {
-            const $btn = $(this);
-            if (!$btn.closest("#btnjournalBack").length) {
-                $btn.dxButton("instance").option("disabled", true);
-            }
-        });
+             // 🔒 Disable all DevExtreme buttons except the three allowed
+             $(".dx-button").each(function () {
+                 const $btn = $(this);
+                 const isAllowed =
+                     $btn.closest("#btnjournalBack").length ||
+                     $btn.closest("#btnDelete").length ||
+                     $btn.closest("#btnAttach").length;
+
+                 if (!isAllowed) {
+                     const instance = $btn.dxButton("instance");
+                     if (instance) {
+                         instance.option("disabled", true);
+                     }
+                 }
+             });
 
         // 🔒 Wait for grid content to be rendered and disable cell buttons
         setTimeout(function () {
@@ -2054,6 +2155,14 @@
                 }
             });
         }, 100);
+        const previewButton = $("#btnPreview2").dxDropDownButton("instance");
+
+                        if (previewButton) {
+                            previewButton.option("disabled", false);
+                            previewButton.repaint();  // Force UI refresh
+                        } else {
+                            console.error("btnPreview1 instance not found");
+                        }
     }
 
 
@@ -2574,6 +2683,45 @@
                 }
             }
         }
+        function onLedgerRowUpdated(e) {
+            debugger;
+             // Get JournalRefNo from the VoucherNo TextBox instead of relying on e.key
+            const journalRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+            if (!journalRefNo) {
+                DevExpress.ui.notify("Journal Reference No is missing. Cannot update.", "error", 3000);
+                return;
+            } // Assuming JournalRefNo is the key
+
+            e.data.JournalRefNo = journalRefNo;
+
+            // Call backend API to update Tbl20127JournalRegisterChild
+            $.ajax({
+                url: '/api/JournalEntryEdit/UpdateJournalChild', // Controller action
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(e.data),
+                success: function () {
+                    // After update, refresh grid with latest data
+                    $.ajax({
+                        url: '/api/JournalEntryEdit/GetJournalRegisterChildren', // Controller action to get data by JournalRefNo
+                        type: 'GET',
+                        data: { voucherNo: journalRefNo },
+                        success: function (result) {
+                            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                            dataGrid.option("dataSource", result);
+                        },
+                        error: function (err) {
+                            console.error("Error fetching updated data:", err);
+                        }
+                    });
+                },
+                error: function (err) {
+                    console.error("Error updating data:", err);
+                }
+            });
+        }
+
          function checkVoucherDateLock(voucherDate) {
      $.ajax({
          type: "GET",

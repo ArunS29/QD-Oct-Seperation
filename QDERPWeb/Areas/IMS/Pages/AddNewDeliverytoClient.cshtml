@@ -3136,8 +3136,14 @@ function dataGridSelectionChanged10(e) {
         }
     })
     .catch(function (err) {
-        DevExpress.ui.notify("Failed to save. " + (err.responseText || ""), "error", 3000);
-    });
+            let errorMessage = "Failed to save.";
+            if (err.responseJSON && err.responseJSON.message) {
+                errorMessage = err.responseJSON.message;
+            } else if (err.responseText) {
+                errorMessage = err.responseText;
+            }
+            DevExpress.ui.notify(errorMessage, "error", 3000);
+        });
     }
    
  //SaveAndClose

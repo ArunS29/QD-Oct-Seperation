@@ -2280,32 +2280,10 @@
 			loadClientDetails(QuoteNo);
 			edit=true;
 		} 
-		// else {
-		// NewNoGeneration();
-		// }
+		
 	});
 
-	// function NewNoGeneration(){
-	// 		// If QuoteNo is not present and IsCurrent is not "true", generate a Autogenerate request number
-	// 		$.ajax({
-	// 			url: "/api/AddNewQuotation/GetNewDebitNoteNoApi",
-	// 			type: "GET",
-	// 			success: function (data) {
-	// 				console.log("Success:", data);
 
-	// 				const invoiceBox = $("#txtQuotationNo").dxTextBox("instance");
-	// 				if (invoiceBox) {
-	// 					invoiceBox.option("value", data || "");
-	// 				} else {
-	// 					console.warn("Invoice TextBox not initialized.");
-	// 				}
-	// 			},
-	// 			error: function (xhr, status, error) {
-	// 				console.error("Error loading Payment Accounts:", error);
-	// 				DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
-	// 			}
-	// 		});
-	// }
 	//For concurrency
 
 	function NewNoGeneration1() {
@@ -2824,9 +2802,9 @@ placeholder: "Search..."
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, formatMessage("Unit of Measure"));
+									let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -2861,7 +2839,7 @@ placeholder: "Search..."
         const totalCost = options.data.TotalCostOfItem;
         const total = options.data.LineTotalWithTax;
         const VAT = options.data.LineTaxAmount;
-        const GSDesc1 = options.data.Descriptions; // optional if you want to send this
+        const GSDesc1 = options.data.Descriptions; 
 		const QuotedQuantity = options.data.QuotedQuantity;
 			
 
@@ -2881,9 +2859,10 @@ placeholder: "Search..."
       return;
   }
 		const GSDesc1 = options.data.Descriptions || "";
+		 window.currentGridformCell = options;
   // ✅ build URL with Quotation No + row fields
   const url = `/${tenantName}/IMS/QuotationGridForm`
-      + `?quoteChildId=${encodeURIComponent(quoteChildId)}`
+      + `?quoteChildId=${encodeURIComponent(quoteChildId||"")}`
       + `&CostPrice=${encodeURIComponent(costprice)}`
       + `&UnitPrice=${encodeURIComponent(unitPrice)}`
       + `&Discount=${encodeURIComponent(discount)}`
@@ -2892,7 +2871,7 @@ placeholder: "Search..."
       + `&Total=${encodeURIComponent(total)}`
       + `&VAT=${encodeURIComponent(VAT)}`
       + `&GsCode=${encodeURIComponent(gsCode)}`
-      + `&QuoteNos=${encodeURIComponent(QuoteNo)}`
+      + `&QuoteNos=${encodeURIComponent(QuoteNo||"")}`
 	  + `&QuotedQuantity=${encodeURIComponent(QuotedQuantity)}`
       + `&GSDesc1=${encodeURIComponent(GSDesc1)}`;
 
@@ -2906,24 +2885,35 @@ placeholder: "Search..."
 },
 				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
-								{
-						dataField: "DiscountDetails",
-						caption: "...",
-						cssClass: "center-header",
-						width: 100,
-						allowEditing: false,
-						cellTemplate: function (container, options) {  // ✅ fixed here
-							$("<div>").dxButton({
-								icon: "calculate", // or another valid icon
-								hint: "Open Discount Calculator",
-								stylingMode: "text",
-								width: 30,
-								onClick: function (e) {
-									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-								}
-							}).appendTo(container);
-						}
-					},
+{
+    dataField: "DiscountDetails",
+    caption: "Discount",
+    cssClass: "center-header",
+    width: 100,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "calculator",
+            hint: "Open Discount Calculator",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                const qty = options.data.QuotedQuantity || 0;
+                const unitPrice = options.data.QuotedUnitPrice || 0;
+                const quoteChildId = options.data.QuoteChildId ||""; // may be undefined in AddGrid
+
+                window.currentDiscountCell = options; // store the clicked cell
+
+                let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
+                let title = formatMessage("Discount / Calculation");
+
+                openModal(url, title, "45%", "40%");
+            }
+        }).appendTo(container);
+    }
+},
+
+
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -3514,9 +3504,9 @@ placeholder: "Search..."
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, formatMessage("Unit of Measure"));
+									let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -3568,6 +3558,7 @@ placeholder: "Search..."
                     return;
                 }
 				const GSDesc1 = options.data.Descriptions || "";
+				 window.currentGridformCell = options;
                 // ✅ build URL with Quotation No + row fields
                 const url = `/${tenantName}/IMS/QuotationGridForm`
                     + `?quoteChildId=${encodeURIComponent(quoteChildId)}`
@@ -3598,24 +3589,36 @@ placeholder: "Search..."
 				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
-								{
-						dataField: "DiscountDetails",
-						caption: "...",
-						cssClass: "center-header",
-						width: 50,
-						allowEditing: false,
-						cellTemplate: function (container, options) {  // ✅ fixed here
-							$("<div>").dxButton({
-								icon: "fa fa-calculator", // or another valid icon
-								hint: "IMS Calculator",
-								stylingMode: "text",
-								width: 30,	
-								onClick: function (e) {
-									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-								}
-							}).appendTo(container);
-						}
-					},
+{
+    dataField: "DiscountDetails",
+    caption: "Discount",
+    cssClass: "center-header",
+    width: 100,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "calculator",
+            hint: "Open Discount Calculator",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                const qty = options.data.QuotedQuantity || 0;
+                const unitPrice = options.data.QuotedUnitPrice || 0;
+                const quoteChildId = options.data.QuoteChildId; // may be undefined in AddGrid
+
+                window.currentDiscountCell = options; // store the clicked cell
+
+                let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
+                let title = formatMessage("Discount / Calculation");
+
+                openModal(url, title, "40%", "40%");
+            }
+        }).appendTo(container);
+    }
+},
+
+
+
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -3883,9 +3886,7 @@ AddlDescription: null,
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				//var button = $("#btnSave").dxButton("instance");
-				//button.option("text", formatMessage("Update"));
+			
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5753,6 +5754,74 @@ AddlDescription: null,
 		grid.repaintRows([rowIndex]);
 		DevExpress.ui.notify("Details saved", "success", 1500);
 	}
+
+// 🔹 Receive discount from popup
+function receiveModalFieldData1(modalData1) {
+		console.log("📦 Received from modal:", modalData1); // ✅ Step 1: Log
+
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentDiscountCell) {
+			console.warn("❌ No currentDiscountCell found");
+			return;
+		}
+
+		const key = window.currentDiscountCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData1)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
+
+	
+function receiveModalFieldData3(modalData3) {
+		console.log("📦 Received from modal:", modalData3); // ✅ Step 1: Log
+
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentGridformCell) {
+			console.warn("❌ No currentGridformCell found");
+			return;
+		}
+
+		const key = window.currentGridformCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData3)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
+
+
+
+
 
 	$("#btnSave").on("click", function (e) {
     const $btn = $(this).dxButton("instance");
@@ -7677,4 +7746,5 @@ function onIMSAttachmentButtonClick(e) {
             }
         }
     }
+	
 </script>

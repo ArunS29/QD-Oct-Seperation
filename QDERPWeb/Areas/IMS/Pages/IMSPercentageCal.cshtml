@@ -1,8 +1,9 @@
 ﻿@page
-@using DevExtreme.AspNet.Mvc
-@model QD.ERP.Web.Areas.Finance.Pages.VATPercentageCalModel
+@model QD.ERP.Web.Areas.IMS.Pages.IMSPercentageCalModel
 @{
 }
+
+
 <style>
     .dx-card {
         background-color: var(--title-background-color);
@@ -80,13 +81,13 @@
             @(Html.DevExtreme().Button()
                 .ID("okButton")
                 .Text("OK")
-               // .OnClick("applyDiscount")
+                        .OnClick("applyAndClose")
                 .Width(70)
                 )
         </div>
 
     </div>
-
+        
     <!-- Percentage Buttons Grid -->
     <div class="percentage-grid">
         @foreach (var percent in new[] { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 })
@@ -102,20 +103,59 @@
 
 </div>
 <script>
-  
-     $("#totalAmount").dxNumberBox("instance").option("value",@ViewBag.mount);
 
+       $(function() {
+        const params = new URLSearchParams(window.location.search);
+        const qty = parseFloat(params.get('qty')) || 0;
+        const unitPrice = parseFloat(params.get('unitPrice')) || 0;
+
+        const amount = qty * unitPrice;
+        $("#totalAmount").dxNumberBox("instance").option("value", amount);
+    });
+
+    // Set discount based on percentage
     function setDiscount(percent) {
-        
-		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
         const discountValue = total * (percent / 100);
         $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));
     }
 
-    // function applyDiscount() {
-    //     const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-    //     const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-    //     const finalAmount = total - discount;
-    //     DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
-    // }
+    // Collect modal fields
+    function collectModalFields() {
+        return {
+            QuotedDiscount: $("#discount").dxNumberBox("instance").option("value")
+        };
+    }
+
+    // Send data to parent when modal is closing (optional)
+    window.onbeforeunload = function () {
+        if (window.opener && typeof window.opener.receiveModalFieldData1 === "function") {
+            const fieldValues = collectModalFields();
+            window.opener.receiveModalFieldData1(fieldValues);
+        }
+    };
+
+    // Apply discount and close modal
+    function applyAndClose() {
+        const modalData1 = {
+            QuotedDiscount: $("#discount").dxNumberBox("instance").option("value")
+        };
+
+        console.log("📤 Sending to parent:", modalData1);
+
+        if (window.parent && typeof window.parent.receiveModalFieldData1 === "function") {
+            window.parent.receiveModalFieldData1(modalData1);
+            window.parent.closeModal(); // your custom modal close logic
+        } else {
+            alert("❌ Could not send discount data to parent.");
+        }
+    }
+
+
+
+
+
+
+
+
 </script>

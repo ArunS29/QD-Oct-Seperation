@@ -127,58 +127,41 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    bool? isUseEffectiveDate = false;
-
-                    // Execute stored procedure using FromSqlRaw
-                    var result = await dbContext.TrialBalanceofflineResult
-                        .FromSqlRaw("EXEC StProTrialBalance_new @p0, @p1", startDate, endDate, isUseEffectiveDate)
+                    var result = await dbContext.FinancialSummaryReports
+                        .Where(x =>
+                            (!startDate.HasValue || x.VoucherDate >= startDate.Value) &&
+                            (!endDate.HasValue || x.VoucherDate <= endDate.Value))
                         .ToListAsync();
 
-                    // Apply filters dynamically
                     if (!string.IsNullOrEmpty(accountGroup))
                     {
                         result = result.Where(x => x.AccountGroup == accountGroup).ToList();
                     }
-                    else
-                    {
-                        if (startDate.HasValue)
-                            result = result.Where(x => x.VoucherDate >= startDate.Value).ToList();
 
-                        if (endDate.HasValue)
-                            result = result.Where(x => x.VoucherDate <= endDate.Value).ToList();
-                    }
-
-                    // Convert to JSON response format
-                    var pivotGridData = result.Select(item => new
+                    var simplifiedData = result.Select(item => new
                     {
-                        item.VoucherNo,
-                        item.VoucherDate,
-                        item.VoucherEntryNo,
                         item.AccountHead,
                         item.AccountHeadName,
-                        item.DrCr,
-                        item.DrAmount,
-                        item.CrAmount,
                         item.VoucherAmountFormatted,
                         item.AccountGroup,
                         item.MasterGroup,
-                        item.VoucherType,
-                        item.Transactions,
                         item.MonthYear,
-                        item.MonthNumber,
-                        item.Category,
-                        item.VoucherRefNo,
-                        item.VoucherNarration,
-                        item.EntryNarration,
-                        item.SysRemarks
-                    }).ToList();
+                        item.DrCr,
+                        item.DrAmount,
+                        item.CrAmount,
+                        TransactionsFull = item.TransactionsFull ?? "N/A",
+                        AccountHeadArabic = item.AccountHeadArabic ?? string.Empty,
+                        AccountGroupAr = item.AccountGroupAr ?? string.Empty,
+                        MasterGroupAr = item.MasterGroupAr ?? string.Empty
+                    });
 
-                    return Ok(pivotGridData);
+
+                    return Ok(simplifiedData);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetTrialBalance: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while processing your request.", error = ex.Message });
+                    _logger.LogError($"Error in GetOfflineTrialBalances: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
                 }
             }
 

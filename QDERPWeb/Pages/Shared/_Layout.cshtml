@@ -4927,7 +4927,7 @@
                 // Report Mappings for Ageing Reports
                 const ageingReportMappings = {
                     "Receivables Ageing Report": "XtraReportBillsReceivableAgeingReport",
-                    "Receivables Ageing Report (By Sales Person)": "XtraReportAgeingreportsummary",
+                    "Receivables Ageing Report (By Sales Person)": "XtraReportBillsReceivableAgeingReport",
                     "Receivables Ageing Report (Customizable)": "XtraReportAgeingCustomizable",
                     "Receivables Ageing Summary": "XtraReportAgeingreportsummary",
                     "Receivables Ageing Summary (Customizable)": "RptReceivableAgeingSummaryCustomizable"
@@ -4965,8 +4965,8 @@
                     var frmDate = frmDateBox.option("value");
                     var toDate = toDateBox.option("value");
 
-                    var formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
-                    var formattedToDate = new Date(toDate).toISOString().split('T')[0];
+                    var formattedFrmDate = formatDateLocal(frmDate);
+                    var formattedToDate = formatDateLocal(toDate);
 
                     // Get the AccountHead manually from the data source
                     dropDownBox.getDataSource().load().done(function (items) {
@@ -4988,7 +4988,34 @@
                         helpVideoLink.href = `https://help.quickdice.net/?formName=${encodeURIComponent(formName)}`;
                     }
                 });
+                 function formatDateLocal(date) {
+                    if (!date) return "";
+                    // if it's a string like '01-Sep-2020', try to parse it safely
+                    if (typeof date === "string") {
+                        var parts = date.split("-");
+                        if (parts.length === 3 && parts[1].length === 3) {
+                            var day = parseInt(parts[0], 10);
+                            var monthMap = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5,
+                                             Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+                            var mon = monthMap[parts[1]];
+                            var year = parseInt(parts[2], 10);
+                            if (!isNaN(day) && mon !== undefined && !isNaN(year)) {
+                                date = new Date(year, mon, day);
+                            } else {
+                                date = new Date(date); // fallback
+                            }
+                        } else {
+                            date = new Date(date);
+                        }
+                    }
 
+                    if (!(date instanceof Date) || isNaN(date.getTime())) return "";
+
+                    var y = date.getFullYear();
+                    var m = String(date.getMonth() + 1).padStart(2, "0");
+                    var d = String(date.getDate()).padStart(2, "0");
+                    return `${y}-${m}-${d}`;
+                }
 
                 function handleVATClick(selectedText) {
                        $('#submenuContainer8').hide();

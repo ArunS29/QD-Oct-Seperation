@@ -87,19 +87,19 @@
         <tr>
             <td>
                 @(Html.DevExtreme().TextBox()
-                                .ID("txtPlateNo")
-                                .Label("Plate No:")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width(200)
-                                )
+                        .ID("txtPlateNo")
+                        .Label("Plate No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(200)
+                        )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
-                                .ID("txtSerialNo")
-                                .Label("Serial No:")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width(200)
-                                )
+                        .ID("txtSerialNo")
+                        .Label("Serial No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(200)
+                        )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
@@ -111,11 +111,11 @@
             </td>
             <td>
                 @(Html.DevExtreme().NumberBox()
-                        .ID("txtSupplierDeduction")
-                        .Label("Supplier Deductions:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width(200)
-                        )
+                                .ID("txtSupplierDeduction")
+                                .Label("Supplier Deductions:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width(200)
+                                )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
@@ -132,53 +132,67 @@
     <!-- Header (dxForm for alignment) -->
 
     <h4 style="margin-top:20px;">Time Sheet Entries:</h4>
-   <div>
-    <!-- Timesheet DataGrid -->
-    @(
-        Html.DevExtreme().DataGrid()
-            .ID("timesheetGrid")
-            .ShowBorders(true)
-            .DataSource(d => d.WebApi()
+    <div>
+        <!-- Timesheet DataGrid -->
+        @(Html.DevExtreme().DataGrid()
+                .ID("timesheetGrid")
+                .ShowBorders(true)
+                .DataSource(d => d.WebApi()
                 .Controller("ERRequestforQuotationList")
                 .LoadAction("GetTimesheetGrid")
-            )
-            .ColumnAutoWidth(true)
-            .Paging(p => p.Enabled(false))
-            .Scrolling(s => s.Mode(GridScrollingMode.Standard))
-            .Editing(edit => edit.Mode(GridEditMode.Cell).AllowUpdating(true))
-            .Columns(columns =>
-            {
-                columns.Add().DataField("PropertyNo").Caption("Property No").Width(120);
-                columns.Add().DataField("TimeSheetDate").Caption("Date").DataType(GridColumnDataType.Date);
-
-                columns.Add()
+                )
+                .ColumnAutoWidth(true)
+                .Paging(p => p.Enabled(false))
+                .Scrolling(s => s.Mode(GridScrollingMode.Standard))
+                .Editing(edit => edit.Mode(GridEditMode.Cell).AllowUpdating(true))
+                .Columns(columns =>
+                {
+                  // Equipment columns with dynamic caption
+                    columns.Add()
+                    .Caption(new JS("formatMessage('Equipment TimeSheet Details')"))
+                    .Columns(subColumns =>
+                    {
+                        subColumns.Add().DataField("PropertyNo").Caption("Property No").Width(120);
+                        subColumns.Add().DataField("TimeSheetDate").Caption("Date").DataType(GridColumnDataType.Date);
+                        subColumns.Add()
                     .DataField("WorkStatus")
                     .Caption("Status")
-                    .Width(250)
+                    .Width(200)
                     .EditCellTemplate(new JS("function(cellElement, cellInfo){ workStatusDropDownEditor(cellElement, cellInfo); }"))
                     .CellTemplate(new JS("function(container, options) { " +
-                        "if (Array.isArray(workStatusList)) { " +
-                            "var item = workStatusList.find(function(d) { return d.DayCode === options.value; }); " +
-                            "container.text(item ? item.DayDescription : (options.value || '')); " +
-                        "} else { " +
-                            "container.text(options.value || ''); " +
-                        "} " +
+                    "if (Array.isArray(workStatusList)) { " +
+                    "var item = workStatusList.find(function(d) { return d.DayCode === options.value; }); " +
+                    "container.text(item ? item.DayDescription : (options.value || '')); " +
+                    "} else { " +
+                    "container.text(options.value || ''); " +
+                    "} " +
                     "}"));
+                    });
 
-                columns.Add().DataField("ClientName").Caption("Client Name").Width(200);
-                columns.Add().DataField("ClientRegHours").Caption("Reg Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
-                columns.Add().DataField("ClientOthours").Caption("OT Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
-                columns.Add().DataField("TotalHoursM").Caption("Total Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
-                columns.Add().DataField("ClientRatePerHour").Caption("Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
-                columns.Add().DataField("ClientOtratePerHour").Caption("OT/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
-            })
-            .Height("45vh")
-            .Width("98%")
-            .ColumnFixing(fixing => fixing.Enabled(true))
-            .HeaderFilter(filter => filter.Visible(false))
-            .ShowRowLines(true)
-    )
-</div>
+                    // Client columns with dynamic caption
+                    columns.Add()
+                    .Caption(new JS("formatMessage('Client TimeSheet Details')"))
+                    .Columns(subColumns =>
+                    {
+                        subColumns.Add().DataField("ClientName").Caption("Client Name").Width(200);
+                        subColumns.Add().DataField("ClientRegHours").Caption("Reg Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientOthours").Caption("OT Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("TotalHoursM").Caption("Total Hours (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientRatePerHour").Caption("Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                        subColumns.Add().DataField("ClientOtratePerHour").Caption("OT Rate/Hour (C)").Format("fixedPoint").Alignment(HorizontalAlignment.Right);
+                    });
+
+                })
+                .Height("60vh")
+                .Width("100%")
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(false))
+                .FilterRow(f => f.Visible(false))
+                .ShowRowLines(true)
+                )
+
+
+    </div>
 
 
 
@@ -210,145 +224,139 @@
         </div>
     </div>
 </div>
+<div class="">
+    @await Html.PartialAsync("/Pages/Shared/ERM/EquipmentTimeSheetDatafooter.cshtml")
+</div>
+
 <script>
-           var workStatusList = [];
+               var workStatusList = [];
 
-    // utility to read query string params
-    function getQueryParam(name) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(name) || "";
-    }
-
-    $(document).ready(function () {
-        // initial load of work status lookup
-        $.get("/api/ERRequestforQuotationList/GetWorkStatus")
-            .done(function (data) {
-                workStatusList = data || [];
-                console.log("workStatusList loaded:", workStatusList);
-            })
-            .fail(function (err) {
-                console.error("Failed to load workStatusList", err);
-            });
-
-        // bind header fields from querystring (if present)
-        const propertyNo = decodeURIComponent(getQueryParam("PropertyNo") || "");
-        const propertyDesc = decodeURIComponent(getQueryParam("PropertyDescription") || "");
-        const plateNo = decodeURIComponent(getQueryParam("PlateNo") || "");
-        const deducation = decodeURIComponent(getQueryParam("Deducation") || "");
-        const timeSheetMaster = decodeURIComponent(getQueryParam("TimeSheetMasterId") || "");
-
-        if ($("#txtPropertyNo").length && propertyNo) $("#txtPropertyNo").dxTextBox("instance").option("value", propertyNo);
-        if ($("#txtPropertyDesc").length && propertyDesc) $("#txtPropertyDesc").dxTextBox("instance").option("value", propertyDesc);
-        if ($("#txtPlateNo").length && plateNo) $("#txtPlateNo").dxTextBox("instance").option("value", plateNo);
-        if ($("#txtSupplierDeduction").length && deducation) $("#txtSupplierDeduction").dxNumberBox("instance").option("value", deducation);
-        if ($("#txtMonthId").length && timeSheetMaster) $("#txtMonthId").dxTextBox("instance").option("value", timeSheetMaster);
-
-        // load grid when both propertyNo and month provided
-        if (propertyNo && timeSheetMaster) {
-            loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster);
+        // utility to read query string params
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name) || "";
         }
 
-        $("#txtPropertyNo").dxTextBox("instance").on("valueChanged", function (e) {
-            const propVal = e.value;
-            const monthVal = $("#txtMonthId").dxTextBox("instance").option("value");
-            if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
-        });
+        $(document).ready(function () {
+            // initial load of work status lookup
+            $.get("/api/ERRequestforQuotationList/GetWorkStatus")
+                .done(function (data) {
+                    workStatusList = data || [];
+                    console.log("workStatusList loaded:", workStatusList);
+                })
+                .fail(function (err) {
+                    console.error("Failed to load workStatusList", err);
+                });
 
-        $("#txtMonthId").dxTextBox("instance").on("valueChanged", function (e) {
-            const monthVal = e.value;
-            const propVal = $("#txtPropertyNo").dxTextBox("instance").option("value");
-            if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
-        });
-    });
+            // bind header fields from querystring (if present)
+            const propertyNo = decodeURIComponent(getQueryParam("PropertyNo") || "");
+            const propertyDesc = decodeURIComponent(getQueryParam("PropertyDescription") || "");
+            const plateNo = decodeURIComponent(getQueryParam("PlateNo") || "");
+            const deducation = decodeURIComponent(getQueryParam("Deducation") || "");
+            const timeSheetMaster = decodeURIComponent(getQueryParam("TimeSheetMasterId") || "");
 
-    function loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster) {
-        $.ajax({
-            url: '/api/ERRequestforQuotationList/GetTimesheetGrid',
-            type: 'GET',
-            data: { propertyNo: propertyNo, timeSheetMaster: timeSheetMaster },
-            success: function (data) {
-                var grid = $("#timesheetGrid").dxDataGrid("instance");
-                if (!grid) return;
-                if (data && data.data) grid.option("dataSource", data.data);
-                else grid.option("dataSource", data);
-                grid.refresh();
-            },
-            error: function (xhr) {
-                console.error("AJAX Error", xhr.responseText || xhr);
-                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            if ($("#txtPropertyNo").length && propertyNo) $("#txtPropertyNo").dxTextBox("instance").option("value", propertyNo);
+            if ($("#txtPropertyDesc").length && propertyDesc) $("#txtPropertyDesc").dxTextBox("instance").option("value", propertyDesc);
+            if ($("#txtPlateNo").length && plateNo) $("#txtPlateNo").dxTextBox("instance").option("value", plateNo);
+            if ($("#txtSupplierDeduction").length && deducation) $("#txtSupplierDeduction").dxNumberBox("instance").option("value", deducation);
+            if ($("#txtMonthId").length && timeSheetMaster) $("#txtMonthId").dxTextBox("instance").option("value", timeSheetMaster);
+
+            // load grid when both propertyNo and month provided
+            if (propertyNo && timeSheetMaster) {
+                loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster);
             }
-        });
-    }
 
-    // ---------- Editor function used by EditCellTemplate ----------
-    window.workStatusDropDownEditor = function (cellElement, cellInfo) {
+            $("#txtPropertyNo").dxTextBox("instance").on("valueChanged", function (e) {
+                const propVal = e.value;
+                const monthVal = $("#txtMonthId").dxTextBox("instance").option("value");
+                if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
+            });
+
+            $("#txtMonthId").dxTextBox("instance").on("valueChanged", function (e) {
+                const monthVal = e.value;
+                const propVal = $("#txtPropertyNo").dxTextBox("instance").option("value");
+                if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
+            });
+        });
+
+        function loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster) {
+            $.ajax({
+                url: '/api/ERRequestforQuotationList/GetTimesheetGrid',
+                type: 'GET',
+                data: { propertyNo: propertyNo, timeSheetMaster: timeSheetMaster },
+                success: function (data) {
+                    var grid = $("#timesheetGrid").dxDataGrid("instance");
+                    if (!grid) return;
+                    if (data && data.data) grid.option("dataSource", data.data);
+                    else grid.option("dataSource", data);
+                    grid.refresh();
+                },
+                error: function (xhr) {
+                    console.error("AJAX Error", xhr.responseText || xhr);
+                    DevExpress.ui.notify("Error while loading data", "error", 2000);
+                }
+            });
+        }
+
+        // ---------- Editor function used by EditCellTemplate ----------
+        window.workStatusDropDownEditor = function (cellElement, cellInfo) {
         var $container = $("<div>").css({ width: "100%" }).appendTo(cellElement);
 
         function initWithList(list) {
-            // create single DropDownBox instance and keep reference
             var $dd = $("<div>").appendTo($container).dxDropDownBox({
-                value: cellInfo.value,
+                dataSource: list,
                 valueExpr: "DayCode",
                 displayExpr: "DayDescription",
-                dataSource: list,
+                value: cellInfo.value,
                 showClearButton: true,
-                width: 320,
                 dropDownOptions: { width: 520 },
+                placeholder: "Select Work Status",
 
-                // contentTemplate gets 'args' where args.component is DropDownBox instance
-                contentTemplate: function (args) {
-                    var dropDownBoxInstance = args.component;
-
+                contentTemplate: function (e) {
+                    var dropDownBoxInstance = e.component;
                     var $grid = $("<div>").dxDataGrid({
                         dataSource: list,
                         keyExpr: "DayCode",
                         selection: { mode: "single" },
+                        height: 300,
+                        scrolling: { mode: "virtual" },
+                        searchPanel: {
+                            visible: true,
+                            placeholder: "Search...",
+                            width: 200
+                        },
                         columns: [
                             { dataField: "DayCode", caption: "Code", width: 120 },
                             { dataField: "DayDescription", caption: "Description" }
                         ],
-                        hoverStateEnabled: true,
-                        height: 300,
-                        filterRow: { visible: true },
-
                         onSelectionChanged: function (selArgs) {
-                            var selected = selArgs.selectedRowsData && selArgs.selectedRowsData[0];
-                            if (!selected) return;
+                            var selectedItem = selArgs.selectedRowsData[0];
+                            if (!selectedItem) return;
 
-                            // update DropDownBox value and grid cell value
-                            dropDownBoxInstance.option("value", selected.DayCode);
-                            cellInfo.setValue(selected.DayCode);
+                            dropDownBoxInstance.option("value", selectedItem.DayCode);
+                            cellInfo.setValue(selectedItem.DayCode);
 
-                            // optionally update other visible column values on the main grid
                             try {
                                 var mainGrid = $("#timesheetGrid").dxDataGrid("instance");
                                 if (mainGrid) {
                                     var rowIndex = mainGrid.getRowIndexByKey(cellInfo.key);
-                                    if (rowIndex >= 0) {
-                                        mainGrid.cellValue(rowIndex, "WorkStatus", selected.DayCode);
-                                        // update DayDescription column if it exists
-                                        try {
-                                            var col = mainGrid.columnOption("DayDescription");
-                                            if (col !== undefined) {
-                                                mainGrid.cellValue(rowIndex, "DayDescription", selected.DayDescription);
-                                            }
-                                        } catch (err) { /* ignore if column missing */ }
+                                    if (rowIndex !== -1) {
+                                        mainGrid.cellValue(rowIndex, "WorkStatus", selectedItem.DayCode);
+                                        mainGrid.cellValue(rowIndex, "DayDescription", selectedItem.DayDescription);
                                     }
                                 }
                             } catch (err) {
-                                console.warn("Could not update main grid cell programmatically:", err);
+                                console.warn("Could not update main grid cell:", err);
                             }
 
-                            // close dropdown
                             dropDownBoxInstance.close();
                         }
-                    });
+                    }).dxDataGrid("instance");
 
                     // pre-select current value
                     setTimeout(function () {
-                        var gridInst = $grid.dxDataGrid("instance");
-                        if (gridInst && cellInfo.value) {
-                            try { gridInst.selectRows([cellInfo.value], false); } catch (ignore) {}
+                        if (cellInfo.value) {
+                            try { $grid.selectRows([cellInfo.value], false); } catch (ignore) {}
                         }
                     }, 0);
 
@@ -359,7 +367,7 @@
             return $dd.dxDropDownBox("instance");
         }
 
-        // Initialize immediately if data loaded, otherwise fetch then init
+        // Initialize immediately if list exists, otherwise fetch
         if (Array.isArray(workStatusList) && workStatusList.length > 0) {
             initWithList(workStatusList);
         } else {
@@ -375,4 +383,5 @@
                 });
         }
     };
+
 </script>

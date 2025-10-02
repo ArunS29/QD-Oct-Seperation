@@ -602,7 +602,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(result);
         }
+        [HttpGet]
+        public IActionResult GetPropertyAllocationByJournalChildNo(long journalChildNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+            var result = (from alloc in dbContext.Tbl20130JournalRegisterPropertyAllocations
+                          join unit in dbContext.Qry40102PropertyMasterView2s
+                              on alloc.PropertyNo equals unit.PropertyNo
+                          where alloc.JournalChildNo == journalChildNo
+                          select new
+                          {
+                              PropNo = alloc.PropertyNo,
+                              PropertyNo = unit.PropertyDescription,
+                              VoucherAmount = alloc.AmountAllocated,
+                              DrCr = alloc.PropertyAllocDrCr
+                          }).ToList();
+
+            return Json(result);
+        }
         [HttpGet]
         public IActionResult GetCostAllocationsBydatagrid(long voucherEntryId)
         {
@@ -1436,6 +1457,39 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
         }
+        [HttpPost]
+        public IActionResult UpdateJournalChild([FromBody] Tbl20127JournalRegisterChild child)
+        {
+            if (child == null)
+                return BadRequest("Invalid data");
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                
+                if (child.JournalChildNo > 0)
+                {
+                    // Update
+                    var existing = dbContext.Tbl20127JournalRegisterChildren
+                        .FirstOrDefault(x => x.JournalChildNo == child.JournalChildNo);
+
+                    if (existing != null)
+                    {
+                        dbContext.Entry(existing).CurrentValues.SetValues(child);
+                    }
+                }
+                else
+                {
+                    // Insert
+                    dbContext.Tbl20127JournalRegisterChildren.Add(child);
+                }
+
+                dbContext.SaveChanges();
+                return Ok(child);
+            }
+
+            return Unauthorized(); // or BadRequest("Tenant context could not be resolved");
+        }
+
     }
 }
 

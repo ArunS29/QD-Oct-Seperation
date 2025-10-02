@@ -79,8 +79,8 @@
 
         /* Hover Effect */
         .dx-menu-item:hover {
-          /*   background: #007bff !important; */
-            color: dodgerblue !important;
+            background:  var(--title-background-color) !important;
+            color: white !important;
         }
 
         /* Icons */
@@ -103,6 +103,13 @@
         border-radius: 5px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+    .dx-icon-edit::before { color: #007bff !important; }
+    .dx-icon-find::before { color: #6c757d !important; }
+    .dx-icon-check::before { color: green !important; }
+    .dx-icon-close::before { color: red !important; }
+    .dx-icon-card::before { color: darkgreen !important; }
+    .dx-icon-user::before { color: orange !important; }
+    .dx-icon-unlock::before { color: purple !important; }
 
         .voucher-actions .menu-item {
             display: flex;
@@ -439,7 +446,7 @@
                 columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved By')")).Width(120).Visible(true)
             ;
 
-                columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
+                columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit Verified By')")).Width(120).Visible(false)
             ;
                 columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')")).Width(120).Visible(true)
             ;
@@ -522,7 +529,7 @@
            ;
 
                 columns.Add().DataField("AuditVerifiedOn").Caption(new JS("formatMessage('Audit Verified On')")).Width(120)
-            .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
+            .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
         ;
 
@@ -982,14 +989,23 @@
     // }
 
     function onRowPrepared(e) {
-        if (e.rowType === "data" && e.data.IsApproved) {
-            e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red Color
-        }
-        if (e.rowType === "data" && e.data.IsAuditVerified) {
-            const voucherNoCell = e.rowElement.find("td").eq(1); // Assuming VoucherNo is the first column
-            voucherNoCell.css("background-color", "rgb(192, 255, 192)");
-        }
+    if (e.rowType !== "data") return;
+
+    const grid = $("#dataGrid").dxDataGrid("instance");
+    const voucherNoColumnIndex = grid.getVisibleColumnIndex("VoucherNo");
+
+    if (e.data.IsApproved) {
+        // Apply full row background if approved
+        e.rowElement.css("background-color", "rgb(255, 192, 192)"); // Light Red
     }
+
+    if (e.data.IsAuditVerified && voucherNoColumnIndex >= 0) {
+        // Apply background color only for VoucherNo cell
+        const voucherNoCell = e.rowElement.find("td").eq(voucherNoColumnIndex);
+        voucherNoCell.css("background-color", "rgb(192, 255, 192)");
+    }
+}
+
     $(document).on("contextmenu", ".dx-data-row", function (e) {
         e.preventDefault();
 
@@ -1114,28 +1130,38 @@
                         voucherNo: data.VoucherNo
                     },
                     success: function () {
-                        const grid = $("#dataGrid").dxDataGrid("instance"); // Declare at the top
+                    const grid = $("#dataGrid").dxDataGrid("instance");
+                    const rowIndex = grid.getRowIndexByKey(data.VoucherNo);
 
-                        const rowIndex = grid.getRowIndexByKey(data.VoucherNo);
+                    if (rowIndex >= 0) {
+                        // ✅ Clone the data and update required fields
+                        const updatedData = Object.assign({}, data, {
+                            IsAuditVerified: true,
+                            AuditVerifiedBy: "@HttpContext.Session.GetString("UserName")", // Or return from API
+                            AuditVerifiedOn: new Date().toISOString()
+                        });
 
-                        if (rowIndex >= 0) {
-                            const updatedData = Object.assign({}, data, {
-                                IsAuditVerified: true
-                            });
+                        // ✅ Update individual cell values instead of full row reload
+                        grid.cellValue(rowIndex, "IsAuditVerified", true);
+                        grid.cellValue(rowIndex, "AuditVerifiedBy", updatedData.AuditVerifiedBy);
+                        grid.cellValue(rowIndex, "AuditVerifiedOn", updatedData.AuditVerifiedOn);
 
-                            grid.cellValue(rowIndex, "IsAuditVerified", true); // ✅ This now works
-                            grid.getDataSource().items()[rowIndex].IsAuditVerified = true;
-                            grid.repaintRows([rowIndex]);
-
-                            const rowElement = grid.getRowElement(rowIndex);
-                            rowElement.find("td").first().css("background-color", "rgb(192, 255, 192)");
-
-                            DevExpress.ui.notify("Voucher audited successfully!", "success", 2000);
-
-                            grid.refresh();
-                               injectHeaderSVG();
+                        // ✅ Get the cell element for VoucherNo column and apply background color
+                        const rowElement = grid.getRowElement(rowIndex);
+                        const columnIndex = grid.getVisibleColumnIndex("VoucherNo");
+                        if (columnIndex >= 0) {
+                            rowElement.find("td").eq(columnIndex).css("background-color", "rgb(192, 255, 192)");
                         }
+
+                        DevExpress.ui.notify("Voucher audited successfully!", "success", 2000);
+
+                        // Optional: refresh only that row to re-render templates properly
+                        grid.repaintRows([rowIndex]);
+
+                        injectHeaderSVG();
                     }
+                }
+
 
                     ,
                     error: function () {

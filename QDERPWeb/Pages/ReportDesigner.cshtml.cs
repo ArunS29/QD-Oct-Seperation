@@ -180,7 +180,7 @@ namespace QD.ERP.Web.Pages
                 case "Payablelandscape":
                     Report = new Payablelandscape(accountId, frmDate.Value, toDate.Value,
                          tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    companyNameAr, username, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "payableRetention":
                     Report = new payableRetention(accountId, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage,

@@ -87,64 +87,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Getoffline(DataSourceLoadOptions loadOptions, string filterType = null)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-
-                    var company = dbContext.Tbl901CompanyDetails
-                    .FirstOrDefault();
-                    var query = dbContext.Tbl201SubLedgerReceivablesMaster.Select(i => new
-                    {
-                        i.AccountHeadNo,
-                        i.AccountHead,
-                        i.ReferenceNo,
-                        i.VoucherRefNo,
-                        i.VoucherDate,
-                        i.InvoiceDueDate,
-                        i.ReceivableAmount,
-                        i.Received,
-                        i.Balance,
-                        //i.NotOverdue,
-                        //i.Less30,
-                        //i.Less30to60,
-                        //i.Less60to90,
-                        //i.Less90to180,
-                        //i.Less180to365,
-                        //i.More365,
-                        i.OverdueDays,
-                        i.ConvertedReceivableAmount,
-                        i.ConvertedReceived,
-                        i.ConvertedBalance,
-                        company.CurrencyImage
-
-                    });
-
-                    if (filterType == "WithBalance")
-                    {
-                        query = query.Where(i => i.Balance > 0);
-                    }
-                    else if (filterType == "FullyReceived")
-                    {
-                        query = query.Where(i => i.Balance <= 0);
-                    }
-
-                    var result = await DataSourceLoader.LoadAsync(query, loadOptions);
-                    return Json(result);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in Get: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
-        [HttpGet]
         public IActionResult GenerateReport()
         {
             return RedirectToPage("/pulse/DocumentViewer", new { reportName = "XtraReportBillsReceivableAgeingReport" });
