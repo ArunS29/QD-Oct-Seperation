@@ -568,7 +568,9 @@
             this.xrLabel27,
             this.xrLabel28,
             this.xrLabel31,
-            this.xrLabel33});
+            this.xrLabel33,
+            this.xrLine1,
+            this.xrLine3});
             this.GroupHeader1.HeightF = 40F;
             this.GroupHeader1.Name = "GroupHeader1";
             this.GroupHeader1.RepeatEveryPage = true;
@@ -2034,6 +2036,18 @@
             this.xrPictureBox2.SizeF = new System.Drawing.SizeF(18F, 18F);
             this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
+            // xrLine1
+            // 
+            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(33.84675F, 0F);
+            this.xrLine1.Name = "xrLine1";
+            this.xrLine1.SizeF = new System.Drawing.SizeF(741.4449F, 2.083333F);
+            // 
+            // xrLine3
+            // 
+            this.xrLine3.LocationFloat = new DevExpress.Utils.PointFloat(33.84675F, 37.91667F);
+            this.xrLine3.Name = "xrLine3";
+            this.xrLine3.SizeF = new System.Drawing.SizeF(741.4449F, 2.083333F);
+            // 
             // Quotation_Mob_DemobDetails_
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -2163,7 +2177,17 @@
         private DevExpress.XtraReports.UI.XRLabel lblApprovedContactNo;
         private DevExpress.XtraReports.UI.XRLabel lblApprovedEmail;
         private DevExpress.XtraReports.UI.XRLabel lblApprovedBy;
-        private DevExpress.XtraReports.UI.XRLine xrLine3;
         private DevExpress.XtraReports.UI.XRLine xrLine1;
+        private DevExpress.XtraReports.UI.XRLine xrLine3;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel5;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel6;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel26;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel27;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel28;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel31;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel33;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox1;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox2;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox3;
     }
 }
