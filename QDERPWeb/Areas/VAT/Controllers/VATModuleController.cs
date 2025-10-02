@@ -39,6 +39,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         private readonly IUserActionLogger _userActionLogger;
 
         private readonly FcmService _fcmService;
+        private object _configuration;
 
         public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
@@ -46,6 +47,54 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetSummary(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return BadRequest(new { message = "Unable to resolve tenant or DbContext." });
+
+                // Default date range: first day → last day of current month
+                fromDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+                var query = dbContext.Qry209004goodsCurrentQtyWtDetails002s.AsQueryable();
+
+                // Optional: apply date filter if table has a date column
+                // query = query.Where(i => i.CreatedOn >= fromDate && i.CreatedOn <= toDate);
+
+                var data = await query.Select(i => new
+                {
+                    i.Gscode,
+                    i.Gsdescrpition,
+                    i.GsgroupName,
+                    i.UnitDesc,
+                    i.OpeningBalance,
+                    i.PurchaseQty,
+                    i.PurchaseReturnedQty,
+                    i.SoldQty,
+                    i.SalesReturnedQty,
+                    ClosingBalance = i.GoodsCurrentClosingBalance,
+                    i.FixedCostPrice,
+                    i.FixedCostOfGoodsSold,
+                    i.FixedCostInventoryValue,
+                    i.TotalSalesValue,
+                    i.TotalSalesReturnValue,
+                    i.NetSalesValue,
+                    i.GrossProfitOnSales
+                }).ToListAsync();
+
+                _logger.LogInformation($"GetSummary returned {data.Count} rows for tenant {tenant.Name}.");
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in VATModule/GetSummary");
+                return StatusCode(500, new { message = "Error while fetching data.", error = ex.Message });
+            }
         }
 
         //[HttpGet]
@@ -164,7 +213,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         //        }
         //    }
         //}
-       
+
         public async Task<ActionResult> GetVatInvoices(
     string frmDate,
     string toDate,
@@ -672,7 +721,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
                                 join u in dbContext.Tbl40111PropertyUnitCodes
-                                    on g.GspackingUnit equals u.UnitCode into gj
+                                    on g.GsuoM equals u.UnitCode into gj
                                 from unit in gj.DefaultIfEmpty()
                                 orderby g.Gscode
                                 select new
@@ -1270,13 +1319,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public async Task<ActionResult> SaveGoodsAndServices([FromBody] Tbl20164GoodsAndServicesMaster model)
+        public async Task<ActionResult> SaveGoodsAndServices([FromBody] SaveGoodsAndServicesRequest request)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    var model = request.Model;  // your formData mapped here
+                    var InvChildSlNo = request.invoiceChildSlNo;
+
                     var now = DateTime.Now;
+                   
 
                     var existing = await dbContext.Tbl20164GoodsAndServicesMasters
                         .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
@@ -1368,7 +1421,20 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         model.CreatedOn = now;
                         model.CreatedBy = "User"; // TODO: Replace with actual user identity
 
+                        var query = from c in dbContext.Tbl20162VatinvoiceChildren
+                                    where c.InvoiceChildSlNo == InvChildSlNo
+                                    select c;
+
+                        var child = query.FirstOrDefault();
+                        if (child != null)
+                        {
+                            child.DetailedDescription = model.Gsdescrpition;
+                            child.ItemCode = model.Gscode;
+                        }
+
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
+
+
                     }
 
                     await dbContext.SaveChangesAsync();
@@ -1401,7 +1467,6 @@ documentNo: model.Gscode
                     {
                         g.CostAllocationUnitId,
                         g.CostAllocationUnit
-
 
                     })
                     .ToListAsync();
@@ -4853,8 +4918,11 @@ documentNo: InvoiceNo
                     var result = await dbContext.Tbl20170VatcreditNoteMasters
                     .Select(g => new
                     {
-                        g.InvoiceNo,
-
+                        g.InvoiceNo
+                        //g.InvoiceDate,
+                        //g.InvoicedAmount,
+                        //g.Received,
+                        //g.Balance
 
                     })
                     .ToListAsync();

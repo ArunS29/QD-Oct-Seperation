@@ -265,6 +265,48 @@
                 .ShowArrowIcon(false)
                 )
         </div>
+
+    <div class="btn-container">
+        @(
+                Html.DevExtreme().DropDownButton()
+                .ID("ddButtonReports")
+                .Icon("tags")
+                .Width("100%")
+                .Text(new JS("formatMessage('Reports')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Claim Report(By Date)-Detailed')"))
+                    .Option("color", "#FF7043")
+                    .Icon("money");
+
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Claim Report(By Date)-Simplified')"))
+                    .Option("color", "#00ACC1")
+                    .Icon("product");
+
+                    items.Add()
+                    .Text(new JS("formatMessage('Expense Claim With Detail')"))
+                    .Option("color", "#AB47BC")
+                    .Icon("money");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("ReportClick")
+                .ShowArrowIcon(false)
+                )
+    </div>
     
     
 
@@ -1279,4 +1321,51 @@
                 </svg>`;
                 $('#rowHeightProperties .dx-button-content').prepend(svgIcon);
             });
+
+                  function ReportClick(e) {
+           var voucherNoBox = $("#Claimer").dxDropDownBox("instance");
+         var voucherNo = voucherNoBox.option("value");
+
+         // Ensure Voucher No is available
+         if (!voucherNo) {
+             alert("Voucher No is required.");
+             return;
+         }
+
+         // Get the selected item text
+         var selectedText = e.itemData.text;
+         console.log("Selected Report:", selectedText);
+
+         // Determine the report name based on the selected text
+         var reportName = "";
+          if (selectedText === formatMessage('Print Claim Report(By Date)-Detailed')) {
+              reportName = "printExpensesClaimBydateSimplified";
+          } else if (selectedText === formatMessage('Print Claim Report(By Date)-Simplified')) {
+              reportName = "printClaimReportBydate_Detailed";
+         
+             return;
+         }
+
+
+
+         // Add more conditions here if you plan to support additional formats
+         else {
+             reportName = "";
+         }
+
+         // Ensure a valid report is selected
+         if (!reportName) {
+             alert("Invalid report format selected.");
+             return;
+         }
+
+         const screenWidth = window.screen.availWidth;
+         const screenHeight = window.screen.availHeight;
+
+         window.open(
+             `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&claimer=${encodeURIComponent(claimer)}&skipPreview=true`,
+             '_blank',
+             `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+         );
+     }
 </script>

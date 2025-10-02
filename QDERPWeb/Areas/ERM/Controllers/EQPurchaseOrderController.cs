@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+//using QD.ERP.Web.Areas.Finance.Models;
+//using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.IMS.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -474,6 +474,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 var currencyRate = model.CurrencyRate ?? 1;
 
+                dbContext.Tbl40127PropertyPochildren.RemoveRange(existingChildren);
+                
                 foreach (var child in children)
                 {
                     // check if child already exists
@@ -507,11 +509,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         await dbContext.Tbl40127PropertyPochildren.AddAsync(newChild);
                     }
                 }
-
+                 
                 // ✅ Save all changes once, outside loop
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new
+                return Ok(new  
                 {
                     message = existingPo.ModifiedOn == existingPo.AddedOn
                         ? "Purchase order inserted successfully"
@@ -520,6 +522,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     children = children,
                     success = true
                 });
+
             }
             catch (Exception ex)
             {

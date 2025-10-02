@@ -78,7 +78,8 @@
 </style>
 
 <div class="card">
-   
+   
+
 
    
     @(
@@ -286,216 +287,178 @@
 
 }
 
-
 <script>
-
     let dataGrid;
+
+    // --- DropDownBox helpers ---
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
-
 
         const text = ddbInstance.option("text");
         if (dataGrid) {
             dataGrid.option("searchPanel.text", text);
         }
     }
-    function onOpened() {
-        console.log("DropDownBox opened");
-    }
 
-    function onKeyDown(event) {
-        console.log("Key pressed:", event.key);
-    }
+    function onOpened() { console.log("DropDownBox opened"); }
+    function onKeyDown(event) { console.log("Key pressed:", event.key); }
 
+    // --- Selection arrays ---
+    let selectedAccountValues = [];
+    let selectedSalesValues = [];
+    let selectedSalesNames = [];
+    let selectedBranchValues = [];
+    let selectedBranchNames = [];
 
-    let selectedValues = []; 
+    // --- AccountHead ---
     function dataGridSelectionChanged1(e) {
-        selectedKeys = e.selectedRowKeys; 
-        console.log("Selected Values:", selectedValues);
-       const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
-
-       ddbInstance.option("value", selectedKeys); 
+        selectedAccountValues = e.selectedRowKeys;
+        console.log("Selected Account IDs:", selectedAccountValues);
+        const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
+        if (ddbInstance) ddbInstance.option("value", selectedAccountValues);
     }
     function onDropDownValueChanged(e) {
-        selectedValues = e.value || []; 
+        selectedAccountValues = e.value || [];
     }
-    function dataGridInitialized1(e) {
-        dataGrid = e.component;
-    }
+    function dataGridInitialized1(e) { dataGrid = e.component; }
 
-
-    let selectedValues1 = []; 
-
+    // --- SalesPerson ---
     function dataGridSelectionChanged2(e) {
-        selectedValues1 = e.selectedRowKeys; 
-        console.log("Selected Values1:", selectedValues1);
+        selectedSalesValues = e.selectedRowKeys;
+        selectedSalesNames = e.selectedRowsData.map(d => d.SalesPersonName); // get display names
+        console.log("Selected Sales Codes:", selectedSalesValues);
+        console.log("Selected Sales Names:", selectedSalesNames);
         const ddbInstance = $("#GetSalesPersonDropDown").dxDropDownBox("instance");
-        if (ddbInstance) {
-            ddbInstance.option("value", selectedValues1);
-        }
+        if (ddbInstance) ddbInstance.option("value", selectedSalesValues);
     }
+    function onDropDownValueChanged1(e) { selectedSalesValues = e.value || []; }
+    function dataGridInitialized2(e) { dataGrid = e.component; }
 
-      function onDropDownValueChanged1(e) {
-        selectedValues1 = e.value || []; 
-    }
-
-
-    function dataGridInitialized2(e) {
-        dataGrid = e.component;
-    }
-    let selectedValues2 = []; 
-
+    // --- Branch ---
     function dataGridSelectionChanged3(e) {
-        selectedValues2 = e.selectedRowKeys; 
-        console.log("Selected Branch Records:", selectedValues2);
+        selectedBranchValues = e.selectedRowKeys;
+        selectedBranchNames = e.selectedRowsData.map(d => d.BranchName); // get display names
+        console.log("Selected Branch Codes:", selectedBranchValues);
+        console.log("Selected Branch Names:", selectedBranchNames);
         const ddbInstance = $("#GetCompanyBranchDropDown").dxDropDownBox("instance");
-        if (ddbInstance) {
-            ddbInstance.option("value", selectedValues2);
-        }
+        if (ddbInstance) ddbInstance.option("value", selectedBranchValues);
     }
+    function dataGridInitialized3(e) { dataGrid = e.component; }
 
-    function dataGridInitialized3(e) {
-        dataGrid = e.component;
-    }
-
+    // --- Download / PDF functions ---
     function downloadSelectedReport() {
         let selectedParams = "";
+        let selectionType = "";
 
-        if (selectedValues.length > 0) {
-            selectedParams = selectedValues.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues1.length > 0) {
-            selectedParams = selectedValues1.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues2.length > 0) {
-            selectedParams = selectedValues2.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else {
-            alert("Please select at least one record.");
-            return;
-        }
-
-        const reportName = "XtraRecivableReport"; // Change as needed
-        const downloadUrl = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&${selectedParams}`;
-
-        // Trigger direct download
-        window.location.href = downloadUrl;
-    }
-
-    function saveGridAsPDF() {
-        let selectedParams = "";
-
-        if (selectedValues.length > 0) {
-            selectedParams = selectedValues.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues1.length > 0) {
-            selectedParams = selectedValues1.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
-        } else if (selectedValues2.length > 0) {
-            selectedParams = selectedValues2.map(val => `selectedValues=${encodeURIComponent(val)}`).join('&');
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
         } else {
             alert("Please select at least one record.");
             return;
         }
 
         const reportName = "XtraRecivableReport";
-        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&${selectedParams}`;
-
-        window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        const downloadUrl = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.location.href = downloadUrl;
     }
 
+    function saveGridAsPDF() {
+        let selectedParams = "";
+        let selectionType = "";
+
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
+        } else {
+            alert("Please select at least one record.");
+            return;
+        }
+
+        const reportName = "XtraRecivableReport";
+        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.open(reportUrl, "_blank", "width=1200,height=800,scrollbars=yes,resizable=yes");
+    }
+
+    // --- Print functions ---
     function printGrid() {
-        if (selectedValues.length === 0) {
+        if (selectedAccountValues.length === 0) {
             alert("Please select at least one record to print.");
             return;
         }
-            fetch("/api/ReportsByClients/GenerateReportAccountHead", {
+
+        fetch("/api/ReportsByClients/GenerateReportAccountHead", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues)  
+            body: JSON.stringify(selectedAccountValues)
         })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; 
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
     }
-    // function printGrid1() {
-    //     if (selectedValues1.length === 0) {
-    //         alert("Please select at least one record to print.");
-    //         return;
-    //     }
-    //     fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(selectedValues1) 
-    //     })
-    //         .then(response => {
-    //             if (response.redirected) {
-    //                 window.location.href = response.url; 
-    //             } else {
-    //                 return response.text();
-    //             }
-    //         })
-    //         .then(data => {
-    //             if (data) console.error("Error:", data);
-    //         })
-    //         .catch(error => console.error("Error:", error));
-    // }
-    // function printGrid2() {
-    //     if (selectedValues2.length === 0) {
-    //         alert("Please select at least one record to print.");
-    //         return;
-    //     }
-    //     fetch("/api/ReportsByClients/GenerateReportBranch", {
-    //         method: "POST",
-    //         headers: { "Content-Type": "application/json" },
-    //         body: JSON.stringify(selectedValues2)  
-    //     })
-    //         .then(response => {
-    //             if (response.redirected) {
-    //                 window.location.href = response.url; 
-    //             } else {
-    //                 return response.text();
-    //             }
-    //         })
-    //         .then(data => {
-    //             if (data) console.error("Error:", data);
-    //         })
-    //         .catch(error => console.error("Error:", error));
-    // }
 
-        let accountHeadData = [];
-    let salesPersonData = [];
-    let branchData = [];
+    function printGridSales() {
+        if (selectedSalesNames.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
 
-      $(function () {
-        // 1) Ensure TabPanel and its DropDownBoxes exist before setting data
+        fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedSalesNames)
+        })
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
+    }
+
+    function printGridBranch() {
+        if (selectedBranchNames.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+
+        fetch("/api/ReportsByClients/GenerateReportBranch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedBranchNames)
+        })
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
+    }
+
+    // --- Preload data and activate tab ---
+    $(function () {
         const tabPanel = $("#AssetTabs").dxTabPanel("instance");
 
-        // 2) Preload data
         $.getJSON(`/${tenantName}/ReportsByClients/GetAccountHead`, function(data) {
             $("#GetAccountHeadDropDown").dxDropDownBox("instance").option("dataSource", data);
         });
-
         $.getJSON(`/${tenantName}/ReportsByClients/GetSalesPerson`, function(data) {
             $("#GetSalesPersonDropDown").dxDropDownBox("instance").option("dataSource", data);
         });
-
         $.getJSON(`/${tenantName}/ReportsByClients/GetCompanyBranch`, function(data) {
             $("#GetCompanyBranchDropDown").dxDropDownBox("instance").option("dataSource", data);
         });
 
-        // 3) Activate the correct tab from query parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const tabIndex = parseInt(urlParams.get('tab'), 10);
-        if (!isNaN(tabIndex)) {
-            tabPanel.option("selectedIndex", tabIndex);
-        }
+        const tabIndex = parseInt(urlParams.get("tab"), 10);
+        if (!isNaN(tabIndex)) tabPanel.option("selectedIndex", tabIndex);
     });
-
-
-
 </script>
+

@@ -1305,62 +1305,74 @@
                 }
             }, 500);
 
-        function confirmDelete() {
-                const dataGrid = $("#costdataGrid").dxDataGrid("instance");
+         function confirmDelete() {
+            const dataGrid = $("#costdataGrid").dxDataGrid("instance");
 
-                const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
-                const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-                const drCr = '@drCr';
-                const voucherno = '@voucherNo';
+            const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+            const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+            const drCr = '@drCr';
+            const voucherno = '@voucherNo';
+
+            const visibleRowCount = dataGrid.getVisibleRows().length;
+
+            const insertAndRefresh = () => {
+                const newRow = {
+                    CostAllocationId: 0,
+                    CostAllocDrCr: drCr,
+                    CostAllocationUnitId: 'ADMIN-0001',
+                    EffectiveDate: new Date(),
+                    AmountAllocated: initialVoucherAmount.toFixed(2),
+                    CostAllocRemarks: null,
+                    VoucherEntryId: VoucherEntryId,
+                    VoucherNo: voucherno
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/JournalEntryEdit/InsertDefaultCostAllocation",
+                    contentType: "application/json",
+                    data: JSON.stringify(newRow),
+                    success: function () {
+                        $.ajax({
+                            url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                            type: 'GET',
+                            success: function (refreshedData) {
+                                dataGrid.option('dataSource', refreshedData);
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+                            }
+                        });
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+                    }
+                });
+            };
+
+            if (visibleRowCount > 0) {
+                 const deleterequest = {
+
+                                     VoucherEntryId: VoucherEntryId,
+                                     VoucherNo: voucherno,
 
 
-                // Step 1: Delete all by VoucherNo
+                 };
                 $.ajax({
                     type: "POST",
                     url: "/api/JournalEntryEdit/DeleteByVoucherNo",
                     contentType: "application/json",
-                    data: JSON.stringify({ voucherNo: voucherno }),
+                    data: JSON.stringify(deleterequest),
                     success: function () {
-                        // Step 2: Insert default row
-                        const newRow = {
-                            CostAllocationId: 0,
-                            CostAllocDrCr: drCr,
-                            CostAllocationUnitId: 'ADMIN-0001',
-                            EffectiveDate: new Date(),
-                            AmountAllocated: initialVoucherAmount.toFixed(2),
-                            CostAllocRemarks: null,
-                            VoucherEntryId: VoucherEntryId,
-                            VoucherNo: voucherno
-                        };
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/api/JournalEntryEdit/InsertDefaultCostAllocation",
-                            contentType: "application/json",
-                            data: JSON.stringify(newRow),
-                            success: function () {
-                                // Step 3: Refresh grid
-                                $.ajax({
-                                    url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-                                    type: 'GET',
-                                    success: function (refreshedData) {
-                                        dataGrid.option('dataSource', refreshedData);
-                                    },
-                                    error: function () {
-                                        DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
-                                    }
-                                });
-                            },
-                            error: function () {
-                                DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
-                            }
-                        });
+                        insertAndRefresh();
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
                     }
                 });
-
+            } else {
+                insertAndRefresh();
+            }
         }
 
 

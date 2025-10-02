@@ -2584,53 +2584,6 @@ ALTER TABLE Aicon.tbl602_01SalesOrderMaster
 ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
 GO
 
-
-Alter view [Aicon].[qry602_01SalesOrderView] as SELECT Aicon.tbl602_01SalesOrderMaster.SalesOrderNo, Aicon.tbl602_01SalesOrderMaster.SalesOrderDate, Aicon.tbl602_01SalesOrderMaster.ClientPONo, Aicon.tbl602_01SalesOrderMaster.ClientPODate, Aicon.tbl602_01SalesOrderMaster.QuoteNo, 
-                  Aicon.tbl602_01SalesOrderMaster.QuoteDate, Aicon.tbl602_01SalesOrderMaster.ClientRefNo, Aicon.tbl602_01SalesOrderMaster.PreparedBy, Aicon.tbl602_01SalesOrderMaster.PreparedOn, Aicon.tbl602_01SalesOrderMaster.ApprovedBy, 
-                  Aicon.tbl602_01SalesOrderMaster.ApprovedOn, Aicon.tbl602_01SalesOrderMaster.AddedBy, Aicon.tbl602_01SalesOrderMaster.AddedOn, Aicon.tbl602_01SalesOrderMaster.ModifiedBy, Aicon.tbl602_01SalesOrderMaster.ModifiedOn, 
-                  Aicon.tbl602_01SalesOrderMaster.RFQCode, Aicon.tbl602_01SalesOrderMaster.ClientCode, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl602_01SalesOrderMaster.SalesPersonCode, Aicon.tbl602_01SalesOrderMaster.IsVerified, 
-                  Aicon.tbl602_01SalesOrderMaster.IsApproved, Aicon.tbl602_01SalesOrderMaster.CompanyBranch, Aicon.tbl602_01SalesOrderMaster.Project, Aicon.qry602_03SalesOrderItemsWithTotal.NoOfItems, 
-                  Aicon.qry602_03SalesOrderItemsWithTotal.TotalBeforeDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.Discount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalAfterDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalTaxAmount, 
-                  Aicon.qry602_03SalesOrderItemsWithTotal.TotalWithTax, Aicon.tbl901CompanyDetails.CompanyName, Aicon.tbl601_01QuotationMaster.MPRNo, Aicon.tbl602_01SalesOrderMaster.OrderExpiryDate, 
-                  Aicon.tbl602_01SalesOrderMaster.InventoryMasterGroupID, Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, Aicon.tbl30104TypeOfRequestMaster.TypeOfRequest, Aicon.tbl602_01SalesOrderMaster.SalesOrderRemarks, 
-                  Aicon.tbl602_01SalesOrderMaster.ExpectedDeliveryDate, Aicon.tbl602_01SalesOrderMaster.DeliveryPeriod, Aicon.tbl602_01SalesOrderMaster.DeliveryTerms, Aicon.tbl20101SalesPersonMaster.SalesPersonName, 
-                  Aicon.tbl20101SalesPersonMaster.UserCode AS SalesPersonUserID, Aicon.tbl602_01SalesOrderMaster.IsSubmitted, Aicon.tbl602_01SalesOrderMaster.SubmittedBy, Aicon.tbl602_01SalesOrderMaster.SubmittedOn, 
-                  Aicon.tbl602_01SalesOrderMaster.VerifiedBy, Aicon.tbl602_01SalesOrderMaster.VerifiedOn,Aicon.tbl602_01SalesOrderMaster.CurrencyId,Aicon.tbl602_01SalesOrderMaster.BaseCurrencyId,Aicon.tbl602_01SalesOrderMaster.CurrencyRate
-FROM     Aicon.tbl602_01SalesOrderMaster LEFT OUTER JOIN
-                  Aicon.tbl20101SalesPersonMaster ON Aicon.tbl602_01SalesOrderMaster.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
-                  Aicon.tbl30104TypeOfRequestMaster ON Aicon.tbl602_01SalesOrderMaster.TypeOfRequest = Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID LEFT OUTER JOIN
-                  Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl602_01SalesOrderMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID LEFT OUTER JOIN
-                  Aicon.tbl601_01QuotationMaster ON Aicon.tbl602_01SalesOrderMaster.QuoteNo = Aicon.tbl601_01QuotationMaster.QuoteNo LEFT OUTER JOIN
-                  Aicon.tbl901CompanyDetails ON Aicon.tbl602_01SalesOrderMaster.CompanyBranch = Aicon.tbl901CompanyDetails.CompanyID LEFT OUTER JOIN
-                  Aicon.qry602_03SalesOrderItemsWithTotal ON Aicon.tbl602_01SalesOrderMaster.SalesOrderNo = Aicon.qry602_03SalesOrderItemsWithTotal.SalesOrderNo LEFT OUTER JOIN
-                  Aicon.tbl30101ClientMaster ON Aicon.tbl602_01SalesOrderMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode;
-
-go
-
-alter view [Aicon].[Qry602_04salesOrderViewMaster] as SELECT Aicon.qry602_01SalesOrderView.SalesOrderNo, Aicon.qry602_01SalesOrderView.SalesOrderDate, Aicon.qry602_01SalesOrderView.ClientPONo, Aicon.qry602_01SalesOrderView.ClientPODate, Aicon.qry602_01SalesOrderView.QuoteNo, 
-                  Aicon.qry602_01SalesOrderView.QuoteDate, Aicon.qry602_01SalesOrderView.ClientRefNo, Aicon.qry602_01SalesOrderView.PreparedBy, Aicon.qry602_01SalesOrderView.PreparedOn, Aicon.qry602_01SalesOrderView.ApprovedBy, 
-                  Aicon.qry602_01SalesOrderView.ApprovedOn, Aicon.qry602_01SalesOrderView.AddedBy, Aicon.qry602_01SalesOrderView.AddedOn, Aicon.qry602_01SalesOrderView.ModifiedBy, Aicon.qry602_01SalesOrderView.ModifiedOn, 
-                  Aicon.qry602_01SalesOrderView.RFQCode, Aicon.qry602_01SalesOrderView.ClientCode, Aicon.qry602_01SalesOrderView.ClientName, Aicon.qry602_01SalesOrderView.SalesPersonCode, Aicon.qry602_01SalesOrderView.IsVerified, 
-                  Aicon.qry602_01SalesOrderView.IsApproved, Aicon.qry602_01SalesOrderView.CompanyBranch, Aicon.qry602_01SalesOrderView.Project, Aicon.qry602_01SalesOrderView.NoOfItems, Aicon.qry602_01SalesOrderView.TotalBeforeDiscount, 
-                  Aicon.qry602_01SalesOrderView.Discount, Aicon.qry602_01SalesOrderView.TotalAfterDiscount, Aicon.qry602_01SalesOrderView.TotalTaxAmount, Aicon.qry602_01SalesOrderView.TotalWithTax,Aicon.qry602_01SalesOrderView.CurrencyId,Aicon.qry602_01SalesOrderView.BaseCurrencyId,Aicon.qry602_01SalesOrderView.CurrencyRate,
-                  CASE WHEN ISNULL(Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered, 0) 
-                  = 0 THEN 'NO ITEMS IN ORDER' ELSE (CASE WHEN Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered = Aicon.qry602_06SalesOrderIsAnyBalance.IsAnyBalanceToDeliver THEN 'Not Delivered' ELSE (CASE WHEN Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered
-                   = Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalIssued THEN 'Fully Delivered' ELSE 'Partially Delivered' END) END) END AS OrderStatus, CASE WHEN ISNULL(Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered, 0) 
-                  = 0 THEN 'NO ITEMS IN ORDER' ELSE (CASE WHEN Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.IsAnyBalanceToInvoice THEN 'Not Invoiced' ELSE (CASE WHEN
-                   Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalInvoiced THEN 'Fully Invoiced' ELSE 'Partially Invoiced' END) END) END AS InvoiceStatus, 
-                  Aicon.qry602_01SalesOrderView.CompanyName, Aicon.qry602_01SalesOrderView.MPRNo, Aicon.qry602_01SalesOrderView.OrderExpiryDate, Aicon.qry602_01SalesOrderView.InventoryMasterGroupID, 
-                  Aicon.qry602_01SalesOrderView.InventoryMasterGroup, Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.qry602_01SalesOrderView.TypeOfRequest, Aicon.qry602_01SalesOrderView.SalesOrderRemarks, 
-                  Aicon.qry602_01SalesOrderView.ExpectedDeliveryDate, Aicon.qry602_01SalesOrderView.DeliveryPeriod, Aicon.qry602_01SalesOrderView.DeliveryTerms, Aicon.qry602_01SalesOrderView.SalesPersonName AS Expr1, 
-                  Aicon.qry602_01SalesOrderView.SalesPersonUserID, Aicon.qry602_01SalesOrderView.IsSubmitted, Aicon.qry602_01SalesOrderView.SubmittedBy, Aicon.qry602_01SalesOrderView.SubmittedOn, Aicon.qry602_01SalesOrderView.VerifiedBy, 
-                  Aicon.qry602_01SalesOrderView.VerifiedOn, Aicon.qry602_10OrdersBalanceToInvoice.TotalInvoicedValue, Aicon.qry602_10OrdersBalanceToInvoice.BalanceToInvoiceValue
-FROM     Aicon.qry602_01SalesOrderView LEFT OUTER JOIN
-                  Aicon.qry602_10OrdersBalanceToInvoice ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_10OrdersBalanceToInvoice.SalesOrderNo LEFT OUTER JOIN
-                  Aicon.tbl20101SalesPersonMaster ON Aicon.qry602_01SalesOrderView.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
-                  Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.SalesOrderNo LEFT OUTER JOIN
-                  Aicon.qry602_06SalesOrderIsAnyBalance ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_06SalesOrderIsAnyBalance.SalesOrderNo;
-go
-
-
 Update tbl20169CurrencyExchange set CurrencyImage='<svg fill="#000000" height="15px" width="15px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	 viewBox="0 0 310.75 310.75" xml:space="preserve">
 <path d="M183.815,265.726c-32.444,0-60.868-21.837-76.306-54.325h102.101v-45.023H95.643c-0.284-3.642-0.437-7.29-0.437-11.016
@@ -3399,7 +3352,7 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
 ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
 ------------------------------
-//IMS New field
+//IMS New field (KOWSALYA)
 IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
 BEGIN
     ALTER TABLE Aicon.tbl20101SalesPersonMaster
@@ -3409,6 +3362,123 @@ END
 ELSE
 BEGIN
     PRINT 'Column already exists: TargetPerMonth';
+
+--DeliveryNote New field added ---
+-- Add IsSubmitted
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD IsSubmitted BIT NULL;
+
+    PRINT 'Added column: IsSubmitted';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: IsSubmitted';
+
+END
+ 
+-- Add SubmittedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: SubmittedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedBy';
+
+END
+ 
+-- Add SubmittedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD SubmittedOn DATETIME NULL;
+
+    PRINT 'Added column: SubmittedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: SubmittedOn';
+
+END
+ 
+-- Add VerifiedBy
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedBy VARCHAR(50) NULL;
+
+    PRINT 'Added column: VerifiedBy';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedBy';
+
+END
+ 
+-- Add VerifiedOn
+
+IF COL_LENGTH('dbo.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+
+BEGIN
+
+    ALTER TABLE dbo.Tbl603_01DeliveryNoteMaster
+
+        ADD VerifiedOn DATETIME NULL;
+
+    PRINT 'Added column: VerifiedOn';
+
+END
+
+ELSE
+
+BEGIN
+
+    PRINT 'Column already exists: VerifiedOn';
+
+END
+
+ 
+ALTER TABLE Aicon.tbl901CompanyDetails02
+
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ 
 
 ---------IMS Currency Implement---------
 
@@ -3535,7 +3605,141 @@ UPDATE Aicon.tbl901CompanyDetails02
 SET NoOfDigitsToInventoryQuotation = 5
 WHERE CompanyID = 2;
 
+---AiconDB---
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
  
+---Sudhir DB---
+ALTER TABLE Sudhir.tbl901CompanyDetails02
+ADD IsEnableDeliveryNoteWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableDeliveryNoteWorkflow DEFAULT 1;
+ ----IMS DeliveryNote Submit,Verify script-----
+ -- Add IsSubmitted
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Sudhir.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Sudhir.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
+---AiconDB---
+-- Add IsSubmitted
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'IsSubmitted') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD IsSubmitted BIT NULL;
+   PRINT 'Added column: IsSubmitted';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: IsSubmitted';
+END
+ 
+ 
+-- Add SubmittedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedBy VARCHAR(50) NULL;
+   PRINT 'Added column: SubmittedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedBy';
+END
+ 
+ 
+-- Add SubmittedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'SubmittedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD SubmittedOn DATETIME NULL;
+   PRINT 'Added column: SubmittedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: SubmittedOn';
+END
+ 
+ 
+-- Add VerifiedBy
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedBy') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedBy VARCHAR(50) NULL;
+   PRINT 'Added column: VerifiedBy';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedBy';
+END
+ 
+ 
+-- Add VerifiedOn
+IF COL_LENGTH('Aicon.Tbl603_01DeliveryNoteMaster', 'VerifiedOn') IS NULL
+BEGIN
+   ALTER TABLE Aicon.Tbl603_01DeliveryNoteMaster
+       ADD VerifiedOn DATETIME NULL;
+   PRINT 'Added column: VerifiedOn';
+END
+ELSE
+BEGIN
+   PRINT 'Column already exists: VerifiedOn';
+END
 --------IMS Report---------
 
  

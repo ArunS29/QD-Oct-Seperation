@@ -1,4 +1,6 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Models
+﻿using QD.ERP.Web.DAL.Entities;
+
+namespace QD.ERP.Web.Areas.VAT.Models
 {
     public class VATFinalReturnsSummary
     {
@@ -94,5 +96,11 @@
         public decimal? CreditNoteTotal_BHD { get; set; }
         public decimal? TotalPayableTax_BHD { get; set; }
     }
+    public class SaveGoodsAndServicesRequest
+    {
+        public Tbl20164GoodsAndServicesMaster Model { get; set; }
+        public int invoiceChildSlNo { get; set; }
+    }
+
 
 }

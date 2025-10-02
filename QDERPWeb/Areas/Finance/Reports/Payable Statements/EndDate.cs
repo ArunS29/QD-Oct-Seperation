@@ -121,6 +121,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
         private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
+            ExecuteAgeingStoredProcedure(toDate);
+
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
                 var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
@@ -128,13 +130,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
                 var querySql = @"
             SELECT * 
-            FROM qry205_027AgeingBillsReceivableWtColumns 
+            FROM qry205_017AgeingBillsPayableWtColumns 
             WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
             AND VoucherDate BETWEEN @StartDate AND @EndDate";
 
                 var customQuery = new CustomSqlQuery
                 {
-                    Name = "qry205_027AgeingBillsReceivableWtColumns",
+                    Name = "qry205_017AgeingBillsPayableWtColumns",
                     Sql = querySql
                 };
 
@@ -152,11 +154,57 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 sqlDataSource1.RebuildResultSchema();
 
                 this.DataSource = sqlDataSource1;
-                this.DataMember = "qry205_027AgeingBillsReceivableWtColumns";
+                this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
             }
             else
             {
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+
+            // Fill data and handle no-data case
+            try
+            {
+                sqlDataSource1.Fill();
+                
+                // Check if data exists
+                var data = sqlDataSource1.Result["qry205_017AgeingBillsPayableWtColumns"];
+                if (data == null || !data.Cast<object>().Any())
+                {
+                    this.DataSource = null;
+                    CreateNoDataLabel();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error loading data: " + ex.Message, ex);
+            }
+        }
+        private void ExecuteAgeingStoredProcedure(DateTime endDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context for stored procedure.");
+
+            using (var connection = new SqlConnection(tenant.ConnectionString))
+            {
+                connection.Open();
+
+                // Step 1: Execute sp20125AgeingPayableReportsWtAdvances
+                using (var command = new SqlCommand("sp20124AgeingReports", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
+
+                // Step 2: Execute sp20125AgeingPayableReports
+                using (var command = new SqlCommand("sp20125AgeingPayableReports", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
             }
         }
         private void LoadCurrencySymbolAndImage()
@@ -334,5 +382,39 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 };
             }
         }
+
+        private void CreateNoDataLabel()
+        {
+            // Clear all existing controls from Detail band first
+            this.Bands[BandKind.Detail].Controls.Clear();
+            
+            // Create a prominent no-data label that will be visible
+            XRLabel noDataLabel = new XRLabel
+            {
+                Text = "No records found.",
+                BoundsF = new RectangleF(100, 30, PageWidth - 200, 80),
+                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter,
+                Font = new Font("Arial", 18, FontStyle.Bold),
+                ForeColor = Color.Red,
+                BackColor = Color.LightYellow,
+                Borders = DevExpress.XtraPrinting.BorderSide.All,
+                BorderColor = Color.Red,
+                BorderWidth = 2,
+                Padding = new DevExpress.XtraPrinting.PaddingInfo(15, 15, 15, 15, 100f)
+            };
+            
+            // Set higher Z-order to bring to front
+            noDataLabel.BringToFront();
+            
+            // Add to Detail band
+            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
+            
+            // Hide headers and footers that might interfere
+           
+            
+            // Make Detail band taller and ensure it's visible
+            this.Bands[BandKind.Detail].HeightF = 140f;
+            this.Bands[BandKind.Detail].Visible = true;
+}
     }
 }

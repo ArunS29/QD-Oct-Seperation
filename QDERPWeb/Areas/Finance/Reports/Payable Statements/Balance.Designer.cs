@@ -743,7 +743,7 @@
             this.tableCell11.StylePriority.UseFont = false;
             this.tableCell11.StylePriority.UseTextAlignment = false;
             this.tableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell11.TextFormatString = "{0:dd-MM-yyyy}";
+            this.tableCell11.TextFormatString = "{0:dd-MMM-yyyy}";
             this.tableCell11.Weight = 0.077813646224822286D;
             // 
             // tableCell12
@@ -825,7 +825,7 @@
             this.tableCell15.StylePriority.UseFont = false;
             this.tableCell15.StylePriority.UseTextAlignment = false;
             this.tableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell15.TextFormatString = "{0:0.00}";
+            this.tableCell15.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.tableCell15.Weight = 0.092495410533950259D;
             // 
             // tableCell16
@@ -846,7 +846,7 @@
             this.tableCell16.StylePriority.UseFont = false;
             this.tableCell16.StylePriority.UseTextAlignment = false;
             this.tableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell16.TextFormatString = "{0:0.00}";
+            this.tableCell16.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.tableCell16.Weight = 0.08417403624857675D;
             // 
             // tableCell17
@@ -858,7 +858,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell17.BorderWidth = 1F;
             this.tableCell17.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif([Balance] < 0, Iif([OverDueDays] < 0, \'–\', [OverDueDays]), \'–\')\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BalanceAmount]")});
             this.tableCell17.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell17.Name = "tableCell17";
             this.tableCell17.StyleName = "DetailData1";
@@ -869,7 +869,7 @@
             this.tableCell17.StylePriority.UseFont = false;
             this.tableCell17.StylePriority.UseTextAlignment = false;
             this.tableCell17.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell17.TextFormatString = "{0:0.00}";
+            this.tableCell17.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.tableCell17.Weight = 0.084722219838846216D;
             // 
             // tableCell18
@@ -890,7 +890,7 @@
             this.tableCell18.StylePriority.UseFont = false;
             this.tableCell18.StylePriority.UseTextAlignment = false;
             this.tableCell18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell18.TextFormatString = "{0:0.00}";
+            this.tableCell18.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.tableCell18.Weight = 0.073018937136219181D;
             // 
             // xrTableCell14
@@ -913,7 +913,7 @@
             this.xrTableCell14.StylePriority.UseTextAlignment = false;
             this.xrTableCell14.Text = "xrTableCell11";
             this.xrTableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrTableCell14.TextFormatString = "{0:0.00}";
+            this.xrTableCell14.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.xrTableCell14.Weight = 0.072979792521053813D;
             // 
             // tableCell19
@@ -1211,7 +1211,7 @@
             this.xrLabel8.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[az]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Sum([More365])")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(1425.247F, 0F);
             this.xrLabel8.Multiline = true;
@@ -1375,7 +1375,7 @@
             this.xrLabel15.StylePriority.UseTextAlignment = false;
             this.xrLabel15.Text = "xrLabel6";
             this.xrLabel15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel15.TextFormatString = "{0:0.00}";
+            this.xrLabel15.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             // 
             // xrLabel14
             // 
@@ -1398,7 +1398,7 @@
             this.xrLabel14.StylePriority.UseTextAlignment = false;
             this.xrLabel14.Text = "xrLabel6";
             this.xrLabel14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel14.TextFormatString = "{0:0.00}";
+            this.xrLabel14.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             // 
             // xrLabel13
             // 
@@ -1421,7 +1421,7 @@
             this.xrLabel13.StylePriority.UseTextAlignment = false;
             this.xrLabel13.Text = "xrLabel6";
             this.xrLabel13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel13.TextFormatString = "{0:0.00}";
+            this.xrLabel13.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             // 
             // xrLabel12
             // 
@@ -1444,7 +1444,7 @@
             this.xrLabel12.StylePriority.UseTextAlignment = false;
             this.xrLabel12.Text = "xrLabel6";
             this.xrLabel12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel12.TextFormatString = "{0:0.00}";
+            this.xrLabel12.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             // 
             // xrLabel6
             // 
@@ -1467,7 +1467,7 @@
             this.xrLabel6.StylePriority.UseTextAlignment = false;
             this.xrLabel6.Text = "xrLabel6";
             this.xrLabel6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel6.TextFormatString = "{0:0.00}";
+            this.xrLabel6.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             // 
             // PageFooter
             // 

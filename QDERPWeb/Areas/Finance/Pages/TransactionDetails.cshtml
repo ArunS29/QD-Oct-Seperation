@@ -60,12 +60,12 @@
 
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container" style="text-align:center;">
         <div id="TransactionDetails" class="no-border-input"></div>
     </div>
 </div>
-
+ *@
 <div>
     @await Html.PartialAsync("TransactionDetailsFooter")
 </div>
@@ -376,14 +376,14 @@ function loadPivotGridData() {
                }, 500); // Small delay to ensure the textbox is ready
            }
        });
-       $(function () {
-            $("#TransactionDetails").dxTextBox({
-            text: formatMessage("Detailed Transaction Report"),
-            readOnly: true,
-            onContentReady: function (e) {
-            $(e.element).addClass("dx-textbox-heading");
-            }
-            });
-        });
+       // $(function () {
+       //      $("#TransactionDetails").dxTextBox({
+       //      text: formatMessage("Detailed Transaction Report"),
+       //      readOnly: true,
+       //      onContentReady: function (e) {
+       //      $(e.element).addClass("dx-textbox-heading");
+       //      }
+       //      });
+       //  });
 
 </script>

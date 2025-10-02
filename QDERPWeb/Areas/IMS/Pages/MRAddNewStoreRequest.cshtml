@@ -1114,6 +1114,7 @@
 							)
 						<input type="hidden" id="hdntxtShowSign1" name="hdntxtShowSign1" value="false" />
 				</div>
+				</div>
 			</div>
 			<div id="tab-content-5" class="tab-content" style="height:155px;" >
 					 <div class="p-3">
@@ -2488,29 +2489,30 @@
 			
 			loadClientDetails(mprno);
 			edit=true;
-		} else {
-	NewNoGeneration();
-		}
+		} 
+	// 	else {
+	// NewNoGeneration();
+	// 	}
 	});
-	function NewNoGeneration(){
-			$.ajax({
-				url: "/api/AddNewClientRequest/GetNewRequestNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
-					const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
-				}
-			});
-	}
+	// function NewNoGeneration(){
+	// 		$.ajax({
+	// 			url: "/api/AddNewClientRequest/GetNewRequestNoApi",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				console.log("Success:", data);
+	// 				const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 				} else {
+	// 					console.warn("Invoice TextBox not initialized.");
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				console.error("Error loading Payment Accounts:", error);
+	// 				DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
+	// 			}
+	// 		});
+	// }
 	//For concurrency
 	function NewNoGeneration1() {
     return $.ajax({
@@ -3827,9 +3829,7 @@ AddlDescription: null,
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+					
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -3865,8 +3865,7 @@ AddlDescription: null,
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh();
-				const button = $("#btnSave").dxButton("instance");
-				button.option("text", formatMessage("Update"));
+				
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5377,11 +5376,11 @@ function saveQuotation(mprNoNew, $btn) {
             CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 		};
 	const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			PurchaseRequestDetails: children
@@ -5393,16 +5392,11 @@ function saveQuotation(mprNoNew, $btn) {
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
+				$btn.option("disabled", false);
 					 const mprno = response.mprno;
-				 window.location.href = `/${tenantName}/IMS/MRAddNewStoreRequest?Mprno=${mprno}`	
-				 //loadChildDataAndBindGrid(mprno);
-				// Refresh parent DataGrid (ensure the correct selector is used)
-				// if (window.parent && window.parent.$("#dataGrid").length) {
-				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				// 	if (dataGrid) {
-				// 		dataGrid.refresh();
-				// 	}
-				// }
+				loadClientDetails(mprno);
+					edit=true;	
+			
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
@@ -5465,11 +5459,11 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
             CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 		};
 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			PurchaseRequestDetails: children
@@ -5482,15 +5476,7 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
 				history.back();
-					 const mprno = response.mprno;
-				
-				// Refresh parent DataGrid (ensure the correct selector is used)
-				// if (window.parent && window.parent.$("#dataGrid").length) {
-				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				// 	if (dataGrid) {
-				// 		dataGrid.refresh();
-				// 	}
-				// }
+					 			
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
@@ -5498,41 +5484,7 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 		});
 }
 	
-		function loadChildDataAndBindGrid(mprno) {
-		
-    if (!mprno) {
-        console.warn("No MPR number provided.");
-        return;
-    }
-    $.ajax({
-        type: "GET",
-        url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
-        dataType: "json",
-        success: function (gridResponse) {
-            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-                console.warn("No child details found in the response.");
-                return;
-            }
-            console.log("Grid Response:", gridResponse);
-            const rowData = gridResponse.map((item, index) => ({
-                SNo: index + 1,
-                ...item
-            }));
-            // ✅ Bind data to existing B2B grid
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            if (grid) {
-                grid.option("dataSource", rowData);
-            } else {
-                console.error("B2B DataGrid instance not found.");
-            }
-        },
-        error: function (xhr, status, error) {
-            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-            console.error("Error fetching grid data:", errorMsg);
-        }
-    });
-}
+
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();
@@ -5559,106 +5511,6 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 			}
 		});
 	}
-// 	$("#btnSaveAndClose").on("click", function (e) {
-// 		const $btn = $(this).dxButton("instance");
-// 		$btn.option("disabled", true);
-	
-// 		let master = {
-// 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
-// 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
-// 			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-// 			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-// 			RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-// 			RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
-// 			ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
-// 			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-// 			SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-// 			ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
-// 			PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
-// 			Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
-// 			CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
-// 			ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
-// 			ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
-// 			Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
-// 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-// 			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-// 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-// 			ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
-// 			BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
-// 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
-// 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
-// 			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-// 			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-// 			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-// 			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
-// 			StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
-// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-//             BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-//             CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-// 		};
-// 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-// 		if (!children || children.length === 0) {
-// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
-// 			return;
-// 		}
-// 		const model = {
-// 			...master,
-// 			PurchaseRequestDetails: children
-// 		};
-// 		$.ajax({
-// 			type: "POST",
-// 			url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
-// 			contentType: "application/json",
-// 			data: JSON.stringify(model),
-// 			success: function (response) {
-// 				DevExpress.ui.notify(response.message, "success", 3000);
-// 								setTimeout(function () {
-    
-//     if (window.parent && window.parent.$("#dataGrid").length) {
-//         const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-//         if (dataGrid) {
-//             dataGrid.refresh();
-//         }
-//     }
-
-//     history.back();
-
-// }, 3000);
-				
-// 			},
-// 			error: function (xhr) {
-// 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-// 			}
-// 		});
-// 	});
-	// $(document).ready(function () {
-	// 	$.ajax({
-	// 		url: "/api/VATModule/CreateNewInvoiceCounter",
-	// 		type: 'POST',
-	// 		success: function (data) {
-	// 			console.log("Success:", data);
-	// 			$("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error loading Payment Accounts:", error);
-	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-	// 		}
-	// 	});
-	// });
-	// $(document).ready(function () {
-	// 	$.ajax({
-	// 		url: "/api/VATModule/GenerateGuid",
-	// 		type: 'POST',
-	// 		success: function (data) {
-	// 			console.log("Success:", data);
-	// 			$("#UUID").dxTextBox("instance").option("value", data);
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error loading Payment Accounts:", error);
-	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-	// 		}
-	// 	});
-	// });
 	function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 		let grid = $("#B2BdataGrid").dxDataGrid("instance");
 		// Get current row values

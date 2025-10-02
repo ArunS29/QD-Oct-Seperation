@@ -6,7 +6,7 @@
                 .Icon("arrowleft")
                 .Text(new JS("formatMessage('Search')"))
                 .Width(50)
-                .OnClick("toggleFilterRow")
+                .OnClick("goback")
                 )
     </div>
     <div class="btn-container">
@@ -363,6 +363,8 @@
             'display': 'block'
         });
     }
-
+    function goback(){
+        window.history.back();
+    }
   
 </script>
