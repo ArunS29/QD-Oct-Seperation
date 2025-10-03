@@ -210,7 +210,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 on t1.VoucherNo equals t2.VoucherNo
                             where t1.BankClearedOn != null
                                   && t1.AccountHead == accid
-                                  
+                                  && (!fromDate.HasValue || t1.BankClearedOn >= fromDate.Value)
+                                  && (!toDate.HasValue || t1.BankClearedOn <= toDate.Value)
                             select new
                             {
                                 t1.VoucherEntryNo,
@@ -450,7 +451,60 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 return Unauthorized(new { message = "Invalid tenant.", success = false });
             }
+        [HttpGet]
+        public async Task<IActionResult> GetCreditors(DataSourceLoadOptions loadOptions, string accid)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Qry201114accountLedgersWtAdvances
+                    .Where(x => x.AccountGroupId =="A003")
+                    .Select(x => new
+                    {
+                        
+                        x.VoucherNoInVoucher,
+                        x.VoucherRefNo,
+                        x.AccountNoInVoucher,
+                        x.DrCr,
+                        x.AmountInVoucherFormatted,
+                        x.AmountInSubLedgerFormatted,
+                        x.BalanceInVoucher,
+                        x.Mapping,
+                        x.VoucherType
 
+                    });
+
+                return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDebtors(DataSourceLoadOptions loadOptions, string accid)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Qry201114accountLedgersWtAdvances
+                    .Where(x => x.AccountGroupId == "A011")
+                    .Select(x => new
+                    {
+
+                        x.VoucherNoInVoucher,
+                        x.VoucherRefNo,
+                        x.AccountNoInVoucher,
+                        x.DrCr,
+                        x.AmountInVoucherFormatted,
+                        x.AmountInSubLedgerFormatted,
+                        x.BalanceInVoucher,
+                        x.Mapping,
+                        x.VoucherType
+
+                    });
+
+                return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
         [HttpGet]
         public IActionResult GetSubledgerMappings(DataSourceLoadOptions loadOptions)
         {

@@ -588,7 +588,7 @@ columns.AddFor(m => m.ClaimerName)
 columns.Add()
 .Caption(new JS("formatMessage('Total Consumed Amount')"))
 .DataField("TotalConsumedAmount")
-.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
+.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) ; }")
 .Format(f => f.Type(Format.FixedPoint).Precision(2))
 .Visible(false); // optional if you don't want it shown in detail rows
 
