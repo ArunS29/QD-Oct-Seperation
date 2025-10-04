@@ -456,49 +456,52 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var query = dbContext.Qry201114accountLedgersWtAdvances
-                    .Where(x => x.AccountGroupId =="A003")
-                    .Select(x => new
-                    {
-                        
-                        x.VoucherNoInVoucher,
-                        x.VoucherRefNo,
-                        x.AccountNoInVoucher,
-                        x.DrCr,
-                        x.AmountInVoucherFormatted,
-                        x.AmountInSubLedgerFormatted,
-                        x.BalanceInVoucher,
-                        x.Mapping,
-                        x.VoucherType
-
-                    });
+                var query = from ledger in dbContext.Qry201114accountLedgersWtAdvances
+                            join coa in dbContext.Tbl201ChartOfAccounts
+                                on ledger.AccountNoInVoucher equals coa.AccountId
+                            where ledger.AccountGroupId == "A003"
+                            select new
+                            {
+                                ledger.VoucherNoInVoucher,
+                                ledger.VoucherRefNo,
+                                ledger.AccountNoInVoucher,
+                                ledger.DrCr,
+                                ledger.AmountInVoucherFormatted,
+                                ledger.AmountInSubLedgerFormatted,
+                                ledger.BalanceInVoucher,
+                                ledger.Mapping,
+                                ledger.VoucherType,
+                                AccountHeadName = coa.AccountHead   // << add Account Head
+                            };
 
                 return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public async Task<IActionResult> GetDebtors(DataSourceLoadOptions loadOptions, string accid)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var query = dbContext.Qry201114accountLedgersWtAdvances
-                    .Where(x => x.AccountGroupId == "A011")
-                    .Select(x => new
-                    {
-
-                        x.VoucherNoInVoucher,
-                        x.VoucherRefNo,
-                        x.AccountNoInVoucher,
-                        x.DrCr,
-                        x.AmountInVoucherFormatted,
-                        x.AmountInSubLedgerFormatted,
-                        x.BalanceInVoucher,
-                        x.Mapping,
-                        x.VoucherType
-
-                    });
+                var query = from ledger in dbContext.Qry201114accountLedgersWtAdvances
+                            join coa in dbContext.Tbl201ChartOfAccounts
+                                on ledger.AccountNoInVoucher equals coa.AccountId
+                            where ledger.AccountGroupId == "A011"
+                            select new
+                            {
+                                ledger.VoucherNoInVoucher,
+                                ledger.VoucherRefNo,
+                                ledger.AccountNoInVoucher,
+                                ledger.DrCr,
+                                ledger.AmountInVoucherFormatted,
+                                ledger.AmountInSubLedgerFormatted,
+                                ledger.BalanceInVoucher,
+                                ledger.Mapping,
+                                ledger.VoucherType,
+                                AccountHeadName = coa.AccountHead   // << add Account Head
+                            };
 
                 return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
             }
