@@ -302,7 +302,7 @@
                     </div>
                 </div>
             </text>)
-            .OnItemClick("handleReportClick")
+            .OnItemClick("ledgertype")
             .ShowArrowIcon(true)
 
             )
@@ -866,6 +866,99 @@
             }
         });
     }
+          function ledgertype(e) {
+        var itemText = e.itemData.text;
+
+        // Get Account ID from a textbox (adjust selector as needed)
+        var accid = $("#AccountLedgerNo").dxTextBox("instance").option("value");
+
+        // Get instance of the grid
+        var grid = $("#ledgerGrid").dxDataGrid("instance");
+
+        if (!accid) {
+            DevExpress.ui.notify("Please select an Account.", "warning", 2000);
+            return;
+        }
+
+        if (itemText === "Show All Creditors") {
+            // Remove AccountHead column if it exists
+            grid.option("columns", [
+                { dataField: "AccountNoInVoucher", caption: "Account No" },
+                { dataField: "VoucherNoInVoucher", caption: "Voucher No" },
+                { dataField: "VoucherType", caption: "Voucher Type" },
+                {
+                dataField: "AmountInVoucherFormatted",
+                caption: "Voucher Amount",
+                dataType: "number",
+                format: { type: "fixedPoint", precision: 2 }
+            },
+            {
+                dataField: "AmountInSubLedgerFormatted",
+                caption: "Adjusted/Mapped",
+                dataType: "number",
+                format: { type: "fixedPoint", precision: 2 }
+            },
+            { dataField: "BalanceInVoucher", caption: "Balance Amount", dataType: "number", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "Mapping", caption: "Mapping Status" },
+                { dataField: "DrCr", caption: "DrCr" }
+            ]);
+
+            // Set dataSource for Creditors
+            grid.option("dataSource", {
+                load: function(loadOptions) {
+                    return $.getJSON("/api/SalaryPayableMapping/GetCreditors", {
+                        accid: accid,
+                        skip: loadOptions.skip,
+                        take: loadOptions.take,
+                        requireTotalCount: loadOptions.requireTotalCount,
+                        sort: JSON.stringify(loadOptions.sort),
+                        filter: JSON.stringify(loadOptions.filter)
+                    });
+                },
+                key: "VoucherNoInVoucher"
+            });
+        }
+
+        if (itemText === "Show All Debtors") {
+            // Restore AccountHead column for Debtors if needed
+            grid.option("columns", [
+                { dataField: "AccountNoInVoucher", caption: "Account No" },
+                { dataField: "VoucherNoInVoucher", caption: "Voucher No" },
+                { dataField: "VoucherType", caption: "Voucher Type" },
+                {
+                dataField: "AmountInVoucherFormatted",
+                caption: "Voucher Amount",
+                dataType: "number",
+                format: { type: "fixedPoint", precision: 2 }
+            },
+            {
+                dataField: "AmountInSubLedgerFormatted",
+                caption: "Adjusted/Mapped",
+                dataType: "number",
+                format: { type: "fixedPoint", precision: 2 }
+            },
+            { dataField: "BalanceInVoucher", caption: "Balance Amount", dataType: "number", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "Mapping", caption: "Mapping Status" },
+                { dataField: "DrCr", caption: "DrCr" }
+            ]);
+
+            // Set dataSource for Debtors
+            grid.option("dataSource", {
+                load: function(loadOptions) {
+                    return $.getJSON("/api/SalaryPayableMapping/GetDebtors", {
+                        accid: accid,
+                        skip: loadOptions.skip,
+                        take: loadOptions.take,
+                        requireTotalCount: loadOptions.requireTotalCount,
+                        sort: JSON.stringify(loadOptions.sort),
+                        filter: JSON.stringify(loadOptions.filter)
+                    });
+                },
+                key: "VoucherNoInVoucher"
+            });
+        }
+    }
+
 
     function showSubmenu5(e) {
         e.event.stopPropagation();
