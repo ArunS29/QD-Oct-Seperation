@@ -6,9 +6,9 @@ using System.Drawing;
 
 namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
 {
-    public partial class CostAllocationSub : DevExpress.XtraReports.UI.XtraReport
+    public partial class rpt20140EmpAllocForAccountStatement : DevExpress.XtraReports.UI.XtraReport
     {
-        public CostAllocationSub()
+        public rpt20140EmpAllocForAccountStatement()
         {
             InitializeComponent();
         }
