@@ -41,11 +41,11 @@ public partial class Tbl40104PropertyQuoteChild
 
     public decimal? UnitRate1 { get; set; }
 
-    public byte? UnitRateMethod2 { get; set; }
+    public string UnitRateMethod2 { get; set; }
 
     public decimal? UnitRate2 { get; set; }
 
-    public byte? UnitRateMethod3 { get; set; }
+    public string UnitRateMethod3 { get; set; }
 
     public decimal? UnitRate3 { get; set; }
 

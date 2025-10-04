@@ -577,7 +577,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         child.AddlNotes = child.AddlNotes;
                         child.PropertyAddlDescription = child.PropertyAddlDescription;
                         child.QuotedQuantity = child.QuotedQuantity;
-                        child.QuoteMethod = child.QuoteMethod;
+                        child.UnitRateMethod = child.UnitRateMethod1;
+
+                        child.UnitRateMethod1 = child.UnitRateMethod1;
                         child.UnitRate1 = child.UnitRate1 * VM.CurrencyRate;
                         child.MobRate = child.MobRate * VM.CurrencyRate;
                         child.DemobRate = child.DemobRate * VM.CurrencyRate;
@@ -596,6 +598,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                             existingChild.AddlNotes = child.AddlNotes;
                             existingChild.PropertyAddlDescription = child.PropertyAddlDescription;
                             existingChild.QuotedQuantity = child.QuotedQuantity;
+                            existingChild.UnitRateMethod = child.UnitRateMethod1;
                             existingChild.UnitRateMethod1 = child.UnitRateMethod1;
                             existingChild.UnitRate1 = (child.UnitRate1 ?? 0) * (VM.CurrencyRate ?? 1);
                             existingChild.MobRate = (child.MobRate ?? 0) * (VM.CurrencyRate ?? 1);
@@ -646,9 +649,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string Capacity { get; set; }
             public string Operator { get; set; }
             public string Attachment { get; set; }
-            public byte? UnitRateMethod2 { get; set; }
+            public string UnitRateMethod2 { get; set; }
             public decimal? UnitRate2 { get; set; }
-            public byte? UnitRateMethod3 { get; set; }
+            public string UnitRateMethod3 { get; set; }
             public decimal? UnitRate3 { get; set; }
             public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
@@ -835,14 +838,19 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string QuoteMethod { get; set; }
             public byte? UnitRateMethod { get; set; }
 
+            public byte? UnitRateMethod1 { get; set; }
+
+            public decimal? UnitRate1 { get; set; }
+
+
             // Extra fields (map to your child table)
             public string Certification { get; set; }
             public string Capacity { get; set; }
             public string Operator { get; set; }
             public string Attachment { get; set; }
-            public byte? UnitRateMethod2 { get; set; }
+            public string UnitRateMethod2 { get; set; }
             public decimal? UnitRate2 { get; set; }
-            public byte? UnitRateMethod3 { get; set; }
+            public string UnitRateMethod3 { get; set; }
             public decimal? UnitRate3 { get; set; }
             public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
@@ -897,8 +905,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     targetRow = lastRow;
                     targetRow.EquipmentQuotedFor = request.PropertyAddlDescription;
                     targetRow.QuotedQuantity = request.QuotedQuantity;
-                    targetRow.QuoteMethod = request.QuoteMethod;
-                    targetRow.UnitRateMethod = request.UnitRateMethod;
+                    targetRow.UnitRateMethod = request.UnitRateMethod1;
+
+                    targetRow.UnitRateMethod1 = request.UnitRateMethod1;
+                    targetRow.UnitRate1 = request.UnitRate1;
                     targetRow.QuotedUom = request.QuotedUom;
 
                     // mark that Equipment Details were updated
@@ -914,8 +924,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         LineOrderNo = nextLineOrderNo,
                         EquipmentQuotedFor = request.PropertyAddlDescription,
                         QuotedQuantity = request.QuotedQuantity,
-                        QuoteMethod = request.QuoteMethod,
-                        UnitRateMethod = request.UnitRateMethod,
+                        UnitRateMethod=request.UnitRateMethod1,
+                        UnitRateMethod1 = request.UnitRateMethod1,
+                        UnitRate1 = request.UnitRate1,
                         QuotedUom = request.QuotedUom,
                         HasEquipmentDetails = "No" // default for newly added without details
                     };
@@ -1326,6 +1337,25 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
+        [HttpGet]
+        public async Task<ActionResult> GetVatTaxSlabs()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Tbl20163VatTaxSlabs.ToListAsync();
+                    return Ok(result); // returns all columns as JSON
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetVatTaxSlabs: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 
 
