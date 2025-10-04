@@ -33,9 +33,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 throw new Exception("Unable to resolve tenant context during report creation.");
             InitializeComponent();
             // ✅ Hook BeforePrint event handlers for subreports
-            //XrSubreport1.BeforePrint += XrSubreport1_BeforePrint;
-            XrSubreport2.BeforePrint += XrSubreport2_BeforePrint;
-            XrSubreport3.BeforePrint += XrSubreport3_BeforePrint;
+            XrSubreport1.BeforePrint += XrSubreport1_BeforePrint;
+            //XrSubreport2.BeforePrint += XrSubreport2_BeforePrint;
+            //XrSubreport3.BeforePrint += XrSubreport3_BeforePrint;
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
 
             try
@@ -55,60 +55,78 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         {
             InitializeComponent();
         }
-        // ---------------- Subreport 1 ----------------
-        //private void XrSubreport1_BeforePrint(object sender, EventArgs e)
+
+        private void XrSubreport1_BeforePrint(object sender, EventArgs e)
+        {
+            var subReportControl = (XRSubreport)sender;
+
+            var voucherNoObj = GetCurrentColumnValue("VoucherEntryNo");
+            if (voucherNoObj == null)
+            {
+                subReportControl.ReportSource = null;
+                return;
+            }
+
+            string voucherNo = voucherNoObj.ToString().Trim();
+
+            if (string.IsNullOrEmpty(voucherNo))
+            {
+                subReportControl.ReportSource = null;
+                return;
+            }
+
+            var report = new rpt20140EmpAllocForAccountStatement();
+
+            if (_resolvedTenant != null)
+            {
+                // Convert to int if DB expects int
+                report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
+            }
+
+            subReportControl.ReportSource = report;
+        }
+
+
+
+        //// ---------------- Subreport 2 ----------------
+        //private void XrSubreport2_BeforePrint(object sender, EventArgs e)
         //{
-        //    var subReport = (XRSubreport)sender;
-        //    var report = new rpt20140EmpAllocForAccountStatement();
+        //    var subReportControl = (XRSubreport)sender;
 
+        //    var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
 
-        //    // ✅ Pass parameters from main report
-        //    report.Parameters["VoucherEntryID"].Value = GetCurrentColumnValue("VoucherEntryNo");
-        //    report.Parameters["VoucherEntryID"].Visible = false;
+        //    var report = new rpt20124SubLedgerForAccountStatement
+        //    {
+        //        VoucherNo = voucherNo,
+        //    };
 
-        //    subReport.ReportSource = report;
+        //    if (_resolvedTenant != null) // ✅ use the already resolved tenant
+        //    {
+        //        report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
+        //    }
+
+        //    subReportControl.ReportSource = report;
         //}
 
-        // ---------------- Subreport 2 ----------------
-        // ---------------- Subreport 2 ----------------
-        private void XrSubreport2_BeforePrint(object sender, EventArgs e)
-        {
-            var subReportControl = (XRSubreport)sender;
+        //// ---------------- Subreport 3 ----------------
+        //private void XrSubreport3_BeforePrint(object sender, EventArgs e)
+        //{
+        //    var subReportControl = (XRSubreport)sender;
 
-            var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
+        //    var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
 
-            var report = new rpt20124SubLedgerForAccountStatement
-            {
-                VoucherNo = voucherNo,
-            };
+        //    var report = new rpt201CostAllocationByAccountStatement
+        //    {
+        //        VoucherNo = voucherNo,
+        //    };
 
-            if (_resolvedTenant != null) // ✅ use the already resolved tenant
-            {
-                report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
-            }
+        //    if (_resolvedTenant != null) // ✅ use the already resolved tenant
+        //    {
+        //        report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
+        //    }
 
-            subReportControl.ReportSource = report;
-        }
-
-        // ---------------- Subreport 3 ----------------
-        private void XrSubreport3_BeforePrint(object sender, EventArgs e)
-        {
-            var subReportControl = (XRSubreport)sender;
-
-            var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
-
-            var report = new rpt201CostAllocationByAccountStatement
-            {
-                VoucherNo = voucherNo,
-            };
-
-            if (_resolvedTenant != null) // ✅ use the already resolved tenant
-            {
-                report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
-            }
-
-            subReportControl.ReportSource = report;
-        }
+        //    subReportControl.ReportSource = report;
+        //}
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
         {
