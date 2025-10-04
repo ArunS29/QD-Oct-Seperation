@@ -883,6 +883,7 @@
         if (itemText === "Show All Creditors") {
             // Remove AccountHead column if it exists
             grid.option("columns", [
+                 { dataField: "AccountHeadName", caption: "Ledger Name", groupIndex: 0 },
                 { dataField: "AccountNoInVoucher", caption: "Account No" },
                 { dataField: "VoucherNoInVoucher", caption: "Voucher No" },
                 { dataField: "VoucherType", caption: "Voucher Type" },
@@ -922,6 +923,7 @@
         if (itemText === "Show All Debtors") {
             // Restore AccountHead column for Debtors if needed
             grid.option("columns", [
+                 { dataField: "AccountHeadName", caption: "Ledger Name", groupIndex: 0 },
                 { dataField: "AccountNoInVoucher", caption: "Account No" },
                 { dataField: "VoucherNoInVoucher", caption: "Voucher No" },
                 { dataField: "VoucherType", caption: "Voucher Type" },
