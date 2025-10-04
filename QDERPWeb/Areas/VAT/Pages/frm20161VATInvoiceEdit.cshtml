@@ -4322,10 +4322,10 @@
     
     // Make sure we have a valid rowIndex (e.g., from cellInfo)
     let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-    
+    let InvoiceChildSLNo=null;
     if (rowIndex >= 0) {
         // Fetch the value from the grid
-        let InvoiceChildSLNo = dataGrid.cellValue(rowIndex, "InvoiceChildSlNo");
+        InvoiceChildSLNo = dataGrid.cellValue(rowIndex, "InvoiceChildSlNo");
         console.log("InvoiceChildSLNo", InvoiceChildSLNo);
     } else {
         console.warn("Row index not found for key:", cellInfo.key);
@@ -5039,9 +5039,10 @@
                         grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
 								// Commit changes to underlying store
                         grid.saveEditData();
-							applyDiscount(formatAmount(amount));
+							//applyDiscount(formatAmount(amount));
 							currentAmount = formatAmount(amount);
-							//applyDiscount(rowIndex);
+
+							updateInvoiceChildren();
 					}
 			};
 		}
@@ -6362,6 +6363,7 @@ if (popover.option("visible")) {
 			  // Store value for use in popover
                currentAmount = formatAmount(amount);
                grid.saveEditData();
+			   updateInvoiceChildren();
 			   }
 
 			};
@@ -6634,7 +6636,7 @@ if (popover.option("visible")) {
 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
 				 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-					BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+				BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
 			    BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
 			    BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
 			    BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
@@ -6896,6 +6898,7 @@ if (popover.option("visible")) {
                     grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
                     grid.cellValue(rowIndex, 'TaxSlabCode', TaxSlabCode);
 					 grid.saveEditData();
+                   updateInvoiceChildren();
 				  
 }
 
@@ -6912,19 +6915,6 @@ if (popover.option("visible")) {
 				}
 			});
 
-			// Binding 'moveRowUp' function to the 'btnMoveUp' button
-			$("#btnMoveUp").dxButton({
-				onClick: function () {
-					moveRowUp();
-				}
-			});
-
-			// Binding 'moveRowDown' function to the 'btnMoveDown' button
-			$("#btnMoveDown").dxButton({
-				onClick: function () {
-					moveRowDown();
-				}
-			});
 		});
 
 
@@ -6944,76 +6934,6 @@ if (popover.option("visible")) {
 			flatten(items); // Flatten all grouped items
 
 			return flatData;
-		}
-
-		  //MoveupDown functionality
-		function moveRowUp() {
-			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-			var dataSource = dataGrid.getDataSource();
-			var data = getFlatData(dataSource.items()); // Flatten the grouped data
-			//   var selectedRowKeys = dataGrid.option("selectedRowKeys");
-
-			console.log("Flattened Data:", data); // Log flattened data for debugging
-
-
-			// Find the row index based on the selected row key (AccountGroupId)
-			var rowIndex = data.findIndex(item => item.SNo === selectedSNo);
-
-			console.log("Row Index:", rowIndex); // Log row index for debugging
-
-			// Proceed only if a valid row is selected and it's not the first row
-			if (rowIndex > 0) {
-				swapRows(data, rowIndex, rowIndex - 1); // Swap rows in the data
-
-				// Update the data source with the new data order
-				dataSource.store().update(data[rowIndex].SNo, data[rowIndex]);
-				dataSource.store().update(data[rowIndex - 1].SNo, data[rowIndex - 1]);
-
-				// After swap, select the moved row
-				dataGrid.selectRows([data[rowIndex - 1].SNo]);
-			}
-		}
-
-
-		function moveRowDown() {
-
-			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-			var dataSource = dataGrid.getDataSource();
-			var data = getFlatData(dataSource.items()); // Get flattened data
-			// var selectedRowKeys = dataGrid.option("selectedRowKeys");
-
-
-			var rowIndex = data.findIndex(item => item.SNo === selectedSNo);
-
-			console.log("Row Index:", rowIndex);
-
-			if (rowIndex < data.length - 1) {
-				swapRows(data, rowIndex, rowIndex + 1);
-				dataGrid.refresh();
-				dataGrid.selectRows([data[rowIndex + 1].SNo]);
-			} else {
-				console.log("Cannot move row down: Row is already at the bottom.");
-			}
-		}
-
-
-		  function swapRows(data, index1, index2) {
-			var temp = data[index1];
-			console.log("Swap Data1:", temp);
-
-			// Swap the rows
-			data[index1] = data[index2];
-			console.log("Swap Data2:", data[index2]);
-
-			data[index2] = temp;
-			console.log("Swapped Data:", data);
-
-			// Get the DataGrid instance and update the data source
-			var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
-			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
-
-
-			dataGrid1.refresh();
 		}
 
 
@@ -8071,10 +7991,11 @@ if (popover.option("visible")) {
 		});
 
 		function applyDiscount() {
+			debugger;
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
 		
 		// Get values from UI
-		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+		//const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
 
 		// Get required values from grid for the specific row
@@ -8575,32 +8496,37 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 		   $("#b2baddlineitem").text(formatMessage("Add Line Item"));
 	   });
 
-				function btnPostToLedgerdisableEditing() {
-				// Disable all input fields and buttons except for specific ones
-				$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+				function btnPostToLedgerdisableEditing() { 
+    // Disable all input fields and buttons except for specific ones
+    $('input, select, textarea').prop('disabled', true);  
 
-					const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack', 'btnPrint1'];
+    const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack', 'btnPrint1'];
 
-				// Disable all dxButton and dxDropDownButton controls
-				$('.dx-button, .dx-dropdownbutton').each(function () {
-					const id = $(this).attr('id');
-					if (id && !allowedButtons.includes(id)) {
-						// Disable dxButton and dxDropDownButton widgets except for allowed ones
-						if ($(this).data('dxButton')) {
-							$(this).dxButton('option', 'disabled', true);
-						} else if ($(this).data('dxDropDownButton')) {
-							$(this).dxDropDownButton('option', 'disabled', true);
-						}
-					}
-				});
+    // Disable all dxButton and dxDropDownButton controls
+    $('.dx-button, .dx-dropdownbutton').each(function () {
+        const id = $(this).attr('id');
+        if (id && !allowedButtons.includes(id)) {
+            if ($(this).data('dxButton')) {
+                $(this).dxButton('option', 'disabled', true);
+            } else if ($(this).data('dxDropDownButton')) {
+                $(this).dxDropDownButton('option', 'disabled', true);
+            }
+        }
+    });
 
-				// Disable DataGrid Editing and Deleting
-				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.option("editing.allowUpdating", false);
-					dataGrid.option("editing.allowDeleting", false);
-				}
-			}
+    // Disable DataGrid Editing and Deleting
+    var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+    if (dataGrid) {
+        dataGrid.option("editing.allowUpdating", false);
+        dataGrid.option("editing.allowDeleting", false);
+    }
+
+    // Disable custom context menu
+    $("#contextMenu").hide();  // Hide immediately
+    $("#contextMenu").addClass("disabled"); // Optional marker class
+    $(document).off("contextmenu", ".dx-datagrid-rowsview .dx-row"); // Remove right-click binding
+}
+
 				function btnVerifydisableEditing() {
 	
 					const allowedButtons = ['btnPostTag','btnPostToLedgers','btnAttach','btnApprove','btnBack','btnPrint1','btnAddNew','btnSaveAndClose','btnSave','ddButtonLayout','btnMoveDown', 'btnMoveUp', 'btnPostTag', 'btnPrint1'];
