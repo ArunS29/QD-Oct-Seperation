@@ -965,13 +965,16 @@
                             )
                         </div>
                         <div style="flex: 1;">
-                            @(Html.DevExtreme().SelectBox()
-                            .ID("ShipmentHandlingMethod")
-                            .DataSource(new[] { "Flat", "Percentage" })
-                            .Label(new JS("formatMessage('')"))
-                            .LabelMode(EditorLabelMode.Hidden)
-                            .Width("100%")
-                            )
+                       
+                              @(Html.DevExtreme().NumberBox()
+        .ID("ShipmentHandlingMethod")
+        .Min(0)
+        .ShowSpinButtons(true)
+        .Label(new JS("formatMessage('Value')"))
+        .LabelMode(EditorLabelMode.Hidden)
+        .Width("50%")
+          .ShowSpinButtons(true)
+    )
                         </div>
                     </div>
 
@@ -986,13 +989,16 @@
                             )
                         </div>
                         <div style="flex: 1;">
-                            @(Html.DevExtreme().SelectBox()
-                            .ID("DiscountMethod")
-                            .DataSource(new[] { "Flat", "Percentage" })
-                            .Label(new JS("formatMessage('')"))
-                            .LabelMode(EditorLabelMode.Hidden)
-                            .Width("100%")
-                            )
+                   
+                                @(Html.DevExtreme().NumberBox()
+        .ID("DiscountMethod")
+        .Min(0)
+        .ShowSpinButtons(true)
+        .Label(new JS("formatMessage('Value')"))
+        .LabelMode(EditorLabelMode.Hidden)
+        .Width("50%")
+          .ShowSpinButtons(true)
+    )
                         </div>
                     </div>
                 </div>
@@ -3144,7 +3150,7 @@ function handleSave() {
 
 
 function savePurchaseOrder(poNo) {
-  
+  debugger;
     const master = {
         Pono: poNo, // ✅ safe assignment here
         Podate: $("#PoDate").dxDateBox("instance").option("value"),
@@ -3178,9 +3184,9 @@ function savePurchaseOrder(poNo) {
         Currency: $("#CurrencyExchange").dxSelectBox("instance").option("value"),
         ExchangeRate: $("#ExchangeRate").dxNumberBox("instance").option("value"),
         DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
-        DiscountMethod: $("#DiscountMethod").dxSelectBox("instance").option("value"),
-        ShipmentHandling: $("#ShipmentHandling").dxTextBox("instance").option("value"),
-        ShipmentHandlingMethod: $("#ShipmentHandlingMethod").dxSelectBox("instance").option("value"),
+        DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance").option("value"),
+        AdditionsText: $("#ShipmentHandling").dxTextBox("instance").option("value"),
+        AdditionsAmount: $("#ShipmentHandlingMethod").dxNumberBox("instance").option("value"),
         Posignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
         PoverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value"),
         PoapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value"),
@@ -3190,6 +3196,7 @@ function savePurchaseOrder(poNo) {
         CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
         BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
         CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+       // SupplierRefNo: $("#ReferenceNo").dxTextBox("instance").option("value")
         // SubmittedOn: new Date(),
         // VerifiedOn: new Date(),
         // ApprovedOn: new Date()
@@ -3312,7 +3319,7 @@ function handleSaveandClose() {
 
 
 function saveandClosePurchaseOrder(poNo) {
- 
+ debugger;
     const master = {
         Pono: poNo, // ✅ safe assignment here
         Podate: $("#PoDate").dxDateBox("instance").option("value"),
@@ -3337,18 +3344,16 @@ function saveandClosePurchaseOrder(poNo) {
         PodeliveryPeriod: $("#DeliveryPeriod").dxSelectBox("instance").option("value"),
         PoshipTo: $("#ShippingAddress").dxTextArea("instance").option("value"),
         PobillTo: $("#BillingAddress").dxTextArea("instance").option("value"),
-       // CompanyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
-         CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value"),
+              CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value"),
         PocategoryId: $("#POCategory").dxSelectBox("instance").option("value"),
-       // InventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
-        InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value"),
+             InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value"),
         TypeOfRequest: $("#RequestType").dxSelectBox("instance").option("value"),
         Currency: $("#CurrencyExchange").dxSelectBox("instance").option("value"),
         ExchangeRate: $("#ExchangeRate").dxNumberBox("instance").option("value"),
-        DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
-        DiscountMethod: $("#DiscountMethod").dxSelectBox("instance").option("value"),
-        ShipmentHandling: $("#ShipmentHandling").dxTextBox("instance").option("value"),
-        ShipmentHandlingMethod: $("#ShipmentHandlingMethod").dxSelectBox("instance").option("value"),
+       DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
+        DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance").option("value"),
+        AdditionsText: $("#ShipmentHandling").dxTextBox("instance").option("value"),
+        AdditionsAmount: $("#ShipmentHandlingMethod").dxNumberBox("instance").option("value"),
         Posignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
         PoverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value"),
         PoapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value"),
@@ -3358,6 +3363,7 @@ function saveandClosePurchaseOrder(poNo) {
         CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
         BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
         CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+     // SupplierRefNo: $("#ReferenceNo").dxTextBox("instance").option("value")
         // SubmittedOn: new Date(),
         // VerifiedOn: new Date(),
         // ApprovedOn: new Date()
@@ -3428,138 +3434,6 @@ const children = grid.getDataSource().items().map(item => {
         }
     });
 }
-
-
-//        $("#btnSaveAndClose").on("click", function () {
-//     const requiredFields = [
-//         "SupplierName", // Client Name
-//     ];
-
-//     const allValid = validateFields(requiredFields);
-
-//     if (!allValid) {
-//         DevExpress.ui.notify("Please fill in all required fields.", "error", 3000);
-//         return;
-//     }
-
-//     const master = {
-//         Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
-//         Podate: $("#PoDate").dxDateBox("instance").option("value"),
-//         SupplierCode: $("#SupplierName").dxSelectBox("instance").option("value"),
-//         PorevisionNo: $("#RevNo").dxTextBox("instance").option("value"),
-//         SupplierQuoteNo: $("#SupplierQuotationNo").dxTextBox("instance").option("value"),
-//         SupplierQuoteDate: $("#SupplierQuoteDate").dxDateBox("instance").option("value"),
-//         Attention: $("#AttentionTo").dxTextBox("instance").option("value"),
-//         SupplierContactNo: $("#SupplierContactNo").dxTextBox("instance").option("value"),
-//         SupplierContactEmail: $("#SupplierEmail").dxTextBox("instance").option("value"),
-//         Rfqno: $("#RFQNo").dxTextBox("instance").option("value"),
-//         ProjectMasterCode: $("#Project").dxSelectBox("instance").option("value"),
-//         SalesPersonCode: $("#SalesPerson").dxSelectBox("instance").option("value"),
-//         ProjectSubUnitCode: $("#RequestingUnit").dxSelectBox("instance").option("value"),
-//         Posummary: $("#PoSummary").dxTextArea("instance").option("value"),
-//         Pointroduction: $("#PoIntro").dxTextArea("instance").option("value"),
-//         PothanksNote: $("#Thanks").dxTextArea("instance").option("value"),
-//         PopaymentTerm: $("#PaymentTerm").dxSelectBox("instance").option("value"),
-//         PodocRequired: $("#DocumentsRequired").dxSelectBox("instance").option("value"),
-//         PodeliveryTerm: $("#DeliveryTerm").dxSelectBox("instance").option("value"),
-//         PowarrantyPeriod: $("#WarrantyPeriod").dxSelectBox("instance").option("value"),
-//         PodeliveryPeriod: $("#DeliveryPeriod").dxSelectBox("instance").option("value"),
-//         PoshipTo: $("#ShippingAddress").dxTextArea("instance").option("value"),
-//         PobillTo: $("#BillingAddress").dxTextArea("instance").option("value"),
-//        // CompanyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
-//          CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value"),
-//         PocategoryId: $("#POCategory").dxSelectBox("instance").option("value"),
-//        // InventoryMasterGroupId: $("#InventoryGroup").dxSelectBox("instance").option("value"),
-//           InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value"),
-//              TypeOfRequest: $("#RequestType").dxSelectBox("instance").option("value"),
-//           ProjectSubUnitCode: $("#RequestingUnit").dxSelectBox("instance").option("value"),
-//         Currency: $("#CurrencyExchange").dxSelectBox("instance").option("value"),
-//         ExchangeRate: $("#ExchangeRate").dxNumberBox("instance").option("value"),
-//         DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
-//         DiscountMethod: $("#DiscountMethod").dxSelectBox("instance").option("value"),
-//         ShipmentHandling: $("#ShipmentHandling").dxTextBox("instance").option("value"),
-//         ShipmentHandlingMethod: $("#ShipmentHandlingMethod").dxSelectBox("instance").option("value"),
-//          Posignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
-//         PoverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value"),
-//         PoapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value"),
-//         // IsSubmitted: !!$("#preparedBy2").dxSelectBox("instance").option("value"),
-//         // IsVerified: !!$("#verifiedBy2").dxSelectBox("instance").option("value"),
-//         // IsApproved: !!$("#approvedBy2").dxSelectBox("instance").option("value"),
-//         CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance")?.option("value"),
-//         BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-//         CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-//         // SubmittedOn: new Date(),
-//         // VerifiedOn: new Date(),
-//         // ApprovedOn: new Date()
-//     };
-
-//     // Prevent save if PO number is missing
-//     if (!master.Pono) {
-//         DevExpress.ui.notify("PO number is missing. Please refresh and try again.", "error", 3000);
-//         return;
-//     }
-
-//     const grid = $("#B2BdataGrid").dxDataGrid("instance");
-//     const children = grid.getDataSource().items().map(item => {
-//         return {
-//             PochildNo: Number(item.PochildNo) || 0,
-//             Pono: master.Pono,
-//             Gscode: item.Gscode,
-//             // GSCode:item.Gscode,
-//             AddlDescription: item.AddlDescription,
-//             QuotedQuantity: item.QuotedQuantity,
-//             UnitRateMethod: item.UnitRateMethod ? Number(item.UnitRateMethod) : null,
-//             UnitPrice: item.UnitPrice,
-//             ItemDiscount: item.ItemDiscount,
-//             PotaxSlab: item.PotaxSlab ? Number(item.PotaxSlab) : null,
-//             PoitemRemarks: item.PoitemRemarks,
-//             LineOrderNo: item.LineOrderNo,
-//             PlanNo: item.PlanNo,
-//             DeliveryPeriod: item.DeliveryPeriod,
-//             MritemNo: item.MritemNo,
-//             LineTaxAmount: item.LineTaxAmount,
-//             LineTotalWithTax: item.LineTotalWithTax,
-//             Currency: item.Currency ? Number(item.Currency) : null,
-//             ExchangeRate: item.ExchangeRate,
-//             UnitRateInOc: item.UnitRateInOc,
-//             DiscountInOc: item.DiscountInOc
-//         };
-//     });
-
-//     $.ajax({
-//         url: '/api/PurchaseOrders/SavePurchaseOrder',
-//         type: 'POST',
-//         data: JSON.stringify({ master, children }),
-//         contentType: 'application/json',
-//         success: function (response) {
-//             DevExpress.ui.notify("Saved successfully", "success", 3000);
-//             isSaved = true;
-
-//             // Reload grid from server if needed
-//             $.get(`/api/PurchaseOrders/GetByPoNo?PoNo=${encodeURIComponent(master.Pono)}`, function (data) {
-//                 const B2BdataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-//                 B2BdataGridInstance.cancelEditData();
-
-//                 // FULLY RESET the data source using a new ArrayStore
-//                 B2BdataGridInstance.option("dataSource", new DevExpress.data.ArrayStore({
-//                     key: "PochildNo",
-//                     data: data.items || []
-//                 }));
-//                 B2BdataGridInstance.refresh();
-
-               
-//                 setTimeout(() => {
-//                     history.back();
-//                 }, 500);
-//             });
-//         },
-//         error: function (xhr) {
-//             DevExpress.ui.notify("Failed to save: " + (xhr.responseText || ""), "error", 3000);
-//         }
-//     });
-// });
-
-       
 function makeAllWidgetsReadOnly() {
         const widgets = [
             { id: "#PurchaseOrderNo", type: "dxTextBox" },
@@ -3593,9 +3467,9 @@ function makeAllWidgetsReadOnly() {
             { id: "#CurrencyExchange", type: "dxSelectBox" },
             { id: "#ExchangeRate", type: "dxNumberBox" },
             { id: "#ShipmentHandling", type: "dxTextBox" },
-            { id: "#ShipmentHandlingMethod", type: "dxSelectBox" },
+            { id: "#ShipmentHandlingMethod", type: "dxNumberBox" },
             { id: "#Discount", type: "dxTextBox" },
-            { id: "#DiscountMethod", type: "dxSelectBox" },
+            { id: "#DiscountMethod", type: "dxNumberBox" },
             { id: "#currencyexchangerate", type: "dxNumberBox" },
             { id: "#ddlGoodsGroup4", type: "dxDropDownBox" },
             { id: "#ddlGoodsGroup3", type: "dxDropDownBox" }
@@ -3739,6 +3613,7 @@ setDxFieldValue("SupplierQuotationNo", data.supplierQuoteNo);
 setDxFieldValue("SupplierQuoteDate", data.supplierQuoteDate);
 setDxFieldValue("AttentionTo", data.attention);
 setDxFieldValue("SupplierContactNo", data.supplierContactNo);
+setDxFieldValue("ReferenceNo", data.supplierRefNo);
 setDxFieldValue("SupplierEmail", data.supplierContactEmail);
 setDxFieldValue("RFQNo", data.rfqno);
 setDxFieldValue("Project", data.projectMasterCode);
@@ -3769,10 +3644,10 @@ setDxFieldValue("CurrencyExchange", data.currency);
 setDxFieldValue("ExchangeRate", data.exchangeRate);
 
 setDxFieldValue("Discount", data.discountsText);
-setDxFieldValue("DiscountMethod", data.discountMethod);
+setDxFieldValue("DiscountMethod", data.deductionsAmount);
 
-setDxFieldValue("ShipmentHandling", data.shipmentHandling);
-setDxFieldValue("ShipmentHandlingMethod", data.shipmentHandlingMethod);
+setDxFieldValue("ShipmentHandling", data.additionsText);
+setDxFieldValue("ShipmentHandlingMethod", data.additionsAmount);
 
 setDxFieldValue("ddPreparedby", data.posignatory);
 setDxFieldValue("ddVerifiedby", data.poverifiedSign);
@@ -3946,10 +3821,12 @@ function loadDataAndGrid(Pono) {
             setDxFieldValue("ddGetInventoryGroup", data.inventoryMasterGroupId);
             setDxFieldValue("CurrencyExchange", data.currency);
             setDxFieldValue("ExchangeRate", data.exchangeRate);
-            setDxFieldValue("Discount", data.discountsText);
-            setDxFieldValue("DiscountMethod", data.discountMethod);
-            setDxFieldValue("ShipmentHandling", data.shipmentHandling);
-            setDxFieldValue("ShipmentHandlingMethod", data.shipmentHandlingMethod);
+           setDxFieldValue("Discount", data.discountsText);
+setDxFieldValue("DiscountMethod", data.deductionsAmount);
+
+setDxFieldValue("ShipmentHandling", data.additionsText);
+setDxFieldValue("ShipmentHandlingMethod", data.additionsAmount);
+
             setDxFieldValue("ddPreparedby", data.posignatory);
             setDxFieldValue("ddVerifiedby", data.poverifiedSign);
             setDxFieldValue("ddApprovedby", data.poapprovedSign);
@@ -4487,4 +4364,90 @@ function selectContact(name, email, mobile, phone) {
         delay: [100, 100],
     });f
     }
+
+    $(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+		// Form ID
+		var formId = "frm60107PurchaseOrderEdit";
+
+		// Call the API to get permissions
+		$.ajax({	
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				console.log("API Response:", response); // Log the API response
+
+				if (response.success && response.permissions) {
+					// Default visibility and enable status for buttons
+					var controlStates = {
+                        "ddButtonLayout": { "Visible": false, "Enabled": false },
+                        "btnMoveUp": { "Visible": false, "Enabled": false },
+                        "btnMoveDown": { "Visible": false, "Enabled": false },
+                        "btnPrint4": { "Visible": false, "Enabled": false },
+                        "btnToggleSearch": { "Visible": false, "Enabled": false },
+                        "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+                        "btnColumnChooser": { "Visible": false, "Enabled": false },
+                        "btnSave": { "Visible": false, "Enabled": false },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnAddNew": { "Visible": false, "Enabled": false },
+                        "btnDelete": { "Visible": false, "Enabled": false },
+                        "btnBack": { "Visible": false, "Enabled": false },
+                        "btnSubmit": { "Visible": false, "Enabled": false },
+                        "btnVerify": { "Visible": false, "Enabled": false },
+                        "btnApprove": { "Visible": false, "Enabled": false },
+                       "btnAttach": { "Visible": false, "Enabled": false },
+                    };
+
+
+					// Check for full access
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
+
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						// Grant full access: make all controls visible and enabled
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						// Update states based on specific permissions for each control
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
+
+					console.log("Control States:", controlStates);
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							// Handle visibility
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							// Handle enable/disable state
+							button.disabled = !controlStates[key].Enabled;
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+						} else {
+							console.warn(`Button with ID "${key}" not found in the DOM.`);
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {  
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+	});
 </script>
