@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
+namespace QD.ERP.Web.Areas.ERM.Reports.EquipmentAsset
 {
-    public partial class CostAllocationSub : DevExpress.XtraReports.UI.XtraReport
+    public partial class PrintReport : DevExpress.XtraReports.UI.XtraReport
     {
-        public CostAllocationSub()
+        public PrintReport()
         {
             InitializeComponent();
         }

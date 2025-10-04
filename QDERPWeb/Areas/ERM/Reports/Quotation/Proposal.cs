@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.Finance.Reports.AccountStatement
+namespace QD.ERP.Web.Areas.ERM.Reports.Quotation
 {
-    public partial class AganistRef : DevExpress.XtraReports.UI.XtraReport
+    public partial class Proposal : DevExpress.XtraReports.UI.XtraReport
     {
-        public AganistRef()
+        public Proposal()
         {
             InitializeComponent();
         }

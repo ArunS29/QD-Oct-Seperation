@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QD.ERP.Web.Areas.Finance.Models
 {
@@ -33,7 +33,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public string Status { get; set; }
     }
-    
+
     public class ClientCategoryDisplayDTO
     {
         public string CategoryCode { get; set; }
@@ -43,9 +43,9 @@ namespace QD.ERP.Web.Areas.Finance.Models
     public class PostAvgCostDto
     {
         public string GSCode { get; set; }
-    public DateTime EndDate { get; set; }
-    public long DeliveryNoteSlNo { get; set; }   // use long (or long?)
-    public decimal IssuedUnitPrice { get; set; }
+        public DateTime EndDate { get; set; }
+        public long DeliveryNoteSlNo { get; set; }   // use long (or long?)
+        public decimal IssuedUnitPrice { get; set; }
     }
     public class ApproveDeliveryNoteDto
     {
@@ -56,7 +56,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public string DeliveryNoteNo { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public int DeliveryType { get; set; } 
+        public int DeliveryType { get; set; }
     }
     public class PostDeliveryNoteRequest
     {
@@ -105,7 +105,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? VoucherAmountFormatted { get; set; }
 
         public decimal? VoucherAmount { get; set; }
-       //VoucherJounal fields
+        //VoucherJounal fields
         public string AddedBy { get; set; }
 
         public DateTime? AddedOn { get; set; }
@@ -115,14 +115,36 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
     public class GetDataForGeneratingTimesheet
     {
-        public string PropertyNo { get; set; }
-        public string PlateNo { get; set; }
-        public string Location { get; set; }
-        public string ClientName { get; set; }
-        public decimal ClientratePerHours { get; set; }
-        public string SupplierName { get; set; }
-        public string PropertyIssueNo { get; set; }
-        public DateTime? PropertyIssuedDate { get; set; }
+        public string PropertyNo { get; set; }                  // string
+        public string PlateNo { get; set; }                     // string
+        public string Location { get; set; }                    // string
+        public string ClientName { get; set; }                  // string
+        public string ClientCode { get; set; }                  // string
+        public decimal? ClientRatePerHour { get; set; }          // decimal
+        public decimal? ClientOvertimeRatePerHour { get; set; }  // decimal
+        public string SupplierName { get; set; }                // string
+        public string SupplierCode { get; set; }                // string
+        public string PropertyIssueNo { get; set; }             // string
+        public DateTime? PropertyIssuedDate { get; set; }       // datetime
+        public string PropertyDescription { get; set; }        // string
+        public DateTime? DemobilizedDate { get; set; }          // datetime
+        public string CurrentStatus { get; set; }               // string
+        public string ClientSite { get; set; }                  // string
+        public string BillingDescription { get; set; }          // string
+        public byte? PropertyCategory { get; set; }            // string
+        public string Specifications { get; set; }             // string
+        public string Brand { get; set; }                       // string
+        public bool? IsDiscontinued { get; set; }              // boolean flag
+        public string ModelType { get; set; }                   // string
+        public bool? IsBreakDown { get; set; }                 // boolean flag
+        public string GatePassNo { get; set; }                 // string
+        public string ProjectID { get; set; }                  // string (or int? if numeric)
+    }
+
+    public class TimesheetRequest
+    {
+        public DateTime? frmDate { get; set; }
+        public DateTime? toDate { get; set; }
     }
     public class AccountLedger
     {
@@ -373,7 +395,51 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VerifiedOn { get; set; }
     }
 
+    //public class TimesheetBillingData
+    //{
+    //    public string PropertyGroup { get; set; }
+    //    public string ClientName { get; set; }
+    //    public string ClientPono { get; set; }
+    //    public string PropertyNo { get; set; }
+    //    public string PropertyDescription { get; set; }
 
+    //    public decimal SupplierTotalHours { get; set; }
+    //    public decimal ClientRatePerHour2 { get; set; }
+    //    public decimal ClientTotalAmount { get; set; }
+    //    public decimal SupplierRatePerHour { get; set; }
+    //    public decimal SupplierTotalAmount { get; set; }
+
+    //    public string PropertySummInvoiceNo { get; set; }
+    //    public string SupplierTssummaryNo { get; set; }
+    //    public decimal Deductions { get; set; }
+
+    //    public long TimeSheetMasterId { get; set; }
+    //    public int TimeSheetMonthId { get; set; }
+    //    public string TimeSheetMonth { get; set; }
+
+    //    public string PropertyType { get; set; }
+    //    public string PropertySuppliedBy { get; set; }
+    //    public string OperatorName { get; set; }
+    //    public decimal OperatorRate { get; set; }
+    //    public DateTime? HiredOn { get; set; }
+
+    //    public string PropertyCategoryName { get; set; }
+    //    public string Brand { get; set; }
+    //    public string PlateNo { get; set; }
+
+    //    public decimal TotalRentAmount { get; set; }
+    //    public decimal TotalHoursWorked { get; set; }
+    //    public decimal ClientTotalHours { get; set; }
+    //    public decimal ClientOtratePerHour { get; set; }
+
+    //    public string Project { get; set; }
+    //    public string ProjectDescription { get; set; }
+
+    //    public string ClientAccountLedgerNo { get; set; }
+    //    public string SupplierAccountLedgerNo { get; set; }
+    //    public string GatePassNo { get; set; }
+    //    public string ClientSite { get; set; }
+    //}
     public class VoucherViewModel
     {
         public Tbl201VoucherMaster VoucherMaster { get; set; }
@@ -394,6 +460,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime EndDate { get; set; }
 
     }
+
+
     // DTO for API request
     public class VoucherUpdateRequest
     {
@@ -471,64 +539,64 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public string SignatoryID { get; set; }
         public string SignatoryName { get; set; }
-       
+
 
     }
     public class InvoiceItem1
     {
-		public int PurchaseChildSlNo { get; set; }
+        public int PurchaseChildSlNo { get; set; }
 
-		public string PurchaseVoucherNo { get; set; }
+        public string PurchaseVoucherNo { get; set; }
 
-		public string UoM { get; set; }
+        public string UoM { get; set; }
 
-		public decimal? QuantityInvoiced { get; set; }
+        public decimal? QuantityInvoiced { get; set; }
 
-		public decimal? UnitsToBill { get; set; }
+        public decimal? UnitsToBill { get; set; }
 
-		public byte? UnitRateMethod { get; set; }
+        public byte? UnitRateMethod { get; set; }
 
-		public decimal? UnitRate { get; set; }
+        public decimal? UnitRate { get; set; }
 
-		public decimal? LineAmount { get; set; }
+        public decimal? LineAmount { get; set; }
 
-		public string DetailedDescription { get; set; }
+        public string DetailedDescription { get; set; }
 
-		public string ItemRemarks { get; set; }
+        public string ItemRemarks { get; set; }
 
-		public string DatesBilledFor { get; set; }
+        public string DatesBilledFor { get; set; }
 
-		public string DeliveryNoteNo { get; set; }
+        public string DeliveryNoteNo { get; set; }
 
-		public DateTime? DeliveryDate { get; set; }
+        public DateTime? DeliveryDate { get; set; }
 
-		public byte? TaxSlabCode { get; set; }
+        public byte? TaxSlabCode { get; set; }
 
-		public decimal? TaxAmount { get; set; }
+        public decimal? TaxAmount { get; set; }
 
-		public string ItemCode { get; set; }
+        public string ItemCode { get; set; }
 
-		public bool? IsExpenses { get; set; }
+        public bool? IsExpenses { get; set; }
 
-		public string ExpensesLedgerNo { get; set; }
+        public string ExpensesLedgerNo { get; set; }
 
-		public decimal? Discount { get; set; }
+        public decimal? Discount { get; set; }
 
-		public string ItemPurchaseType { get; set; }
+        public string ItemPurchaseType { get; set; }
 
-		public bool? IsGoodsInTransitAccount { get; set; }
+        public bool? IsGoodsInTransitAccount { get; set; }
 
-		public string GoodsInTransitAccountNo { get; set; }
+        public string GoodsInTransitAccountNo { get; set; }
 
-		public string GoodsInTransitPurchaseVoucherNo { get; set; }
+        public string GoodsInTransitPurchaseVoucherNo { get; set; }
 
-		public decimal? LineOrderNo { get; set; }
+        public decimal? LineOrderNo { get; set; }
 
-		public string EmployeeNo { get; set; }
+        public string EmployeeNo { get; set; }
 
-		public string PropertyNo { get; set; }
-	}
-		public class ExpenseClaimViewModel
+        public string PropertyNo { get; set; }
+    }
+    public class ExpenseClaimViewModel
     {
         public string ClaimRefNo { get; set; }
         public DateTime? ClaimDate { get; set; }
@@ -555,119 +623,119 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public List<Tbl20127JournalRegisterChild> JournalDetails { get; set; }
     }
-	public class PurchaseRequestViewModel
-	{
-		public string Mprno { get; set; }
-		public DateTime? Mprdate { get; set; }
-		public string ClientCode { get; set; }
-		public string RequestedBy { get; set; }
-		public string RequesterContactEmail { get; set; }
-		public string RequesterContact { get; set; }
-		public byte? ModeOfRequest { get; set; }
-		public byte? TypeOfRequest { get; set; }
-		public string SalesPersonCode { get; set; }
-		public string ClientRefNo { get; set; }
-		public string PurposeOfRequest { get; set; }
-		public string Priority { get; set; }
-		public string CostCenterText { get; set; }
-		public DateTime? ExpectedDate { get; set; }
-		public byte? ExpectedVatrate { get; set; }
-		public string Remarks { get; set; }
-		public byte? CompanyBranch { get; set; }
-		public short? PurchaseRequestStatusId { get; set; }
-		public short? InventoryMasterGroupId { get; set; }
-		public string ProjectMasterCode { get; set; }
-		public DateTime? BidClosingDate { get; set; }
-		public DateTime? BidReminderOn { get; set; }
-		public string ClientProject { get; set; }
-		public byte? RequestSignatory { get; set; }
-		public byte? MprverifiedSign { get; set; }
-		public byte? MprapprovedSign { get; set; }
-		
+    public class PurchaseRequestViewModel
+    {
+        public string Mprno { get; set; }
+        public DateTime? Mprdate { get; set; }
+        public string ClientCode { get; set; }
+        public string RequestedBy { get; set; }
+        public string RequesterContactEmail { get; set; }
+        public string RequesterContact { get; set; }
+        public byte? ModeOfRequest { get; set; }
+        public byte? TypeOfRequest { get; set; }
+        public string SalesPersonCode { get; set; }
+        public string ClientRefNo { get; set; }
+        public string PurposeOfRequest { get; set; }
+        public string Priority { get; set; }
+        public string CostCenterText { get; set; }
+        public DateTime? ExpectedDate { get; set; }
+        public byte? ExpectedVatrate { get; set; }
+        public string Remarks { get; set; }
+        public byte? CompanyBranch { get; set; }
+        public short? PurchaseRequestStatusId { get; set; }
+        public short? InventoryMasterGroupId { get; set; }
+        public string ProjectMasterCode { get; set; }
+        public DateTime? BidClosingDate { get; set; }
+        public DateTime? BidReminderOn { get; set; }
+        public string ClientProject { get; set; }
+        public byte? RequestSignatory { get; set; }
+        public byte? MprverifiedSign { get; set; }
+        public byte? MprapprovedSign { get; set; }
 
-		public byte? TypeOfMpr { get; set; }
 
-		
+        public byte? TypeOfMpr { get; set; }
 
-		public string StoreCode { get; set; }
 
-		
-		public string Mprremarks { get; set; }
 
-		public bool? IsApproved { get; set; }
+        public string StoreCode { get; set; }
 
-		public string PreparedBy { get; set; }
 
-		public DateTime? PreparedOn { get; set; }
+        public string Mprremarks { get; set; }
 
-		public string ApprovedBy { get; set; }
+        public bool? IsApproved { get; set; }
 
-		public DateTime? ApprovedOn { get; set; }
+        public string PreparedBy { get; set; }
 
-		public string AddedBy { get; set; }
+        public DateTime? PreparedOn { get; set; }
 
-		public DateTime? AddedOn { get; set; }
+        public string ApprovedBy { get; set; }
 
-		public string ModifiedBy { get; set; }
+        public DateTime? ApprovedOn { get; set; }
 
-		public DateTime? ModifiedOn { get; set; }
+        public string AddedBy { get; set; }
 
-	
+        public DateTime? AddedOn { get; set; }
 
-		public string Project { get; set; }
+        public string ModifiedBy { get; set; }
 
-	
-		public short? DepartmentId { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
-		
 
-		public bool? IsSubmitted { get; set; }
 
-		public string SubmittedBy { get; set; }
+        public string Project { get; set; }
 
-		public DateTime? SubmittedOn { get; set; }
 
-		public bool? IsVerified { get; set; }
+        public short? DepartmentId { get; set; }
 
-		public string VerifiedBy { get; set; }
 
-		public DateTime? VerifiedOn { get; set; }
 
-		public string RequesterName { get; set; }
+        public bool? IsSubmitted { get; set; }
 
-	
-		public short? ProjectSubUnitCode { get; set; }
+        public string SubmittedBy { get; set; }
 
-		
+        public DateTime? SubmittedOn { get; set; }
 
-		public string MaterialQuoteNo { get; set; }
+        public bool? IsVerified { get; set; }
 
-		public byte? MprrevisionId { get; set; }
+        public string VerifiedBy { get; set; }
 
-		public bool? IsObseleteVersion { get; set; }
+        public DateTime? VerifiedOn { get; set; }
 
-		public string MprrevisedBy { get; set; }
+        public string RequesterName { get; set; }
 
-		public DateTime? MprrevisedOn { get; set; }
 
-		public string MprrevisionNo { get; set; }
+        public short? ProjectSubUnitCode { get; set; }
 
-		public bool? IsCancelled { get; set; }
 
-		public string CancelledBy { get; set; }
 
-		public DateTime? CancelledOn { get; set; }
+        public string MaterialQuoteNo { get; set; }
 
-		public string RemarksByApprover { get; set; }
+        public byte? MprrevisionId { get; set; }
 
-		public string RemarksByVerifier { get; set; }
+        public bool? IsObseleteVersion { get; set; }
+
+        public string MprrevisedBy { get; set; }
+
+        public DateTime? MprrevisedOn { get; set; }
+
+        public string MprrevisionNo { get; set; }
+
+        public bool? IsCancelled { get; set; }
+
+        public string CancelledBy { get; set; }
+
+        public DateTime? CancelledOn { get; set; }
+
+        public string RemarksByApprover { get; set; }
+
+        public string RemarksByVerifier { get; set; }
         public decimal? CurrencyRate { get; set; }
         public int? BaseCurrencyId { get; set; }
         public int? CurrencyId { get; set; }
 
         public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
-		
-	}
+
+    }
     public class SalesorderViewModel
     {
         public string SalesOrderNo { get; set; }
@@ -780,224 +848,224 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public DateTime? VerifiedOn { get; set; }
 
         public string CostAllocationMasterGroup { get; set; }
-        public string ? ValveType { get; set; }  // e.g. "Manual Valves", "Control Valves", "Safety Valves"
+        public string? ValveType { get; set; }  // e.g. "Manual Valves", "Control Valves", "Safety Valves"
 
         public List<Tbl60202salesOrderChild> SalesOrderChildren { get; set; }
 
     }
     public class RFQViewModel
-	{
+    {
         public string Rfqno { get; set; }
 
-		public DateTime? Rfqdate { get; set; }
+        public DateTime? Rfqdate { get; set; }
 
-		public string Mprno { get; set; }
+        public string Mprno { get; set; }
 
-		public string SupplierCode { get; set; }
+        public string SupplierCode { get; set; }
 
-		public bool? IsQuoted { get; set; }
+        public bool? IsQuoted { get; set; }
 
-		public bool? IsWon { get; set; }
+        public bool? IsWon { get; set; }
 
-		public string ReasonWon { get; set; }
+        public string ReasonWon { get; set; }
 
-		public string DeliveryPeriod { get; set; }
+        public string DeliveryPeriod { get; set; }
 
-		public string PaymentTerms { get; set; }
+        public string PaymentTerms { get; set; }
 
-		public string QuoteValidTo { get; set; }
+        public string QuoteValidTo { get; set; }
 
-		public DateTime? QuoteValidDate { get; set; }
+        public DateTime? QuoteValidDate { get; set; }
 
-		public string SupplierQuotationNo { get; set; }
+        public string SupplierQuotationNo { get; set; }
 
-		public DateTime? SupplierQuotationDt { get; set; }
+        public DateTime? SupplierQuotationDt { get; set; }
 
-		public string PreparedBy { get; set; }
+        public string PreparedBy { get; set; }
 
-		public DateTime? PreparedOn { get; set; }
+        public DateTime? PreparedOn { get; set; }
 
-		public string AddedBy { get; set; }
+        public string AddedBy { get; set; }
 
-		public DateTime? AddedOn { get; set; }
+        public DateTime? AddedOn { get; set; }
 
-		public string ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
-		public DateTime? ModifiedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
-		public byte? CompanyBranch { get; set; }
+        public byte? CompanyBranch { get; set; }
 
-		public string Attention { get; set; }
+        public string Attention { get; set; }
 
-		public string SupplierContactNo { get; set; }
+        public string SupplierContactNo { get; set; }
 
-		public string SupplierContactEmail { get; set; }
+        public string SupplierContactEmail { get; set; }
 
-		public bool? IsApproved { get; set; }
+        public bool? IsApproved { get; set; }
 
-		public string ApprovedBy { get; set; }
+        public string ApprovedBy { get; set; }
 
-		public DateTime? ApprovedOn { get; set; }
+        public DateTime? ApprovedOn { get; set; }
 
-		public string Rfqsubject { get; set; }
+        public string Rfqsubject { get; set; }
 
-		public string Rfqintro { get; set; }
+        public string Rfqintro { get; set; }
 
-		public string Rfqsummary { get; set; }
+        public string Rfqsummary { get; set; }
 
-		public byte? Rfqsignatory { get; set; }
+        public byte? Rfqsignatory { get; set; }
 
-		public string Project { get; set; }
+        public string Project { get; set; }
 
-		public byte? InventoryMasterGroupId { get; set; }
+        public byte? InventoryMasterGroupId { get; set; }
 
-		public string ProjectMasterCode { get; set; }
+        public string ProjectMasterCode { get; set; }
 
-		public bool? IsSubmitted { get; set; }
+        public bool? IsSubmitted { get; set; }
 
-		public string SubmittedBy { get; set; }
+        public string SubmittedBy { get; set; }
 
-		public DateTime? SubmittedOn { get; set; }
+        public DateTime? SubmittedOn { get; set; }
 
-		public bool? IsVerified { get; set; }
+        public bool? IsVerified { get; set; }
 
-		public string VerifiedBy { get; set; }
+        public string VerifiedBy { get; set; }
 
-		public DateTime? VerifiedOn { get; set; }
+        public DateTime? VerifiedOn { get; set; }
 
-		public string SalesPersonCode { get; set; }
+        public string SalesPersonCode { get; set; }
 
         public decimal? CurrencyRate { get; set; }
         public int? BaseCurrencyId { get; set; }
         public int? CurrencyId { get; set; }
 
-		public List<Tbl60702rfqchild> RFQDetailses { get; set; }
-		
+        public List<Tbl60702rfqchild> RFQDetailses { get; set; }
 
-	}
-	public class QuotationViewModel
-	{
-		public string QuoteNo { get; set; }
 
-		public DateTime? QuoteDate { get; set; }
+    }
+    public class QuotationViewModel
+    {
+        public string QuoteNo { get; set; }
 
-		public string ClientRefNo { get; set; }
+        public DateTime? QuoteDate { get; set; }
 
-		public string Attention { get; set; }
+        public string ClientRefNo { get; set; }
 
-		public string SubjectTitle { get; set; }
+        public string Attention { get; set; }
 
-		public byte? TypeOfQuote { get; set; }
+        public string SubjectTitle { get; set; }
 
-		public string QuoteType { get; set; }
+        public byte? TypeOfQuote { get; set; }
 
-		public decimal? QuoteTransport { get; set; }
+        public string QuoteType { get; set; }
 
-		public decimal? QuoteDiscount { get; set; }
+        public decimal? QuoteTransport { get; set; }
 
-		public byte? PaymentTerms { get; set; }
+        public decimal? QuoteDiscount { get; set; }
 
-		public byte? DeliveryPeriod { get; set; }
+        public byte? PaymentTerms { get; set; }
 
-		public byte? DeliveryTerms { get; set; }
+        public byte? DeliveryPeriod { get; set; }
 
-		public string QuoteValidity { get; set; }
+        public byte? DeliveryTerms { get; set; }
 
-		public string PreparedBy { get; set; }
+        public string QuoteValidity { get; set; }
 
-		public DateTime? PreparedOn { get; set; }
+        public string PreparedBy { get; set; }
 
-		public string ApprovedBy { get; set; }
+        public DateTime? PreparedOn { get; set; }
 
-		public DateTime? ApprovedOn { get; set; }
+        public string ApprovedBy { get; set; }
 
-		public string AddedBy { get; set; }
+        public DateTime? ApprovedOn { get; set; }
 
-		public DateTime? AddedOn { get; set; }
+        public string AddedBy { get; set; }
 
-		public string ModifiedBy { get; set; }
+        public DateTime? AddedOn { get; set; }
 
-		public DateTime? ModifiedOn { get; set; }
+        public string ModifiedBy { get; set; }
 
-		public string Rfqcode { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
-		public string ClientContactNo { get; set; }
+        public string Rfqcode { get; set; }
 
-		public string ClientContactEmail { get; set; }
+        public string ClientContactNo { get; set; }
 
-		public string ClientCode { get; set; }
+        public string ClientContactEmail { get; set; }
 
-		public string QuotationSummary { get; set; }
+        public string ClientCode { get; set; }
 
-		public byte? QuoteSignatory { get; set; }
+        public string QuotationSummary { get; set; }
 
-		public string QuoteIntro { get; set; }
+        public byte? QuoteSignatory { get; set; }
 
-		public byte? TypeOfRequest { get; set; }
+        public string QuoteIntro { get; set; }
 
-		public byte? ModeOfRequest { get; set; }
+        public byte? TypeOfRequest { get; set; }
 
-		public string AdditionsText { get; set; }
+        public byte? ModeOfRequest { get; set; }
 
-		public string DiscountsText { get; set; }
+        public string AdditionsText { get; set; }
 
-		public DateTime? QuoteDueDate { get; set; }
+        public string DiscountsText { get; set; }
 
-		public string Project { get; set; }
+        public DateTime? QuoteDueDate { get; set; }
 
-		public string SalesPersonCode { get; set; }
+        public string Project { get; set; }
 
-		public bool? IsVerified { get; set; }
+        public string SalesPersonCode { get; set; }
 
-		public bool? IsApproved { get; set; }
+        public bool? IsVerified { get; set; }
 
-		public byte? RevisionNo { get; set; }
+        public bool? IsApproved { get; set; }
 
-		public byte? CompanyBranch { get; set; }
+        public byte? RevisionNo { get; set; }
 
-		public string Mprno { get; set; }
+        public byte? CompanyBranch { get; set; }
 
-		public string QuoteThanksNote { get; set; }
+        public string Mprno { get; set; }
 
-		public string QuoteColumn1 { get; set; }
+        public string QuoteThanksNote { get; set; }
 
-		public string QuoteColumn2 { get; set; }
+        public string QuoteColumn1 { get; set; }
 
-		public string QuoteColumn3 { get; set; }
+        public string QuoteColumn2 { get; set; }
 
-		public string QuoteLabel1 { get; set; }
+        public string QuoteColumn3 { get; set; }
 
-		public string QuoteLabel2 { get; set; }
+        public string QuoteLabel1 { get; set; }
 
-		public string QuoteLabel3 { get; set; }
+        public string QuoteLabel2 { get; set; }
 
-		public DateTime? QuoteSubmittedOn { get; set; }
+        public string QuoteLabel3 { get; set; }
 
-		public string QuoteSubmittedBy { get; set; }
+        public DateTime? QuoteSubmittedOn { get; set; }
 
-		public byte? QuoteStatus { get; set; }
+        public string QuoteSubmittedBy { get; set; }
 
-		public byte? InventoryMasterGroupId { get; set; }
+        public byte? QuoteStatus { get; set; }
 
-		public byte? VerifiedSignatory { get; set; }
+        public byte? InventoryMasterGroupId { get; set; }
 
-		public byte? ApprovedSignatory { get; set; }
+        public byte? VerifiedSignatory { get; set; }
 
-		public bool? IsSubmitted { get; set; }
+        public byte? ApprovedSignatory { get; set; }
 
-		public string SubmittedBy { get; set; }
+        public bool? IsSubmitted { get; set; }
 
-		public DateTime? SubmittedOn { get; set; }
+        public string SubmittedBy { get; set; }
 
-		public string VerifiedBy { get; set; }
+        public DateTime? SubmittedOn { get; set; }
 
-		public DateTime? VerifiedOn { get; set; }
+        public string VerifiedBy { get; set; }
 
-		public string ProjectMasterCode { get; set; }
+        public DateTime? VerifiedOn { get; set; }
 
-		public DateTime? BidClosingDate { get; set; }
+        public string ProjectMasterCode { get; set; }
 
-		public string TransportationScope { get; set; }
+        public DateTime? BidClosingDate { get; set; }
+
+        public string TransportationScope { get; set; }
 
         public decimal? CurrencyRate { get; set; }
         public int? BaseCurrencyId { get; set; }
@@ -1005,9 +1073,9 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
 
 
-	}
-	public class MaterialReceiptViewModel
-	{
+    }
+    public class MaterialReceiptViewModel
+    {
         public decimal? CurrencyRate { get; set; }
 
         public int? BaseCurrencyId { get; set; }
@@ -1016,91 +1084,91 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public string ReceiptNo { get; set; }
 
-		public DateTime? ReceiptDate { get; set; }
+        public DateTime? ReceiptDate { get; set; }
 
-		public byte? ModeOfReceiptId { get; set; }
+        public byte? ModeOfReceiptId { get; set; }
 
-		public string SupplierCode { get; set; }
+        public string SupplierCode { get; set; }
 
-		public string ClientCode { get; set; }
+        public string ClientCode { get; set; }
 
-		public string Mprno { get; set; }
+        public string Mprno { get; set; }
 
-		public string Rfqno { get; set; }
+        public string Rfqno { get; set; }
 
-		public string SupplierQuotationNo { get; set; }
+        public string SupplierQuotationNo { get; set; }
 
-		public string OurPurchaseOrderNo { get; set; }
+        public string OurPurchaseOrderNo { get; set; }
 
-		public string JobCode { get; set; }
+        public string JobCode { get; set; }
 
-		public string IssueRemarks { get; set; }
+        public string IssueRemarks { get; set; }
 
-		public string PreparedBy { get; set; }
+        public string PreparedBy { get; set; }
 
-		public DateTime? PreparedOn { get; set; }
+        public DateTime? PreparedOn { get; set; }
 
-		public string ApprovedBy { get; set; }
+        public string ApprovedBy { get; set; }
 
-		public DateTime? ApprovedOn { get; set; }
+        public DateTime? ApprovedOn { get; set; }
 
-		public string AddedBy { get; set; }
+        public string AddedBy { get; set; }
 
-		public DateTime? AddedOn { get; set; }
+        public DateTime? AddedOn { get; set; }
 
-		public string ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
 
-		public DateTime? ModifiedOn { get; set; }
+        public DateTime? ModifiedOn { get; set; }
 
-		public byte? CompanyBranch { get; set; }
+        public byte? CompanyBranch { get; set; }
 
-		public bool? IsApproved { get; set; }
+        public bool? IsApproved { get; set; }
 
-		public byte? ReceiptSignatory { get; set; }
+        public byte? ReceiptSignatory { get; set; }
 
-		public string VatpurchaseBillNo { get; set; }
+        public string VatpurchaseBillNo { get; set; }
 
-		public string StoreCode { get; set; }
+        public string StoreCode { get; set; }
 
-		public string DeliveryNoteNo { get; set; }
+        public string DeliveryNoteNo { get; set; }
 
-		public bool? IsPosted { get; set; }
+        public bool? IsPosted { get; set; }
 
-		public DateTime? PostedOn { get; set; }
+        public DateTime? PostedOn { get; set; }
 
-		public string PostedBy { get; set; }
+        public string PostedBy { get; set; }
 
-		public string VoucherNo { get; set; }
+        public string VoucherNo { get; set; }
 
-		public string SupplierDeliveryNoteNo { get; set; }
+        public string SupplierDeliveryNoteNo { get; set; }
 
-		public string ProjectMasterCode { get; set; }
+        public string ProjectMasterCode { get; set; }
 
-		public byte? InventoryMasterGroupId { get; set; }
+        public byte? InventoryMasterGroupId { get; set; }
 
-		public string SalesPersonCode { get; set; }
+        public string SalesPersonCode { get; set; }
 
-		public DateTime? InventoryEffectiveDate { get; set; }
+        public DateTime? InventoryEffectiveDate { get; set; }
 
-		public bool? IsSubmitted { get; set; }
+        public bool? IsSubmitted { get; set; }
 
-		public string SubmittedBy { get; set; }
+        public string SubmittedBy { get; set; }
 
-		public DateTime? SubmittedOn { get; set; }
+        public DateTime? SubmittedOn { get; set; }
 
-		public string VerifiedBy { get; set; }
+        public string VerifiedBy { get; set; }
 
-		public DateTime? VerifiedOn { get; set; }
+        public DateTime? VerifiedOn { get; set; }
 
-		public bool? IsVerified { get; set; }
+        public bool? IsVerified { get; set; }
 
-		public string StoreReceivedIn { get; set; }
+        public string StoreReceivedIn { get; set; }
 
-		public List<Tbl60502materialReceiptChild> MaterialReceiptDetailses { get; set; }
+        public List<Tbl60502materialReceiptChild> MaterialReceiptDetailses { get; set; }
 
 
-	}
-	public class CloneJournalEntryRequest
+    }
+    public class CloneJournalEntryRequest
     {
         public string FromJournalRefNo { get; set; }
         public string ToJournalRefNo { get; set; }
@@ -1134,7 +1202,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public byte VATApplicableRate { get; set; }
         public bool IsTaxIncluded { get; set; }
     }
-    public  class ClaimPaymentDto
+    public class ClaimPaymentDto
     {
         public string ClaimRefNo { get; set; } = default!;
         public string PaymentVoucherNo { get; set; } = default!;
@@ -1191,7 +1259,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal? PostingPercentage { get; set; }
         public string PostingCostItemCode { get; set; }
         public decimal? TotalCostOfItemInclAll { get; set; }
-     public int MethodType { get; set; }
+        public int MethodType { get; set; }
     }
     public class CreateQuotationRequest
     {
@@ -1330,7 +1398,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
 
 
-public class InvoiceRequest
+    public class InvoiceRequest
     {
         public string InvoiceNo { get; set; }
         public string UniqueInvoiceID { get; set; }

@@ -1,0 +1,1921 @@
+﻿@page
+@using DevExpress.AspNetCore
+@model QD.ERP.Web.Areas.ERM.Pages.SevicemaintenaceEditModel
+@{
+}
+<style>
+     .dxreSelCursor dxreSelCursorZL4{
+        height:20px!important;
+    }
+    .dxreRow {
+        white-space: nowrap;
+        overflow: visible!important;
+        position: absolute;
+        font-size: 0;
+        user-select: none;
+    }
+    .ledgerResult {
+    overflow-x: auto;
+    width: 100%;
+    }
+
+    .dx-tabpanel .dx-tab {
+    color: black !important;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 10px 15px;
+    }
+
+
+    .dx-tabpanel .dx-tab.dx-selection {
+    background-color: lightblue;
+    color: white !important;
+    }
+
+    .dx-tabpanel {
+    }
+
+    .dx-button-text {
+        color:black;
+    }
+
+    .mainContainer {
+    overflow-x: hidden;
+    width:100%;
+    }
+
+    
+    .form-container1 {
+    margin: 15px;
+    width: 99%;
+    padding: 5px;
+    border-radius: 1px;
+    }
+
+    .form-container {
+    width: 100%;
+    border-radius: 1px;
+    }
+
+    .form-row {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    }
+
+
+    .form-label {
+    color: black;
+    padding: 5px;
+    font-weight: bold;
+    width: 200px;
+    text-align: Left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    }
+
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+    }
+
+    .dx-button {
+    margin-left: 5px;
+    }
+
+    .dx-selectbox {
+    width: 100%;
+    }
+
+    .footer-buttons .row {
+    margin-top: 20px;
+    }
+
+    .form-control-with-border {
+    border-radius: 4px;
+    padding: 8px;
+    width: 100%;
+    }
+
+
+    .horizontal-container {
+    display: flex;
+    gap: 20px;
+    justify-content: start;
+    align-items: center;
+    margin: 15px;
+    }
+
+    .button-group {
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    }
+
+    .form-row.border-outline {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    }
+
+    .select-box {
+    width: 20vh;
+    }
+
+    .imagecontainer {
+    background-color: #e0f7fa;
+    border: 1px solid #90caf9;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    }
+
+    .imagecontainer img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    }
+
+    .imagecontainer span {
+    color: #555;
+    font-style: italic;
+    position: absolute;
+    }
+
+    .layout-container {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    }
+
+    .form-column {
+    flex: 1 1 48%;
+    display: flex;
+    flex-direction: column;
+    }
+
+    .field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.3rem;
+    }
+
+    .field-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    }
+
+    .field-buttons {
+    display: flex;
+    gap: 0.5rem;
+    }
+
+    .btn-solid {
+    padding: 4px 10px;
+    font-size: 0.875rem;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+
+    .btn-outline {
+    padding: 4px 10px;
+    font-size: 0.875rem;
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    border-radius: 4px;
+    cursor: pointer;
+    }
+
+    .flex-row {
+    display: flex;
+    align-items: end;
+    }
+
+    .form-container {
+    gap: 20px;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+    }
+
+    .form-card1 {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 1%;
+    }
+
+    .form-row1 {
+    display: flex;
+    gap: 20px;
+    }
+
+    .form-group1 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    }
+
+    label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    }
+
+    .containers {
+    display: flex;
+    }
+
+    .dx-card {
+    background: var(--background-color);
+    }
+
+    .important-height {
+    height: 190px !important;
+    }
+    .row {
+        width:150%;
+         }
+
+          .joborder-container {
+                        display: flex;
+                        height: 90vh;
+                    }
+
+                    .joborder-tabs {
+                        width: 220px;
+                        padding-top: 10px;
+                        min-height: 100%;
+                        border: 1px solid #ddd;
+                    }
+
+                    .joborder-content {
+                        flex: 1;
+                        padding: 18px 18px 0 18px;
+                    }
+
+                    .joborder-form-table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 10px 8px;
+                    }
+
+                        .joborder-form-table td {
+                            padding: 0;
+                            vertical-align: middle;
+                        }
+
+                    .manual-valves-cell {
+                        background: #d3d3d3;
+                        font-weight: bold;
+                        padding: 4px 8px;
+                        color: #222;
+                        border-radius: 2px;
+                    }
+
+                    .joborder-desc-label {
+                        font-weight: bold;
+                        font-size: 13px;
+                        margin-bottom: 4px;
+                        display: block;
+                    }
+
+                    .joborder-footer {
+                        display: flex;
+                        justify-content: space-between;
+                        font-size: 12px;
+                        margin-top: 4px;
+                        padding: 0 2px;
+                    }
+                    #SupplierTabs{
+                        height:250px;
+                    }
+   </style>
+<meta charset="UTF-8">
+<div class="title">
+    <div class="header-container">
+        <div id="Servcemaintenance" class="no-border-title"></div>
+    </div>
+</div>
+<div class="form-container1">
+    <div class="form-container">
+        <!-- Tab Menu -->
+        @(
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                    .Items(item =>
+                    {
+                    item.Add()
+                    .Title("Service Order Details")
+                    .Icon("folder")
+                    .Text("Service Order Details")
+                    .Template(@<text>
+                                <div class="row g-2">
+                        <!-- Row 1 -->
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().TextBox()
+                                        .ID("txtServiceOrderNo")
+                                        .Label("Service Order No:")
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .ReadOnly(true)
+                                        .Width("100%")
+                                        )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().DateBox()
+                                    .ID("ServiceEntryDate")
+                                    .Value(DateTime.Now)
+                                    .Label("Service Entry Date:")
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("100%")
+                                    )
+                        </div>
+
+                      <div class="col-md-4" style="display:flex; align-items:end;">
+                            @(Html.DevExtreme().DropDownBox()
+                                .ID("ddlVehicleDescription")
+                                .Label("Property / Vehicle Description:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .DataSource(d => d.WebApi()
+                                    .Controller("ServiceMaintenance")
+                                    .LoadAction("GetpropertyVehicle")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("PropertyNo")
+                                )
+                                .ValueExpr("PropertyNo")
+                                .DisplayExpr("PropertyDescription")
+                                .Width("100%")
+                                .HoverStateEnabled(true)
+                                .OnValueChanged("onPropertyChanged")
+                                .OnOpened("onOpened")
+                                .OnKeyDown("onKeyDown")
+                                .TabIndex(1)
+                                .ContentTemplate(new TemplateName("GetPropertyContentTemplate"))
+                                .ElementAttr(new { dataGridId = "GetProject-datagrid" }) // <-- Add this line
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                        .Message(new JS("formatMessage('Property should be entered')"));
+                                })
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                        .Name("AddPreparedBy")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("plus")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                        );
+                                    buttons.Add()
+                                        .Name("dropDown");
+                                })
+                            )
+
+            </div>
+
+
+                  
+
+                    <div class="row g-2" style="margin-top:8px;">
+
+                        <!-- Row 2 -->
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().SelectBox()
+                                    .ID("ddlMechanicName")
+                                    .Label("Mechanic Name:")
+                                    .AcceptCustomValue(true)
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("100%")
+                                    )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().SelectBox()
+                                            .ID("ddlPropertyBroughtBy")
+                                            .Label("Property Brought By:")
+                                            .AcceptCustomValue(true)
+                                            .LabelMode(EditorLabelMode.Floating)
+                                            .Width("100%")
+                                            )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().TextBox()
+                                                    .ID("txtOperatorName")
+                                                    .Label("Operator / Driver Name:")
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .Width("100%")
+                                                    )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().TextBox()
+                                        .ID("txtDriverContact")
+                                        .Label("Operator / Driver Contact No:")
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width("100%")
+                                        )
+                        </div>
+
+                    </div>
+
+                    <div class="row g-2" style="margin-top:8px;">
+
+                        <!-- Row 3 -->
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().SelectBox()
+                                    .ID("ddlServiceType")
+                                    .Label("Service Type:")
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .AcceptCustomValue(true)
+                                    .Width("100%")
+                                    )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().SelectBox()
+                                .ID("ddlServiceStatus")
+                                .Label("Service Status:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .AcceptCustomValue(true)
+                                .Width("100%")
+                                )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtLocation")
+                                .Label("Location:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                )
+                        </div>
+
+                        <div class="col-md-2">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtProject")
+                                .Label("Project:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                )
+                        </div>
+
+                    </div>
+                </div>
+        </text>);
+          item.Add().Text("Deductions & Currency Details").Icon("home").Title(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+          <div class="p-3">
+                <table style="width:100%; font-size:14px; margin:5px;">
+                    <tr>
+                        <td style="width: 30%;">
+                            @(Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('Base Currency')"))
+                                .DataSource(d => d.WebApi()
+                                    .Controller("VATModule")
+                                    .LoadAction("GetTaxCurrency")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("CurrencyExchangeId")
+                                )
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("ddlGoodsGroup4")
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .OnInitialized("onBaseCurrencyInitialized")
+                                .ValueExpr("CurrencyExchangeId")
+                                .DisplayExpr("CurrencyName")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .Disabled(true)
+                                .DropDownOptions(o => o.Width(425))
+                                .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+                                .Width("100%")
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                        .Name("btnEditTaxCurrency")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("edit")
+                                            .Disabled(true)
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            .OnClick("CurrencyClick")
+                                        );
+
+                                    buttons.Add().Name("dropDown");
+                                })
+                            )
+                        </td>
+
+                        <td style="width: 30%;">
+                            @(Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('Convertion Currency')"))
+                                .DataSource(d => d.WebApi()
+                                    .Controller("VATModule")
+                                    .LoadAction("GetInvoiceCurrency")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("CurrencyExchangeId")
+                                )
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("ddlGoodsGroup3")
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .OnInitialized("onBaseCurrencyInitialized")
+                                .ValueExpr("CurrencyExchangeId")
+                                .DisplayExpr("CurrencyName")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .DropDownOptions(o => o.Width(430))
+                                .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+						        .Width("100%")
+						        .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                        .Name("btnAddInvoiceCurrency")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("edit")
+                                            .Hint("Edit Description")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            .OnClick("CurrencyClick")
+                                        );
+
+                                    buttons.Add().Name("dropDown");
+                                })
+                            )
+                        </td>
+                        <td>
+						        @(Html.DevExtreme().NumberBox()
+							        .ID("currencyexchangerate")
+							        .Label(new JS("formatMessage('Currency Exchange Rate:')"))
+							        .LabelMode(EditorLabelMode.Floating)
+							        .Min(1)
+							        .Step(1)
+							        .ShowSpinButtons(true)
+							        .Value(1)
+							        .Width("100%")
+						        )
+					        </td>
+				        </tr>
+			        </table>
+		        </div>
+        </text>);
+                    })
+                )
+        <div class="joborder-container">
+            <!-- Left Vertical Tabs -->
+            <div class="joborder-tabs">
+                @(Html.DevExtreme().List()
+                    .ID("jobOrderTabs")
+                    .DataSource(new[] {
+                    new { id = 1, text = "Service Details", icon = "fa fa-cogs" },
+                    new { id = 2, text = "Spare Parts", icon = "fa fa-tools" }
+                })
+                    .DisplayExpr("text")
+                    .KeyExpr("id")
+                    .SelectionMode(ListSelectionMode.Single)
+                    .SelectedItemKeys(new[] { 1 })
+                    .OnItemClick("onJobOrderTabClick")
+                    )
+            </div>
+            <!-- Right Content Area -->
+            <div class="joborder-content">
+                <div id="tabContent_1">
+                    <div style="display:flex; align-items:end; ">
+                    <div>
+                          @(Html.DevExtreme().TextArea()
+							        .ID("ddlPropertyComplaint")
+							        .Label(new JS("formatMessage('Property Complaint')"))
+							        .LabelMode(EditorLabelMode.Floating)
+							        .Width("100%")
+                                    .Height(30)
+
+						        )
+                    </div>
+                      <div>
+                          @(Html.DevExtreme().DropDownBox()
+							        .ID("ddlServiceTemplate")
+							        .Label(new JS("formatMessage('Service Template')"))
+							        .LabelMode(EditorLabelMode.Floating)
+                                     .DataSource(d => d.WebApi()
+                                    .Controller("ServiceMaintenance")
+                                    .LoadAction("GetServiceTemplate")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("ServiceTemplateCode")
+                                    )
+                                    .ValueExpr("ServiceTemplateCode")
+                                    .DisplayExpr("ServiceTemplateText")
+                                    .Width("100%")
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .OnInput("dropDownBoxOnInput")
+                                    .OnOpened("onOpened")
+                                    .TabIndex(1)
+                                    .Width("100%")
+                                    .OnKeyDown("onKeyDown")
+                                    .ContentTemplate(new TemplateName("GetServiceContentTemplate"))
+                                   .Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
+
+								// Add Client Button
+								buttons.Add()
+									.Name("AddServiceplus")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										//.OnClick("AddNewClient")
+									);
+
+								// Edit Client Button
+								buttons.Add()
+									.Name("btnEditClient")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										@* .OnClick(@<text>
+											function() {
+												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+													return;
+												}
+												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+												openModal(url, 'Client Master');
+											}
+										</text>) *@
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
+						)
+                            
+						        
+                    </div>
+                 </div>
+             <div>
+                     Hiii   @* @await Html.PartialAsync("/Pages/RichTextEditor.cshtml") *@
+                </div>
+             </div>
+                <div id="tabContent_2" style="display:none;">
+                  <div style="display:flex; width: 450px; align-items: end; column-gap:40px;">
+                      <div>
+                         @(Html.DevExtreme().DropDownBox()
+                            .ID("dditemfromstore")
+                            .Label("Item Issued From Store:")
+                            .LabelMode(EditorLabelMode.Floating)
+                            .DataSource(d => d.WebApi()
+                                .Controller("ServiceMaintenance")
+                                .LoadAction("GetStoreItem")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("StoreId")
+                            )
+                            .ValueExpr("StoreId")
+                            .DisplayExpr("StoreName")
+                            .Width("100%")
+                            .HoverStateEnabled(true)
+                            .OnValueChanged("onStoreChanged")
+                            .OnOpened("onOpened")
+                            .OnKeyDown("onKeyDown")
+                            .TabIndex(1)
+                            .ContentTemplate(new TemplateName("GetstoreContentTemplate"))
+                            .ElementAttr(new { dataGridId = "GetProject-datagrid" }) // <-- Add this line
+                        )
+                                     </div>
+
+                       <div>                        
+                        @(Html.DevExtreme().Button()
+                            .ID("ddcAddbutton")
+                            .Text("Add Spare parts / consumbles")
+                            .Icon("plus")
+                            .Width("100%")
+                            .OnClick("Gridchild")
+                            )
+                           </div>
+                        </div>
+                   <div class="dx-field ledgerResult">
+				        @(Html.DevExtreme().DataGrid()
+					        .ID("itemGrid") 
+					        .Height("38vh")
+					        .DataSource(new JS("window.itemGridDataSource"))
+					        .Columns(columns =>
+					        {
+						        columns.Add().DataField("SpareSlNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")).Visible(false);
+						        columns.Add()
+                                .DataField("Gsdescrpition")
+                                .Caption(new JS("formatMessage('Item Code')"))
+                                .Width(120)
+                                .AllowEditing(false)
+                                .CellTemplate(new JS(@"
+                                    function(container, options) {
+                                        container.text(options.data?.Gscode || '');
+                                    }
+                                "));
+                              columns.Add()
+                                .DataField("Gscode")
+                                .Caption(new JS("formatMessage('Item Description')"))
+                                .Width(400)
+                                .EditCellTemplate(new JS("descriptionDropDownTemplate"))
+                                .CellTemplate(new JS(@"
+                                    function (container, options) {
+                                        $('<span>').text(options.data?.Gsdescrpition || '').appendTo(container);
+                                    }
+                                "));
+
+                              columns.Add()
+                            .DataField("UnitCode") // ✅ use code for binding
+                            .Caption(new JS("formatMessage('Unit')"))
+                            .Width(200)
+                            .EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
+                            .CellTemplate(new JS(@"
+                                function (container, options) {
+                                    const unit = unitCodesList.find(u => u.UnitCode === options.value);
+                                    container.text(unit ? unit.UnitDesc : options.value);
+                                }
+                            "));
+						        columns.Add()
+						        .DataField("QtyUsed")
+						        .Caption(new JS("formatMessage('Qty Used')"))
+						        .DataType(GridColumnDataType.Number) 
+                                .EditorOptions(new {value = 0})
+						        .Width(150)
+						        .EditorOptions(new {
+							        maxLength = 8
+							        });
+						        columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+
+						        columns.Add().DataField("TotalCost").Caption(new JS("formatMessage('Total Cost')")).DataType(GridColumnDataType.Number).AllowEditing(false).EditorOptions(new {value = 0});
+
+						        columns.Add()
+							        .Type(GridCommandColumnType.Buttons)
+							        .Width(60)
+							        .Buttons(b =>
+							        {
+								        b.Add()
+								         .Hint("Delete")
+								         .Icon("remove")            
+								         .OnClick("deleteChild");
+							        });
+					        })
+					        .ColumnAutoWidth(true)
+					        .Width("100%")
+					        .WordWrapEnabled(false)
+					        .AllowColumnReordering(true)
+					        .AllowColumnResizing(true)
+					        .ColumnFixing(fixing => fixing.Enabled(true))
+					        .HeaderFilter(filter => filter.Visible(false))
+					        .Paging(p => p.Enabled(false))
+					        .Pager(pager => pager.Visible(false))
+					        .Grouping(grouping => grouping.AutoExpandAll(true))
+					        .FilterRow(filterRow => filterRow.Visible(false))
+					        .GroupPanel(groupPanel => groupPanel.Visible(false))
+					        .ShowBorders(true)
+					        .ShowRowLines(true)
+					        .Editing(editing => editing
+					        .Mode(GridEditMode.Cell)
+					        .AllowUpdating(true)
+					        .AllowDeleting(true)
+					        )
+					        .OnContextMenuPreparing("onGridRightClick")
+					        )
+		                      </div>
+                        </div>
+                    </div>
+                </div>
+        <div class="footer-fixed" style="height: 80px;">
+        @await Html.PartialAsync("/Pages/Shared/ERM/ServiceMaintenanceFooter.cshtml")
+        </div>
+
+        @using (Html.DevExtreme().NamedTemplate("GetPropertyContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetProject-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("ServiceMaintenance")
+					.LoadAction("GetpropertyVehicle")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("PropertyNo")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.OnSelectionChanged("dataGridSelectionChanged29")
+					.OnInitialized("dataGridInitialized1")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height("65vh")
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(300))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
+						columns.Add().DataField("PropertyDescription").Caption(new JS("formatMessage('Property Description')"));
+						columns.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
+						columns.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')"));
+						columns.Add().DataField("DoorNo").Caption(new JS("formatMessage('DoorNo')"));
+						columns.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
+						columns.Add().DataField("ModelType").Caption(new JS("formatMessage('Model Type')"));
+					})
+					)
+				}
+                 @using (Html.DevExtreme().NamedTemplate("GetServiceContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetServietem-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("ServiceMaintenance")
+					.LoadAction("GetServiceTemplate")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("ServiceTemplateCode")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.OnSelectionChanged("dataGridSelectionChanged1")
+					.OnInitialized("dataGridInitialized1")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height("65vh")
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(300))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("ServiceTemplateCode").Caption(new JS("formatMessage('Tempalate Code')"));
+						columns.Add().DataField("TemplateType").Caption(new JS("formatMessage('Tempalate Name')"));
+					})
+					)
+				}
+                  @using (Html.DevExtreme().NamedTemplate("GetstoreContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetStore-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("ServiceMaintenance")
+					.LoadAction("GetStoreItem")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("StoreId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.OnSelectionChanged("dataGridSelectionChanged22")
+					.OnInitialized("dataGridInitialized1")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height("65vh")
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(200))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("StoreId").Caption(new JS("formatMessage('ID')")).Visible(false);
+						columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')"));
+					})
+					)
+				}
+               @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+
+						.ID("taxcurrecy-datagrid")
+						.DataSource(d => d.WebApi()
+						.Controller("VATModule")
+								.LoadAction("GetTaxCurrency")
+						.LoadMode(DataSourceLoadMode.Raw)
+								.Key("CurrencyExchangeId")
+
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						.SearchPanel(sp => sp.HighlightSearchText(true))
+						.Selection(sl => sl.Mode(SelectionMode.Single)) 
+						.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+						.OnInitialized("onBaseCurrencyInitialized")
+						// .HeaderFilter(p => p.Visible(true))
+						.ShowBorders(true)
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.FilterRow(f => f.Visible(true))
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(345)
+						.Selection(s => s.Mode(SelectionMode.Single))
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+						columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+						})
+					)
+
+}
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+					.ID("invoicecurrecy-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("VATModule")
+					.LoadAction("GetInvoiceCurrency")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("CurrencyExchangeId")
+					)		
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.SearchPanel(sp => sp.HighlightSearchText(true))
+					.Selection(sl => sl.Mode(SelectionMode.Single)) 
+					.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
+					.OnInitialized("onBaseCurrencyInitialized")
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
+						columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+					})
+				)
+}
+
+
+
+<script>
+
+                function onPropertyChanged(e) {
+                console.log("Property selected:", e.value);
+            }
+
+            function onStoreChanged(e) {
+                console.log("Store selected:", e.value);
+            }
+                function Gridchild(e) {
+                const storeValue = $("#dditemfromstore").dxDropDownBox("instance")?.option("value");
+
+                if (!storeValue) {
+                    DevExpress.ui.dialog.alert("Please select a Store before adding spare parts/consumables.", "Validation");
+                    return;
+                }
+
+                var button = $("#btnSave").dxButton("instance");
+                button.option("text", "Update");
+
+                var grid = $("#itemGrid").dxDataGrid("instance");
+                grid.addRow().done(function () {
+                    var rowIndex = grid.getVisibleRows().length - 1;
+                    grid.editCell(rowIndex, 0);
+                });
+            }
+
+            $("#btnBack").on("click", function () {
+		            window.history.back();
+	            });
+
+         $("#btnSave").on("click", function (e) {
+             debugger;
+            const $btn = $(this).dxButton("instance");
+            $btn.option("disabled", true); // prevent double clicks
+
+            // ✅ Step 1: Validate required field
+            const PropertyValidator = $("#ddlVehicleDescription").dxValidator("instance");
+            const PropertyValidation = PropertyValidator.validate();
+
+            if (!PropertyValidation.isValid) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+                $btn.option("disabled", false);
+                return;
+            }
+
+            // ✅ Step 2: Build master object
+            const master = {
+                ServiceSheetNo: $("#txtServiceOrderNo").dxTextBox("instance")?.option("value"),
+                ServiceDate: $("#ServiceEntryDate").dxDateBox("instance")?.option("value"),
+                PropertyNo: $("#ddlVehicleDescription").dxDropDownBox("instance")?.option("value"),
+                ServicedBy: $("#ddlMechanicName").dxSelectBox("instance")?.option("value"),
+                PropertyBroughtBy: $("#ddlPropertyBroughtBy").dxSelectBox("instance")?.option("value"),
+                OperatorName: $("#txtOperatorName").dxTextBox("instance")?.option("value"),
+                OperatorContactNo: $("#txtDriverContact").dxTextBox("instance")?.option("value"),
+                Location: $("#txtLocation").dxTextBox("instance")?.option("value"),
+                Project: $("#txtProject").dxTextBox("instance")?.option("value"),
+                ServiceStatus: $("#ddlServiceStatus").dxSelectBox("instance")?.option("value"),
+                StoreIssuedFrom: $("#dditemfromstore").dxDropDownBox("instance")?.option("value"),
+                ServiceOrderType: $("#ddlServiceType").dxSelectBox("instance")?.option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId : $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
+                AddedBy: "CurrentUser",
+                AddedOn: new Date()
+            };
+
+            // ✅ Step 3: Get children from DataGrid
+            const gridInstance = $("#itemGrid").dxDataGrid("instance");
+            const children = gridInstance?.getDataSource()?.items() || [];
+
+            if (!children || children.length === 0) {
+                DevExpress.ui.notify("No child records to save.", "error", 3000);
+                $btn.option("disabled", false);
+                return;
+            }
+
+            // ✅ Step 4: Build DTO payload
+            const model = {
+                Master: [master],  // wrap in array for DTO
+                Children: children
+            };
+
+            // ✅ Step 5: AJAX call to save data
+            $.ajax({
+                type: "POST",
+                url: "/api/ServiceMaintenance/SaveOrUpdateServiceRequest",
+                contentType: "application/json",
+                data: JSON.stringify(model),
+                success: function (response) {
+                    DevExpress.ui.notify(response.message || "Saved successfully.", "success", 3000);
+
+                    // Optional: refresh parent grid if exists
+                    if (window.parent && window.parent.$("#dataGrid").length) {
+                        const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                        if (dataGrid) dataGrid.refresh();
+                    }
+
+                    $btn.option("disabled", false);
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 5000);
+                    $btn.option("disabled", false);
+                }
+            });
+        });
+
+$("#btnSaveAndClose").on("click", function () {
+    const $btn = $(this).dxButton("instance");
+    $btn.option("disabled", true); // prevent double clicks
+
+    // ✅ Step 1: Validate required field
+    const PropertyValidator = $("#ddlVehicleDescription").dxValidator("instance");
+    const PropertyValidation = PropertyValidator.validate();
+
+    if (!PropertyValidation.isValid) {
+        DevExpress.ui.dialog.alert(
+            "Cannot continue saving with errors, please clear the errors and continue.",
+            "Clear Errors"
+        );
+        $btn.option("disabled", false);
+        return;
+    }
+
+    // ✅ Step 2: Build master object
+    const master = {
+        ServiceSheetNo: $("#txtServiceOrderNo").dxTextBox("instance")?.option("value"),
+        ServiceDate: $("#ServiceEntryDate").dxDateBox("instance")?.option("value"),
+        PropertyNo: $("#ddlVehicleDescription").dxDropDownBox("instance")?.option("value"),
+        ServicedBy: $("#ddlMechanicName").dxSelectBox("instance")?.option("value"),
+        PropertyBroughtBy: $("#ddlPropertyBroughtBy").dxSelectBox("instance")?.option("value"),
+        OperatorName: $("#txtOperatorName").dxTextBox("instance")?.option("value"),
+        OperatorContactNo: $("#txtDriverContact").dxTextBox("instance")?.option("value"),
+        Location: $("#txtLocation").dxTextBox("instance")?.option("value"),
+        Project: $("#txtProject").dxTextBox("instance")?.option("value"),
+        ServiceStatus: $("#ddlServiceStatus").dxSelectBox("instance")?.option("value"),
+        StoreIssuedFrom: $("#dditemfromstore").dxDropDownBox("instance")?.option("value"),
+        ServiceOrderType: $("#ddlServiceType").dxSelectBox("instance")?.option("value"),
+        CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value"),
+        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
+        AddedBy: "CurrentUser",
+        AddedOn: new Date()
+    };
+
+    // ✅ Step 3: Get children from DataGrid
+    const gridInstance = $("#itemGrid").dxDataGrid("instance");
+    const children = gridInstance?.getDataSource()?.items() || [];
+
+    if (!children || children.length === 0) {
+        DevExpress.ui.notify("No child records to save.", "error", 3000);
+        $btn.option("disabled", false);
+        return;
+    }
+
+    // ✅ Step 4: Build DTO payload
+    const model = {
+        Master: [master],
+        Children: children
+    };
+
+    // ✅ Step 5: AJAX call to save data
+    $.ajax({
+        type: "POST",
+        url: "/api/ServiceMaintenance/SaveOrUpdateServiceRequest",
+        contentType: "application/json",
+        data: JSON.stringify(model),
+        success: function (response) {
+            DevExpress.ui.notify(response.message || "Saved successfully.", "success", 3000);
+
+            // Optional: refresh parent grid
+            if (window.parent && window.parent.$("#dataGrid").length) {
+                const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                if (dataGrid) dataGrid.refresh();
+            }
+
+            // ✅ After save, navigate back or close form
+            setTimeout(() => {
+                history.back(); // goes back to previous page
+                // OR: window.location.href = "/ERM/ServiceMaintenanceList"; // hard redirect if needed
+            }, 1500);
+
+            $btn.option("disabled", false);
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 5000);
+            $btn.option("disabled", false);
+        }
+    });
+});
+
+
+
+  function descriptionDropDownTemplate(cellElement, cellInfo) {
+    let $container = $("<div>").css({
+        display: "flex",
+        alignItems: "center",
+        gap: "5px",
+        width: "100%"
+    }).appendTo(cellElement);
+
+    const dropdownStore = new DevExpress.data.CustomStore({
+        key: "GSCode",
+        load: function (loadOptions) {
+            const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+            const pageSize = loadOptions.take;
+            return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", { pageNumber, pageSize })
+                .then(response => ({
+                    data: response.data,
+                    totalCount: response.totalCount
+                }));
+        },
+        byKey: function (key) {
+            return $.getJSON("/api/GoodsandServices/GetGoodsAndServiceByCode?code=" + key);
+        }
+    });
+
+    // ✅ Main DropDownBox
+    $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+        valueExpr: "GSCode",         // use the primary key
+        displayExpr: "GSDescrpition", // show description
+        value: cellInfo.value,        // current cell value
+        dataSource: dropdownStore,
+        searchEnabled: true,
+        searchExpr: ["GSDescrpition", "ItemPartNo"],
+        searchMode: "contains",
+        minSearchLength: 3,
+        deferRendering: true,
+        dropDownOptions: { width: 800 },
+
+        contentTemplate: function (e) {
+            return $("<div>").dxDataGrid({
+                dataSource: dropdownStore,
+                keyExpr: "GSCode",
+                height: 300,
+                remoteOperations: true,
+                paging: { enabled: true, pageSize: 15 },
+                pager: { visible: true, showPageSizeSelector: true },
+                selection: { mode: "single" },
+                columns: [
+                    { dataField: "GSCode", caption: "Code", width: 80 },
+                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+                    { dataField: "IsDiscontinued", caption: "Discontinued", dataType: "boolean", width: 150 }
+                ],
+                onSelectionChanged: function (selectedItems) {
+                    const selectedItem = selectedItems.selectedRowsData[0];
+                    if (!selectedItem) return;
+
+                    // ✅ update grid cell value via editor context
+                    cellInfo.setValue(selectedItem.GSCode);
+
+                    // ✅ also update extra fields in the same row
+                    const dataGrid = $("#itemGrid").dxDataGrid("instance");
+                    const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                    if (rowIndex !== -1) {
+                        dataGrid.cellValue(rowIndex, "GSDescrpition", selectedItem.GSDescrpition || '');
+                        dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || 0);
+                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                        dataGrid.cellValue(rowIndex, "Qty", 1);
+                        dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
+                    }
+
+                    e.component.close();
+                }
+            });
+        }
+    });
+
+    // ✅ Add button
+    $("<div>").dxButton({
+        icon: "plus",
+        hint: "Add new item",
+        onClick: function () {
+            openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+        }
+    }).appendTo($container);
+}
+
+    // 	function dataGridInitialized1(e) {
+				// 	dataGrid = e.component;
+				// }
+
+					function dataGridSelectionChanged22(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#dditemfromstore").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+
+    function dataGridSelectionChanged1(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddlServiceTemplate").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+                function dataGridInitialized1(e) {
+					dataGrid = e.component;
+				}
+    function dataGridSelectionChanged29(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddlVehicleDescription").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+    function onKeyDown(e) {
+				const ddbInstance = e.component;
+				if (e.event.keyCode !== 40) return;
+				if (!ddbInstance.option("opened")) {
+					ddbInstance.open();
+				} else {
+					let focusedIndex = dataGrid.option("focusedRowIndex");
+					let visibleRows = dataGrid.getVisibleRows().length - 1;
+					if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+					dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+				}
+			}
+             function onBaseCurrencyInitialized(e) {
+					const ddb = e.component;
+
+					setTimeout(() => {
+						const ds = ddb.getDataSource();
+
+						if (ds) {
+							ds.load().done(function (data) {
+								if (data && data.length > 0) {
+									const firstItemId = data[0].CurrencyExchangeId;
+									ddb.option("value", firstItemId);
+								}
+							});
+						} else {
+							console.warn("DataSource is not available yet.");
+						}
+					}, 100);
+				}
+				 function CurrencyClick() {
+				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+				let title = "Currency Master";
+				openModal(url, title);
+			}
+			  function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+				const selectedRow = e.selectedRowsData[0]; // full object
+				const selectedKey = e.selectedRowKeys[0];
+				const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+
+				if (selectedKey) {
+					ddbInstance.option("value", selectedKey); // CurrencyId
+					if (ddbInstance.option("opened")) {
+						ddbInstance.close();
+					}
+
+					// Set CurrencyRate from the selected grid row
+					const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+					$("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
+				}
+			}
+
+			function dataGridTaxCurrencyHeadSelectionChanged(e) {
+
+				const selectedKey = e.selectedRowKeys[0];
+				const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+
+				if (selectedKey) {
+					ddbInstance.option("value", selectedKey); // BaseCurrencyId
+					if (ddbInstance.option("opened")) {
+						ddbInstance.close();
+					}
+				}
+			}
+
+    function dropDownBoxOnInput(e) {
+					const ddbInstance = e.component;
+					if (!ddbInstance.option("opened")) ddbInstance.open();
+
+					const text = ddbInstance.option("text");
+					if (dataGrid) {
+						dataGrid.option("searchPanel.text", text);
+					}
+				}
+                function onKeyDown(e) {
+					const ddbInstance = e.component;
+					if (e.event.keyCode !== 40) return;
+					if (!ddbInstance.option("opened")) {
+						ddbInstance.open();
+					} else {
+						let focusedIndex = dataGrid.option("focusedRowIndex");
+						let visibleRows = dataGrid.getVisibleRows().length - 1;
+						if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+						dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+					}
+				}
+
+			            $(document).ready(function () {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        let ServiceSheetNo = urlParams.get('code');
+                        ServiceSheetNo = ServiceSheetNo ? ServiceSheetNo.split("?")[0] : null;
+
+                        getSalesPersonByUser();
+                        getDefaultCompany();
+
+                        if (ServiceSheetNo) {
+                            // Load existing details
+                            loadClientDetails(ServiceSheetNo);
+                        } else {
+                            // Generate new Service Sheet No
+                            $.ajax({
+                                url: "/api/ServiceMaintenance/GetNewRequestNoApi",
+                                type: "GET",
+                                success: function (data) {
+                                    console.log("Success:", data);
+
+                                    const invoiceBox = $("#txtServiceOrderNo").dxTextBox("instance");
+                                    if (invoiceBox) {
+                                        invoiceBox.option("value", data || "");
+                                    } else {
+                                        console.warn("Service Order No textbox not initialized.");
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error loading ServiceSheetNo:", error);
+                                    DevExpress.ui.dialog.alert("Failed to load Request No details.", "Error");
+                                }
+                            });
+                        }
+                    });
+
+
+                    function loadClientDetails(ServiceSheetNo) {
+                        $.ajax({
+                            url: `/api/ServiceMaintenance/GetServiceProperty?code=${encodeURIComponent(ServiceSheetNo)}`,
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                if (!response) {
+                                    console.warn("No client details found in the response.");
+                                    return;
+                                }
+
+                                console.log("Client details:", response);
+
+                                // Change Save button to Update
+                                const saveBtn = $("#btnSave").dxButton("instance");
+                                if (saveBtn) saveBtn.option("text", "Update");
+
+                                // Row 1
+                                $("#txtServiceOrderNo").dxTextBox("instance")?.option("value", response.ServiceSheetNo);
+                                $("#ServiceEntryDate").dxDateBox("instance")?.option("value", response.ServiceDate);
+                                $("#ddlVehicleDescription").dxDropDownBox("instance")?.option("value", response.PropertyNo);
+
+                                // Row 2
+                                $("#ddlMechanicName").dxSelectBox("instance")?.option("value", response.ServicedBy);
+                                $("#ddlPropertyBroughtBy").dxSelectBox("instance")?.option("value", response.PropertyBroughtBy);
+                                $("#txtOperatorName").dxTextBox("instance")?.option("value", response.OperatorName);
+                                $("#txtDriverContact").dxTextBox("instance")?.option("value", response.OperatorContactNo);
+
+                                // Row 3
+                                $("#ddlServiceType").dxSelectBox("instance")?.option("value", response.ServiceOrderType);
+                                $("#ddlServiceStatus").dxSelectBox("instance")?.option("value", response.ServiceStatus);
+                                $("#txtLocation").dxTextBox("instance")?.option("value", response.Location);
+                                $("#txtProject").dxTextBox("instance")?.option("value", response.Project);
+                                $("#ddlPropertyComplaint").dxtextArea("instance").option("value", response.Complaint);
+                                $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
+						        $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
+						        $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
+
+                                   // ✅ Load children grid
+                                if (Array.isArray(response.Children)) {
+                                    const cleanChildren = response.Children.map((row, index) => ({
+                                        ...row,
+                                        SNo: index + 1
+                                    }));
+
+                                    const grid = $("#itemGrid").dxDataGrid("instance");
+                                    if (grid) {
+                                        grid.option("dataSource", cleanChildren);
+                                        grid.refresh();
+                                    }
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error fetching client details:", error);
+                            }
+                        });
+                    }
+
+                    function getSalesPersonByUser() {
+				$.ajax({
+					type: "GET",
+					url: "/api/AddNewClientRequest/GetSalesPersonByUser",
+					success: function (data) {
+						if (data && data.SalesPersonCode) {
+								const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
+							if (salesPersonDropDown) {
+									salesPersonDropDown.option("value", data.SalesPersonCode);
+							}
+						}
+					},
+					error: function (xhr) {
+						console.log("SalesPerson fetch failed:", xhr.responseText);
+					}
+				});
+			}
+
+          function getDefaultCompany() {
+			$.ajax({
+				type: "GET",
+				url: "/api/AddNewClientRequest/GetDefaultCompany",
+				success: function (data) {
+					if (data && data.CompanyId) {
+						console.log("Default Company:", data.CompanyId, data.CompanyName);
+
+						const CompanyDropDown = $("#ddGetCompany").dxDropDownBox("instance");
+						if (CompanyDropDown) {
+							// ✅ Bind CompanyId as value
+							CompanyDropDown.option("value", data.CompanyId);
+						}
+					}
+				},
+				error: function (xhr) {
+					console.error("Company fetch failed:", xhr.responseText);
+				}
+			});
+		}
+
+
+
+
+
+     let unitCodesList = [];
+
+		$(function () {
+			$.get("/api/SalesOrders/GetUnitCodes", function (data) {
+				unitCodesList = data;
+			});
+		});
+
+			function unitRateMethodDropDownTemplate(cellElement, cellInfo) {
+			const wrapper = $("<div>").css({
+				display: "flex",
+				alignItems: "center",
+				width: "100%",
+				minWidth: "600px",
+				boxSizing: "border-box",
+				gap: "1px"
+			});
+
+			const dropDown = $("<div>").dxDropDownBox({
+				value: cellInfo.value,
+				valueExpr: "UnitCode",    
+				displayExpr: "UnitDesc",     
+				deferRendering: false,
+				showClearButton: true,
+				showDropDownButton: true,
+				width: 290,
+			dataSource: () => unitCodesList,   
+				dropDownOptions: { width: 300 },
+				contentTemplate: function(e) {
+					const dataGrid = $("<div>").dxDataGrid({
+						dataSource: unitCodesList,
+						keyExpr: "UnitCode",
+						selection: { mode: "single" },
+						columns: [
+							{ dataField: "UnitCode", caption: "Code" },
+							{ dataField: "UnitType", caption: "Type" },
+							{ dataField: "UnitDesc", caption: "UnitDesc",visible:false }
+						],
+						searchPanel: {
+							visible: true,
+							width: 240,
+							placeholder: "Search unit codes..."
+						},
+						onSelectionChanged: function(selectedItems) {
+							const data = selectedItems.selectedRowsData[0];
+							if (data) {
+								cellInfo.setValue(data.UnitCode);   // Set the UnitCode as value
+								e.component.option("value", data.UnitCode);
+
+								// Optionally update related cells here if needed
+								e.component.option("dataSource", unitCodesList);
+
+								e.component.close();
+							}
+						},
+						hoverStateEnabled: true,
+						height: 300,
+						paging: { enabled: false },
+						pager: {
+							visible: true,
+							showPageSizeSelector: true,
+							allowedPageSizes: [10, 15, 30],
+							showInfo: true
+						},
+						scrolling: {
+							mode: "virtual",
+							useNative: true,
+							showScrollbar: "always"
+						},
+						paging: { enabled: false }
+					});
+
+					return $("<div>").append(dataGrid);
+				}
+			});
+
+			// Add Button for new Unit Code
+			const addButton = $("<div>").dxButton({
+				icon: "plus",
+				hint: "Add new unit code",
+				stylingMode: "text",
+				onClick: function () {
+			  let url = `/${tenantName}/IMS/UnitOfMeasure`;
+					openModal(url, "");
+				},
+				width: 60,
+				height: 30
+			});
+
+			// Edit Button to open dropdown and focus input
+			const editButton = $("<div>").dxButton({
+				icon: "edit",
+				hint: "Edit unit codes",
+				stylingMode: "text",
+				onClick: function () {
+					const dropDownInstance = dropDown.dxDropDownBox("instance");
+					dropDownInstance.open();
+
+					setTimeout(() => {
+						const inputElement = dropDown.find("input.dx-texteditor-input").get(0);
+						if (inputElement) {
+							inputElement.focus();
+							inputElement.setSelectionRange(0, inputElement.value.length);
+						}
+					}, 50);
+				}
+			});
+
+			wrapper.append(dropDown, addButton, editButton);
+			cellElement.append(wrapper);
+		}
+  
+				function onGridRightClick(e) {
+				if (e.row && e.row.rowType === "data") {
+					e.items = []; // wipe defaults if you only want custom
+
+					e.items.push(
+						  {
+							text: "Delete Line",
+							icon: "trash",
+							onItemClick: function () {
+								// ✅ Pass the key field (SpareSlNo) to your deleteChild function
+								const SpareSlNo = e.row.data.SpareSlNo;
+								deleteChild(SpareSlNo);
+							}
+						},
+					);
+				}
+			}
+
+                  function onJobOrderTabClick(e) {
+                    for (let i = 1; i <= 2; i++) {
+                        document.getElementById("tabContent_" + i).style.display = "none";
+                    }
+                    document.getElementById("tabContent_" + e.itemData.id).style.display = "block";
+                        }
+                        document.addEventListener("DOMContentLoaded", function () {
+                            onJobOrderTabClick({ itemData: { id: 1 } });
+                        });
+
+
+
+    $(function () {
+        $("#Servcemaintenance").dxTextBox({
+        text: formatMessage("Service Maintenance"),
+        readOnly: true,
+        onContentReady: function (e) {
+        $(e.element).addClass("dx-textbox-heading");
+        }
+        });
+    });
+   
+
+
+      function onOpened(e) {
+      const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+      const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+      if (grid) {
+          grid.getDataSource().reload(); // refresh data
+      }
+
+      setTimeout(() => {
+          e.component.focus();
+      });
+  }
+      function onOpened1(e) {
+      const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+      const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+      if (grid) {
+          grid.getDataSource().reload(); // refresh data
+      }
+
+      setTimeout(() => {
+          e.component.focus();
+      });
+  }
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+    
+    
+  
+   
+    function redirecttoClientLeadmaster1(){
+        const url = `/${tenantName}/ERM/ClientLeadMaster`;
+        const title = "";
+            openModal(url, title);
+    }
+        function redirecttoClientLeadmaster() {
+        // Get the selected client code from the DropDownBox
+        var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
+
+        if (!clientCode) {
+            alert("Please select a client to edit.");
+            return;
+        }
+
+        // Assuming tenantName is defined globally or you can set it here
+        const url = `/${tenantName}/ERM/ClientLeadMaster?clientCode=${clientCode}`;
+        const title = "Edit Client";
+
+        openModal(url, title);
+    }
+
+    function serialTemplate(cellElement, cellInfo) {
+				 const grid = $("#itemGrid").dxDataGrid("instance");
+				 const rowIndex = grid.getRowIndexByKey(cellInfo.key);
+				 if (rowIndex >= 0) {
+					 cellElement.text(rowIndex + 1);
+				 }
+			 }
+			  window.itemGridDataSource = new DevExpress.data.ArrayStore({
+				key: "ItemCode",
+				data: []
+			});
+
+            	function deleteChild(SpareSlNo) {
+				DevExpress.ui.dialog.confirm(
+					"Do you want to delete this child record?",
+					"Confirmation"
+				).done(function (dialogResult) {
+					if (dialogResult) {
+						$.ajax({
+							url: `/api/ServiceMaintenance/DeleteServiceChild/${encodeURIComponent(SpareSlNo)}`,
+							type: "DELETE",
+							success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+
+							 const grid = $("#itemGrid").dxDataGrid("instance");
+                                if (grid) {
+                                    const ds = grid.getDataSource();
+
+                                    if (ds && typeof ds.reload === "function") {
+                                        // ✅ For remote or array store
+                                        ds.reload().done(() => grid.refresh());
+                                    } else {
+                                        // ✅ Fallback: force fetch again
+                                        grid.option("dataSource", new DevExpress.data.DataSource({
+                                            load: () => $.getJSON("/api/ServiceMaintenance/GetChildren")
+                                        }));
+                                    }
+                                }
+						},
+							error: function (xhr) {
+								DevExpress.ui.notify(
+									"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
+									"error",
+									3000
+								);
+							}
+						});
+					}
+				});
+			}
+
+              $(document).ready(function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                const ServiceSheetNo = urlParams.get("code");
+
+                if (!ServiceSheetNo) {
+                    console.warn("⚠️ No 'code' parameter found in the URL.");
+                    return;
+                }
+
+                // ✅ Direct AJAX call to hit API
+                $.ajax({
+                    url: "/api/ServiceMaintenance/GetServiceProperty?ServiceSheetNo=" + encodeURIComponent(ServiceSheetNo),
+                    method: "GET",
+                    data: { code: ServiceSheetNo }, 
+                    success: function (response) {
+                        console.log("✅ API Response:", response);
+
+                        if (response) {
+                            // Row 1
+                            $("#txtServiceOrderNo").dxTextBox("instance").option("value", response.Master?.ServiceSheetNo ?? "");
+                            $("#ServiceEntryDate").dxDateBox("instance").option("value", response.Master?.ServiceDate);
+                            $("#ddlVehicleDescription").dxDropDownBox("instance").option("value", response.Master?.PropertyNo);
+
+                            // Row 2
+                            $("#ddlMechanicName").dxSelectBox("instance").option("value", response.Master?.ServicedBy);
+                            $("#ddlPropertyBroughtBy").dxSelectBox("instance").option("value", response.Master?.PropertyBroughtBy);
+                            $("#txtOperatorName").dxTextBox("instance").option("value", response.Master?.OperatorName);
+                            $("#txtDriverContact").dxTextBox("instance").option("value", response.Master?.OperatorContactNo);
+
+                            // Row 3
+                            $("#ddlServiceType").dxSelectBox("instance").option("value", response.Master?.ServiceOrderType);
+                            $("#ddlServiceStatus").dxSelectBox("instance").option("value", response.Master?.ServiceStatus);
+                            $("#txtLocation").dxTextBox("instance").option("value", response.Master?.Location);
+                            $("#txtProject").dxTextBox("instance").option("value", response.Master?.Project);
+                            $("#ddlPropertyComplaint").dxTextArea("instance").option("value", response.Master?.Complaint);
+                            $("#dditemfromstore").dxDropDownBox("instance").option("value", response.Master?.StoreIssuedFrom);
+                            $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
+                            $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
+                            $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
+
+                            // ✅ Load children grid
+                            if (Array.isArray(response.Children)) {
+                                const cleanChildren = response.Children.map((row, index) => ({
+                                    ...row,
+                                    SNo: index + 1
+                                }));
+
+                                const grid = $("#itemGrid").dxDataGrid("instance");
+                                if (grid) {
+                                    grid.option("dataSource", cleanChildren);
+                                    grid.refresh();
+                                }
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.error("❌ Error loading service order", err);
+                    }
+                });
+            });
+
+  function ServiceDelete() {
+      debugger;
+    const serviceSheetNo = $("#txtServiceOrderNo").dxTextBox("instance")?.option("value");
+
+    if (!serviceSheetNo) {
+        DevExpress.ui.notify("Service Sheet No is missing.", "error", 3000);
+        return;
+    }
+
+    DevExpress.ui.dialog.confirm(
+        "Do you really want to delete this Service Sheet?",
+        "Delete Confirmation"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            $.ajax({
+                url: `/api/ServiceMaintenance/DeleteServiceMaster/${serviceSheetNo}`, // ✅ pass value to API
+                type: "DELETE",
+                success: function (response) {
+                    DevExpress.ui.notify(response.message || "Deleted successfully.", "success", 3000);
+
+                    // ✅ reload your DataGrid if it exists
+                    setTimeout(function () {
+                        history.back();   // goes to the last visited page
+                    }, 1500);
+                },
+                error: function (xhr) {
+                    const msg = xhr.responseJSON?.error || "Failed to delete record.";
+                    DevExpress.ui.notify(msg, "error", 4000);
+                }
+            });
+        }
+    });
+}
+
+
+</script>
+
+<link href="~/node_modules/devextreme-dist/css/dx.light.css" rel="stylesheet" />
+<link href="~/node_modules/devexpress-richedit/dist/dx.richedit.css" rel="stylesheet" />
+<script src="~/node_modules/jszip/dist/jszip.min.js"></script>
+<script src="~/node_modules/devextreme-dist/js/dx.all.js"></script>
+<script src="~/node_modules/devexpress-richedit/dist/dx.richedit.js"></script>

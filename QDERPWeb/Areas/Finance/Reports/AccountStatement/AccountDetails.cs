@@ -1,11 +1,12 @@
+﻿using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.DataAccess.Sql;
+using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using QD.ERP.Web.Areas.Finance.Reports.AccountStatement;
+using QD.ERP.Web.Service;
+using Svg;
 using System;
 using System.Drawing;
-using DevExpress.XtraReports.UI;
-using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
-using QD.ERP.Web.Service;
-using DevExpress.XtraPrinting;
-using Svg;
 using System.Text;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
@@ -13,7 +14,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
     public partial class AccountDetails : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-
+        private readonly Tenant _resolvedTenant;
         public AccountDetails(
             string accountId,
             DateTime frmDate,
@@ -28,12 +29,18 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _resolvedTenant, out _))
+                throw new Exception("Unable to resolve tenant context during report creation.");
             InitializeComponent();
+            // ✅ Hook BeforePrint event handlers for subreports
+            //XrSubreport1.BeforePrint += XrSubreport1_BeforePrint;
+            XrSubreport2.BeforePrint += XrSubreport2_BeforePrint;
+            XrSubreport3.BeforePrint += XrSubreport3_BeforePrint;
             SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
 
             try
             {
-                sqlDataSource2.Fill();
+                sqlDataSource1.Fill();
 
                 LoadCurrencyImage(accountId, frmDate, toDate);
 
@@ -47,6 +54,60 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         public AccountDetails()
         {
             InitializeComponent();
+        }
+        // ---------------- Subreport 1 ----------------
+        //private void XrSubreport1_BeforePrint(object sender, EventArgs e)
+        //{
+        //    var subReport = (XRSubreport)sender;
+        //    var report = new rpt20140EmpAllocForAccountStatement();
+
+
+        //    // ✅ Pass parameters from main report
+        //    report.Parameters["VoucherEntryID"].Value = GetCurrentColumnValue("VoucherEntryNo");
+        //    report.Parameters["VoucherEntryID"].Visible = false;
+
+        //    subReport.ReportSource = report;
+        //}
+
+        // ---------------- Subreport 2 ----------------
+        // ---------------- Subreport 2 ----------------
+        private void XrSubreport2_BeforePrint(object sender, EventArgs e)
+        {
+            var subReportControl = (XRSubreport)sender;
+
+            var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
+
+            var report = new rpt20124SubLedgerForAccountStatement
+            {
+                VoucherNo = voucherNo,
+            };
+
+            if (_resolvedTenant != null) // ✅ use the already resolved tenant
+            {
+                report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
+            }
+
+            subReportControl.ReportSource = report;
+        }
+
+        // ---------------- Subreport 3 ----------------
+        private void XrSubreport3_BeforePrint(object sender, EventArgs e)
+        {
+            var subReportControl = (XRSubreport)sender;
+
+            var voucherNo = GetCurrentColumnValue("VoucherEntryNo")?.ToString();
+
+            var report = new rpt201CostAllocationByAccountStatement
+            {
+                VoucherNo = voucherNo,
+            };
+
+            if (_resolvedTenant != null) // ✅ use the already resolved tenant
+            {
+                report.LoadData(voucherNo, _resolvedTenant.ConnectionString);
+            }
+
+            subReportControl.ReportSource = report;
         }
 
         private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate, string tenantName, string company_Name, string company_address, Image logoImage, string Company_Name_Ar, string company_address_arb, string username)
@@ -111,11 +172,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
         private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
-            sqlDataSource2.Queries.Clear();
+            sqlDataSource1.Queries.Clear();
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource2.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
                 // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
@@ -134,8 +195,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             new QueryParameter("@EndDate", typeof(DateTime), toDate)
         });
 
-                sqlDataSource2.Queries.Add(storedProcQuery);
-                sqlDataSource2.Name = "sqlDataSource2";
+                sqlDataSource1.Queries.Add(storedProcQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
             }
             else
             {

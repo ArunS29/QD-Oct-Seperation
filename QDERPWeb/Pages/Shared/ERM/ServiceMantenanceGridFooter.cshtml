@@ -111,7 +111,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnAddNewJobOrder")
             .Icon("add")
-            .Text(new JS("formatMessage('Add New Job Order')"))
+            .Text(new JS("formatMessage('Add New Sevice')"))
             .OnClick("addNewJobOrder")
             )
     </div>
@@ -144,6 +144,6 @@
         
   
         function addNewJobOrder(){
-            window.location.href = `/${tenantName}/ERM/EditJobOrderDetails`;
+              window.location.href = `/${tenantName}/ERM/SevicemaintenaceEdit`;
         }
 </script>
