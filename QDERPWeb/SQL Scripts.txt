@@ -1587,6 +1587,28 @@ VALUES
     (556,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
     (557,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
 
+    INSERT INTO dbo.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (558,'Purchase Order Edit Form','frm60107PurchaseOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (559,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnMoveUp','Move Up',1, 1,null,'IMS',null,null,null,null), 
+    (560,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (561,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnPrint4','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (562,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnToggleSearch','Toggle Search',1, 1,null, 'IMS',null,null,null,null), 
+    (563,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btntoggleGroupPanel','Toggle Group Panel',1, 1,null,'IMS',null,null,null,null), 
+    (564,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnColumnChooser','Column Chooser', 1, 1,null, 'IMS',null,null,null,null),
+    (565,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSave','Save', 1, 1,null, 'IMS',null,null,null,null),
+    (566,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSaveAndClose','Save and Close', 1, 1,null, 'IMS',null,null,null,null),
+    (567,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (568,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (569,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (570,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (571,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (572,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+	(573,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (574,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+
 ---------------------------Cheque---------------------------  
 alter table Aicon.tbl20113ChequeMaster   
 add Currencyid int       

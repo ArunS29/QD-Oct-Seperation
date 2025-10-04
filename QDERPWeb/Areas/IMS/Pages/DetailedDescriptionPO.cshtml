@@ -132,16 +132,14 @@
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
          const poChildNos = urlParams.get("poChildNo");
-         alert(poChildNos);
-          poChildNo1 = poChildNos ? poChildNos.split("?")[0] : null;
+                  poChildNo1 = poChildNos ? poChildNos.split("?")[0] : null;
           if(poChildNo1){
               loadeditData(poChildNo1);
           }
 
         const GSCodes = urlParams.get("gsCode");
        GSCode = GSCodes ? GSCodes.split("?")[0] : null;
-       alert(GSCodes);
-        console.log("Loaded GSCode:", GSCode);
+              console.log("Loaded GSCode:", GSCode);
         if (GSCode) {
                 // If Mprno is present, load client details
                 loadClientDetails(GSCode);
