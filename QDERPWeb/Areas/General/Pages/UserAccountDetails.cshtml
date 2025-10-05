@@ -59,11 +59,11 @@
     </div>
 </div>
 
-    <div class="Head">
+   @*  <div class="Head">
     <div class="limited-footer">
         <div class="footer">@await Html.PartialAsync("userfooter", new ViewDataDictionary(ViewData) { { "HideDropdown", true } })</div>
     </div>
-</div>
+</div> *@
     <div id="tabPanelContainer">
         @(Html.DevExtreme().TabPanel()
                 .ID("accessTabPanel")
@@ -99,7 +99,7 @@
                     </div>
 
                     <div class="form-group">
-                        @(Html.DevExtreme().TextBox().ReadOnly(true).ID("Password").Label(new JS("formatMessage('Password:')")).Mode(TextBoxMode.Password).Width("100%"))
+                        @(Html.DevExtreme().TextBox().ReadOnly(true).ID("Password").Label(new JS("formatMessage('Password:')")).Mode(TextBoxMode.Text).Width("100%"))
                     </div>
 
                     <div class="form-group">
@@ -138,8 +138,8 @@
                         rules.AddRequired().Message("Please select a company.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -151,6 +151,9 @@
                         //.Width("100%") // Set the desired width for the dropdown content*@
                         .Width(1000)
                         )
+                         .ValidationRules(rules => {
+                            rules.AddRequired().Message("Please select a company.");
+                        })
                         // .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("CompanyContentTemplate")))
 
@@ -172,8 +175,8 @@
                         rules.AddRequired().Message("Please select a Division.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -204,8 +207,8 @@
                         rules.AddRequired().Message("Please select a user level.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -217,6 +220,9 @@
                         //.Width("100%") // Set the desired width for the dropdown content*@
                         .Width(1000)
                         )
+                         .ValidationRules(rules => {
+                            rules.AddRequired().Message("Please select a User Level.");
+                        })
                         // .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("UserLevelContentTemplate")))
 
@@ -236,8 +242,8 @@
                         rules.AddRequired().Message("Please select an employee group.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -295,8 +301,8 @@
                         rules.AddRequired().Message("Ledger Account should be entered.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -324,9 +330,9 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("HruserLevelId")
                         )
-                        .ValidationRules(rules => {
-                        rules.AddRequired().Message(new JS("formatMessage('User Level should be selected')"));
-                        })
+                         .ValidationRules(rules => {
+                                rules.AddRequired().Message("Please select a Equipment Sales Person Access.");
+                            })
                         .LabelMode(EditorLabelMode.Floating)
                         .ShowClearButton(true)
                         .AcceptCustomValue(false)
@@ -349,8 +355,8 @@
                         rules.AddRequired().Message("Ledger Account should be entered.");
                         })
                         .ShowClearButton(true)
-                        .AcceptCustomValue(true)
-                        .OpenOnFieldClick(false)
+                        .AcceptCustomValue(false)
+                        .OpenOnFieldClick(true)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .Value(null)
@@ -1045,8 +1051,20 @@
                     success: function (response) {
                         if (response.success && response.nextUserId) {
                             const userIdBox = $("#UserId").dxTextBox("instance");
+                            const passwordBox = $("#Password").dxTextBox("instance");
+                            const userNameBox = $("#UserName").dxTextBox("instance");
+
                             if (userIdBox) {
                                 userIdBox.option("value", response.nextUserId);
+                            }
+
+                            if (passwordBox) {
+                                passwordBox.option("value", response.nextUserId); // ✅ bind nextUserId as password
+                                         
+                            }
+
+                            if (userNameBox) {
+                                userNameBox.option("readOnly", false);            // ✅ make editable
                             }
                         } else {
                             DevExpress.ui.notify("Failed to generate User ID", "error", 3000);
@@ -1273,14 +1291,14 @@ function showColumnChooser() {
 
                     // DropDown values
                     $("#ddDepartment").dxDropDownBox("instance").option("value", user.DeptCode);
-                    // $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
-                    // $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
-                    // $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
-                    // $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
+                    $("#ddCompany").dxDropDownBox("instance").option("value", user.CompanyId);
+                    $("#ddBranch").dxDropDownBox("instance").option("value", user.BranchCode);
+                    $("#ddUserLevel").dxDropDownBox("instance").option("value", user.UserLevel);
+                    $("#ddEmployeeGroup").dxDropDownBox("instance").option("value", user.HrlevelCode);
                     $("#ddInventoryMasterGroup").dxDropDownBox("instance").option("value", user.InventoryAccess);
-                    // $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
+                    $("#ddFilteredAccountHead").dxDropDownBox("instance").option("value", user.PettyCashAccount);
                     $("#ddHRUserLevel").dxDropDownBox("instance").option("value", user.EqptQuotationAccess);
-                    // $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
+                    $("#ddSalesPerson").dxDropDownBox("instance").option("value", user.InventoryMpraccess);
                     $("#ddProjectGroup").dxDropDownBox("instance").option("value", user.HrtimeSheetProjectGroup);
                     $("#ddInventoryStoreAccess").dxDropDownBox("instance").option("value", user.StoreId);
 
@@ -1539,10 +1557,56 @@ function onOuterTabSelectionChanged(e) {
             }
         }
 
+        function getEditorInstance(selector) {
+            // Try TextBox
+            let instance = $(selector).dxTextBox("instance");
+            if (instance) return instance;
 
+            // Try DropDownBox
+            instance = $(selector).dxDropDownBox("instance");
+            if (instance) return instance;
+
+            // Try DateBox
+            instance = $(selector).dxDateBox("instance");
+            if (instance) return instance;
+
+            return null;
+        }
+        function getValidator(id) {
+    var $el = $(id);
+    if ($el.length && $el.data("dxValidator")) {
+        return $el.dxValidator("instance");
+    }
+    return null; // no validator attached
+}
 
                function saveUserDetails() {
-            
+             
+            var userNameValidator = getValidator("#UserName");
+            var passwordValidator = getValidator("#Password");
+            var companyValidator = getValidator("#ddCompany");
+            var userLevelValidator = getValidator("#ddUserLevel");
+            var empGroupValidator = getValidator("#ddEmployeeGroup");
+            var invGroupValidator = getValidator("#ddInventoryMasterGroup");
+            var hrUserLevelValidator = getValidator("#ddHRUserLevel");
+
+            var validations = [
+                userNameValidator ? userNameValidator.validate() : { isValid: true },
+                passwordValidator ? passwordValidator.validate() : { isValid: true },
+                companyValidator ? companyValidator.validate() : { isValid: true },
+                userLevelValidator ? userLevelValidator.validate() : { isValid: true },
+                empGroupValidator ? empGroupValidator.validate() : { isValid: true },
+                invGroupValidator ? invGroupValidator.validate() : { isValid: true },
+                hrUserLevelValidator ? hrUserLevelValidator.validate() : { isValid: true }
+            ];
+
+            // check if all valid
+            if (validations.some(v => !v.isValid)) {
+                DevExpress.ui.notify("Please fill all required fields.", "error", 3000);
+                return;
+            }
+
+
              
              let userLevelValue=null;
                         if(IsUserlevelflag==false) {
@@ -1590,11 +1654,12 @@ function onOuterTabSelectionChanged(e) {
                                                              else{
                                                                          PettyCashAccountIDvalue=$("#ddFilteredAccountHead").dxDropDownBox("instance").option("value");
                                                              }
-
+          debugger;
             const user = {
+                
                 UserId: $("#UserId").dxTextBox("instance").option("value"),
                 UserName: $("#UserName").dxTextBox("instance").option("value"),
-                Password: $("#Password").dxTextBox("instance").option("value"),
+                Password: String($("#Password").dxTextBox("instance").option("value") || ""), // ✅ ensure string
                 DeptCode: $("#ddDepartment").dxDropDownBox("instance").option("value"),
                     CompanyId: companyValue,
                     BranchCode: BranchValue,

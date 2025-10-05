@@ -1805,8 +1805,7 @@ $(document).ready(function () {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
-			cellTemplate: function (container, options) {
+					cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
 					return;
@@ -2302,7 +2301,7 @@ $(document).ready(function () {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
