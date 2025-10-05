@@ -1761,18 +1761,6 @@
             }
         }
     }
-     function onOpened(e) {
-        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
-        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
-
-        if (grid) {
-            grid.getDataSource().reload(); // refresh data
-        }
-
-        setTimeout(() => {
-            e.component.focus();
-        });
-    }
      function onKeyDown(e) {
         const ddbInstance = e.component;
         if (e.event.keyCode !== 40) return;
@@ -2138,6 +2126,15 @@
         const code = urlParams.get("code");
         const mode = urlParams.get("mode");
 
+            $("#PropertyGroup").dxDropDownBox({
+            onValueChanged: function (e) {
+                // Only generate PropertyNo if NOT in edit mode
+                if (mode !== "edit") {
+                    generatePropertyNo(e.value);
+                }
+            }
+        });
+
        if (mode === "edit") {
             $("#btnSave").dxButton("instance").option("text", "Update");
             $("#btnSave").data("is-update", true);
@@ -2477,14 +2474,6 @@
                      $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
                  }
              }
-                 window.addEventListener("message", function (event) {
-        if (event.data && event.data.action === "refreshOperatorGrid") {
-            const operatorGrid = $("#OperatorGrid").dxDataGrid("instance");
-            if (operatorGrid) {
-                operatorGrid.reload();
-            }
-        }
-    });
     function refreshTypeOfRequestDropDown(dropdownId) {
 		const dropdown = $(`#${dropdownId}`).dxDropDownBox("instance");
 		if (dropdown) {
