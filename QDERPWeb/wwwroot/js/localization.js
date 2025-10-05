@@ -5573,9 +5573,7 @@ var dictionary = {
         "Client PO Date": "Client PO Date",
         "Client PO End Date": "Client PO End Date",
         "Client PO Type": "Client PO Type",
-        "Client PO Value": "Client PO Value"
-
-
+        "Client PO Value": "Client PO Value",
         "Other Buyer ID":"Other Buyer ID",
         "Line Total": "Line Total",
         "Account Confirmation Letter (Debtors)": "Account Confirmation Letter (Debtors)",
