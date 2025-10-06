@@ -2015,8 +2015,7 @@ function dataGridSelectionChanged10(e) {
 			caption: formatMessage('Stock Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
-			cellTemplate: function (container, options) {
+						cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
 					return;

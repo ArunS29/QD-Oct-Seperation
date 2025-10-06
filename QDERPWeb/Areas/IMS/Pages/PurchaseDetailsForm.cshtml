@@ -341,7 +341,10 @@
 		return e.value != null ? e.value.toFixed(2) : '0.00';
 		}
 		");
-
+		items.Add().Column("Gsdescrpition")
+		.SummaryType(SummaryType.Count)
+		.DisplayFormat(new JS("formatMessage('No. of Items: {0}')"));
+	
 		items.Add().Column("LineTotalBeforeTax")
 		.SummaryType(SummaryType.Sum)
 		.DisplayFormat(new JS("formatMessage('Total Before Tax: {0}')"))

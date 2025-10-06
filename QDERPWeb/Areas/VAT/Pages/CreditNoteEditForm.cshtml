@@ -436,6 +436,9 @@
 		border-radius: 8px;
 	}
 </style>
+<div id="loadingSpinner" class="spinner-overlay">
+	<div id="loader" class="loader"></div>
+</div>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm20168VATCreditNoteEdit" type="hidden" />
@@ -444,6 +447,7 @@
 		<div id="CreditNoteEditForm" class="no-border-title"></div>
 	</div>
 </div> *@
+
 <div class="dx-card-container">
 	<div class="dx-card-header minimal-header">
 		<div class="card-title-icon">
@@ -724,7 +728,7 @@
 												<td>
 													@* 									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType").LabelMode(EditorLabelMode.Floating))
  *@								
- 	@(Html.DevExtreme().DropDownBox()
+                                                                                                       	@(Html.DevExtreme().DropDownBox()
 																										.Label(new JS("formatMessage('Country Code:')"))
 																										.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("Getcountrycode").LoadMode(DataSourceLoadMode.Raw).Key("CountryCodeAlpha2"))
 																										.LabelMode(EditorLabelMode.Floating)
@@ -735,7 +739,7 @@
 																										.ValueChangeEvent("input")
 																										.HoverStateEnabled(true)
 																										.Value(null)
-																										.ValueExpr("CountryCodeAlpha2")
+																										.ValueExpr("CountryCodeNumeric")
 																										.DisplayExpr("CountryCodeAlpha2")
 																										.Width("100%")
 																										.TabIndex(1)
@@ -1618,21 +1622,21 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Address - Street Name:')"))
-                    .ID("StreetName")
+                    .ID("OurStreetName")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
-                    .ID("StreetNameArabic")
+                    .ID("OurStreetNameArabic")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Building Number:')"))
-                    .ID("BuildingNumber")
+                    .ID("OurBuildingNumber")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
@@ -1641,21 +1645,21 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Address - Additional Address:')"))
-                    .ID("AdditionalAddress")
+                    .ID("OurAdditionalAddress")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
-                    .ID("AdditionalAddressArabic")
+                    .ID("OurAdditionalAddressArabic")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
 			  <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Additional Number:')"))
-                    .ID("AdditionalNumber")
+                    .ID("OurAdditionalNumber")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
@@ -1666,21 +1670,21 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Client City:')"))
-                    .ID("ClientCity")
+                    .ID("OurClientCity")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Client City: (Arabic)')"))
-                    .ID("ClientCityArabic")
+                    .ID("OurClientCityArabic")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
 			<td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Postal Code:')"))
-                    .ID("PostalCode")
+                    .ID("OurPostalCode")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
@@ -1690,21 +1694,21 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Province / State:')"))
-                    .ID("Province")
+                    .ID("OurProvince")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Province / State: (Arabic)')"))
-                    .ID("ProvinceArabic")
+                    .ID("OurProvinceArabic")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
 			
 			<td>
                 @(Html.DevExtreme().SelectBox()
-                    .ID("CountryCode")
+                    .ID("OurCountryCode")
                     .Label(new JS("formatMessage('Country Code:')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .Items(new[] { "US", "UK", "IN", "SA", "UAE" })
@@ -1718,14 +1722,14 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('District / Neighborhood:')"))
-                    .ID("District")
+                    .ID("OurDistrict")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
-                    .ID("DistrictArabic")
+                    .ID("OurDistrictArabic")
                     .LabelMode(EditorLabelMode.Floating)
                     .Width("100%"))
             </td>
@@ -3224,7 +3228,7 @@
             .Controller("VATModule")
             .LoadAction("Getcountrycode")
             .LoadMode(DataSourceLoadMode.Raw)
-            .Key("CountryCodeAlpha2")
+            .Key("CountryCodeNumeric")
         )
         .WordWrapEnabled(true)
         .ShowBorders(true)
@@ -3524,137 +3528,145 @@
 
 						if (response && response.length > 0) {
 							var account = response[0];
+							
+		    $("#CreditNoteNo").dxTextBox("instance").option("value", account.CreditNoteNo || null);
+			$("#CreditNoteDate").dxDateBox("instance").option("value", account.CreditNoteDate || null);
+			$("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value", account.CreditNoteEffectiveDate || null);
+			$("#SupplyDate").dxDateBox("instance").option("value", account.InvoiceSupplyDate || null);
+			$("#ddpaymentmeans").dxDropDownBox("instance").option("value", account.PaymentMeansTypeCode || null);
 
-							$('#CreditNoteNo').dxTextBox("instance")?.option("value", account.CreditNoteNo);
-							ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-							$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
+			$("#ddclientcode").dxDropDownBox("instance").option("value", account.ClientCode || null);
+			$("#ddclientname").dxTextBox("instance").option("value", account.BuyerName || null);
+			$("#ClientNameArabic").dxTextBox("instance").option("value", account.BuyerNameAr || null);
+			$("#GroupVATNo").dxTextBox("instance").option("value", account.SellerGroupVatnumber || null);
+			$("#ClientVATNo").dxTextBox("instance").option("value", account.BuyerVatnumber || null);
+			$("#OtherIDType").dxDropDownBox("instance").option("value", account.BuyerOtherIdtype || null);
+			$("#ClientOtherID").dxTextBox("instance").option("value", account.BuyerOtherId || null);
 
-					     	$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
-							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
-						    $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
-							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
-							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
-							 $('#CreditNoteDate').dxDateBox("instance")?.option("value", account.CreditNoteDate);
-						     $('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.CreditNoteEffectiveDate);
-							 $('#InvoiceStartDate').dxDateBox("instance").option("value",account.InvoiceStartDate);
-					            $('#InvoiceEndDate').dxDateBox("instance").option("value",account.InvoiceEndDate);
-								$('#ddlInvoiceNo').dxDropDownBox("instance")?.option("value", account.InvoiceNo);
+			$("#StreetName").dxTextBox("instance").option("value", account.BuyerAddressStreet || null);
+			$("#StreetNameArabic").dxTextBox("instance").option("value", account.BuyerAddressStreetAr || null);
+			$("#AdditionalAddress").dxTextBox("instance").option("value", account.BuyerAdditionalStreet || null);
+			$("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr || null);
 
-										 var ddl2 = $("#ddlRevenueAccount").dxDropDownBox("instance");
+			$("#BuildingNumber").dxTextBox("instance").option("value", account.erBuildingNumber || null);
+			$("#ClientCity").dxTextBox("instance").option("value", account.erCity || null);
+			$("#ClientCityArabic").dxTextBox("instance").option("value", account.erCityAr || null);
+			$("#AdditionalNumber").dxTextBox("instance").option("value", account.erAdditionalNumber || null);
+			$("#Province").dxTextBox("instance").option("value", account.BuyerProvince || null);
+			$("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr || null);
+			$("#PostalCode").dxTextBox("instance").option("value", account.erPostalCode || null);
+			$("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood || null);
+			$("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr || null);
+			$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", account.BuyerCountryCode || null);
 
-											console.log("ddl2 instance:", ddl2);
+			$("#InvoiceCounterValue").dxTextBox("instance").option("value", account.InvoiceCounterValue || null);
+			$("#ddlInvoiceNo").dxDropDownBox("instance").option("value", account.InvoiceNo || null);
 
-											ddl2.getDataSource().load().done(function (data) {
-												console.log("Loaded data from datasource:", data);
-													console.log("account.RevenueAccount value:", account.RevenueAccount);
+			$("#EffectiveDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate || null);
+			$("#InvoiceStartDate").dxDateBox("instance").option("value", account.InvoiceStartDate || null);
+			$("#InvoiceEndDate").dxDateBox("instance").option("value", account.InvoiceEndDate || null);
+			$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+			$("#txtInvoiceNotes").dxTextArea("instance").option("value", account.CreditNoteRemarks || null);
+			$("#txtNotesinArabic").dxTextArea("instance").option("value", account.CreditNoteRemarksAr || null);
 
-												// Debug the types
-													console.log("typeof account.RevenueAccount:", typeof account.RevenueAccount);
-												if (data.length > 0) {
-														console.log("Sample SignatoryID type:", typeof data[0].RevenueAccount);
-												}
+			$("#currencyexchangerate").dxNumberBox("instance").option("value", account.ExchangeRate || null);
+			$("#LessAdvance").dxTextBox("instance").option("value", account.AdvanceText || null);
+			$("#currencyexchangerate3").dxNumberBox("instance").option("value", account.AdvanceAmount || null);
+			$("#LessAdvanceAr").dxTextBox("instance").option("value", account.AdvanceTextAr || null);
+			$("#LessOtherDeductions").dxTextBox("instance").option("value", account.OtherDeductionText || null);
+			$("#currencyexchangerate4").dxNumberBox("instance").option("value", account.OtherDeductionAmount || null);
+			$("#LessAdvanceAr1").dxTextBox("instance").option("value", account.OtherDeductionTextAr || null);
+			$("#LessRetention").dxTextBox("instance").option("value", account.RetentionText || null);
+			$("#currencyexchangerate5").dxNumberBox("instance").option("value", account.RetentionAmount || null);
+			$("#LessAdvanceAr2").dxTextBox("instance").option("value", account.RetentionTextAr || null);
 
-												// Try finding the match
-													var match = data.find(x => x.SignatoryID == account.RevenueAccount); // use == for debug
-												console.log("Match found:", match);
+			$("#ddlDivision").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+			$("#ClientPONo").dxTextBox("instance").option("value", account.Pono || null);
+			$("#ProjectRef").dxTextBox("instance").option("value", account.ReferenceNo || null);
 
-												if (match) {
-													ddl2.option("value", match.SignatoryID);
-													console.log("Value set in dropdown:", match.SignatoryID);
-												} else {
-														console.warn("⚠️ No matching SignatoryID found for account.RevenueAccount");
-												}
-											});
-								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+			// Branch / Division
+			$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", account.SellerName || null);
+			$("#OurGroupVATNo").dxTextBox("instance").option("value", account.SellerGroupVatnumber || null);
+			$("#OurVATNo").dxTextBox("instance").option("value", account.SellerVATNumber || null);
+			$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", account.SellerNameAr || null);
+			$("#OtherID1").dxTextBox("instance").option("value", account.SellerOtherSellerId || null);
 
-									$('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.CreditNoteRemarks);
-									$('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.CreditNoteRemarksAr);
-									  $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+			$("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet || null);
+			$("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr || null);
+			$("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet || null);
+			$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr || null);
+			$("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber || null);
+			$("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity || null);
+			$("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr || null);
+			$("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber || null);
+			$("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince || null);
+			$("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr || null);
+			$("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode || null);
+			$("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood || null);
+			$("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr || null);
+			$("#OurCountryCode").dxSelectBox("instance").option("value", account.SellerCountryCode || null);
 
-							// 		   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
-										 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
-							 			 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
-							//  		 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
-							// 			 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
-							// 			 $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
-							// 				 $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
-											 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
-							         		 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
-						        			 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
-							 				 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
-											 $('#SellerOtherSellerId').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
-							// 				//dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
-							// 				//dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
-											dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
-											//dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
-							     			dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
-											dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
-							 		
-	                                        $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
-											$("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
-											$("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+				var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+					 ddl3.getDataSource().load().done(function(data) {
+						 // Check if SignatoryID exists in the loaded list
+						 var match = data.find(x => x.CurrencyExchangeId === account.Currency);
+						 if (match) {
+							 ddl3.option("value", match.CurrencyExchangeId);
+						 }
+					 });
 
-											$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
-											$("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
-											$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+						 var ddl1 = $("#ddlGoodsGroup9").dxDropDownBox("instance");
+
+													console.log("ddl1 instance:", ddl1);
+
+													ddl1.getDataSource().load().done(function (data) {
+														console.log("Loaded data from datasource:", data);
+														console.log("account.InvoicePreparedBy value:", account.InvoicePreparedBy);
+
+														// Debug the types
+															console.log("typeof account.InvoicePreparedBy:", typeof account.InvoicePreparedBy);
+														if (data.length > 0) {
+															console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
+														}
+
+														// Try finding the match
+														var match = data.find(x => x.SignatoryID == account.InvoicePreparedBy); // use == for debug
+														console.log("Match found:", match);
+
+														if (match) {
+															ddl1.option("value", match.SignatoryID);
+															console.log("Value set in dropdown:", match.SignatoryID);
+														} else {
+																console.warn("⚠️ No matching SignatoryID found for account.InvoicePreparedBy");
+														}
+													});
 
 
-				                            $("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceSupplyDate);
-				                            $("#ddpaymentmeans").dxDropDownBox("instance").option("value",account.PaymentMeansTypeCode);
-				                            $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value",account.InvoiceTransactionCode);
-				                            $("#OtherIDType").dxDropDownBox("instance").option("value",account.BuyerOtherIdtype);
-						                    var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
-											 ddl3.getDataSource().load().done(function(data) {
-												 // Check if SignatoryID exists in the loaded list
-												 var match = data.find(x => x.CurrencyExchangeId === account.Currency);
-												 if (match) {
-													 ddl3.option("value", match.CurrencyExchangeId);
-												 }
-											 });
+											 var ddl2 = $("#ddlRevenueAccount").dxDropDownBox("instance");
 
-											var ddl1 = $("#ddlGoodsGroup9").dxDropDownBox("instance");
+												console.log("ddl2 instance:", ddl2);
 
-											console.log("ddl1 instance:", ddl1);
+												ddl2.getDataSource().load().done(function (data) {
+													console.log("Loaded data from datasource:", data);
+														console.log("account.RevenueAccount value:", account.RevenueAccount);
 
-											ddl1.getDataSource().load().done(function (data) {
-												console.log("Loaded data from datasource:", data);
-												console.log("account.InvoicePreparedBy value:", account.InvoicePreparedBy);
+													// Debug the types
+														console.log("typeof account.RevenueAccount:", typeof account.RevenueAccount);
+													if (data.length > 0) {
+															console.log("Sample SignatoryID type:", typeof data[0].RevenueAccount);
+													}
 
-												// Debug the types
-													console.log("typeof account.InvoicePreparedBy:", typeof account.InvoicePreparedBy);
-												if (data.length > 0) {
-													console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
-												}
+													// Try finding the match
+														var match = data.find(x => x.SignatoryID == account.RevenueAccount); // use == for debug
+													console.log("Match found:", match);
 
-												// Try finding the match
-												var match = data.find(x => x.SignatoryID == account.InvoicePreparedBy); // use == for debug
-												console.log("Match found:", match);
-
-												if (match) {
-													ddl1.option("value", match.SignatoryID);
-													console.log("Value set in dropdown:", match.SignatoryID);
-												} else {
-														console.warn("⚠️ No matching SignatoryID found for account.InvoicePreparedBy");
-												}
-											});
-				
-				                            //TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
-				                                $("#currencyexchangerate").dxNumberBox("instance").option("value",account.ExchangeRate);
-				                                $("#LessAdvance").dxTextBox("instance").option("value",account.AdvanceText);
-				                                $("#currencyexchangerate3").dxNumberBox("instance").option("value",account.AdvanceAmount);
-				                                $("#LessAdvanceAr").dxTextBox("instance").option("value",account.AdvanceTextAr);
-				                            	$("#LessOtherDeductions").dxTextBox("instance").option("value",account.OtherDeductionText);
-				                            	$("#currencyexchangerate4").dxNumberBox("instance").option("value",account.OtherDeductionAmount);
-				                            	$("#LessAdvanceAr1").dxTextBox("instance").option("value",account.OtherDeductionTextAr);
-				                            	$("#LessRetention").dxTextBox("instance").option("value",account.RetentionText);
-				                            	$("#currencyexchangerate5").dxNumberBox("instance").option("value",account.RetentionAmount);
-				                            	$("#LessAdvanceAr2").dxTextBox("instance").option("value",account.RetentionTextAr);
-
-					                             //SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
-					                              $("#ClientPONo").dxTextBox("instance").option("value",account.Pono);
-												  $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value",account.InvoicePreparedBy);
-
+													if (match) {
+														ddl2.option("value", match.SignatoryID);
+														console.log("Value set in dropdown:", match.SignatoryID);
+													} else {
+															console.warn("⚠️ No matching SignatoryID found for account.RevenueAccount");
+													}
+												});
 			
 											   if(account.IsVerified==true)
 											{
@@ -3717,86 +3729,118 @@
 						
 						if (response && response.length > 0) {
 							var account = response[0];
+	 $("#CreditNoteNo").dxTextBox("instance").option("value", account.CreditNoteNo || null);
+		$("#CreditNoteDate").dxDateBox("instance").option("value", account.CreditNoteDate || null);
+		$("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value", account.CreditNoteEffectiveDate || null);
+		$("#SupplyDate").dxDateBox("instance").option("value", account.InvoiceSupplyDate || null);
+		$("#ddpaymentmeans").dxDropDownBox("instance").option("value", account.PaymentMeansTypeCode || null);
 
+		$("#ddclientcode").dxDropDownBox("instance").option("value", account.ClientCode || null);
+		$("#ddclientname").dxTextBox("instance").option("value", account.BuyerName || null);
+		$("#ClientNameArabic").dxTextBox("instance").option("value", account.BuyerNameAr || null);
+		$("#GroupVATNo").dxTextBox("instance").option("value", account.SellerGroupVatnumber || null);
+		$("#ClientVATNo").dxTextBox("instance").option("value", account.BuyerVatnumber || null);
+		$("#OtherIDType").dxDropDownBox("instance").option("value", account.BuyerOtherIdtype || null);
+		$("#ClientOtherID").dxTextBox("instance").option("value", account.BuyerOtherId || null);
 
-								$('#CreditNoteNo').dxTextBox("instance")?.option("value", account.CreditNoteNo);
-								ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-								$('#ddclientname').dxTextBox("instance")?.option("value", account.BuyerName);
+		$("#StreetName").dxTextBox("instance").option("value", account.BuyerAddressStreet || null);
+		$("#StreetNameArabic").dxTextBox("instance").option("value", account.BuyerAddressStreetAr || null);
+		$("#AdditionalAddress").dxTextBox("instance").option("value", account.BuyerAdditionalStreet || null);
+		$("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr || null);
 
-								$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
-								$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
-								$('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
-								// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
-								 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-								 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
-								 $('#CreditNoteDate').dxDateBox("instance")?.option("value", account.CreditNoteDate);
-								 $('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.CreditNoteEffectiveDate);
-									$('#ddlInvoiceNo').dxDropDownBox("instance")?.option("value", account.InvoiceNo);
-									$('#ddlRevenueAccount').dxDropDownBox("instance")?.option("value", account.RevenueAccount);
-									dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+		$("#BuildingNumber").dxTextBox("instance").option("value", account.erBuildingNumber || null);
+		$("#ClientCity").dxTextBox("instance").option("value", account.erCity || null);
+		$("#ClientCityArabic").dxTextBox("instance").option("value", account.erCityAr || null);
+		$("#AdditionalNumber").dxTextBox("instance").option("value", account.erAdditionalNumber || null);
+		$("#Province").dxTextBox("instance").option("value", account.BuyerProvince || null);
+		$("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr || null);
+		$("#PostalCode").dxTextBox("instance").option("value", account.erPostalCode || null);
+		$("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood || null);
+		$("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr || null);
+		$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", account.BuyerCountryCode || null);
 
-										$('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
-										$('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
-										  $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+		$("#InvoiceCounterValue").dxTextBox("instance").option("value", account.InvoiceCounterValue || null);
+		$("#ddlInvoiceNo").dxDropDownBox("instance").option("value", account.InvoiceNo || null);
 
-								// 		   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
-											 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
-											 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
-								//  		 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
-								// 			 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
-								// 			 $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
-								// 				 $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
-												 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
-												 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
-												 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
-												 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
-												 $('#SellerOtherSellerId').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
-								// 				//dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
-								// 				//dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
-												dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
-												//dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
-												dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
-												dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
+		$("#EffectiveDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate || null);
+		$("#InvoiceStartDate").dxDateBox("instance").option("value", account.InvoiceStartDate || null);
+		$("#InvoiceEndDate").dxDateBox("instance").option("value", account.InvoiceEndDate || null);
+		$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+		$("#txtInvoiceNotes").dxTextArea("instance").option("value", account.CreditNoteRemarks || null);
+		$("#txtNotesinArabic").dxTextArea("instance").option("value", account.CreditNoteRemarksAr || null);
 
-												$("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
-												$("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
-												$("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+		$("#currencyexchangerate").dxNumberBox("instance").option("value", account.ExchangeRate || null);
+		$("#LessAdvance").dxTextBox("instance").option("value", account.AdvanceText || null);
+		$("#currencyexchangerate3").dxNumberBox("instance").option("value", account.AdvanceAmount || null);
+		$("#LessAdvanceAr").dxTextBox("instance").option("value", account.AdvanceTextAr || null);
+		$("#LessOtherDeductions").dxTextBox("instance").option("value", account.OtherDeductionText || null);
+		$("#currencyexchangerate4").dxNumberBox("instance").option("value", account.OtherDeductionAmount || null);
+		$("#LessAdvanceAr1").dxTextBox("instance").option("value", account.OtherDeductionTextAr || null);
+		$("#LessRetention").dxTextBox("instance").option("value", account.RetentionText || null);
+		$("#currencyexchangerate5").dxNumberBox("instance").option("value", account.RetentionAmount || null);
+		$("#LessAdvanceAr2").dxTextBox("instance").option("value", account.RetentionTextAr || null);
 
-												$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
-												$("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
-												$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+		$("#ddlDivision").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+		$("#ClientPONo").dxTextBox("instance").option("value", account.Pono || null);
+		$("#ProjectRef").dxTextBox("instance").option("value", account.ReferenceNo || null);
 
+		// Branch / Division
+		$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", account.SellerName || null);
+		$("#OurGroupVATNo").dxTextBox("instance").option("value", account.SellerGroupVatnumber || null);
+		$("#OurVATNo").dxTextBox("instance").option("value", account.SellerVATNumber || null);
+		$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", account.SellerNameAr || null);
+		$("#OtherID1").dxTextBox("instance").option("value", account.SellerOtherSellerId || null);
 
-												$("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceSupplyDate);
-												$("#ddpaymentmeans").dxDropDownBox("instance").option("value",account.PaymentMeansTypeCode);
-												$("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value",account.InvoiceTransactionCode);
-												$("#OtherIDType").dxDropDownBox("instance").option("value",account.BuyerOtherIdtype);
-												var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
-												 ddl3.getDataSource().load().done(function(data) {
-													 // Check if SignatoryID exists in the loaded list
-													 var match = data.find(x => x.CurrencyExchangeId === account.Currency);
-													 if (match) {
-														 ddl3.option("value", match.CurrencyExchangeId);
-													 }
-												 });
+		$("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet || null);
+		$("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr || null);
+		$("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet || null);
+		$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr || null);
+		$("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber || null);
+		$("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity || null);
+		$("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr || null);
+		$("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber || null);
+		$("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince || null);
+		$("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr || null);
+		$("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode || null);
+		$("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood || null);
+		$("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr || null);
+		$("#OurCountryCode").dxSelectBox("instance").option("value", account.SellerCountryCode || null);
 
-												//TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
-													$("#currencyexchangerate").dxNumberBox("instance").option("value",account.ExchangeRate);
-													$("#LessAdvance").dxTextBox("instance").option("value",account.AdvanceText);
-													$("#currencyexchangerate3").dxNumberBox("instance").option("value",account.AdvanceAmount);
-													$("#LessAdvanceAr").dxTextBox("instance").option("value",account.AdvanceTextAr);
-													$("#LessOtherDeductions").dxTextBox("instance").option("value",account.OtherDeductionText);
-													$("#currencyexchangerate4").dxNumberBox("instance").option("value",account.OtherDeductionAmount);
-													$("#LessAdvanceAr1").dxTextBox("instance").option("value",account.OtherDeductionTextAr);
-													$("#LessRetention").dxTextBox("instance").option("value",account.RetentionText);
-													$("#currencyexchangerate5").dxNumberBox("instance").option("value",account.RetentionAmount);
-													$("#LessAdvanceAr2").dxTextBox("instance").option("value",account.RetentionTextAr);
+		$("#ddlGoodsGroup9").dxDropDownBox("instance").option("value", account.InvoicePreparedBy || null);
+			var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+				 ddl3.getDataSource().load().done(function(data) {
+					 // Check if SignatoryID exists in the loaded list
+					 var match = data.find(x => x.CurrencyExchangeId === account.Currency);
+					 if (match) {
+						 ddl3.option("value", match.CurrencyExchangeId);
+					 }
+				 });
 
-													 //SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
-													  $("#ClientPONo").dxTextBox("instance").option("value",account.Pono);
-													  $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value",account.InvoicePreparedBy);
+					 var ddl1 = $("#ddlGoodsGroup9").dxDropDownBox("instance");
 
-								
+												console.log("ddl1 instance:", ddl1);
+
+												ddl1.getDataSource().load().done(function (data) {
+													console.log("Loaded data from datasource:", data);
+													console.log("account.InvoicePreparedBy value:", account.InvoicePreparedBy);
+
+													// Debug the types
+														console.log("typeof account.InvoicePreparedBy:", typeof account.InvoicePreparedBy);
+													if (data.length > 0) {
+														console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
+													}
+
+													// Try finding the match
+													var match = data.find(x => x.SignatoryID == account.InvoicePreparedBy); // use == for debug
+													console.log("Match found:", match);
+
+													if (match) {
+														ddl1.option("value", match.SignatoryID);
+														console.log("Value set in dropdown:", match.SignatoryID);
+													} else {
+															console.warn("⚠️ No matching SignatoryID found for account.InvoicePreparedBy");
+													}
+												});
 							$.ajax({
 								type: "GET",
 								  url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
@@ -4059,6 +4103,7 @@
 						}
 
 						e.component.close();
+					    updateInvoiceChildren();
 					}
 				});
 			}
@@ -4458,7 +4503,7 @@ openModal(url, title);
 						},
 						onCellValueChanged: function (e) {
 	                           	if (e.value !== e.oldValue) {
-	                           		updateInvoiceChildren();
+	                           		
 	                           	}
 	                           }},
 
@@ -4474,7 +4519,7 @@ openModal(url, title);
 						},
 						onCellValueChanged: function (e) {
 	                       	if (e.value !== e.oldValue) {
-	                       		updateInvoiceChildren();
+	                       		//updateInvoiceChildren();
 	                       	}
 	                       }
 						},
@@ -4493,7 +4538,7 @@ openModal(url, title);
 						},
 								onCellValueChanged: function (e) {
 	                         	if (e.value !== e.oldValue) {
-	                         		updateInvoiceChildren();
+	                         		//updateInvoiceChildren();
 	                         	}
 	                         }
 						},
@@ -4525,7 +4570,7 @@ openModal(url, title);
 							VATPercentage(selectedItem.TaxRate, rowIndex,TaxSlabCode)
 							 dataGrid.saveEditData();	
                              if (e.previousValue !== e.value) {
-                                 updateInvoiceChildren();
+                                 //updateInvoiceChildren();
                              }
 						}
 							
@@ -4687,6 +4732,52 @@ openModal(url, title);
 				columnAutoWidth: true,
 
 				showBorders: true,
+					onEditorPreparing:function (e) {
+			   if (e.parentType === "dataRow" &&
+				(e.dataField === "QuantityCredited" ||
+				 e.dataField === "UnitRate" ||
+				// e.dataField === "VATPercentage" ||
+				 e.dataField === "Discount")) {
+
+				e.editorOptions.onValueChanged = function (args) {
+					debugger;
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					let rowIndex = e.row.rowIndex;
+
+					let newValue = args.value;
+
+					// Get existing values or updated ones
+							let qty = e.dataField === "QuantityCredited" ? newValue : grid.cellValue(rowIndex, 'QuantityCredited') || 0;
+							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,'UnitRate') || 0;
+							let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, 'Discount') || 0;
+
+					// VAT rate handling
+									let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT%')}`) || "0%";
+									let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+
+									// Calculate amount
+									let amount = qty * unitPrice;
+									let discountedAmount = amount - discount;
+
+									// Ensure discountedAmount doesn't go negative
+									if (discountedAmount < 0) discountedAmount = 0;
+
+									let vatValue = discountedAmount * vatRate;
+									let totalValue = discountedAmount + vatValue;
+
+									grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+									grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+									grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
+									//grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+									grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
+									grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+									grid.cellValue(rowIndex,`${formatMessage('Qty')}` , formatAmount(qty));
+									grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr);
+                                    grid.saveEditData();
+									updateInvoiceChildren();
+				};
+			}
+		}
 
 			}).dxDataGrid("instance");
 
@@ -4820,18 +4911,18 @@ openModal(url, title);
 							},
 							error: function (xhr, status, error) {
 								console.error("Error fetching grid data:", error);
-								document.getElementById('loadingSpinner').style.display = 'none';
+								//document.getElementById('loadingSpinner').style.display = 'none';
 							}
 						});
 
 						// isVoucherSaved = true;
 						// updateWorkflowVisual(getWorkflowStatusFromFields());
 						// DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-						document.getElementById('loadingSpinner').style.display = 'none';
+						//document.getElementById('loadingSpinner').style.display = 'none';
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-						document.getElementById('loadingSpinner').style.display = 'none';
+						//document.getElementById('loadingSpinner').style.display = 'none';
 					}
 				});
 			})
@@ -4839,45 +4930,6 @@ openModal(url, title);
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
 			});
 	});
-
-
-	// 			$("#btnAddNew").on("click", function (e) {
-	// 	const grid = $("#B2BdataGrid").dxDataGrid("instance");
-	// 	const store = grid.getDataSource().store();
-	// 	const currentData = grid.getDataSource().items();
-
-	// 	// Calculate next SNo safely based on existing items
-	// 	const nextSNo = currentData.length > 0
-	// 		? Math.max(...currentData.map(row => row.SNo || 0)) + 1
-	// 		: 1;
-
-	// 	const newRow = {
-	// 		SNo: nextSNo,
-	// 		//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
- //            ItemCode:"", 
-	// 		DetailedDescription: "",
-	// 		DescriptionDetails: "",
-	// 		QuantityCredited: 0,
-	// 		UnitRate: 0.00,
-	// 		CalcLineAmountBeforeDiscount: 0.00,
-	// 		Discount: 0,
-	// 		DiscountDetails: "",
-	// 		CalcLineAmount: 0.00,
-	// 		ExcemptionCode: "",
-	// 		CalcTaxAmount: "",
-	// 		LineTotal: 0.00
-	// 	};
-
-	// 	// Efficient insert without replacing entire dataSource
-	// 	store.insert(newRow)
-	// 		.then(() => {
-	// 			grid.refresh(); // Ensure the UI updates with the new row
-	// 		})
-	// 		.catch(error => {
-	// 			DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
-	// 		});
-	// });
-
 
 			// Fetch dropdown data (same API can be used if needed)
 		 function getDropdownData() {
@@ -6381,269 +6433,6 @@ openModal(url, title);
 				}
 			});
 		}
-		   function onsaveLedgerAccountClick(e) {
-
-			   var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
-			   var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
-			   var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
-			   var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
-			   var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
-			   acgid = sAccountGroup;
-			   //Setting Tab Values
-			   var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
-			   var sCreditDebit = $('#ddlCreditDebit').dxDropDownBox('option', 'value');
-			   var isDefaultEntryChecked = $("#chkDefaultEntry").dxCheckBox("instance").option("value");
-			   var sVoucherAbbr = $('#txtVoucherNoAbbr').dxTextBox("instance").option("value");
-			   var isMaintainBillEntryChecked = $("#chkMaintainBillEntry").dxCheckBox("instance").option("value");
-			   var sNodays = $('#txtNoDays').dxNumberBox("instance").option("value");
-			   var chkEmployeeDBEntryChecked = $("#chkEmployeeDBEntry").dxCheckBox("instance").option("value");
-			   var chkPropertyDBEntryChecked = $("#chkPropertyDBEntry").dxCheckBox("instance").option("value");
-			   var chkLoanAccountEntryChecked = $("#chkLoanAccountEntry").dxCheckBox("instance").option("value");
-			   var schIsLedgerObselete = $("#schLedgerActive").dxSwitch("instance").option("value");
-			   //ContactDetails Tab
-			   var cdBranch = $('#ddlbranch').dxDropDownBox('option', 'value');
-			   var cdSubGroup = $('#ddlSubgroup').dxDropDownBox('option', 'value');
-			   var cdSales = $('#ddlSales').dxDropDownBox('option', 'value');
-			   var cdContact = $('#txtContactPerson').dxTextBox("instance").option("value");
-			   var cdTitle = $('#txtPersonTitle').dxTextBox("instance").option("value");
-			   var cdMobile = $('#txtPersonMobile').dxTextBox("instance").option("value");
-			   var cdEmail = $('#txtEmail').dxTextBox("instance").option("value");
-			   var cdRemarks = $('#txtRemarks').dxTextBox("instance").option("value");
-			   // Bank Details
-			   var bdAccountName = $('#txtBankAccountName').dxTextBox("instance").option("value");
-			   var bdAccountNamear = $('#txtBankAccountNameAr').dxTextBox("instance").option("value");
-			   var bdBankName = $('#txtBankName').dxTextBox("instance").option("value");
-			   var bdBankNamear = $('#txtBankNameAr').dxTextBox("instance").option("value");
-			   var bdBankBranch = $('#txtBankBranch').dxTextBox("instance").option("value");
-			   var bdBankBranchar = $('#txtBankBranchAr').dxTextBox("instance").option("value");
-
-			   var bdBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance").option("value");
-			   var bdIBAN = $('#txtBankIBAN').dxTextBox("instance").option("value");
-			   var bdSwiftCode = $('#txtSwiftCode').dxTextBox("instance").option("value");
-			   //Client Details Tab
-			   var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
-			   var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
-			   var cntVATNo = $('#txtClientVATNo').dxNumberBox('option', 'value');
-			   var cntGroupVATNo = $('#txtGrouptVATNo').dxNumberBox('option', 'value');
-			   var cntOtherType = $('#ddlOtherType').dxDropDownBox('option', 'value');
-			   var cntOtherID = $('#txtOtherId').dxTextBox('option', 'value');
-			   var cntAddress = $('#txtClientAddress').dxTextBox('option', 'value');
-			   var cntAddressar = $('#txtClientAddressAr').dxTextBox('option', 'value');
-			   var cntAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox('option', 'value');
-			   var cntAdditionalAddressar = $('#txtClientAdditionalAddressAr').dxTextBox('option', 'value');
-			   var cntBuildingNo = $('#txtBuildingNo').dxNumberBox('option', 'value');
-			   var cntCity = $('#txtClientCity').dxTextBox('option', 'value');
-			   var cntCityar = $('#txtClientCityAr').dxTextBox('option', 'value');
-			   var cntAdditionalNo = $('#txtAdditionalNo').dxNumberBox('option', 'value');
-			   var cntState = $('#txtState').dxTextBox('option', 'value');
-			   var cntStatear = $('#txtStateAr').dxTextBox('option', 'value');
-			   var cntPostalCode = $('#txtPostalCode').dxNumberBox('option', 'value');
-			   var cntDistrict = $('#txtDistrict').dxTextBox('option', 'value');
-			   var cntDistrictAr = $('#txtDistrictAr').dxTextBox('option', 'value');
-			   var cntCountryCode = $('#ddlCountryCode').dxDropDownBox('option', 'value');
-			   //SupplierDetails Tab
-			   var supBillingName = $('#txtSupBilling').dxTextBox('option', 'value');
-			   var supBillingNamear = $('#txtSupBillingAr').dxTextBox('option', 'value');
-			   var supVATNo = $('#txtSupVATNo').dxNumberBox('option', 'value');
-			   var supGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox('option', 'value');
-			   var cntSupOtherType = $('#ddlSupOtherType').dxDropDownBox('option', 'value');
-			   var cntSupOtherID = $('#txtSupOtherId').dxTextBox('option', 'value');
-			   var supAddress = $('#txtSupAddress').dxTextBox('option', 'value');
-			   var supAddressAr = $('#txtSupAddressAr1').dxTextBox('option', 'value');
-
-			   var supAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox('option', 'value');
-			   var supAdditionalAddressAr = $('#txtSupAdditionalAddressAr1').dxTextBox('option', 'value');
-
-			   var supBuildingNo = $('#txtSupBuildingNo').dxNumberBox('option', 'value');
-			   var supCity = $('#txtSupCity').dxTextBox('option', 'value');
-			   var supCityAr = $('#txtSupCityAr1').dxTextBox('option', 'value');
-			   var supAdditionalNo = $('#txtSupAdditionalNo').dxNumberBox('option', 'value');
-			   var supState = $('#txtSupState').dxTextBox('option', 'value');
-			   var supStateAr = $('#txtSupStateAr1').dxTextBox('option', 'value');
-			   var supPostalCode = $('#txtSupPostalCode').dxNumberBox('option', 'value');
-			   var supDistrict = $('#txtSupDistrict').dxTextBox('option', 'value');
-			   var supDistrictAr = $('#txtSupDistrictAr1').dxTextBox('option', 'value');
-			   var cntSupCountryCode = $('#ddlSupCountryCode').dxDropDownBox('option', 'value');
-
-			   // AttachmentTab
-			   // --Right now Attachment details values is not completed.
-			   //Billing Details tab
-			   var bClientBillingName = $('#txtClientBillingName').dxTextBox('option', 'value');
-
-			   var bBillingAddress = $('#txtBillingAddress').dxTextArea('option', 'value');
-			   var bBillingAddressAr = $('#txtBillingAddressAr').dxTextArea('option', 'value');
-
-			   var bVATNO = $('#txtBillingVATRegNo').dxNumberBox('option', 'value');
-
-			  // var bVATNOAR = $('#txtBillingVATRegNoArabic').dxNumberBox('option', 'value');
-			   var bTIN = $('#txtBillingTIN').dxNumberBox('option', 'value');
-			   var bContactPerson = $('#txtBillingContactPerson').dxTextBox('option', 'value');
-			   var bContactNo = $('#txtBillingContactNumber').dxTextBox('option', 'value');
-			   var bFaxNo = $('#txtBillingFaxNo').dxTextBox('option', 'value');
-			   var bVendorNo = $('#txtBillingVendorNo').dxTextBox('option', 'value');
-			   var bBillingTitle = $('#txtBillingContactPersonTitle').dxTextBox('option', 'value');
-			   var bBillingPayment = $('#ddlBillingPayment').dxDropDownBox('option', 'value');
-			   //Obselte (Old Version)
-			   var obAddress = $('#txtObsSupAddress').dxTextBox('option', 'value');
-			   //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
-
-			   var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
-			   //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
-
-			   // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
-			   //     alert("Account Head Name cannot be empty");
-			   //     return false;
-			   // }
-
-			   // if (sAccountGroup == null || sAccountGroup == "undefined" || sAccountGroup == "") {
-			   //     alert("Account group cannot be empty");
-			   //     return false;
-			   // }
-
-
-			   var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
-			   var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
-
-			   var accountHeadValidation = accountHeadValidator.validate();
-			   var AccountGroupValidation = AccountGroupValidator.validate();
-
-			   if (accountHeadValidation.isValid && AccountGroupValidation.isValid) {
-
-				   const data = {
-					   AccountID: sAccountID,
-					   ReferenceNo: sRefNo,
-					   AccountHead: sAcccountHead,
-					   AccountGroupId: sAccountGroup,
-					   OpeningBalance: sOpeningBalance,
-					   OpeningBalanceDrCr: sCreditDebit,
-					   IsDefaultForCash: isDefaultEntryChecked,
-					   VoucherAbbr: sVoucherAbbr,
-					   IsMaintainBillByBill: isMaintainBillEntryChecked,
-					   NoOfDaysCreditPeriod: sNodays,
-					   IsEmployeeAllocated: chkEmployeeDBEntryChecked,
-					   IsPropertyAllocated: chkPropertyDBEntryChecked,
-					   IsEmployeePaymentAc: chkLoanAccountEntryChecked,
-					   // LedgerActiveChecked: schLedgerActiveChecked,
-					   IsLedgerObselete: schIsLedgerObselete,
-					   AccountBranch: cdBranch,
-					   AccountSubGroup: cdSubGroup,
-					   SalesPersonCode: cdSales,
-					   AccountsContactName: cdContact,
-					   AccountsContactTitle: cdTitle,
-					   AccountsContactMobile: cdMobile,
-					   EmailAddress: cdEmail,
-					   LedgerRemarks: cdRemarks,
-					   BankAccountName: bdAccountName,
-					   BankAccountNameAr: bdAccountNamear,
-					   AccountHeadArabic: sAcccountHeadAr,
-					   BankName: bdBankName,
-					   BankNameAr: bdBankNamear,
-					   BankBranch: bdBankBranch,
-					   BankBranchAr: bdBankBranchar,
-
-					   BankAccountNo: bdBankAccountNo,
-					   BankIBAN: bdIBAN,
-					   BankSwiftCode: bdSwiftCode,
-					   BillingName: cntBillingName,
-					   BillingNameAr: cntBillingNamear,
-
-					   VATRegistrationNo: String(cntVATNo),
-					   ClientGroupVATNumber:String(cntGroupVATNo),
-					   ClientOtherIDType: cntOtherType,
-					   ClientOtherID: cntOtherID,
-					   ClientAddressStreet: cntAddress,
-					   ClientAddressStreetAr: cntAddressar,
-					   ClientAdditionalStreet: cntAdditionalAddress,
-					   ClientAdditionalStreetAr: cntAdditionalAddressar,
-					   ClientBuildingNumber:String(cntBuildingNo),
-					   ClientCity: cntCity,
-					   ClientCityAr: cntCityar,
-					   ClientAdditionalNumber:String(cntAdditionalNo),
-					   ClientProvince: cntState,
-					   ClientProvinceAr: cntStatear,
-					   ClientPostalCode:String(cntPostalCode),
-					   ClientNeighborhood: cntDistrict,
-					  ClientNeighborhoodAr: cntDistrictAr,
-
-					   ClientCountryCode: cntCountryCode,
-					   SupplierName: supBillingName,
-					   SupplierNameAr: supBillingNamear,
-					   SupplierVATNo: String(supVATNo),
-					   SupplierGroupVATNumber:String(supGroupVATNo),
-					   SupplierOtherIdtype: cntSupOtherType,
-					   SupplierOtherId: cntSupOtherID,
-					   SupplierAddressStreet: supAddress,
-					   SupplierAddressStreetAr: supAddressAr,
-					   SupplierAdditionalStreet: supAdditionalAddress,
-					   SupplierAdditionalStreetAr: supAdditionalAddressAr,
-					   SupplierBuildingNumber:String(supBuildingNo),
-					   SupplierCity: supCity,
-					   SupplierCityAr: supCityAr,
-					   SupplierAdditionalNumber:String(supAdditionalNo),
-					   SupplierProvince: supState,
-					   SupplierProvinceAr: supStateAr,
-					   SupplierPostalCode:String(supPostalCode),
-					   SupplierNeighborhood: supDistrict,
-					   SupplierNeighborhoodAr: supDistrictAr,
-					   SupplierCountryCode: cntSupCountryCode,
-					   BillingName: bClientBillingName,
-					   BillingAddress: bBillingAddress,
-					   BillingAddressAr: bBillingAddressAr,
-					   VATRegistrationNo: String(bVATNO),
-					   ClientTIN:String(bTIN),
-					   BillingContactPerson: bContactPerson,
-					   BillingPhoneNo: bContactNo,
-					   BillingFaxNo: bFaxNo,
-					   ClientVendorNo: bVendorNo,
-					   BillingContactPersonTitle: bBillingTitle,
-					   BillingBankAccount: bBillingPayment,
-					   SupplierAddress: obAddress,
-					   SupplierVATNo:String(obVATNo)
-				   };
-
-				   console.log(data);
-
-				   const values = JSON.stringify(data);
-				   // console.log("val: " + values);
-
-
-				   $.ajax({
-					   //url: '/api/ledgeraccount/InsertLedgerAccount',
-					   url: `/api/VATModule/UpdateInvoiceDetails?AccountGroupID=${encodeURIComponent(acgid)}`,
-					   type: 'POST',
-					   contentType: 'application/json',  // Set the content type to JSON
-					   data: values,  // Convert the object to JSON
-					   success: function (response) {
-						   if (response.success) {
-							   //alert(response.message);
-							   DevExpress.ui.notify(response.message, "success", 3000);
-							 setTimeout(function () {
-				   window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-				   window.parent.$("#popupContainer").dxPopup("instance").hide();
-			   }, 2000);
-								// window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-								// window.parent.$("#popupContainer").dxPopup("instance").hide();
-							   // window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
-
-						   } else {
-							   DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
-						   }
-					   },
-					   error: function (xhr, status, error) {
-						   // Handle any error that occurred during the request
-						   console.log("Error: " + error);
-					   }
-				   });
-
-
-
-			   }       else {
-							   DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
-						   }
-		   }
-
-
-
 			 function gridBox_valueChanged(e) {
 					var $dataGrid = $("#dataGrid");
 
@@ -6683,6 +6472,7 @@ openModal(url, title);
 			 e.dataField === "Discount")) {
 				 
 			e.editorOptions.onValueChanged = function (args) {
+				debugger;
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 					
@@ -6694,28 +6484,29 @@ openModal(url, title);
 						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, 'Discount') || 0;
 
 				// VAT rate handling
-						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT%')}`) || "0%";
-				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+						        let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT%')}`) || "0%";
+				                let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+				                
+				                // Calculate amount
+				                let amount = qty * unitPrice;
+				                let discountedAmount = amount - discount;
+				                
+				                // Ensure discountedAmount doesn't go negative
+				                if (discountedAmount < 0) discountedAmount = 0;
+				                
+				                let vatValue = discountedAmount * vatRate;
+				                let totalValue = discountedAmount + vatValue;
 
-				// Calculate amount
-				let amount = qty * unitPrice;
-				let discountedAmount = amount - discount;
-
-				// Ensure discountedAmount doesn't go negative
-				if (discountedAmount < 0) discountedAmount = 0;
-
-				let vatValue = discountedAmount * vatRate;
-				let totalValue = discountedAmount + vatValue;
-
-									grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
-									grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
-									grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
-							//grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+							    grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+							    grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+							    grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
+							    //grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 								grid.cellValue(rowIndex, `${formatMessage('Amount')}`, formatAmount(amount));
 								grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
 								grid.cellValue(rowIndex,`${formatMessage('Qty')}` , formatAmount(qty));
-									grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr);
-				
+						        grid.cellValue(rowIndex, `${formatMessage('VAT%')}`, vatRateStr);
+                              	grid.saveEditData();
+					            updateInvoiceChildren();
 			};
 		}
 	}
@@ -6761,6 +6552,20 @@ openModal(url, title);
 			 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),
 			 BuyerOtherIdtype:$("#OtherIDType").dxDropDownBox("instance").option("value") || null,
 			 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
+			 BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+			 BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+			 BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+			 BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+			 BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+			 BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+			 BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+			 BuyerAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+			 BuyerProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+		     BuyerProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+			 BuyerPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+			 BuyerNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+			 BuyerNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+			 BuyerCountryCode:$("#CountryCodeNumeric").dxDropDownBox("instance").option("value")||null,
 		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
 			 InvoiceNo: $("#ddlInvoiceNo").dxDropDownBox("instance").option("value")|| null,
 
@@ -6803,6 +6608,20 @@ openModal(url, title);
 			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
 			   SellerOtherIdtype:SellerOtherIdtype|| null,
 			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+			    SellerAddressStreet:$("#OurStreetName").dxTextBox("instance").option("value")||null,
+			  SellerAddressStreetAr:$("#OurStreetNameArabic").dxTextBox("instance").option("value")||null,
+			  SellerAdditionalStreet:$("#OurAdditionalAddress").dxTextBox("instance").option("value")||null,
+			  SellerAdditionalStreetAr:$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value")||null,
+			  SellerBuildingNumber:$("#OurBuildingNumber").dxTextBox("instance").option("value")||null,
+			  SellerCity:$("#OurClientCity").dxTextBox("instance").option("value")||null,
+			   SellerCityAr:$("#OurClientCityArabic").dxTextBox("instance").option("value")||null,
+			   SellerAdditionalNumber:$("#OurAdditionalNumber").dxTextBox("instance").option("value")||null,
+			   SellerProvince:$("#OurProvince").dxTextBox("instance").option("value")||null,
+			   SellerProvinceAr:$("#OurProvinceArabic").dxTextBox("instance").option("value")||null,
+			   SellerPostalCode:$("#OurPostalCode").dxTextBox("instance").option("value")||null,
+			   SellerNeighborhood:$("#OurDistrict").dxTextBox("instance").option("value")||null,
+			   SellerNeighborhoodAr:$("#OurDistrictArabic").dxTextBox("instance").option("value")||null,
+			   SellerCountryCode: $("#OurCountryCode").dxSelectBox("instance").option("value") || null,
 		       InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value")|| null
 			   
 		};
@@ -6902,15 +6721,12 @@ openModal(url, title);
 	 }
 
 
+	function SaveandCloseInvoiceDetails() {
 
-
-
-		function SaveandCloseInvoiceDetails() {
-			
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-					var button = $("#btnSaveAndClose").dxButton("instance");
+				var button = $("#btnSave").dxButton("instance");
 				button.option("disabled", true);
 
 			if(clientnameValidation.isValid)
@@ -6919,12 +6735,18 @@ openModal(url, title);
 			let CreditNoteNo=$('#CreditNoteNo').dxTextBox("instance").option("value");
 
 			if(revaccheadid==null)
-	        {
-	        	revaccheadid="L00343"
-	        }
+			{
+				revaccheadid="L00343"
+			}
+				if(transcode==null)
+				   {
+					transcode="0100000";
+				   }
+
+
 
 			var InvoiceMaster = {
-					CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
+				CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 				CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
 				CreditNoteEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
 				InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
@@ -6940,6 +6762,20 @@ openModal(url, title);
 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value"),
 				 BuyerOtherIdtype:$("#OtherIDType").dxDropDownBox("instance").option("value") || null,
 				 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value"),
+				 BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+				 BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+				 BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+				 BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+				 BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+				 BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+				 BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+				 BuyerAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+				 BuyerProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+				 BuyerProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+				 BuyerPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+				 BuyerNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+				 BuyerNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+				 BuyerCountryCode:$("#CountryCodeNumeric").dxDropDownBox("instance").option("value")||null,
 				 InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
 				 InvoiceNo: $("#ddlInvoiceNo").dxDropDownBox("instance").option("value")|| null,
 
@@ -6949,7 +6785,7 @@ openModal(url, title);
 				RevenueAccount:revaccheadid|| null,
 				CostCenterCode: $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")|| null,
 				CreditNoteRemarks: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
-			    CreditNoteRemarksAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+				CreditNoteRemarksAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 
 
 					//Deduction&CurrencyDetails
@@ -6965,7 +6801,8 @@ openModal(url, title);
 				RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
 				RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
 				RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
-
+				CostCenterCode: $("#ddlDivision").dxDropDownBox("instance").option("value")|| null,
+					//ddlDivision
 					//SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
 				Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
 				ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
@@ -6980,7 +6817,23 @@ openModal(url, title);
 				  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
 				  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
 				   SellerOtherIdtype:SellerOtherIdtype|| null,
-				   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null
+				   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+					SellerAddressStreet:$("#OurStreetName").dxTextBox("instance").option("value")||null,
+				  SellerAddressStreetAr:$("#OurStreetNameArabic").dxTextBox("instance").option("value")||null,
+				  SellerAdditionalStreet:$("#OurAdditionalAddress").dxTextBox("instance").option("value")||null,
+				  SellerAdditionalStreetAr:$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value")||null,
+				  SellerBuildingNumber:$("#OurBuildingNumber").dxTextBox("instance").option("value")||null,
+				  SellerCity:$("#OurClientCity").dxTextBox("instance").option("value")||null,
+				   SellerCityAr:$("#OurClientCityArabic").dxTextBox("instance").option("value")||null,
+				   SellerAdditionalNumber:$("#OurAdditionalNumber").dxTextBox("instance").option("value")||null,
+				   SellerProvince:$("#OurProvince").dxTextBox("instance").option("value")||null,
+				   SellerProvinceAr:$("#OurProvinceArabic").dxTextBox("instance").option("value")||null,
+				   SellerPostalCode:$("#OurPostalCode").dxTextBox("instance").option("value")||null,
+				   SellerNeighborhood:$("#OurDistrict").dxTextBox("instance").option("value")||null,
+				   SellerNeighborhoodAr:$("#OurDistrictArabic").dxTextBox("instance").option("value")||null,
+				   SellerCountryCode: $("#OurCountryCode").dxSelectBox("instance").option("value") || null,
+				   InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value")|| null
+
 			};
 
 			// Create JSON array for child records
@@ -7031,18 +6884,17 @@ openModal(url, title);
 
 												let rowData = response.map((item, index) => {
 
-		                                        	return {
-		                                        		SNo: index + 1,
-		                                        		...item
-		                                        		//LineTotal: currencyRate // overwrite with converted value
-		                                        	};
-		                                        });
-
+												return {
+													SNo: index + 1,
+													...item
+													//LineTotal: currencyRate // overwrite with converted value
+												};
+											   });
 											// ✅ Now safely initialize the grid here
 											//initializeDataGrid(rowData);
-											      let grid = $("#B2BdataGrid").dxDataGrid("instance");
-                                                 grid.option("dataSource", rowData);
-                                                 grid.refresh();v
+												   let grid = $("#B2BdataGrid").dxDataGrid("instance");
+													 grid.option("dataSource", rowData);
+													 grid.refresh();
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
@@ -7055,17 +6907,18 @@ openModal(url, title);
 							  DevExpress.ui.notify(
 						"Credit Note Details updated Successfully.","success",2000
 					);
+					history.back();
 						button.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-								button.option("disabled", false);
+							button.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-					button.option("disabled", false);
+						button.option("disabled", false);
 				}
 			});
 			}
@@ -7076,9 +6929,7 @@ openModal(url, title);
 							button.option("disabled", false);
 			}
 
-		 }
-
-
+		 }	
 
 
 	 $(document).ready(function () {
@@ -7105,37 +6956,38 @@ openModal(url, title);
 		});
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
-			let grid = $("#B2BdataGrid").dxDataGrid("instance");
- // 
+			let grid = $("#B2BdataGrid").dxDataGrid("instance"); 
 
-// Get existing values or updated ones
-		let qty = grid.cellValue(rowIndex,'QuantityCredited') || 0;
-		let unitPrice =  grid.cellValue(rowIndex,'UnitRate') || 0;
-		let discount = grid.cellValue(rowIndex,'Discount') || 0;
+            // Get existing values or updated ones
+		    let qty = grid.cellValue(rowIndex,'QuantityCredited') || 0;
+		    let unitPrice =  grid.cellValue(rowIndex,'UnitRate') || 0;
+		    let discount = grid.cellValue(rowIndex,'Discount') || 0;
 
-// VAT rate handling
-let vatRateStr = newValue || "0%";
-let vatRate = parseFloat(vatRateStr);
-
-// Calculate amount
-let amount = qty * unitPrice;
-let discountedAmount = amount - discount;
-
-// Ensure discountedAmount doesn't go negative
-if (discountedAmount < 0) discountedAmount = 0;
-
-let vatValue = discountedAmount * vatRate;
-let totalValue = discountedAmount + vatValue;
+            // VAT rate handling
+            let vatRateStr = newValue || "0%";
+            let vatRate = parseFloat(vatRateStr);
+            
+            // Calculate amount
+            let amount = qty * unitPrice;
+            let discountedAmount = amount - discount;
+            
+            // Ensure discountedAmount doesn't go negative
+            if (discountedAmount < 0) discountedAmount = 0;
+            
+            let vatValue = discountedAmount * vatRate;
+            let totalValue = discountedAmount + vatValue;
 
 			grid.cellValue(rowIndex, `${formatMessage('VAT')}`,formatAmount(vatValue));
 			grid.cellValue(rowIndex,`${formatMessage('Total')}` ,formatAmount(totalValue));
 			grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`,formatAmount(unitPrice));
-//	grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+            //	grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 			grid.cellValue(rowIndex, `${formatMessage('Amount')}`,formatAmount(amount));
 			grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
 			grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
 			grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr);
 			grid.cellValue(rowIndex, 'TaxSlabCode', TaxSlabCode);
+			grid.saveEditData();
+		    updateInvoiceChildren();
 
 
 		}
@@ -8168,33 +8020,36 @@ $(document).ready(function () {
 });
 
 
+					function btnPostToLedgerdisableEditing() {
+		// Disable all input fields and buttons except for specific ones
+		$('input, select, textarea').prop('disabled', true);
 
-				function btnPostToLedgerdisableEditing() {
-				// Disable all input fields and buttons except for specific ones
-				$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
-		        const allowedButtons = ['btnMoveDown',  'btnMoveUp','btnPostTag','btnPrint23'];
+			const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnPostTag','btnBack', 'btnPrint23'];
 
-				// Disable all dxButton and dxDropDownButton controls
-				$('.dx-button, .dx-dropdownbutton').each(function () {
-					const id = $(this).attr('id');
-					if (id && !allowedButtons.includes(id)) {
-						// Disable dxButton and dxDropDownButton widgets except for allowed ones
-						if ($(this).data('dxButton')) {
-							$(this).dxButton('option', 'disabled', true);
-						} else if ($(this).data('dxDropDownButton')) {
-							$(this).dxDropDownButton('option', 'disabled', true);
-						}
-					}
-				});
-
-				// Disable DataGrid Editing and Deleting
-				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.option("editing.allowUpdating", false);
-					dataGrid.option("editing.allowDeleting", false);
+		// Disable all dxButton and dxDropDownButton controls
+		$('.dx-button, .dx-dropdownbutton').each(function () {
+			const id = $(this).attr('id');
+			if (id && !allowedButtons.includes(id)) {
+				if ($(this).data('dxButton')) {
+					$(this).dxButton('option', 'disabled', true);
+				} else if ($(this).data('dxDropDownButton')) {
+					$(this).dxDropDownButton('option', 'disabled', true);
 				}
 			}
+		});
 
+		// Disable DataGrid Editing and Deleting
+		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (dataGrid) {
+			dataGrid.option("editing.allowUpdating", false);
+			dataGrid.option("editing.allowDeleting", false);
+		}
+
+		// Disable custom context menu
+		$("#contextMenu").hide();  // Hide immediately
+		$("#contextMenu").addClass("disabled"); // Optional marker class
+		$(document).off("contextmenu", ".dx-datagrid-rowsview .dx-row"); // Remove right-click binding
+	}
 
 				function btnVerifydisableEditing() {
 	
@@ -8388,7 +8243,7 @@ $(document).ready(function () {
 		var formType ="e-Invoice CreditNote";
 		const response = await fetch(`/api/VATModule/GetInvoiceNoFromCreditNote?creditNoteNo=${encodeURIComponent(creditNo)}`);
 		var invoiceNofromSales = await response.text(); // Get Invoice No
-		console.log(invoiceNofromSales);
+		//console.log(invoiceNofromSales);
 		var invoiceRes = null, invoiceData = null;
 		let folderId2 = "";
 		if(invoiceNofromSales?.trim()) {
@@ -8668,7 +8523,7 @@ $(document).ready(function () {
 		}));
 
 		// show spinner if you want
-		document.getElementById('loadingSpinner').style.display = 'block';
+		//document.getElementById('loadingSpinner').style.display = 'block';
 
 		$.ajax({
 			type: "POST",
@@ -8696,7 +8551,7 @@ $(document).ready(function () {
 						console.error("Error fetching grid data:", error);
 					},
 					complete: function () {
-						document.getElementById('loadingSpinner').style.display = 'none';
+						//document.getElementById('loadingSpinner').style.display = 'none';
 					}
 				});
 
@@ -8706,10 +8561,21 @@ $(document).ready(function () {
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-				document.getElementById('loadingSpinner').style.display = 'none';
+				//document.getElementById('loadingSpinner').style.display = 'none';
 			}
 		});
 	}
 
+		$(function () {
+
+			var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
+			dropDownBox.open();
+			dropDownBox.close();
+
+
+		});
+
+
+				
 </script>
 

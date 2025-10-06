@@ -1,0 +1,463 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+    .dx-button {
+        background-color: whitesmoke;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+        margin-bottom: 50px;
+    }
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+    .btn-container {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+    }
+
+        /* Initially hide the button text and set a fixed small width */
+        .btn-container .dx-button {
+            width: 40px !important; /* Small width for icons */
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Show full text when hovered */
+        .btn-container:hover .dx-button {
+            width: 200px !important; /* Expand to fit text */
+        }
+
+        /* Initially hide text */
+        .btn-container .dx-button .dx-button-text {
+            display: none;
+        }
+
+        /* Show text on hover */
+        .btn-container:hover .dx-button .dx-button-text {
+            display: inline-block;
+        }
+
+        /* Ensure dropdown button behaves similarly */
+        .btn-container .dx-dropdownbutton {
+            width: 75px !important;
+            transition: width 0.3s ease-in-out;
+        }
+
+        .btn-container:hover .dx-dropdownbutton {
+            width: 180px !important; /* Adjust as needed */
+        }
+
+        .btn-container .dx-dropdownbutton .dx-button-text {
+            display: none;
+        }
+
+        .btn-container:hover .dx-dropdownbutton .dx-button-text {
+            display: inline-block;
+        }
+</style>
+<!-- jsPDF library (core PDF engine) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- pdfMake (alternative engine if you prefer) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<!-- DevExtreme PDF export module -->
+<script src="https://cdn3.devexpress.com/jslib/latest/dx.all.js"></script>
+<!-- or specifically dx.pdf.js if you are using modular imports -->
+
+
+
+
+<div class="dx-fieldset horizontal-container">
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Text(new JS("formatMessage('Layout')"))
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(true)
+
+        @* .OnItemClick("addRecipitsButton_click") *@
+
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .OnClick("exportPivotToPdfExact")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnShowFields")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
+                .Text(new JS("formatMessage('Show Fields')"))
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnShowRowTotals")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
+                .Text(new JS("formatMessage('Show Row Totals')"))
+
+                )
+
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+    // Handle the file selection
+    $("#loadLayoutInput").on("change", function (event) {
+        const dataGrid = $("#dataGrid").dxPivotGrid("instance");
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    // Parse the JSON string from the file
+                    const layout = JSON.parse(e.target.result);
+
+                    // Restore the grid state
+                    dataGrid.state(layout);
+                } catch (error) {
+                    console.error("Error parsing JSON:", error);
+                    alert("Failed to load layout. Please ensure the file is valid JSON.");
+                }
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        }
+    });
+    // Convert JS object to XML string
+    function sanitizeXmlTagName(name) {
+        let safeName = name.replace(/[^a-zA-Z0-9_\-]/g, "_");
+        if (/^[^a-zA-Z_]/.test(safeName)) {
+            safeName = "_" + safeName;
+        }
+        return safeName;
+    }
+
+    function objectToXml(obj, rootName) {
+        let xml = `<${sanitizeXmlTagName(rootName)} originalName="${rootName}">`;
+        for (let prop in obj) {
+            if (!obj.hasOwnProperty(prop)) continue;
+            let value = obj[prop];
+
+            // Skip undefined or null
+            if (value === undefined || value === null) continue;
+
+            if (Array.isArray(value)) {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">` +
+                    value.map(item => objectToXml(item, 'item')).join('') +
+                    `</${sanitizeXmlTagName(prop)}>`;
+            } else if (typeof value === "object") {
+                xml += objectToXml(value, prop);
+            } else {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">${String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")}</${sanitizeXmlTagName(prop)}>`;
+            }
+        }
+        xml += `</${sanitizeXmlTagName(rootName)}>`;
+        return xml;
+    }
+
+    function xmlToObject(xml) {
+        if (xml.children.length === 0) {
+            let text = xml.textContent;
+            if (text === "true") return true;
+            if (text === "false") return false;
+            if (text === "" || text === null) return undefined;
+            if (!isNaN(text) && text.trim() !== "") return Number(text);
+            return text;
+        }
+
+        const isItem = (el) => el.nodeName === "item";
+        let obj = {};
+
+        for (let child of xml.children) {
+            const key = child.getAttribute("originalName") || child.nodeName;
+            const val = xmlToObject(child);
+
+            if (key === "item") {
+                if (!Array.isArray(obj)) obj = [];
+                obj.push(val);
+            } else {
+                if (obj.hasOwnProperty(key)) {
+                    if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+                    obj[key].push(val);
+                } else {
+                    obj[key] = val;
+                }
+            }
+        }
+
+        return obj;
+    }
+    // Save as default layout
+     function setDefaultLayoutClick() {
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+         const form = $('#formId').val();
+
+         if (!pivotGrid) {
+             DevExpress.ui.notify("Grid not found", "error", 2000);
+             return;
+         }
+
+         // Include expanded paths in state
+         const state = pivotGrid.getDataSource().state();
+         state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+         state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
+
+         const layoutXml = objectToXml(state, "Layout");
+
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: layoutXml,
+                 form: form
+             }),
+             success: function () {
+                 DevExpress.ui.notify("Default layout saved", "success", 2000);
+             },
+             error: function (xhr) {
+                 console.error("SaveLayout error:", xhr.responseText);
+                 DevExpress.ui.notify("Error while saving layout", "error", 2000);
+             }
+         });
+     }
+
+     // Reset layout
+     function resetLayoutClick() {
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+         const form = $('#formId').val();
+
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: null,
+                 form: form
+             }),
+             success: function () {
+                 DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                 pivotGrid.getDataSource().state({});
+             },
+             error: function (xhr) {
+                 console.error(xhr.responseText);
+                 DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+             }
+         });
+     }
+
+     // Download layout
+     function saveLayoutClick() {
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+         const state = pivotGrid.getDataSource().state();
+         state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+         state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
+
+         const layoutXml = objectToXml(state, "Layout");
+
+         const blob = new Blob([layoutXml], { type: "application/xml" });
+         const url = URL.createObjectURL(blob);
+         const a = document.createElement("a");
+         a.href = url;
+         a.download = "pivotgrid-layout.xml";
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         URL.revokeObjectURL(url);
+     }
+
+     // Open layout from file
+     function openLayoutClick() {
+         const input = document.createElement("input");
+         input.type = "file";
+         input.accept = "application/xml";
+
+         input.addEventListener("change", function (event) {
+             const file = event.target.files[0];
+             if (!file) return;
+
+             const reader = new FileReader();
+             reader.onload = function (e) {
+                 try {
+                     const parser = new DOMParser();
+                     const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+                     let layoutObj = xmlToObject(xmlDoc.documentElement);
+                     layoutObj = JSON.parse(JSON.stringify(layoutObj));
+                     const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+                     pivotGrid.getDataSource().state(layoutObj);
+                 } catch (error) {
+                     DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                 }
+             };
+
+             reader.readAsText(file);
+         });
+
+         input.click();
+     }
+
+     // Load default layout on page ready
+     $(document).ready(function () {
+         const pivotGrid = $("#dataGrid").dxPivotGrid({
+             // ... your pivot grid config
+             onContentReady: function (e) {
+                 // Load layout only once on first render
+                 if (!e.component.__layoutLoaded) {
+                     loadGridState();
+                     e.component.__layoutLoaded = true;
+                 }
+             }
+         }).dxPivotGrid("instance");
+     });
+
+     function loadGridState() {
+         const form = $('#formId').val();
+
+         $.ajax({
+             url: `/api/Utility/LoadLayout`,
+             method: 'GET',
+             data: { form: form },
+             success: function (response) {
+                 const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+
+                 if (response) {
+                     try {
+                         const parser = new DOMParser();
+                         const xmlDoc = parser.parseFromString(response, "application/xml");
+                         let layoutObj = xmlToObject(xmlDoc.documentElement);
+
+                         if (layoutObj.fields && Array.isArray(layoutObj.fields)) {
+                             layoutObj.fields.sort((a, b) => {
+                                 const aIndex = Number(a.areaIndex ?? 0);
+                                 const bIndex = Number(b.areaIndex ?? 0);
+                                 return aIndex - bIndex;
+                             });
+                         }
+
+                         pivotGrid.getDataSource().state(layoutObj);
+                     } catch (error) {
+                         console.error("Error parsing layout XML:", error);
+                     }
+                 }
+             },
+             error: function (xhr, status, error) {
+                 console.error("Error loading grid layout:", error);
+             }
+         });
+     }
+           function exportPivotToPdfExact() {
+        var pivotGrid = $("#dataGrid").dxPivotGrid("instance");
+
+        DevExpress.pdfExporter.exportPivotGrid({
+            component: pivotGrid,
+            fileName: "PivotGrid.pdf",
+            filterable: true,             // include filtering if used
+            autoFilterEnabled: true,
+            keepColumnWidths: true,       // keeps same column widths as on screen
+            loadPanel: { enabled: false }, // hide loading panel
+            customizeCell: function(options) {
+                // Customize header cells
+                if (options.area === "column" || options.area === "row") {
+                    options.backgroundColor = "#f0f0f0";
+                    options.font = { bold: true };
+                    options.borderColor = "#d0d0d0";
+                }
+
+                // Customize data cells
+                if (options.area === "data") {
+                    options.font = { bold: false };
+                    options.borderColor = "#d0d0d0";
+                }
+
+                // Customize total / grand total cells
+                if (options.total || options.grandTotal) {
+                    options.font = { bold: true };
+                    options.backgroundColor = "#d9edf7";
+                }
+            }
+        }).then(function() {
+            DevExpress.ui.notify("PivotGrid exported to PDF successfully", "success", 2000);
+        }).catch(function(err) {
+            console.error("Export error:", err);
+            DevExpress.ui.notify("Export failed", "error", 2000);
+        });
+    }
+
+
+</script>
+

@@ -235,7 +235,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                        .Select(s => new
                        {
                            s.ServiceTemplateCode,
-                           s.ServiceTemplateText
+                           s.TemplateType
                        })
                         .ToListAsync();
 
@@ -475,7 +475,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 {
                     // ✅ Call the stored procedure directly
                     var rowsAffected = await dbContext.Database.ExecuteSqlInterpolatedAsync(
-                        $"EXEC sp40106DeleteSpareItems @SpareSlNo = {SpareSlNo}"
+                        $"EXEC sp40106DeleteSpareItem @SpareSlNo = {SpareSlNo}"
                     );
 
                     if (rowsAffected == 0)
@@ -495,6 +495,38 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     return BadRequest(new { error = ex.Message });
                 }
             }
+        [HttpDelete("{serviceSheetNo}")]
+        public async Task<IActionResult> DeleteServiceMaster(string serviceSheetNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant");
+
+            try
+            {
+                var masterRecord = await dbContext.Tbl40132PropertyServiceMasters
+                    .FirstOrDefaultAsync(x => x.ServiceSheetNo == serviceSheetNo);
+
+                if (masterRecord == null)
+                    return NotFound(new { error = "Master record not found." });
+
+                dbContext.Tbl40132PropertyServiceMasters.Remove(masterRecord);
+                await dbContext.SaveChangesAsync();
+
+                // ✅ Log action
+                await _userActionLogger.LogAsync(
+                    module: "ERM > Delete Request",
+                    actionDetail: $"Deleted Service Master with ServiceSheetNo {serviceSheetNo}",
+                    documentNo: serviceSheetNo.ToString()
+                );
+
+                return Ok(new { message = "Service master deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
     }
 }
+    

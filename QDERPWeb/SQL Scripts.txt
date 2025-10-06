@@ -835,7 +835,7 @@ VALUES
 
 (37, 'ERP Module Access', 'Finance', 'CAMP Management Home Page', 1, 1, NULL, 'CAMP'),  
 
-(38, 'ERP Module Access', 'Finance', 'IMS Home Page', 1, 1, NULL, 'IMS'),  
+(38, 'ERP Module Access', 'IMS', 'IMS Home Page', 1, 1, NULL, 'IMS'),  
 
 (39, 'ERP Module Access', 'Finance', 'HR Home Page', 1, 1, NULL, 'HR'),  
 
@@ -1035,33 +1035,33 @@ INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (
 
 VALUES  
 
-(212, 'Inventory Menu', 'Stock Inventory', 'Stock Inventory', 1, 1, NULL, 'Inventory'),
+(212, 'Inventory Menu', 'Stock Inventory', 'Stock Inventory', 1, 1, NULL, 'IMS'),
 
-(213, 'Inventory Menu', 'Material Requests', 'Material Requests', 1, 1, NULL, 'Inventory'),
+(213, 'Inventory Menu', 'Material Requests', 'Material Requests', 1, 1, NULL, 'IMS'),
 
-(214, 'Inventory Menu', 'Quotations To Clients', 'Quotations To Clients', 1, 1, NULL, 'Inventory'),
+(214, 'Inventory Menu', 'Quotations To Clients', 'Quotations To Clients', 1, 1, NULL, 'IMS'),
 
-(215, 'Inventory Menu', 'Sales Orders', 'Sales Orders', 1, 1, NULL, 'Inventory'),
+(215, 'Inventory Menu', 'Sales Orders', 'Sales Orders', 1, 1, NULL, 'IMS'),
 
-(216, 'Inventory Menu', 'Delivery Note', 'Delivery Note', 1, 1, NULL, 'Inventory'),
+(216, 'Inventory Menu', 'Delivery Note', 'Delivery Note', 1, 1, NULL, 'IMS'),
 
-(217, 'Inventory Menu', 'RFQ Database', 'RFQ Database', 1, 1, NULL, 'Inventory'),
+(217, 'Inventory Menu', 'RFQ Database', 'RFQ Database', 1, 1, NULL, 'IMS'),
 
-(218, 'Inventory Menu', 'Quotation Analysis', 'Quotation Analysis', 1, 1, NULL, 'Inventory'),
+(218, 'Inventory Menu', 'Quotation Analysis', 'Quotation Analysis', 1, 1, NULL, 'IMS'),
 
-(219, 'Inventory Menu', 'Purchase Orders', 'Purchase Orders', 1, 1, NULL, 'Inventory'),
+(219, 'Inventory Menu', 'Purchase Orders', 'Purchase Orders', 1, 1, NULL, 'IMS'),
 
-(220, 'Inventory Menu', 'Material Receipts', 'Material Receipts', 1, 1, NULL, 'Inventory'),
+(220, 'Inventory Menu', 'Material Receipts', 'Material Receipts', 1, 1, NULL, 'IMS'),
 
-(221, 'Inventory Menu', 'Client Leads', 'Client Leads', 1, 1, NULL, 'Inventory'),
+(221, 'Inventory Menu', 'Client Leads', 'Client Leads', 1, 1, NULL, 'IMS'),
 
-(222, 'Inventory Menu', 'Suppliers', 'Suppliers', 1, 1, NULL, 'Inventory'),
+(222, 'Inventory Menu', 'Suppliers', 'Suppliers', 1, 1, NULL, 'IMS'),
 
-(223, 'Inventory Menu', 'Job Orders', 'Job Orders', 1, 1, NULL, 'Inventory'),
+(223, 'Inventory Menu', 'Job Orders', 'Job Orders', 1, 1, NULL, 'IMS'),
 
-(224, 'Inventory Menu', 'Stock Adjustments', 'Stock Adjustments', 1, 1, NULL, 'Inventory'),
+(224, 'Inventory Menu', 'Stock Adjustments', 'Stock Adjustments', 1, 1, NULL, 'IMS'),
 
-(225, 'Inventory Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'Inventory'),
+(225, 'Inventory Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'IMS'),
 
 (226, 'Equipment Rental Menu', 'frm401Dashboard', 'Equipments Dashboard', 1, 1, NULL, 'Equipment Rental'),
 
@@ -1586,6 +1586,28 @@ VALUES
     (555,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnPostbooks','Post', 1, 1,null, 'IMS',null,null,null,null),
     (556,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
     (557,'Delivery Note Edit Form', 'frm60106DeliveryNoteEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
+    INSERT INTO dbo.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (558,'Purchase Order Edit Form','frm60107PurchaseOrderEdit_ddButtonLayout','Layout',1,1,null,'IMS',null,null,null,null), 
+    (559,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnMoveUp','Move Up',1, 1,null,'IMS',null,null,null,null), 
+    (560,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnMoveDown','Move Down', 1, 1,null, 'IMS',null,null,null,null), 
+    (561,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnPrint4','Print', 1, 1,null, 'IMS',null,null,null,null), 
+    (562,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnToggleSearch','Toggle Search',1, 1,null, 'IMS',null,null,null,null), 
+    (563,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btntoggleGroupPanel','Toggle Group Panel',1, 1,null,'IMS',null,null,null,null), 
+    (564,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnColumnChooser','Column Chooser', 1, 1,null, 'IMS',null,null,null,null),
+    (565,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSave','Save', 1, 1,null, 'IMS',null,null,null,null),
+    (566,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSaveAndClose','Save and Close', 1, 1,null, 'IMS',null,null,null,null),
+    (567,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnAddNew','Add New Item', 1, 1,null, 'IMS',null,null,null,null),
+    (568,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnDelete','Delete', 1, 1,null, 'IMS',null,null,null,null),
+    (569,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnBack','Back', 1, 1,null, 'IMS',null,null,null,null),
+    (570,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnSubmit','Submit', 1, 1,null, 'IMS',null,null,null,null),
+    (571,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnVerify','Verify', 1, 1,null, 'IMS',null,null,null,null),
+    (572,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnApprove','Approve', 1, 1,null, 'IMS',null,null,null,null),
+	(573,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_btnAttach','Attach', 1, 1,null, 'IMS',null,null,null,null),
+    (574,'Purchase Order Edit Form', 'frm60107PurchaseOrderEdit_FullAccess','Full Access', 1, 1,null, 'IMS',null,null,null,null);
+
 
 ---------------------------Cheque---------------------------  
 alter table Aicon.tbl20113ChequeMaster   
@@ -4886,3 +4908,11 @@ FROM   Aicon.qry406_01PropertyRequestView
 GO
 
 
+//If any Issues in UserAccess script in IMS use this 
+UPDATE tbl901UserAccessMasterWeb
+SET itemName = 'IMS'
+WHERE SlNo = 38;
+
+UPDATE tbl901UserAccessMasterWeb
+SET module = 'IMS'
+WHERE Module = 'Inventory';
