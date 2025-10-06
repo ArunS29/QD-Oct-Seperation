@@ -5573,9 +5573,14 @@ var dictionary = {
         "Client PO Date": "Client PO Date",
         "Client PO End Date": "Client PO End Date",
         "Client PO Type": "Client PO Type",
-        "Client PO Value": "Client PO Value"
-
-
+        "Client PO Value": "Client PO Value",
+        "Other Buyer ID":"Other Buyer ID",
+        "Line Total": "Line Total",
+        "Account Confirmation Letter (Debtors)": "Account Confirmation Letter (Debtors)",
+        "Cash Imprest Account Confirmation Letter": "Cash Imprest Account Confirmation Letter",
+        "VAT Credit Notes (Obsolete)": "VAT Credit Notes (Obsolete)",
+        "View VAT Credit Note": "View VAT Credit Note"
+        
 
     },
     //Arabic Language Translations
@@ -10301,7 +10306,12 @@ var dictionary = {
         "8a - Imports subject to VAT Paid at Customer 10%": "8أ - الواردات الخاضعة لضريبة القيمة المضافة المدفوعة عند العميل 10%",
         "9a - Imports Subject to VAT - thru RCM 10%": "9أ - الواردات الخاضعة لضريبة القيمة المضافة - عبر آلية الاحتساب العكسي 10%",
         "VAT on Sales (BH)": "ضريبة القيمة المضافة على المبيعات (البحرين)",
-        "VAT on Purchase (BH)": "ضريبة القيمة المضافة على المشتريات (البحرين)"
+        "VAT on Purchase (BH)": "ضريبة القيمة المضافة على المشتريات (البحرين)",
+        "Account Confirmation Letter (Debtors)": "خطاب تأكيد الحساب (المدينون)",
+        "Cash Imprest Account Confirmation Letter": "خطاب تأكيد حساب السلفة النقدية",
+        "VAT Credit Notes (Obsolete)": "ملاحظات ضريبة القيمة المضافة (ملغاة)",
+        "View VAT Credit Note": "عرض إشعار ضريبة القيمة المضافة"
+
     },
 
     // Mandrian Chinese Languange Translations
@@ -14704,7 +14714,11 @@ var dictionary = {
         "8a - Imports subject to VAT Paid at Customer 10%": "8a - 고객이 납부한 부가세 대상 수입 10%",
         "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM을 통한 부가세 대상 수입 10%",
         "VAT on Sales (BH)": "판매에 대한 VAT (BH)",
-        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)"
+        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)",
+        "Account Confirmation Letter (Debtors)": "账户确认函（债务人）",
+        "Cash Imprest Account Confirmation Letter": "现金备用金账户确认函",
+        "VAT Credit Notes (Obsolete)": "增值税贷方票据（已废止）",
+        "View VAT Credit Note": "查看增值税贷方票据"
 
 
 
@@ -19190,9 +19204,6 @@ var dictionary = {
         "Client PO End Date": "क्लाइंट पीओ समाप्ति तिथि",
         "Client PO Type": "क्लाइंट पीओ प्रकार",
         "Client PO Value": "क्लाइंट पीओ मूल्य",
-
-
-
         "Validations": "मान्यकरण",
         "Item Details": "वस्तु विवरण",
         "Payment Details": "भुगतान विवरण",
@@ -19205,7 +19216,12 @@ var dictionary = {
         "8a - Imports subject to VAT Paid at Customer 10%": "8a - ग्राहक द्वारा भुगतान किए गए VAT के अधीन आयात 10%",
         "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM के माध्यम से VAT के अधीन आयात 10%",
         "VAT on Sales (BH)": "बिक्री पर VAT (BH)",
-        "VAT on Purchase (BH)": "खरीद पर VAT (BH)"
+        "VAT on Purchase (BH)": "खरीद पर VAT (BH)",
+        "Account Confirmation Letter (Debtors)": "खाता पुष्टि पत्र (ऋणी)",
+        "Cash Imprest Account Confirmation Letter": "नकद इम्प्रेस्ट खाता पुष्टि पत्र",
+        "VAT Credit Notes (Obsolete)": "वैट क्रेडिट नोट्स (अप्रचलित)",
+        "View VAT Credit Note": "वैट क्रेडिट नोट देखें"
+
     },
 
     // Urdu Language Translation
@@ -23764,7 +23780,12 @@ var dictionary = {
         "8a - Imports subject to VAT Paid at Customer 10%": "8ا - وہ درآمدات جن پر گاہک نے VAT ادا کیا 10%",
         "9a - Imports Subject to VAT - thru RCM 10%": "9ا - درآمدات VAT کے تحت - RCM کے ذریعے 10%",
         "VAT on Sales (BH)": "فروخت پر VAT (بحرین)",
-        "VAT on Purchase (BH)": "خریداری پر VAT (بحرین)"
+        "VAT on Purchase (BH)": "خریداری پر VAT (بحرین)",
+        "Account Confirmation Letter (Debtors)": "اکاؤنٹ تصدیقی خط (قرض داران)",
+        "Cash Imprest Account Confirmation Letter": "نقدی امپریسٹ اکاؤنٹ تصدیقی خط",
+        "VAT Credit Notes (Obsolete)": "وی اے ٹی کریڈٹ نوٹس (غیر فعال)",
+        "View VAT Credit Note": "وی اے ٹی کریڈٹ نوٹ دیکھیں"
+
     },
 
     // Korean Language Translation
@@ -28117,7 +28138,11 @@ var dictionary = {
         "8a - Imports subject to VAT Paid at Customer 10%": "8a - 고객이 납부한 부가세 대상 수입 10%",
         "9a - Imports Subject to VAT - thru RCM 10%": "9a - RCM을 통한 부가세 대상 수입 10%",
         "VAT on Sales (BH)": "판매에 대한 VAT (BH)",
-        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)"
+        "VAT on Purchase (BH)": "구매에 대한 VAT (BH)",
+        "Account Confirmation Letter (Debtors)": "계정 확인서 (채무자)",
+        "Cash Imprest Account Confirmation Letter": "현금 임프레스트 계정 확인서",
+        "VAT Credit Notes (Obsolete)": "부가가치세 대변 메모 (사용 중지됨)",
+        "View VAT Credit Note": "부가가치세 대변 메모 보기"
 
 
     }
