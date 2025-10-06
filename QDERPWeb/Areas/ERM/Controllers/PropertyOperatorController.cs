@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
-using QD.ERP.Web.Areas.Finance.Models;
+//using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;

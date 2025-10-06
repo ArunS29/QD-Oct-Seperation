@@ -981,15 +981,16 @@
         .ID("B2BdataGrid")
         .Height("33vh")
         
-        .DataSource(new JS("window.B2BdataGridDataSource"))        
+        .DataSource(new JS("window.B2BdataGridDataSource"))  
+         .KeyExpr("LineOrderNo") 
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
         )
         .Columns(columns =>
         {
-            columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
-            columns.Add().Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
+            columns.Add().DataField("SalesOrderChildId").Visible(true).AllowEditing(false);
+            columns.Add().DataField("LineOrderNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
             columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120).AllowEditing(false)
                 .CellTemplate(new JS(@"
                     function(container, options) {
@@ -1065,10 +1066,10 @@
             .CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 
             columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')"));
-            columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')"));
-            columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+            columns.Add().DataField("CostPrice").Caption(new JS("formatMessage('Cost Price')")).AllowEditing(false);;
+            columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format(f => f.Type(Format.FixedPoint).Precision(2));
             columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Quoted Discount')"));
-            columns.Add().DataField("LineTotalAfterDiscount").Caption(new JS("formatMessage('Amount')")).AllowEditing(false);
+            columns.Add().DataField("LineTotalAfterDiscount").Caption(new JS("formatMessage('Amount')")).AllowEditing(false).Format(f => f.Type(Format.FixedPoint).Precision(2));
             columns.Add()
             .DataField("QuotedTaxSlab")
             .Caption(new JS("formatMessage('VAT Description')"))
@@ -1077,11 +1078,11 @@
             .CellTemplate(new JS(@"
     function (container, options) {
     const found = TaxSlabs.find(x => x.TaxSlabCode === options.value);
-    container.text(found ? found.TaxCodeToDisplay : options.value);
+    container.text(found ? found.TaxSlab : options.value);
     }
     "));
-                columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT')")).AllowEditing(false);
-            columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).AllowEditing(false);
+                columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT')")).AllowEditing(false).Format(f => f.Type(Format.FixedPoint).Precision(2));
+            columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).AllowEditing(false).Format(f => f.Type(Format.FixedPoint).Precision(2));
 
             columns.Add().DataField("AddlDescription").Visible(false);
             columns.Add().DataField("QuoteRemarks").Visible(false);
@@ -1119,6 +1120,37 @@
                         .Hint("Delete");
                 });
         })
+        .Summary(s => {
+    s.TotalItems(totalItems => {
+        // Discount total
+        totalItems.Add()
+            .Column("QuotedDiscount") // 👈 use your actual discount column name
+            .SummaryType(SummaryType.Sum)
+            .DisplayFormat("{0}")
+            .ValueFormat(f => f.Type(Format.FixedPoint));
+
+        totalItems.Add()
+            .Column("LineTotalAfterDiscount") // 👈 use your actual discount column name
+            .SummaryType(SummaryType.Sum)
+            .DisplayFormat("{0}")
+            .ValueFormat(f => f.Type(Format.FixedPoint).Precision(2));
+
+        // VAT total
+        totalItems.Add()
+            .Column("LineTaxAmount")
+            .SummaryType(SummaryType.Sum)
+            .DisplayFormat("{0}")
+            .ValueFormat(f => f.Type(Format.FixedPoint).Precision(2));
+
+        // Grand total
+        totalItems.Add()
+            .Column("LineTotalWithTax")
+            .SummaryType(SummaryType.Sum)
+            .DisplayFormat("{0}")
+            .ValueFormat(f => f.Type(Format.FixedPoint).Precision(2));
+    });
+})
+
         )
 </div>
 <div class="Head">
@@ -1898,7 +1930,7 @@
         const dropDownBox = $("<div>").dxDropDownBox({
             value: cellInfo.value,
                     valueExpr: "TaxSlabCode",
-                displayExpr: "TaxCodeToDisplay",
+                displayExpr: "TaxSlab",
             dataSource: TaxSlabs,
             showClearButton: true,
             showDropDownButton: true,
@@ -1947,35 +1979,44 @@
             grid.editCell(e.rowIndex, e.columnIndex); // ✅ ensures editing is triggered
         }
 
+       let nextLineOrderNo = 1; // global counter for unique LineOrderNo
 
-        function serialTemplate(cellElement, cellInfo) {
-             const grid = $("#B2BdataGrid").dxDataGrid("instance");
-             const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-             if (rowIndex >= 0) {
-                 cellElement.text(rowIndex + 1);
-             }
-         }
-          window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
-            key: "ItemCode",
-            data: []
+function serialTemplate(cellElement, cellInfo) {
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+    const visibleRows = grid.getVisibleRows();
+    const rowIndex = visibleRows.findIndex(r => r.key === cellInfo.key);
+    if (rowIndex >= 0) {
+        cellElement.text(rowIndex + 1);
+    }
+}
+
+
+window.B2BdataGridDataSource = new DevExpress.data.ArrayStore({
+    key: "LineOrderNo",
+    data: []
+});
+
+$(function () {
+    $("#btnAddNew").on("click", function () {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+        // Add new row with unique LineOrderNo
+        grid.addRow(); 
+
+        // Assign LineOrderNo when row is inserted
+        grid.on("initNewRow", function(e) {
+            e.data.LineOrderNo = nextLineOrderNo++;
         });
 
-            $(function () {
-        $("#btnAddNew").on("click", function () {
-            
-              var grid = $("#B2BdataGrid").dxDataGrid("instance");
-            // Get total row count
-            var totalCount = grid.totalCount();
-            var pageSize = grid.pageSize();
+        // Optional: Go to last page
+        const totalCount = grid.totalCount();
+        const pageSize = grid.pageSize();
+        grid.pageIndex(Math.floor(totalCount / pageSize));
 
-            // Go to last page
-            grid.pageIndex(Math.floor(totalCount / pageSize));
-            grid.addRow();
-
-            // ✅ Show a success toast
-            DevExpress.ui.notify("Cost Center created", "success", 2000);
-        });
+        DevExpress.ui.notify("Cost Center created", "success", 2000);
     });
+});
+
 
     
              ///clientname IDBIndex data
@@ -2063,7 +2104,7 @@
                 console.warn("SalesOrderNO TextBox not initialized yet.");
                 return;
             }
-           
+               const grid = $("#B2BdataGrid").dxDataGrid("instance");
             if (salesOrderNo) {
 				edit=true;
                 // Editing: fetch and bind existing order (do NOT generate new number)
@@ -2077,9 +2118,17 @@
                             $("#btnVerify").dxButton("instance").option("disabled", true);
                         }
                 if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
-                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
+                    // Assign LineOrderNo if missing
+                    data.SalesOrderChildren.forEach((row, index) => {
+                        if (!row.LineOrderNo) row.LineOrderNo = index + 1;
+                    });
+
+                    // Update global counter for new rows
+                    nextLineOrderNo = data.SalesOrderChildren.length + 1;
+
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
+
                   if (data.IsApproved === true) {
             disableAllControls();
         }
@@ -2089,32 +2138,76 @@
                     });
             } 
             });
-            
-                  function loadSODetails1(salesOrderNo) {
-				edit=true;
-                // Editing: fetch and bind existing order (do NOT generate new number)
-                $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
-                    .done(function (data) {
-                        salesOrderTextBox.option("value", data.SalesOrderNo);
-                        if (data.IsSubmitted) {
-                            $("#btnSubmit").dxButton("instance").option("disabled", true);
-                        }
-                        if (data.IsVerified) {
-                            $("#btnVerify").dxButton("instance").option("disabled", true);
-                        }
-                if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
-                    var grid = $("#B2BdataGrid").dxDataGrid("instance");
+function loadSODetails1(salesOrderNo) {
+    edit = true;
+
+    const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+    $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
+        .done(function (data) {
+            if (salesOrderTextBox) {
+                salesOrderTextBox.option("value", data.SalesOrderNo);
+            }
+
+            if (data.IsSubmitted) {
+                $("#btnSubmit").dxButton("instance").option("disabled", true);
+            }
+            if (data.IsVerified) {
+                $("#btnVerify").dxButton("instance").option("disabled", true);
+            }
+
+            if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
+                // Ensure LineOrderNo exists
+                data.SalesOrderChildren.forEach((row, index) => {
+                    if (!row.LineOrderNo || row.LineOrderNo === 0) {
+                        row.LineOrderNo = index + 1;
+                    }
+                });
+
+                // Update global counter for future inserts
+                nextLineOrderNo = data.SalesOrderChildren.length + 1;
+
+                if (grid) {
                     grid.option("dataSource", data.SalesOrderChildren);
                 }
-                  if (data.IsApproved === true) {
-            disableAllControls();
-        }
-                    })
-                    .fail(function () {
-                        DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
-                    });
             }
-//        
+
+            if (data.IsApproved === true) {
+                disableAllControls();
+            }
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+        });
+}
+
+
+    //               function loadSODetails1(salesOrderNo) {
+				// edit=true;
+    //             // Editing: fetch and bind existing order (do NOT generate new number)
+    //             $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
+    //                 .done(function (data) {
+    //                     salesOrderTextBox.option("value", data.SalesOrderNo);
+    //                     if (data.IsSubmitted) {
+    //                         $("#btnSubmit").dxButton("instance").option("disabled", true);
+    //                     }
+    //                     if (data.IsVerified) {
+    //                         $("#btnVerify").dxButton("instance").option("disabled", true);
+    //                     }
+    //             if (data.SalesOrderChildren && data.SalesOrderChildren.length > 0) {
+    //                 var grid = $("#B2BdataGrid").dxDataGrid("instance");
+    //                 grid.option("dataSource", data.SalesOrderChildren);
+    //             }
+    //               if (data.IsApproved === true) {
+    //         disableAllControls();
+    //     }
+    //                 })
+    //                 .fail(function () {
+    //                     DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+    //                 });
+    //         }
+      
 	// For concurrency-safe saving
 function NewSalesOrderNoForSave() {
     return $.ajax({
