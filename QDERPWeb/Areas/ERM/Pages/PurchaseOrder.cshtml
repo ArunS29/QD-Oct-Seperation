@@ -259,7 +259,7 @@
 		.ElementAttr("class", "button-alignment-down")
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
 				.Items(items =>
 				{
@@ -326,7 +326,7 @@
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
-		.ColumnFixing(fixing => fixing.Enabled(true))
+		.ColumnFixing(fixing => fixing.Enabled(false))
 		.HeaderFilter(filter => filter.Visible(false))
 		.Paging(p => p.PageSize(10)) 
 		.Pager(pager =>
@@ -783,18 +783,8 @@
 					   alert('An error occurred while fetching permissions. Please try again.');
 				   }
 			   });
-			   showColumnChooser();
+			   
 			   console.log('End permission handling');
 		   });
-			   function showColumnChooser() {
-		var dataGrid = $("#dataGrid").dxDataGrid("instance");
-		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
-
-		if (isColumnChooserVisible) {
-			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-		} else {
-			dataGrid.option("columnChooser.enabled", true);
-			dataGrid.showColumnChooser();
-		}
-	}					
+			 	
 </script>

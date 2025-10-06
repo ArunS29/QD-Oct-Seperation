@@ -414,7 +414,7 @@
                 WorkingShift: $("#Shift").dxSelectBox("instance")?.option("value") || "",
             };
 
-            $.ajax({
+               $.ajax({
                 url: "/api/PropertyOperator/SaveOrUpdate",
                 method: "POST",
                 contentType: "application/json",
@@ -422,18 +422,7 @@
                 success: function (result) {
                     if (result?.success) {
                         DevExpress.ui.notify(result.message, "success", 3000);
-
-                          refreshFields();
-                        // Update hidden field with new ID from API (for future updates)
-
-                        if (result.propertyOperatorTypeId) {
-                            $("#PropertyOperatorTypeId").dxTextBox("instance").option("value", result.propertyOperatorTypeId);
-                        }
-                        setTimeout(() => {
-								if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
-									window.parent.refreshTypeOfRequestDropDown('OperatorGrid');
-								}
-							}, 300);
+                        refreshFields();
                     } else {
                         DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
                     }
@@ -558,36 +547,31 @@
             };
 
             $.ajax({
-                url: "/api/PropertyOperator/SaveOrUpdate",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                success: function (result) {
-                    if (result?.success) {
-                        DevExpress.ui.notify(result.message, "success", 3000);
+                    url: "/api/PropertyOperator/SaveOrUpdate",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        if (result?.success) {
+                            DevExpress.ui.notify(result.message, "success", 3000);
 
-                        setTimeout(() => {
-                            // ✅ Refresh dxDataGrid
+                            // Refresh grid immediately
                             const grid = $("#OperatorGrid").dxDataGrid("instance");
-                            if (grid) {
-                                grid.refresh();
-                            }
-                            // ✅ Close popup if form was inside popup
-                            const popup = $("#OperatorPopup").dxPopup("instance");
-                            if (popup) {
-                                popup.hide();
-                            }
-                        }, 300);
+                            if (grid) grid.refresh();
 
-                    } else {
-                        DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
+                            // Close modal after 2 seconds
+                            setTimeout(() => {
+                                window.parent.closeModal();
+                            }, 2000);
+                        } else {
+                            DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("AJAX Error:", xhr.responseText);
+                        DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.responseText), "error", 3000);
                     }
-                },
-                error: function (xhr) {
-                    console.error("AJAX Error:", xhr.responseText);
-                    DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
-                }
-            });
+                });
         } catch (err) {
             console.error("btnSaveAndCloseClick error:", err);
             DevExpress.ui.notify("Form controls not initialized properly", "error", 3000);
