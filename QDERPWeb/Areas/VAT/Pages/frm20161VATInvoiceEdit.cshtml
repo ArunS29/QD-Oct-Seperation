@@ -8120,75 +8120,73 @@ if (popover.option("visible")) {
 
 	$(function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const deliveryNoteNo = urlParams.get("deliveryNoteNo");
     const salesOrderNo = urlParams.get("salesOrderNo");
     const invoiceNo = urlParams.get("invoiceNo");
     const mode = urlParams.get("mode");
 
-   if (salesOrderNo && invoiceNo && mode === "create") {
-    // Set generated invoice number
-    $("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
+    if (salesOrderNo && invoiceNo && mode === "create") {
+        console.log("🔹 Invoice No set:", invoiceNo);
+        $("#InvoiceNo").dxTextBox("instance").option("value", invoiceNo);
 
-    // Get sales order data by salesOrderNo
-    $.get("/api/SalesOrders/GetSalesOrderByNo", { salesOrderNo: salesOrderNo })
-        .done(function (data) {
-            // Map master fields from sales order
-           $("#InvoiceDate").dxDateBox("instance").option("value", data.SalesOrderDate || new Date());
-$("#ClientPONo").dxTextBox("instance").option("value", data.ClientPono || "");
-$("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.SalesOrderNo || "");
-$("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo || "");
-$("#PODate").dxDateBox("instance").option("value", data.ClientPodate || null);
-$("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention || "");
+        $.get("/api/SalesOrders/GetSalesOrderByNo", { salesOrderNo: salesOrderNo })
+            .done(function (data) {
+                console.log("🔹 Full Sales Order Data:", data);
 
-            // Bind client info if available
-            if (data.ClientCode) {
-    $.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.ClientCode })
-        .done(function (client) {
-          //  $("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-            $("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
-        })
-        .fail(function () {
-            DevExpress.ui.notify("Failed to load client details.", "error", 2000);
-        });
-} else {
-    DevExpress.ui.notify("Client code not found in sales order.", "error", 2000);
-}
+                // --- Header fields ---
+                $("#InvoiceDate").dxDateBox("instance").option("value", data.SalesOrderDate || new Date());
+                $("#ClientPONo").dxTextBox("instance").option("value", data.ClientPono || "");
+                $("#OurSalesOrderNo").dxDropDownBox("instance").option("value", data.SalesOrderNo || "");
+                $("#QuotationNo").dxTextBox("instance").option("value", data.QuoteNo || "");
+                $("#PODate").dxDateBox("instance").option("value", data.ClientPodate || null);
+                $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention || "");
 
-            // Bind child grid 	
-           getDropdownData().done(function (dropdownData) {
-    getUnitRateMethods().done(function (unitRates) {
-        const invoiceItems = (data.SalesOrderChildren || []).map((item, idx) => {
-            let found = dropdownData.find(d => d.GSCode === item.Gscode);
-            let unitRateObj = unitRates.find(u => u.UnitCode == item.UnitRateMethod);
-            return {
-                SNo: idx + 1,
-                ItemCode: item.Gscode || "",
-					DetailedDescription: found ? found.GSDescrpition : item.Gsdescrpition || "",
-                UnitRateMethod: item.UnitRateMethod, // store the code (number)
-   			 UnitRateMethodText: unitRateObj ? unitRateObj.UnitDesc : "", // store the text
-				UnitRate: item.QuotedUnitPrice || item.CostPrice || 0,
-                VATPercentage: item.QuotedTaxSlab || "",
-					QuantityInvoiced: item.QuotedQuantity || 0, 	
-                Discount: item.QuotedDiscount || 0,
-					CalcLineAmount: item.LineTotalAfterDiscount || 0,
-				CalcTaxAmount: item.LineTaxAmount || 0,
-						LineTotal: item.LineTotalWithTax || 0,
-                ...item
-            };
-        });
-        var grid = $("#B2BdataGrid").dxDataGrid("instance");
-        if (grid) {
-            grid.option("dataSource", invoiceItems);
-            grid.option("editing", { mode: "cell", allowUpdating: true, allowAdding: true, allowDeleting: true });
-        }
-    });
+                // --- Client info ---
+                if (data.ClientCode) {
+                    $.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.ClientCode })
+                        .done(function (client) {
+                            console.log("🔹 Client Data:", client);
+                            $("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+                        });
+                }
+
+                // --- Child grid binding ---
+                const invoiceItems = (data.SalesOrderChildren || []).map((item, idx) => {
+                    return {
+                        SNo: idx + 1,
+                        ItemCode: item.Gscode || "",
+                        DetailedDescription: item.Gsdescrpition || "",
+                        UnitRateMethod: item.UnitRateMethod || null,
+                        UnitRate: item.QuotedUnitPrice || item.CostPrice || 0,
+                        QuantityInvoiced: item.QuotedQuantity || 0,
+                        Discount: item.QuotedDiscount || 0,
+                        VATPercentage: item.QuotedTaxSlab || 0,
+                        CalcLineAmount: item.LineTotalAfterDiscount || 0,
+                        CalcTaxAmount: item.LineTaxAmount || 0,
+                        LineTotal: item.LineTotalWithTax || 0,
+                        ...item
+                    };
+                });
+
+                console.log("🔹 Invoice Items for Grid:", invoiceItems);
+
+                let grid = $("#B2BdataGrid").dxDataGrid("instance");
+                if (grid) {
+                    grid.option("dataSource", invoiceItems);
+                    grid.option("editing", {
+                        mode: "cell",
+                        allowUpdating: true,
+                        allowAdding: true,
+                        allowDeleting: true
+                    });
+                    grid.refresh();
+                }
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
+            });
+    }
 });
-        })
-        .fail(function () {
-            DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
-        });
-}
-});
+
 
 			$(function () {
 			// Get InvoiceNo from the page (from a hidden field or query string)
@@ -8239,6 +8237,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 				// 3. Default credit days from master
 				let creditDays = Number(details.NoOfDaysCreditPeriod) || 0;
 				let NoOfDays = creditDays;
+			
 				// 4. If the checkbox “Submitted By” is ticked, recompute creditDays
 				const isSubmitted = $('#SubmittedBy').dxCheckBox("instance")?.option("value");
 				if (isSubmitted) {
