@@ -136,34 +136,34 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("print")
+                .ID("btnPrint")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("print")
                 .Text(new JS("formatMessage('Print')"))
                 .OnClick("exportPivotToPdfExact")
-            )
+                )
 
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnShowFields")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("hierarchy")
+                .ID("btnShowFields")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
                 .Text(new JS("formatMessage('Show Fields')"))
-            )
+                )
 
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnShowRowTotals")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("hierarchy")
+                .ID("btnShowRowTotals")
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("hierarchy")
                 .Text(new JS("formatMessage('Show Row Totals')"))
 
-            )
+                )
 
     </div>
 
@@ -264,7 +264,7 @@
     }
     // Save as default layout
      function setDefaultLayoutClick() {
-         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
          const form = $('#formId').val();
 
          if (!pivotGrid) {
@@ -299,7 +299,7 @@
 
      // Reset layout
      function resetLayoutClick() {
-         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
          const form = $('#formId').val();
 
          $.ajax({
@@ -323,7 +323,7 @@
 
      // Download layout
      function saveLayoutClick() {
-         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+         const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
          const state = pivotGrid.getDataSource().state();
          state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
          state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
@@ -358,7 +358,7 @@
                      const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
                      let layoutObj = xmlToObject(xmlDoc.documentElement);
                      layoutObj = JSON.parse(JSON.stringify(layoutObj));
-                     const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                     const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
                      pivotGrid.getDataSource().state(layoutObj);
                  } catch (error) {
                      DevExpress.ui.notify("Invalid layout file!", "error", 600);
@@ -373,7 +373,7 @@
 
      // Load default layout on page ready
      $(document).ready(function () {
-         const pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+         const pivotGrid = $("#dataGrid").dxPivotGrid({
              // ... your pivot grid config
              onContentReady: function (e) {
                  // Load layout only once on first render
@@ -393,7 +393,7 @@
              method: 'GET',
              data: { form: form },
              success: function (response) {
-                 const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                 const pivotGrid = $("#dataGrid").dxPivotGrid("instance");
 
                  if (response) {
                      try {
@@ -421,7 +421,7 @@
          });
      }
            function exportPivotToPdfExact() {
-        var pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        var pivotGrid = $("#dataGrid").dxPivotGrid("instance");
 
         DevExpress.pdfExporter.exportPivotGrid({
             component: pivotGrid,
@@ -460,3 +460,4 @@
 
 
 </script>
+

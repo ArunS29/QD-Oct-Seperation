@@ -575,7 +575,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.CrAmount,
                             i.EntryNarration,
                             i.AccountHead,
-                            i.SysRemarks
+                            i.SysRemarks,
+                            i.AddedBy,
+                            i.AddedOn
                         })
                         .ToList();
 
@@ -2513,7 +2515,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var existingVoucher = await dbContext.Tbl201VoucherMasters
                                                         .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
-
+                    var userName = HttpContext.Session.GetString("UserName");
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
 
@@ -2544,6 +2546,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     else
                     {
                         // Insert new record
+                        VM.VoucherEnteredBy = userName;
+                        VM.VoucherEnteredOn = DateTime.Now;
                         dbContext.Tbl201VoucherMasters.Add(VM);
                     }
 

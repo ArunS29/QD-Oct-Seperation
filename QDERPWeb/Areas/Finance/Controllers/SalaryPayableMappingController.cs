@@ -210,8 +210,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 on t1.VoucherNo equals t2.VoucherNo
                             where t1.BankClearedOn != null
                                   && t1.AccountHead == accid
-                                  && (!fromDate.HasValue || t1.BankClearedOn >= fromDate.Value)
-                                  && (!toDate.HasValue || t1.BankClearedOn <= toDate.Value)
+                                  && (!fromDate.HasValue || t2.VoucherDate >= fromDate.Value)
+                                  && (!toDate.HasValue || t2.VoucherDate <= toDate.Value)
                             select new
                             {
                                 t1.VoucherEntryNo,
