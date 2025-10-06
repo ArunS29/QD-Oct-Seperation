@@ -149,146 +149,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult SalesOrderNoIncrease1()
-        {
-            try
-            {
-                // Get tenant name from session
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                {
-                    _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
-                    return Unauthorized(new { message = "Tenant name not found in session." });
-                }
+      
 
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
-                    return Unauthorized(new { message = "Invalid tenant." });
-                }
-
-                // Build prefix from tenant name
-                string[] words = tenantName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                string prefix;
-                if (words.Length == 1)
-                {
-                    var word = words[0];
-                    prefix = (word.Length >= 2)
-                        ? $"{char.ToUpper(word[0])}{char.ToUpper(word[^1])}"
-                        : word.ToUpper();
-                }
-                else
-                {
-                    prefix = string.Concat(words.Select(w => char.ToUpper(w[0])));
-                }
-
-                string year = DateTime.Now.Year.ToString();
-
-                // 🔄 Updated format: {Prefix}-SO-{Year}-
-                string basePrefix = $"{prefix}-SO-{year}-";
-
-                // Fetch existing Sales Order Nos matching this format
-                var orderNos = dbContext.Tbl60201salesOrderMasters
-                    .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
-                    .Select(x => x.SalesOrderNo)
-                    .ToList();
-
-                // Extract number part using Regex
-                int maxNumber = 0;
-                var regex = new Regex($@"^{Regex.Escape(basePrefix)}(\d+)$");
-                foreach (var orderNo in orderNos)
-                {
-                    var match = regex.Match(orderNo ?? "");
-                    if (match.Success && int.TryParse(match.Groups[1].Value, out int num))
-                    {
-                        if (num > maxNumber)
-                            maxNumber = num;
-                    }
-                }
-
-                // Generate next number
-                int nextNumber = maxNumber + 1;
-                string nextOrderNo = $"{basePrefix}{nextNumber:D5}";
-
-                return Ok(new { salesOrderNo = nextOrderNo });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-            }
-        }
-        //[HttpGet]
-        //public IActionResult SalesOrderNoIncrease()
-        //{
-        //    try
-        //    {
-        //        // Step 1: Get tenant name from session
-        //        string tenantName = HttpContext.Session.GetString("TenantName");
-        //        if (string.IsNullOrWhiteSpace(tenantName))
-        //        {
-        //            _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
-        //            return Unauthorized(new { message = "Tenant name not found in session." });
-        //        }
-
-        //        // Step 2: Get DB context
-        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
-        //            return Unauthorized(new { message = "Invalid tenant." });
-        //        }
-
-        //        // Step 3: Get company details
-        //        var company = dbContext.Tbl901CompanyDetails
-        //            .FirstOrDefault(c => c.CompanyNameShort == tenantName);
-
-        //        if (company == null)
-        //            return NotFound("Company not found in Tbl901CompanyDetails.");
-
-        //        // Step 4: Get SalesOrderAbbrv, year digit, reset flag, and number of digits
-        //        string SalesOrderAbbrv = company.SalesOrderAbbrv ?? "";
-        //        int yearInDigit = company.InvoiceYearDigits ?? 0;
-        //        bool isResetByYear = company.IsResetInvoiceInYear ?? false;
-
-        //        int noOfDigits = dbContext.Tbl901CompanyDetails02s
-        //            .Where(c => c.CompanyId == company.CompanyId)
-        //            .Select(c => c.NoOfDigitsToInventoryQuotation ?? 5)
-        //            .FirstOrDefault();
-
-        //        DateTime currentDate = DateTime.Now;
-        //        string yearPart = currentDate.Year.ToString();
-
-        //        if (yearInDigit > 0)
-        //            yearPart = yearPart.Substring(yearPart.Length - yearInDigit, yearInDigit);
-        //        else
-        //            yearPart = "";
-
-        //        string basePrefix = $"{SalesOrderAbbrv}{yearPart}-";
-
-        //        // Step 5: Get existing matching SalesOrderNos
-        //        var orderNos = dbContext.Tbl60201salesOrderMasters
-        //            .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
-        //            .Select(x => x.SalesOrderNo)
-        //            .ToList();
-
-        //        // Step 6: Extract and compute next number
-        //        int maxNumber = orderNos
-        //            .Select(no => int.TryParse(no?.Substring(no.Length - noOfDigits), out int num) ? num : 0)
-        //            .DefaultIfEmpty(0)
-        //            .Max();
-
-        //        int nextNumber = maxNumber + 1;
-        //        string nextOrderNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
-
-        //        return Ok(new { salesOrderNo = nextOrderNo });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
-        //        return StatusCode(500, new { message = "An error occurred while generating Sales Order No.", error = ex.Message });
-        //    }
-        //}
 
         [HttpGet]
         public IActionResult SalesOrderNoIncrease()
@@ -667,7 +529,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
                     existingEntity.AddedOn = DateTime.Now;
-                    existingEntity.IsVerified = true;
+                   // existingEntity.IsVerified = true;
                     existingEntity.CurrencyId = model.CurrencyId ?? 1;
                     existingEntity.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                     existingEntity.CurrencyRate = model.CurrencyRate ?? 0;
@@ -708,9 +570,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         CostAllocationMasterGroup = model.CostAllocationMasterGroup,
                         AddedBy = model.AddedBy ?? User.Identity?.Name,
                         AddedOn = DateTime.Now,
-                         IsApproved = false,
-                        IsVerified = false,
-                        IsSubmitted = false,
+                        // IsApproved = false,
+                        //IsVerified = false,
+                        //IsSubmitted = false,
                         CurrencyId = model.CurrencyId??1,
                         BaseCurrencyId = model.BaseCurrencyId??1,
                         CurrencyRate = model.CurrencyRate ?? 0
@@ -1040,6 +902,9 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.SubmittedBy,
                 order.VerifiedBy,
                 order.ApprovedBy,
+                order.ApprovedOn,
+                order.SubmittedOn,
+                order.VerifiedOn,
                 SalesOrderChildren = children
             });
         }
@@ -1129,39 +994,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
     }
 
     return Ok(new { success = true });
-}   //[HttpGet]
-        //public IActionResult GetGoodsAndServices()
-        //{
-        //    try
-        //    {
-        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            var items = dbContext.Tbl20164GoodsAndServicesMasters
-        //                .Where(x => x.IsDiscontinued == false) // Optional filter
-        //                .Select(x => new
-        //                {
-        //                    x.Gscode,
-        //                    x.Gsdescrpition,
-        //                    x.GsdescriptionAr,
-        //                    x.ItemPartNo,
-        //                    x.GspackingUnit
-        //                })
-        //                .ToList();
-
-        //            return Json(items);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Unable to resolve tenant context.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Optional: Log the exception (example: using ILogger)
-        //        Console.WriteLine("Error loading Goods and Services: " + ex.Message);
-        //        return StatusCode(500, "An error occurred while retrieving the data.");
-        //    }
-        //}
+}  
         [HttpGet]
         public async Task<IActionResult> GetGoodsAndServices()
         {

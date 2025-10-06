@@ -64,7 +64,7 @@
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Contained)
                         .ElementAttr("style", "margin-right: 10px;")
-                        .OnClick("getDetailedDescription1")
+                        .OnClick("getDetailedDescription2")
                         )
             @(Html.DevExtreme().Button()
                         .ID("btnUseItemDesc")
@@ -99,16 +99,19 @@
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("Size")
+                .Disabled(true)
                 .Label(new JS("formatMessage('Size')"))
                 .LabelMode(EditorLabelMode.Floating))
  
         @(Html.DevExtreme().TextBox()
                 .ID("Manufacturer")
+                .Disabled(true)
                 .Label(new JS("formatMessage('Manufacturer')"))
                 .LabelMode(EditorLabelMode.Floating))
  
         @(Html.DevExtreme().TextBox()
                 .ID("Brand")
+                .Disabled(true)
                 .Label(new JS("formatMessage('Brand')"))
                 .LabelMode(EditorLabelMode.Floating))
 </div>
@@ -117,6 +120,7 @@
 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
                 .ID("PartNo")
+                .Disabled(true)
                 .Label(new JS("formatMessage('Part No')"))
                 .LabelMode(EditorLabelMode.Floating))
  
@@ -214,7 +218,7 @@
         });
     }
 
-    function getDetailedDescription1() {
+    function getDetailedDescription2() {
         if (!GSCode) {
             DevExpress.ui.notify("GSCode is missing", "error", 2000);
             return;

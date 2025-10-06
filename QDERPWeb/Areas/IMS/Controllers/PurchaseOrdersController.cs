@@ -407,162 +407,162 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return BadRequest("Unable to resolve tenant or database context.");
         }
-        [HttpPost]
-        public async Task<IActionResult> SavePurchaseOrder1([FromBody] Tbl60401purchaseOrderMaster model)
-        {
-            if (model == null || !ModelState.IsValid)
-                return BadRequest(new { message = "Invalid data", success = false });
+        //[HttpPost]
+        //public async Task<IActionResult> SavePurchaseOrder1([FromBody] Tbl60401purchaseOrderMaster model)
+        //{
+        //    if (model == null || !ModelState.IsValid)
+        //        return BadRequest(new { message = "Invalid data", success = false });
 
-            if (string.IsNullOrWhiteSpace(model.Pono))
-                return BadRequest(new { message = "PO No is required", success = false });
+        //    if (string.IsNullOrWhiteSpace(model.Pono))
+        //        return BadRequest(new { message = "PO No is required", success = false });
 
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return Unauthorized(new { message = "Invalid tenant", success = false });
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        return Unauthorized(new { message = "Invalid tenant", success = false });
 
-            try
-            {
-                string userName = HttpContext.Session.GetString("UserName") ?? "System";
+        //    try
+        //    {
+        //        string userName = HttpContext.Session.GetString("UserName") ?? "System";
 
-                var existingPo = await dbContext.Tbl60401purchaseOrderMasters
-                    .FirstOrDefaultAsync(x => x.Pono == model.Pono);
+        //        var existingPo = await dbContext.Tbl60401purchaseOrderMasters
+        //            .FirstOrDefaultAsync(x => x.Pono == model.Pono);
 
-                if (existingPo == null)
-                {
-                    // New PO - initialize states
-                    model.AddedBy = userName;
-                    model.AddedOn = DateTime.Now;
-                    model.IsApproved = false;
-                    model.IsVerified = false;
-                    model.IsSubmitted = model.IsSubmitted ?? false;
+        //        if (existingPo == null)
+        //        {
+        //            // New PO - initialize states
+        //            model.AddedBy = userName;
+        //            model.AddedOn = DateTime.Now;
+        //            model.IsApproved = false;
+        //            model.IsVerified = false;
+        //            model.IsSubmitted = model.IsSubmitted ?? false;
 
-                    if (model.IsSubmitted == true)
-                    {
-                        model.SubmittedBy = userName;
-                        model.SubmittedOn = DateTime.Now;
-                    }
+        //            if (model.IsSubmitted == true)
+        //            {
+        //                model.SubmittedBy = userName;
+        //                model.SubmittedOn = DateTime.Now;
+        //            }
 
-                    dbContext.Tbl60401purchaseOrderMasters.Add(model);
-                }
-                else
-                {
-                    // If already approved, do NOT allow editing
-                    if (existingPo.IsApproved == true)
-                    {
-                        return BadRequest(new { message = "This purchase order has been approved and cannot be edited.", success = false });
-                    }
+        //            dbContext.Tbl60401purchaseOrderMasters.Add(model);
+        //        }
+        //        else
+        //        {
+        //            // If already approved, do NOT allow editing
+        //            if (existingPo.IsApproved == true)
+        //            {
+        //                return BadRequest(new { message = "This purchase order has been approved and cannot be edited.", success = false });
+        //            }
 
-                    // Update fields normally
-                    existingPo.Podate = model.Podate;
-                    existingPo.SupplierCode = model.SupplierCode;
-                    existingPo.SupplierQuoteNo = model.SupplierQuoteNo;
-                    existingPo.SupplierQuoteDate = model.SupplierQuoteDate;
-                    existingPo.SupplierRefNo = model.SupplierRefNo;
-                    existingPo.Attention = model.Attention;
-                    existingPo.SupplierContactNo = model.SupplierContactNo;
-                    existingPo.SupplierContactEmail = model.SupplierContactEmail;
-                    existingPo.SubjectTitle = model.SubjectTitle;
+        //            // Update fields normally
+        //            existingPo.Podate = model.Podate;
+        //            existingPo.SupplierCode = model.SupplierCode;
+        //            existingPo.SupplierQuoteNo = model.SupplierQuoteNo;
+        //            existingPo.SupplierQuoteDate = model.SupplierQuoteDate;
+        //            existingPo.SupplierRefNo = model.SupplierRefNo;
+        //            existingPo.Attention = model.Attention;
+        //            existingPo.SupplierContactNo = model.SupplierContactNo;
+        //            existingPo.SupplierContactEmail = model.SupplierContactEmail;
+        //            existingPo.SubjectTitle = model.SubjectTitle;
 
-                    // Handle submit, verify, approve logic
+        //            // Handle submit, verify, approve logic
 
-                    // Submit
-                    if (model.IsSubmitted == true && existingPo.IsSubmitted != true)
-                    {
-                        existingPo.IsSubmitted = true;
-                        existingPo.SubmittedBy = userName;
-                        existingPo.SubmittedOn = DateTime.Now;
-                    }
+        //            // Submit
+        //            if (model.IsSubmitted == true && existingPo.IsSubmitted != true)
+        //            {
+        //                existingPo.IsSubmitted = true;
+        //                existingPo.SubmittedBy = userName;
+        //                existingPo.SubmittedOn = DateTime.Now;
+        //            }
 
-                    // Verify - only if submitted and not verified yet
-                    if (model.IsVerified == true && existingPo.IsVerified != true)
-                    {
-                        if (existingPo.IsSubmitted != true)
-                        {
-                            return BadRequest(new { message = "Cannot verify before submitting.", success = false });
-                        }
-                        existingPo.IsVerified = true;
-                        existingPo.VerifiedBy = userName;
-                        existingPo.VerifiedOn = DateTime.Now;
-                    }
+        //            // Verify - only if submitted and not verified yet
+        //            if (model.IsVerified == true && existingPo.IsVerified != true)
+        //            {
+        //                if (existingPo.IsSubmitted != true)
+        //                {
+        //                    return BadRequest(new { message = "Cannot verify before submitting.", success = false });
+        //                }
+        //                existingPo.IsVerified = true;
+        //                existingPo.VerifiedBy = userName;
+        //                existingPo.VerifiedOn = DateTime.Now;
+        //            }
 
-                    // Approve - only if verified and not approved yet
-                    if (model.IsApproved == true && existingPo.IsApproved != true)
-                    {
-                        if (existingPo.IsVerified != true)
-                        {
-                            return BadRequest(new { message = "Cannot approve before verification.", success = false });
-                        }
-                        existingPo.IsApproved = true;
-                        existingPo.ApprovedBy = userName;
-                        existingPo.ApprovedOn = DateTime.Now;
-                    }
+        //            // Approve - only if verified and not approved yet
+        //            if (model.IsApproved == true && existingPo.IsApproved != true)
+        //            {
+        //                if (existingPo.IsVerified != true)
+        //                {
+        //                    return BadRequest(new { message = "Cannot approve before verification.", success = false });
+        //                }
+        //                existingPo.IsApproved = true;
+        //                existingPo.ApprovedBy = userName;
+        //                existingPo.ApprovedOn = DateTime.Now;
+        //            }
 
-                    // Update other fields that can be changed before approval
-                    existingPo.PreparedBy = model.PreparedBy;
-                    existingPo.PreparedOn = model.PreparedOn;
-                    existingPo.Project = model.Project;
-                    existingPo.Pointroduction = model.Pointroduction;
-                    existingPo.Posummary = model.Posummary;
-                    existingPo.RevisionNo = model.RevisionNo;
-                    existingPo.CompanyBranch = model.CompanyBranch;
-                    existingPo.AdditionsText = model.AdditionsText;
-                    existingPo.DiscountsText = model.DiscountsText;
-                    existingPo.PodueDate = model.PodueDate;
-                    existingPo.Posignatory = model.Posignatory;
-                    existingPo.AdditionsAmount = model.AdditionsAmount;
-                    existingPo.DeductionsAmount = model.DeductionsAmount;
-                    existingPo.Rfqno = model.Rfqno;
-                    existingPo.TypeOfRequest = model.TypeOfRequest;
-                    existingPo.PothanksNote = model.PothanksNote;
-                    existingPo.ProjectMasterCode = model.ProjectMasterCode;
-                    existingPo.PoverifiedSign = model.PoverifiedSign;
-                    existingPo.PoapprovedSign = model.PoapprovedSign;
-                    existingPo.PopaymentTerm = model.PopaymentTerm;
-                    existingPo.PodeliveryTerm = model.PodeliveryTerm;
-                    existingPo.PodeliveryPeriod = model.PodeliveryPeriod;
-                    existingPo.PodocRequired = model.PodocRequired;
-                    existingPo.PowarrantyPeriod = model.PowarrantyPeriod;
-                    existingPo.PoshipTo = model.PoshipTo;
-                    existingPo.PobillTo = model.PobillTo;
-                    existingPo.PorevisionNo = model.PorevisionNo;
-                    existingPo.Currency = model.Currency;
-                    existingPo.ExchangeRate = model.ExchangeRate;
-                    existingPo.PocategoryId = model.PocategoryId;
-                    existingPo.PorevisionId = model.PorevisionId;
-                    existingPo.IsObseleteVersion = model.IsObseleteVersion;
-                    existingPo.PorevisedBy = model.PorevisedBy;
-                    existingPo.PorevisedOn = model.PorevisedOn;
-                    existingPo.InventoryMasterGroupId = model.InventoryMasterGroupId;
-                    existingPo.SalesPersonCode = model.SalesPersonCode;
-                    existingPo.Mprno = model.Mprno;
-                    existingPo.ProjectSubUnitCode = model.ProjectSubUnitCode;
-                    existingPo.CurrencyId = model.CurrencyId ?? 1;
-                    existingPo.CurrencyRate = model.CurrencyRate ?? 1;
-                    existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
-                    existingPo.ModifiedBy = userName;
-                    existingPo.ModifiedOn = DateTime.Now;
-                }
+        //            // Update other fields that can be changed before approval
+        //            existingPo.PreparedBy = model.PreparedBy;
+        //            existingPo.PreparedOn = model.PreparedOn;
+        //            existingPo.Project = model.Project;
+        //            existingPo.Pointroduction = model.Pointroduction;
+        //            existingPo.Posummary = model.Posummary;
+        //            existingPo.RevisionNo = model.RevisionNo;
+        //            existingPo.CompanyBranch = model.CompanyBranch;
+        //            existingPo.AdditionsText = model.AdditionsText;
+        //            existingPo.DiscountsText = model.DiscountsText;
+        //            existingPo.PodueDate = model.PodueDate;
+        //            existingPo.Posignatory = model.Posignatory;
+        //            existingPo.AdditionsAmount = model.AdditionsAmount;
+        //            existingPo.DeductionsAmount = model.DeductionsAmount;
+        //            existingPo.Rfqno = model.Rfqno;
+        //            existingPo.TypeOfRequest = model.TypeOfRequest;
+        //            existingPo.PothanksNote = model.PothanksNote;
+        //            existingPo.ProjectMasterCode = model.ProjectMasterCode;
+        //            existingPo.PoverifiedSign = model.PoverifiedSign;
+        //            existingPo.PoapprovedSign = model.PoapprovedSign;
+        //            existingPo.PopaymentTerm = model.PopaymentTerm;
+        //            existingPo.PodeliveryTerm = model.PodeliveryTerm;
+        //            existingPo.PodeliveryPeriod = model.PodeliveryPeriod;
+        //            existingPo.PodocRequired = model.PodocRequired;
+        //            existingPo.PowarrantyPeriod = model.PowarrantyPeriod;
+        //            existingPo.PoshipTo = model.PoshipTo;
+        //            existingPo.PobillTo = model.PobillTo;
+        //            existingPo.PorevisionNo = model.PorevisionNo;
+        //            existingPo.Currency = model.Currency;
+        //            existingPo.ExchangeRate = model.ExchangeRate;
+        //            existingPo.PocategoryId = model.PocategoryId;
+        //            existingPo.PorevisionId = model.PorevisionId;
+        //            existingPo.IsObseleteVersion = model.IsObseleteVersion;
+        //            existingPo.PorevisedBy = model.PorevisedBy;
+        //            existingPo.PorevisedOn = model.PorevisedOn;
+        //            existingPo.InventoryMasterGroupId = model.InventoryMasterGroupId;
+        //            existingPo.SalesPersonCode = model.SalesPersonCode;
+        //            existingPo.Mprno = model.Mprno;
+        //            existingPo.ProjectSubUnitCode = model.ProjectSubUnitCode;
+        //            existingPo.CurrencyId = model.CurrencyId ?? 1;
+        //            existingPo.CurrencyRate = model.CurrencyRate ?? 1;
+        //            existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+        //            existingPo.ModifiedBy = userName;
+        //            existingPo.ModifiedOn = DateTime.Now;
+        //        }
 
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                  module: "IMS > Save Purchase Order1",
-                  actionDetail: $"Saved Purchase Order1  {model.PocategoryId}",
-                  documentNo: $"{model.PocategoryId}"
-                );
+        //        await dbContext.SaveChangesAsync();
+        //        await _userActionLogger.LogAsync(
+        //          module: "IMS > Save Purchase Order1",
+        //          actionDetail: $"Saved Purchase Order1  {model.PocategoryId}",
+        //          documentNo: $"{model.PocategoryId}"
+        //        );
 
-                return Ok(new
-                {
-                    message = "Purchase order saved successfully",
-                    pono = model.Pono,
-                    isApproved = existingPo?.IsApproved ?? model.IsApproved ?? false,
-                    success = true
-                });
+        //        return Ok(new
+        //        {
+        //            message = "Purchase order saved successfully",
+        //            pono = model.Pono,
+        //            isApproved = existingPo?.IsApproved ?? model.IsApproved ?? false,
+        //            success = true
+        //        });
 
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Error saving purchase order: " + ex.Message, success = false });
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "Error saving purchase order: " + ex.Message, success = false });
+        //    }
+        //}
       [HttpPost]
 public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewModel model)
 {
