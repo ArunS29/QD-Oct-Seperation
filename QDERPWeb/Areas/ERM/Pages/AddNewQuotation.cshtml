@@ -910,20 +910,20 @@
 
 
 							@(Html.DevExtreme().SelectBox()
-							.ID("ddGetInventoryGroup")
-							.Label(new JS("formatMessage('VAT Applicable % :')"))
-							.LabelMode(EditorLabelMode.Floating)
-							.Width("100%")
-							.DataSource(new[] {
-								"15% Domestic Standard Sales",
-								"5% Domestic Standard Sales",
-								"0% Domestic Zero Tax Sales",
-								"0% Domestic Exempted Tax Sales",
-								"0% GCC Sales",
-								"0% Exports Sales"
-							})
-							.Value("15% Domestic Standard Sales") // default selected value
-                            )
+								.ID("ddGetInventoryGroup")
+								.Label(new JS("formatMessage('VAT Applicable % :')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								.DataSource(d => d.WebApi()
+									.Controller("AddNewQuotation1")     // your controller
+									.LoadAction("GetVatTaxSlabs")       // API action
+									.Key("TaxSlabCode")                 // unique key column in your table
+								)
+								.ValueExpr("TaxSlabCode")               // save code to DB
+								.DisplayExpr("TaxSlab")                 // show label to user
+								.SearchEnabled(true)
+							)
+
 
 
 
@@ -3087,6 +3087,7 @@ function hideAllButtonsExcept(exceptions) {
 
 
 
+	
 
 
 
@@ -3101,10 +3102,20 @@ async function onFinalAddClick(e) {
         return;
     }
 
+const quoteMethodDD = $("#QuoteMethod").dxDropDownBox("instance");
+
+// Numeric code to save in DB
+const unitMethodCode = quoteMethodDD.option("value");  
+
+// Text to display in grid
+const unitMethodText = quoteMethodDD.option("text");  
+
+
+
     const eqQuotedFor = $("#EquipmentQuotedFor").dxDropDownBox("instance");
     const description = eqQuotedFor.option("text");
     const qty        = $("#Quantity").dxNumberBox("instance").option("value");
-    const unitMethod = $("#QuoteMethod").dxDropDownBox("instance").option("text");
+    const unitMethod = $("#QuoteMethod").dxDropDownBox("instance").option("value");
     const rate1      = $("#UnitRate").dxNumberBox("instance").option("value");
     const quotedUOM  = $("#UOM").dxTextBox("instance").option("value");
 
@@ -3122,8 +3133,8 @@ async function onFinalAddClick(e) {
                 QuoteNo: quoteNo,
                 PropertyAddlDescription: description,
                 QuotedQuantity: qty,
-                QuoteMethod: unitMethod,
-                UnitRateMethod: rate1,
+                UnitRateMethod1: unitMethodCode,
+                UnitRate1: rate1,
                 QuotedUOM: quotedUOM
             })
         });
@@ -3142,7 +3153,10 @@ async function onFinalAddClick(e) {
                 LineOrderNo: lineOrderNo,
                 Description: description || "",
                 Qty: qty || 0,
-                UnitMethod: unitMethod || "",
+
+				 QuoteMethod: unitMethodText || "",   // text → goes into C# QuoteMethod
+                  UnitMethod: unitMethodText || "",    // optional, for UI grid display
+                  UnitRateMethod1: unitMethodCode || null, // numeric code → goes into C# UnitRateMethod1
                 Rate1: rate1 || 0,
                 UOM: quotedUOM || "",
                 DetailedDescription: detailResponse?.DetailedDescription || "",
@@ -6212,19 +6226,42 @@ async function onFinalAddClick(e) {
                        DevExpress.ui.notify("No child records to save.", "error", 3000);
                       return;
                  }
-			
+			let quoteNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+
+
 			// map grid rows to exactly the 8 fields API expects
-			let mappedChildren = children.map(row => ({
-				QuoteChildId: row.QuoteChildId || 0, 
-				LineOrderNo: row.LineOrderNo,
-				AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
-				PropertyAddlDescription: row.DetailedDescription,
-				QuotedQuantity: row.Qty,
-				QuoteMethod: row.UnitMethod,
-				UnitRate1: row.Rate1,
-				MobRate: row.MobRate,
-				DemobRate: row.DemobRate
-			}));
+			// let mappedChildren = children.map(row => ({
+			// 	QuoteChildId: row.QuoteChildId || 0, 
+			// 	LineOrderNo: row.LineOrderNo,
+			// 	AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
+			// 	PropertyAddlDescription: row.DetailedDescription,
+			// 	QuotedQuantity: row.Qty,
+			// 	UnitRateMethod1: row.UnitRateMethod1,
+			// 	UnitRate1: row.Rate1,
+			// 	MobRate: row.MobRate,
+			// 	DemobRate: row.DemobRate
+			// }));
+
+
+
+
+
+					let mappedChildren = children.map(row => ({
+					QuoteChildId: row.QuoteChildId || 0,
+					QuoteNo: quoteNo,  // <--- important: must be sent
+					LineOrderNo: row.LineOrderNo,
+					AddlNotes: row.Description,
+					PropertyAddlDescription: row.DetailedDescription,
+					QuotedQuantity: row.Qty,
+					QuotedUom: row.UOM || null,      // <--- backend expects QuotedUom
+					UnitRateMethod1: row.UnitRateMethod1,
+					UnitRate1: row.Rate1,
+					MobRate: row.MobRate,
+					DemobRate: row.DemobRate
+		}));
+
+
+
 
 
 
@@ -6263,6 +6300,15 @@ async function onFinalAddClick(e) {
 			);
 		}
 	});
+
+
+
+
+
+
+
+
+
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();
@@ -6369,7 +6415,8 @@ async function onFinalAddClick(e) {
 				AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
 				PropertyAddlDescription: row.DetailedDescription,
 				QuotedQuantity: row.Qty,
-				QuoteMethod: row.UnitMethod,
+				UnitRateMethod1 : row.QuoteMethod,
+				//QuoteMethod: row.UnitMethod,
 				UnitRate1: row.Rate1,
 				MobRate: row.MobRate,
 				DemobRate: row.DemobRate
@@ -6415,6 +6462,11 @@ async function onFinalAddClick(e) {
 		}
 
 	});
+
+
+
+
+
 
 
 	$(document).ready(function () {

@@ -1,5 +1,6 @@
 ﻿@page
 @model QD.ERP.Web.Pages.Shared.HomeModel
+@using Microsoft.AspNetCore.Http
 
 @{
     var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
