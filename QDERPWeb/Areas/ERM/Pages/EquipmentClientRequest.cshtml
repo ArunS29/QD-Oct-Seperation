@@ -1440,39 +1440,7 @@
 					)
 				}
 
-		@using (Html.DevExtreme().NamedTemplate("GetRequesstingUnitContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetRequesstingUnit-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetRequesstingUnit")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("ProjectSubUnitCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged9")
-					.OnInitialized("dataGridInitialized9")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Width(352)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-
-						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(270);
-
-					})
-					)
-				}
+		
 				@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
 				{
 					@(Html.DevExtreme().DataGrid()
@@ -1625,7 +1593,6 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-										 		@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
 					.FilterRow(f => f.Visible(true))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(200)
@@ -2013,21 +1980,7 @@
             grid.editCell(rowIndex, 0);
         });
     });
-});
-
-				// $(function () {
-				// 	$("#btnAddNew").on("click", function () {
-				// 		var button = $("#btnSave").dxButton("instance");
-				// 		button.option("text", "Update");
-
-				// 		var grid = $("#itemGrid").dxDataGrid("instance");
-				// 		grid.addRow().done(function() {
-				// 			var rowIndex = grid.getVisibleRows().length - 1;
-				// 			grid.editCell(rowIndex, 0); 
-				// 		});
-				// 	});
-				// });
-
+});			
 				function onGridRightClick(e) {
 				if (e.row && e.row.rowType === "data") {
 					e.items = []; // wipe defaults if you only want custom
@@ -2397,7 +2350,7 @@
 
 					 $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
 					  $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
-					 $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
+					 $('#ContactNo').dxTextBox("instance").option("value", data.ContactPhone1);
 						},
 						error: function (xhr, status, error) {
 							console.error('Error fetching contact details:', error);
@@ -4049,9 +4002,9 @@
 								DevExpress.ui.notify(message, "success", 3000);
 
 								// ✅ Update dropdown if exists
-								const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
-								if (preparedByBox && response && response.VoucherApprovedBy) {
-									preparedByBox.option("value", response.VoucherApprovedBy);
+								const SubmittedBy = $("#ddPreparedby").dxDropDownBox("instance");
+								if (SubmittedBy && response && response.VoucherApprovedBy) {
+									SubmittedBy.option("value", response.VoucherApprovedBy);
 								}
 
 								// ✅ Sync workflow fields
@@ -4140,7 +4093,7 @@
 							: "Enquiry Request has been Verified successfully!";
 
 						// ✅ Update dropdown if value exists
-						const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+						const VerifiedBy = $("#ddVerifiedby").dxDropDownBox("instance");
 						if (approvedByBox && response && response.VoucherApprovedBy) {
 							approvedByBox.option("value", response.VoucherApprovedBy);
 						}
@@ -4217,9 +4170,9 @@
 							disableAllControls();
 							// Optionally update workflow or dropdowns here
 							if (response.VoucherApprovedBy) {
-								const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
-								if (approvedByBox) {
-									approvedByBox.option("value", response.VoucherApprovedBy);
+								const ApprovedBy = $("#ddApprovedby").dxDropDownBox("instance");
+								if (ApprovedBy) {
+									ApprovedBy.option("value", response.VoucherApprovedBy);
 								}
 							}
 							syncWorkflowFromFields && syncWorkflowFromFields();
@@ -5191,25 +5144,26 @@
 					}
 				}
 			}
-			function onDeleteRequest() {
+		function onDeleteRequest() {
 				// Get the value from the DevExtreme TextBox with ID 'txtRequestNo'
-				var equipmentRequestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+				var EqiupmentRequestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
 
-				if (!equipmentRequestNo) {
+				if (!EqiupmentRequestNo) {
 					DevExpress.ui.notify("Equipment No is missing.", "error", 3000);
 					return;
 				}
 
 				$.ajax({
-					url: `/api/AddNewClientRequest1/DeletePropertyRequest/${encodeURIComponent(equipmentRequestNo)}`, // ✅ REST style
-					type: "DELETE", // ✅ matches HttpDelete
+					url: `/api/AddNewClientRequest1/DeletePropertyRequest/${encodeURIComponent(EqiupmentRequestNo)}`,
+					type: "DELETE",
 					success: function (response) {
 						DevExpress.ui.notify(response.message, "success", 2000);
 
-						// ✅ Delay so toast shows before going back
+						// ✅ Redirect to EquipmentClientRequest page after success
 						setTimeout(function () {
-							window.history.back();
-						}, 800);
+							const tenantName = window.tenantName || "defaultTenant"; // replace with your actual tenantName logic
+							window.location.href = `/${tenantName}/ERM/EquipmentClientRequest`;
+						}, 500);
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify(
@@ -5220,6 +5174,7 @@
 					}
 				});
 			}
+
 
 			 function descriptionCellTemplate(container, options) {
         const buttonId = "popover-btn-" + options.rowIndex;
@@ -5238,7 +5193,7 @@
             });
     }
 
-			$("<div id='rowPopover'>")
+	$("<div id='rowPopover'>")
     .appendTo("body")
     .dxPopover({
         width: 900,

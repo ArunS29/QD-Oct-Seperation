@@ -249,31 +249,27 @@
 			</div>
 
 			<!-- Year Selector -->
-			<select id="yearSelect"
-					class="year-select"
-					onchange="toggleYearInput(this)">
-				@{
-					int currentYear = DateTime.Now.Year;
-					for (int i = currentYear - 5; i <= currentYear + 5; i++)
-					{
-						if (i == currentYear)
-						{
-							<option value="@i" selected="selected">@i</option>
-						}
-						else
-						{
-							<option value="@i">@i</option>
-						}
-					}
-				}
-				<option value="custom">Other...</option>
-			</select>
+				<!-- Year Selector -->
+				<select id="yearSelect" class="year-select" onchange="toggleYerInput(this)">
+					<option value="2020">2020</option>
+					<option value="2021">2021</option>
+					<option value="2022">2022</option>
+					<option value="2023">2023</option>
+					<option value="2024" selected="selected">2024</option>
+					<option value="2025">2025</option>
+					<option value="2026">2026</option>
+					<option value="custom">Other...</option>
+				</select>
 
+				<!-- Hidden input for custom year -->
+				<input type="number" id="customYearInput" placeholder="Enter year" style="display:none; margin-top:10px; width:100%; padding:10px;
+								  font-size:20px; font-weight:600; text-align:center;
+							  background:#444; color:white; border:none; border-radius:5px;" />
 
-			<input type="number" id="yearInput"
+			@* <input type="number" id="yearInput"
 				   style="display:none; margin-top:10px; width:100%; padding:10px;
 							  font-size:20px; font-weight:600; text-align:center;
-						  background:#444; color:white; border:none; border-radius:5px;" />
+						  background:#444; color:white; border:none; border-radius:5px;" /> *@
 		</div>
 	</text>)
 		)
@@ -634,6 +630,17 @@
 	</script>
 }
 <script>
+		function toggleYearInput(selectElem) {
+		const customInput = document.getElementById("customYearInput");
+		if (selectElem.value === "custom") {
+			// Show input for custom year
+			customInput.style.display = "inline-block";
+			customInput.focus();
+		} else {
+			// Hide input when a normal year is selected
+			customInput.style.display = "none";
+		}
+	}
 			$(function () {
 			$("#yearSelect").on("change", function () {
 				const val = $(this).val();
@@ -959,15 +966,15 @@
 		}
 	}
 
-	function toggleYearInput(select) {
-		let input = document.getElementById("yearInput");
-		if (select.value === "custom") {
-			input.style.display = "block";
-			input.focus();
-		} else {
-			input.style.display = "none";
-		}
-	}
+	// function toggleYearInput(select) {
+	// 	let input = document.getElementById("yearInput");
+	// 	if (select.value === "custom") {
+	// 		input.style.display = "block";
+	// 		input.focus();
+	// 	} else {
+	// 		input.style.display = "none";
+	// 	}
+	// }
 
 	$(function () {
 		$("#quickrfq").text(formatMessage("Quick Dice ERP Solutions"));
