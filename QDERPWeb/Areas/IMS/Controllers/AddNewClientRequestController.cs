@@ -924,6 +924,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error in DeleteMultipleChildren: {ex.Message}");
+
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }

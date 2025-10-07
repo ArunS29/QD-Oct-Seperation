@@ -6,7 +6,10 @@
 
 
 <h2 id="employeesummaryreport"></h2>
-
+<input id="formId" value="EmployeeReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -209,7 +212,7 @@
                    
                     { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
                     { dataField: "AccountHead", area: "filter",caption: formatMessage("Account Head") },
-                    { dataField: "EmployeeName", area: "filter",caption: formatMessage("Employee Name") },
+                 
                     { dataField: "VoucherDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
                     { dataField: "EffectiveDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
                     { dataField: "CategoryTitle", area: "filter",caption: formatMessage("Category Title") },
@@ -224,7 +227,7 @@
                     { dataField: "CostCentreCode", area: "filter",caption: formatMessage("Cost Centre Code") },
                     { dataField: "CostCentreTitle",area: "filter", caption: formatMessage("Cost Centre Title") },
                     { dataField: "DepartmentCode",area: "filter", caption: formatMessage("Department Code") },
-                    { dataField: "Department",area: "filter", caption: formatMessage("Department") },
+                    
                     { dataField: "EmployeeReferenceId",area: "filter", caption: formatMessage("Employee Reference Id") },
                     { dataField: "BankAccountNo", area: "filter",caption: formatMessage("Bank Account No") },
                     { dataField: "BankName", area: "filter",caption: formatMessage("Bank Name") },
@@ -347,6 +350,86 @@
         });
 
     });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if currently showing filter fields
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of your filter fields to toggle
+        const filterFields = [
+            "VoucherNo", "VoucherEntryId", "EmployeeNo", "EmpAllocDrCr",
+            "VoucherRefNo", "AccountHead", "VoucherDate",
+            "EffectiveDate", "CategoryTitle", "NationalityEn", "VisaPositionTitle",
+            "WorkSite", "SponsorName", "NationalId", "IsDiscontinued",
+            "EmployeeGroup", "JobTitle", "CostCentreCode", "CostCentreTitle",
+            "DepartmentCode",  "EmployeeReferenceId",
+            "BankAccountNo", "BankName", "VoucherType", "VoucherNarration", "BillRemarks"
+        ];
+
+        // Toggle area for all filter fields
+        fields.forEach((f, i) => {
+            if (filterFields.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Reload data source to apply change
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1500
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "Department");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+
 </script>
 
 <style>

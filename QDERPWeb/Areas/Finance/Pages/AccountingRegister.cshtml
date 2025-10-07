@@ -800,7 +800,7 @@
 			columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')")).Alignment(HorizontalAlignment.Left).Visible(false);
 			columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
 			columns.AddFor(m => m.SubGroupName).Caption(new JS("formatMessage('Sub Group Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
-			columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('Voucher Amount Formatted')")).Alignment(HorizontalAlignment.Right).Visible(false);
+			//columns.AddFor(m => m.VoucherAmountFormatted).Caption(new JS("formatMessage('Voucher Amount Formatted')")).Alignment(HorizontalAlignment.Right).Visible(false);
 			columns.AddFor(m => m.VoucherApprovedBy).Caption(new JS("formatMessage('Voucher Approved By')")).Alignment(HorizontalAlignment.Left).Visible(false);
 			columns.AddFor(m => m.VoucherApprovedOn).Caption(new JS("formatMessage('Voucher Approved On')")).Alignment(HorizontalAlignment.Left).Visible(false);
 			columns.AddFor(m => m.VoucherEnteredBy).Caption(new JS("formatMessage('Voucher Entered By')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -1090,6 +1090,7 @@
 					 },
 					 success: function (data) {
 						 // Bind the data to the DataGrid
+						 console.log("GridData",data)
 						 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 							 injectHeaderSVG();
 							injectCurrencyToCards();
@@ -1180,19 +1181,19 @@
 	}
 
 
-	// Function to handle right-click event on the grid
+		// Function to handle right-click event on the grid
 	$(document).on("contextmenu", ".dx-datagrid-rowsview .dx-row", function (e) {
 		e.preventDefault(); // Prevent default right-click menu
 
 		let dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the grid instance
-		let rowIndex = $(this).index();
+		let rowIndex = dataGrid.getRowIndexByElement($(this)); // Correct way
 		let rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
 
-		console.log("Row Data:", rowData); // Debugging
+		console.log("Row Data:", rowData);
 
 		if (rowData && rowData.VoucherNo && rowData.VoucherType) {
-			selectedVoucherNo = rowData.VoucherNo; // Store selected voucher number
-			selectedVoucherType = rowData.VoucherType; // Store selected voucher type
+			selectedVoucherNo = rowData.VoucherNo;
+			selectedVoucherType = rowData.VoucherType;
 			console.log("Selected VoucherNo:", selectedVoucherNo, "Selected VoucherType:", selectedVoucherType);
 		} else {
 			console.log("Voucher data is missing.");
@@ -1205,6 +1206,7 @@
 			top: e.pageY
 		});
 	});
+
 
 	// Hide context menu when clicking elsewhere
 	$(document).on("click", function () {
