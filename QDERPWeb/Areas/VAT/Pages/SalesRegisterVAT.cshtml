@@ -371,7 +371,7 @@
 </div>
 
 
-<div class="context-menuInvoice" id="contextMenu">
+@* <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
 		<i class="dx-icon-search" id="salesregisterview"></i>
 	</div>
@@ -391,7 +391,7 @@
 	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy" id="clonesalesregister"></i>
 	</div>
-</div>
+</div> *@
 
 
 <div class="horizontal-container">
@@ -1736,36 +1736,137 @@
 			}
 		});
 	});
-	$(function () {
-		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-			width: 600,
-			height: 400,
-			showTitle: true,
-			title: "Details",
-			visible: false,
-			dragEnabled: true,
-			closeOnOutsideClick: true,
-			contentTemplate: function () {
-				return $("<div>").attr("id", "popupFormContent");
+		$("#dataGrid").dxDataGrid({
+		// ... your other grid options ...
+		onContextMenuPreparing: function (e) {
+			e.items = [];
+
+			// --- Context Menu for Data Rows ---
+			if (e.target === "content" && e.row && e.row.rowType === "data") {
+				const rowData = e.row.data;
+
+				// Define your menu items with permission keys
+				const menuConfig = [
+					{
+						text: formatMessage("View VAT Invoice"),
+						icon: "search",
+						color: "#007bff",
+						permissionKey: "frm20162VATInvoiceMasterView_ViewInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							InvoiceType = rowData.InvoiceType;
+							viewInvoice();
+						}
+					},
+					{
+						text: formatMessage("Cancel/Amend this Invoice (Invoice Credit Note)"),
+						icon: "close",
+						color: "#dc3545",
+						permissionKey: "frm20162VATInvoiceMasterView_CancelInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							InvoiceType = rowData.InvoiceType;
+							cancelInvoice();
+						}
+					},
+					{
+						text: formatMessage("VAT Invoices (Obselete)"),
+						icon: "file",
+						color: "#17a2b8",
+						permissionKey: "frm20162VATInvoiceMasterView_CheckOldVATInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							checkIfOldVATInvoice(invoiceNo);
+						}
+					},
+					{
+						text: formatMessage("Clone e-Invoice"),
+						icon: "copy",
+						color: "#28a745",
+						permissionKey: "frm20162VATInvoiceMasterView_CloneEInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							cloneEInvoice();
+						}
+					}
+				];
+
+				// Apply permission visibility/enabled state dynamically
+				menuConfig.forEach(item => {
+					const perm = menuPermissions[item.permissionKey?.toLowerCase()];
+					if (perm && perm.visible) {
+						e.items.push({
+							...item,
+							disabled: !perm.enabled
+						});
+					}
+				});
 			}
-		}).dxPopup("instance");
-		var contextMenu = $("#contextMenu");
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-		$("#dataGrid").customizeGridContextMenu();
-		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-			e.preventDefault();
-			var rowIndex = $(this).index();
-			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-			 invoiceNo = rowData.InvoiceNo;
-			 InvoiceType = rowData.InvoiceSubType;
-			console.log("SalesRegisterData",rowData);
-			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-		});
+
+			// --- Context Menu for Header Area ---
+			if (e.target === "header") {
+				e.items.push(
+					{
+						text: "Column Chooser",
+						icon: "columnchooser",
+						color: "#007bff",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").showColumnChooser();
+						}
+					},
+					{
+						text: "Refresh Data",
+						icon: "refresh",
+						color: "#ffc107",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						}
+					}
+				);
+			}
+
+			// --- Prevent unwanted menu or highlight behavior ---
+			if (!e.items || e.items.length === 0) {
+				e.cancel = true; // cancel if no items available
+			}
+
+			if (e.target === "content" && !e.row) {
+				e.cancel = true; // cancel if clicking empty area below last row
+			}
+		}
 	});
 
-	
+
+	$(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+		const menuItems = $(".dx-context-menu .dx-menu-item");
+		currentIndex = menuItems.index(this);
+		highlightItem(this);
+	});
+
+	// ✅ Highlight helper
+	function highlightItem(item) {
+		$(".dx-context-menu .dx-menu-item").removeClass("highlighted"); // remove old highlight
+		if (item) $(item).addClass("highlighted"); // apply new highlight
+	}
+
+	// ✅ Custom CSS
+	$("<style>")
+		.prop("type", "text/css")
+		.html(`
+			/* Remove DevExtreme default hover/focus */
+			.dx-context-menu .dx-menu-item.dx-state-focused,
+			.dx-context-menu .dx-menu-item.dx-state-hover {
+					background-color: var(--title-background-color) !important;
+					color: white !important;
+			}
+
+			/* Our unified highlight */
+			.dx-context-menu .dx-menu-item.highlighted {
+				   background-color: var(--title-background-color) !important;
+				   color: white !important;
+			}
+		`)
+		.appendTo("head");
 	// function ddBtnShowRecords_click(duration, page) {
 	// 	var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 	// 	var toDateBox = $("#todateBox").dxDateBox("instance");

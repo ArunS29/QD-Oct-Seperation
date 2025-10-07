@@ -5563,19 +5563,19 @@
 				let newValue = args.value;
 				console.log("gridnewvalue",newValue)
 				// Get existing values
-				let qty = e.dataField === "QuantityDebited" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityDebited')}`) || 0;
+				let qty = e.dataField === "QuantityDebited" ? newValue : grid.cellValue(rowIndex, 'QuantityDebited') || 0;
 				console.log("qty",qty)
 
-				 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+				 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,'UnitRate') || 0;
 				 console.log("unitPrice",unitPrice)
 				// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-				let vatval=grid.cellValue(rowIndex, `${formatMessage('VATPercentage')}`);
+				let vatval=grid.cellValue(rowIndex, 'VATPercentage');
 				 console.log("VATVal",vatval)
 
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VATPercentage')}`) || "0%";
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,'VATPercentage') || "0%";
 				console.log("vatRateStr",vatRateStr)
 
-				let UnitsToBillAmt = e.dataField === "UnitsToDebited" ? newValue : grid.cellValue(rowIndex,`${formatMessage('UnitsToDebited')}`) || "1";
+				let UnitsToBillAmt = e.dataField === "UnitsToDebited" ? newValue : grid.cellValue(rowIndex,'UnitsToDebited') || "1";
 				console.log("UnitsToDebited",UnitsToBillAmt)
 
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
@@ -5882,12 +5882,12 @@ button.option("disabled", false);
 		let grid = $("#B2BdataGrid").dxDataGrid("instance");
 		debugger;
 		// Get current row values
-		let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityDebited')}`) || 0;
+		let qty = grid.cellValue(rowIndex,'QuantityDebited') || 0;
 
-		let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+		let unitPrice = grid.cellValue(rowIndex,'UnitRate') || 0;
 		let vatRateStr = newValue || "0%";
 
-		let UnitsToBillAmt = grid.cellValue(rowIndex,`${formatMessage('UnitsToDebited')}`) || "1";
+		let UnitsToBillAmt = grid.cellValue(rowIndex,'UnitsToDebited') || "1";
 		console.log("UnitsToDebited",UnitsToBillAmt)
 
 @* 
