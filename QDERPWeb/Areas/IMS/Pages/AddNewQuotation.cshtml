@@ -653,7 +653,7 @@
                        
                         @(Html.DevExtreme().TextBox()
                         .ID("QuoteIntro")
-						.Label(new JS("formatMessage('Project:')"))
+						.Label(new JS("formatMessage('Quote Introduction:')"))
 						.LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
 						.ElementAttr("style", "height: 50px !important;")
@@ -1678,7 +1678,7 @@
 @using (Html.DevExtreme().NamedTemplate("GetQuotationStatusContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("GetProject-datagrid")
+                        .ID("GetProject-datagrid11")
                         .DataSource(d => d.WebApi()
 						.Controller("AddNewQuotation")
                         .LoadAction("GetQuotationStatus")
@@ -2135,7 +2135,7 @@
 	}
 	function dataGridSelectionChanged5(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
+		const ddbInstance = $("#ddGetQuoteStatus").dxDropDownBox("instance");
 
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
@@ -2301,7 +2301,7 @@
 			success: function (response) {
 
         if (response) {
-				
+				console.log("getdata:",response);
 
 					$("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
 					// Populate DevExtreme controls with the response data
@@ -2893,7 +2893,7 @@ placeholder: "Search..."
     allowEditing: false,
     cellTemplate: function (container, options) {
         $("<div>").dxButton({
-            icon: "calculator",
+           icon: "percentage",
             hint: "Open Discount Calculator",
             stylingMode: "text",
             width: 60,
@@ -2907,7 +2907,7 @@ placeholder: "Search..."
                 let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
                 let title = formatMessage("Discount / Calculation");
 
-                openModal(url, title, "45%", "40%");
+                openModal(url, title, "55%", "30%");
             }
         }).appendTo(container);
     }
@@ -3597,7 +3597,7 @@ placeholder: "Search..."
     allowEditing: false,
     cellTemplate: function (container, options) {
         $("<div>").dxButton({
-            icon: "calculator",
+             icon: "percentage",
             hint: "Open Discount Calculator",
             stylingMode: "text",
             width: 60,
@@ -3611,7 +3611,7 @@ placeholder: "Search..."
                 let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
                 let title = formatMessage("Discount / Calculation");
 
-                openModal(url, title, "40%", "40%");
+                openModal(url, title, "55%", "30%");
             }
         }).appendTo(container);
     }
@@ -5869,12 +5869,13 @@ function saveQuotation(quotationNoNew, $btn) {
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
 				ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
 				Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
+				
 				SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
 				QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
 				QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
 				QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-
+				
 
 				InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
 				ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
