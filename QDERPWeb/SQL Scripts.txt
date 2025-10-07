@@ -4916,3 +4916,12 @@ WHERE SlNo = 38;
 UPDATE tbl901UserAccessMasterWeb
 SET module = 'IMS'
 WHERE Module = 'Inventory';
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1090,'VAT Module SalesRegister Main View Screen','frm20162VATInvoiceMasterView_ViewInvoice','View Invoice',1,1,null,'VAT',null,null,null,null), 
+    (1091,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CancelInvoice','Cancel Invoice',1, 1,null,'VAT',null,null,null,null), 
+    (1092,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CheckOldVATInvoice','Check Old VATInvoice', 1, 1,null, 'VAT',null,null,null,null), 
+    (1093,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CloneEInvoice','Clone E Invoice', 1, 1,null, 'VAT',null,null,null,null)
+
