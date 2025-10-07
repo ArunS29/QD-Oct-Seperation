@@ -4935,13 +4935,36 @@
 
                 // Function to handle submenu report clicks
                 function handleClickreport(reportKey) {
+                    console.log('handleClickreport called with:', reportKey);
+                    
                     if (reportKey === "Receivables Ageing Report (Customizable)") {
                         window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
                     } else if (reportKey === "Receivables Ageing Summary (Customizable)") {
                         window.location.href = `/${tenantName}/Finance/SalesBillsReceivable`;
                     } else if (ageingReportMappings[reportKey]) {
-                        const reportName = ageingReportMappings[reportKey];
-                        console.log(`Opening report: ${reportName}`);
+                        let reportName = ageingReportMappings[reportKey];
+                        
+                        // Check if selectedMode is offline and modify report name accordingly
+                        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+                            // Map online report names to their offline (Import) versions
+                            switch (reportName) {
+                                case "XtraReportBillsReceivableAgeingReport":
+                                    reportName = "XtraReportBillsReceivableAgeingReportImport";
+                                    break;
+                                case "XtraReportAgeingreportsummary":
+                                    reportName = "XtraReportAgeingreportsummaryImport";
+                                    break;
+                                case "BillsReceivableAgeingReport":
+                                    reportName = "BillsReceivableAgeingReportImport";
+                                    break;
+                                // Add more mappings as needed
+                                default:
+                                    // For reports that don't have Import versions, keep the original name
+                                    break;
+                            }
+                        }
+                        
+                        console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
 
                         // Open Document Viewer with selected report
                         window.open(

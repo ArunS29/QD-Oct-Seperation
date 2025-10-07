@@ -324,12 +324,24 @@
         });
     }
     function showSubmenu1(e) {
+        console.log('showSubmenu1 called with:', e);
         e.event.stopPropagation();
         var $submenu = $('#submenuContainer1');
+        
+        if ($submenu.length === 0) {
+            console.error('submenuContainer1 not found in DOM');
+            return;
+        }
+        
         var $target = $(e.event.target).closest('.dx-item-content'); // Target the content of the item
         var offset = $target.offset();
         var elementWidth = $target.outerWidth();
         var elementHeight = $target.outerHeight();
+
+        console.log('Positioning submenu at:', {
+            top: offset.top,
+            left: offset.left + elementWidth
+        });
 
         // Position the submenu to the right of the dropdown item
         $submenu.css({
@@ -337,6 +349,7 @@
             'position': 'absolute',
             'top': offset.top,
             'left': offset.left + elementWidth, // Position to the right of the item
+            'z-index': 9999,
             'display': 'block' // Show the submenu
         });
     }
@@ -380,7 +393,10 @@
         location.reload();
     }
     function ReportsByClient(tabIndex) {
-        let url = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}`;
+        // Pass the current selectedMode to the ReportsByClients page via URL parameter
+        const currentMode = typeof selectedMode !== "undefined" ? selectedMode : "online";
+        let url = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}&mode=${encodeURIComponent(currentMode)}`;
+        console.log(`Opening ReportsByClients with mode: ${currentMode}`);
         $("#popupIframe").attr("src", url);
         $("#reportsByClientPopup").dxPopup("instance").show();
     }
@@ -393,18 +409,51 @@
         "Receivables with Unmapped Vouchers": "ReceivablesUnmappedVouchersReport"
     };
 
-  function handleReportsClick(e) {
-    const reportName = e.itemData.reportName;
-    if (reportName) {
-        window.open(
-            `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
-            '_blank',
-            'width=1200,height=800,scrollbars=yes,resizable=yes'
-        );
-    } else {
-        console.warn('No reportName found for selected item:', e.itemData.text);
+    function handleReportsClick(e) {
+        console.log('handleReportsClick called with:', e.itemData);
+        let reportName = e.itemData.reportName;
+        if (reportName) {
+            // Check if selectedMode is offline and modify report name accordingly
+            if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+                // Map online report names to their offline (Import) versions
+                switch (reportName) {
+                    case "BillsRecivableReport1":
+                        reportName = "BillsRecivableReport1Import";
+                        break;
+                    case "ReceivableReport(EffectiveDate)":
+                        reportName = "ReceivableReportEffectiveDateImport";
+                        break;
+                    case "Summary":
+                        reportName = "SummaryImport";
+                        break;
+                    case "XtraRecivableReport":
+                        reportName = "XtraRecivableReportImport";
+                        break;
+                    case "ReceivablesUnmappedVouchersReport":
+                        // This report doesn't have an Import version, keep original
+                        break;
+                    // Add more mappings if needed in the future
+                    default:
+                        // For reports that don't have Import versions, keep the original name
+                        break;
+                }
+            }
+            
+            if (typeof tenantName === "undefined") {
+                console.error("tenantName is not defined.");
+                return;
+            }
+            
+            console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
+            window.open(
+                `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
+                '_blank',
+                'width=1200,height=800,scrollbars=yes,resizable=yes'
+            );
+        } else {
+            console.warn('No reportName found for selected item:', e.itemData.text);
+        }
     }
-}
 
 
 
@@ -441,15 +490,20 @@
         }).dxPopup("instance");
 
         window.ReportsByClient = function (tabIndex) {
-            iframeUrl = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}`;
+            // Pass the current selectedMode to the ReportsByClients page via URL parameter
+            const currentMode = typeof selectedMode !== "undefined" ? selectedMode : "online";
+            iframeUrl = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}&mode=${encodeURIComponent(currentMode)}`;
+            console.log(`Opening ReportsByClients popup with mode: ${currentMode}`);
             popup.show();
         }
     });
 
 
     function Mapping(reportKey) {
-
+        console.log('Mapping called with:', reportKey);
+        
         if (reportKey === "Receivables with unmapped Vouchers") {
+            console.log(`Navigating to: /${tenantName}/Finance/MappingBillsReceivable`);
             window.location.href = `/${tenantName}/Finance/MappingBillsReceivable`;
         } else {
             console.warn('No report mapping found for:', reportKey);
