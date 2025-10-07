@@ -695,7 +695,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { message = "Invalid tenant." });
 
-                // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
+                bool exists = dbContext.Tbl30111StockClassificationMasters
+            .Any(x => x.StockClassification.ToLower().Trim() == model.StockClassification.ToLower().Trim());
+
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "This Stock Classification is already in the database. Please check again." });
+                }
+                                  // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
                 short maxId = (short)dbContext.Tbl30111StockClassificationMasters
                          .Select(x => x.StockClassId)
                          .AsEnumerable()
