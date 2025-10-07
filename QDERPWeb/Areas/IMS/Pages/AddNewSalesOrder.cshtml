@@ -3788,42 +3788,110 @@ $(document).ready(function () {
         }
     }
 
-    $("#B2BdataGrid").dxDataGrid({
+$("#B2BdataGrid").dxDataGrid({
     dataSource: window.B2BdataGridDataSource,
-    keyExpr: "Gscode",
+    keyExpr: "LineOrderNo",
     selection: { mode: "multiple" },
     onContextMenuPreparing: function(e) {
         if (e.row && e.row.rowType === "data") {
             e.items = [
+                // Delete single row
                 {
-                    text:formatMessage("Delete Line Item"),
+                    text: formatMessage("Delete Line Item"),
                     icon: "trash",
                     onItemClick: function() {
-                        const rowKey = e.row.key;
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                        const rowIndex = grid.getRowIndexByKey(rowKey);
-                        if (rowIndex >= 0) {
-                            grid.deleteRow(rowIndex);
-                        }
+                        const rowData = e.row.data;
+
+                        DevExpress.ui.dialog.confirm(
+                            "Delete this row permanently?",
+                            "Confirm"
+                        ).done(function(result) {
+                            if (!result) return;
+
+                            if (rowData.SalesOrderChildId > 0) {
+                                // Delete saved row via API
+                                $.ajax({
+                                    url: `/api/SalesOrders/DeleteChildById?childId=${encodeURIComponent(rowData.SalesOrderChildId)}`,
+                                    type: "DELETE",
+                                    success: function(res) {
+                                        if (res.success) {
+                                            removeRowsFromGrid([rowData]);
+                                            DevExpress.ui.notify(res.message || "Row deleted", "success", 2000);
+                                        } else {
+                                            DevExpress.ui.notify(res.message || "Delete failed", "error", 2000);
+                                        }
+                                    },
+                                    error: function(xhr) {
+                                        const err = xhr.responseJSON?.message || "Server error on delete";
+                                        DevExpress.ui.notify(err, "error", 3000);
+                                    }
+                                });
+                            } else {
+                                // Unsaved row
+                                removeRowsFromGrid([rowData]);
+                                DevExpress.ui.notify("Unsaved row deleted", "success", 2000);
+                            }
+                        });
                     }
                 },
+
+                // Delete multiple selected rows
                 {
                     text: formatMessage("Delete Selected Items"),
                     icon: "remove",
                     onItemClick: function() {
                         const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                        const keys = grid.getSelectedRowKeys();
-                        if (keys.length === 0) return;
+                        const selectedRows = grid.getSelectedRowsData();
+                        if (selectedRows.length === 0) {
+                            DevExpress.ui.notify("No rows selected", "warning", 2000);
+                            return;
+                        }
 
-                        const doDelete = () => {
-                            keys.forEach(k => {
-                                const idx = grid.getRowIndexByKey(k);
-                                if (idx >= 0) grid.deleteRow(idx);
+                        setTimeout(() => {
+                            DevExpress.ui.dialog.confirm(
+                                `Delete ${selectedRows.length} selected row(s) permanently?`,
+                                "Confirm"
+                            ).done(function(result) {
+                                if (!result) return;
+
+                                const savedRows = selectedRows.filter(r => r.SalesOrderChildId > 0);
+                                const unsavedRows = selectedRows.filter(r => !r.SalesOrderChildId);
+
+                                // Delete saved rows via API
+                                if (savedRows.length) {
+                                    const savedIds = savedRows.map(r => r.SalesOrderChildId);
+                                    $.ajax({
+                                        url: "/api/SalesOrders/DeleteMultipleChild",
+                                        type: "DELETE",
+                                        contentType: "application/json",
+                                        data: JSON.stringify(savedIds),
+                                        success: function(res) {
+                                            if (res.success) {
+                                                removeRowsFromGrid(savedRows);
+                                                DevExpress.ui.notify(res.message, "success", 2000);
+                                            } else {
+                                                DevExpress.ui.notify(res.message || "Delete failed", "error", 2000);
+                                            }
+                                        },
+                                        error: function(xhr) {
+                                            const err = xhr.responseJSON?.message || "Server error on delete";
+                                            DevExpress.ui.notify(err, "error", 3000);
+                                        }
+                                    });
+                                }
+
+                                // Delete unsaved rows locally
+                                if (unsavedRows.length) {
+                                    removeRowsFromGrid(unsavedRows);
+                                    DevExpress.ui.notify(`${unsavedRows.length} unsaved row(s) deleted`, "success", 2000);
+                                }
                             });
-                        };
-                        doDelete();
+                        }, 0);
                     }
                 },
+
+                // Add Line Item
                 {
                     text: formatMessage("Add Line Item"),
                     icon: "add",
@@ -3831,6 +3899,8 @@ $(document).ready(function () {
                         $("#B2BdataGrid").dxDataGrid("instance").addRow();
                     }
                 },
+
+                // Generate Job Orders
                 {
                     text: formatMessage("Generate Job Orders"),
                     icon: "chart",
@@ -3842,6 +3912,24 @@ $(document).ready(function () {
         }
     }
 });
+
+// 🔹 Helper function to remove rows and resequence LineOrderNo
+function removeRowsFromGrid(rows) {
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+    let ds = grid.getDataSource().items();
+
+    rows.forEach(r => {
+        const idx = ds.indexOf(r);
+        if (idx >= 0) ds.splice(idx, 1);
+    });
+
+    // Resequence LineOrderNo
+    ds.forEach((row, index) => row.LineOrderNo = index + 1);
+
+    grid.option("dataSource", ds);
+    grid.refresh();
+}
+
         function onKeyDown(e) {
 			const ddbInstance = e.component;
 			if (e.event.keyCode !== 40) return;
@@ -3929,4 +4017,57 @@ $(document).ready(function () {
                $(function () {
 		$("#generatejosales").text(formatMessage("Generate JO"));
 	});
+    $(function () {
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+  grid.option("onRowRemoving", function (e) {
+    const row = e.data;
+
+    // Case 1: Already saved row (delete from DB)
+    if (row.SalesOrderChildId && row.SalesOrderChildId > 0) {
+        e.cancel = true; // stop default delete until confirmed
+
+        DevExpress.ui.dialog.confirm("Delete this row permanently?", "Confirm")
+            .done(function (result) {
+                if (!result) return;
+
+                $.ajax({
+                    url: `/api/SalesOrders/DeleteChildById?childId=${encodeURIComponent(row.SalesOrderChildId)}`, // ✅ query string style
+                    type: "DELETE",
+                    success: function (res) {
+                        if (res.success) {
+                            // remove from grid
+                            let store = grid.getDataSource().store();
+                            store.remove(row.LineOrderNo);
+                            grid.refresh();
+                            resequenceLineOrderNo(grid);
+
+                            DevExpress.ui.notify(res.message || "Row deleted", "success", 2000);
+                        } else {
+                            DevExpress.ui.notify(res.message || "Delete failed", "error", 2000);
+                        }
+                    },
+                    error: function (xhr) {
+                        const err = xhr.responseJSON?.message || "Server error on delete";
+                        DevExpress.ui.notify(err, "error", 3000);
+                    }
+                });
+            });
+    }
+    // Case 2: Unsaved row (just remove locally)
+    else {
+        setTimeout(() => resequenceLineOrderNo(grid), 100);
+    }
+});
+});
+// resequence LineOrderNo
+function resequenceLineOrderNo(grid) {
+    let ds = grid.option("dataSource") || [];
+    ds.forEach((row, idx) => row.LineOrderNo = idx + 1);
+    grid.option("dataSource", ds);
+    grid.refresh();
+}
+
+
+
 </script>

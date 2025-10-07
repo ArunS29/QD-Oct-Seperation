@@ -35,7 +35,6 @@
     .dx-datagrid-pager .dx-page.dx-selection,
     .pagination .active a {
         color: black !important; /* Set the active page number to yellow */
-      
     }
 
     .button-alignment-down {
@@ -62,13 +61,11 @@
     /*     text-decoration: underline; /* Underlines the text */ */
     /*     margin-right: 20px; */
     /* } */
-
     .col-md-6 {
         margin-top: 20px; /* Adjust this value to control the space */
     }
 
     #dataGrid .dx-header-row .dx-datagrid-text-content {
-       
         color: black;
     }
 
@@ -98,165 +95,165 @@
 </style>
 <input id="formId" value="BillsPayable" type="hidden" />
 
-    <div class="content-container-top">
-        @* <div class="container-fluid"></div> *@
-        @* <div id="FinanceManagementDashboard" class="card-header no-border-input"></div> *@
-    
-<div class="title" id="kpiCarousel">
-    <div class="titleCard-cards">
+<div class="content-container-top">
+    @* <div class="container-fluid"></div> *@
+    @* <div id="FinanceManagementDashboard" class="card-header no-border-input"></div> *@
 
-        <!-- STATIC -->
-        <div id="Static" class="titleCard-card vibrant-pink">
-            <div class="value-block">
+    <div class="title" id="kpiCarousel">
+        <div class="titleCard-cards">
 
-                <h2 id="billspayable"></h2>
-                    <h6 id ="QuickDiceERPSolutionsbillspayable"></h6>
+            <!-- STATIC -->
+            <div id="Static" class="titleCard-card vibrant-pink">
+                <div class="value-block">
 
-            </div>
-        </div>
+                    <h2 id="billspayable"></h2>
+                    <h6 id="QuickDiceERPSolutionsbillspayable"></h6>
 
-        <!-- BALANCE -->
-        <div id="cardBalance" class="titleCard-card cool-blue">
-                <div class="header" id="totalbillsbalancepayable"></div>
-            <div class="value-block">
-                <div class="value-slider">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
-                    <span>0.00</span>
-                    <span>0.00</span>
                 </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                    <div class="detail"></div>
-                    <div class="detail"></div>
-                    <div class="detail"></div>
-            </div>
-        </div>
 
-        <!-- DEBIT -->
-        <div id="cardDebit" class="titleCard-card deep-purple">
+            <!-- BALANCE -->
+            <div id="cardBalance" class="titleCard-card cool-blue">
+                <div class="header" id="totalbillsbalancepayable"></div>
+                <div class="value-block">
+                    <div class="value-slider">
+                        <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                        <span>0.00</span>
+                        <span>0.00</span>
+                    </div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                </div>
+            </div>
+
+            <!-- DEBIT -->
+            <div id="cardDebit" class="titleCard-card deep-purple">
                 <div class="header" id="totalinvoicedbillspayable"></div>
-            <div class="value-block">
-                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                    <div class="detail"></div>
-                    <div class="detail"></div>
-                    <div class="detail"></div>
-            </div>
-        </div>
 
-        <!-- CREDIT -->
-        <div id="cardCredit" class="titleCard-card mint-green">
+            <!-- CREDIT -->
+            <div id="cardCredit" class="titleCard-card mint-green">
                 <div class="header" id="totalpaidbillspayable"></div>
-            <div class="value-block">
-                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                    <div class="detail"></div>
+                </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                <div class="detail"></div>
-                <div class="detail"></div>
-                <div class="detail"></div>
-            </div>
+
         </div>
-
     </div>
-</div>
 
 
-   @*  <div class="title">
+    @*  <div class="title">
         <div class="header-container">
             <div id="BillsPayable" class="no-border-title"></div>
         </div>
     </div> *@
     <div class="card-footer" style="display: flex;justify-content: space-between;margin: 10px 0px;">
-    @await Html.PartialAsync("_GridFooter2")
-    <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;padding-right: 30px;">
-        <div>
-            @(Html.DevExtreme().Button()
-                .ID("btnBillsWithBalance")
-                .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
-                .Height(30)
-                .Width(400)
-                .Icon("checklist")
-                .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
-                )
+        @await Html.PartialAsync("_GridFooter2")
+        <div class="form-group col-md-6" id="Btnchange" style=" padding-bottom: 10px;  text-align: right;padding-right: 30px;">
+            <div>
+                @(Html.DevExtreme().Button()
+                                .ID("btnBillsWithBalance")
+                                .Text(new JS("formatMessage('Show All Bills(Only with Balance)')"))
+                                .Height(30)
+                                .Width(400)
+                                .Icon("checklist")
+                                .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
+                                )
+            </div>
+            <div>
+                @(Html.DevExtreme().Button()
+                                .ID("btnBillsFullyPaid")
+                                .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
+                                .Height(30)
+                                .Width(400)
+                                .Icon("checklist")
+                                .Visible(false)//Initially hidden
+                                .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
+                                )
+            </div>
         </div>
-        <div>
-            @(Html.DevExtreme().Button()
-                .ID("btnBillsFullyPaid")
-                .Text(new JS("formatMessage('Show Bills Receivable(Including fully Paid)')"))
-                .Height(30)
-                .Width(400)
-                .Icon("checklist")
-                .Visible(false)//Initially hidden
-                .OnClick("function() { switchButtons('btnBillsFullyPaid'); }")
-                )
-        </div>
-    </div>
 
-    <div id="reportsByClientPopup">
-        <div id="popupContent"></div>
+        <div id="reportsByClientPopup">
+            <div id="popupContent"></div>
+        </div>
     </div>
-</div>
     <div class="ledgerResult">
-    @(
-            Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
-            .ID("dataGrid")
-            .DataSource(ds => ds.Mvc()
-            .Controller("BillsPayable")
-            .LoadAction("Get"))
-            .RemoteOperations(false)
-            .Columns(columns =>
-            {
-                // Grid Band: Bills Payable
-                columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
-            {
-                band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('Account Head No')")).Alignment(HorizontalAlignment.Center).Width(130);
-                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250);
-                band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0); // Group by this column
-                band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center).Width(130)
-            .CellTemplate(@<text>
-        <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
-            <%= data.ReferenceNo %>
-        </a>
-    </text>);
-                band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(130)
-    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
-                
-                    band.AddFor(m => m.InvoiceAmountBeforeRetention)
+        @(
+                Html.DevExtreme().DataGrid<Qry201SubLedgerPayablesMaster>()
+                .ID("dataGrid")
+                .DataSource(ds => ds.Mvc()
+                .Controller("BillsPayable")
+                .LoadAction("Get"))
+                .RemoteOperations(false)
+                .Columns(columns =>
+                {
+                  // Grid Band: Bills Payable
+                    columns.Add().Caption(new JS("formatMessage('Bills Payable')")).Columns(band =>
+                    {
+                        band.AddFor(m => m.AccountHeadNo).Caption(new JS("formatMessage('Account Head No')")).Alignment(HorizontalAlignment.Center).Width(130);
+                        band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250);
+                        band.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Ledger Account')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0); // Group by this column
+                        band.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center).Width(130)
+                    .CellTemplate(@<text>
+                                       <a href="/<%= tenantName %>/Finance/PurchaseVoucher?argsledno=<%= data.ReferenceNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+                                           <%= data.ReferenceNo %>
+                                       </a>
+                                   </text>);
+                        band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(130)
+                    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                        band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
+
+                        band.AddFor(m => m.InvoiceAmountBeforeRetention)
                     .Caption(new JS("formatMessage('Invoice Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
-                                     <div class='invoice-header' style='font-weight: bold;'>
-                                         <%= column.caption %>
-                                     </div>
-                                 </text>
-        )
+                                             <div class='invoice-header' style='font-weight: bold;'>
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>
+                    )
                     .CellTemplate(@<text>
-                               <%
-                               var val = data.InvoiceAmountBeforeRetention;
-                               if (val !== null && val !== undefined) {
-                               let positive = Math.abs(val);
-                               let formatted = positive.toLocaleString(undefined, {
-                               minimumFractionDigits: 2,
-                               maximumFractionDigits: 2
-                               });
-                               %>
-                               <div class="credit-pill">(<%- formatted %>)</div>
-                               <%
-                               }
-                               %>
-                           </text>).Width(130);
+                                       <%
+                                       var val = data.InvoiceAmountBeforeRetention;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="credit-pill">(<%- formatted %>)</div>
+                                       <%
+                                       }
+                                       %>
+                                   </text>).Width(130);
 
 
 
-                @* band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Trans Paid')")).Alignment(HorizontalAlignment.Right)
+                    @* band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Trans Paid')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -276,30 +273,30 @@
 
 
                     band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
-          
-            .HeaderCellTemplate(@<text>
-                                   <div class="received-header" style="font-weight: bold;">
-                                       <%= column.caption %>
-                                   </div>
-                               </text>)
-            .CellTemplate(@<text>
-                               <%
-                               var val = data.Paid;
-                               if (val !== null && val !== undefined) {
-                               let positive = Math.abs(val);
-                               let formatted = positive.toLocaleString(undefined, {
-                               minimumFractionDigits: 2,
-                               maximumFractionDigits: 2
-                               });
-                               %>
-                               <div class="received-pill"><%- formatted %></div>
-                               <%
-                               }
-                               %>
+
+                    .HeaderCellTemplate(@<text>
+                                             <div class="received-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.Paid;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="received-pill"><%- formatted %></div>
+                                       <%
+                                       }
+                                       %>
                                    </text>).Width(130);
 
 
-                @* band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Trans Balance')")).Alignment(HorizontalAlignment.Right)
+                    @* band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Trans Balance')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -322,236 +319,272 @@
 
 
 
-            band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
-           
-            .HeaderCellTemplate(@<text>
-                                     <div class="balance-header" style="font-weight: bold;">
-                                         <%= column.caption %>
-                                     </div>
-                                 </text>)
-            .CellTemplate(@<text>
-                               <%
-                               var val = data.Balance;
-                               if (val !== null && val !== undefined) {
-                               let positive = Math.abs(val);
-                               let formatted = positive.toLocaleString(undefined, {
-                               minimumFractionDigits: 2,
-                               maximumFractionDigits: 2
-                               });
-                               %>
-                               <div class="debit-pill">(<%- formatted %>)</div>
-                               <%
-                               }
-                               %>
+                    band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
+
+                    .HeaderCellTemplate(@<text>
+                                             <div class="balance-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.Balance;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       let formatted = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       %>
+                                       <div class="debit-pill">(<%- formatted %>)</div>
+                                       <%
+                                       }
+                                       %>
                                    </text>
-        ).Width(130);
+                    ).Width(130);
 
 
                         band.AddFor(m => m.InvoiceDueDate).Caption(new JS("formatMessage('Invoice Due Date')")).Alignment(HorizontalAlignment.Center).Width(130)
-    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
-                    band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width(130);
-                    band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(130);
+                    .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
+                        band.AddFor(m => m.NoOfDaysCreditPeriod).Caption(new JS("formatMessage('No Of Days Credit Period')")).Alignment(HorizontalAlignment.Center).Width(130);
+                        band.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Over due Days')")).Alignment(HorizontalAlignment.Center).Width(130);
 
 
-                columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Voucher Effective Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("InvoiceSubmittedDate").Caption(new JS("formatMessage('Invoice Submitted Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BankAccountNo").Caption(new JS("formatMessage('Bank Account No')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BankIban").Caption(new JS("formatMessage('Bank IBAN')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BankName").Caption(new JS("formatMessage('Bank Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BankBranch").Caption(new JS("formatMessage('Bank Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("LedgerRemarks").Caption(new JS("formatMessage('Ledger Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group ID')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("AccountBranch").Caption(new JS("formatMessage('Account Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("CostCenterCode").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Allocation Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Allocation Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("AccountSubGroup").Caption(new JS("formatMessage('Account Sub Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BankAccountName").Caption(new JS("formatMessage('Bank Account Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("RetentionAmount").Caption(new JS("formatMessage('Retention Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("TotalPayableAmount").Caption(new JS("formatMessage('Total Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BalanceDueWithOutRetention").Caption(new JS("formatMessage('Balance Due Without Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("RetentionPayable").Caption(new JS("formatMessage('Retention Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("BalanceDueWithRetention").Caption(new JS("formatMessage('Balance Due With Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("ReferenceNote").Caption(new JS("formatMessage('Reference Note')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("PurchaseBillDate").Caption(new JS("formatMessage('Purchase Bill Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Purchase Order No')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("MaterialReceiptNo").Caption(new JS("formatMessage('Material Receipt No')")).Alignment(HorizontalAlignment.Left).Visible(false);
-                columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("PayableAmount").Caption(new JS("formatMessage('Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Voucher Effective Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("InvoiceSubmittedDate").Caption(new JS("formatMessage('Invoice Submitted Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BankAccountNo").Caption(new JS("formatMessage('Bank Account No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BankIban").Caption(new JS("formatMessage('Bank IBAN')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BankName").Caption(new JS("formatMessage('Bank Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BankBranch").Caption(new JS("formatMessage('Bank Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("LedgerRemarks").Caption(new JS("formatMessage('Ledger Remarks')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group ID')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("AccountBranch").Caption(new JS("formatMessage('Account Branch')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('Sales Person Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("CostCenterCode").Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Cost Allocation Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("CostAllocationMasterGroup").Caption(new JS("formatMessage('Cost Allocation Master Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("AccountSubGroup").Caption(new JS("formatMessage('Account Sub Group')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("SubGroupName").Caption(new JS("formatMessage('Sub Group Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BankAccountName").Caption(new JS("formatMessage('Bank Account Name')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("RetentionAmount").Caption(new JS("formatMessage('Retention Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("TotalPayableAmount").Caption(new JS("formatMessage('Total Payable Amount')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BalanceDueWithOutRetention").Caption(new JS("formatMessage('Balance Due Without Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("RetentionPayable").Caption(new JS("formatMessage('Retention Payable')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("BalanceDueWithRetention").Caption(new JS("formatMessage('Balance Due With Retention')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("ReferenceNote").Caption(new JS("formatMessage('Reference Note')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("PurchaseBillDate").Caption(new JS("formatMessage('Purchase Bill Date')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("PurchaseOrderNo").Caption(new JS("formatMessage('Purchase Order No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("MaterialReceiptNo").Caption(new JS("formatMessage('Material Receipt No')")).Alignment(HorizontalAlignment.Left).Visible(false);
+                        columns.Add().DataField("Expr1").Caption(new JS("formatMessage('Expr1')")).Alignment(HorizontalAlignment.Left).Visible(false);
 
-            });
-            })
-        .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
-        .Pager(pager => pager
-        .Visible(true)                            // show pager UI (page numbers etc)
-        .ShowPageSizeSelector(true)              // allow user to change page size
-        .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-        .ShowInfo(true)                          // show info like "Page 1 of 10"
-        )
-        .AllowColumnReordering(true)
-        .AllowColumnResizing(true)
-        .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+                    });
+                })
+                .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+                .Pager(pager => pager
+                .Visible(true)                            // show pager UI (page numbers etc)
+                .ShowPageSizeSelector(true)              // allow user to change page size
+                .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+                .ShowInfo(true)                          // show info like "Page 1 of 10"
+                )
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 
-        .ColumnFixing(fixing => fixing.Enabled(true))
-        .HeaderFilter(filter => filter.Visible(false))
-        .Height("65vh")
-        .ColumnResizingMode(ColumnResizingMode.Widget)
-        .ColumnAutoWidth(true)
-        .WordWrapEnabled(true)
-        .FilterRow(filterRow => filterRow.Visible(false))
-        .Grouping(grouping => grouping.AutoExpandAll(true))
-        .GroupPanel(groupPanel => groupPanel.Visible(false))
-        .ShowBorders(true)
-        .Width("100%")
-        .Summary(summary =>
-        {
-            summary.GroupItems(items =>
-            {
-                items.Add().Column("VoucherRefNo")
-            .SummaryType(SummaryType.Count)
-            .ShowInGroupFooter(true)
-            .DisplayFormat(new JS("formatMessage('No of Invoices: {0}')"));
-                items.Add().Column("InvoiceAmountBeforeRetention")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    let positiveValue = Math.abs(e.value);
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')';
-    }
-    ");
-                items.Add().Column("Paid")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-                items.Add().Column("Balance")
-            .SummaryType(SummaryType.Sum)
-            .ShowInGroupFooter(true)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    let positiveValue = Math.abs(e.value);
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')';
-    }
-    ");
-            });
-            summary.TotalItems(items =>
-            {
-                items.Add().Column("VoucherRefNo")
-            .SummaryType(SummaryType.Count)
-            .DisplayFormat("No of Invoices: {0}");
-                items.Add().Column("InvoiceAmountBeforeRetention")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    let positiveValue = Math.abs(e.value);
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')';
-    }
-    ");
-                items.Add().Column("Paid")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    return e.value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    }
-    ");
-                items.Add().Column("Balance")
-            .SummaryType(SummaryType.Sum)
-            .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    let positiveValue = Math.abs(e.value);
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')';
-    }
-    ");
-            });
-        })
-        .OnInitialized("dataGridInitialized")
-        .OnOptionChanged("handleGridOptionChanged")
-        .OnContentReady("function(e) { handleGridContentReady(e); }")
-        
-        )
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(false))
+                .Height("65vh")
+                .ColumnResizingMode(ColumnResizingMode.Widget)
+                .ColumnAutoWidth(true)
+                .WordWrapEnabled(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%")
+                .Summary(summary =>
+                {
+                    summary.GroupItems(items =>
+                    {
+                        items.Add().Column("VoucherRefNo")
+                    .SummaryType(SummaryType.Count)
+                    .ShowInGroupFooter(true)
+                    .DisplayFormat(new JS("formatMessage('No of Invoices: {0}')"));
+                        items.Add().Column("InvoiceAmountBeforeRetention")
+                    .SummaryType(SummaryType.Sum)
+                    .ShowInGroupFooter(true)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                let positiveValue = Math.abs(e.value);
+                let formattedValue = positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return '(' + formattedValue + ')';
+                }
+                ");
+                        items.Add().Column("Paid")
+                    .SummaryType(SummaryType.Sum)
+                    .ShowInGroupFooter(true)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                return e.value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ");
+                        items.Add().Column("Balance")
+                    .SummaryType(SummaryType.Sum)
+                    .ShowInGroupFooter(true)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                let positiveValue = Math.abs(e.value);
+                let formattedValue = positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return '(' + formattedValue + ')';
+                }
+                ");
+                    });
+                    summary.TotalItems(items =>
+                    {
+                        items.Add().Column("VoucherRefNo")
+                    .SummaryType(SummaryType.Count)
+                    .DisplayFormat("No of Invoices: {0}");
+                        items.Add().Column("InvoiceAmountBeforeRetention")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                let positiveValue = Math.abs(e.value);
+                let formattedValue = positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return '(' + formattedValue + ')';
+                }
+                ");
+                        items.Add().Column("Paid")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                return e.value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ");
+                        items.Add().Column("Balance")
+                    .SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+                function(e) {
+                if (e.value === null || e.value === undefined) {
+                return '';
+                }
+                let positiveValue = Math.abs(e.value);
+                let formattedValue = positiveValue.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                return '(' + formattedValue + ')';
+                }
+                ");
+                    });
+                })
+                .OnInitialized("dataGridInitialized")
+                .OnOptionChanged("handleGridOptionChanged")
+                .OnContentReady("function(e) { handleGridContentReady(e); }")
+
+                )
 
     </div>
 </div>
 
-    
+<div id="dataModePopup"></div>
+
 
 
 <script>
     $(function () {
 
-										$("#FinanceManagementDashboard").dxTextBox({
-													text:formatMessage("Finance Management : Dashboard"),
+                                            $("#FinanceManagementDashboard").dxTextBox({
+                                                        text:formatMessage("Finance Management : Dashboard"),
                                                         readOnly: true,
-													onContentReady: function(e) {
-				$(e.element).addClass("dx-textbox-heading");
-		}
+                                                        onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+        }
 
                                     });
-									});
+                                        });
     $(function () {
 
-										$("#BillsPayable").dxTextBox({
-													text:formatMessage("Bills Payable"),
+                                            $("#BillsPayable").dxTextBox({
+                                                        text:formatMessage("Bills Payable"),
                                                         readOnly: true,
-													onContentReady: function(e) {
-				$(e.element).addClass("dx-textbox-heading");
-		}
+                                                        onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+        }
 
                                     });
-									});
+                                        });
+
+    // Online/Offline selection (mirrors BillsReceivable)
+    let selectedMode = "online"; // default
+    let allowDataMode = false;
+
+    $(function () {
+        $.getJSON('/api/TrialBalance/GetAllowDataModeSelection', function (res) {
+            if (res && res.allowDataMode === true) {
+                allowDataMode = true;
+                showDataModePopup(function (mode) {
+                    selectedMode = mode || 'online';
+                    initializeDataGridForMode();
+                });
+            } else {
+                initializeDataGridForMode();
+            }
+        });
+    });
+
+    function initializeDataGridForMode() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        if (!grid) return;
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        const loadUrl = isOffline ? '/api/BillsPayable/Getoffline' : '/api/BillsPayable/Get';
+        grid.option('dataSource', DevExpress.data.AspNet.createStore({
+            key: 'ReferenceNo',
+            loadUrl: loadUrl,
+            loadMode: 'raw'
+        }));
+        // After initial full load, show WithBalance toggle
+        $("#btnBillsFullyPaid").dxButton("instance").option("visible", false);
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
+        grid.refresh();
+    }
+
     let dataGrid; // Global reference to the DataGrid instance
 
     // Initialize the DataGrid and store its instance
@@ -559,37 +592,66 @@
         dataGrid = e.component;
     }
 
-    function switchButtons(buttonId) {
-        let hideBtn, showBtn, filterType;
-
-        // Determine which buttons to toggle and set the filter type
-        if (buttonId === "btnBillsWithBalance") {
-            showBtn = "btnBillsFullyPaid";
-            hideBtn = "btnBillsWithBalance";
-            filterType = "WithBalance"; // Filter: Balance > 0
-        } else if (buttonId === "btnBillsFullyPaid") {
-            showBtn = "btnBillsWithBalance";
-            hideBtn = "btnBillsFullyPaid";
-            filterType = "FullyPaid"; // Filter: Balance = 0
-        }
-
-        // Use DevExtreme APIs to toggle button visibility
-        const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
-        const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
-
-        hideButtonInstance.option("visible", false);
-        showButtonInstance.option("visible", true);
-
-        // Reload the DataGrid with the appropriate filter based on the button clicked
-        if (dataGrid) {
-            dataGrid.option("dataSource", {
-                load: function () {
-                    return $.getJSON(`/api/BillsPayable/Get`, { filterType: filterType });
-                }
-            });
-            dataGrid.refresh();
-        }
+    function loadBillsWithBalance() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        const loadUrl = isOffline ? '/api/BillsPayable/Getoffline' : '/api/BillsPayable/Get';
+        grid.option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "ReferenceNo",
+            loadUrl: loadUrl,
+            loadParams: { filterType: 'WithBalance' },
+            loadMode: "raw"
+        }));
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", false);
+        $("#btnBillsFullyPaid").dxButton("instance").option("visible", true);
     }
+
+    function loadAllBills() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const isOffline = selectedMode.toLowerCase() === 'offline';
+        grid.option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "ReferenceNo",
+            loadUrl: isOffline ? "/api/BillsPayable/Getoffline" : "/api/BillsPayable/Get",
+            loadMode: "raw"
+        }));
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
+        $("#btnBillsFullyPaid").dxButton("instance").option("visible", false);
+    }
+
+        function switchButtons(buttonId) {
+            let hideBtn, showBtn, filterType;
+
+            // Determine which buttons to toggle and set the filter type
+            if (buttonId === "btnBillsWithBalance") {
+                showBtn = "btnBillsFullyPaid";
+                hideBtn = "btnBillsWithBalance";
+                filterType = "WithBalance"; // Filter: Balance > 0
+            } else if (buttonId === "btnBillsFullyPaid") {
+                showBtn = "btnBillsWithBalance";
+                hideBtn = "btnBillsFullyPaid";
+                filterType = "FullyPaid"; // Filter: Balance = 0
+            }
+
+            // Use DevExtreme APIs to toggle button visibility
+            const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
+            const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
+
+            hideButtonInstance.option("visible", false);
+            showButtonInstance.option("visible", true);
+
+            // Reload the DataGrid with the appropriate filter based on the button clicked
+            if (dataGrid) {
+                const isOffline = selectedMode.toLowerCase() === 'offline';
+                const loadUrl = isOffline ? '/api/BillsPayable/Getoffline' : '/api/BillsPayable/Get';
+                dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
+                    key: "ReferenceNo",
+                    loadUrl: loadUrl,
+                    loadParams: { filterType: filterType },
+                    loadMode: "raw"
+                }));
+                dataGrid.refresh();
+            }
+        }
 
         function handleGridOptionChanged(e) {
         if (e.name === "columns" || e.name === "visible") {
@@ -620,7 +682,7 @@
 
                        $grid.find(".dx-header-row td").each(function () {
                                                        const $cell = $(this);
-                            const dataField = $cell.attr("data-field");  // 👈 This is key
+                            const dataField = $cell.attr("data-field");  // ?? This is key
 
                                 const $debitHeader = $(".invoice-header");
                                 const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
@@ -633,7 +695,7 @@
                                     </div>
                                 `);
 
-                                // 👉 Credit
+                                // ?? Credit
                                 const $creditHeader = $(".received-header");
                                 const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
                                 $creditHeader.data("original-text", creditText);
@@ -762,5 +824,95 @@
         $("#QuickDiceERPSolutionsbillspayable").text(formatMessage("Quick Dice ERP Solutions"));
     });
 
-  
+    // Popup (same as BillsReceivable)
+    function showDataModePopup(callback) {
+        const playSound = () => {
+            const audio = new Audio("/tones/mixkit-correct-answer-tone-2870.wav");
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+        };
+
+        $("#dataModePopup").dxPopup({
+            title: "? Select Data Mode",
+            contentTemplate: function (contentElement) {
+                const container = $("<div>").css({
+                    padding: "20px",
+                    fontFamily: "'Segoe UI', sans-serif",
+                    fontSize: "14px",
+                    lineHeight: "1.6",
+                    background: "#fdfdfd",
+                    borderRadius: "12px",
+                    boxShadow: "inset 0 0 3px rgba(0,0,0,0.05)"
+                }).appendTo(contentElement);
+
+                $("<div>").html(`
+                    <h3 style="margin: 0 0 10px; font-size: 18px; color: #333;">
+                        ?? <span style="font-weight:600;">How do you want to load data?</span>
+                    </h3>
+                `).appendTo(container);
+
+                const messageBox = $("<div>").css({
+                    backgroundColor: "#e0f3ff",
+                    border: "2px dashed #4bb3fd",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    color: "#01579b",
+                    fontSize: "14px",
+                    display: "none",
+                    marginTop: "12px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                }).appendTo(container);
+
+                const radioGroup = $("<div>").dxRadioGroup({
+                    items: ["Online", "Offline"],
+                    layout: "horizontal",
+                    stylingMode: "outlined",
+                    value: null,
+                    onValueChanged: function (e) {
+                        selectedMode = e.value.toLowerCase();
+                        const msg = selectedMode === "online"
+                            ? "? You’ve selected <strong>Online Mode</strong>. Real-time data will load."
+                            : "?? You’ve selected <strong>Offline Mode</strong>. Using snapshot data (GetAlloffline).";
+                        messageBox.html(msg).slideDown(200);
+                    }
+                }).css({
+                    marginTop: "20px",
+                    textAlign: "center"
+                });
+
+                $("<div>").addClass("dx-field-value").append(radioGroup).appendTo(container);
+            },
+            showCloseButton: true,
+            showTitle: true,
+            width: 500,
+            height: "auto",
+            dragEnabled: false,
+            shadingColor: "rgba(0,0,0,0.15)",
+            animation: {
+                show: { type: "slide", from: { top: -150, opacity: 0 }, to: { top: 0, opacity: 1 }, duration: 400 },
+                hide: { type: "fade", duration: 100 }
+            },
+            visible: true,
+            toolbarItems: [
+                {
+                    toolbar: "bottom",
+                    location: "after",
+                    widget: "dxButton",
+                    options: {
+                        text: "?? Confirm",
+                        type: "success",
+                        elementAttr: { style: "border-radius: 8px; font-weight: 600; min-width: 100px;" },
+                        onClick: function () {
+                            playSound();
+                            setTimeout(() => {
+                                $("#dataModePopup").dxPopup("instance").hide();
+                                callback(selectedMode);
+                            }, 150);
+                        }
+                    }
+                }
+            ]
+        });
+    }
 </script>
+}

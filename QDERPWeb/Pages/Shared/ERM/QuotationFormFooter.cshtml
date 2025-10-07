@@ -181,21 +181,16 @@
                 .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .ElementAttr(new { @class = "bold-button" })
-                .DropDownOptions(options => options.Width(230))
+                .DropDownOptions(options => options.Width(280))
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Preview Quotation").Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text("Preview Quotation (W/O Discount Column)").Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text("Preview Quotation (W/o VAT)").Icon("folder").Option("color", "#AB47BC");
-                    items.Add().Text("Preview Quotation (W/o VAT & W/o TotalPrice)").Icon("folder").Option("color", "#FBBC05");
-                    items.Add().Text("Preview Quotation (W/o VAT & W/o Discount)").Icon("folder").Option("color", "#EA4335");
-                    items.Add().Text("Preview Quotation (With Addl Details)").Icon("folder").Option("color", "#34A853");
-                    items.Add().Text("Preview Quotation (Without Price)").Icon("folder").Option("color", "#4285F4");
-                    items.Add().Text("Preview Quotation (With Item Image)").Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text("Preview Quotation (With Group Code)").Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text("Preview Quotation (With Sub Group)").Icon("folder").Option("color", "#AB47BC");
-                    items.Add().Text("Prepare Cost Sheet").Icon("money").Option("color", "#34A853");
+                    items.Add().Text("Preview Quotation").Icon("folder").Option("color", "#FF7043").Option("reportName", "PreviewQuotation");
+                    items.Add().Text("Quotation (Without VAT)").Icon("folder").Option("color", "#00ACC1").Option("reportName", "QuotationWithoutVAT");
+                    items.Add().Text("Quotation (Mob & Demob Details)").Icon("folder").Option("color", "#AB47BC").Option("reportName", "Quotation_Mob_DemobDetails_");
+                    items.Add().Text("Quotation (With 2 Rates)").Icon("folder").Option("color", "#FBBC05").Option("reportName", "Quotation_With2Rates_");
+                    items.Add().Text("Quotation (with 3 Rates)").Icon("folder").Option("color", "#EA4335").Option("reportName", "Quotation_with3Rates_");
+                    items.Add().Text("Quotation (Mob & Demob with Total)").Icon("folder").Option("color", "#34A853").Option("reportName", "Quotation_Mob_DemobwithTotal_");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -208,7 +203,7 @@
                         </div>
                     </div>
                 </text>)
-                .OnItemClick("handleQuatation")
+                .OnItemClick("handleQuotationPrinting") // ✅ Updated function name
                 )
     </div>
     <div class="btn-container">
@@ -498,45 +493,69 @@
         }
 
     }
-           const quotationReportMap = {
-        "Preview Quotation": "PreviewQuotations",
-        "Preview Quotation(W/O Discount Column)": "wtDiscount",
-        "Preview Quotation(W/o VAT)":"QuotationWOvat",
-        "Preview Quotation(W/o VAT & W/o TotalPrice)":"vatTotalPricewithout",
-        "Preview Quotation(W/o VAT & W/o Discount)":"withoutvatDiscount",
-        "Preview Quotation(With Addl Details)":"PreviewQuotationwithadditionalDetails",
-        "Preview Quotation(Without Price)":"PreviewQuotationwithoutPrice",
-        "Preview Quotation(With Item Image)":"PreviewQuotationWithImage",
-        "Preview Quotation(With Group Code)":"GroupCode",
-        "Preview Quotation(With Sub Group)":"PreviewQuotationWithSubGroup"
-         };
 
 
-    function handleQuatation(e) {
-        alert('History trig')
-        const itemText = e.itemData?.text;
-        const tenantName = window.tenantName || "";
-        const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+  function handleQuotationPrinting(e) {
+    const reportName = e.itemData?.reportName; // ✅ Get reportName from .Option()
+    const tenantName = window.tenantName || "";
+    const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 
-        if (!quotationNo && itemText.includes("Quotation")) {
-            alert("Quotation number is required.");
-            return;
-        }
-
-        try {
-            const reportName = quotationReportMap[itemText];
-
-            if (!reportName) {
-                alert("Invalid report format selected.");
-                return;
-            }
-
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-
-        } catch (error) {
-            console.error("Failed to open report:", error);
-            alert("An error occurred while trying to open the report.");
-        }
+    // Validate quotation number
+    if (!quotationNo) {
+        DevExpress.ui.notify("Quotation number is required.", "error", 3000);
+        return;
     }
+
+    // Validate report name
+    if (!reportName) {
+        DevExpress.ui.notify("Invalid report format selected.", "error", 3000);
+        return;
+    }
+
+    try {
+        // Base URL
+            let url = `/${tenantName}/EquipmentViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
+        
+        // Add additional report parameters from hidden fields (same as purchase order)
+        const quotationReports = [
+                "PreviewQuotation",
+                "Quotation_Mob_DemobDetails_",
+                "Quotation_Mob_DemobwithTotal_",
+                "Quotation_With2Rates_",
+                "Quotation_with3Rates_",
+                 "QuotationWithoutVAT"
+        ];
+
+        if (quotationReports.includes(reportName)) {
+            const params = {
+                showSeal: $("#hdnshowSeal").val(),
+                showSignature: $("#hdnshowSignature").val(),
+                printLetterhead: $("#hdnprintLetterhead").val(),
+                pageBreakBefore: $("#hdnPageBreakBefore").val(),
+                pageBreakAfter: $("#hdnPageAfterBefore").val(),
+                clientAcknowledgement: $("#hdnclientAcknowledgement").val(),
+              
+            };
+
+            // Add parameters that are set to "true"
+            Object.keys(params).forEach(key => {
+                if (params[key] === "true") {
+                    url += `&${key}=true`;
+                }
+            });
+        }
+        
+        // Open report in new window
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+    } catch (error) {
+        console.error("Failed to open quotation report:", error);
+        DevExpress.ui.notify("An error occurred while trying to open the report.", "error", 3000);
+    }
+}
+
+// Keep old function for backward compatibility
+function handleQuotation(e) {
+    return handleQuotationPrinting(e);
+}
 </script>

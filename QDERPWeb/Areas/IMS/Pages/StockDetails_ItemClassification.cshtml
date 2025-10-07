@@ -291,35 +291,39 @@
 		$("#TypenewStockClassification").text(
 			 formatMessage("Type new Stock Classification By & Add to the Existing List"));
 	});
-		$(function () {
-			$("#addStockClassBtn").dxButton({
-				onClick: function () {
-					var newStockClass = $("#stockClassificationInput").dxTextBox("instance").option("value");
+			$(function () {
+		$("#addStockClassBtn").dxButton({
+			onClick: function () {
+				var newStockClass = $("#stockClassificationInput").dxTextBox("instance").option("value");
 
-					if (!newStockClass || newStockClass.trim() === "") {
-						DevExpress.ui.notify("Please enter a Stock Classification.", "error", 2000);
-						return;
-					}
+				if (!newStockClass || newStockClass.trim() === "") {
+					DevExpress.ui.notify("Please enter a Stock Classification.", "error", 2000);
+					return;
+				}
 
-					$.ajax({
+				$.ajax({
 					url: '/api/StockInventory/AddStockClassification',
-						type: 'POST',
-						contentType: 'application/json',
-						data: JSON.stringify({ StockClassification: newStockClass }),
-						success: function (res) {
-							DevExpress.ui.notify("Stock Classification added successfully!", "success", 2000);
-							// Clear input box
-							$("#stockClassificationInput").dxTextBox("instance").option("value", "");
-							// Optionally reload any grid or list showing the data
-							 $("#storeGrid").dxDataGrid("instance").refresh();
-						},
-						error: function (err) {
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify({ StockClassification: newStockClass }),
+					success: function (res) {
+						DevExpress.ui.notify(res.message || "Stock Classification added successfully!", "success", 2000);
+						$("#stockClassificationInput").dxTextBox("instance").option("value", "");
+						$("#storeGrid").dxDataGrid("instance").refresh();
+					},
+					error: function (err) {
+						// 👇 handle the specific duplicate message
+						if (err.responseJSON && err.responseJSON.message) {
+							DevExpress.ui.notify(err.responseJSON.message, "error", 3000);
+						} else {
 							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);
 						}
-					});
-				}
-			});
+					}
+				});
+			}
 		});
+	});
+
 	$(function () {
 		var grid = $("#storeGrid").dxDataGrid("instance");
 		if (grid) {

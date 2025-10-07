@@ -3113,6 +3113,7 @@ function dataGridSelectionChanged10(e) {
     function loadFullSalesOrder(salesOrderNo, filterChildIds = []) {
         $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo })
             .done(function (data) {
+                console.log("🔹 Full Sales Order Data:", data);
                 // Bind header fields
                 $("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
                 $("#clientPOnumber").dxTextBox("instance").option("value", data.ClientPono);
@@ -3130,14 +3131,15 @@ function dataGridSelectionChanged10(e) {
                 if (filterChildIds.length > 0) {
                     children = children.filter(c => filterChildIds.includes(String(c.SalesOrderChildId)));
                 }
-
+                 console.log("🔹 Filtered Children:", children);
                 const deliveryItems = children.map((child, index) => ({
                     SNo: index + 1,
                     ItemCode: child.Gscode,
-                    StockDescription: child.Gsdescrpition,
+                    Gscode: child.Gscode,
                     UnitRateMethod: child.UnitRateMethod,
                     Qty: child.QuotedQuantity,
-                    UnitCostPrice: child.CostPrice
+                    IssuedUnitPrice: child.CostPrice,
+                    IssuedQuoteUnitPrice:child.QuotedUnitPrice,
                       }));
 
                 $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", deliveryItems);
