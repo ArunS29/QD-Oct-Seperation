@@ -174,7 +174,8 @@
                                         .ID("SignatoryContact")
                                         .Label(new JS("formatMessage('Signatory Contact No.')"))
                                         .LabelMode(EditorLabelMode.Floating)
-                                        .InputAttr(new { type = "text", maxlength = "20" }) // allow for + and spaces
+                                        .InputAttr(new { type = "text", maxlength = "20" })
+                                        .OnValueChanged("onSignatoryContactChanged") // triggers revalidation live
                                         .ValidationRules(rules =>
                                         {
                                             rules.AddCustom()
@@ -182,6 +183,7 @@
                                             .Message("Contact number must be 7–15 digits (digits, +, and spaces allowed)");
                                         })
                                         )
+
                 </div>
 
 
@@ -455,7 +457,7 @@ columns.Add().DataField("SignatoryEmail")
     </div>
 </div>
  <script>
-             function validateContact(e) {
+               function validateContact(e) {
         if (!e.value) return false;
 
         // Allow + and spaces, but require 7–15 digits total
@@ -464,6 +466,15 @@ columns.Add().DataField("SignatoryEmail")
 
         return isValid;
     }
+
+    // This ensures the red border disappears once value becomes valid
+    function onSignatoryContactChanged(e) {
+        const validator = $("#SignatoryContact").dxValidator("instance");
+        if (validator) {
+            validator.validate();
+        }
+    }
+
 
     $(document).ready(function () {
 
@@ -571,6 +582,7 @@ columns.Add().DataField("SignatoryEmail")
 
             $("#SignatoryPosition").dxValidator("instance").reset();
                    $("#SignatoryName").dxValidator("instance").reset();
+            $("#SignatoryContact").dxValidator("instance").reset();
 
 
             },
