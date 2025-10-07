@@ -1426,7 +1426,7 @@
             }
 
 
-
+              let menuPermissions = {};
     $(document).ready(function () {
             console.log('Start permission handling');
             // Form ID
@@ -1495,6 +1495,14 @@
                                 console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
                             } else {
                                 console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                             response.permissions.forEach(p => {
+                            if (p.ItemName) {
+                                menuPermissions[p.ItemName.trim().toLowerCase()] = {
+                                    visible: p.ItemVisible || false,
+                                    enabled: p.ItemEnabled || false
+                                };
                             }
                         });
                     } else {

@@ -6776,13 +6776,12 @@ if (popover.option("visible")) {
 
 											let rowData = response.map((item, index) => {
 		
-		return {
-			SNo: index + 1,
-			...item
-			//LineTotal: currencyRate // overwrite with converted value
-		};
-	});
-
+                                        		return {
+                                        			SNo: index + 1,
+                                        			...item
+                                        			//LineTotal: currencyRate // overwrite with converted value
+                                        		};
+                                        	});
 
 										// ✅ Now safely initialize the grid here
 										//initializeDataGrid(rowData);
@@ -7641,6 +7640,7 @@ if (popover.option("visible")) {
     dropDownInstance = e.component;
 }
 		function onVatTransactionSelectionChanged(e) {
+			debugger;
 	const selectedIds = e.component.option("selectedItemKeys");
 	const transactionCode = setInvoiceTransactionCode(selectedIds);
 	
