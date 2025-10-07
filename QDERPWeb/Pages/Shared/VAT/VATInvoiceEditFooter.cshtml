@@ -442,53 +442,6 @@
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
     </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-                .ID("ddButtonLayout")
-                .Icon("smalliconslayout")
-                .Width("100%")
-                .Text(new JS("formatMessage('Layout')"))
-                .ElementAttr(new { style = "display: none;" })
-                .DropDownOptions(options => options.Width(230))
-                .Items(items =>
-                {
-
-                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
-
-                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
-
-                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-                })
-                .ShowArrowIcon(false)
-                )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveDown")
-                .Text(new JS("formatMessage('Move Down')"))
-                .Type(ButtonType.Normal)
-                .Width(40)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("arrowdown") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnMoveUp")
-                .Text(new JS("formatMessage('Move Up')"))
-                .Type(ButtonType.Normal)
-                .Width(40)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("arrowup") // Change the icon to an up/down arrow option
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
 
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
@@ -525,54 +478,6 @@
 });
  
      let isPosted=null;
-    function moveRow(direction) {
-        const grid = $("#B2BdataGrid").dxDataGrid("instance");
-        const dataSource = grid.getDataSource();
-        const items = dataSource.items();
-        const selectedKey = grid.option("selectedRowKeys")[0];
-
-        if (selectedKey === undefined) return;
-
-        const currentIndex = items.findIndex(item => item.SNo === selectedKey);
-        if (currentIndex === -1) return;
-
-        const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-
-        // Boundary check
-        if (targetIndex < 0 || targetIndex >= items.length) return;
-
-        // Swap data
-        [items[currentIndex], items[targetIndex]] = [items[targetIndex], items[currentIndex]];
-
-        // Optional: Swap SNo for consistent display
-        const tempSno = items[currentIndex].SNo;
-        items[currentIndex].SNo = items[targetIndex].SNo;
-        items[targetIndex].SNo = tempSno;
-
-        // Replace array to trigger re-render
-        dataSource.store()._array = items;
-        grid.refresh();
-
-        // Reselect moved row
-        const newSelectedKey = items[targetIndex].SNo;
-        grid.selectRows([newSelectedKey], true);
-
-        // Scroll to the newly selected row
-        grid.navigateToRow(newSelectedKey);
-    }
-
-    $(function () {
-        $("#btnMoveUp").dxButton("instance").option("onClick", function () {
-            moveRow("up");
-        });
-
-        $("#btnMoveDown").dxButton("instance").option("onClick", function () {
-            moveRow("down");
-        });
-    });
-
-
-
 
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
@@ -842,8 +747,6 @@
         newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
     }
 
-
-
         // Hide context menu on click outside
         
 
@@ -860,156 +763,7 @@
             $submenu.hide(); // Hide the submenu popup
         });
 
-        // Handle the file selection
-        $("#loadLayoutInput").on("change", function (event) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const file = event.target.files[0];
 
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(e.target.result);
-
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the file is valid JSON.");
-                    }
-                };
-
-                // Read the file as text
-                reader.readAsText(file);
-            }
-        });
-        function saveLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
-            const blob = new Blob([layoutJson], { type: "application/json" });
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            // Create a link element
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "grid-layout.json"; // Set the file name for download
-            // Append the link to the body (needed for Firefox)
-            document.body.appendChild(a);
-            // Programmatically click the link to trigger the download
-            a.click();
-            // Clean up by removing the link and revoking the Object URL
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            //DevExpress.ui.notify("Layout", "success", 600);
-        }
-        function openLayoutClick(e) {
-            // Create an input element dynamically
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "application/json";
-
-            // When a file is selected
-            input.addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const layout = JSON.parse(e.target.result);
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.state(layout);
-                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                    } catch (error) {
-                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                    }
-                };
-
-                reader.readAsText(file);
-            });
-
-            // Trigger the file input click event
-            input.click();
-        }
-
-        function loadGridState() {
-            var form = $('#formId').val();
-            // Call the API to get the grid state
-            $.ajax({
-                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                method: 'GET',
-                data: {
-                    form: form
-                },
-                success: function (response) {
-                    // Get the DataGrid instance
-                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-                    // Load the state into the DataGrid
-                    if (response) {
-                        try {
-                            // Parse the JSON string from the file
-                            const layout = JSON.parse(response);
-
-                            // Restore the grid state
-                            dataGrid.state(layout);
-                        } catch (error) {
-                            console.error("Error parsing JSON:", error);
-                           
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error loading grid state:", error);
-                }
-            });
-        }
-        function setDefaultLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2);
-            console.log(layoutJson);
-
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: layoutJson,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: null,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
         // Footer Group Pannel button click event
         function toggleGroupPanel() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1150,42 +904,6 @@
             openModal(url, title);
         }
 
-        // function addPaymentButton_click(e) {
-        //      let url = "";
-        //      let title = "Payments";
-        //      switch (e.itemData.text) {
-        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-
-        //            DevExpress.ui.dialog.confirm(
-        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
-        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
-        //             "You can cancel only thru CREDIT NOTE."
-        //             "Click Yes if you want to continue.. or Click No to exit this option.",
-        //             "Confirm Creating new STANDARD TAX Invoice?"
-        //         ).done(function (dialogResult) {
-        //             if (dialogResult) {
-        //                 onConfirm(); // Proceed only if the user clicks "Yes"
-        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-        //             }
-        //         });
-
-        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-        //              break;
-
-        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-
-        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-        //              break;
-
-        //          default:
-        //              console.log("Clicked item: ", e.itemData.text);
-        //              return;
-        //      }
-        //     openModal(url, title);
-        // }
-
-
         function addPaymentButton_click(e) {
        // let url = "";
         let title = "Payments";
@@ -1276,52 +994,8 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-        // Handle the file selection
-        $("#loadLayoutInput").on("change", function (event) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const file = event.target.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    try {
-
-                        const layout = JSON.parse(e.target.result);
 
 
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the file is valid JSON.");
-                    }
-                };
-
-
-                reader.readAsText(file);
-            }
-        });
-        // function addReportsButton_click(e) {
-        //     var selectedText = e.itemData.text; // Get selected item text
-
-
-        //     if (selectedText === "Account Statements") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account With Narration") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
-        //     }
-        // }
-
-
-        function AccountGroupsOrdering() {
-
-            window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
-
-        }
         function showSubmenu8(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide all submenus before showing the selected one

@@ -7,7 +7,10 @@
 
 
 <h2 id="costallocationdetailsreport"></h2>
-
+<input id="formId" value="CostReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -103,9 +106,7 @@
     </div>
 </div>
 <div id="dataGrid" style="margin-top: 15px;"></div>
-<div class="limited-footer">
-    @await Html.PartialAsync("_GridFooter")
-</div>
+
 <div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
 
 <script>
@@ -370,6 +371,87 @@
     $(function () {
            $("#costallocationdetailsreport").text(formatMessage("Cost Allocation Details for Ledger Account"));
       });
+          // === SHOW / HIDE FILTER FIELDS ===
+    $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Determine if currently visible (any field in filter area)
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        fields.forEach((f, i) => {
+            // Only toggle fields that were originally filter fields
+            const originallyFilterField = [
+                "CostAmount", "Income", "Expenses", "VoucherDate", "EffectiveDate",
+                "AllocationEffectiveDate", "CostAllocationId", "VoucherEntryId", "CostAllocationUnitId",
+                "CostAllocDrCr", "CostAllocRemarks", "IsDisabled", "AccountGroup", "MasterGroup",
+                "AccountId", "VoucherNo", "VoucherType", "VoucherTypeAndNo", "CostCenterIncharge",
+                "EntryNarration", "SysRemarks", "VoucherMonth", "VoucherYear",
+                "EffectiveMonth", "EffectiveYear", "AllocationEffectiveMonth", "AllocationEffectiveYear",
+                "ProjectMasterCode", "BranchCode", "BranchName", "VoucherNarration", "VoucherRefNo"
+            ].includes(f.dataField);
+
+            if (originallyFilterField) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1500
+            // );
+        });
+    });
+
+
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "CostAllocationMasterGroup");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+
 </script>
 
 <style>

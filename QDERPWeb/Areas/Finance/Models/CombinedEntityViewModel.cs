@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QD.ERP.Web.Areas.Finance.Models
 {
@@ -17,6 +17,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string AdditionalFieldFromSecondEntity { get; set; } // Example
         public string SalaryPayableLedgerNo { get; set; }
     }
+    
     //public partial class qry20103GetBankAccountsResult
     //{
     //    public string AccountHead { get; set; }
