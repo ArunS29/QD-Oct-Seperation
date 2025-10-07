@@ -841,9 +841,10 @@
 									@(Html.DevExtreme().DropDownBox()
 												.ID("InvoiceTransactionsCode")
 								                .Label(new JS("formatMessage('Invoice Transaction Code')"))
-												.Value(new[] { 1 }) // Default selected value
+												//.Value(new[] { 1 }) // Default selected value
+												.Value("0100000")
 												.ValueExpr("ID")
-												.DisplayExpr("Name")
+												.DisplayExpr("ID")
 												.LabelMode(EditorLabelMode.Floating)
 												.Placeholder("Choose VAT Transaction Types")
 												.ContentTemplate(new JS("VATTransactionTemplate"))
@@ -951,13 +952,13 @@
 																					.Controller("VATModule")
 																					.LoadAction("GetRevenueAccount")
 																					.LoadMode(DataSourceLoadMode.Raw)
-																					.Key("IncomeLedger")
+														                            .Key("AccountId")
 																					)
 																					.ValidationRules(rules =>
-														{
-															rules.AddRequired()
-															.Message(new JS("formatMessage('Revenue Account should be entered')"));
-														})
+														                            {
+														                            	rules.AddRequired()
+														                            	.Message(new JS("formatMessage('Revenue Account should be entered')"));
+														                            })
 
 																					.LabelMode(EditorLabelMode.Floating)
 																					.ID("ddlRevenueAccount")
@@ -966,7 +967,7 @@
 																					.OpenOnFieldClick(false)
 																					.ValueChangeEvent("input")
 																					.HoverStateEnabled(true)
-																					.ValueExpr("IncomeLedger")
+														                            .ValueExpr("AccountId")
 																					.DisplayExpr("IncomeLedger")
 																					.OnInput("dropDownBoxOnInput")
 																					.OnOpened("onOpened")
@@ -2367,7 +2368,7 @@
 															.LoadAction("GetRevenueAccount")
 														.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
-													.Key("IncomeLedger")
+														.Key("AccountId")
 
 														)
 														.WordWrapEnabled(true)
@@ -3450,14 +3451,16 @@
 		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
 			 InvoiceNo: $("#ddlInvoiceNo").dxDropDownBox("instance").option("value")|| null,
 
-			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
 			RevenueAccount:revaccheadid|| null,
+			InvoiceSalesPerson: $("#ddlSalesPerson").dxDropDownBox("instance").option("value")|| null,
+		    SubmittedBy:$("#CreditNoteSubmittedBy").dxTextBox("instance").option("value")||null,
 			CostCenterCode: $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")|| null,
-				CreditNoteRemarks: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
-				CreditNoteRemarksAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
-
+			RevenueAccount:$("#ddlRevenueAccount").dxDropDownBox("instance").option("value")|| null,
+			CreditNoteRemarks: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+			CreditNoteRemarksAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 
 				//Deduction&CurrencyDetails
 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
@@ -3548,13 +3551,13 @@
 			$("#AdditionalAddress").dxTextBox("instance").option("value", account.BuyerAdditionalStreet || null);
 			$("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr || null);
 
-			$("#BuildingNumber").dxTextBox("instance").option("value", account.erBuildingNumber || null);
-			$("#ClientCity").dxTextBox("instance").option("value", account.erCity || null);
-			$("#ClientCityArabic").dxTextBox("instance").option("value", account.erCityAr || null);
-			$("#AdditionalNumber").dxTextBox("instance").option("value", account.erAdditionalNumber || null);
+				$("#BuildingNumber").dxTextBox("instance").option("value", account.BuyerBuildingNumber || null);
+			$("#ClientCity").dxTextBox("instance").option("value", account.BuyerCity || null);
+				$("#ClientCityArabic").dxTextBox("instance").option("value", account.BuyerCityAr || null);
+				$("#AdditionalNumber").dxTextBox("instance").option("value", account.BuyerAdditionalNumber || null);
 			$("#Province").dxTextBox("instance").option("value", account.BuyerProvince || null);
 			$("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr || null);
-			$("#PostalCode").dxTextBox("instance").option("value", account.erPostalCode || null);
+				$("#PostalCode").dxTextBox("instance").option("value", account.BuyerPostalCode || null);
 			$("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood || null);
 			$("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr || null);
 			$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", account.BuyerCountryCode || null);
@@ -3566,6 +3569,12 @@
 			$("#InvoiceStartDate").dxDateBox("instance").option("value", account.InvoiceStartDate || null);
 			$("#InvoiceEndDate").dxDateBox("instance").option("value", account.InvoiceEndDate || null);
 			$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+
+			$("#ddlSalesPerson").dxDropDownBox("instance").option("value",account.InvoiceSalesPerson || null),
+			$("#CreditNoteSubmittedBy").dxTextBox("instance").option("value",account.SubmittedBy ||null),
+			$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode || null),
+			$("#ddlRevenueAccount").dxDropDownBox("instance").option("value",account.RevenueAccount || null),
+				
 			$("#txtInvoiceNotes").dxTextArea("instance").option("value", account.CreditNoteRemarks || null);
 			$("#txtNotesinArabic").dxTextArea("instance").option("value", account.CreditNoteRemarksAr || null);
 
@@ -3729,6 +3738,7 @@
 						
 						if (response && response.length > 0) {
 							var account = response[0];
+								console.log("Account",account)
 	 $("#CreditNoteNo").dxTextBox("instance").option("value", account.CreditNoteNo || null);
 		$("#CreditNoteDate").dxDateBox("instance").option("value", account.CreditNoteDate || null);
 		$("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value", account.CreditNoteEffectiveDate || null);
@@ -3748,13 +3758,13 @@
 		$("#AdditionalAddress").dxTextBox("instance").option("value", account.BuyerAdditionalStreet || null);
 		$("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr || null);
 
-		$("#BuildingNumber").dxTextBox("instance").option("value", account.erBuildingNumber || null);
-		$("#ClientCity").dxTextBox("instance").option("value", account.erCity || null);
-		$("#ClientCityArabic").dxTextBox("instance").option("value", account.erCityAr || null);
-		$("#AdditionalNumber").dxTextBox("instance").option("value", account.erAdditionalNumber || null);
+		$("#BuildingNumber").dxTextBox("instance").option("value", account.BuyerBuildingNumber || null);
+		$("#ClientCity").dxTextBox("instance").option("value", account.BuyerCity || null);
+		$("#ClientCityArabic").dxTextBox("instance").option("value", account.BuyerCityAr || null);
+		$("#AdditionalNumber").dxTextBox("instance").option("value", account.BuyerAdditionalNumber || null);
 		$("#Province").dxTextBox("instance").option("value", account.BuyerProvince || null);
 		$("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr || null);
-		$("#PostalCode").dxTextBox("instance").option("value", account.erPostalCode || null);
+		$("#PostalCode").dxTextBox("instance").option("value", account.BuyerPostalCode || null);
 		$("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood || null);
 		$("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr || null);
 		$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", account.BuyerCountryCode || null);
@@ -6569,11 +6579,14 @@ openModal(url, title);
 		     InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value"),
 			 InvoiceNo: $("#ddlInvoiceNo").dxDropDownBox("instance").option("value")|| null,
 
-			 InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
 			RevenueAccount:revaccheadid|| null,
+			InvoiceSalesPerson: $("#ddlSalesPerson").dxDropDownBox("instance").option("value")|| null,
+		    SubmittedBy:$("#CreditNoteSubmittedBy").dxTextBox("instance").option("value")||null,
 			CostCenterCode: $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")|| null,
+			RevenueAccount:$("#ddlRevenueAccount").dxDropDownBox("instance").option("value")|| null,
 			CreditNoteRemarks: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			CreditNoteRemarksAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 
@@ -8467,6 +8480,7 @@ $(document).ready(function () {
 	}
 
 			function onVatTransactionSelectionChanged(e) {
+				debugger;
 		const selectedIds = e.component.option("selectedItemKeys");
 		const transactionCode = setInvoiceTransactionCode(selectedIds);
 

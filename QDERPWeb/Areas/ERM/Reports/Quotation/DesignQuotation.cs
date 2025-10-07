@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.ERM.Reports.Enquiry
+namespace QD.ERP.Web.Areas.ERM.Reports.Quotation
 {
-    public partial class PreviewRequest : DevExpress.XtraReports.UI.XtraReport
+    public partial class DesignQuotation : DevExpress.XtraReports.UI.XtraReport
     {
-        public PreviewRequest()
+        public DesignQuotation()
         {
             InitializeComponent();
         }

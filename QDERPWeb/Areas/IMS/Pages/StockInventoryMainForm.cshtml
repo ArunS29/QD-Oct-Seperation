@@ -264,7 +264,7 @@
     
     @await Html.PartialAsync("/Pages/Shared/IMS/StockInventoryFooter.cshtml")
 </div>
-<div class="context-menuInvoice" id="contextMenu">
+@* <div class="context-menuInvoice" id="contextMenu">
     <div class="context-menu-itemInvoice" onclick="viewRecord()">
         <i class="dx-icon-search" id="stockeditview"></i> 
     </div>
@@ -274,7 +274,7 @@
     <div class="context-menu-itemInvoice" onclick="deleteRecord()">
         <i class="dx-icon-trash" id="stockdeleteitem"></i> 
     </div>
-</div>
+</div> *@
 
 <div class="dx-fieldset horizontal-container">
     @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -697,6 +697,7 @@
     .Grouping(g => g.AutoExpandAll(true))
     .GroupPanel(gp => gp.Visible(true)) 
     .ShowBorders(true)
+  .OnContextMenuPreparing("onContextMenuPreparing")
     .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
     .Height("60vh")
     .Width("100%")
@@ -923,84 +924,153 @@
 
 
 
+        function onContextMenuPreparing(e) {
+        if (e.target === "content" && e.row && e.row.data) {
+            const rowData = e.row.data;
+            const code = encodeURIComponent(rowData.Gscode);
+            const tenantName = window.tenantName || "defaultTenant";
 
-    let selectedRowData = null;
-
-    $(function () {
-        const contextMenu = $("#contextMenu");
-
-        $(document).on("click", function () {
-            contextMenu.hide();
-        });
-
-       $("#dataGrid").customizeGridContextMenu();
-          $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        e.preventDefault();
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowIndex = $(this).index();
-        selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
-
-        $("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-    });
-
-    });
-    function viewRecord() {
-        if (selectedRowData) {
-            const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=view`;
-        }
-    }
-
-    function editRecord() {
-        if (selectedRowData) {
-            const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=edit`;
-        }
-    }
-
-
-          function deleteRecord() {
-        if (!selectedRowData) {
-            DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
-            return;
-        }
-
-        const code = selectedRowData.Gscode;
-
-        DevExpress.ui.dialog.confirm(
-            `Are you sure you want to delete stock item: <b>${code}</b>?`,
-            "Confirm Deletion"
-        ).done(function (dialogResult) {
-            if (dialogResult) {
-                $.ajax({
-                    url: "/api/StockInventory/DeleteStockItem",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(code),
-                    success: function (result) {
-                        const messageType = result.success ? "Success" : "Error";
-                        const messageColor = result.success ? "green" : "red";
-
-                        DevExpress.ui.dialog.alert(
-                            `<div style="color: ${messageColor}; font-weight: bold;">
-                                ${result.message}
-                            </div>`,
-                            messageType
-                        );
-
-                        if (result.success) {
-                            const grid = $("#dataGrid").dxDataGrid("instance");
-                            grid.refresh();
+            e.items = [
+                {
+                    text: formatMessage("View Stock Item Details"),
+                    icon: "search",
+                    onItemClick: function () {
+                        if (!code) {
+                            DevExpress.ui.notify("Record code not found.", "error", 2000);
+                            return;
                         }
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Error deleting stock item", "error", 2000);
-                        console.error(xhr);
+                        const url = `/${tenantName}/IMS/InventoryStockDetails?code=${code}&mode=view`;
+                        window.location.href = url;
                     }
-                });
-            }
-        });
+                },
+                {
+                    text: formatMessage("Edit Stock Item"),
+                    icon: "edit",
+                    onItemClick: function () {
+                        if (!code) {
+                            DevExpress.ui.notify("Record code not found.", "error", 2000);
+                            return;
+                        }
+                        const url = `/${tenantName}/IMS/InventoryStockDetails?code=${code}&mode=edit`;
+                        window.location.href = url;
+                    }
+                },
+                {
+                    text: formatMessage("Delete Stock Item"),
+                    icon: "trash",
+                    onItemClick: function () {
+                        if (!code) {
+                            DevExpress.ui.notify("Record code not found.", "error", 2000);
+                            return;
+                        }
+
+                        DevExpress.ui.dialog.confirm(
+                            "You are about to delete this record.\nAre you sure?",
+                            "Confirm Delete"
+                        ).done(function (dialogResult) {
+                            if (!dialogResult) return;
+
+                            $.ajax({
+                                url: "/api/StockInventory/DeleteStockItem",
+                                type: "POST",
+                                contentType: "application/json",
+                               data: JSON.stringify(code),
+                                success: function (response) {
+                                    DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+                                    if (response.success) {
+                                        $("#dataGrid").dxDataGrid("instance").refresh();
+                                    }
+                                },
+                                error: function (xhr) {
+                                    let msg = xhr.responseJSON?.message || "❌ Error deleting record.";
+                                    DevExpress.ui.notify(msg, "error", 3000);
+                                    console.error("Delete error:", xhr.responseJSON);
+                                }
+                            });
+                        });
+                    }
+                }
+            ];
+        }
     }
+
+    // let selectedRowData = null;
+
+    // $(function () {
+    //     const contextMenu = $("#contextMenu");
+
+    //     $(document).on("click", function () {
+    //         contextMenu.hide();
+    //     });
+
+    //    $("#dataGrid").customizeGridContextMenu();
+    //       $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+    //     e.preventDefault();
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const rowIndex = $(this).index();
+    //     selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
+
+    //     $("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+    // });
+
+    // });
+    // function viewRecord() {
+    //     if (selectedRowData) {
+    //         const code = selectedRowData.Gscode;
+    //         window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=view`;
+    //     }
+    // }
+
+    // function editRecord() {
+    //     if (selectedRowData) {
+    //         const code = selectedRowData.Gscode;
+    //         window.location.href = `/${tenantName}/IMS/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=edit`;
+    //     }
+    // }
+
+
+    //       function deleteRecord() {
+    //     if (!selectedRowData) {
+    //         DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+    //         return;
+    //     }
+
+    //     const code = selectedRowData.Gscode;
+
+    //     DevExpress.ui.dialog.confirm(
+    //         `Are you sure you want to delete stock item: <b>${code}</b>?`,
+    //         "Confirm Deletion"
+    //     ).done(function (dialogResult) {
+    //         if (dialogResult) {
+    //             $.ajax({
+    //                 url: "/api/StockInventory/DeleteStockItem",
+    //                 method: "POST",
+    //                 contentType: "application/json",
+    //                 data: JSON.stringify(code),
+    //                 success: function (result) {
+    //                     const messageType = result.success ? "Success" : "Error";
+    //                     const messageColor = result.success ? "green" : "red";
+
+    //                     DevExpress.ui.dialog.alert(
+    //                         `<div style="color: ${messageColor}; font-weight: bold;">
+    //                             ${result.message}
+    //                         </div>`,
+    //                         messageType
+    //                     );
+
+    //                     if (result.success) {
+    //                         const grid = $("#dataGrid").dxDataGrid("instance");
+    //                         grid.refresh();
+    //                     }
+    //                 },
+    //                 error: function (xhr) {
+    //                     DevExpress.ui.notify("Error deleting stock item", "error", 2000);
+    //                     console.error(xhr);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
     $(function () {
         $("#StockInventoryMainForm").dxTextBox({
             text: formatMessage("Stock Inventory"),
@@ -1127,15 +1197,15 @@
             }
         });
     }
-      $(function () {
-        $("#stockeditview").text(formatMessage("View Stock Item Details"));
-    });
-      $(function () {
-        $("#stockitemedit").text(formatMessage("Edit Stock Item"));
-    });
-      $(function () {
-        $("#stockdeleteitem").text(formatMessage("Delete Stock Item"));
-    });
+    //   $(function () {
+    //     $("#stockeditview").text(formatMessage("View Stock Item Details"));
+    // });
+    //   $(function () {
+    //     $("#stockitemedit").text(formatMessage("Edit Stock Item"));
+    // });
+    //   $(function () {
+    //     $("#stockdeleteitem").text(formatMessage("Delete Stock Item"));
+    // });
       $(function () {
         $("#stockgroupissuse").text(formatMessage("Issues"));
     });

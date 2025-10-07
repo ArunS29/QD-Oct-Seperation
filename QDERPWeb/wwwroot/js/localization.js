@@ -10460,6 +10460,7 @@ var dictionary = {
         "Invoice Master": "رئيس الفاتورة",
         "Main": "الرئيسي",
         "Other Buyer ID": "معرّف المشتري الآخر",
+
         "Furthermore, If you require any more clarification,  please do not hesitate to call the undersigned.": "علاوة على ذلك، إذا كنتم بحاجة إلى أي توضيح إضافي، فلا تترددوا في الاتصال بالموقع أدناه.",
         "Client PO Date": "تاريخ أمر الشراء للعميل",
         "Client PO End Date": "تاريخ انتهاء أمر الشراء للعميل",
