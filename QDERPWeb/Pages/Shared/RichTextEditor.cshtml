@@ -1,0 +1,47 @@
+﻿@using DevExpress.AspNetCore
+@{
+    Layout = null; // ✅ Important: prevent layout nesting conflicts
+}
+
+<!-- DevExpress RichEdit Styles -->
+<link href="~/node_modules/devextreme-dist/css/dx.light.css" rel="stylesheet" />
+<link href="~/node_modules/devexpress-richedit/dist/dx.richedit.css" rel="stylesheet" />
+
+<!-- DevExpress Scripts -->
+<script src="~/node_modules/jszip/dist/jszip.min.js"></script>
+<script src="~/node_modules/devextreme-dist/js/dx.all.js"></script>
+<script src="~/node_modules/devexpress-richedit/dist/dx.richedit.js"></script>
+
+<!-- RichEdit Component -->
+@(Html.DevExpress().RichEdit("DemoRichEdit")
+    .Height(740)
+    .ConfirmOnLosingChanges(c => c.Enabled(false))
+)
+
+@* 
+<style>
+    .dxreSelCursor dxreSelCursorZL4 {
+        height: 20px !important;
+    }
+    .dxreRow {
+        white-space: nowrap;
+        overflow: visible !important;
+        position: absolute;
+        font-size: 0;
+        user-select: none;
+    }
+    .container, .frame, .footerContainer, .playIcon {
+        display: none !important;
+    }
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+    .mainContainer {
+        background-color: white;
+        margin: 0;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+</style> *@

@@ -13,8 +13,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+//using QD.ERP.Web.Areas.Finance.Models;
+//using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using static Org.BouncyCastle.Math.EC.ECCurve;
@@ -28,7 +28,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ERRequestforQuotationListController> _logger;
-        private readonly IDbConnection _db;
+        private readonly SqlConnection _db;
+
 
         public ERRequestforQuotationListController(ILogger<ERRequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration config)
         {
@@ -36,58 +37,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             _logger = logger;
             _db = new SqlConnection(config.GetConnectionString("DefaultConnection"));
         }
-        [HttpGet]
-        public async Task<IActionResult> GetRFQRequest(DateTime? fromDate, DateTime? toDate)
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
-
-
-                    // Default dates if not provided
-                    if (!fromDate.HasValue)
-                    {
-                        fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
-                    }
-
-                    if (!toDate.HasValue)
-                    {
-                        toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
-                    }
-
-                    // Filtering by date range
-                    query = query.Where(i => i.Rfqdate >= fromDate && i.Rfqdate <= toDate);
-
-                    // Fetching the data
-                    var data = await query.Select(i => new
-                    {
-                        i.Rfqno,
-                        i.Rfqdate,
-                        i.Mprno,
-                        i.SupplierName,
-                        i.SupplierQuotationNo,
-                        i.QuoteHasItemsToPo,
-                        i.Pono,
-                        i.NoOfItems,
-                        i.TotalBeforeTax,
-                        i.TotalDiscount,
-                        i.TotalAfterDiscount,
-                    }).ToListAsync();
-
-                    return Json(data);
-                }
-
-                return Unauthorized(new { message = "Invalid tenant." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-            }
-        }
-        //RFQ Item Details form
+      
         [HttpGet]
         public async Task<IActionResult> GetGenarateTimeGrid(DateTime? fromDate, DateTime? toDate)
         {
@@ -172,6 +122,32 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 _logger.LogError($"Error in GetTimeSheetReq: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
+        }
+        public class TimesheetCopyDto
+        {
+            public string PropertyNo { get; set; }
+            public int TimeSheetMasterID { get; set; }
+        }
+        [HttpPost]
+        public IActionResult CopyClientToSuppliers([FromBody] List<TimesheetCopyDto> timesheets)
+        {
+            if (timesheets == null || timesheets.Count == 0)
+                return BadRequest("No data provided");
+
+            _db.Open();
+            foreach (var ts in timesheets)
+            {
+                using (var cmd = new SqlCommand("stpro401_17CopyClientTStoSupplierTS", _db))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PropertyNo", ts.PropertyNo);
+                    cmd.Parameters.AddWithValue("@TimeSheetMasterID", ts.TimeSheetMasterID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            _db.Close();
+
+            return Ok(new { message = "Timesheets copied successfully!" });
         }
 
         [HttpGet]
@@ -491,41 +467,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        //   [HttpGet]
-        //   public async Task<IActionResult> GetBillingData(
-        //string propertyNo,
-        //string frmDate,
-        //string toDate,
-        //int billingCode)
-        //   {
-        //       if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //           return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-        //       try
-        //       {
-        //           // Parse dates in MM/dd/yyyy format
-        //           if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime startDate))
-        //               return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
-
-        //           if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime endDate))
-        //               return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
-
-        //           // Execute stored procedure and map results to TimesheetBillingData
-        //           var billingData = await dbContext.Set<TimesheetBillingData>()
-        //               .FromSqlRaw("EXEC stpro401_02GetDataForUpdatingTimeSheet @PropertyNo={0}, @StartDate={1}, @EndDate={2}, @BillingCode={3}",
-        //                           propertyNo, startDate, endDate, billingCode)
-        //               .ToListAsync();
-
-        //           return Ok(new { success = true, data = billingData });
-        //       }
-        //       catch (Exception ex)
-        //       {
-        //           return StatusCode(500, new { success = false, message = ex.Message });
-        //       }
-        //   }
-
-
-
         [HttpGet]
         public async Task<IActionResult> GetWorkStatus(DataSourceLoadOptions loadOptions)
         {
@@ -536,7 +477,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     var WorkDay = dbContext.Tbl40123TimeSheetDayStatuses.Select(i => new
                     {
                         i.DayCode,
-                        i.DayDescription
+                        i.DayDescription,
+                        i.DaySlNo
 
                     });
 
@@ -551,315 +493,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        [HttpGet]
-        public async Task<IActionResult> GetCompany(DataSourceLoadOptions loadOptions)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var ClientCategory = dbContext.Tbl901CompanyDetails.Select(i => new
-                    {
-                        i.CompanyId,
-                        i.CompanyName
-
-                    });
-
-                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetProject: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetInventoryGroup(DataSourceLoadOptions loadOptions)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var ClientCategory = dbContext.Tbl60008inventoryMasterGroups.Select(i => new
-                    {
-                        i.InventoryMasterGroupId,
-                        i.InventoryMasterGroup
-
-                    });
-
-                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in GetProject: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetRFQdataByCode(string RFQno)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                if (string.IsNullOrEmpty(RFQno))
-                    return BadRequest("RFQ No is required.");
-
-                try
-                {
-
-                    var client = await dbContext.Tbl60701rfqmasters
-                        .Where(c => c.Rfqno == RFQno)
-                        .FirstOrDefaultAsync();
-
-                    if (client == null)
-                        return NotFound("RFQ not found.");
-
-                    return Ok(client);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-        [HttpGet]
-        public async Task<ActionResult> GetRFQChildren(string RFQno)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var resultWithDetails = new List<ExpandoObject>();
-
-                    // Query the Tbl60602purchaseRequestChildren table for the given Mprno
-                    var result = dbContext.Tbl60702rfqchildren
-                        .Where(x => x.Rfqno == RFQno)
-                        .ToList();
-
-                    foreach (var gridDetails in result)
-                    {
-                        dynamic item = new ExpandoObject();
-                        var dict = (IDictionary<string, object>)item;
-
-                        // Copy all existing fields from gridDetails into dynamic object
-                        var properties = gridDetails.GetType().GetProperties();
-                        foreach (var prop in properties)
-                        {
-                            dict[prop.Name] = prop.GetValue(gridDetails);
-                        }
-
-                        // Retrieve UnitDesc based on UnitCode
-                        var unitDesc = await dbContext.Tbl40111PropertyUnitCodes
-                            .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
-                            .Select(x => x.UnitDesc)
-                            .FirstOrDefaultAsync();
-
-
-
-                        // Retrieve Gsdescription based on Gscode
-                        var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
-                            .Where(x => x.Gscode == gridDetails.Gscode)
-                            .Select(x => x.Gsdescrpition)
-                            .FirstOrDefaultAsync();
-
-                        // Add the retrieved values to the dynamic object
-                        dict["UnitDesc"] = unitDesc;
-
-                        dict["GsDescription"] = gsDescription;
-
-                        resultWithDetails.Add(item);
-                    }
-
-                    return Json(resultWithDetails);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
-            }
-
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SaveOrUpdateRFQ([FromBody] RFQViewModel VM)
-        {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                return Unauthorized(new { success = false, message = "Invalid tenant context." });
-            }
-
-            if (VM == null || string.IsNullOrEmpty(VM.Rfqno))
-            {
-                return BadRequest(new { success = false, message = "RFQ No. is required." });
-            }
-
-            try//
-            {
-                // Ensure child list is initialized
-                //VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
-
-                // Check if the master record exists
-                var existingMaster = await dbContext.Tbl60701rfqmasters
-                    .FirstOrDefaultAsync(x => x.Rfqno == VM.Rfqno);
-
-                if (existingMaster != null)
-                {
-                    //Update existing master with manual property mapping
-
-                    //existingMaster.Rfqno = VM.Rfqno;
-                    existingMaster.Rfqdate = VM.Rfqdate;
-                    existingMaster.SupplierCode = VM.SupplierCode;
-                    existingMaster.Mprno = VM.Mprno;
-                    existingMaster.Project = VM.Project;
-                    existingMaster.Attention = VM.Attention;
-                    existingMaster.SupplierContactEmail = VM.SupplierContactEmail;
-                    existingMaster.SupplierContactNo = VM.SupplierContactNo;
-                    existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
-                    existingMaster.SupplierQuotationDt = VM.SupplierQuotationDt;
-                    existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-                    existingMaster.Rfqsubject = VM.Rfqsubject;
-                    existingMaster.Rfqintro = VM.Rfqintro;
-                    existingMaster.Rfqsummary = VM.Rfqsummary;
-
-
-                    existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
-                    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-                    existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-
-                }
-                else
-                {
-                    // Insert new master
-                    var newMaster = new Tbl60701rfqmaster
-                    {
-                        Rfqno = VM.Rfqno,
-                        Rfqdate = VM.Rfqdate,
-                        SupplierCode = VM.SupplierCode,
-
-                        Mprno = VM.Mprno,
-                        Project = VM.Project,
-                        Attention = VM.Attention,
-                        SupplierContactEmail = VM.SupplierContactEmail,
-                        SupplierContactNo = VM.SupplierContactNo,
-
-                        SupplierQuotationNo = VM.SupplierQuotationNo,
-                        SupplierQuotationDt = VM.SupplierQuotationDt,
-                        ProjectMasterCode = VM.ProjectMasterCode,
-                        Rfqsubject = VM.Rfqsubject,
-                        Rfqintro = VM.Rfqintro,
-                        Rfqsummary = VM.Rfqsummary,
-                        Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
-                        CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId)
-,
-
-                    };
-
-                    await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
-                }
-
-                // Handle child entries
-                var existingChildren = await dbContext.Tbl60702rfqchildren
-                    .Where(x => x.Rfqno == VM.Rfqno)
-                    .ToListAsync();
-
-                foreach (var child in VM.RFQDetailses)
-                {
-                    if (child.RfqchildSlNo == 0)
-                    {
-                        // New child entry
-                        child.Rfqno = VM.Rfqno; // Ensure foreign key is set
-                        await dbContext.Tbl60702rfqchildren.AddAsync(child);
-                    }
-                    else
-                    {
-                        // Existing child entry
-                        var existingChild = existingChildren
-                            .FirstOrDefault(x => x.RfqchildSlNo == child.RfqchildSlNo);
-
-                        if (existingChild != null)
-                        {
-                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-                        }
-                    }
-                }
-
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = ex.Message });
-            }
-        }
-        private async Task<int?> GetSignatoryIDfromUserID(int? userId)
-        {
-            if (userId == null)
-                return null;
-
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                return await dbContext.Tbl90104DocumentSignatories
-                    .Where(x => x.UserId == userId)
-                    .Select(x => x.SignatoryId)
-                    .FirstOrDefaultAsync();
-            }
-
-            // Tenant context is invalid; return null
-            return null;
-        }
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRfq([FromQuery] string Rfqno)
-        {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                return Unauthorized(new { success = false, message = "Invalid tenant context." });
-            }
-
-            if (string.IsNullOrEmpty(Rfqno))
-            {
-                return BadRequest(new { success = false, message = "Rfqno. is required." });
-            }
-
-            try
-            {
-                // Retrieve the master record
-                var masterRecord = await dbContext.Tbl60701rfqmasters
-                    .FirstOrDefaultAsync(x => x.Rfqno == Rfqno);
-
-                if (masterRecord == null)
-                {
-                    return NotFound(new { success = false, message = "RFQ not found." });
-                }
-
-                // Retrieve and remove child records
-                var childRecords = dbContext.Tbl60702rfqchildren
-                    .Where(x => x.Rfqno == Rfqno);
-
-                dbContext.Tbl60702rfqchildren.RemoveRange(childRecords);
-
-                // Remove the master record
-                dbContext.Tbl60701rfqmasters.Remove(masterRecord);
-
-                await dbContext.SaveChangesAsync();
-
-                return Ok(new { success = true, message = "RFQ details deleted successfully." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = ex.Message });
-            }
-        }
+     
 
         [HttpPost]
         public async Task<IActionResult> SubmitRFQ(string Rfqno)

@@ -612,6 +612,52 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
         [HttpPost]
+        public IActionResult DeleteGridEnquiry(string EquipmentRequestNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var prMaster = dbContext.Tbl40136PropertyRequestMasters
+                        .FirstOrDefault(pr => pr.EqiupmentRequestNo == EquipmentRequestNo);
+
+                    if (prMaster == null)
+                    {
+                        return Json(new { success = false, message = "Equipment not found." });
+                    }
+
+                    if (prMaster.IsSubmitted.HasValue && prMaster.IsSubmitted.Value)
+                    {
+                        return Json(new { success = false, message = "Property Request is already submitted. You cannot delete a submitted request." });
+                    }
+
+                    if (prMaster.IsApproved.HasValue && prMaster.IsApproved.Value)
+                    {
+                        return Json(new { success = false, message = "Property Request is already approved. You cannot delete an approved request." });
+                    }
+
+                    // Delete child records
+                    var prChildren = dbContext.Tbl40137PropertyRequestChildren
+                        .Where(child => child.EquipmentRequestNo == EquipmentRequestNo);
+                    dbContext.Tbl40137PropertyRequestChildren.RemoveRange(prChildren);
+
+                    // Delete master record
+                    dbContext.Tbl40136PropertyRequestMasters.Remove(prMaster);
+
+                    dbContext.SaveChanges();
+
+                    return Json(new { success = true, message = "Property Request has been successfully deleted." });
+                }
+                catch (Exception ex)
+                {
+                    // log ex if needed
+                    return Json(new { success = false, message = "An error occurred while deleting the Property Request." });
+                }
+            }
+
+            return Json(new { success = false, message = "Invalid tenant context." });
+        }
+        [HttpDelete("{EquipmentRequestNo}")]
         public IActionResult DeletePropertyRequest(string EquipmentRequestNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

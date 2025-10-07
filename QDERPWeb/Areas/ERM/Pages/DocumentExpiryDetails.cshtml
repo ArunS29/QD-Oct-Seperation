@@ -143,7 +143,7 @@
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="DeliveryNoteDetails" class="no-border-input"></div>
+		<div id="DeliveryNoteDetails" class="no-border-input">Document Expiry Details</div>
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
@@ -348,14 +348,14 @@
 
 	}
 
-		 $(function () {
-		$("#DeliveryNoteDetails").dxTextBox({
-		text: formatMessage("Delivery Note Details"),
-			readOnly: true,
-			onContentReady: function (e) {
-			$(e.element).addClass("dx-textbox-heading");
-			}
-			});
-		});
+		//  $(function () {
+		// $("#DeliveryNoteDetails").dxTextBox({
+		// text: formatMessage("Document Expiry Details"),
+		// 	readOnly: true,
+		// 	onContentReady: function (e) {
+		// 	$(e.element).addClass("dx-textbox-heading");
+		// 	}
+		// 	});
+		// });
 
 </script>
