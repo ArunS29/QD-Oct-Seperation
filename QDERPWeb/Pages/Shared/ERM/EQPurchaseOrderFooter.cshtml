@@ -1,0 +1,1249 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+
+<style type="text/css">
+
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 9px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #9ca3af;
+        opacity: 1;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+
+    .footer-fixed {
+        bottom: 35px !important;
+    }
+</style>
+<div class="WorkFlow">
+    <div class="workflow-container">
+        <div class="workflow-line"></div>
+
+        <div class="workflow-step" id="step-update">
+            <div class="step-circle"><i class="fas fa-user"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Updated</div>
+                <div class="step-status-msg"> - In Progress</div>
+            </div>
+        </div>
+        <div class="workflow-step" id="step-submit">
+            <div class="step-circle" id="circle-submit"><i class="fas fa-paper-plane"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Submitted</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-verify">
+            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Verified</div>
+                <div class="step-status-msg"> - Waiting</div>
+            </div>
+        </div>
+
+        <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="workflowText">
+                <div class="step-label">Approved</div>
+                <div class="step-status-msg"> - Pending</div>
+            </div>
+        </div>
+
+        <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
+        <div id="approvePopover" class="popover-box">Approved by: <span id="approvedByName"></span><br>On: <span id="approvedOn"></span></div>
+
+    </div>
+</div>
+<div class="horizontal-container1">
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Text(new JS("formatMessage('Save and Close')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" }) )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnPrint4")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" })
+                .DropDownOptions(options => options.Width(300))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+                    items.Add().Text("Custom Report Designs").Icon("print").Option("color", "#4285F4");
+                    items.Add().Text("Preview Purchase Order").Icon("file").Option("color", "#34A853");
+                    items.Add().Text("Preview Purchase Order(Wt VAT)").Icon("file").Option("color", "#EA4335");
+                    items.Add().Text("Preview Purchase Order(Wt VAT / Wo Total Price)").Icon("file").Option("color", "#FBBC05");
+                    items.Add().Text("Preview Purchase Order(Foreign Currency)").Icon("file").Option("color", "#AB47BC");
+                    items.Add().Text("Distribute Discount Amount").Icon("file").Option("color", "#00ACC1");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("handlePurchase")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Icon("close")
+
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
+
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+                .Icon("plus")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Submit')"))
+                .Icon("check")
+                               // .OnClick("onVerifyButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .Icon("check")
+                               // .OnClick("onVerifyButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-verify" })
+
+                )
+
+    </div>  
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Approve')"))
+                .Icon("exportselected")
+                .ElementAttr(new { @class = "dx-button-custom btn-approve" })
+                )
+
+    </div>
+
+</div>
+<script type="text/javascript">
+
+
+    function refreshPage() {
+        location.reload();
+    }
+    function navigateToInvoiceEdit() {
+               // Replace with the actual tenant name dynamically
+                    var url = `/${tenantName}/Finance/VATInvoiceWithDetails`;
+                window.location.href = url; // Navigate to the page
+            }
+      
+     function getDropdownData() {
+        return $.ajax({
+            url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
+            method: "GET",
+            dataType: "json"
+        }).then(function(response) {
+            console.log("GsData",response)
+            return response.map(item => ({
+                GSCode: item.Gscode,
+                GSDescrpition: item.Gsdescrpition,
+                GsdescriptionAr:item.GsdescriptionAr,
+                ItemPartNo: item.ItemPartNo,
+                CostPrice: item.CostPrice,
+                GSSellingRate: item.GssellingRate,
+                ReorderQty:item.ReorderQty
+            }));
+        });
+    }
+
+
+     // Handle button clicks
+        function addPrintButton_click(e) {
+            let url = "";
+            let title = "Print1";
+            switch (e.itemData.text) {
+                case (formatMessage('Upload Items from Excel')):
+                    url = `/${tenantName}/Finance/InventoryListtoUpload`;
+                    title = formatMessage('Upload Items from Excel');
+                    break;
+                case (formatMessage('Profit On Sale')):
+                    url = `/${tenantName}/Finance/InvoiceProfitorLossSummary`;
+                    title = formatMessage('Profit On Sale');
+                    break;
+                case (formatMessage('Invoice Cost Posting')):
+                    url = `/${tenantName}/Finance/InvoiceCostPosting`;
+                    title = formatMessage('Invoice Cost Posting');
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+            openModal(url, title);
+        }
+
+     function exportGridToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
+
+        // Get the instance of the DataGrid
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Extract headers
+        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
+
+        // Extract data and calculate sums
+        var creditSum = 0;
+        var debitSum = 0;
+        var data = dataGrid.getVisibleRows().map(row => {
+            return dataGrid.getVisibleColumns().map(column => {
+                let value = row.data[column.dataField];
+                if (column.dataType === 'date' && value) {
+                    // Format date as dd-MMM-yyyy
+                    let date = new Date(value);
+                    let day = String(date.getDate()).padStart(2, '0');
+                    let month = date.toLocaleString('default', { month: 'short' });
+                    let year = date.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                if (column.dataField === 'CrAmount') {
+                    creditSum += value || 0;
+                }
+                if (column.dataField === 'DrAmount') {
+                    debitSum += value || 0;
+                }
+                return value;
+            });
+        });
+
+        // Generate PDF
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            styles: { overflow: 'linebreak' },
+            theme: 'grid',
+            tableWidth: 'auto', // Adjust table width to fit the page
+            columnStyles: {
+                0: { cellWidth: 'wrap' }, // Adjust the first column width
+                //    more column styles if needed
+            },
+            margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
+            didDrawPage: function (data) {
+                // Remove the "DataGrid Export" text
+                // doc.setFontSize(10);
+                // doc.text('DataGrid Export', data.settings.margin.left, 10);
+
+                // Add footer
+                var pageCount = doc.internal.getNumberOfPages();
+                doc.setFontSize(8);
+                doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
+
+                // Add sum of credit and debit, and row count
+                doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
+                doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
+                doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
+            }
+        });
+
+        // Open PDF in a new window
+        var string = doc.output('datauristring');
+        var newWindow = window.open();
+        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
+    }
+
+
+
+        // Hide context menu on click outside
+
+
+        function toggleHeaderFilter() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+            isHeaderFilterEnabled = !isHeaderFilterEnabled;
+            dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+        }
+        $(document).on("click", function () {
+            var contextMenu = $("#contextMenu");
+            contextMenu.hide();
+            var $submenu = $('#submenuContainer');
+            $submenu.hide(); // Hide the submenu popup
+        });
+
+        // Handle the file selection
+        $("#loadLayoutInput").on("change", function (event) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    try {
+                        // Parse the JSON string from the file
+                        const layout = JSON.parse(e.target.result);
+
+                        // Restore the grid state
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the file is valid JSON.");
+                    }
+                };
+
+                // Read the file as text
+                reader.readAsText(file);
+            }
+        });
+        function saveLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var layout = grid.state();
+            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+            //console.log(layoutJson);
+            // Create a Blob from the JSON string
+            const blob = new Blob([layoutJson], { type: "application/json" });
+            // Create a URL for the Blob
+            const url = URL.createObjectURL(blob);
+            // Create a link element
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "grid-layout.json"; // Set the file name for download
+            // Append the link to the body (needed for Firefox)
+            document.body.appendChild(a);
+            // Programmatically click the link to trigger the download
+            a.click();
+            // Clean up by removing the link and revoking the Object URL
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            //DevExpress.ui.notify("Layout", "success", 600);
+        }
+        function openLayoutClick(e) {
+            // Create an input element dynamically
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "application/json";
+
+            // When a file is selected
+            input.addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const layout = JSON.parse(e.target.result);
+                        const grid = $("#dataGrid").dxDataGrid("instance");
+                        grid.state(layout);
+                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                    } catch (error) {
+                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                    }
+                };
+
+                reader.readAsText(file);
+            });
+
+            // Trigger the file input click event
+            input.click();
+        }
+
+        function loadGridState() {
+            var form = $('#formId').val();
+            // Call the API to get the grid state
+            $.ajax({
+                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                method: 'GET',
+                data: {
+                    form: form
+                },
+                success: function (response) {
+                    // Get the DataGrid instance
+                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                    // Load the state into the DataGrid
+                    if (response) {
+                        try {
+                            // Parse the JSON string from the file
+                            const layout = JSON.parse(response);
+
+                            // Restore the grid state
+                            dataGrid.state(layout);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading grid state:", error);
+                }
+            });
+        }
+        function setDefaultLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            var layout = grid.state();
+            const layoutJson = JSON.stringify(layout, null, 2);
+            console.log(layoutJson);
+
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: layoutJson,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
+        function resetLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: null,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                    grid.state({});
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
+        // Footer Group Pannel button click event
+        function toggleGroupPanel() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isVisible = dataGrid.option("groupPanel.visible");
+            dataGrid.option("groupPanel.visible", !isVisible);
+        }
+        function showColumnChooser() {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+            if (isColumnChooserVisible) {
+                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+            } else {
+                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
+                dataGrid.showColumnChooser(); // Show the column chooser
+            }
+        }
+
+
+
+        // Footer Filter row button click event
+        function toggleFilterRow() {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var currentVisibility = grid.option("filterRow.visible");
+
+            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
+        }
+
+        // Footer Recipits button event
+        function addRecipitsButton_click(e) {
+            switch (e.itemData.text) {
+                case 'Add Cash Receipts':
+                    window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                    break;
+                case 'Add Bank Receipts':
+                    window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                    break;
+                // You can handle other cases here if needed
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+            }
+        }
+        function addReportsButton_click(e) {
+            let pageUrl = '';
+            let selectedText = e.itemData.text;
+
+            switch (selectedText) {
+                case 'Ledger to Salary Payable Mapping':
+                    if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                        pageUrl = `/${tenantName}/Finance/SalaryPayableMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}`;
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Please select the Account to Review',
+                            text: 'You need to select an account before proceeding.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+                    break;
+
+                case 'Ledger to Receivable/Payable Mapping':
+                    if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                        pageUrl = `/${tenantName}/Finance/LedgerToSubLedgerMapping?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}`;
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Please select the Account to Review',
+                            text: 'You need to select an account before proceeding.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+                    break;
+
+                case 'Bank Reconciliation':
+                    if (typeof acchedid !== 'undefined' && typeof accheadname !== 'undefined') {
+                        pageUrl = `/${tenantName}/Finance/BankReconciliation?acchedid=${encodeURIComponent(acchedid)}&accheadname=${encodeURIComponent(accheadname)}&accid=${encodeURIComponent(accid)}&FromDate=${encodeURIComponent(FromDate)}&ToDate=${encodeURIComponent(ToDate)}&lastRowBalance=${encodeURIComponent(lastRowBalance)}&firstRowBalance=${encodeURIComponent(firstRowBalance)}`;
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Please Select the Account to Reconcile',
+                            text: 'You need to select an account before proceeding.',
+                            confirmButtonText: 'OK'
+                        });
+                        return;
+                    }
+                    break;
+
+                case 'Detailed Transaction Report':
+                    window.open(`/${tenantName}/Finance/TransactionDetails`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                    return;  // No need to set pageUrl for new window
+            }
+            if (pageUrl) {
+                openModal(pageUrl, selectedText); // Open modal with the URL and title
+            }
+
+            // Handle Account Statement Cases
+            const reportMapping = {
+                "Account Statements": "AccountReport",
+                "Statement Of Account With Narration": "AccountWithNarration",
+                "Statement Of Account Export Formate": "AccountExportFormatReport",
+                "Statement Of Account Export Formate[Landscape]": "AccountExportLandscapeReport",
+                "Statement of Account Export [Formate2]": "AccountStatementFormat2Report",
+                "Statement of Account [OrderByVoucerNo9 (Without Narration)]": "AccountOrderbyVchNoWONarrationReport"
+            };
+
+            if (reportMapping[selectedText]) {
+                window.location.href = `/DocumentViewer?reportName=${reportMapping[selectedText]}`;
+            }
+        }
+
+
+
+
+        function closeOverlay() {
+            $("#overlay").fadeOut();
+            $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
+        }
+
+        // Handle button clicks
+        function addRecipitsButton_click(e) {
+            let url = "";
+            let title = "Receipts";
+            switch (e.itemData.text) {
+                case 'Add Cash Receipts':
+                    url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
+                    title = "Add Cash Receipts";
+                    break;
+                case 'Add Bank Receipts':
+                    url = `/${tenantName}/Finance/VoucherEntryReceipts`;
+                    title = "Add Bank Receipts";
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+            openModal(url, title);
+        }
+
+        // function addPaymentButton_click(e) {
+        //      let url = "";
+        //      let title = "Payments";
+        //      switch (e.itemData.text) {
+        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
+
+        //            DevExpress.ui.dialog.confirm(
+        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
+        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
+        //             "You can cancel only thru CREDIT NOTE."
+        //             "Click Yes if you want to continue.. or Click No to exit this option.",
+        //             "Confirm Creating new STANDARD TAX Invoice?"
+        //         ).done(function (dialogResult) {
+        //             if (dialogResult) {
+        //                 onConfirm(); // Proceed only if the user clicks "Yes"
+        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+        //             }
+        //         });
+
+        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
+        //              break;
+
+        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
+        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
+
+        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
+        //              break;
+
+        //          default:
+        //              console.log("Clicked item: ", e.itemData.text);
+        //              return;
+        //      }
+        //     openModal(url, title);
+        // }
+
+        function clientMaster(){
+            const url = `/${tenantName}/IMS/ClientLeadMaster`;
+            const title = "Client Master";
+                openModal(url, title);
+        }
+         function supplierMaster(){
+            const url = `/${tenantName}/IMS/SupplierLeadMaster`;
+            const title = "Supplier Master";
+                openModal(url, title);
+        }
+
+        function AddNewQuotation(){
+            const url = `/${tenantName}/IMS/AddNewQuotation`;
+            // const title = "";
+            window.location.href = url;
+        }
+        function AddNewSalesOrder() {
+            window.location.href = `/${tenantName}/IMS/AddNewSalesOrder`;
+        }
+        function AddNewRFQ() {
+            window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
+        }
+    function AddNewRFQDetails() {
+        window.location.href = `/${tenantName}/IMS/RFQwithItemDetails`;
+    }
+
+    function btnSalesOrderDetail() {
+        window.location.href = `/${tenantName}/IMS/SalesOrdersDetails`;
+    }
+    function QuotationDetails() {
+        window.location.href = `/${tenantName}/IMS/QuotationDetails`;
+    }
+    function MaterialReceiptDetails() {
+        window.location.href = `/${tenantName}/IMS/MaterialReceiptDetails`;
+    }
+     function PurchaseEditDetails() {
+        window.location.href = `/${tenantName}/IMS/PurchaseRequestItemDetails`;
+     }
+    function OpenDeliveryNoteDetails() {
+        window.location.href = `/${tenantName}/IMS/DeliveryNoteDetails`;
+    }
+
+        function AddPurchaseOrder(){
+        const url = `/${tenantName}/IMS/AddNewPurchaseOrder`;
+        // const title = "";
+        window.location.href = url;
+        }
+        function addPaymentButton_click(e) {
+        let url = "";
+        let title = "Payments";
+
+        switch (e.itemData.text) {
+           case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
+        DevExpress.ui.dialog.confirm(
+            "<div style='white-space: pre-wrap;'>"
+            + "This option will create a New STANDARD TAX INVOICE (B2B).\n"
+            + "After creating the invoice, you cannot remove or delete the invoice.\n"
+            + "You can cancel only through a CREDIT NOTE.\n"
+            + "Click Yes if you want to continue, or click No to exit this option."
+            + "</div>",
+            "Confirm Creating New STANDARD TAX Invoice?"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
+                title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
+                openModal(url, title);
+            }
+        });
+
+                break;
+
+            case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
+                url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
+                title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
+                openModal(url, title);
+                break;
+
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
+        }
+    }
+
+
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            let modal = document.getElementById("customModal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        };
+
+
+
+
+        function ChangeRowHeight(newHeight) {
+            // Update the row height
+            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
+            closeSubmenu();
+        }
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+        // Handle the file selection
+        $("#loadLayoutInput").on("change", function (event) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    try {
+
+                        const layout = JSON.parse(e.target.result);
+
+
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the file is valid JSON.");
+                    }
+                };
+
+
+                reader.readAsText(file);
+            }
+        });
+        // function addReportsButton_click(e) {
+        //     var selectedText = e.itemData.text; // Get selected item text
+
+
+        //     if (selectedText === "Account Statements") {
+        //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
+        //     } else if (selectedText === "Statement Of Account With Narration") {
+        //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
+        //     } else if (selectedText === "Statement Of Account Export Formate") {
+        //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
+        //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
+        //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
+        //     }
+        // }
+
+
+        function AccountGroupsOrdering() {
+
+            window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
+
+        }
+        function showSubmenu8(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            var $submenu = $('#submenuContainer8');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var submenuWidth = $submenu.outerWidth();
+
+            // Calculate left-side positioning
+            var leftPos = offset.left - submenuWidth - 5;
+
+            // Prevent submenu from going off-screen on the left
+            if (leftPos < 0) {
+                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            }
+
+            // Position submenu
+            $submenu.css({
+                'width': 250,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': leftPos,
+                'display': 'block',
+                'background': '#fff',
+                'border': '1px solid #ccc',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+                'padding': '5px'
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
+
+        function showSubmenu9(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            var $submenu = $('#submenuContainer9');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var submenuWidth = $submenu.outerWidth();
+
+            // Calculate left-side positioning
+            var leftPos = offset.left - submenuWidth - 5;
+
+            // Prevent submenu from going off-screen on the left
+            if (leftPos < 0) {
+                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            }
+
+            // Position submenu
+            $submenu.css({
+                'width': 250,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': leftPos,
+                'display': 'block',
+                'background': '#fff',
+                'border': '1px solid #ccc',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+                'padding': '5px'
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
+
+        function showSubmenu6(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            var $submenu = $('#submenuContainer6');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var submenuWidth = $submenu.outerWidth();
+
+            // Calculate left-side positioning
+            var leftPos = offset.left - submenuWidth - 5;
+
+            // Prevent submenu from going off-screen on the left
+            if (leftPos < 0) {
+                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            }
+
+            // Position submenu
+            $submenu.css({
+                'width': 250,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': leftPos,
+                'display': 'block',
+                'background': '#fff',
+                'border': '1px solid #ccc',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+                'padding': '5px'
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
+
+        function showSubmenu7(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            var $submenu = $('#submenuContainer7');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var submenuWidth = $submenu.outerWidth();
+
+            // Calculate left-side positioning
+            var leftPos = offset.left - submenuWidth - 5;
+
+            // Prevent submenu from going off-screen on the left
+            if (leftPos < 0) {
+                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+            }
+
+            // Position submenu
+            $submenu.css({
+                'width': 250,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': leftPos,
+                'display': 'block',
+                'background': '#fff',
+                'border': '1px solid #ccc',
+                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+                'padding': '5px'
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#submenuContainer7, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
+
+        // Helper function to hide all submenus
+        function hideAllSubmenus() {
+            $('#submenuContainer4').hide();
+            $('#submenuContainer5').hide();
+            $('#submenuContainer6').hide();
+            $('#submenuContainer7').hide();
+        }
+
+         
+        // function printFun() {
+        //     exportDataGridToPDF('dataGrid');
+        // }
+
+        
+    async function checkInvoiceApprovalStatus1(requestNo) {
+        try {
+            const response = await $.ajax({
+
+
+                url: `/api/AddNewClientRequest/GetRequestNoteApprovalStatus/${encodeURIComponent(requestNo)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            return response?.isApproved ?? false;
+        } catch (error) {
+            console.error("Error fetching approval status:", error);
+            return false;
+        }
+    }
+
+   
+       const salesReportMap = {
+        "Preview  Sales Order": "SalesOrderReport", // two spaces!
+        "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
+    };
+
+    function handleSales(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+
+        if (!salesOrderNo) {
+            alert("Sales Order number is required.");
+            return;
+        }
+
+        const reportName = salesReportMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+
+
+    const RFQMap = {
+        "Preview RFQ": "RFQEdit"
+    };
+
+    function handleRFQ(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
+
+        if (!rfqNo) {
+            alert("RFQ number is required.");
+            return;
+        }
+
+        const reportName = RFQMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
+
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
+
+
+
+
+        const PurchaseMap = {
+        "Preview Purchase Order": "PreviewPurchaseOrder",
+        "Preview Purchase Order(Wt VAT)":"PreviewPurchaseOrderWithoutVAT",
+         "Preview Purchase Order(Wt VAT / Wo Total Price)":"WithoutVATTotalPrice",
+          "Preview Purchase Order(Foreign Currency)":"PreviewPurchaseOrderForeignCurrency"
+    };
+
+   
+        function handlePurchase(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+
+        if (!purchaseNo) {
+            DevExpress.ui.notify("Purchase order number is required.", "error", 3000);
+            return;
+        }
+
+        try {
+            // Special case for "Distribute Discount Amount"
+            if (itemText === "Distribute Discount Amount") {
+                const url = `/${tenantName}/IMS/PODiscountDistribution?purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+                window.location.href = url;
+                return;
+            }
+
+            // Normal report handling
+            const reportName = PurchaseMap[itemText];
+
+            if (!reportName) {
+                DevExpress.ui.notify("Invalid report format selected.", "error", 3000);
+                return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open purchase report:", error);
+            DevExpress.ui.notify("An error occurred while trying to open the report.", "error", 3000);
+        }
+    }
+
+
+    function onIMSAttachmentButtonClick(e) {
+        // Get Voucher No safely
+        const purchaseOrderNOBox = $("#PurchaseOrderNo").dxTextBox("instance");
+        const purchaseOrderNO = purchaseOrderNOBox ? purchaseOrderNOBox.option("value") : null;
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Purchase Order";
+        // Log and build URL
+        console.log("Voucher No:", purchaseOrderNO);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(purchaseOrderNO)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+</script>

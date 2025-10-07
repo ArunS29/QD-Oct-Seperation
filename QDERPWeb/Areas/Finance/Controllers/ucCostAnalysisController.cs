@@ -213,7 +213,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var query = dbContext.Qry20106CostAnalyses.AsQueryable();
+                    var query = dbContext.Qry20181CostAllocationWtLedgers.AsQueryable();
 
                     if (!string.IsNullOrEmpty(accountId))
                     {
@@ -247,7 +247,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.CostAllocDrCr,
                         item.AmountAllocated,
                         item.CostAllocRemarks,
-                        item.IsDisabled,
+                       
                         item.AccountHead,
                         item.AccountGroup,
                         item.MasterGroup,
@@ -255,10 +255,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.AccountId,
                         item.VoucherNo,
                         item.VoucherType,
-                        item.VoucherTypeAndNo,
-                        item.CostCenterIncharge,
-                        item.EntryNarration,
-                        item.SysRemarks,
+                       
                         item.VoucherMonth,
                         item.VoucherYear,
                         item.EffectiveMonth,
@@ -284,6 +281,25 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetLedgerName(string accountId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
+
+            if (string.IsNullOrWhiteSpace(accountId))
+                return BadRequest("Invalid AccountId");
+
+            var ledger = await dbContext.Tbl201ChartOfAccounts
+                .Where(a => a.AccountId == accountId)
+                .Select(a => a.AccountHead)
+                .FirstOrDefaultAsync();
+
+            if (ledger == null)
+                return NotFound("Ledger not found");
+
+            return Ok(new { ledgerName = ledger });
+        }
 
         [HttpPost]
         public async Task<ActionResult> DeleteWronglyAllocatedEntries()

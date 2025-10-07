@@ -61,7 +61,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
 
                     // Fetching the data
-                    var cost = 0;
+                    //var cost = 0;
                     var data = await query.Select(i => new
                     {
                         i.SalesOrderNo,
@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
-                        cost = i.TotalWithTax / i.CurrencyRate,
+                        //cost = i.TotalWithTax / i.CurrencyRate,
                     }).ToListAsync();
 
                     return Json(data);
@@ -149,146 +149,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult SalesOrderNoIncrease1()
-        {
-            try
-            {
-                // Get tenant name from session
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                {
-                    _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
-                    return Unauthorized(new { message = "Tenant name not found in session." });
-                }
+      
 
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
-                    return Unauthorized(new { message = "Invalid tenant." });
-                }
-
-                // Build prefix from tenant name
-                string[] words = tenantName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                string prefix;
-                if (words.Length == 1)
-                {
-                    var word = words[0];
-                    prefix = (word.Length >= 2)
-                        ? $"{char.ToUpper(word[0])}{char.ToUpper(word[^1])}"
-                        : word.ToUpper();
-                }
-                else
-                {
-                    prefix = string.Concat(words.Select(w => char.ToUpper(w[0])));
-                }
-
-                string year = DateTime.Now.Year.ToString();
-
-                // 🔄 Updated format: {Prefix}-SO-{Year}-
-                string basePrefix = $"{prefix}-SO-{year}-";
-
-                // Fetch existing Sales Order Nos matching this format
-                var orderNos = dbContext.Tbl60201salesOrderMasters
-                    .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
-                    .Select(x => x.SalesOrderNo)
-                    .ToList();
-
-                // Extract number part using Regex
-                int maxNumber = 0;
-                var regex = new Regex($@"^{Regex.Escape(basePrefix)}(\d+)$");
-                foreach (var orderNo in orderNos)
-                {
-                    var match = regex.Match(orderNo ?? "");
-                    if (match.Success && int.TryParse(match.Groups[1].Value, out int num))
-                    {
-                        if (num > maxNumber)
-                            maxNumber = num;
-                    }
-                }
-
-                // Generate next number
-                int nextNumber = maxNumber + 1;
-                string nextOrderNo = $"{basePrefix}{nextNumber:D5}";
-
-                return Ok(new { salesOrderNo = nextOrderNo });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
-                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-            }
-        }
-        //[HttpGet]
-        //public IActionResult SalesOrderNoIncrease()
-        //{
-        //    try
-        //    {
-        //        // Step 1: Get tenant name from session
-        //        string tenantName = HttpContext.Session.GetString("TenantName");
-        //        if (string.IsNullOrWhiteSpace(tenantName))
-        //        {
-        //            _logger.LogWarning("Tenant name not found in session when generating SalesOrderNo.");
-        //            return Unauthorized(new { message = "Tenant name not found in session." });
-        //        }
-
-        //        // Step 2: Get DB context
-        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            _logger.LogWarning("Invalid tenant context when generating SalesOrderNo.");
-        //            return Unauthorized(new { message = "Invalid tenant." });
-        //        }
-
-        //        // Step 3: Get company details
-        //        var company = dbContext.Tbl901CompanyDetails
-        //            .FirstOrDefault(c => c.CompanyNameShort == tenantName);
-
-        //        if (company == null)
-        //            return NotFound("Company not found in Tbl901CompanyDetails.");
-
-        //        // Step 4: Get SalesOrderAbbrv, year digit, reset flag, and number of digits
-        //        string SalesOrderAbbrv = company.SalesOrderAbbrv ?? "";
-        //        int yearInDigit = company.InvoiceYearDigits ?? 0;
-        //        bool isResetByYear = company.IsResetInvoiceInYear ?? false;
-
-        //        int noOfDigits = dbContext.Tbl901CompanyDetails02s
-        //            .Where(c => c.CompanyId == company.CompanyId)
-        //            .Select(c => c.NoOfDigitsToInventoryQuotation ?? 5)
-        //            .FirstOrDefault();
-
-        //        DateTime currentDate = DateTime.Now;
-        //        string yearPart = currentDate.Year.ToString();
-
-        //        if (yearInDigit > 0)
-        //            yearPart = yearPart.Substring(yearPart.Length - yearInDigit, yearInDigit);
-        //        else
-        //            yearPart = "";
-
-        //        string basePrefix = $"{SalesOrderAbbrv}{yearPart}-";
-
-        //        // Step 5: Get existing matching SalesOrderNos
-        //        var orderNos = dbContext.Tbl60201salesOrderMasters
-        //            .Where(x => x.SalesOrderNo.StartsWith(basePrefix))
-        //            .Select(x => x.SalesOrderNo)
-        //            .ToList();
-
-        //        // Step 6: Extract and compute next number
-        //        int maxNumber = orderNos
-        //            .Select(no => int.TryParse(no?.Substring(no.Length - noOfDigits), out int num) ? num : 0)
-        //            .DefaultIfEmpty(0)
-        //            .Max();
-
-        //        int nextNumber = maxNumber + 1;
-        //        string nextOrderNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
-
-        //        return Ok(new { salesOrderNo = nextOrderNo });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError($"Error in SalesOrderNoIncrease: {ex.Message}");
-        //        return StatusCode(500, new { message = "An error occurred while generating Sales Order No.", error = ex.Message });
-        //    }
-        //}
 
         [HttpGet]
         public IActionResult SalesOrderNoIncrease()
@@ -667,7 +529,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.CostAllocationMasterGroup = model.CostAllocationMasterGroup;
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
                     existingEntity.AddedOn = DateTime.Now;
-                    existingEntity.IsVerified = true;
+                   // existingEntity.IsVerified = true;
                     existingEntity.CurrencyId = model.CurrencyId ?? 1;
                     existingEntity.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                     existingEntity.CurrencyRate = model.CurrencyRate ?? 0;
@@ -708,9 +570,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         CostAllocationMasterGroup = model.CostAllocationMasterGroup,
                         AddedBy = model.AddedBy ?? User.Identity?.Name,
                         AddedOn = DateTime.Now,
-                         IsApproved = false,
-                        IsVerified = false,
-                        IsSubmitted = false,
+                        // IsApproved = false,
+                        //IsVerified = false,
+                        //IsSubmitted = false,
                         CurrencyId = model.CurrencyId??1,
                         BaseCurrencyId = model.BaseCurrencyId??1,
                         CurrencyRate = model.CurrencyRate ?? 0
@@ -1037,6 +899,12 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.CurrencyId,
                 order.CurrencyRate,
                 order.BaseCurrencyId,
+                order.SubmittedBy,
+                order.VerifiedBy,
+                order.ApprovedBy,
+                order.ApprovedOn,
+                order.SubmittedOn,
+                order.VerifiedOn,
                 SalesOrderChildren = children
             });
         }
@@ -1126,39 +994,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
     }
 
     return Ok(new { success = true });
-}   //[HttpGet]
-        //public IActionResult GetGoodsAndServices()
-        //{
-        //    try
-        //    {
-        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //        {
-        //            var items = dbContext.Tbl20164GoodsAndServicesMasters
-        //                .Where(x => x.IsDiscontinued == false) // Optional filter
-        //                .Select(x => new
-        //                {
-        //                    x.Gscode,
-        //                    x.Gsdescrpition,
-        //                    x.GsdescriptionAr,
-        //                    x.ItemPartNo,
-        //                    x.GspackingUnit
-        //                })
-        //                .ToList();
-
-        //            return Json(items);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest("Unable to resolve tenant context.");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Optional: Log the exception (example: using ILogger)
-        //        Console.WriteLine("Error loading Goods and Services: " + ex.Message);
-        //        return StatusCode(500, "An error occurred while retrieving the data.");
-        //    }
-        //}
+}  
         [HttpGet]
         public async Task<IActionResult> GetGoodsAndServices()
         {
@@ -1295,70 +1131,6 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetStoreStockAvailabilityGrid()
-        //{
-        //	try
-        //	{
-        //		if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-        //		{
-        //			var data = await dbContext.Qry65320storeStockAvaliabilityForSalesOrders
-        //				.Select(i => new
-        //				{
-        //					i.StoreId,
-        //					i.StoreName,
-        //					i.LedgerNo,
-        //					i.CostAllocationUnitId,
-
-        //				})
-        //				.ToListAsync();
-
-        //			return Json(data); // return raw data, paging/sorting done on client-side
-        //		}
-
-        //		return Unauthorized(new { message = "Invalid tenant.", success = false });
-        //	}
-        //	catch (Exception ex)
-        //	{
-        //		_logger.LogError($"Error in GetProject: {ex.Message}");
-        //		return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
-        //	}
-        //}
-
-        [HttpPost]
-        public async Task<IActionResult> SubmitSalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                if (string.IsNullOrWhiteSpace(salesOrderNo))
-                    return BadRequest(new { success = false, message = "Invalid Sales Order No." });
-
-                var existingEntity = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (existingEntity == null)
-                    return NotFound(new { success = false, message = "Sales Order not found. Please save it first." });
-
-                existingEntity.IsSubmitted = true;
-                dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                   module: "IMS > Submit Sales Order1",
-                   actionDetail: $"Saved SalesOrder1 {salesOrderNo}",
-                   documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales Order submitted successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while submitting Sales Order.");
-                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
-            }
-        }
 
            [HttpPost]
 
@@ -1369,10 +1141,16 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
        try
 
        {
-
+            var userName = HttpContext.Session.GetString("UserName");
+            var userIdString = HttpContext.Session.GetString("UserId");
+            if (!int.TryParse(userIdString, out int userId))
+            {
+                return Unauthorized(new { message = "Invalid or missing UserId in session." });
+            }
+            
            if (string.IsNullOrWhiteSpace(salesOrderNo))
 
-               return BadRequest(new { success = false, message = "Sales Order number is required." });
+                    return BadRequest(new { success = false, message = "Sales Order number is required." });
  
            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
 
@@ -1402,8 +1180,8 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                    actionDetail: $"Saved Sales Order {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
-
-                return Ok(new { success = true, message = "Sales order submitted successfully." });
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                return Ok(new { success = true, message = "Sales order submitted successfully.",submittedBy = signatoryId });
 
        }
 
@@ -1419,50 +1197,17 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
 
    }
 
- 
-        [HttpPost]
-        public async Task<IActionResult> VerifySalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                var order = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (order == null)
-                    return NotFound(new { success = false, message = "Sales order not found." });
-
-                if (order.IsSubmitted != true)
-                    return BadRequest(new { success = false, message = "Please submit before verifying." });
-
-                order.IsVerified = true;
-
-                // ✅ Add this line to mark entity as modified
-                dbContext.Tbl60201salesOrderMasters.Update(order);
-
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                 module: "IMS > Verify Sales Order1",
-                  actionDetail: $"Verified Sales Order1 {salesOrderNo}",
-                 documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales order verified successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "VerifySalesOrder error");
-                return StatusCode(500, new { success = false, message = "Internal error." });
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
         {
             try
             {
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                }
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Sales Order number is required." });
 
@@ -1484,15 +1229,15 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 order.IsVerified = true;
                 order.VerifiedBy = HttpContext.Session.GetString("UserName") ?? "System";
                 order.VerifiedOn = DateTime.Now;
-
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order",
                   actionDetail: $"Verified Sales Order {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
 
-                return Ok(new { success = true, message = "Sales order verified successfully." });
+                return Ok(new { success = true, message = "Sales order verified successfully.",verifiedBy = signatoryId });
             }
             catch (Exception ex)
             {
@@ -1500,48 +1245,18 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
             }
         }
-        [HttpPost]
-        public async Task<IActionResult> ApproveSalesOrder1([FromBody] string salesOrderNo)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
-                if (string.IsNullOrWhiteSpace(salesOrderNo))
-                    return BadRequest(new { success = false, message = "Sales Order No is required." });
-
-                var order = await dbContext.Tbl60201salesOrderMasters
-                    .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
-
-                if (order == null)
-                    return NotFound(new { success = false, message = "Sales Order not found." });
-
-                if (order.IsVerified != true)
-                    return BadRequest(new { success = false, message = "Sales Order must be verified before approval." });
-
-                order.IsApproved = true;
-                dbContext.Tbl60201salesOrderMasters.Update(order);
-                await dbContext.SaveChangesAsync();
-                await _userActionLogger.LogAsync(
-                  module: "IMS > Approve Sales Order1",
-                  actionDetail: $": Approved Sales Order1 {salesOrderNo}",
-                   documentNo: $"{salesOrderNo}"
-                );
-
-                return Ok(new { success = true, message = "Sales Order approved successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error approving Sales Order");
-                return StatusCode(500, new { success = false, message = "Internal server error." });
-            }
-        }
+        
         [HttpPost]
         public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
         {
             try
             {
+                var userName = HttpContext.Session.GetString("UserName");
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (!int.TryParse(userIdString, out int userId))
+                {
+                    return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                }
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Sales Order No is required." });
 
@@ -1570,8 +1285,8 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                   actionDetail: $"Approved Sales Order {salesOrderNo}",
                   documentNo: $"{salesOrderNo}"
                 );
-
-                return Ok(new { success = true, message = "Sales order approved successfully." });
+                var signatoryId = await GetSignatoryIDfromUserID(userId);
+                return Ok(new { success = true, message = "Sales order approved successfully.",ApprovedBy = signatoryId });
             }
             catch (Exception ex)
             {
@@ -1579,7 +1294,22 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
             }
         }
+    private async Task<int?> GetSignatoryIDfromUserID(int? userId)
+		{
+			if (userId == null)
+				return null;
 
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return await dbContext.Tbl90104DocumentSignatories
+                    .Where(x => x.UserId == userId)
+                    .Select(x => x.SignatoryId)
+                    .FirstOrDefaultAsync();
+            }
+
+            // Tenant context is invalid; return null
+            return null;
+        }
         [HttpGet]
         public async Task<IActionResult> GetSalesOrderStatus(string salesOrderNo)
         {
@@ -1631,16 +1361,22 @@ public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel
         if (existingEntity.IsApproved == true)
         {
             existingEntity.IsApproved = false;
+            existingEntity.ApprovedBy = "";
+            existingEntity.ApprovedOn = null;
             wasChanged = true;
         }
         if (existingEntity.IsVerified == true)
         {
             existingEntity.IsVerified = false;
+            existingEntity.VerifiedBy = "";
+            existingEntity.VerifiedOn = null;
             wasChanged = true;
         }
         if (existingEntity.IsSubmitted == true)
         {
             existingEntity.IsSubmitted = false;
+            existingEntity.SubmittedBy = "";
+            existingEntity.SubmittedOn= null;
             wasChanged = true;
         }
 
@@ -1929,6 +1665,206 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
             return Json(result);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var child = await dbContext.Tbl60202salesOrderChildren
+                    .FirstOrDefaultAsync(x => x.SalesOrderChildId == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60202salesOrderChildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                    actionDetail: $"Deleted Child By Id: {childId}",
+                    documentNo: $"{childId}"
+                );
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error in DeleteChildById for ChildId={ChildId}", childId);
+                return StatusCode(500, new { success = false, message = $"Error: {ex.Message}" });
+            }
+
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMultipleChild([FromBody] long[] childIds)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+            try
+            {
+                var children = dbContext.Tbl60202salesOrderChildren
+                                .Where(x => childIds.Contains(x.SalesOrderChildId)).ToList();
+
+                if (!children.Any())
+                    return NotFound(new { success = false, message = "No child records found." });
+
+                dbContext.Tbl60202salesOrderChildren.RemoveRange(children);
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                    actionDetail: $"Deleted Child IDs: {string.Join(",", childIds)}",
+                    documentNo: $"{string.Join(",", childIds)}"
+                );
+
+                return Ok(new { success = true, message = $"{children.Count} row(s) deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in DeleteMultipleChild for ChildId={ChildId}", childIds);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        //Create Performa Invoice
+
+        public class CreateProformaInvoiceRequest
+        {
+            public string SalesOrderNo { get; set; }
+            public string ClientCode { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateFromSalesOrder([FromBody] CreateProformaInvoiceRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.SalesOrderNo))
+                return BadRequest(new { success = false, message = "Sales Order No is required." });
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+                // 1️⃣ Check if Sales Order exists
+                var salesOrder = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(s => s.SalesOrderNo == request.SalesOrderNo);
+
+                if (salesOrder == null)
+                    return NotFound(new { success = false, message = "Sales Order not found." });
+
+                // Optional: check if approved
+                if ((bool)!salesOrder.IsApproved)
+                    return BadRequest(new { success = false, message = "Sales Order is not approved." });
+
+                // 2️⃣ Check if Proforma Invoice already exists
+                bool proformaExists = dbContext.Tbl20181ProformaInvoiceMasters
+                    .Any(p => p.SalesOrderNo == request.SalesOrderNo);
+
+                if (proformaExists)
+                    return BadRequest(new { success = false, message = "Proforma Invoice already exists for this Sales Order." });
+
+                // 3️⃣ Generate new Proforma Invoice No
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyId == defaultCompanyByte);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                string invoiceAbbrv = company.InvoiceAbbrv;
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+
+                string newProformaInvoiceNo = GetNewProformaInvoiceNo(invoiceAbbrv, yearDigits, DateTime.Now, isResetByYear, dbContext);
+
+                // 4️⃣ Get Due Date
+                int noOfDaysDue = GetDueDateOfInvoice(request.ClientCode, dbContext); // implement as per your logic
+                DateTime dueDate = DateTime.Today.AddDays(noOfDaysDue);
+
+                // 5️⃣ AddedBy
+                string addedBy = HttpContext.Session.GetString("UserName");
+
+                // 6️⃣ Call SP to insert Master and Child
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_05InsertToProformaFromSalesOrder @ProformaInvoiceNo={0}, @SalesOrderNo={1}, @ClientLedgerNo={2}, @DueDate={3}, @AddedBy={4}",
+                    newProformaInvoiceNo, request.SalesOrderNo, request.ClientCode, dueDate, addedBy
+                );
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Proforma Invoice created successfully.",
+                    invoiceNo = newProformaInvoiceNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        // Helper: Generate Proforma Invoice No
+        private string GetNewProformaInvoiceNo(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+        {
+            try
+            {
+                int maxNumber = 0;
+                var query = dbContext.Tbl20181ProformaInvoiceMasters.AsQueryable();
+
+                if (isResetByYear)
+                {
+                    query = query.Where(d => d.ProformaInvoiceDate.HasValue && d.ProformaInvoiceDate.Value.Year == invoiceDate.Year);
+                }
+
+                maxNumber = query
+                    .Select(d => d.ProformaInvoiceNo)
+                    .Where(no => !string.IsNullOrEmpty(no) && no.Length >= 6)
+                    .AsEnumerable()
+                    .Select(no => int.TryParse(no.Substring(no.Length - 6), out int number) ? number : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                maxNumber += 1;
+
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-{maxNumber.ToString().PadLeft(6, '0')}";
+            }
+            catch
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                else
+                    strYear = "";
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-000001";
+            }
+        }
+
+        // Dummy placeholder: implement your due date logic
+        private int GetDueDateOfInvoice(string clientCode, ERPMasterWtDataContext dbContext)
+        {
+            // Example: fetch from ledger or default 30
+            return 30;
+        }
     }
 
 

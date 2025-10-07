@@ -284,16 +284,21 @@
             const $thead = $("#topOutstandingTableBody").closest("table").find("thead tr");
 
             // Define table headers
-            if (tabType === "netAmount") {
-                $thead.html(`<th>Account Group</th><th>Balance Amount</th><th>% of Total</th>`);
-            } else if (tabType === "client" || tabType === "supplier") {
-                $thead.html(`
-                    <th>Account Head</th>
-                    <th>Balance Amount</th>
-                    <th>% of Total</th>
-                    <th>Account Head No</th>
-                `);
-            }
+                   if (tabType === "netAmount") {
+            $thead.html(`
+                <th>${formatMessage("Account Group")}</th>
+                <th>${formatMessage("Balance Amount")}</th>
+                <th>${formatMessage("% of Total")}</th>
+            `);
+        } else if (tabType === "client" || tabType === "supplier") {
+            $thead.html(`
+                <th>${formatMessage("Account Head")}</th>
+                <th>${formatMessage("Balance Amount")}</th>
+                <th>${formatMessage("% of Total")}</th>
+                <th>${formatMessage("Account Head No")}</th>
+            `);
+        }
+
 
             $body.html(`
                 <tr>

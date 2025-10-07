@@ -1,6 +1,11 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -8,11 +13,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 using QDERPWeb.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -23,11 +24,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ExpenseClaimController> _logger;
-
+        private readonly IUserActionLogger _userActionLogger;
         private readonly FcmService _fcmService;
 
-        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
+        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
@@ -449,7 +451,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                                    var notifyRequest = new NotificationRequest
+                await _userActionLogger.LogAsync(
+      module: "Finance > Expense Claim",
+      actionDetail: $"Saved Voucher: {model.ClaimRefNo}",
+      documentNo: model.ClaimRefNo
+  );
+
+                var notifyRequest = new NotificationRequest
              {
                  UserId = userIdStr, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
@@ -502,7 +510,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.SubmittedOn = submittedOn;
 
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Expense Claim",
+                    actionDetail: $"Submitted: {claim.ClaimRefNo}",
+                    documentNo: claim.ClaimRefNo
+                    );
                     var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
@@ -550,6 +562,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
 
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Verified Claim: {model.ClaimRefNo}",
+          documentNo: model.ClaimRefNo
+      );
+
                     var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
@@ -594,8 +612,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.ApprovedOn = approveOn;
 
                     await dbContext.SaveChangesAsync();
-
-                        var notifyRequest = new NotificationRequest
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Approved Claim: {model.ClaimRefNo}",
+          documentNo: model.ClaimRefNo
+      );
+                    var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
@@ -810,6 +832,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         x.ClaimDate,
                                         x.ProjectClaimedFor,
                                         x.Priority,
+                                        x.ClaimEffectiveDate,
                                         x.ClaimRemarks,
                                         x.IsSubmittedToFinance,
                                         x.SubmittedBy,
@@ -962,23 +985,65 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSupplierName()
+        public async Task<IActionResult> GetSupplierName(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var data = dbContext.Tbl30199SupplierMasters
-                    .Select(c => new
-                    {
-                        c.SupplierName,
-                        c.SupplierVatno
-                    }).ToList();
+                try
+                {
+                    var supplierDataQuery = dbContext.Tbl20103ExpenseClaimChildren
+                        // Remove null/empty/whitespace supplier names first
+                        .Where(i => i.SupplierName != null && i.SupplierName.Trim() != "")
+                        // Group by trimmed name so " ABC " and "ABC" are treated the same
+                        .GroupBy(i => i.SupplierName.Trim())
+                        .Select(g => new
+                        {
+                            SupplierName = g.Key,
+                            SupplierVATNo = g.Select(x => x.SupplierVatno).FirstOrDefault()
+                        });
 
-                return Ok(data);
+                    return Json(await DataSourceLoader.LoadAsync(supplierDataQuery, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSupplierName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
+        public async Task<IActionResult> GetPurchaserNames(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var supplierDataQuery = dbContext.Tbl20103ExpenseClaimChildren
+                        // Remove null/empty/whitespace supplier names first
+                        .Where(i => i.PurchaserName != null && i.PurchaserName.Trim() != "")
+                        // Group by trimmed name so " ABC " and "ABC" are treated the same
+                        .GroupBy(i => i.PurchaserName.Trim())
+                        .Select(g => new
+                        {
+                            PurchaserName = g.Key,
+                            SupplierVATNo = g.Select(x => x.SupplierVatno).FirstOrDefault()
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(supplierDataQuery, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetSupplierName: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
         public IActionResult GetCostEmployees()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1311,7 +1376,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     master.IsPaid = true;
                     master.PaidBy = HttpContext.Session.GetString("UserName") ?? "System";
-                    master.PaidOn = DateTime.Now;
+                    master.PaidOn = dto.PaidOn;
                     master.PaymentAccount = dto.SelectedAccountHead;
                     master.PaymentVoucherNo = dto.PaymentVoucherNo;
                     master.PaymentType = dto.SelectedPaymentType;
@@ -1337,7 +1402,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     IsPaid = true,
                     PaidBy = HttpContext.Session.GetString("UserName") ?? "System",
-                    PaidOn = DateTime.Now.ToString("dd-MMM-yyyy")
+                    PaidOn = dto.PaidOn.ToString("dd-MMM-yyyy")
                 });
             }
             catch (Exception ex)
@@ -1507,7 +1572,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
-                strategy.Execute(() =>
+                strategy.Execute(async () =>
                 {
                     using var transaction = dbContext.Database.BeginTransaction();
 
@@ -1525,6 +1590,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
 
                     dbContext.SaveChanges();
+
+                    await _userActionLogger.LogAsync(
+          module: "Finance > Expense Claim",
+          actionDetail: $"Deleted Claim: {master.ClaimRefNo}",
+          documentNo: master.ClaimRefNo
+      );
                     transaction.Commit();
                 });
 

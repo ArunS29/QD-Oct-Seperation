@@ -110,4 +110,12 @@ public partial class Tbl40103PropertyQuoteMaster
     public short? CoordinatorIncharge { get; set; }
 
     public string TransportationScope { get; set; }
+    public DateTime? VerifiedOn { get; set; }   
+    public string? VerifiedBy { get; set; }
+    public bool IsSubmitted { get; set; }          
+    public string? SubmittedBy { get; set; }       
+    public DateTime? SubmittedOn { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

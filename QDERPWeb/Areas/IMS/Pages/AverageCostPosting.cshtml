@@ -107,7 +107,9 @@
 		padding: 5px 0;
 		z-index: 1000;
 	}
-
+	 .titleCard-toggle1 {
+        display: none;
+    }
 	.context-menu-itemInvoice {
 		display: flex;
 		align-items: center;
@@ -429,106 +431,106 @@
     )
     .OnInitialized("onStatusCardReady")
     .DataSource(new JS("[]"))
-    .Columns(columns =>
-    {
-       columns.AddFor(m => m.DeliveryNoteSlNo).Caption("Delivery Note Sl No");
-columns.AddFor(m => m.DeliveryNoteNo).Caption("Delivery Note No");
-columns.AddFor(m => m.DeliveryDate).Caption("Delivery Date").Format("dd-MMM-yyyy");
-columns.AddFor(m => m.Gscode).Caption("GS Code");
-columns.AddFor(m => m.Gsdescrpition).Caption("GS Description");
+   .Columns(columns =>
+{
+    columns.AddFor(m => m.DeliveryNoteSlNo).Caption(new JS("formatMessage('Delivery Note Sl No')"));
+    columns.AddFor(m => m.DeliveryNoteNo).Caption(new JS("formatMessage('Delivery Note No')"));
+    columns.AddFor(m => m.DeliveryDate).Caption(new JS("formatMessage('Delivery Date')")).Format("dd-MMM-yyyy");
+    columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')"));
+    columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')"));
 
-// All other fields hidden by default with proper captions
-columns.AddFor(m => m.DeliveryType).Caption("Delivery Type").Visible(false);
-columns.AddFor(m => m.ClientPono).Caption("Client PO No").Visible(false);
-columns.AddFor(m => m.QuotationNo).Caption("Quotation No").Visible(false);
-columns.AddFor(m => m.SalesOrderNo).Caption("Sales Order No").Visible(false);
-columns.AddFor(m => m.MaterialRequestNo).Caption("Material Request No").Visible(false);
-columns.AddFor(m => m.StoreId).Caption("Store Id").Visible(false);
-columns.AddFor(m => m.ProjectId).Caption("Project Id").Visible(false);
-columns.AddFor(m => m.ClientProject).Caption("Client Project").Visible(false);
-columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
-columns.AddFor(m => m.ClientAddress).Caption("Client Address").Visible(false);
-columns.AddFor(m => m.ContactPerson).Caption("Contact Person").Visible(false);
-columns.AddFor(m => m.ContactPersonTitle).Caption("Contact Person Title").Visible(false);
-columns.AddFor(m => m.ContactMobile1).Caption("Contact Mobile 1").Visible(false);
-columns.AddFor(m => m.ContactMobile2).Caption("Contact Mobile 2").Visible(false);
-columns.AddFor(m => m.ContactPhone1).Caption("Contact Phone 1").Visible(false);
-columns.AddFor(m => m.ContactPhone2).Caption("Contact Phone 2").Visible(false);
-columns.AddFor(m => m.ContactEmail).Caption("Contact Email").Visible(false);
-columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
-columns.AddFor(m => m.EmailAddress).Caption("Email Address").Visible(false);
-columns.AddFor(m => m.IssuedQty).Caption("Issued Qty").Visible(false);
-columns.AddFor(m => m.IssuedUom).Caption("Issued UOM").Visible(false);
-columns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Visible(false);
-columns.AddFor(m => m.DeliveryRemarks).Caption("Delivery Remarks").Visible(false);
-columns.AddFor(m => m.LineOrderNo).Caption("Line Order No").Visible(false);
-columns.AddFor(m => m.AddlDescription).Caption("Additional Description").Visible(false);
-columns.AddFor(m => m.UnitType).Caption("Unit Type").Visible(false);
-columns.AddFor(m => m.UnitDesc).Caption("Unit Description").Visible(false);
-columns.AddFor(m => m.SignatoryName).Caption("Signatory Name").Visible(false);
-columns.AddFor(m => m.SignatoryPosition).Caption("Signatory Position").Visible(false);
-columns.AddFor(m => m.SignatoryContact).Caption("Signatory Contact").Visible(false);
-columns.AddFor(m => m.SignatoryEmail).Caption("Signatory Email").Visible(false);
-columns.AddFor(m => m.Salesman).Caption("Salesman").Visible(false);
-columns.AddFor(m => m.TransportedBy).Caption("Transported By").Visible(false);
-columns.AddFor(m => m.DriversName).Caption("Driver's Name").Visible(false);
-columns.AddFor(m => m.DriversId).Caption("Driver's Id").Visible(false);
-columns.AddFor(m => m.VehicleNo).Caption("Vehicle No").Visible(false);
-columns.AddFor(m => m.DeliveryNoteRemarks).Caption("Delivery Note Remarks").Visible(false);
-columns.AddFor(m => m.VendorNo).Caption("Vendor No").Visible(false);
-columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
-columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
-columns.AddFor(m => m.ClientPodate).Caption("Client PO Date").Visible(false);
-columns.AddFor(m => m.Mprno).Caption("MPR No").Visible(false);
-columns.AddFor(m => m.RevisionNo).Caption("Revision No").Visible(false);
-columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
-columns.AddFor(m => m.IssuedUnitPrice).Caption("Issued Unit Price").Visible(false);
-columns.AddFor(m => m.UnitTotalPrice).Caption("Unit Total Price").Visible(false);
-columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-columns.AddFor(m => m.ExpiryDate).Caption("Expiry Date").Visible(false);
-columns.AddFor(m => m.BatchNo).Caption("Batch No").Visible(false);
-columns.AddFor(m => m.DeliveryIssuedTo).Caption("Delivery Issued To").Visible(false);
-columns.AddFor(m => m.Attention).Caption("Attention").Visible(false);
-columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
-columns.AddFor(m => m.ClientContactEmail).Caption("Client Contact Email").Visible(false);
-columns.AddFor(m => m.IssuedFromStoreCode).Caption("Issued From Store Code").Visible(false);
-columns.AddFor(m => m.IssuedFromStoreName).Caption("Issued From Store Name").Visible(false);
-columns.AddFor(m => m.DeliveryTypeName).Caption("Delivery Type Name").Visible(false);
-columns.AddFor(m => m.VoucherNo).Caption("Voucher No").Visible(false);
-columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
-columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
-columns.AddFor(m => m.GsgroupName).Caption("GS Group Name").Visible(false);
-columns.AddFor(m => m.ItemSize).Caption("Item Size").Visible(false);
-columns.AddFor(m => m.ItemPartNo).Caption("Item Part No").Visible(false);
-columns.AddFor(m => m.ItemBrand).Caption("Item Brand").Visible(false);
-columns.AddFor(m => m.ItemMake).Caption("Item Make").Visible(false);
-columns.AddFor(m => m.StockClassification).Caption("Stock Classification").Visible(false);
-columns.AddFor(m => m.Hscode).Caption("HS Code").Visible(false);
-columns.AddFor(m => m.ActualSize).Caption("Actual Size").Visible(false);
-columns.AddFor(m => m.Identification).Caption("Identification").Visible(false);
-columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
-columns.AddFor(m => m.GsdescriptionAr).Caption("GS Description (AR)").Visible(false);
-columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group Id").Visible(false);
-columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
-columns.AddFor(m => m.ProjectLocation).Caption("Project Location").Visible(false);
-columns.AddFor(m => m.ProjectInchargeName).Caption("Project Incharge Name").Visible(false);
-columns.AddFor(m => m.ProjectInchargeEmail).Caption("Project Incharge Email").Visible(false);
-columns.AddFor(m => m.ProjectInchargeContactNo).Caption("Project Incharge Contact No").Visible(false);
-columns.AddFor(m => m.SalesPersonContactNo).Caption("Sales Person Contact No").Visible(false);
-columns.AddFor(m => m.EmployeeNo).Caption("Employee No").Visible(false);
-columns.AddFor(m => m.EmployeeName).Caption("Employee Name").Visible(false);
-columns.AddFor(m => m.PropertyNo).Caption("Property No").Visible(false);
-columns.AddFor(m => m.PropertyDescription).Caption("Property Description").Visible(false);
-columns.AddFor(m => m.SaesPersonUserId).Caption("Sales Person User Id").Visible(false);
-columns.AddFor(m => m.TotalIssuedQty).Caption("Total Issued Qty").Visible(false);
-columns.AddFor(m => m.ClientInvoiceStatus).Caption("Client Invoice Status").Visible(false);
-columns.AddFor(m => m.IsServicesGroup).Caption("Is Services Group").Visible(false);
+    // All other fields hidden by default with proper captions
+    columns.AddFor(m => m.DeliveryType).Caption(new JS("formatMessage('Delivery Type')")).Visible(false);
+    columns.AddFor(m => m.ClientPono).Caption(new JS("formatMessage('Client PO No')")).Visible(false);
+    columns.AddFor(m => m.QuotationNo).Caption(new JS("formatMessage('Quotation No')")).Visible(false);
+    columns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Visible(false);
+    columns.AddFor(m => m.MaterialRequestNo).Caption(new JS("formatMessage('Material Request No')")).Visible(false);
+    columns.AddFor(m => m.StoreId).Caption(new JS("formatMessage('Store Id')")).Visible(false);
+    columns.AddFor(m => m.ProjectId).Caption(new JS("formatMessage('Project Id')")).Visible(false);
+    columns.AddFor(m => m.ClientProject).Caption(new JS("formatMessage('Client Project')")).Visible(false);
+    columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+    columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+    columns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Visible(false);
+    columns.AddFor(m => m.ClientAddress).Caption(new JS("formatMessage('Client Address')")).Visible(false);
+    columns.AddFor(m => m.ContactPerson).Caption(new JS("formatMessage('Contact Person')")).Visible(false);
+    columns.AddFor(m => m.ContactPersonTitle).Caption(new JS("formatMessage('Contact Person Title')")).Visible(false);
+    columns.AddFor(m => m.ContactMobile1).Caption(new JS("formatMessage('Contact Mobile 1')")).Visible(false);
+    columns.AddFor(m => m.ContactMobile2).Caption(new JS("formatMessage('Contact Mobile 2')")).Visible(false);
+    columns.AddFor(m => m.ContactPhone1).Caption(new JS("formatMessage('Contact Phone 1')")).Visible(false);
+    columns.AddFor(m => m.ContactPhone2).Caption(new JS("formatMessage('Contact Phone 2')")).Visible(false);
+    columns.AddFor(m => m.ContactEmail).Caption(new JS("formatMessage('Contact Email')")).Visible(false);
+    columns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
+    columns.AddFor(m => m.EmailAddress).Caption(new JS("formatMessage('Email Address')")).Visible(false);
+    columns.AddFor(m => m.IssuedQty).Caption(new JS("formatMessage('Issued Qty')")).Visible(false);
+    columns.AddFor(m => m.IssuedUom).Caption(new JS("formatMessage('Issued UOM')")).Visible(false);
+    columns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit Rate Method')")).Visible(false);
+    columns.AddFor(m => m.DeliveryRemarks).Caption(new JS("formatMessage('Delivery Remarks')")).Visible(false);
+    columns.AddFor(m => m.LineOrderNo).Caption(new JS("formatMessage('Line Order No')")).Visible(false);
+    columns.AddFor(m => m.AddlDescription).Caption(new JS("formatMessage('Additional Description')")).Visible(false);
+    columns.AddFor(m => m.UnitType).Caption(new JS("formatMessage('Unit Type')")).Visible(false);
+    columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Description')")).Visible(false);
+    columns.AddFor(m => m.SignatoryName).Caption(new JS("formatMessage('Signatory Name')")).Visible(false);
+    columns.AddFor(m => m.SignatoryPosition).Caption(new JS("formatMessage('Signatory Position')")).Visible(false);
+    columns.AddFor(m => m.SignatoryContact).Caption(new JS("formatMessage('Signatory Contact')")).Visible(false);
+    columns.AddFor(m => m.SignatoryEmail).Caption(new JS("formatMessage('Signatory Email')")).Visible(false);
+    columns.AddFor(m => m.Salesman).Caption(new JS("formatMessage('Salesman')")).Visible(false);
+    columns.AddFor(m => m.TransportedBy).Caption(new JS("formatMessage('Transported By')")).Visible(false);
+    columns.AddFor(m => m.DriversName).Caption(new JS("formatMessage(\"Driver's Name\")")).Visible(false);
+    columns.AddFor(m => m.DriversId).Caption(new JS("formatMessage(\"Driver's Id\")")).Visible(false);
+    columns.AddFor(m => m.VehicleNo).Caption(new JS("formatMessage('Vehicle No')")).Visible(false);
+    columns.AddFor(m => m.DeliveryNoteRemarks).Caption(new JS("formatMessage('Delivery Note Remarks')")).Visible(false);
+    columns.AddFor(m => m.VendorNo).Caption(new JS("formatMessage('Vendor No')")).Visible(false);
+    columns.AddFor(m => m.StoreName).Caption(new JS("formatMessage('Store Name')")).Visible(false);
+    columns.AddFor(m => m.StoreCode).Caption(new JS("formatMessage('Store Code')")).Visible(false);
+    columns.AddFor(m => m.ClientPodate).Caption(new JS("formatMessage('Client PO Date')")).Visible(false);
+    columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR No')")).Visible(false);
+    columns.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('Revision No')")).Visible(false);
+    columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Visible(false);
+    columns.AddFor(m => m.IssuedUnitPrice).Caption(new JS("formatMessage('Issued Unit Price')")).Visible(false);
+    columns.AddFor(m => m.UnitTotalPrice).Caption(new JS("formatMessage('Unit Total Price')")).Visible(false);
+    columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+    columns.AddFor(m => m.ExpiryDate).Caption(new JS("formatMessage('Expiry Date')")).Visible(false);
+    columns.AddFor(m => m.BatchNo).Caption(new JS("formatMessage('Batch No')")).Visible(false);
+    columns.AddFor(m => m.DeliveryIssuedTo).Caption(new JS("formatMessage('Delivery Issued To')")).Visible(false);
+    columns.AddFor(m => m.Attention).Caption(new JS("formatMessage('Attention')")).Visible(false);
+    columns.AddFor(m => m.ClientContactNo).Caption(new JS("formatMessage('Client Contact No')")).Visible(false);
+    columns.AddFor(m => m.ClientContactEmail).Caption(new JS("formatMessage('Client Contact Email')")).Visible(false);
+    columns.AddFor(m => m.IssuedFromStoreCode).Caption(new JS("formatMessage('Issued From Store Code')")).Visible(false);
+    columns.AddFor(m => m.IssuedFromStoreName).Caption(new JS("formatMessage('Issued From Store Name')")).Visible(false);
+    columns.AddFor(m => m.DeliveryTypeName).Caption(new JS("formatMessage('Delivery Type Name')")).Visible(false);
+    columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Visible(false);
+    columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+    columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+    columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+    columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Visible(false);
+    columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('GS Group Name')")).Visible(false);
+    columns.AddFor(m => m.ItemSize).Caption(new JS("formatMessage('Item Size')")).Visible(false);
+    columns.AddFor(m => m.ItemPartNo).Caption(new JS("formatMessage('Item Part No')")).Visible(false);
+    columns.AddFor(m => m.ItemBrand).Caption(new JS("formatMessage('Item Brand')")).Visible(false);
+    columns.AddFor(m => m.ItemMake).Caption(new JS("formatMessage('Item Make')")).Visible(false);
+    columns.AddFor(m => m.StockClassification).Caption(new JS("formatMessage('Stock Classification')")).Visible(false);
+    columns.AddFor(m => m.Hscode).Caption(new JS("formatMessage('HS Code')")).Visible(false);
+    columns.AddFor(m => m.ActualSize).Caption(new JS("formatMessage('Actual Size')")).Visible(false);
+    columns.AddFor(m => m.Identification).Caption(new JS("formatMessage('Identification')")).Visible(false);
+    columns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Visible(false);
+    columns.AddFor(m => m.GsdescriptionAr).Caption(new JS("formatMessage('GS Description (AR)')")).Visible(false);
+    columns.AddFor(m => m.InventoryMasterGroupId).Caption(new JS("formatMessage('Inventory Master Group Id')")).Visible(false);
+    columns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Master Group')")).Visible(false);
+    columns.AddFor(m => m.ProjectLocation).Caption(new JS("formatMessage('Project Location')")).Visible(false);
+    columns.AddFor(m => m.ProjectInchargeName).Caption(new JS("formatMessage('Project Incharge Name')")).Visible(false);
+    columns.AddFor(m => m.ProjectInchargeEmail).Caption(new JS("formatMessage('Project Incharge Email')")).Visible(false);
+    columns.AddFor(m => m.ProjectInchargeContactNo).Caption(new JS("formatMessage('Project Incharge Contact No')")).Visible(false);
+    columns.AddFor(m => m.SalesPersonContactNo).Caption(new JS("formatMessage('Sales Person Contact No')")).Visible(false);
+    columns.AddFor(m => m.EmployeeNo).Caption(new JS("formatMessage('Employee No')")).Visible(false);
+    columns.AddFor(m => m.EmployeeName).Caption(new JS("formatMessage('Employee Name')")).Visible(false);
+    columns.AddFor(m => m.PropertyNo).Caption(new JS("formatMessage('Property No')")).Visible(false);
+    columns.AddFor(m => m.PropertyDescription).Caption(new JS("formatMessage('Property Description')")).Visible(false);
+    columns.AddFor(m => m.SaesPersonUserId).Caption(new JS("formatMessage('Sales Person User Id')")).Visible(false);
+    columns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Visible(false);
+    columns.AddFor(m => m.ClientInvoiceStatus).Caption(new JS("formatMessage('Client Invoice Status')")).Visible(false);
+    columns.AddFor(m => m.IsServicesGroup).Caption(new JS("formatMessage('Is Services Group')")).Visible(false);
+})
 
-    })
     .Height("60vh")
     .ColumnAutoWidth(true)
     .Width("98%")

@@ -211,10 +211,10 @@
                             allowedPageSizes: [5, 10, 20]
                         },
                         columns: [
-                            { dataField: "CostAllocationUnitId", width: 60 },
-                            { dataField: "CostAllocationUnit",  width: 200 },
-                             { dataField: "CostAllocationGroup",  width: 200 },
-                              { dataField: "CostAllocationMasterGroup",  width: 200 }
+                            { dataField: "CostAllocationUnitId",caption:formatMessage('Cost Allocation Unit ID'), width: 60 },
+                            { dataField: "CostAllocationUnit",caption:formatMessage('Cost Allocation Unit'),  width: 200 },
+                             { dataField: "CostAllocationGroup",caption:formatMessage('Cost Allocation Group'),  width: 200 },
+                              { dataField: "CostAllocationMasterGroup",caption:formatMessage('Cost Allocation Master Group'),  width: 200 }
                         ],
                         onSelectionChanged: function (e) {
                             var selected = e.selectedRowsData[0];
@@ -232,7 +232,7 @@
 
         @(Html.DevExtreme().Button()
             .ID("btnAdd")
-            .Text("Add")
+            .Text(new JS("formatMessage('Add')"))
             .Icon("plus")
             .Type(ButtonType.Success)
             .OnClick("function(){addProjectToGrid();}")
@@ -279,10 +279,10 @@
                 .OnRowUpdating("onProjectUpdating")                       // Handles saving
                 .Columns(columns =>
                 {
-                columns.Add().DataField("ProjectId").Caption("Project ID").AllowEditing(false);
-                columns.Add().DataField("ProjectDescription").Caption("Project Description");
+                columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project ID')")).AllowEditing(false);
+                columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
-                columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center Code").Width(200)
+                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')")).Width(200)
                 .Lookup(lookup => lookup
                 .DataSource(d => d.WebApi()
                 .Controller("StoreCode")
@@ -369,8 +369,8 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Code')")).DataField("ProjectGroupCode");
-                columns.Add().DataField("ProjectGroup");
-                columns.Add().DataField("ProjectGroupId");
+                columns.Add().DataField("ProjectGroup").Caption(new JS("formatMessage('Project Group')"));
+                columns.Add().DataField("ProjectGroupId").Caption(new JS("formatMessage('Project Group ID')"));
             })
             )
     }
@@ -381,7 +381,7 @@
         //addProjectGroup
     function AddProjectgroup(){
            const url = `/${tenantName}/IMS/ProjectGroup`;
-           const title = "Project Group";
+           const title = formatMessage("Project Group");
                openModal(url, title,"","90%");
        }
 
@@ -496,7 +496,7 @@
         const nameValidationResult = $("#txtPrjCode").dxValidator("instance").validate();
         const positionValidationResult = $("#GetProjectDropDown").dxValidator("instance").validate();
         const nameValidationResults = $("#txtProjectDescription").dxValidator("instance").validate();
-        const positionValidationResults = $("#GetProjectDropDown").dxValidator("instance").validate();
+        const positionValidationResults = $("#ddCostAllocation").dxValidator("instance").validate();
 
         if (!nameValidationResult.isValid || !positionValidationResult.isValid || !nameValidationResults.isValid || !positionValidationResults.isValid) {
             DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
@@ -519,6 +519,10 @@
             success: function () {
                 DevExpress.ui.notify("ProjectGroup saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                $("#txtPrjCode").dxValidator("instance").reset();
+                $("#GetProjectDropDown").dxValidator("instance").reset();
+                $("#txtProjectDescription").dxValidator("instance").reset();
+                $("#ddCostAllocation").dxValidator("instance").reset();
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save Projectgroup.", "error", 2000);
@@ -559,28 +563,47 @@
             }
         });
     }
-    function onDeleteButtonClicks(e) {
+       function onDeleteButtonClicks(e) {
         e.event.preventDefault(); // prevent default delete
 
         var grid = $("#SignatoryGrid").dxDataGrid("instance");
         var key = e.row.data.ProjectId; // get the ID of the row
 
+        // 🔹 Use DevExtreme confirm dialog instead of browser confirm
+        var result = DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Confirm Delete"
+        );
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/ProjectGroup/Delete1?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    // Refresh the grid after delete
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
-                }
-            });
-        }
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/ProjectGroup/Delete1?key=' + key,
+                    type: 'DELETE',
+                    success: function (response) {
+                        // ✅ Show success notify
+                        let msg = response && response.message ? response.message : "Deleted successfully";
+                        DevExpress.ui.notify(msg, "success", 2000);
+
+                        // Refresh grid
+                        grid.refresh();
+                    },
+                    error: function (xhr) {
+                        // ✅ Show error notify with backend message if available
+                        let msg = "Delete failed";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        DevExpress.ui.notify(msg, "error", 3000);
+                    }
+                });
+            } else {
+                // ✅ User cancelled delete
+                DevExpress.ui.notify("Delete cancelled", "info", 2000);
+            }
+        });
     }
+
     $(function () {
         $("#Project").dxTextBox({
             text: formatMessage("Project"),

@@ -6,24 +6,6 @@
 @await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
 
 
-<div class="context-menu" id="contextMenu">
-	<div class="context-menu-item">
-		<i class="dx-icon-search"></i> View e-Invoice Credit Note
-	</div>
-
-	<div class="context-menu-item has-submenu">
-		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
-		<div class="submenu">
-			<div class="context-menu-item">
-				<i class="dx-icon-file"></i> View VAT Credit Note
-			</div>
-		</div>
-	</div>
-</div>
-
-
-
-
 <div class="dx-fieldset horizontal-container" style="align-items:end;">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -94,12 +76,12 @@
 		{
 			columns.Add().Caption(new JS("formatMessage('Purchase Order Item Details')")).Columns(band =>
 			{
-				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PONo')")).Alignment(HorizontalAlignment.Left).Width(250);
-				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PONo')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0);
+				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Left).Width(250);
+				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0);
 				band.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('Revision No')")).Alignment(HorizontalAlignment.Left).Width(250);
 				band.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Left);
 				band.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.SupplierQuoteNo).Caption(new JS("formatMessage('Suppiler Quote No')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.SupplierQuoteNo).Caption(new JS("formatMessage('Supplier Quote No')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.SupplierRefNo).Caption(new JS("formatMessage('Supplier Ref No')")).Alignment(HorizontalAlignment.Right);
 				band.AddFor(m => m.PodueDate).Caption(new JS("formatMessage('PO Due Date')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center);
@@ -359,7 +341,10 @@
 		return e.value != null ? e.value.toFixed(2) : '0.00';
 		}
 		");
-
+		items.Add().Column("Gsdescrpition")
+		.SummaryType(SummaryType.Count)
+		.DisplayFormat(new JS("formatMessage('No. of Items: {0}')"));
+	
 		items.Add().Column("LineTotalBeforeTax")
 		.SummaryType(SummaryType.Sum)
 		.DisplayFormat(new JS("formatMessage('Total Before Tax: {0}')"))

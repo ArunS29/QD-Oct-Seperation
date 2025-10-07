@@ -15,6 +15,10 @@ public partial class ERPMasterWtDataContext : DbContext
         : base(options)
     {
     }
+    public DbSet<tbl20115BillsOutStanding> tbl20115BillsOutStanding { get; set; }
+    public DbSet<tbl001CostAnalysis> tbl001CostAnalysis { get; set; }
+    public virtual DbSet<TrialBalanceofflineResult> TrialBalanceofflineResult { get; set; }
+    public DbSet<Tbl201SubLedgerReceivablesMaster> Tbl201SubLedgerReceivablesMaster { get; set; }
 
     public DbSet<SupplierOutstanding> SupplierOutstandings { get; set; }
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
@@ -3014,7 +3018,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl40116PropertyIssuesMaster> Tbl40116PropertyIssuesMasters { get; set; }
 
-    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChildren { get; set; }
+    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChilds { get; set; }
 
     public virtual DbSet<Tbl40118PropertyInvoiceMaster> Tbl40118PropertyInvoiceMasters { get; set; }
 
@@ -3404,15 +3408,17 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<XxxuploadingSalesInvoiceSubLedger> XxxuploadingSalesInvoiceSubLedgers { get; set; }
     public virtual DbSet<VoucherResult> VoucherResults { get; set; }
     public virtual DbSet<AccountLedger> AccountLedgers { get; set; }
-
+    public virtual DbSet<GetDataForGeneratingTimesheet> GetDataForGeneratingTimesheets { get; set; }
     public virtual DbSet<VATFinalReturnsSummary> VATFinalReturnsSummarys { get; set; }
-
     public virtual DbSet<TrialBalanceResult> TrialBalanceResults { get; set; }
+
+    public virtual DbSet<TrialBalanceofflineResult> TrialBalanceofflineResults { get; set; }
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
     public DbSet<TotalDepreciationResult> TotalDepreciationResults { get; set; }
-
+    public virtual DbSet<AccountBalanceResult> AccountBalanceResults { get; set; }
+    public virtual DbSet<BankClearedBalanceResult> BankClearedBalanceResults { get; set; }
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
     //public virtual DbSet<ClientCategoryDisplayDTO> ClientCategoryDisplayDTOs { get; set; }
@@ -3428,6 +3434,12 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
     public DbSet<PostAvgCostDto> PostAvgCostDtos { get; set; }
     public DbSet<PostJournalDto> PostJournalDtos { get; set; }
+    public DbSet<PostJournalDtos> PostJournalDtoss { get; set; }
+    public DbSet<PostDeliveryNoteRequest> PostDeliveryNoteRequests { get; set; }
+    public DbSet<MaterialReceiptDto> MaterialReceiptDtos { get; set; }
+    public DbSet<MaterialReceiptChildDto> MaterialReceiptChildDtos { get; set; }
+
+
     public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
     public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
    
@@ -3445,10 +3457,11 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey();
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<GetDataForGeneratingTimesheet>().HasNoKey().ToView(null);
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<JournalRegisterView>().HasNoKey();
-        modelBuilder.Entity<TrialBalanceResult>().HasNoKey();
+        modelBuilder.Entity<TrialBalanceofflineResult>().HasNoKey();
         modelBuilder.Entity<AssetRegisterViews>().HasNoKey();
         modelBuilder.Entity<ExpenseClaimViews>().HasNoKey();
         modelBuilder.Entity<DashBoardBankAccount>().HasNoKey();// Mark as keyless
@@ -3460,6 +3473,10 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
         modelBuilder.Entity<PostAvgCostDto>().HasNoKey();
         modelBuilder.Entity<PostJournalDto>().HasNoKey();
+        modelBuilder.Entity<PostJournalDtos>().HasNoKey();
+        modelBuilder.Entity<PostDeliveryNoteRequest>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptDto>().HasNoKey();
+        modelBuilder.Entity<MaterialReceiptChildDto>().HasNoKey();
         modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
         modelBuilder.Entity<ApproveDeliveryNoteDto>().HasNoKey();
        // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();
@@ -3467,7 +3484,8 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
-
+        modelBuilder.Entity<AccountBalanceResult>().HasNoKey();
+        modelBuilder.Entity<BankClearedBalanceResult>().HasNoKey();
         modelBuilder.Entity<FinancialSummaryReport>(entity =>
         {
             entity.HasNoKey(); // required for views or tables without PK
@@ -51989,6 +52007,31 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.SupervisorContactNo).IsUnicode(false);
             entity.Property(e => e.SupervisorMobileNo).IsUnicode(false);
             entity.Property(e => e.SupervisorName).IsUnicode(false);
+        });
+        modelBuilder.Entity<tbl20115BillsOutStanding>(entity =>
+        {
+            entity.ToTable("tbl20115BillsOutStanding"); // map to your SQL table
+
+            entity.HasKey(e => new { e.AccountHeadNo, e.AccountGroupId });
+
+            entity.Property(e => e.AccountHeadNo)
+                  .HasColumnType("varchar(10)");
+
+            entity.Property(e => e.AccountHead)
+                  .HasColumnType("varchar(200)");
+
+            entity.Property(e => e.Balance)
+                  .HasColumnType("money");
+
+            entity.Property(e => e.AccountGroupId)
+                  .HasColumnType("varchar(10)");
+
+            entity.Property(e => e.OverdueDays)
+                  .HasColumnType("int");
+
+            // Optional: index for performance
+            entity.HasIndex(e => e.OverdueDays);
+            entity.HasIndex(e => e.Balance);
         });
 
         modelBuilder.Entity<Tbl101EmployeeAsset>(entity =>

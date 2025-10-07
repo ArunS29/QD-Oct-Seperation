@@ -181,7 +181,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                                                           
                 )
 
     </div>
@@ -225,9 +225,9 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Custom Report Designs").Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text("Preview  Sales Order").Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text("Preview Sales Order(without Price)").Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("folder").Option("color", "#FF7043");
+                    items.Add().Text(new JS("formatMessage('Preview Sales Order')")).Icon("folder").Option("color", "#00ACC1");
+                    items.Add().Text(new JS("formatMessage('Preview Sales Order(without Price)')")).Icon("folder").Option("color", "#AB47BC");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -327,16 +327,13 @@
                 return;
             }
 
-            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
               const salesReport= [
                 "Preview  Sales Order", 
                 "Preview Sales Order(without Price)"
               ];
 
-            if (!reportName) {
-                alert("Invalid report format selected.");
-                return;
-            }
+           
 
         if (salesReport.includes(itemText)) {
                 // Collect parameters only if true

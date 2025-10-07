@@ -138,15 +138,15 @@
         <div id="SupplierCategory" class="no-border-title"></div>
     </div>
 </div>  *@
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Supplier Category</h3>
-</div>
+</div> *@
 <div class="content-container-top" style="padding:10px;">
-    <div class="form-group" style="display:flex; align-items:end; gap:10px;">
-
+   @*  <div class="form-group" style="display:flex; align-items:end; gap:10px;"> *@
+        <div style="display:flex; align-items :end; padding:0px;gap:18px;">
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Supplier Category & Add to the Existing List:')"))
             .LabelMode(EditorLabelMode.Floating)
@@ -159,6 +159,7 @@
                 .Message(new JS("formatMessage('Supplier Category is required')"));
             })
             )
+        <div style="display:flex; align-items:end;gap:20px;">
         @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Supplier Category Code:')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -180,14 +181,14 @@
                 .OnClick("function() { adddivmaster(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
                 )
+        </div>
     </div>
 
     <br />  
     <div id="gridContainer"></div>
-    <div id="gridContainer"></div>
-    <br />
-</div>
-<div style="footer-fixed">
+        <br />
+
+
     <div class="form-group">
         @(Html.DevExtreme().Button()
                 .ID("btnback")
@@ -201,8 +202,8 @@
 </div>
 <script type="text/javascript">
 
-         function btnbackbt() {
-       
+        function btnbackbt() {
+
                     window.parent.closeModal();
                   }
 
@@ -293,49 +294,64 @@
                     type: "buttons",
                     width: 100,
                     buttons: [
-                        {
-                            icon: "trash",
-                            hint: "Delete",
-                            onClick: function (e) {
-                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                                var selectedData = e.row.data;
-                                var supplierCategoryCode = selectedData.SupplierCategoryCode;
+                     {
+        icon: "trash",
+        hint: "Delete",
+        onClick: function (e) {
+            var dataGrid = $("#gridContainer").dxDataGrid("instance");
+            var selectedData = e.row.data;
+            var supplierCategoryCode = selectedData.SupplierCategoryCode;
 
-                                // Send delete request to the API
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/api/SupplierCategory/DeleteBranchMaster",
-                                    data: JSON.stringify({ SupplierCategoryCode: supplierCategoryCode }),
-                                    contentType: "application/json",
-                                    success: function (response) {
-                                        if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage('Branch deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    },
-                                    error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
-                                        });
-                                    }
+            // Confirmation before delete
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this Supplier Category?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed with delete
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/SupplierCategory/DeleteBranchMaster",
+                        data: JSON.stringify({ SupplierCategoryCode: supplierCategoryCode }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            if (response.success) {
+                                dataGrid.refresh(); // Refresh the grid
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'The Supplier Category was deleted successfully.',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
                                 });
                             }
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: xhr.responseText,
+                                confirmButtonText: 'OK'
+                            });
                         }
+                    });
+                }
+            });
+        }
+    }
+
                     ]
                 }
             ],

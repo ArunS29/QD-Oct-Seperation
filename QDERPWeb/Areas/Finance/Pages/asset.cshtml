@@ -2021,7 +2021,7 @@ function redirectToAssetCategoryView() {
         var isMaster = false;
         var menuType = "finance";
         let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
-        let title = "";
+        let title = formatMessage("Transaction Documents");
         openModal(url, title);
     }
      function redirectassetmaintanence() {

@@ -170,6 +170,9 @@
                             .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
                             .HoverStateEnabled(true)
+                            .ValidationRules(rules => rules
+                                .AddRequired()
+                                .Message(new JS("formatMessage('Payment Account should be entered')")))
                             .ValueExpr("AccountId")
                             .DisplayExpr("AccountHead")
                             .OnInput("dropDownBoxOnInput")
@@ -317,7 +320,7 @@ buttons.Add()
                             .ValidationRules(rules =>
                             {
                                 rules.AddRequired().Message("Voucher Amount Cannot be Zero Or Negative");
-                                rules.AddRange().Min(0).Message("Voucher Amount Cannot be Zero Or Negative");
+                                rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
                             })
                             
                             .Format("###,###,###,##0.00")
@@ -466,188 +469,148 @@ buttons.Add()
       <div class="dx-card-body">
         <div class="dx-field ledgerResult">
 
-            @(
-                        Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-                        .ID("dataGrid")
-                        .RemoteOperations(false)
-                        .Columns(columns =>
-                        {
-                            columns.AddFor(m => m.VoucherEntryNo)
-                        .Caption(new JS("formatMessage('Voucher Entry No')"))
-                        .Visible(false);
+             @(
+                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+                 .ID("dataGrid")
+                 .RemoteOperations(false)
+                 .Columns(columns =>
+                 {
+                     columns.AddFor(m => m.VoucherEntryNo)
+                     .Caption("VoucherEntryNo")
+                     .Caption(new JS("formatMessage('Voucher Entry No')"))
+                     .Visible(false);
 
-                            columns.AddFor(m => m.DrCr)
-                        .Caption(new JS("formatMessage('Dr/Cr')"))
-                        .DataType(GridColumnDataType.String).AllowEditing(false);
+                     columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataType(GridColumnDataType.String).Lookup(lookup => lookup
+                     .DataSource(new[] { "Dr", "Cr" })
+                     .ValueExpr("this")
+                     .DisplayExpr("this")
+                     );
 
-
-
-                        columns.AddFor(m => m.AccountHead).DataField("AccountId").Caption(new JS("formatMessage('Account Head')"))
-                        .CellTemplate(@<text>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        <%- data.AccountHead ? data.AccountHead : "No Selection" %>
-                    </span>
-                </div>
-            </text>)
-                    .EditCellTemplate(@<text>
-
-
-                @(Html.DevExtreme().DropDownBox()
-                .DataSource(d => d.WebApi()
-                .Controller("VoucherMaster")
-                .LoadAction("GetEditAccountHead")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("AccountId")
-                )
-                .LabelMode(EditorLabelMode.Floating)
-                .ID("accountDropDownBoxEdit")
-                .ShowClearButton(true)
-                .AcceptCustomValue(false)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("change")
-                .HoverStateEnabled(true)
-                .Value(new JS("data.AccountHead"))
-                .ValueExpr("AccountId")
-                .DisplayExpr("AccountHead")
-                .OnValueChanged("gridData_valueChanged")
-                .OnOpened("onOpened")
-                @* .Width(250) *@
-                .TabIndex(12)
-                .DropDownOptions(o => o.Width(500))
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("AccountHeadEditDropdownContentTemplate"))
-                )
+                     columns.AddFor(m => m.AccountHead).DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Width("350")
+                     .CellTemplate(@<text>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="account-head-span">
+                                                <%- data.AccountHead ? data.AccountHead : "No Selection" %>
+                                            </span>
+                                        </div>
+                                    </text>)
+                     .EditCellTemplate(@<text>
 
 
-            </text>);
+         @(Html.DevExtreme().DropDownBox()
+                             .DataSource(d => d.WebApi()
+                             .Controller("VoucherEntryCashReceipts")
+                             .LoadAction("GetEditAccountHead")
+                             .LoadMode(DataSourceLoadMode.Raw)
+                             .Key("AccountId")
+                             )
 
-                            columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
-                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                             .LabelMode(EditorLabelMode.Floating)
+                             .ID("accountDropDownBoxEdit")
+                             .ShowClearButton(true)
+                             .AcceptCustomValue(false)
+                             .AcceptCustomValue(true)
+                             .OpenOnFieldClick(false)
+                             .ValueChangeEvent("change")
+                             .HoverStateEnabled(true)
+                             .Value(new JS("data.AccountHead"))
+                             .ValueExpr("AccountId")
+                             .DisplayExpr("AccountHead")
+                             .OnValueChanged("gridData_valueChanged")
+                             .OnOpened("onOpened")
+                             .Width(350)
+                             .TabIndex(1)
+                             .DropDownOptions(o => o.Width(500))
+                             .OnKeyDown("onKeyDown")
+                             .ContentTemplate(new TemplateName("ReceivingAccountDropdownContentTemplate"))
+                             )
 
-                        ).AllowEditing(false) .CalculateCellValue("function(data) { " +
-                                    "    if (data.DrAmount != null) { " +
-                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
-                                     "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
-                                    "        var val = data.DrAmount / currencyRate; " +
-                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
-                                    "    } " +
-                                    "    return null; " +
-                                    "}")
-                                    .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
+
+ </text>);
 
 
 
-                            columns.AddFor(m => m.CrAmount)
-                        .Caption(new JS("formatMessage('Credit')"))
-                        .AllowEditing(false)
-                        .Alignment(HorizontalAlignment.Right)
-                        .AllowEditing(false)
-                    @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
-                   .CalculateCellValue("function(data) { " +
-                                    "    debugger; " +
-                                    "    if (data.CrAmount != null) { " +
-                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
-                                     "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
-                                    "        var val = data.CrAmount / currencyRate; " +
-                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
-                                    "    } " +
-                                    "    return null; " +
-                                    "}")
-                                    .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
+                     columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false)  .CalculateCellValue("function(data) { " +
+                     "    if (data.DrAmount != null) { " +
+                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                     "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
+                     "        var val = data.DrAmount / currencyRate; " +
+                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                     "    } " +
+                     "    return null; " +
+                     "}")
+                     .CustomizeText("function(e) { " +
+                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                     "}");
 
+                     columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false)  .CalculateCellValue("function(data) { " +
+                     "    debugger; " +
+                     "    if (data.CrAmount != null) { " +
+                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                     "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
+                     "        var val = data.CrAmount / currencyRate; " +
+                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                     "    } " +
+                     "    return null; " +
+                     "}")
+                     .CustomizeText("function(e) { " +
+                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                     "}");
 
-                            columns.AddFor(m => m.EntryNarration)
-                        .Caption(new JS("formatMessage('Entry Narration')"))
-                        .AllowEditing(true) // Allow editing for this column
+                     columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')")).Width(300);
+                     columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Width(300);
+                 })
+                 .Selection(selection => selection.Mode(SelectionMode.Single))
+                                                                               //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+                 .AllowColumnReordering(true) // Enable column reordering
+                 .AllowColumnResizing(true)   // Enable column resizing
+                 .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                 .HeaderFilter(filter => filter.Visible(false))
+                 .Height(250)
+                 .ColumnAutoWidth(true)
+                 .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                 .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                 .ShowBorders(true)
+                 .Width("100%")
+                 .Editing(editing => editing
+                 .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
+                 .AllowUpdating(true)   // Enable editing of existing rows
+                 .AllowDeleting(true)   // Enable deleting rows
+                 .UseIcons(true)                       // Enables icons for editing buttons
+                 )
+                 .OnEditorPreparing("onEditorPreparing")
+                 .OnRowUpdating("onRowUpdating")
+                 .OnRowRemoving("onRowRemoving")
+                 .OnRowPrepared(@"
+ function(e) {
+    
+     if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+     $(e.rowElement).css('background-color', 'var(--header-color) !important');
+     
+     }
+     if (e.rowType === 'data' && e.data.DrCr === 'Dr') {
+     $(e.rowElement).css('background-color', 'var(--title-background-color) !important');
+     $(e.rowElement).find('td').css('color', 'white');
+     
+     }
+ }
+ ")
+                 .Summary(summary =>
+                 {
+                     summary.TotalItems(totalItems =>
+                     {
 
-                        ;
-
-
-                            columns.AddFor(m => m.SysRemarks)
-                        .Caption(new JS("formatMessage('Remarks')"))
-                        .AllowEditing(false)
-                        ;
-                            columns.Add()
-                            .Type(GridCommandColumnType.Buttons)
-                            .Buttons(buttons =>
-                            {
-                                
-                                buttons.Add().Name(GridColumnButtonName.Delete);
-                            })
-                        .HeaderCellTemplate(@<text>
-                    <div style="display: flex; justify-content: center; gap: 6px;">
-                       
-                        <i class="dx-icon dx-icon-trash" title="Delete" style="color: red !important;"></i>
-                    </div>
-                </text>)
-                            .Width(50); // Adjust width as needed
-
-
-                        })
-                    .Selection(selection => selection.Mode(SelectionMode.Single))
-                    .AllowColumnReordering(true)
-				.ColumnResizingMode(ColumnResizingMode.Widget)
-                    .AllowColumnResizing(true)   // Enable column resizing
-                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                                                                  //.HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
-                    .ColumnAutoWidth(true)
-                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                    .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                    .ShowBorders(true)
-                    .Width("100%")
-                  
-                    .Editing(editing => editing
-                    .Mode(GridEditMode.Cell) // or use .Batch(), .Cell(), or .Popup() depending on your requirement
-                    .AllowUpdating(true)   // Enable editing of existing rows
-                     .AllowDeleting(true)   // Enable deleting rows
-                     .UseIcons(true) // Enables icons for editing buttons
-                    )
-                    .OnEditorPreparing("onEditorPreparing")
-                    .OnRowUpdating("onRowUpdating")
-                    .OnRowRemoving("onRowRemoving") // Ensure correct capitalization
-                         .OnRowPrepared(@"
-            function(e) {
-                               
-                                if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
-                                $(e.rowElement).css('background-color', 'var(--header-color) !important');
-                                
-                                }
-                                if (e.rowType === 'data' && e.data.DrCr === 'Dr') {
-                                $(e.rowElement).css('background-color', 'var(--title-background-color) !important');
-                                $(e.rowElement).find('td').css('color', 'white');
-                                
-                                }
-            }
-            ")
-                    .Summary(summary =>
-
-                    {
-
-                        summary.TotalItems(totalItems =>
-
-                        {
-
-                            totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
-
-                         .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
-                            totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
-
-                          .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
-                        });
-
-                    })
-                    )
+                         totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
+                      .CustomizeText("function(e) { " +
+                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                     "}");
+                         totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
+                      .CustomizeText("function(e) { " +
+                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                     "}");
+                     });
+                 })
+                 )
 
 
         </div>
@@ -992,6 +955,8 @@ buttons.Add()
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
+                        .FocusedRowEnabled(true)
+                         .OnFocusedRowChanged("onGridFocusedRowChanged")
                         .SearchPanel(sp => sp.Visible(true))
                         .SearchPanel(sp => sp.HighlightSearchText(true))
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
@@ -1054,6 +1019,7 @@ buttons.Add()
                     .Key("AccountId")
                     )
                     .FocusedRowEnabled(true)
+                    .OnFocusedRowChanged("onGridFocusedRowChanged")
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
                     .SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1107,50 +1073,49 @@ buttons.Add()
         }
 
 
-        @using (Html.DevExtreme().NamedTemplate("AccountHeadEditDropdownContentTemplate"))
-        {
-            @(
-                    Html.DevExtreme().DataGrid()
-                    .ID("accountDropDownBoxeditGrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VoucherMaster")
-                    .LoadAction("GetEditAccountHead")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountHead")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+        @using (Html.DevExtreme().NamedTemplate("ReceivingAccountDropdownContentTemplate"))
+ {
+     @(
+             Html.DevExtreme().DataGrid()
+             .ID("accountDropDownBoxeditGrid")
+             .DataSource(d => d.WebApi()
+             .Controller("VoucherEntryReceipts")
+             .LoadAction("GetEditAccountHead")
+             .LoadMode(DataSourceLoadMode.Raw)
+             .Key("AccountHead")
+             )
+             .WordWrapEnabled(true)
+             .ShowBorders(true)
+             .SearchPanel(sp => sp.HighlightSearchText(true))
+             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
-                    .SelectedRowKeys(new JS(@"component.option(""value"")"))
-                    .OnSelectionChanged(@<text>
-            function(selectedItems) {
-            var keys = selectedItems.selectedRowKeys;
-            component.option("value", keys);
-            console.log(keys);
-            }
-        </text>)
+             .SelectedRowKeys(new JS(@"component.option(""value"")"))
+             .OnSelectionChanged(@<text>
+     function(selectedItems) {
+     var keys = selectedItems.selectedRowKeys;
+     component.option("value", keys);
+     console.log(keys);
+     }
+ </text>)
 
 
-                    // .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .ColumnChooser(c => c.Enabled(true))
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .Columns(columns =>
-                    {
-                        columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
-                        columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
-                        columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
+         .HeaderFilter(p => p.Visible(true))
+             .ShowBorders(true)
+             .HoverStateEnabled(true)
+             .Paging(p => p.PageSize(15))
+             .FilterRow(f => f.Visible(true))
+             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+             .Height(345)
+             .Selection(s => s.Mode(SelectionMode.Single))
+             .Columns(columns =>
+             {
+                 columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                 columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                 columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
 
-                    })
-                    )
-        }
+             })
+             )
+         }
 
         <div id="attachOptionsPopup"></div>
 
@@ -1362,7 +1327,7 @@ buttons.Add()
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.notify(
+                                      DevExpress.ui.dialog.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1475,7 +1440,7 @@ buttons.Add()
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.alert(
+                                      DevExpress.ui.dialog.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1609,8 +1574,10 @@ buttons.Add()
 
 
         const text = ddbInstance.option("text");
-        if (dataGrid) {
-            dataGrid.option("searchPanel.text", text);
+        // Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+        if (grid) {
+            grid.option("searchPanel.text", text);
         }
     }
     function dropDownBoxInput(e) {
@@ -1714,7 +1681,7 @@ buttons.Add()
 
                         if(paymentIsLedgerObselete==true){
                             IsObeselete=true;
-                              DevExpress.ui.notify(
+                              DevExpress.ui.dialog.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1756,7 +1723,7 @@ buttons.Add()
 
                         if(accIsLedgerObselete==true){
 
-                              DevExpress.ui.notify(
+                              DevExpress.ui.dialog.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1841,7 +1808,19 @@ buttons.Add()
             icon: "spinner", // built-in spinner icon
             text: "Loading..."
         });
+        var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+    var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+     var paymentHeadValidator = $("#accountDropDownBox").dxValidator("instance");
+    var accountHeadValidation = accountHeadValidator.validate();
+    var voucherAmtValidation = voucherAmtValidator.validate();
+    var PaymentHeadValidation = paymentHeadValidator.validate();
+    if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid && PaymentHeadValidation.isValid )) {
+        // ❌ Validation failed → stop, re-enable button
+        resetVoucherButton();
 
+        DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+        return;
+    }
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
         var griddatacount = rowCount;
@@ -2834,35 +2813,33 @@ function resetVoucherButton() {
 
 
     function gridData_valueChanged(e) {
-                var $dataGrid = $("#dataGrid");
+    var $dataGrid = $("#dataGrid");
 
-                if ($dataGrid.length) {
-                    var dataGrid = $dataGrid.dxDataGrid("instance");
-                    dataGrid.selectRows(e.value, false);
-                }
-                if (e.value) {
+    if ($dataGrid.length) {
+        var dataGrid = $dataGrid.dxDataGrid("instance");
+        dataGrid.selectRows(e.value, false);
+    }
+    if (e.value) {
+        let grid = $("#dataGrid").dxDataGrid("instance");
+        let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+        let rowData = grid.getVisibleRows()[rowIndex].data;
 
+        let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+        let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
 
-                    let grid = $("#dataGrid").dxDataGrid("instance");
-                    let rowIndex = e.element.closest("tr").index(); // Get the edited row index
-                    let rowData = grid.getVisibleRows()[rowIndex].data;
+        // if (selectedRowData) {
+        //     propertyno = selectedRowData.PropertyNo; // Store the correct ID
 
-                    let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
-                    let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+        // }
 
-                    // if (selectedRowData) {
-                    //     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+        rowData.AccountHead = e.value; // Update the row data
+        grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
 
-                    // }
+    }
+    // Close the dropdown after selection
+    e.component.option("opened", false);
 
-                    rowData.AccountHead = e.value; // Update the row data
-                    grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
-
-                }
-                // Close the dropdown after selection
-                e.component.option("opened", false);
-
-            }
+}
 
             //  function onRowUpdated(e) {
             //     const updatedData = e.data; // The updated row data
@@ -3011,7 +2988,14 @@ function resetVoucherButton() {
 
             // // Call function when the page loads
             // document.addEventListener("DOMContentLoaded", checkVoucherLockStatus);
+             $(function () {
+        var voucherDate = $("#VoucherDate").dxDateBox("instance");
+        var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
+        voucherDate.option("onValueChanged", function (e) {
+            effectiveDate.option("value", e.value);
+        });
+    });
 
 
     $(function () {
@@ -4002,9 +3986,14 @@ function fetchUpdatedData(voucherEntryNo) {
             const baseCurrencyInstance = $("#ddlBaseCurrency").dxDropDownBox("instance");
             const baseCurrencyId = baseCurrencyInstance ? baseCurrencyInstance.option("value") : null;
 
-            const currencyRate = $("#txtCurrencyRate").dxNumberBox("instance")?.option("value");
+                var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance")?.option("value");
+        currencyRate = Math.round(currencyRate * 1000) / 1000;
 
-            const originalAmount = currencyRate !== 0 ? totalDrAmount / currencyRate : 0;
+// Format to always have 3 decimals
+currencyRate = parseFloat(currencyRate).toFixed(3);
+
+            // ✅ Multiply instead of divide
+const originalAmount = currencyRate != 0 ? totalDrAmount * parseFloat(currencyRate) : 0;
 
 
             if (originalAmount) {
@@ -4040,11 +4029,11 @@ function fetchUpdatedData(voucherEntryNo) {
                             // Currency Rate
                             $("#txtchequeCurrencyRate").dxNumberBox("instance")?.option("value", currencyRate);
                             // Original Amount
-                            $("#OriginalAmount").dxNumberBox("instance")?.option("value", originalAmount);
+                            $("#OriginalAmount").dxNumberBox("instance")?.option("value", totalDrAmount);
 
                         } else {
                             // ❌ No data found — use defaults
-                            $("#AmountinSAR").dxNumberBox("instance")?.option("value", totalDrAmount);
+                            $("#AmountinSAR").dxNumberBox("instance")?.option("value", originalAmount);
                             $("#ChequeNo").dxTextBox("instance")?.option("value", chequeboxNo);
                             $("#ChequeIssuedinfavourof").dxTextBox("instance")?.option("value", paymentaccheadname);
                             $("#PopVoucherNo").dxTextBox("instance")?.option("value", voucherno);
@@ -4056,7 +4045,7 @@ function fetchUpdatedData(voucherEntryNo) {
                             // Currency Rate
                             $("#txtchequeCurrencyRate").dxNumberBox("instance")?.option("value", currencyRate);
                             // Original Amount
-                            $("#OriginalAmount").dxNumberBox("instance")?.option("value", originalAmount);
+                            $("#OriginalAmount").dxNumberBox("instance")?.option("value", totalDrAmount);
                         }
                     }, 500);
                 },
@@ -4777,5 +4766,15 @@ const menuItems = [
 
  renderContextMenu();
 
+    function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
 
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
+    }
+}
 </script>

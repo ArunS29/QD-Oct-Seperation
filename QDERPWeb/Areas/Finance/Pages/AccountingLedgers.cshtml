@@ -431,7 +431,6 @@
 
 	.titleCard-card .header {
 		position: relative;
-
 	}
 
 	.value-slider span {
@@ -488,6 +487,11 @@
 		font-size: 1.4rem;
 		color: #000;
 	}
+	.narration-cell {
+    white-space: normal;   /* Allow wrapping */
+    word-break: break-word; /* Break long words if needed */
+}
+
 
 </style>
 
@@ -830,6 +834,8 @@
 						columns.AddFor(m => m.VoucherDate)
 					.Caption(new JS("formatMessage('VoucherDate')"))
 					.Alignment(HorizontalAlignment.Center)
+					 .SortOrder(SortOrder.Desc) // 👈 Add this line (Desc for newest first, Asc for oldest first)
+                     .SortIndex(0)    
 					.Format(format => format.Type(Format.ShortDate)
 					.Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"))
 					.Visible(true);
@@ -1005,7 +1011,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(true)
     .CellTemplate(@<text>
-        <div title="<%- data.SysRemarks %>" class="narration-cell max-lines-1">
+        <div title="<%- data.SysRemarks %>" class="narration-cell">
             <%- data.SysRemarks %>
         </div>
     </text>);
@@ -1017,7 +1023,7 @@
     .Alignment(HorizontalAlignment.Left)
     .Visible(false)
     .CellTemplate(@<text>
-        <div title="<%- data.EntryNarration %>" class="narration-cell max-lines-1">
+        <div title="<%- data.EntryNarration %>" class="narration-cell">
             <%- data.EntryNarration %>
         </div>
     </text>);
@@ -1038,7 +1044,7 @@
 						columns.AddFor(m => m.VoucherNarration)
 					.Caption(new JS("formatMessage('Narration')"))
 					.CellTemplate(@<text>
-			<div title="<%- data.VoucherNarration %>" class="narration-cell max-lines-1">
+			<div title="<%- data.VoucherNarration %>" class="narration-cell">
 				<%- data.VoucherNarration %>
 			</div>
 		</text>)
@@ -1175,7 +1181,9 @@
 											)
 }
 
-<script>function onToolbarPreparing(e) {
+<script>
+	
+	function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
 		e.toolbarOptions.items = e.toolbarOptions.items.filter(function(item) {
 			return item.name !== "columnChooserButton";
@@ -1197,9 +1205,6 @@
 
 
 		$(document).ready(function () {
-
-
-
 	   $("#btnCreateNew").css("display", "none");
 
 			console.log('Start permission handling AccountingLedgers');
@@ -1360,16 +1365,19 @@
 		// 	});
 		// }
 		$(document).ready(function () {
+			debugger;
 			const urlParams = new URLSearchParams(window.location.search);
 			const AccountId = urlParams.get('AccountId');
+			const IsChartOfAccounts = urlParams.get('IsChartOfAccounts');
 			// alert(AccountId);
 
 			if (AccountId) {
+				
 				// Change the Save button to Update
 				// $("#btnSave").text("Update");
 				//  var button = $("#btnSave").dxButton("instance");
 				// button.option("text", "Update");
-
+			  //  accgroupid = response.data.AccountGroupId;
 				// Fetch and bind data to form fields if CostAllocationUnitId is in the query string
 				$.ajax({
 					url: `/api/AccountingLedgers/GetAccountId?id=${AccountId}`,
@@ -1386,6 +1394,18 @@
 							// $("#costCenterComboBox").dxSelectBox("instance").option("value", response.data.CostAllocationGroup);
 							// $("#costCenterMaster1").dxSelectBox("instance").option("value", response.data.CostAllocationMasterGroup);
 							// $("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.data.ProjectMasterCode);
+
+							if(IsChartOfAccounts=="true")
+							{
+								acchedid = response.data.AccountId;
+                                accheadname = response.data.AccountHead;
+                                refno = response.data.ReferenceNo;
+                                accgroup = response.data.AccountGroup;
+                                accgroupid = response.data.AccountGroupId;
+                                accheadar = response.data.AccountHeadArabic;
+								
+								ddBtnShowRecords_click("fullmonth")
+							}
 
 						} else {
 							//   alert(response.message);
@@ -1717,6 +1737,7 @@
 		}
 		// This function used to call API to get records for the selected values.
 		function ddBtnShowRecords_click(duration) {
+			debugger;
 			var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 			if (dropDownBox.option("value") === null) {
 				DevExpress.ui.notify("Please select a ledger account.", "error", 3000);
@@ -2566,7 +2587,7 @@ function dropDownBoxValueChanged(e) {
             // ✅ Row right-click → Edit Voucher
             if (e.target === "content" && e.row && e.row.rowType === "data") {
                 e.items.push({
-                    text: "Edit Voucher",
+                    text: formatMessage("Edit Voucher"),
                     icon: "edit",
                     onItemClick: function () {
                         const rowData = e.row.data;

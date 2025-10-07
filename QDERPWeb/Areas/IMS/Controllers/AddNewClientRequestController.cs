@@ -924,6 +924,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error in DeleteMultipleChildren: {ex.Message}");
+
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
@@ -997,6 +998,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> SubmitMPR(string mprNo)
         {
+
             // Validate tenant context
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -1130,7 +1132,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error in VerifyMPR: {ex.Message}");
-                return StatusCode(500, new { message = "Internal Server Error", ex.Message });
+                return BadRequest(new { message = ex.Message });
+            
             }
         }
 
@@ -1145,7 +1148,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     var userIdString = HttpContext.Session.GetString("UserId");
                     if (!int.TryParse(userIdString, out int userId))
                     {
-                        return Unauthorized(new { message = "Invalid or missing UserId in session." });
+                        return Unauthorized(new { Message = "Invalid or missing UserId in session." });
                     }
 
                     if (string.IsNullOrEmpty(mprNo))

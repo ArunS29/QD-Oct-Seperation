@@ -43,21 +43,21 @@
 
 <div class="title">
     <div class="header-container">
-        <h2>Access Management</h2>
+        <h2 id="acessmanagements"></h2>
     </div>
 </div>
 <div style="display: flex; gap: 10px; margin: 20px;">
     <!-- ERP User Database box -->
     <div style=" background-color: #27ae60; color: white; padding: 20px; border-radius: 5px;">
-        <h5 style="margin: 0; font-weight: bold;">QuickDice ERP Solutions</h5>
-        <h4 style="margin-top: 5px;">ERP User Database</h4>
+        <h5 style="margin: 0; font-weight: bold;" id="quicldiceacess"></h5>
+        <h4 style="margin-top: 5px;" id="erpuserdatabases"></h4>
         <div style="font-size: 40px; margin-top: 10px;">👥</div>
     </div>
 
     <!-- Active Users box -->
     <div style="width: 120px; background-color: #c0392b; color: white; padding: 20px; border-radius: 5px; text-align: center;">
         <div style="font-size: 10px; font-weight: bold;">1</div>
-        <div style="margin-top: 10px;">Active Users</div>
+        <div style="margin-top: 10px;" id="activeuserssacess"></div>
         <div style="font-size: 24px;">🧑‍💻</div>
     </div>
 </div>
@@ -81,7 +81,7 @@
             .Items(items =>
             {
                 items.Add()
-            .Title("Welcome")
+            .Title(new JS("formatMessage('Welcome')"))
             .Template(@<text>
 
         @(Html.DevExtreme().DataGrid()
@@ -103,33 +103,60 @@
         .Columns(columns =>
         {
 
-        columns.Add().DataField("IsDisabled").Caption("Is Disabled").DataType(GridColumnDataType.Boolean).Width(100);
-        columns.Add().DataField("UserId").Caption("User ID").CssClass("text-link").Width(100);
-        columns.Add().DataField("UserName").Caption("User Name");
-        columns.Add().DataField("UserLevel").Caption("User Level")
-        .Lookup(lookup => lookup
-        .DataSource(new JS("userLevels"))
-        .ValueExpr("UserLevelID")
-        .DisplayExpr("UserLevelDesc")
-        );
-        columns.Add().DataField("EqptQuotationAccess").Caption("Employee Group")
-        .Lookup(lookup => lookup
-        .DataSource(new JS("employeeGroups"))
-        .ValueExpr("EmpGroupID")
-        .DisplayExpr("EmployeeGroup")
-        );
-        columns.Add().DataField("DeptCode").Caption("Department")
-        .Lookup(lookup => lookup
-        .DataSource(new JS("departments"))
-        .ValueExpr("DepartmentCode")
-        .DisplayExpr("Department")
-        );
-        columns.Add().DataField("MobileNo").Caption("UserMobileNo");
-        columns.Add().DataField("EmailAddress").Caption("EmailAddress");
-        columns.Add().DataField("IsDisabled").Caption("Currently Logged In").DataType(GridColumnDataType.Boolean).Width(100);
-        columns.Add().DataField("LogTerminal").Caption("Last Logged In Terminal");
-        columns.Add().DataField("LastLogOnTime").Caption("UserLastLoggedInTime");
-        columns.Add().DataField("LastLogOffTime").Caption("UserLastLoggedOffTime");
+                        columns.Add().DataField("IsDisabled")
+                    .Caption(new JS("formatMessage('Is Disabled')"))
+                    .DataType(GridColumnDataType.Boolean).Width(100);
+
+                        columns.Add().DataField("UserId")
+                    .Caption(new JS("formatMessage('User ID')"))
+                    .CssClass("text-link").Width(100);
+
+                        columns.Add().DataField("UserName")
+                    .Caption(new JS("formatMessage('User Name')"));
+
+                        columns.Add().DataField("UserLevel")
+                    .Caption(new JS("formatMessage('User Level')"))
+                    .Lookup(lookup => lookup
+                    .DataSource(new JS("userLevels"))
+                    .ValueExpr("UserLevelID")
+                    .DisplayExpr("UserLevelDesc")
+                    );
+
+                        columns.Add().DataField("EqptQuotationAccess")
+                    .Caption(new JS("formatMessage('Employee Group')"))
+                    .Lookup(lookup => lookup
+                    .DataSource(new JS("employeeGroups"))
+                    .ValueExpr("EmpGroupID")
+                    .DisplayExpr("EmployeeGroup")
+                    );
+
+                        columns.Add().DataField("DeptCode")
+                    .Caption(new JS("formatMessage('Department')"))
+                    .Lookup(lookup => lookup
+                    .DataSource(new JS("departments"))
+                    .ValueExpr("DepartmentCode")
+                    .DisplayExpr("Department")
+                    );
+
+                        columns.Add().DataField("MobileNo")
+                    .Caption(new JS("formatMessage('User Mobile No')"));
+
+                        columns.Add().DataField("EmailAddress")
+                    .Caption(new JS("formatMessage('Email Address')"));
+
+                        columns.Add().DataField("IsDisabled")
+                    .Caption(new JS("formatMessage('Currently Logged In')"))
+                    .DataType(GridColumnDataType.Boolean).Width(100);
+
+                        columns.Add().DataField("LogTerminal")
+                    .Caption(new JS("formatMessage('Last Logged In Terminal')"));
+
+                        columns.Add().DataField("LastLogOnTime")
+                    .Caption(new JS("formatMessage('User Last Logged In Time')"));
+
+                        columns.Add().DataField("LastLogOffTime")
+                    .Caption(new JS("formatMessage('User Last Logged Off Time')"));
+
 
 
 @* 
@@ -254,6 +281,7 @@
     </text>); *@
             })
         .Width("100%")
+        .Height("80%")
         )
 </div>
 
@@ -607,7 +635,18 @@
                 });
             }
         }
-
+          $(function () {
+                            $("#acessmanagements").text(formatMessage("Access Management"));
+                     });
+          $(function () {
+                            $("#quicldiceacess").text(formatMessage("QuickDice ERP Solutions"));
+                     });
+          $(function () {
+                            $("#erpuserdatabases").text(formatMessage("ERP User Database"));
+                     });
+          $(function () {
+                            $("#activeuserssacess").text(formatMessage("Active Users"));
+                     });
         //       $(document).ready(function () {
         //     $(".limited-footer .btn-containerIvoiceEdit").each(function () {
         //         if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {

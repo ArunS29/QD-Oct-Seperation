@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -16,11 +17,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<CostAllocationController> _logger;
-
-        public CostAllocationController(ILogger<CostAllocationController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public CostAllocationController(ILogger<CostAllocationController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -56,7 +58,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveCostAllocations([FromBody] List<Tbl201CostAllocationMaster> allocations)
+        public async Task<IActionResult> SaveCostAllocationsAsync([FromBody] List<Tbl201CostAllocationMaster> allocations)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -80,7 +82,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 var existing = dbContext.Tbl201CostAllocationMasters
                     .FirstOrDefault(x => x.CostAllocationId == allocation.CostAllocationId);
-
+                await _userActionLogger.LogAsync(
+            module: "Finance > Cost Allocation",
+            actionDetail: $"Updated Cost Allocation: {existing.VoucherNo}",
+            documentNo: existing.VoucherNo
+            );
                 if (existing != null && allocation.CostAllocationId > 0)
                 {
                     // Update existing record
@@ -108,12 +114,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         EnteredBy = userName,
                         EnteredOn = now
                     });
+                    await _userActionLogger.LogAsync(
+            module: "Finance > Cost Allocation",
+            actionDetail: $"Saved Cost Aloocation: {allocation.VoucherNo}",
+            documentNo: allocation.VoucherNo
+            );
                 }
             }
 
 
             dbContext.SaveChanges();
-
+            
 
 
             return Ok();
@@ -268,7 +279,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
 
-            
+
 
             var allocations = dbContext.Tbl201CostAllocationMasters
                 .Where(x => x.CostAllocationId == costAllocationId)
@@ -284,6 +295,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
         }
+        [HttpGet]
+        public IActionResult CheckVoucherApproval(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Json(new { isApproved = false });
+
+            var voucher = dbContext.Tbl201VoucherMasters
+                .Where(v => v.VoucherNo == voucherNo)
+                .Select(v => new { v.IsApproved })
+                .FirstOrDefault();
+
+            return Json(new { isApproved = voucher?.IsApproved ?? false });
+        }
+
 
     }
 }

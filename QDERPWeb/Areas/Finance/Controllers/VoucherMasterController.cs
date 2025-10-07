@@ -320,7 +320,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Add entries to the database
                     dbContext.Tbl201VoucherEntries.AddRange(voucherEntries);
                     await dbContext.SaveChangesAsync();
-
+                    await _userActionLogger.LogAsync(
+                  module: "Finance > Bank Payment",
+                  actionDetail: $"Added Voucher: {voucherEntries[0].VoucherNo}, Entries: {voucherEntries.Count}, AccountHead: {AccountHead}",
+                  documentNo: voucherEntries[0].VoucherNo
+              );
                     //SaveVoucher(voucherEntries);
 
 
@@ -571,7 +575,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             i.CrAmount,
                             i.EntryNarration,
                             i.AccountHead,
-                            i.SysRemarks
+                            i.SysRemarks,
+                            i.AddedBy,
+                            i.AddedOn
                         })
                         .ToList();
 
@@ -2167,7 +2173,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     await dbContext.SaveChangesAsync();
                     // ✅ Log the deletion action
                     await _userActionLogger.LogAsync(
-                        module: "Finance > Delete Receipts",
+                        module: "Finance > Delete Voucher",
                         actionDetail: $"Deleted all voucher entries for VoucherNo: {VoucherNo}. Total deleted: {records.Count}",
                         documentNo: VoucherNo
                     );
@@ -2236,7 +2242,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     voucher.VoucherVerifiedBy = UserName;
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Voucher",
+                    actionDetail: $"Verified voucher: {voucherMaster.VoucherNo}",
+                    documentNo: voucherMaster.VoucherNo
+                );
                     return Ok(new
                     {
                         Message = "Voucher verified successfully.",
@@ -2289,7 +2299,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+                   module: "Finance > Voucher",
+                   actionDetail: $"Approved voucher: {VoucherNo}",
+                   documentNo: VoucherNo
+                    );
                     return Ok(new
                     {
                         Message = "Voucher verified successfully.",
@@ -2501,7 +2515,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var existingVoucher = await dbContext.Tbl201VoucherMasters
                                                         .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
-
+                    var userName = HttpContext.Session.GetString("UserName");
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
 
@@ -2532,10 +2546,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     else
                     {
                         // Insert new record
+                        VM.VoucherEnteredBy = userName;
+                        VM.VoucherEnteredOn = DateTime.Now;
                         dbContext.Tbl201VoucherMasters.Add(VM);
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Voucher",
+                    actionDetail: $" Saved Voucher: {VM.VoucherNo}",
+                    documentNo: VM.VoucherNo
+                     );
 
                     var notifyRequest = new NotificationRequest
                     {
@@ -2546,6 +2567,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     };
 
                     await _fcmService.SendNotificationAsync(notifyRequest);
+
 
                     return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
                 }

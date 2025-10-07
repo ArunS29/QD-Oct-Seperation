@@ -277,7 +277,7 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode").Alignment(HorizontalAlignment.Center).Width(80);
-                columns.Add().DataField("Status");
+                    columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')"));
 
 
             })
@@ -311,7 +311,7 @@
             .Columns(columns =>
             {
                 columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode");
-                columns.Add().DataField("Status");
+                    columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')"));
 
 
             })
@@ -323,7 +323,7 @@
 <script>
     function redirectToClientStatusCode() {
         let url = `/${tenantName}/IMS/ClientStatusCode`;
-          let title = "Client Status";
+          let title = formatMessage("Client Status");
         openModal(url, title);
         refreshClientCategorySelectBox()
     }
@@ -337,16 +337,30 @@
            if (clientStatusNo) {
               bindClientStatusById(clientStatusNo);
               $("#btnSave").dxButton("instance").option("text", "Update");
+          }else{
+                   $.ajax({
+            url: "/api/ClientStatusUpdate/GetReportedByValue",
+            type: "GET",
+            success: function (data) {
+                if (data.success && data.reportedBy) {
+                    console.log("ReportedBy:", data.reportedBy);
+                    $("#reportedBy").dxTextBox("instance").option("value", data.reportedBy);
+                } else {
+                    console.warn("Could not fetch ReportedBy name");
+                }
+            },
+            error: function (xhr) {
+                console.error("ReportedBy fetch failed:", xhr.responseText);
+            }
+        });
           }
          const statusBox = $("#statusId").dxNumberBox("instance");
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
     }
-  
+    
     });
-       $(document).ready(function () {
-                 getReportedBy();
-                 });
+    
     function bindClientStatusById(clientStatusNo) {
      
         $.ajax({
@@ -370,23 +384,29 @@
         });
     }
 
-  function  getReportedBy() {
-        $.ajax({
-            type: "GET",
-            url: "/api/ClientStatusUpdate/GetReportedByvalue",
-            success: function (data) {
-                const userName = data.userName ?? data;
+    // $(document).ready(function () {
+        
+    //     $.ajax({
+    //          url: "/api/ClientStatusUpdate/GetReportedByValue",
 
-      if (userName) {
-        $("#reportedBy").dxTextBox("instance")
-          .option("value", userName);
-      }
-            },
-            error: function (xhr) {
-                console.log("ReportedBy fetch failed:", xhr.responseText);
-            }
-        });
-    }
+    //           type: "GET",
+    //         success: function (data) {
+    //             if (data.success && data.reportedBy) {
+    //                 console.log("reportby:",data.reportedBy);
+    //                 $("#reportedBy").dxTextBox("instance")
+    //                     .option("value", data.reportedBy);
+    //             } else {
+    //                 DevExpress.ui.notify("Could not fetch Reported By name", "error", 2000);
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             console.error("ReportedBy fetch failed:", xhr.responseText);
+    //             DevExpress.ui.notify("Error fetching Reported By", "error", 2000);
+    //         }
+    //     });
+    
+    // });
+
     $(function () {
         $("#ClientStatusUpdate").dxTextBox({
             text: formatMessage("Client Status Update"),
@@ -471,10 +491,9 @@
         onDeleteButtonClick();
     });
     function onDeleteButtonClick(e) {
+        var clientStatusNo = $("#statusId").dxTextBox("instance").option("value");
 
-        var ClientCode = $("#statusId").dxTextBox("instance").option("value");
-
-        if (!ClientCode) {
+        if (!clientStatusNo) {
             DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
             return;
         }
@@ -483,23 +502,51 @@
             url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(ClientCode), // 👈 plain string
+            data: JSON.stringify(clientStatusNo),
             success: function (response) {
+                // Show success message
                 DevExpress.ui.notify(response.message, 'success', 3000);
-                window.parent.closeModal();
+
+                // Refresh parent grid
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
+                    }
+                }
+
+                // Close modal after short delay so user sees notify
+                setTimeout(function() {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500); // 0.5s delay
             },
             error: function (xhr) {
                 const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
                 DevExpress.ui.notify(msg, 'error', 3000);
             }
         });
-
     }
 
 
+    
 
     function onBackToList() {
-        window.parent.closeModal();
+        // Refresh parent grid
+                if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
+                    const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
+                    if (clientCode) {
+                        window.parent.loadClientStatusGrid(clientCode);
+                    }
+                }
+
+                // Close modal after short delay so user sees notify
+                setTimeout(function() {
+                    if (window.parent && typeof window.parent.closeModal === "function") {
+                        window.parent.closeModal();
+                    }
+                }, 500); // 0.5s delay
     }
 
     function dataGridSelectionChanged(e) {
@@ -605,34 +652,5 @@
         });
     }
 
-    $("#btnDelete").on("click", function (e) {
-        e.preventDefault();
-        onDeleteButtonClick();
-    });
-    function onDeleteButtonClick(e) {
-
-        var ClientCode = $("#statusId").dxTextBox("instance").option("value");
-
-        if (!ClientCode) {
-            DevExpress.ui.notify("Please enter or select a Journal Entry to delete.", "warning", 3000);
-            return;
-        }
-
-        $.ajax({
-            url: "/api/ClientStatusUpdate/DeleteClientStatusUpdate",
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(ClientCode), // 👈 plain string
-            success: function (response) {
-                DevExpress.ui.notify(response.message, 'success', 3000);
-                setTimeout(function () {
-                    location.reload();
-                }, 2000);
-            },
-            error: function (xhr) {
-                const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-                DevExpress.ui.notify(msg, 'error', 3000);
-            }
-        });
-    }
+    
 </script>

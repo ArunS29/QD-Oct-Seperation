@@ -42,4 +42,10 @@ public partial class Tbl40132PropertyServiceMaster
     public string ServiceOrderType { get; set; }
 
     public string StoreIssuedFrom { get; set; }
+
+    public decimal? CurrencyRate { get; set; }
+
+    public int? BaseCurrencyId { get; set; }
+
+    public int? CurrencyId { get; set; }
 }

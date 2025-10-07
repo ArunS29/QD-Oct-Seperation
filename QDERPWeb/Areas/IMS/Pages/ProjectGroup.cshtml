@@ -121,7 +121,7 @@
           
                 @(Html.DevExtreme().Button()
                     .ID("btnAdd")
-                    .Text("Add")
+                    .Text(new JS("formatMessage('Add')"))
                     .Icon("plus")
                     .Type(ButtonType.Success)
                     .Width(150)
@@ -166,11 +166,11 @@
             .OnRowUpdating("onProjectGroupUpdating")                       // Handles saving
             .Columns(columns =>
             {
-                columns.Add().DataField("ProjectGroupCode").Caption("Code").AllowEditing(false);
-                columns.Add().DataField("ProjectGroup").Caption("Group");
-                columns.Add().DataField("ProjectGroupAr").Caption("Project Group (In Arabic)");
-                columns.Add().DataField("ProjectCategory").Caption("Category");
-                columns.Add().DataField("ProjectGroupId").Caption("ProjectGroupId").Visible(false);
+                columns.Add().DataField("ProjectGroupCode").Caption(new JS("formatMessage('Code')")).AllowEditing(false);
+                columns.Add().DataField("ProjectGroup").Caption(new JS("formatMessage('Group')"));
+                columns.Add().DataField("ProjectGroupAr").Caption(new JS("formatMessage('Project Group (In Arabic)')"));
+                columns.Add().DataField("ProjectCategory").Caption(new JS("formatMessage('Category')"));
+                columns.Add().DataField("ProjectGroupId").Caption(new JS("formatMessage('ProjectGroupId')")).Visible(false);
                 // Add delete button column
                 columns.Add()
                 .Type(GridCommandColumnType.Buttons)
@@ -236,7 +236,7 @@
         $("#CategoryComboBox").dxSelectBox({
             dataSource: items,
             acceptCustomValue: true,
-            label: "Category",              // ✅ Floating Label
+            label: formatMessage("Category"),              // ✅ Floating Label
         labelMode: "floating",
             onCustomItemCreating: function (e) {
                 const newValue = e.text;
@@ -299,6 +299,13 @@
             success: function () {
                 DevExpress.ui.notify("ProjectGroup saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                  $("#txtGroup").dxTextBox("instance").option("value", "");
+                  $("#txtGroupArabic").dxTextBox("instance").option("value", "");
+                  $("#txtGroupCode").dxTextBox("instance").option("value", "");
+                  $("#CategoryComboBox").dxSelectBox("instance").option("value", "");
+
+                  $("#txtGroup").dxValidator("instance").reset();
+                  $("#txtGroupCode").dxValidator("instance").reset();
             },
             error: function (xhr) {
       
@@ -341,27 +348,49 @@
             }
         });
     }
+   
     function onDeleteButtonClick(e) {
         e.event.preventDefault(); // prevent default delete
 
         var grid = $("#SignatoryGrid").dxDataGrid("instance");
         var key = e.row.data.ProjectGroupId; // get the ID of the row
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/ProjectGroup/Delete?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    // Refresh the grid after delete
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
-                }
-            });
-        }
+        // 🔹 Use DevExtreme confirm dialog for UI-friendly confirmation
+        var result = DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Confirm Delete"
+        );
+
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                // User clicked Yes → proceed with delete
+                $.ajax({
+                    url: '/api/ProjectGroup/Delete?key=' + key,
+                    type: 'DELETE',
+                    success: function (response) {
+                        // Show success notification
+                        let msg = response && response.message ? response.message : "Deleted successfully";
+                        DevExpress.ui.notify(msg, "success", 2000);
+
+                        // Refresh grid
+                        grid.refresh();
+                    },
+                    error: function (xhr) {
+                        // Show error notification with backend message if available
+                        let msg = "Delete failed";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        DevExpress.ui.notify(msg, "error", 3000);
+                    }
+                });
+            } else {
+                // User clicked No → optional notification
+                DevExpress.ui.notify("Delete cancelled", "info", 2000);
+            }
+        });
     }
+
     $(function () {
         $("#Projectsub").dxTextBox({
             text: formatMessage("Project Group"),

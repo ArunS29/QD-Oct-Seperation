@@ -132,23 +132,25 @@
     .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report))
 
-
-<a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
-   onclick="openReportDesigner(
-   '@Model.ReportName',
-   '@Model.quotationNo',
-   '@Model.purchaseOrderNo',
-   '@Model.rfqNo',
-   '@Model.deliveryNoteNo',
-   '@Model.salesOrderNo',
-   '@Model.RequestNo',
-   '@Model.CreditNoteNo',
-   '@Model.debitNoteNo',
-   '@Model.invoiceNo'
-)">
-    <span class="btn-text">Open Designer</span>
-    <i class="fa fa-pencil-alt"></i>
-</a>
+@if (Model.ShowDesignerButton)
+{
+    <a href="javascript:void(0);" id="btnOpenDesigner" class="btn-edit-report"
+       onclick="openReportDesigner(
+       '@Model.ReportName',
+       '@Model.quotationNo',
+       '@Model.purchaseOrderNo',
+       '@Model.rfqNo',
+       '@Model.deliveryNoteNo',
+       '@Model.salesOrderNo',
+       '@Model.RequestNo',
+       '@Model.CreditNoteNo',
+       '@Model.debitNoteNo',
+       '@Model.invoiceNo'
+    )">
+        <span class="btn-text">Open Designer</span>
+        <i class="fa fa-pencil-alt"></i>
+    </a>
+}
 
 <!-- Email Popup -->
 <div id="emailPopup" class="popup-overlay">

@@ -11,6 +11,7 @@ using PdfSharpCore.Pdf.IO;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
+using SkiaSharp;
 using System.Collections.Generic;
 using System.IO;
 using System.IO;
@@ -36,7 +37,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         //[HttpGet]
-        //public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
+        //public async Task<IActionResult> GetInventory1(DataSourceLoadOptions loadOptions, string filterType = null)
         //{
         //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
         //    {
@@ -694,7 +695,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { message = "Invalid tenant." });
 
-                // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
+                bool exists = dbContext.Tbl30111StockClassificationMasters
+            .Any(x => x.StockClassification.ToLower().Trim() == model.StockClassification.ToLower().Trim());
+
+                if (exists)
+                {
+                    return BadRequest(new { success = false, message = "This Stock Classification is already in the database. Please check again." });
+                }
+                                  // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
                 short maxId = (short)dbContext.Tbl30111StockClassificationMasters
                          .Select(x => x.StockClassId)
                          .AsEnumerable()
@@ -847,8 +855,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     // set default value
                     model.CreatedBy = addedBy;
                     model.CreatedOn = DateTime.Now;
-                    model.ModifiedBy = addedBy;
-                    model.ModifiedOn = DateTime.Now;
+                   // model.ModifiedBy = addedBy;
+                   // model.ModifiedOn = DateTime.Now;
                     model.IsDiscontinued = (model.IsDiscontinued == true) ? true : false;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
@@ -865,6 +873,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 else
                 {
                     // Update fields
+                    //if (existingItem.CreatedBy == "" || string.IsNullOrEmpty(existingItem.CreatedBy))
+                    //{
+                    //    existingItem.CreatedBy = addedBy;
+                    //}
                     existingItem.Gsdescrpition = model.Gsdescrpition;
                     existingItem.GsdescriptionAr = model.GsdescriptionAr;
                     existingItem.GsgroupId = model.GsgroupId;
@@ -1611,28 +1623,80 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 var entity = await dbContext.Tbl60502materialReceiptChildren
                     .FirstOrDefaultAsync(x => x.Gscode == update.Gscode && x.ReceiptChildSlNo == update.ReceiptChildSlNo);
-                
                 if (entity == null)
                     return NotFound("Record not found.");
 
-                // Update only the fields you want (ExpiryDate, BatchNo)
+                if (entity.QtyReceived != update.QtyReceived)
+                {
+                    int lineOrderNo = await dbContext.Tbl60502materialReceiptChildren
+                        .Where(x => x.ReceiptNo == entity.ReceiptNo)
+                        .MaxAsync(x => (int?)x.LineOrderNo) ?? 0;
+
+                    var newEntity = new Tbl60502materialReceiptChild
+                    {
+                        ReceiptNo = entity.ReceiptNo,
+                        UnitPrice = entity.UnitPrice,
+                        UnitRateMethod = entity.UnitRateMethod,
+                        Gscode = update.Gscode,
+                        ExpiryDate = update.ExpiryDate,
+                        QtyReceived = entity.QtyReceived - update.QtyReceived,
+                        BatchNo = update.BatchNo,
+                        LineOrderNo = lineOrderNo + 1,
+
+                    };
+
+                    dbContext.Tbl60502materialReceiptChildren.Add(newEntity);
+                }
+
+                // Update the existing record
                 entity.ExpiryDate = update.ExpiryDate;
+                entity.QtyReceived = update.QtyReceived;
                 entity.BatchNo = update.BatchNo;
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { message = "Update successful" });
+                // ✅ return total received also
+                var totalReceived = await dbContext.Tbl60502materialReceiptChildren
+                    .Where(x => x.ReceiptNo == entity.ReceiptNo && x.Gscode == entity.Gscode)
+                    .SumAsync(x => x.QtyReceived);
+
+                return Ok(new
+                {
+                    message = "Update successful",
+                    totalReceived
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in UpdateOpeningBalanceItem: {ex.Message}");
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                _logger.LogError(ex, "Error in UpdateOpeningBalanceItem");
+                return StatusCode(500, $"An error occurred: {ex.InnerException?.Message ?? ex.Message}");
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteOpeningBalance(int id)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant context.");
+            try
+            {
 
+                var entity = await dbContext.Tbl60502materialReceiptChildren
+                .FirstOrDefaultAsync(x => x.ReceiptChildSlNo == id);
+            if (entity == null)
+                return NotFound("Record not found.");
 
+            dbContext.Tbl60502materialReceiptChildren.Remove(entity);
+            await dbContext.SaveChangesAsync();
 
+                return Ok(new { success = true, message = "Deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteStatus: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetOpeningBalanceByGscode(string gscode)

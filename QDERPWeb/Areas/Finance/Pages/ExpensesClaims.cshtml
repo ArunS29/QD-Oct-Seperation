@@ -461,12 +461,12 @@
             .LoadMode(DataSourceLoadMode.Raw)
             .Key("UserId")
             )
-            
+            .AcceptCustomValue(false)
             .LabelMode(EditorLabelMode.Floating)
             .ID("Claimer")
             .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(false)
+           
+            .OpenOnFieldClick(true)
             .ValueChangeEvent("input")
             .HoverStateEnabled(true)
             .ValueExpr("UserId")
@@ -565,7 +565,7 @@
                     <%- data.ClaimRefNo %>
                 </a>
             </div>
-        </text>).Visible(true);
+        </text>).Visible(true).AllowEditing(false);
 
                     
                     columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -588,7 +588,7 @@ columns.AddFor(m => m.ClaimerName)
 columns.Add()
 .Caption(new JS("formatMessage('Total Consumed Amount')"))
 .DataField("TotalConsumedAmount")
-.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) + (data.ApprovedAmountTotal || 0); }")
+.CalculateCellValue("function(data) { return (data.ClaimedAmountTotal || 0) ; }")
 .Format(f => f.Type(Format.FixedPoint).Precision(2))
 .Visible(false); // optional if you don't want it shown in detail rows
 
@@ -815,7 +815,7 @@ columns.Add()
                 .LoadAction("GetUser")
                 .LoadMode(DataSourceLoadMode.Raw)
                 ///   .Key("AccountHead") //salary paid entry
-                .Key("UserName")
+                .Key("UserId")
 
                 )
                 
@@ -913,7 +913,7 @@ columns.Add()
              // Define context menu items with permission keys
             let menuConfig = [
                 {
-                    text: "Edit Journal Voucher",
+                    text: "Edit Claim",
                     icon: "edit",
                     color: "#28a745",
                     permissionKey: "frm20107ExpenseClaimView_EditClaim",
@@ -925,7 +925,7 @@ columns.Add()
                             } else if (rowData.ClaimRefNo.startsWith('PCQ')) {
                                 targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
                             } else if (rowData.ClaimRefNo.startsWith('SRQ')) {
-                                targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                                targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
                             }
                             if (targetUrl) window.location.href = targetUrl;
                         } else {
@@ -934,7 +934,7 @@ columns.Add()
                     }
                 },
                 {
-                    text: "Unlock Journal Voucher",
+                    text: "Unlock Claim",
                     icon: "unlock",
                     color: "#17a2b8",
                     permissionKey: "frm20107ExpenseClaimView_UnlockClaim",
@@ -943,7 +943,7 @@ columns.Add()
                     }
                 },
                 {
-                    text: "Delete Journal Voucher",
+                    text: "Delete Claim",
                     icon: "trash",
                     color: "#dc3545",
                     permissionKey: "frm20107ExpenseClaimView_DeleteClaim",
@@ -1321,9 +1321,8 @@ columns.Add()
                 toDate = currentDate;// Today
                 break;
             case 'fullyear':
-                // Get the first and last day of the current year
-                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
-                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                frmDate = new Date(currentDate.getFullYear(), 0, 1);   // ✅ FIXED
+                toDate = new Date(currentDate.getFullYear(), 11, 31);  // ✅ FIXED
                 break;
             case 'lastyear':
                 // Get the first and last day of the last year
@@ -1441,29 +1440,29 @@ columns.Add()
             dataGrid.focus(dataGrid.getRowElement(focusedIndex));
         }
     }
-    function dataGridAccountHeadSelectionChanged(e) {
+       function dataGridAccountHeadSelectionChanged(e) {
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#Claimer").dxDropDownBox("instance");
         acchead = selectedKey;
+
         if (selectedKey) {
-            ddbInstance.option("value", selectedKey);
+            ddbInstance.option("value", selectedKey); // ✅ selectedKey = UserId
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
-            // Get ReferenceNo from selected row
-            debugger
+
+            const selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
             if (selectedRowData.length > 0) {
                 accheadid = selectedRowData[0].UserId;
                 accheadname = selectedRowData[0].UserName;
-                
-
             } else {
                 DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
                 return;
             }
         }
     }
+
 
 
     function dataGridAccountHeadInitialized(e) {

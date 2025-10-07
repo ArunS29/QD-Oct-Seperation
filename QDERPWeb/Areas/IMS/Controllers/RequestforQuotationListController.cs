@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.UnitConversion;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
@@ -73,6 +74,22 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalBeforeTax,
                         i.TotalDiscount,
                         i.TotalAfterDiscount,
+                        i.Rfqsignatory,
+                        i.SignatoryName,
+                        i.SignatoryPosition,
+                        i.SignatoryContact,
+                        i.SignatoryEmail,
+                        i.SignatureImage,
+                        i.Project,
+                        i.ClientRefNo,
+                        i.InventoryMasterGroupId,
+                        i.InventoryMasterGroup,
+                        i.ProjectMasterCode,
+                        i.ProjectDescription,
+                        i.SalesPersonCode,
+                        i.SalesPersonName,
+                        i.UserCode
+
 
                     }).ToListAsync();
 
@@ -132,8 +149,52 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     i.ItemDiscount,
                     i.IsWonForPo,
                     i.LineTotalBeforeTax,
-                    i.LineTotalAfterDisc
-				}).ToListAsync();
+                    i.LineTotalAfterDisc,
+                    i.SupplierCode,
+                    i.IsQuoted,
+                    i.IsWon,
+                    i.ReasonWon,
+                    i.DeliveryPeriod,
+                    i.PaymentTerms,
+                    i.QuoteValidTo,
+                    i.QuoteValidDate,
+                    i.SupplierQuotationDt,
+                    i.PreparedBy,
+                    i.PreparedOn,
+                    i.AddedBy,
+                    i.AddedOn,
+                    i.ModifiedBy,
+                    i.ModifiedOn,
+                    i.CompanyName,
+                    i.UnitRateMethod,
+                    i.QuotationRemarks,
+                    i.LineOrderNo,
+                    i.UnitType,
+                    i.AddlDescription,
+                    i.Attention,
+                    i.SupplierContactNo,
+                    i.SupplierContactEmail,
+                    i.RfqchildSlNo,
+                    i.IsWonUpdatedBy,
+                    i.IsWonUpdatedDate,
+                    i.Project,
+                    i.PlanNo,
+                    i.ItemSize,
+                    i.ItemPartNo,
+                    i.ItemBrand,
+                    i.ItemMake,
+                    i.InventoryMasterGroupId,
+                    i.InventoryMasterGroup,
+                    i.ClientRefNo,
+                    i.ReasonForSelection,
+                    i.ProjectMasterCode,
+                    i.ProjectDescription,
+                    i.SalesPersonCode,
+                    i.SalesPersonName,
+                    i.UserCode
+
+
+                }).ToListAsync();
 
                 return Json(data);
             }
@@ -676,7 +737,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			master.ModifiedBy = userName;
 			master.ModifiedOn = DateTime.Now;
 
-			
+			var signatoryId = await GetSignatoryIDfromUserID(userId);
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
@@ -685,7 +746,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                              documentNo: $"{Rfqno}"
                            );
 
-            return Ok(new { success = true, message = "RFQ submitted successfully." });
+            return Ok(new { success = true, message = "RFQ submitted successfully.",submittedBy = signatoryId  });
 		}
         [HttpPost]
         public async Task<IActionResult> VerifyRFQ(string Rfqno)
@@ -721,6 +782,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedOn = DateTime.Now;
             voucher.VerifiedBy = userName;
 
+            var signatoryId = await GetSignatoryIDfromUserID(userId);
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify RFQ",
@@ -731,7 +793,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Ok(new
             {
                 message = "RFQ has been Verified and processed for Approval.",
-               
+                verifiedBy = signatoryId
             });
         }
 
@@ -871,9 +933,18 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (existingEntity.IsApproved != true && existingEntity.IsSubmitted != true && existingEntity.IsVerified != true)
                     return Ok(new { success = false, message = "RFQ is already unlocked." });
 
-                existingEntity.IsApproved = false;
                 existingEntity.IsSubmitted = false;
+                existingEntity.SubmittedBy = "";
+                existingEntity.SubmittedOn = null;
+
+                existingEntity.IsApproved = false;
+                existingEntity.ApprovedBy = "";
+                existingEntity.ApprovedOn = null;
+                
                 existingEntity.IsVerified = false;
+                existingEntity.VerifiedBy = "";
+                existingEntity.VerifiedOn = null;
+                
 
                 dbContext.Tbl60701rfqmasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();

@@ -101,12 +101,12 @@
         <div id="ClientContactList" class="no-border-title"></div>
     </div>
 </div>  *@
-<div class="dx-card-header minimal-header">
+@* <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Client Contact List</h3>
-</div>
+</div> *@
 <div class="formContainer">
     <div class="form-row">
         <div class="form-field">
@@ -224,7 +224,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Mobile Number (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -237,7 +238,8 @@
                 .Width("100%")
                   .Label(new JS("formatMessage('Phone No. (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -252,7 +254,8 @@
                 .Width("100%")
                  .Label(new JS("formatMessage('Mobile Number (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -265,7 +268,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Phone No. (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -293,7 +297,7 @@
                 .ID("email")
                 .Value("")
                 .Width("100%")
-               
+                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Label(new JS("formatMessage('Email')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("class", "white-bg"))
@@ -485,9 +489,18 @@
             data: JSON.stringify(ClientContactSlNo), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+                    // Refresh parent DataGrid with fresh data
+                    if (window.parent && typeof window.parent.loadContactListGrid === "function") {
+                        const clientCode = $("#clientCode").dxTextBox("instance").option("value");
+                        if (clientCode) {
+                            window.parent.loadContactListGrid(clientCode);
+                        }
+                    }
+                     setTimeout(function() {
+                if (window.parent && typeof window.parent.closeModal === "function") {
+                    window.parent.closeModal();
+                }
+            }, 500);
             },
             error: function (xhr) {
                 const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
@@ -496,7 +509,17 @@
         });
     }
     function Goback() {
-        window.parent.closeModal();
+       if (window.parent && typeof window.parent.loadContactListGrid === "function") {
+                        const clientCode = $("#clientCode").dxTextBox("instance").option("value");
+                        if (clientCode) {
+                            window.parent.loadContactListGrid(clientCode);
+                        }
+                    }
+                     setTimeout(function() {
+                if (window.parent && typeof window.parent.closeModal === "function") {
+                    window.parent.closeModal();
+                }
+            }, 500);
     }
 
 </script>

@@ -231,79 +231,79 @@
     </div> *@
     <div class="btn-container menuBtn report-menu-button">
         @(Html.DevExtreme().Menu()
-                .ID("menuReports1")
-                .DataSource(new[] {
+    .ID("menuReports1")
+    .DataSource(new[] {
+        new {
+            text = new JS("formatMessage('Financial Reports')"),
+            icon = "doc",
+            items = new[] {
                 new {
-                text = new JS("formatMessage('Financial Reports')"),
-                icon = "doc",
-                items = new[] {
-                new {
-                text = new JS("formatMessage('Account Group Report')"),
-                icon = "home",
-                items = new[] {
-                new { text = new JS("formatMessage('Account Group')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Account Group Report(with subGroups)')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Account Group Report')"),
+                    icon = "home",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Account Group')"), icon = "chart-line", reportName = "Group" },
+                        new { text = new JS("formatMessage('Account Group Report(with subGroups)')"), icon = "chart-line", reportName = "subGroup" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Trial Balance Report')"),
-                icon = "chart",
-                items = new[] {
-                new { text = new JS("formatMessage('Trial Balance')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Trial Balance (Export Format)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Trial Balance (Dr/ Cr Format)')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Trial Balance Report')"),
+                    icon = "chart",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Trial Balance')"), icon = "chart-line", reportName = "TrialBalanceReport" },
+                        new { text = new JS("formatMessage('Trial Balance (Export Format)')"), icon = "chart-line", reportName = "TrialBalanceExportFormat" },
+                        new { text = new JS("formatMessage('Trial Balance (Dr/ Cr Format)')"), icon = "chart-line", reportName = "TrialBalanceDrCr" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Income Statements')"),
-                icon = "cart",
-                items = new[] {
-                new { text = new JS("formatMessage('Income Statements')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Income Statements(By Month)')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Income Statements')"),
+                    icon = "cart",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Income Statements')"), icon = "chart-line", reportName = "IncomeStatements" },
+                        new { text = new JS("formatMessage('Income Statements(By Month)')"), icon = "chart-line", reportName = "incomeStatementsBymonth" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Balance Sheet')"),
-                icon = "chart",
-                items = new[] {
-                new { text = new JS("formatMessage('Balance Sheet')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Balance Sheet(Horizondal Format)')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Balance Sheet')"),
+                    icon = "chart",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Balance Sheet')"), icon = "chart-line", reportName = "balnceSheet" },
+                        new { text = new JS("formatMessage('Balance Sheet(Horizondal Format)')"), icon = "chart-line", reportName = "BalanceSheetHorizondalFormat" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Cash Inflow & Outflow Reports')"),
-                icon = "money",
-                items = new[] {
-                new { text = new JS("formatMessage('Cash Flow Statements')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Cash Inflow & Outflow Reports')"),
+                    icon = "money",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Cash Flow Statements')"), icon = "chart-line", reportName = "Cash Flow Statements" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Ageing Report')"),
-                icon = "product",
-                items = new[] {
-                new { text = new JS("formatMessage('Bills Receivable- Ageing (By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Receivable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Receivable Report(By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Payable- Ageing (By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Payable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Payable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line" },
-                new { text = new JS("formatMessage('Bills Payable Report (By End Date)')"), icon = "chart-line" },
-                }
+                    text = new JS("formatMessage('Ageing Report')"),
+                    icon = "product",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Bills Receivable- Ageing (By End Date)')"), icon = "chart-line", reportName = "BillsReceivableEndDate" },
+                        new { text = new JS("formatMessage('Bills Receivable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line", reportName = "BillsReceivableledgerBalance" },
+                        new { text = new JS("formatMessage('Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line", reportName = "BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate" },
+                        new { text = new JS("formatMessage('Bills Receivable Report(By End Date)')"), icon = "chart-line", reportName = "BillsReceivablesReportByEndDate" },
+                        new { text = new JS("formatMessage('Bills Payable- Ageing (By End Date)')"), icon = "chart-line", reportName = "BillsPayablesAgeingByEndDate" },
+                        new { text = new JS("formatMessage('Bills Payable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line", reportName = "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate" },
+                        new { text = new JS("formatMessage('Bills Payable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line", reportName = "billsPayableSummaryLedgerBalance" },
+                        new { text = new JS("formatMessage('Bills Payable Report (By End Date)')"), icon = "chart-line", reportName = "BillsPayableReportEnddate" }
+                    }
                 },
                 new {
-                text = new JS("formatMessage('Cost Reports')"),
-                icon = "monney",
-                items = new[] {
-                new { text = new JS("formatMessage('Property Allocation Report')"), icon = "chart-line" },
+                    text = new JS("formatMessage('Cost Reports')"),
+                    icon = "monney",
+                    items = new[] {
+                        new { text = new JS("formatMessage('Property Allocation Report')"), icon = "chart-line", reportName = "PropertAllocationReport" }
+                    }
                 }
-                },
-                }
-                }
-                })
-                .DisplayExpr("text")
-                .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-                .OnItemClick("handleReportsClick")
+            }
+        }
+    })
+    .DisplayExpr("text")
+    .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+    .OnItemClick("handleReportsClick")
                 )
     </div>
 
@@ -884,7 +884,7 @@
         "Bills Receivable- Ageing (By End Date)": "BillsReceivableEndDate",
         "Bills Receivable- Ageing as per Ledger Balance(By End Date)": "BillsReceivableledgerBalance",
           "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)":"BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate",
-        "Bills Receivable Report(By End Date)": "BillsReceivablesReportByEndDate",
+        "Bills Receivables Report(By End Date)": "BillsReceivablesReportByEndDate",
         "Bills Payable- Ageing (By End Date)": "BillsPayablesAgeingByEndDate",
         "Bills Payable- Ageing as per Ledger Balance(By End Date)": "BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate",
           "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)":"billsPayableSummaryLedgerBalance",
@@ -894,10 +894,10 @@
       };
     function handleReportsClick(e) {
         const selectedText = e.itemData.text;
+        let reportName = e.itemData.reportName; // Use reportName from menu item
 
         // 👇 Use global selectedMode or default to "online"
         const mode = selectedMode || "online";
-
         var accountGroup = selectBox;
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -905,9 +905,9 @@
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 
-            if (selectedText === "Trial Balance" && mode === "offline") {
+        // 👇 Override report name if Trial Balance and mode is offline
+        if (selectedText === "Trial Balance" && mode === "offline") {
             reportName = "TrialBalancePreReport";
-
             DevExpress.ui.notify({
                 message: "📁 Your report is generating in *Offline Mode* (preloaded data).",
                 type: "info",
@@ -930,14 +930,7 @@
         var frmDateStr = formatDate(frmDate);
         var toDateStr = formatDate(toDate);
 
-        if (reportMappingss[selectedText]) {
-            let reportName = reportMappingss[selectedText];
-
-            // 👇 Override report name if Trial Balance and mode is offline
-            if (selectedText === "Trial Balance" && mode === "offline") {
-                reportName = "TrialBalancePreReport";
-            }
-
+        if (reportName) {
             if (selectedText === "Cash Flow Statements") {
                 const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
                 const formattedToDate = new Date(toDate).toISOString().split('T')[0];
@@ -949,16 +942,16 @@
                 var url = `/${tenantName}/Finance/PropertAllocationReport?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
                 window.open(url, '_blank');
             } else {
-                    let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
+                let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
 
-                    const screenWidth = window.screen.availWidth;
-                    const screenHeight = window.screen.availHeight;
+                const screenWidth = window.screen.availWidth;
+                const screenHeight = window.screen.availHeight;
 
-                    window.open(
-                        url,
-                        '_blank',
-                        `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
-                    );
+                window.open(
+                    url,
+                    '_blank',
+                    `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+                );
             }
         } else {
             console.warn("No report mapping found for:", selectedText);

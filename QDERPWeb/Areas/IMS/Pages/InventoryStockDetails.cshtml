@@ -309,7 +309,7 @@
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Item Store')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("ERStockInventory")
+                                                .Controller("StockInventory")
                             .LoadAction("GetStores")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("StoreId")
@@ -383,7 +383,7 @@
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Item Classification')"))
                             .DataSource(d => d.WebApi()
-                            .Controller("ERStockInventory")
+                                                .Controller("StockInventory")
                             .LoadAction("GetItemClassifications")
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("StockClassId")
@@ -973,7 +973,7 @@
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
                             @(Html.DevExtreme().CheckBox()
                                 .ID("ItemDiscontinued")
-                                .Value(true))
+                                .Value(false))
                         </td>
                         </tr>
                     </table>
@@ -2021,11 +2021,11 @@
                                                        </a>
                                                    </text>);
 
-                        columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                             columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
                         columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
+                                    columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
@@ -2125,14 +2125,8 @@
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
-                .OnRowUpdated("onUnitConversionRowUpdated")
                     .Columns(columns =>
                     {
-
-                        columns.Add()
-                        .DataField("GSCode")
-                        .Visible(false);
-
                         columns.Add()
                         .DataField("UnitCodeOfConversion")
                         .Width(300)
@@ -2210,25 +2204,7 @@
                             });
                         });
                     });
-
-            function onUnitConversionRowUpdated(e) {
-                const stockNoBox = $("#StockNoItemCode").dxTextBox("instance");
-                selectedGsCode = stockNoBox.option("value"); // set from your stock group selection
-                e.data.GSCode = selectedGsCode;
-
-                $.ajax({
-                    url: "/api/StockInventory/SaveUnitConversion",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(e.data),
-                    success: function () {
-                        DevExpress.ui.notify("Saved successfully", "success", 2000);
-                    },
-                    error: function () {
-                        DevExpress.ui.notify("Error saving data", "error", 2000);
-                    }
-                });
-            }
+                   
 
                     // ✅ Dropdown Editor Template
                     function unitCodeDropDownEditor(cellElement, cellInfo) {
@@ -2772,7 +2748,7 @@
     @(Html.DevExtreme().DataGrid()
                 .ID("GetItemStore-datagrid")
                 .DataSource(d => d.WebApi()
-                .Controller("ERStockInventory")
+                    .Controller("StockInventory")
                 .LoadAction("GetStores")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("StoreId")
@@ -2808,7 +2784,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("GetItemClassification-datagrid")
         .DataSource(d => d.WebApi()
-        .Controller("ERStockInventory")
+            .Controller("StockInventory")
         .LoadAction("GetItemClassifications")
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("StockClassId")
@@ -3145,8 +3121,7 @@
         const description = descriptionInstance.option("value") || '';
         const openingBalance = $("#OpeningBalance").dxNumberBox("instance").option("value");
         const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
-        const unitOfMeasureInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
-        const unitCode = unitOfMeasureInstance.option("value");
+        const unitCode =  $("#UnitOfMeasure").dxDropDownBox("instance").option("value");
         // Encode the parameters to ensure URL safety
         const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&UnitCode=${encodeURIComponent(unitCode)}&modal=true`;
         openModal(url, formatMessage("Opening Balance Entries"));
@@ -3555,8 +3530,7 @@
 
 
     $(document).ready(function () {
-        debugger;
-            var urlParams = new URLSearchParams(window.location.search);
+                    var urlParams = new URLSearchParams(window.location.search);
             var Gsdescrpition = urlParams.get('Gsdescrpition');
             var GsdescriptionAr = urlParams.get('GsdescriptionAr');
             var UnitOfMeasure = urlParams.get('UnitOfMeasure');

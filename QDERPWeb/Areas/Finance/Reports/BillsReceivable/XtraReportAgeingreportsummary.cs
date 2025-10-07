@@ -108,6 +108,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
 
         private void ConfigureSqlDataSource()
         {
+            ExecuteAgeingStoredProcedure();
             sqlDataSource1.Queries.Clear();
 
             var customQuery = new CustomSqlQuery
@@ -125,6 +126,27 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             else
             {
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
+        private void ExecuteAgeingStoredProcedure()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context for stored procedure.");
+
+            using var connection = new SqlConnection(tenant.ConnectionString);
+            connection.Open();
+
+            var currentDate = DateTime.Today; // current system date
+
+            foreach (var spName in new[] { "sp20124AgeingReports", "sp20125AgeingReceivableReports" })
+            {
+                using var cmd = new SqlCommand(spName, connection)
+                {
+                    CommandType = System.Data.CommandType.StoredProcedure,
+                    CommandTimeout = 120
+                };
+                cmd.Parameters.AddWithValue("@EndDate", currentDate);
+                cmd.ExecuteNonQuery();
             }
         }
         private void LoadCurrencySymbolAndImage()

@@ -203,6 +203,7 @@
 										.LabelMode(EditorLabelMode.Floating)
 										.Placeholder("Type")
 										.Width("100%")
+										.ReadOnly(true)
 										)
 				</div>
 
@@ -227,6 +228,7 @@
 										.Label(new JS("formatMessage('Amount')"))
 										.LabelMode(EditorLabelMode.Floating)
 										.Width("100%")
+										.ReadOnly(true)
 										)
 				</div>
 
@@ -366,8 +368,8 @@
 
 					columns.AddFor(m => m.AmountAllocated).Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
 					columns.AddFor(m => m.CostAllocRemarks).Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
-					columns.AddFor(m => m.EnteredOn).Caption(new JS("formatMessage('Add Loan Schedule')"));
-							columns.AddFor(m => m.LoanId).Caption(new JS("formatMessage('Loan Doc ID')"));
+					@* columns.AddFor(m => m.EnteredOn).Caption(new JS("formatMessage('Add Loan Schedule')"));
+							columns.AddFor(m => m.LoanId).Caption(new JS("formatMessage('Loan Doc ID')")); *@
 						})
 			   			//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
 						.AllowColumnReordering(true) // Enable column reordering
@@ -1246,60 +1248,77 @@
 						const accountId = '@accountId';
 
 
-						// Step 1: Delete all by VoucherNo
-						$.ajax({
-							type: "POST",
-							url: "/api/JournalEntryEdit/DeleteEmployeeByVoucherNo",
-							contentType: "application/json",
-							data: JSON.stringify({ voucherNo: voucherno }),
-							success: function () {
-								// Step 2: Insert default row
-										const newRow = {
-											EmployeeAllocationId: 0,
-											EmpAllocDrCr: drCr,
-											EmployeeNo:  null,
-											EffectiveDate: new Date(),
-											AmountAllocated: initialVoucherAmount.toFixed(2),
-											CostAllocRemarks: null,
-											VoucherEntryId: VoucherEntryId,
-											VoucherNo: voucherno,
-											LedgerAccountNo: accountId
-									   };
 
-								$.ajax({
-									type: "POST",
-									url: "/api/JournalEntryEdit/InsertDefaultEmployeeAllocation",
-									contentType: "application/json",
-									data: JSON.stringify(newRow),
-									success: function () {
-										// Step 3: Refresh grid
-										$.ajax({
-											url: `/api/JournalEntryEdit/GetEmployeeAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-											type: 'GET',
-											success: function (refreshedData) {
-												dataGrid.option('dataSource', refreshedData);
-											},
-											error: function () {
-												DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
-											}
-										});
-									},
-									error: function () {
-										DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
-									}
-								});
-							},
-							error: function () {
-								DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
-							}
-						});
+				const visibleRowCount = dataGrid.getVisibleRows().length;
 
+				const insertAndRefresh = () => {
+					const newRow = {
+								EmployeeAllocationId: 0,
+								EmpAllocDrCr: drCr,
+								EmployeeNo:  null,
+								EffectiveDate: new Date(),
+								AmountAllocated: initialVoucherAmount.toFixed(2),
+								CostAllocRemarks: null,
+								VoucherEntryId: VoucherEntryId,
+								VoucherNo: voucherno,
+								LedgerAccountNo: accountId
+			        };
+
+					$.ajax({
+						type: "POST",
+					url: "/api/JournalEntryEdit/InsertDefaultEmployeeAllocation",
+						contentType: "application/json",
+						data: JSON.stringify(newRow),
+						success: function () {
+							// Step 3: Refresh grid
+							$.ajax({
+							url: `/api/JournalEntryEdit/GetEmployeeAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+								type: 'GET',
+								success: function (refreshedData) {
+									dataGrid.option('dataSource', refreshedData);
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+						}
+					});
+
+
+				};
+
+				if (visibleRowCount > 0) {
+					const deleterequest = {
+
+										VoucherEntryId: VoucherEntryId,
+										VoucherNo: voucherno,
+
+
+					};
+					$.ajax({
+						type: "POST",
+					url: "/api/JournalEntryEdit/DeleteEmployeeByVoucherNo",
+						contentType: "application/json",
+						data: JSON.stringify(deleterequest),
+						success: function () {
+							insertAndRefresh();
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+						}
+					});
+				} else {
+					insertAndRefresh();
 				}
+			}
 
+			
+		
 
-
-
-			});
+		});
 
 
 	</script>

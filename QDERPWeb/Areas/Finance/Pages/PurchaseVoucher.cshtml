@@ -23,7 +23,6 @@
      background: #fff;
      border: 1px solid #ccc;
      border-radius: 4px;
-     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
      /* 👇 Control size */
      width: 200px; /* adjust as needed */
      max-height: 300px; /* set a limit */
@@ -81,6 +80,13 @@
 	   .footer-fixed{
        bottom:37px!important;
    }
+   .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 <div class="content-container-top" style="background-color:#909ead00;">
 	<div class="dx-card-container">
@@ -346,7 +352,7 @@ buttons.Add()
         .Type(ButtonType.Default)
         .Icon("edit")
         .ElementAttr(new { @class = "custom-hover-button edit-hover" })
-        .OnClick("showLedgerAccountEditPopup"));
+        .OnClick("showClientAccountEditPopup"));
 
 
 
@@ -368,11 +374,8 @@ buttons.Add()
 								.Max(99999999)
 								.ValidationRules(rules =>
 								{
-									rules.AddRequired()
-									.Message(new JS("formatMessage('Voucher Amount is required')"));
-									rules.AddCustom()
-									.ValidationCallback("validateAmount")
-									.Message("Negative value is not allowed.");
+									 rules.AddRequired().Message("Voucher Amount Cannot be Zero Or Negative");
+                                    rules.AddRange().Min(1).Message("Voucher Amount Cannot be Zero Or Negative");
 								})
 								.Placeholder("0.00")
 								.Format("#,##0.00")
@@ -425,7 +428,7 @@ buttons.Add()
 						})
 						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddCurrency")
-						.ShowClearButton(true)
+						.ShowClearButton(false)
 						.AcceptCustomValue(false)
 						.OpenOnFieldClick(true)
 						.ValueExpr("CurrencyExchangeId")
@@ -616,7 +619,7 @@ buttons.Add()
 			.Value(new JS("data.AccountHead"))
 			.ValueExpr("AccountId")
 			.DisplayExpr("AccountHead")
-			.OnValueChanged("gridData_valueChanged")
+			.OnValueChanged("gridpurchase_valueChanged")
 			.OnOpened("onOpened")
 			@* .Width(250) *@
 			.TabIndex(1)
@@ -994,6 +997,7 @@ buttons.Add()
 						.Key("AccountId")
 						)
 						 .FocusedRowEnabled(true)
+                          .OnFocusedRowChanged("onGridFocusedRowChanged")
 						.WordWrapEnabled(true)
 						.ShowBorders(true)
 						.SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1065,6 +1069,7 @@ buttons.Add()
 						.Key("AccountId")
 						)
 						 .FocusedRowEnabled(true)
+                        .OnFocusedRowChanged("onGridFocusedRowChanged")
 						.WordWrapEnabled(true)
 						.ShowBorders(true)
 						.SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1163,7 +1168,7 @@ buttons.Add()
 
 
 <script>
-	let refno, accheadar, accgroup, accgroupid, accheadid, accheadname, paymentaccheadname, paymentaccheadId, paymentIsLedgerObselete, IsDrCr = false;
+	let refno, accheadar, accgroup, accgroupid,accIsLedgerObselete, accheadid, accheadname, paymentaccheadname, paymentaccheadId, paymentIsLedgerObselete,paymentgroupid,paymentgroup,paymentar,paymentrefno, IsDrCr = false,IsObeselete=false;
 
 // $(function () {
 // 										$("#EditCostAllocation").dxTextBox({
@@ -1578,20 +1583,29 @@ buttons.Add()
 					return;
 				}
 
-					var lastRow = response.data[response.data.length - 1]; // Get the last row
+					 // Filter only rows where DrCr == "Cr"
+				const creditRows = response.data.filter(x => x.DrCr === "Cr");
+
+				if (creditRows.length > 0) {
+					// Sort by AddedOn descending to get the latest
+					const latestCreditRow = creditRows.sort((a, b) => new Date(b.AddedOn) - new Date(a.AddedOn))[0];
+
 					var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
 					if (dropDownBox) {
-						//IsClientName=true;
-						// Set selected value based on what the DropDownBox expects
-						// Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
-						//dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
-						 console.log("lastRow",lastRow)
-						 accheadid=lastRow.AccountId;
-						 accheadname=lastRow.AccountHead;
-						 dropDownBox.option("value", lastRow.AccountHead);
-						// dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+						IsClientName = true;
+
+						console.log("latestCreditRow", latestCreditRow);
+
+						paymentaccheadId = latestCreditRow.AccountId;
+						paymentaccheadname = latestCreditRow.AccountHead;
+
+						// Set DropDownBox value (you can switch to AccountId if ValueExpr is AccountId)
+						dropDownBox.option("value", latestCreditRow.AccountHead);
 					}
+				} else {
+					console.warn("No rows with DrCr = 'Cr' found.");
+				}
 				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
 				if (voucherTextBox) {
 					voucherTextBox.option("readOnly", true);
@@ -1786,14 +1800,25 @@ buttons.Add()
 
 	     function addVoucherEntry() {
     var btn = $("#btnVoucherEntry").dxButton("instance");
-
+	 getDocumentCount();
     // Disable button + show loading
     btn.option({
         disabled: true,
         icon: "spinner", // built-in spinner icon
         text: "Loading..."
     });
+	var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
+        var voucherAmtValidator = $("#txtVoucherAmount").dxValidator("instance");
+            var paymentHeadValidator = $("#accountDropDownBox").dxValidator("instance");
+        var accountHeadValidation = accountHeadValidator.validate();
+        var voucherAmtValidation = voucherAmtValidator.validate();
+            var PaymentHeadValidation = paymentHeadValidator.validate();
+            if (!(accountHeadValidation.isValid && voucherAmtValidation.isValid && PaymentHeadValidation.isValid)) {
+                resetVoucherButton();
 
+            DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "Error");
+            return;
+        }
     var dataGrid = $("#dataGrid").dxDataGrid("instance");
     var rowCount = dataGrid.getVisibleRows().length;
     var griddatacount = rowCount;
@@ -2150,7 +2175,14 @@ $.ajax({
 							console.error("Error updating currency:", error);
 						}
 					});
+					  if(IsObeselete==true)
+                                {
+                                          DevExpress.ui.dialog.alert(
+                       "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+                       "LEDGER IS OBSELETE(NOT IN USE)"
+                       );
 
+                                }
 			},
 
 			error: function (xhr, status, error) {
@@ -2288,7 +2320,14 @@ $.ajax({
 							// resetVoucherButton();
        //                  }
        //              }
+	                       if(IsObeselete==true)
+											{
+													  DevExpress.ui.dialog.alert(
+								   "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+								   "LEDGER IS OBSELETE(NOT IN USE)"
+								   );
 
+                             }
                     var button = $("#btnSave").dxButton("instance");
                     button.option("text", "Update");
 					                                      syncWorkflowFromFields();
@@ -2413,6 +2452,14 @@ $.ajax({
 				dataType: "json",
 				success: function (response) {
 					if (response.success) {
+						  if(IsObeselete==true)
+                                {
+                                          DevExpress.ui.dialog.alert(
+                       "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+                       "LEDGER IS OBSELETE(NOT IN USE)"
+                       );
+
+                                }
 						DevExpress.ui.notify("Voucher details saved succfully!", "success", 2000);
 						var button = $("#btnSave").dxButton("instance");
 
@@ -2452,8 +2499,10 @@ $.ajax({
 
 
 		const text = ddbInstance.option("text");
-		if (dataGrid) {
-			dataGrid.option("searchPanel.text", text);
+		// Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+		if (grid) {
+			grid.option("searchPanel.text", text);
 		}
 	}
 
@@ -2502,6 +2551,10 @@ $.ajax({
 			if (selectedRowData.length > 0) {
 				paymentaccheadId = selectedRowData[0].AccountId;
 				paymentaccheadname = selectedRowData[0].AccountHead;
+						paymentrefno = selectedRowData[0].ReferenceNo;
+						paymentar = selectedRowData[0].AccountHeadArabic;
+						paymentgroup = selectedRowData[0].AccountGroup;
+						paymentgroupid = selectedRowData[0].AccountGroupId;
 				paymentIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
 
 				if (paymentIsLedgerObselete == true) {
@@ -2535,7 +2588,15 @@ $.ajax({
 				accheadar = selectedRowData[0].AccountHeadArabic;
 				accgroup = selectedRowData[0].AccountGroup;
 				accgroupid =  selectedRowData[0].AccountGroupId;
+				 accIsLedgerObselete = selectedRowData[0].IsLedgerObselete;
+				 if(accIsLedgerObselete==true){
+					  IsObeselete=true;
+                                 DevExpress.ui.dialog.alert(
+                       "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+                       "LEDGER IS OBSELETE(NOT IN USE)"
+                       );
 
+                        }
 			} else {
 				DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
 				return;
@@ -2989,52 +3050,100 @@ if (dropDownBox) {
 
 
 
-		function showLedgerAccountEditPopup() {
-		var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance"); // Get DropDownBox instance
-			var supplierId = dropDownBox.option("value"); // Get the selected value
+		function showClientAccountEditPopup() {
+		 // Get DropDownBox instance
+		var supplierId = paymentaccheadId; // Get the selected value
 
-			IsEdit = true;
+		IsEdit = true;
 
-			// Ensure variables are initialized properly
-			suprefno = suprefno || "";
-			supaccheadar = supaccheadar || "";
-			suppliername = suppliername || "";
-			supaccgroup = supaccgroup || "";
-			supaccgroupid = supaccgroupid || "";
+		// Ensure variables are initialized properly
+		suprefno = paymentrefno || "";
+		supaccheadar = paymentar || "";
+		suppliername = paymentaccheadname || "";
+		supaccgroup = paymentgroup || "";
+		supaccgroupid = paymentgroupid || "";
 
-			// Validate AccountHead selection
-			if (!supplierId) {
-				DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+		// Validate AccountHead selection
+		if (!supplierId) {
+			DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+			return;
+		}
+
+		// Construct the URL only if AccountHeadID is valid
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
 				return;
 			}
 
-			// Construct the URL only if AccountHeadID is valid
-			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+			// Clear iframe src to prevent caching issues
+			iframe.src = "";
 
-			// Show the popup
-			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-			popupInstance.show();
+			// Set new iframe src
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
 
-			// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
-			popupInstance.option("onShown", function () {
-				var iframe = document.getElementById("ledgerEditAccountFrame");
+			iframe.src = url;
+		});
+	}
 
-				if (!iframe) {
-					console.error("Error: ledgerEditAccountFrame not found!");
-					return;
-				}
 
-				// Clear iframe src to prevent caching issues
-				iframe.src = "";
+	function showLedgerAccountEditPopup() {
+		 // Get DropDownBox instance
+		var supplierId = accheadid; // Get the selected value
 
-				// Set new iframe src
-				iframe.onload = function () {
-					console.log("Iframe loaded successfully.");
-				};
+		IsEdit = true;
 
-				iframe.src = url;
-			});
+		// Ensure variables are initialized properly
+		suprefno = refno || "";
+		supaccheadar = accheadar || "";
+		suppliername = accheadname || "";
+		supaccgroup = accgroup || "";
+		supaccgroupid = accgroupid || "";
+
+		// Validate AccountHead selection
+		if (!supplierId) {
+			DevExpress.ui.notify("Please select an Account Head before editing.", "error", 2000);
+			return;
 		}
+
+		// Construct the URL only if AccountHeadID is valid
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(supplierId)}&ReferenceNo=${encodeURIComponent(suprefno)}&AccountHeadName=${encodeURIComponent(suppliername)}&AccountGroup=${encodeURIComponent(supaccgroup)}&IsEdit=${IsEdit}&AccountGroupID=${encodeURIComponent(supaccgroupid)}&AccountHeadAr=${encodeURIComponent(supaccheadar)}`;
+
+		// Show the popup
+		var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popupInstance.show();
+
+		// Use DevExtreme popup's `onShown` event to wait for rendering before setting iframe src
+		popupInstance.option("onShown", function () {
+			var iframe = document.getElementById("ledgerEditAccountFrame");
+
+			if (!iframe) {
+				console.error("Error: ledgerEditAccountFrame not found!");
+				return;
+			}
+
+			// Clear iframe src to prevent caching issues
+			iframe.src = "";
+
+			// Set new iframe src
+			iframe.onload = function () {
+				console.log("Iframe loaded successfully.");
+			};
+
+			iframe.src = url;
+		});
+	}
 	function onSupplierNameChanged(e) {
 		var accountId = e.value; // Get selected AccountId
 		if (!accountId) {
@@ -3284,7 +3393,34 @@ if (dropDownBox) {
 			}
 		});
 	}
+	function fetchUpdatedData(voucherEntryNo) {
+    $.ajax({
+        url: "/api/VoucherMaster/GetVoucherEntry?VoucherEntryNo=" + voucherEntryNo, // Adjust API endpoint as needed
+        type: "GET",
+        success: function(data) {
+            console.log("Updated Data:", data); // Debug response
+            let dataGrid = $("#dataGrid").dxDataGrid("instance");
 
+            // Find the row index of the updated VoucherEntryNo and update that row
+            let allData = dataGrid.option("dataSource");
+            let rowIndex = allData.findIndex(row => row.VoucherEntryNo === voucherEntryNo);
+
+            if (rowIndex !== -1) {
+                allData[rowIndex] = data; // Update the specific row with new data
+                dataGrid.option("dataSource", allData); // Set updated data
+                dataGrid.refresh(); // Refresh the DataGrid
+                DevExpress.ui.notify("Voucher Entry updated successfully", "success", 2000);
+            } else {
+                // If row not found, reload the entire grid
+                dataGrid.refresh();
+            }
+        },
+        error: function(xhr) {
+            DevExpress.ui.notify("Error fetching updated data", "error", 2000);
+            console.error("Fetch Error:", xhr.responseText); // Log error response
+        }
+    });
+}
 	 function onRowRemoving(e) {
 		const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const visibleRows = dataGrid.getVisibleRows();
@@ -3655,6 +3791,14 @@ if (dropDownBox) {
 				dataType: "json",
 				success: function (response) {
 					if (response.success) {
+						  if(IsObeselete==true)
+                                {
+                                          DevExpress.ui.dialog.alert(
+                       "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
+                       "LEDGER IS OBSELETE(NOT IN USE)"
+                       );
+
+                                }
 						DevExpress.ui.notify("Voucher details saved successfully!", "success", 2000);
 
 					} else {
@@ -3884,55 +4028,53 @@ if (dropDownBox) {
 
 
 
-	function disableEditing() {
-		// Disable all input fields and buttons except for specific ones
-		$('input, select, textarea').prop('disabled', true);
+	// function disableEditing() {
+	// 	// Disable all input fields and buttons except for specific ones
+	// 	$('input, select, textarea').prop('disabled', true);
 
-		$('.dx-button').each(function () {
-			const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
-			if (!allowedButtons.includes($(this).attr('id'))) {
-				$(this).dxButton('option', 'disabled', true);
-			}
-		});
-		// Enable the DropDownButton explicitly
-		const previewButton = $("#btnPreview1").dxDropDownButton("instance");
+	// 	$('.dx-button').each(function () {
+	// 		const allowedButtons = ['btnBack', 'btnPrint', 'btnAttach', 'btnAttachment', 'btnEditAHead', 'btnAddAHead', 'btncostBack'];
+	// 		if (!allowedButtons.includes($(this).attr('id'))) {
+	// 			$(this).dxButton('option', 'disabled', true);
+	// 		}
+	// 	});
+	// 	// Enable the DropDownButton explicitly
+	// 	const previewButton = $("#btnPreview2").dxDropDownButton("instance");
 
-		if (previewButton) {
-			previewButton.option("disabled", false);
-			previewButton.repaint();  // Force UI refresh
-		} else {
-			console.error("btnPreview1 instance not found");
-		}
-		// Modify context menu items
-		$("#EditCostAllocation").text("View Cost Allocation");
-		$("#EditBillReceivable").text("View Bill Receivable");
-		$("#EditSalaryPayable").text("View Salary Payable");
-		$("#EditEmployeeAllocation").text("View Employee Allocation");
-		$("#EditPropertyAllocation").text("View Property Allocation");
+	// 	if (previewButton) {
+	// 		previewButton.option("disabled", false);
+	// 		previewButton.repaint();  // Force UI refresh
+	// 	} else {
+	// 		console.error("btnPreview1 instance not found");
+	// 	}
+	// 	  // 🔹 Change menuItems text from Edit → View and disable Delete option
+	// 		menuItems.forEach(item => {
+	// 			if (item.text.startsWith("Edit ")) {
+	// 				item.text = item.text.replace("Edit", "View");
+	// 			}
+	// 			if (item.id === "onAllRowRemoving") {
+	// 				item.disabled = true; // disable delete menu item
+	// 			}
+	// 		});
 
-		// Completely disable DeleteAllLineEntries
-		$("#DeleteAllLineEntries").parent().css({
-			"pointer-events": "none",  // Disables interaction
-			"opacity": "0.5",  // Makes it look disabled
-			"cursor": "default"  // Prevents pointer cursor
-		}).attr("aria-disabled", "true");
-
-		// Disable DevExtreme DateBox components
-		$("#VoucherDate").dxDateBox("instance").option("disabled", true);
-		$("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
+	// 		// Re-render context menu so UI updates
+	// 		renderContextMenu();
+	// 	// Disable DevExtreme DateBox components
+	// 	$("#VoucherDate").dxDateBox("instance").option("disabled", true);
+	// 	$("#VoucherEffectiveDate").dxDateBox("instance").option("disabled", true);
 
 
-		// Disable DevExtreme DropDownBox component
-		$("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
+	// 	// Disable DevExtreme DropDownBox component
+	// 	$("#accountDropDownBox").dxDropDownBox("instance").option("disabled", true);
 
-		// Disable DataGrid Editing and Deleting
-		var dataGrid = $("#dataGrid").dxDataGrid("instance");
-		if (dataGrid) {
-			dataGrid.option("editing.allowUpdating", false);
-			dataGrid.option("editing.allowDeleting", false);
-		}
+	// 	// Disable DataGrid Editing and Deleting
+	// 	var dataGrid = $("#dataGrid").dxDataGrid("instance");
+	// 	if (dataGrid) {
+	// 		dataGrid.option("editing.allowUpdating", false);
+	// 		dataGrid.option("editing.allowDeleting", false);
+	// 	}
 
-	}
+	// }
 
 
 	function onApproveButtonClick() {
@@ -4164,6 +4306,7 @@ function onReferenceDropdownOpened(e) {
             attachWorkflowWatchers();
             syncWorkflowFromFields();
              // bindWorkflowPopovers(); 
+			  getDocumentCount();
              initWorkflowTippyPopovers();
 
         }, 300);
@@ -4300,11 +4443,104 @@ function showMainFooter() {
 				var folderNo2 = voucherNo;
 				console.log(voucherType)
 				const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
-				const title = "Transaction Documents";
+				 const title = formatMessage("Transaction Documents");
 				openModal(url, title);
 			}
 		}
+		  function updateAttachButtonCount(buttonSelector, count) {
+            var btn = $(buttonSelector);
+            var btnInstance = btn.dxButton("instance");
+            if (!btnInstance) return;
 
+            var originalText = btnInstance.option("text");
+            var color = count > 0 ? "green" : "red";
+
+            btnInstance.option({
+                template: function() {
+                    // Icon element
+                    var iconElement = $("<span>")
+                    .addClass("dx-icon dx-icon-attach")
+                    .addClass(count > 0 ? "icon-green" : "icon-red")
+                    .css({
+                        "font-size": "15px",
+                        "vertical-align": "middle",
+                        "margin-right": "4px"
+                    })[0];
+
+                    // Create fragment
+                    var fragment = document.createDocumentFragment();
+                    fragment.appendChild(iconElement);
+
+                    // Append count only if > 0
+                    if (count > 0) {
+                        var countSpan = document.createElement("span");
+                        countSpan.style.color = color;
+                        countSpan.style.fontWeight = "bold";
+                        countSpan.style.fontSize = "15px";
+                        countSpan.style.marginRight = "2px";
+                        countSpan.textContent = count;
+                        fragment.appendChild(countSpan);
+                    }
+
+                    // Append original text
+                    fragment.appendChild(document.createTextNode(originalText));
+
+                    return fragment;
+                }
+            });
+        }
+
+    //1. Get Document Count from Grid Load in Ledger Documents
+    function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
+    }
+    //2. Get Document Count
+    async function getDocumentCount() {
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+        var voucherType = voucherTypeBox.option("value");
+        var folderNo2 = voucherNo;
+        var menuType = "finance";
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+
+        // No need to return anything if you don't want to
+    }
+
+		function gridpurchase_valueChanged(e) {
+		var $dataGrid = $("#dataGrid");
+
+		if ($dataGrid.length) {
+			var dataGrid = $dataGrid.dxDataGrid("instance");
+			dataGrid.selectRows(e.value, false);
+		}
+		if (e.value) {
+
+
+			let grid = $("#dataGrid").dxDataGrid("instance");
+			let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+			let rowData = grid.getVisibleRows()[rowIndex].data;
+
+			let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+			let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+			// if (selectedRowData) {
+			//     propertyno = selectedRowData.PropertyNo; // Store the correct ID
+
+			// }
+
+			rowData.AccountHead = e.value; // Update the row data
+			grid.cellValue(rowIndex, "AccountHead", e.value); // Ensure it reflects in the grid
+
+		}
+		// Close the dropdown after selection
+		e.component.option("opened", false);
+
+	}
 		   $(function () {
 		 $("#PurchaseVouchers").dxTextBox({
             text: formatMessage("Purchase Voucher"),
@@ -4530,4 +4766,23 @@ function showMainFooter() {
         e.component.option("value", null); // clear if no match found
     }
 }
+   function onGridFocusedRowChanged(e) {
+    // Remove hover from all rows
+    e.component.getView("rowsView").element()
+        .find(".dx-row")
+        .removeClass("dx-state-hover");
+
+    // Add hover style to focused row
+    if (e.row && e.row.rowElement) {
+        e.row.rowElement.addClass("dx-state-hover");
+    }
+}
+$(function () {
+            var voucherDate = $("#VoucherDate").dxDateBox("instance");
+            var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+
+            voucherDate.option("onValueChanged", function (e) {
+                effectiveDate.option("value", e.value);
+            });
+        });
 </script>

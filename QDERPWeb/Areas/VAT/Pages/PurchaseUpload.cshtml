@@ -79,7 +79,9 @@
 	}
 	
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <div class="dx-card-container">
 	<div class="dx-card-header minimal-header">
 		<div class="card-title-icon">
@@ -177,15 +179,13 @@
 								)
 
 							</td>
+							<td>
+								<a href="/templates/Upload_Template.xlsx" download data-bs-toggle="tooltip" title="Download Excel Template">
+									<i class="fas fa-file-excel" style="font-size:35px; color:#169a48;"></i>
+								</a>
+							</td>
 						</tr>
 					</table>
-					<a href="/templates/Material_Request_sample.xlsx" download class="templateBtn" role="button">
-						<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 512 512" fill="#fff" style="margin-right:8px;">
-							<path d="M416 0H96C78.3 0 64 14.3 64 32v448c0 17.7 14.3 32 32 32h320c17.7 0 32-14.3 
-							32-32V128L320 0H96zm176 160h-96V64h96v96zM312.6 304L272 368l40.6 64H272l-32-50.2L208 432h-40.6l40.6-64-40.6-64H208l32 50.2L272 304h40.6z"/>
-						</svg>
-						Download Template
-					</a>
 					<table>
 						<tr>
 							<td>
@@ -209,27 +209,28 @@
 									.Alignment(HorizontalAlignment.Center)
 									.Columns(sub =>
 									{
-										sub.Add().DataField("sno").Caption("SI NO").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GSCode").Caption("GS Code").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GSDescription").Caption("GS Description").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GSUoM").Caption("GSUoM").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("RequestQty").Caption("Quantity").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("SlNo").Caption("SI NO").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Code").Caption("Code").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Description").Caption("Description").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("UoM").Caption("UoM").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("QtyRequested").Caption("Quantity").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("UnitPrice").Caption("Unit Price").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("PlanNo").Caption("Plan No").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("PlanNo").Caption("Plan No").Visible(true).Alignment(HorizontalAlignment.Center).DataType(GridColumnDataType.String);
 										sub.Add().DataField("Manufacturer").Caption("Manufacturer").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("DeliveryPeriod").Caption("Delivery Period").Visible(true).Alignment(HorizontalAlignment.Center);
 										sub.Add().DataField("Remarks").Caption("Remarks").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GsuomDesc").Caption("GSUoM Desc").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemSize").Caption("Item Size").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemPartNo").Caption("Item Part NO").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemBrand").Caption("Item Brand").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemColor").Caption("Item Color").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemDimension").Caption("Item Dimension").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("ItemThickness").Caption("Item Thickness").Visible(true).Alignment(HorizontalAlignment.Center);
-										sub.Add().DataField("GsdescriptionAr").Caption("GS Description Ar").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Unit").Caption("Unit").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Size").Caption("Size").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("PartNo").Caption("Part NO").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Brand").Caption("Brand").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Color").Caption("Color").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Dimension").Caption("Dimension").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("Thickness").Caption("Thickness").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("ArabicDescription").Caption("Arabic Description").Visible(true).Alignment(HorizontalAlignment.Center);
+										sub.Add().DataField("VAT%").Caption("VAT %").Visible(true).Alignment(HorizontalAlignment.Center);
 									});
 								})
-								.Width("69%")
+								.Width("76%")
 								.Height("60vh")
 								)
 			</td>
@@ -331,22 +332,27 @@
 function preparePayload(items) {
     return items.map((item, index) => ({
         ...item,
-     //   GSCode: item.GSCode || `AUTO-GS-${index + 1}`, // Generate GSCode if missing
-	   SlNo: index + 1, // Assign a unique SlNo value
-       
-		 GSCode: item.GSCode && item.GSCode.trim(),
-        ItemSize: item.ItemSize ? String(item.ItemSize) : null // Convert ItemSize to string
+        SlNo: index + 1, // unique SlNo
+        PlanNo: item.PlanNo !== undefined && item.PlanNo !== null ? String(item.PlanNo) : "",
+        PartNo: item.PartNo !== undefined && item.PartNo !== null ? String(item.PartNo) : "",
+        GSCode: item.GSCode ? item.GSCode.trim() : null,
+        ItemSize: item.ItemSize !== undefined && item.ItemSize !== null ? String(item.ItemSize) : null
     }));
 }
 
 function uploadToVatPurchaseVoucher() {
+	document.getElementById('loadingSpinner').style.display = 'block';
+	document.getElementById('loader').style.display = 'block';
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
 	const selectedGSGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
     const preparedItems = preparePayload(items);
 
+    const params1 = new URLSearchParams(window.location.search);
+	const exist = params1.get("exist");
     const requestBody = {
+		IsExist: exist === "true",
         GSGroupCode: "",
         RequestNo: $("#txtPurchaseNo").dxTextBox("instance").option("value"),
         Items: preparedItems,
@@ -361,6 +367,8 @@ function uploadToVatPurchaseVoucher() {
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
+			document.getElementById('loader').style.display = 'none';
+			document.getElementById('loadingSpinner').style.display = 'none';
             DevExpress.ui.notify("Purchase uploaded successfully.", "success", 3000);
 			onUploadButtonClick();
         },
@@ -432,14 +440,14 @@ function uploadToVatPurchaseVoucher() {
             const validatedData = jsonData.filter((row, index) => {
                 const errors = [];
 
-                // Validate GSDescription
-                if (!row.GSDescription || row.GSDescription.trim() === "") {
-                    errors.push(`Row ${index + 1}: GSDescription is required.`);
+                // Validate Description
+                if (!row.Description || row.Description.trim() === "") {
+                    errors.push(`Row ${index + 1}: Description is required.`);
                 }
 
-                // Validate RequestQty
-                if (!row.RequestQty || isNaN(row.RequestQty) || row.RequestQty <= 0) {
-                    errors.push(`Row ${index + 1}: RequestQty must be a positive number.`);
+                // Validate QtyRequested
+                if (!row.QtyRequested || isNaN(row.QtyRequested) || row.QtyRequested <= 0) {
+                    errors.push(`Row ${index + 1}: QtyRequested must be a positive number.`);
                 }
 
                 // Validate UnitPrice
@@ -489,6 +497,12 @@ function uploadToVatPurchaseVoucher() {
         const title = "Stock Group";
         openModal(url, title,"","70%");
     }
+	document.addEventListener("DOMContentLoaded", function () {
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		tooltipTriggerList.map(function (tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+	});
 </script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>

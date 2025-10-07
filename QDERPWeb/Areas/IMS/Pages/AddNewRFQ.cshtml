@@ -19,15 +19,6 @@
         padding: 10px 15px; 
     }
 
-       
-        .dx-tabpanel .dx-tab.dx-selection {
-            background-color: lightblue;
-            color: white !important;
-        }
-    .dx-tabpanel {
-    }
-
-
     .mainContainer {
         overflow-x: hidden;
     }
@@ -39,7 +30,6 @@
     .form-container {
         width: 100%;
         border-radius: 1px;
-		background: var(--background-color);
 	}
 
     .form-row {
@@ -311,7 +301,7 @@
 								})
 						)
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierEmail")
 						.Label(new JS("formatMessage('Supplier Email:')"))
@@ -320,7 +310,7 @@
 						.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%"))
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("SupplierContact")
 						.Label(new JS("formatMessage('Supplier Contact No:')"))
@@ -509,50 +499,137 @@
             <div class="form-container">
                 <div>
                     <table class=" table-borderless w-100">
-                        <thead>
-                            <tr>
-                                @* <th>Siguatory:</th> *@
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
-                                <!-- Prepared By SelectBox -->
                                 <td>
-                                   @(Html.DevExtreme().DropDownBox()
-													.Label(new JS("formatMessage('Signatory:')"))
-													.DataSource(d => d.WebApi()
-													.Controller("RequestforQuotationList")
-													.LoadAction("GetSignatory")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("SignatoryId")
-													)
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ddSignatory")
-													.Width(400)
-													@*  .ShowClearButton(true)
-						                            .AcceptCustomValue(true) *@
-													.OpenOnFieldClick(false)//
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("SignatoryId")
-													.DisplayExpr("SignatoryName")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													.TabIndex(1)
-													.OnKeyDown("onKeyDown")
-													//.OnValueChanged("dropDownBoxValueChanged")
-													.ContentTemplate(new TemplateName("GetSignatoryContentTemplate"))
-													)
-
+									<div class="row" style="padding:0 10px">
+                						<div class="col-3">
+											@(Html.DevExtreme().DropDownBox()
+											.Label(new JS("formatMessage('Signatory:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("RequestforQuotationList")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddSignatory")
+											@*  .ShowClearButton(true)
+											.AcceptCustomValue(true) *@
+											.OpenOnFieldClick(false)//
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.OnKeyDown("onKeyDown")
+											//.OnValueChanged("dropDownBoxValueChanged")
+											.ContentTemplate(new TemplateName("GetSignatoryContentTemplate"))
+											)
+										</div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Prepared By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddPreparedby")
+											.Width(900)
+											.OpenOnFieldClick(false)//
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+																	//.OnValueChanged("dropDownBoxValueChanged")
+											.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+											.Buttons(buttons =>
+											{
+												buttons.Add()
+												.Name("AddPreparedBy")
+												.Location(TextEditorButtonLocation.After)
+												.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("plus")
+												.ElementAttr(new { @class = "custom-hover-button add-hover" })
+												.OnClick("AddPreparedBy"));
+												buttons.Add()
+												.Name("dropDown");
+											}))
+										</div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Verified By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddVerifiedby")
+											.Width(900)
+											.OpenOnFieldClick(false)
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+											.ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+											)
+										</div>
+										<div class="col-3">
+											@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+											.Label(new JS("formatMessage('Approved By:')"))
+											.DataSource(d => d.WebApi()
+											.Controller("AddNewClientRequest")
+											.LoadAction("GetSignatory")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("SignatoryId")
+											)
+											.LabelMode(EditorLabelMode.Floating)
+											.ID("ddApprovedby")
+											.Width(900)
+											.OpenOnFieldClick(false)
+											.ValueChangeEvent("input")
+											.HoverStateEnabled(true)
+											.ValueExpr("SignatoryId")
+											.DisplayExpr("SignatoryName")
+											.OnInput("dropDownBoxOnInput")
+											.OnOpened("onOpened")
+											.TabIndex(1)
+											.Width("100%")
+											.OnKeyDown("onKeyDown")
+											.ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+											)
+										</div>
+									</div>
                                 </td>
-                            <tr style="display: flex;" >
+                            <tr style="display: flex;padding:0 10px" >
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
+									  @(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
                                     <br />
-									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
-                                    <br />
-								   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
+                                       @(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+									<br />        
+                                   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
                                 </td>
                             </tr>
                         </tbody>
@@ -629,7 +706,7 @@
                     </div>
         </text>);
 
-		        item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+		        item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
         <div class="p-3">
             <table style="width:100%; font-size:14px; margin:5px;">
                 <tr>
@@ -944,7 +1021,102 @@
 		<div class="footer-fixed" >
 	@await Html.PartialAsync("/Pages/Shared/IMS/RFQFormFooter.cshtml")
 	</div>
-	
+	@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+				{
+					@(Html.DevExtreme().DataGrid()
+							.ID("GetPreparedby-datagrid")
+							.DataSource(d => d.WebApi()
+							.Controller("AddNewClientRequest")
+							.LoadAction("GetSignatory")
+							.LoadMode(DataSourceLoadMode.Raw)
+							.Key("SignatoryId")
+							)
+							.WordWrapEnabled(true)
+							.ShowBorders(true)
+							   				@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+							.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+							.OnSelectionChanged("dataGridSelectionChanged10")
+							.OnInitialized("dataGridInitialized10")
+							.HeaderFilter(p => p.Visible(true))
+							.ShowBorders(true)
+							.HoverStateEnabled(true)
+							.Paging(p => p.PageSize(15))
+							.FilterRow(f => f.Visible(false))//
+							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+							.Height(345)
+							.Selection(s => s.Mode(SelectionMode.Single))
+							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+							.Columns(columns =>
+							{
+								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+							})
+							)
+						}
+		@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetVerifiedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged11")
+					.OnInitialized("dataGridInitialized11")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
+		@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetApprovedby-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSignatory")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SignatoryId")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged12")
+					.OnInitialized("dataGridInitialized12")
+					.HeaderFilter(p => p.Visible(true))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					.FilterRow(f => f.Visible(false))//
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
+					})
+					)
+				}
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1051,7 +1223,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SupplierName");
+						columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
 						
 
 
@@ -1085,8 +1257,8 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ProjectId").Width(150);
-						columns.Add().DataField("ProjectDescription");
+						columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project Id')")).Width(150);
+						columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
 
 
@@ -1120,8 +1292,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("SignatoryId").Caption("ID").Width(80);
-				columns.Add().DataField("SignatoryName").Caption("Name");
+				columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')"));
 			})
 			)
 }
@@ -1152,8 +1324,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("CompanyId").Caption("ID").Width(80);
-				columns.Add().DataField("CompanyName").Caption("Name");
+				columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Name')"));
 
 
 
@@ -1187,8 +1359,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("InventoryMasterGroupId").Caption("ID").Width(80);
-				columns.Add().DataField("InventoryMasterGroup").Caption("Name");
+				columns.Add().DataField("InventoryMasterGroupId").Caption(new JS("formatMessage('ID')")).Width(80);
+				columns.Add().DataField("InventoryMasterGroup").Caption(new JS("formatMessage('Name')"));
 
 			})
 			)
@@ -1221,7 +1393,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SalesPersonName");
+						columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 					})
 					)
@@ -1231,6 +1403,28 @@
 
 
 <script>
+	
+     $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
   function onOpened(e) {
       const gridId = e.component.option("dataGridId"); // 👈 Get common ID
       const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
@@ -1386,12 +1580,7 @@
         });
     }
 
-		function navigateToLedgerAccountForm() {
-		// make sure this is available in the view
-			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-			const title = "";
-			openModal(url, title); // opens in modal instead of new window
-		}
+	
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null;
@@ -1405,7 +1594,7 @@
 				let Approved=null;
 				let edit=false;
 	$(document).ready(function () {
-
+		getDefaultCompany("ddCompany");
 		const urlParams = new URLSearchParams(window.location.search);
 		const Rfqnos = urlParams.get('Rfqno');
 		const Rfqno = Rfqnos ? Rfqnos.split("?")[0] : null;
@@ -1416,32 +1605,9 @@
 			// If Mprno is present, load client details
 			loadClientDetails(Rfqno);
 			edit=true;
-		} else  {
-		NewNoGeneration();
 		}
 	});
-function NewNoGeneration(){
-			// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
-			$.ajax({
-				url: "/api/RequestforQuotationList/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
 
-					const invoiceBox = $("#RFQNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load RFQNo details.", "Error");
-				}
-			});
-	}
-	//For concurrency
 
 	function NewNoGeneration1() {
     return $.ajax({
@@ -1460,7 +1626,7 @@ function NewNoGeneration(){
 
 			  if (response) {
 
-					$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
                 // Populate DevExtreme controls with the response data
                
 					$('#RFQNo').dxTextBox("instance").option("value", response.Rfqno);
@@ -1483,6 +1649,9 @@ function NewNoGeneration(){
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", response.CurrencyRate);
 					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
+					$("#ddPreparedby").dxDropDownBox("instance").option("value",response.SubmittedBy);
+					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
+					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
                
 
                // Fetch and initialize the data grid with invoice details
@@ -1636,8 +1805,7 @@ $(document).ready(function () {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
-			cellTemplate: function (container, options) {
+					cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
 					return;
@@ -1711,13 +1879,13 @@ $(document).ready(function () {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -1756,7 +1924,7 @@ $(document).ready(function () {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -1774,7 +1942,7 @@ $(document).ready(function () {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -1814,7 +1982,7 @@ $(document).ready(function () {
 							window.currentDescriptionCell = options;
 
 											let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?RfqchildSlNo=${encodeURIComponent(RfqchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
-							let title = "Details Description";
+							let title = formatMessage("Details Description");
 
 							openModal(url, title);
 						}
@@ -1892,13 +2060,13 @@ $(document).ready(function () {
 													},
 												columns: [
 
-														{ dataField: "UnitCode", caption: "Code", width: 80 },
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-													{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+													{ dataField: "UnitDesc", caption:formatMessage("Unit Rate Method"), width: 200 },
 
-													{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+													{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-													{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+													{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 												],
 
@@ -1946,7 +2114,7 @@ $(document).ready(function () {
 
 											let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-										   openModal(url, "");
+										   openModal(url, formatMessage("Unit Of Measure"));
 
 										},
 
@@ -1964,18 +2132,18 @@ $(document).ready(function () {
 
 
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
-				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
+				//{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
 
 				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
-				{ dataField: "LineTotalBeforeTax", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "LineTotalBeforeTax", caption: formatMessage('Total'), width: 150,  format: { type: "fixedPoint", precision: 2 } },
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
-				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
+				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150,  format: { type: "fixedPoint", precision: 2 } },
 				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150,visible:false },
 				{
 			type: "buttons",
-			caption: "Delete",
+			caption: formatMessage("Delete"),
 			width: 80,
 			buttons: [{
 				hint: "Delete Row",
@@ -2133,7 +2301,7 @@ $(document).ready(function () {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -2208,13 +2376,13 @@ $(document).ready(function () {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -2254,7 +2422,7 @@ $(document).ready(function () {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2265,7 +2433,7 @@ $(document).ready(function () {
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2294,7 +2462,7 @@ $(document).ready(function () {
 						window.currentDescriptionCell = options;
 
 							let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = formatMessage("Details Description");
 
 						openModal(url, title);
 					}
@@ -2373,13 +2541,13 @@ $(document).ready(function () {
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -2413,7 +2581,7 @@ $(document).ready(function () {
 
 									let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-									openModal(url, "");
+									openModal(url, formatMessage("Unit Of Measure"));
 
 								},
 
@@ -2431,14 +2599,14 @@ $(document).ready(function () {
 
 
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
-				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
+			//	{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
 
 				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 				
-				{ dataField: "LineTotalBeforeTax", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "LineTotalBeforeTax", caption: formatMessage('Total'), width: 150,   format: { type: "fixedPoint", precision: 2 }},
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
-				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
+				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150,  format: { type: "fixedPoint", precision: 2 } },
 				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150,visible:false},
 
 				{ dataField: "AddlDescription", visible: false },
@@ -2448,7 +2616,7 @@ $(document).ready(function () {
 	
 		{
 			type: "buttons",
-			caption: "Delete",
+			caption: formatMessage("Delete"),
 			width: 80,
 			buttons: [{
 				hint: "Delete Row",
@@ -2557,9 +2725,8 @@ $(document).ready(function () {
 			store.insert(newRow)
 				.then(() => {
 					grid.refresh(); // Ensure the UI updates with the new row
-						// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+					
+				
 				})
 				.catch(error => {
 					DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -4165,18 +4332,6 @@ $(document).ready(function () {
 					   //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
 
 					   var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
-					   //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
-
-					   // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
-					   //     alert("Account Head Name cannot be empty");
-					   //     return false;
-					   // }
-
-					   // if (sAccountGroup == null || sAccountGroup == "undefined" || sAccountGroup == "") {
-					   //     alert("Account group cannot be empty");
-					   //     return false;
-					   // }
-
 
 					   var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
 					   var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
@@ -4352,54 +4507,6 @@ $(document).ready(function () {
 
 						}
 
-			// 		function onEditorPreparing(e) {
-
-			// 	if (e.parentType === "dataRow" && (e.dataField === "Qty" || e.dataField === "UnitPrice" || e.dataField === "VATPercentage")) {
-			// 		e.editorOptions.onValueChanged = function (args) {
-			// 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
-			// 			let rowIndex = e.row.rowIndex;
-
-
-			// 			// Get the updated value from the input field
-			// 			let newValue = args.value;
-			// 			console.log("gridnewvalue",newValue)
-			// 			// Get existing values
-			// 			let qty = e.dataField === "Qty" ? newValue : grid.cellValue(rowIndex, "Qty") || 0;
-			// 			console.log("qty",qty)
-
-			// 			 let unitPrice = e.dataField === "UnitPrice" ? newValue : grid.cellValue(rowIndex, "UnitPrice") || 0;
-			// 			 console.log("unitPrice",unitPrice)
-			// 			// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-			// 			let vatval=grid.cellValue(rowIndex, "VAT%");
-			// 			 console.log("VATVal",vatval)
-
-			// 			let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-			// 			console.log("vatRateStr",vatRateStr)
-
-			// 			let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" â†’ 15 â†’ 0.15
-			// 			console.log("vatRate",vatRate)
-
-			// 			// Calculate values
-			// 			let amount = qty * unitPrice;
-			// 			 console.log("amount",amount)
-
-			// 			let vatValue = amount * vatRate;
-			// 			console.log("vatValue",vatValue)
-
-			// 			let totalValue = amount + vatValue;
-			// 			console.log("totalValue",vatValue)
-
-			// 			// Update values in the grid
-			// 			grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-			// 			grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-			// 			grid.cellValue(rowIndex, "Unit Price",amount);
-			// 			 grid.cellValue(rowIndex, "Qty",qty);
-			// 			 grid.cellValue(rowIndex, "VAT%",vatRateStr);
-			// 		};
-			// 	}
-			// }
-
-
 	function receiveModalFieldData(modalData) {
 			console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
 
@@ -4491,14 +4598,14 @@ function saveQuotation(rfqNoNew, $btn) {
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 		};
-			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-		//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-		if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			return;
-		}
-
+			
+	
+		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
 		const model = {
 			...master,
 			RFQDetailses: children
@@ -4510,21 +4617,13 @@ function saveQuotation(rfqNoNew, $btn) {
 			contentType: "application/json",
 			data: JSON.stringify(model),
 			success: function (response) {
+				isVoucherSaved = true;
+            	updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
-
-				 const rfqno = response.rfqno;
-				window.location.href=`/${tenantName}/IMS/AddNewRFQ?Rfqno=${Rfqno}`;
-				// loadChildDataAndBindGrid(rfqno);f
-
-				// Refresh parent DataGrid (ensure the correct selector is used)
-				// if (window.parent && window.parent.$("#dataGrid").length) {
-				// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-				// 	if (dataGrid) {
-				// 		dataGrid.refresh();
-				// 	}
-				// }
-
-
+				$btn.option("disabled", false);
+				const Rfqno = response.rfqno;
+				loadClientDetails(Rfqno);
+			    edit=true;
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
@@ -4532,132 +4631,100 @@ function saveQuotation(rfqNoNew, $btn) {
 		});
 		
 }
+$("#btnSaveAndClose").on("click", function (e) {
+    const $btn = $(this).dxButton("instance");
 
-	// $("#btnSave").on("click", function (e) {
-	// 		const $btn = $(this).dxButton("instance");
+			// ✅ Step 1: Validate required field
+			const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+			const clientnameValidation = clientnameValidator.validate();
 
-	// 		// ✅ Step 1: Validate required field
-	// 		const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-	// 		const clientnameValidation = clientnameValidator.validate();
+			if (!clientnameValidation.isValid) {
+				DevExpress.ui.dialog.alert(
+					"Cannot continue saving with errors, please clear the errors and continue.",
+					"Clear Errors"
+				);
+				return;
+			}
 
-	// 		if (!clientnameValidation.isValid) {
-	// 			DevExpress.ui.dialog.alert(
-	// 				"Cannot continue saving with errors, please clear the errors and continue.",
-	// 				"Clear Errors"
-	// 			);
-	// 			return;
-	// 		}
+			// ✅ Step 2: Disable the button after validation passes
+			$btn.option("disabled", true);
 
-	// 		// ✅ Step 2: Disable the button after validation passes
-	// 		$btn.option("disabled", true);
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var rfqNoNew = data;
+            $("#RFQNo").dxTextBox("instance").option("value", rfqNoNew);
 
-		
-
-	// 	let master = {
-	// Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
-	// Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
-	// SupplierCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-	// Mprno: $('#RequestNo').dxTextBox("instance").option("value") || null,
-	// Project: $('#ProjectRef').dxTextBox("instance").option("value") || null,
-	// Attention: $('#AttentionTo').dxTextBox("instance").option("value") || null,
- //    SupplierContactEmail: $('#SupplierEmail').dxTextBox("instance").option("value") || null,
- //    SupplierContactNo: $('#SupplierContact').dxTextBox("instance").option("value") || null,
- //    SupplierQuotationNo: $('#SupplierQuoteNo').dxTextBox("instance").option("value") || null,
- //    SupplierQuotationDt: $('#SupplierQuoteDate').dxDateBox("instance").option("value") || null,
- //    ProjectMasterCode: $("#ddProject").dxDropDownBox("instance").option("value") || null,
-	// Rfqsubject: $('#Subject').dxTextBox("instance").option("value") || null,
-	// RFQIntro: $('#QuoteIntro').dxTextArea("instance").option("value") || null,
- //        Rfqsummary: $('#QuoteSummary').dxTextArea("instance").option("value") || null,
- //        Rfqsignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
-	// 	CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
-	// InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
-
-	// 		SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-	// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-	// 			BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-	// 			CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-	// 	};
-	// 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-	// 	//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-	// 	if (!children || children.length === 0) {
-	// 		DevExpress.ui.notify("No child records to save.", "error", 3000);
-	// 		return;
-	// 	}
-
-	// 	const model = {
-	// 		...master,
-	// 		RFQDetailses: children
-	// 	};
-
-	// 	$.ajax({
-	// 		type: "POST",
-	// 		url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
-	// 		contentType: "application/json",
-	// 		data: JSON.stringify(model),
-	// 		success: function (response) {
-	// 			DevExpress.ui.notify(response.message, "success", 3000);
-
-	// 			 const rfqno = response.rfqno;
-				
-	// 			 loadChildDataAndBindGrid(rfqno);
-
-	// 			// Refresh parent DataGrid (ensure the correct selector is used)
-	// 			if (window.parent && window.parent.$("#dataGrid").length) {
-	// 				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-	// 				if (dataGrid) {
-	// 					dataGrid.refresh();
-	// 				}
-	// 			}
-
-
-	// 		},
-	// 		error: function (xhr) {
-	// 			DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-	// 		}
-	// 	});
-		
-	// });
-
-	function loadChildDataAndBindGrid(rfqno) {
-		//
-    if (!rfqno) {
-        console.warn("rfqno number not provided.");
-        return;
+            saveAndCloseQuotation(rfqNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var rfqNoNew = $('#RFQNo').dxTextBox("instance").option("value") || null;
+        saveAndCloseQuotation(rfqNoNew, $btn);
     }
+});
 
-    $.ajax({
-        type: "GET",
-		url: `/api/RequestforQuotationList/GetRFQChildren?RFQno=${encodeURIComponent(rfqno)}`,
-        dataType: "json",
-        success: function (gridResponse) {
-            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-                console.warn("No child details found in the response.");
-                return;
-            }
+function saveAndCloseQuotation(rfqNoNew, $btn) {
+    let master = {
+	Rfqno:rfqNoNew,
+	Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
+	SupplierCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+	Mprno: $('#RequestNo').dxTextBox("instance").option("value") || null,
+	Project: $('#ProjectRef').dxTextBox("instance").option("value") || null,
+	Attention: $('#AttentionTo').dxTextBox("instance").option("value") || null,
+    SupplierContactEmail: $('#SupplierEmail').dxTextBox("instance").option("value") || null,
+    SupplierContactNo: $('#SupplierContact').dxTextBox("instance").option("value") || null,
+    SupplierQuotationNo: $('#SupplierQuoteNo').dxTextBox("instance").option("value") || null,
+    SupplierQuotationDt: $('#SupplierQuoteDate').dxDateBox("instance").option("value") || null,
+    ProjectMasterCode: $("#ddProject").dxDropDownBox("instance").option("value") || null,
+	Rfqsubject: $('#Subject').dxTextBox("instance").option("value") || null,
+	RFQIntro: $('#QuoteIntro').dxTextArea("instance").option("value") || null,
+        Rfqsummary: $('#QuoteSummary').dxTextArea("instance").option("value") || null,
+        Rfqsignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
+		CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
+	InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
 
-            console.log("Grid Response:", gridResponse);
+			SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		};
+			
+	
+		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+		// if (!children || children.length === 0) {
+		// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+		// 	$btn.option("disabled", false); // Re-enable the button
+		// 	return;
+		// }
+		const model = {
+			...master,
+			RFQDetailses: children
+		};
 
-            const rowData = gridResponse.map((item, index) => ({
-                SNo: index + 1,
-                ...item
-            }));
-
-            // ✅ Bind data to existing B2B grid
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            if (grid) {
-                grid.option("dataSource", rowData);
-            } else {
-                console.error("B2B DataGrid instance not found.");
-            }
-        },
-        error: function (xhr, status, error) {
-            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-            console.error("Error fetching grid data:", errorMsg);
-        }
-    });
+		$.ajax({
+			type: "POST",
+			url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
+			contentType: "application/json",
+			data: JSON.stringify(model),
+			success: function (response) {
+				isVoucherSaved = true;
+            	updateWorkflowVisual(getWorkflowStatusFromFields());
+					DevExpress.ui.notify(response.message, "success", 3000);
+				history.back();
+				
+				
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+			}
+		});
+		
 }
+	
 
 	 $("#btnDelete").on("click", function (e) {
         e.preventDefault();
@@ -4678,7 +4745,7 @@ function saveQuotation(rfqNoNew, $btn) {
                        success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
                 setTimeout(function () {
-                    location.reload();
+                    window.location.href = `/${tenantName}/IMS/AddNewRFQ`;
                 }, 1000);
             },
             error: function (xhr) {
@@ -4690,118 +4757,86 @@ function saveQuotation(rfqNoNew, $btn) {
 
 
 
-			$("#btnSaveAndClose").on("click", function (e) {
+			// $("#btnSaveAndClose").on("click", function (e) {
 
 			
 
-				// ✅ Step 1: Validate required field
-				const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-				const clientnameValidation = clientnameValidator.validate();
+			// 	// ✅ Step 1: Validate required field
+			// 	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+			// 	const clientnameValidation = clientnameValidator.validate();
 
-				if (!clientnameValidation.isValid) {
-					DevExpress.ui.dialog.alert(
-						"Cannot continue saving with errors, please clear the errors and continue.",
-						"Clear Errors"
-					);
-					return;
-				}
+			// 	if (!clientnameValidation.isValid) {
+			// 		DevExpress.ui.dialog.alert(
+			// 			"Cannot continue saving with errors, please clear the errors and continue.",
+			// 			"Clear Errors"
+			// 		);
+			// 		return;
+			// 	}
 
 			
-			let master = {
-				Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
-				Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
-				SupplierCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-				Mprno: $('#RequestNo').dxTextBox("instance").option("value") || null,
-				Project: $('#ProjectRef').dxTextBox("instance").option("value") || null,
-				Attention: $('#AttentionTo').dxTextBox("instance").option("value") || null,
-				SupplierContactEmail: $('#SupplierEmail').dxTextBox("instance").option("value") || null,
-				SupplierContactNo: $('#SupplierContact').dxTextBox("instance").option("value") || null,
-				SupplierQuotationNo: $('#SupplierQuoteNo').dxTextBox("instance").option("value") || null,
-				SupplierQuotationDt: $('#SupplierQuoteDate').dxDateBox("instance").option("value") || null,
-				ProjectMasterCode: $("#ddProject").dxDropDownBox("instance").option("value") || null,
-				Rfqsubject: $('#Subject').dxTextBox("instance").option("value") || null,
-				RFQIntro: $('#QuoteIntro').dxTextArea("instance").option("value") || null,
-				Rfqsummary: $('#QuoteSummary').dxTextArea("instance").option("value") || null,
-				Rfqsignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
-				CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
-				InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
-				SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-			};
+			// let master = {
+			// 	Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
+			// 	Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
+			// 	SupplierCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+			// 	Mprno: $('#RequestNo').dxTextBox("instance").option("value") || null,
+			// 	Project: $('#ProjectRef').dxTextBox("instance").option("value") || null,
+			// 	Attention: $('#AttentionTo').dxTextBox("instance").option("value") || null,
+			// 	SupplierContactEmail: $('#SupplierEmail').dxTextBox("instance").option("value") || null,
+			// 	SupplierContactNo: $('#SupplierContact').dxTextBox("instance").option("value") || null,
+			// 	SupplierQuotationNo: $('#SupplierQuoteNo').dxTextBox("instance").option("value") || null,
+			// 	SupplierQuotationDt: $('#SupplierQuoteDate').dxDateBox("instance").option("value") || null,
+			// 	ProjectMasterCode: $("#ddProject").dxDropDownBox("instance").option("value") || null,
+			// 	Rfqsubject: $('#Subject').dxTextBox("instance").option("value") || null,
+			// 	RFQIntro: $('#QuoteIntro').dxTextArea("instance").option("value") || null,
+			// 	Rfqsummary: $('#QuoteSummary').dxTextArea("instance").option("value") || null,
+			// 	Rfqsignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
+			// 	CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
+			// 	InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
+			// 	SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+			// 	CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+			// 	BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+			// 	CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+			// };
 
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+			// let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+			// if (!children || children.length === 0) {
+			// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+			// 	return;
+			// }
 
-			const model = {
-				...master,
-				RFQDetailses: children
-			};
+			// const model = {
+			// 	...master,
+			// 	RFQDetailses: children
+			// };
 
-			$.ajax({
-				type: "POST",
-				url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
-				contentType: "application/json",
-				data: JSON.stringify(model),
-				success: function (response) {
-					DevExpress.ui.notify(response.message, "success", 3000);
-					// Refresh parent DataGrid (ensure the correct selector is used)
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
-					history.back();
+			// $.ajax({
+			// 	type: "POST",
+			// 	url: "/api/RequestforQuotationList/SaveOrUpdateRFQ",
+			// 	contentType: "application/json",
+			// 	data: JSON.stringify(model),
+			// 	success: function (response) {
+			// 		DevExpress.ui.notify(response.message, "success", 3000);
+			// 		// Refresh parent DataGrid (ensure the correct selector is used)
+			// 		if (window.parent && window.parent.$("#dataGrid").length) {
+			// 			let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+			// 			if (dataGrid) {
+			// 				dataGrid.refresh();
+			// 			}
+			// 		}
+			// 		history.back();
 					
 
-				},
-				error: function (xhr) {
-					DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-				}
-			});
+			// 	},
+			// 	error: function (xhr) {
+			// 		DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+			// 	}
+			// });
 	
-				 });
+			// 	 });
 
 
-			 $(document).ready(function () {
-				$.ajax({
-					url: "/api/VATModule/CreateNewInvoiceCounter",
-					type: 'POST',
-					success: function (data) {
-						console.log("Success:", data);
-
-					   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress. ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			});
-
-
-			 $(document).ready(function () {
-				$.ajax({
-					url: "/api/VATModule/GenerateGuid",
-					type: 'POST',
-					success: function (data) {
-						console.log("Success:", data);
-
-					   $("#UUID").dxTextBox("instance").option("value", data);
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			});
-
+			
 
 			// function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -5040,6 +5075,13 @@ function saveQuotation(rfqNoNew, $btn) {
                 success: function (response) {
 					//disableEditing();
                   DevExpress.ui.notify("RFQ has been submitted for Approval.", "success", 3000);
+				  if (response.submittedBy) {
+                        const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+                        if (approvedByBox) {
+                            approvedByBox.option("value", response.submittedBy);
+                        }
+                    }
+                    syncWorkflowFromFields();
 
                     // Update UI elements as needed
                 },
@@ -5116,6 +5158,13 @@ function saveQuotation(rfqNoNew, $btn) {
 		success: function(response) {
 		  if (response?.message) {
 			DevExpress.ui.notify("RFQ has been Verified and processed for Approval.", "success", 3000);
+			if (response.verifiedBy) {
+				const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+				if (approvedByBox) {
+					approvedByBox.option("value", response.verifiedBy);
+				}
+			}
+			syncWorkflowFromFields();
 
 		  } else {
 			DevExpress.ui.notify("Verification failed: No valid response.", "error", 2000);
@@ -5194,6 +5243,13 @@ function saveQuotation(rfqNoNew, $btn) {
 			  approvedByBox.getDataSource().reload();  // refresh data
 			  approvedByBox.repaint();                // update UI display :contentReference[oaicite:1]{index=1}
 			}
+			if (response.VoucherApprovedBy) {
+				const approvedByBox1 = $("#ddApprovedby").dxDropDownBox("instance");
+				if (approvedByBox1) {
+					approvedByBox1.option("value", response.VoucherApprovedBy);
+				}
+			}
+			syncWorkflowFromFields();
 		  }
 
 		  if (response?.Message) {
@@ -5820,28 +5876,28 @@ $("#btnCreatePo").on("click", function () {
 
 		 function AddPreparedBy(){
 				const url = `/${tenantName}/IMS/Signatories`;
-			  const title = "Signatories";
+			  const title = formatMessage("Signatories");
 				  openModal(url, title);
 		  }
 
 		   function AddReqUnit(){
 				const url = `/${tenantName}/IMS/ProjectSubUnits`;
-			  const title = "Project";
+			  const title = formatMessage("Project");
 				  openModal(url, title);
 		  }
 			 function AddModeReq(){
 				const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-			  const title = "Quotation Mode Of Request";
+			  const title = formatMessage("Quotation Mode Of Request");
 				  openModal(url, title);
 		  }
 			 function AddTypeReq(){
 				const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-			  const title = "Quotation Type Of Request";
+			  const title = formatMessage("Quotation Type Of Request");
 				  openModal(url, title);
 		  }
 		   function AddNewSupplier(){
 				const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-               const title = "Supplier Master";
+               const title = formatMessage("Supplier Master");
 				  openModal(url, title);
             } 
 			   $(function () {
@@ -6011,7 +6067,7 @@ $("#btnCreatePo").on("click", function () {
               }
                function CurrencyClick() {
               let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-              let title = "Currency Master";
+              let title = formatMessage("Currency Master");
               openModal(url, title);
           }
             function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -6074,7 +6130,7 @@ $("#btnCreatePo").on("click", function () {
 				encodeURIComponent(supplierCode) + '&SupplierName=' +
 				encodeURIComponent(supplierName);
 
-			openModal(url, 'Supplier Contact List');
+			openModal(url, formatMessage('Supplier Contact List'));
 		});
 	}
 		function selectContact(name, email, mobile, phone) {
@@ -6089,4 +6145,186 @@ $("#btnCreatePo").on("click", function () {
 			// ✅ Close the modal after selection
 			closeModal();
 		}
+		
+        function dataGridSelectionChanged10(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized10(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged11(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized11(e) {
+			dataGrid = e.component;
+		}
+		function dataGridSelectionChanged12(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized12(e) {
+			dataGrid = e.component;
+		}
+		let isVoucherSaved = false;
+
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
 </script>

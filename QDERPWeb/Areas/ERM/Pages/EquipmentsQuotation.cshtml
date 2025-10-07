@@ -151,6 +151,7 @@
 	</div>
 </div>
 
+<input id="formId" value="QuotationView" type="hidden" />
 
 @await Html.PartialAsync("/Pages/Shared/ERM/QuotationFooter.cshtml")
 
@@ -409,68 +410,96 @@
 				},
 				{
 					text: "Duplicate Quotation",
-					icon: "doc",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
+		icon: "copy",
+		onItemClick: function () {
+			const quoteNo = e.row.data.QuoteNo;
+
+			if (!quoteNo) {
+				DevExpress.ui.notify("Quote No not found.", "error", 2000);
+				return;
+			}
+
+			DevExpress.ui.dialog.confirm(
+				"You are about to Duplicate this Quotation. Are you sure you want to continue?",
+				"Confirm Duplicate"
+			).done(function (result) {
+				if (result) {
+					$.ajax({
+						url: "/api/Quotation1/DuplicateQuotation",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(quoteNo),
+						success: function (response) {
+							DevExpress.ui.notify(response.message, "success", 2000);
+								  ddBtnShowRecords_click('range');
+						},
+						error: function (xhr) {
+							let msg = xhr.responseJSON?.message || "Duplication failed.";
+							DevExpress.ui.notify(msg, "error", 2000);
+							console.error("Clone error:", xhr.responseJSON);
+						}
+					});
+				}
+			});
+		}
+	},
 				{
 					text: "Delete Quotation",
 					icon: "trash",
 					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/ERM/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
-										e.component.refresh();
-									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
+						DevExpress.ui.dialog.confirm(
+							"You are about to delete the Quotation.\nYou cannot revert the changes.\nAre you sure?",
+							"Confirm Delete"
+						).done(function (dialogResult) {
+							if (dialogResult) {
+								var QuoteNo=e.row.data.QuoteNo;
+								console.log("number", QuoteNo);
+								onDeleteRequest(QuoteNo);
+							}
+						});
+					}
+				},
+				{				
+									text: "Revise Quotation",
+						icon: "repeat",
+						onItemClick: function () {
+							const quoteNo = e.row?.data?.QuoteNo;
+							if (!quoteNo) {
+								DevExpress.ui.notify("Quote No not found.", "error", 2000);
+								return;
+							}
+
+							DevExpress.ui.dialog.confirm(
+								"You are about to revise this Quotation. Are you sure you want to continue adding a new revised Quotation?",
+								"Confirm Revision"
+							).done(function (result) {
+								if (!result) return;
+
+								$.ajax({
+									url: "/api/Quotation1/ReviseQuotation",
+									type: "POST",
+									contentType: "application/json",
+									data: JSON.stringify(quoteNo),
+									success: function (response) {
+										DevExpress.ui.notify(response.message, "success", 2000);
+											  ddBtnShowRecords_click('range');
+
+										if (response.newQuoteNo) {
+											const tenantName = window.tenantName || "defaultTenant";
+											window.location.href = `/${tenantName}/ERM/AddNewQuotation?QuoteNo=${encodeURIComponent(response.newQuoteNo)}`;
+										}
+									},
+									error: function (xhr) {
+										let msg = xhr.responseJSON?.message || "Revision failed.";
+										DevExpress.ui.notify(msg, "error", 2000);
+										console.error("Revision error:", xhr.responseJSON);
 									}
-								})
-								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
 								});
-						}
-					}
-				},
-				{
-					text: "Unlock the Quotation",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
 							});
-					}
+						}
+
 				},
-				{
-					text: "Revise Quotation",
-					icon: "preferences",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
+				
 				{
 					text: "Create Sales Order",
 					icon: "add",
@@ -482,4 +511,109 @@
 			];
 		}
 	}
+
+
+
+
+	function onDeleteRequest(QuoteNo) {
+		if (!QuoteNo) {
+			DevExpress.ui.notify('MPRNo is missing.', 'error', 3000);
+			return;
+		}
+
+		$.ajax({
+			url: `/api/Quotation1/DeleteQuotationView?QuoteNo=${QuoteNo}`,
+			method: 'POST',
+			success: function (response) {
+				if (response.success) {
+					DevExpress.ui.notify(response.message, 'success', 2000);
+						  ddBtnShowRecords_click('range');
+				} else {
+					DevExpress.ui.notify(response.message, 'error', 3000);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify('An error occurred while attempting to delete the request.', 'error', 3000);
+			}
+		});
+	}
+
+	$(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+		// Form ID
+		var formId = "QuotationView";
+
+		// Call the API to get permissions
+		$.ajax({
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				console.log("API Response:", response); // Log the API response
+
+				if (response.success && response.permissions) {
+					// Default visibility and enable status for buttons
+					var controlStates = {
+						"ddButtonLayout": { "Visible": false, "Enabled": false },
+						"rowHeightProperties": { "Visible": false, "Enabled": false },
+						"btnPrint": { "Visible": false, "Enabled": false },
+						"btnToggleSearch": { "Visible": false, "Enabled": false },
+						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+						"btnColumnChooser": { "Visible": false, "Enabled": false },
+						"btnAddNewQuotation": { "Visible": false, "Enabled": false },
+						"ddBtnShowRecords": { "Visible": false, "Enabled": false },
+					};
+
+					// Check for full access
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
+
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						// Grant full access: make all controls visible and enabled
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						// Update states based on specific permissions for each control
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
+
+					console.log("Control States:", controlStates);
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							// Handle visibility
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							// Handle enable/disable state
+							button.disabled = !controlStates[key].Enabled;
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+						} else {
+							console.warn(`Button with ID "${key}" not found in the DOM.`);
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+	});
+
 </script>

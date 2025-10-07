@@ -168,21 +168,24 @@
             .Items(items =>
             {
                 items.Add()
-                    .Text(new JS("formatMessage('Inventory Report(With Expiry date)')"))
+                    .Text(new JS("formatMessage('Equipment Revenue & Cost Report')"))
                     .Icon("money")
+                    .OnClick("EqrevenueCostsum")
                     .Option("color", "#FF7043");  // Orange
 
                 items.Add()
-                    .Text(new JS("formatMessage('Inventory Report By date')"))
+                    .Text(new JS("formatMessage('Report on Equipment Revenue & cost (Detailed)')"))
                     .Icon("money")
+                    .OnClick("ReportonCost")
                     .Option("color", "#00ACC1");  // Cyan
 
                 items.Add()
-                    .Text(new JS("formatMessage('Inventory Report On Stores')"))
+                    .Text(new JS("formatMessage('Doucument Expiry Details')"))
                     .Icon("money")
+                    .OnClick("DoucumentExpiry")
                     .Option("color", "#AB47BC");  // Purple
 
-                items.Add()
+                @* items.Add()
                     .Text(new JS("formatMessage('Inventory Report on Store(Pivort Report)')"))
                     .Icon("money")
                     .Option("color", "#FBBC05");  // Yellow
@@ -195,7 +198,7 @@
                 items.Add()
                     .Text(new JS("formatMessage('Inventory - Stock Movement report')"))
                     .Icon("money")
-                    .Option("color", "#34A853");  // Green
+                    .Option("color", "#34A853");  // Green *@
             })
             .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
@@ -208,15 +211,14 @@
                     </div>
                 </div>
             </text>)
-            .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )
     </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnAddNewPayment")
-            .Icon("money")
+            .ID("btnAddNewProperty")
+            .Icon("fa-solid fa-house")
             .Text(new JS("formatMessage('Add New Property')"))
             .Width(200)
             .OnClick("addStock")
@@ -225,98 +227,6 @@
     </div>
 </div>
 <script type="text/javascript">
-
-
-
-
-
-
-
-    // $(document).ready(function () {
-    //     console.log('Start permission handling');
-    //     // Form ID
-    //     var formId = "frm201VoucherCashPayment";
-
-    //     // Call the API to get permissions
-    //     $.ajax({
-    //         url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-    //         type: 'GET',
-    //         contentType: 'application/json',
-    //         success: function (response) {
-    //             console.log("API Response:", response); // Log the API response
-
-    //             if (response.success && response.permissions) {
-    //                 // Default visibility and enable status for buttons
-    //                 var controlStates = {
-    //                     "btnSave": { "Visible": true, "Enabled": true },
-    //                     "btnSaveAndClose": { "Visible": false, "Enabled": false },
-    //                     "btnPreview1": { "Visible": true, "Enabled": true },
-    //                     "btnPrint": { "Visible": true, "Enabled": true },
-    //                     "btnDelete": { "Visible": false, "Enabled": false },
-    //                     "btnBack": { "Visible": false, "Enabled": false },
-    //                     "btnVerify": { "Visible": true, "Enabled": true },
-    //                     "btnApprove": { "Visible": false, "Enabled": false },
-    //                     "btnAttach": { "Visible": false, "Enabled": false }
-    //                 };
-
-
-    //                 // Check for full access
-    //                 var fullAccess = response.permissions.find(p =>
-    //                     p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-    //                 );
-
-    //                 if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-    //                     // Grant full access: make all controls visible and enabled
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         controlStates[key] = { "Visible": true, "Enabled": true };
-    //                     });
-    //                 } else {
-    //                     // Update states based on specific permissions for each control
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         var controlPermission = response.permissions.find(p =>
-    //                             p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-    //                         );
-    //                         if (controlPermission) {
-    //                             controlStates[key] = {
-    //                                 "Visible": controlPermission.ItemVisible || false,
-    //                                 "Enabled": controlPermission.ItemEnabled || false
-    //                             };
-    //                         }
-    //                     });
-    //                 }
-
-    //                 console.log("Control States:", controlStates); // Log the control states
-
-    //                 // Dynamically update button visibility and enabled state
-    //                 Object.keys(controlStates).forEach(key => {
-    //                     var button = document.getElementById(key);
-    //                     if (button) {
-    //                         // Handle visibility
-    //                         button.style.display = controlStates[key].Visible ? "" : "none";
-    //                         // Handle enable/disable state
-    //                         button.disabled = !controlStates[key].Enabled;
-    //                         // Ensure button text is visible
-    //                         button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
-    //                         console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-    //                     } else {
-    //                         console.warn(`Button with ID "${key}" not found in the DOM.`);
-    //                     }
-    //                 });
-
-    //             } else {
-    //                 console.warn("Failed to fetch permissions or no permissions available.");
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("Error fetching permissions:", error);
-    //             alert('An error occurred while fetching permissions. Please try again.');
-    //         }
-    //     });
-    //     // showColumnChooser();
-    //     console.log('End permission handling');
-    // });
-
-
     let IsDirect = true;
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -502,6 +412,21 @@
         window.location.href = url;
     }
 
+    function DoucumentExpiry() {
+        var url = `/${tenantName}/ERM/DocumentExpiryDetails`;
+        window.location.href = url;
+    }
+
+    function EqrevenueCostsum() {
+        var url = `/${tenantName}/ERM/EquipmentsRevenue&CostDetails`;
+        window.location.href = url;
+    }
+
+    function ReportonCost() {
+        var url = `/${tenantName}/ERM/EquipmentsRevenue&CostDetails`;
+        window.location.href = url;
+    }
+
     function refreshGrid() {
         const grid = $("#dataGrid").dxDataGrid("instance");
         grid.refresh();
@@ -534,45 +459,45 @@
         
     };
 
-    function handleReportClick(e) {
-        const selectedText = e.itemData.text;
-        const reportName = reportMappings[selectedText];
+    // function handleReportClick(e) {
+    //     const selectedText = e.itemData.text;
+    //     const reportName = reportMappings[selectedText];
 
-        if (reportName) {
-            console.log(`Opening report: ${reportName}`);
+    //     if (reportName) {
+    //         console.log(`Opening report: ${reportName}`);
 
-            // Ensure tenantName is defined before using
-            if (typeof tenantName === "undefined") {
-                console.error("tenantName is not defined.");
-                return;
-            }
+    //         Ensure tenantName is defined before using
+    //         if (typeof tenantName === "undefined") {
+    //             console.error("tenantName is not defined.");
+    //             return;
+    //         }
 
-            window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-        } else {
-            let url = "";
-            switch (selectedText) {
-            case "Inventory Report By date":
-                url = `/${tenantName}/ERM/InventoryByDateReport`;
-                break;
-            case "Inventory Report On Stores":
-                url = `/${tenantName}/ERM/StoreInventoryReport`;
-                break;
-            case "Inventory Report on Store(Pivort Report)":
-                url = `/${tenantName}/ERM/PivotStoreInventory`;
-                break;
-            case "Inventory Report On stores (By Date)":
-                url = `/${tenantName}/ERM/StoreInventoryByDate`;
-                break;
-            case "Inventory - Stock Movement report":
-                url = `/${tenantName}/ERM/StockMovementReport`;
-                break;
-            default:
-                console.warn('No URL mapping found for:', selectedText);
-                return;
-        }
+    //         window.open(`/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    //     } else {
+    //         let url = "";
+    //         switch (selectedText) {
+    //         case "Doucument Expiry Details":
+    //             url = `/${tenantName}/ERM/DocumentExpiryDetails`;
+    //             break;
+    //         case "Inventory Report On Stores":
+    //             url = `/${tenantName}/ERM/StoreInventoryReport`;
+    //             break;
+    //         case "Inventory Report on Store(Pivort Report)":
+    //             url = `/${tenantName}/ERM/PivotStoreInventory`;
+    //             break;
+    //         case "Inventory Report On stores (By Date)":
+    //             url = `/${tenantName}/ERM/StoreInventoryByDate`;
+    //             break;
+    //         case "Inventory - Stock Movement report":
+    //             url = `/${tenantName}/ERM/StockMovementReport`;
+    //             break;
+    //         default:
+    //             console.warn('No URL mapping found for:', selectedText);
+    //             return;
+    //     }
 
-            window.location.href = url;
-        }
-    }
+    //         window.location.href = url;
+    //     }
+    // }
     
 </script>

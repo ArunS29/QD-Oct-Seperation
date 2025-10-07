@@ -756,6 +756,9 @@
 					"Property Allocation Details updated Successfully.",
 					"Update Successful"
 				).then(function () {
+					setTimeout(function () {
+								loadLedgerGridData('@voucherNo');
+						   }, 500);
 					if (popupInstances[voucherchildno]) {
 								popupInstances[voucherchildno].hide();
 					}
@@ -1145,54 +1148,70 @@
 				const accountId = '@accountId';
 
 
-				// Step 1: Delete all by VoucherNo
+			const visibleRowCount = dataGrid.getVisibleRows().length;
+
+			const insertAndRefresh = () => {
+				const newRow = {
+									PropertyAllocationId: 0,
+									PropertyAllocDrCr: drCr,
+									PropertyNo:  null,
+									EffectiveDate: new Date(),
+									AmountAllocated: initialVoucherAmount.toFixed(2),
+									PropertyAllocRemarks: null,
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+									LedgerAccountNo: accountId
+
+					};
+
+					$.ajax({
+						type: "POST",
+						url: "/api/JournalEntryEdit/InsertDefaultPropertyAllocation",
+						contentType: "application/json",
+						data: JSON.stringify(newRow),
+						success: function () {
+							// Step 3: Refresh grid
+							$.ajax({
+								url: `/api/JournalEntryEdit/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+								type: 'GET',
+								success: function (refreshedData) {
+									dataGrid.option('dataSource', refreshedData);
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+						}
+					});
+
+			};
+
+			if (visibleRowCount > 0) {
+				const deleterequest = {
+
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+
+
+				};
 				$.ajax({
 					type: "POST",
 					url: "/api/JournalEntryEdit/DeletePropertyByVoucherNo",
 					contentType: "application/json",
-					data: JSON.stringify({ voucherNo: voucherno }),
+					data: JSON.stringify(deleterequest),
 					success: function () {
-						// Step 2: Insert default row
-						const newRow = {
-										PropertyAllocationId: 0,
-										PropertyAllocDrCr: drCr,
-										PropertyNo:  null,
-										EffectiveDate: new Date(),
-										AmountAllocated: initialVoucherAmount.toFixed(2),
-										PropertyAllocRemarks: null,
-										VoucherEntryId: VoucherEntryId,
-										VoucherNo: voucherno,
-										LedgerAccountNo: accountId
-						};
-
-						$.ajax({
-							type: "POST",
-							url: "/api/JournalEntryEdit/InsertDefaultPropertyAllocation",
-							contentType: "application/json",
-							data: JSON.stringify(newRow),
-							success: function () {
-								// Step 3: Refresh grid
-								$.ajax({
-									url: `/api/JournalEntryEdit/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-									type: 'GET',
-									success: function (refreshedData) {
-										dataGrid.option('dataSource', refreshedData);
-									},
-									error: function () {
-										DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
-									}
-								});
-							},
-							error: function () {
-								DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
-							}
-						});
+						insertAndRefresh();
 					},
 					error: function () {
 						DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
 					}
 				});
-
+			} else {
+				insertAndRefresh();
+			}
 		}
 
 		

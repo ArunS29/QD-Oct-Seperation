@@ -6,69 +6,102 @@
 
 
 <h2 id="employeesummaryreport"></h2>
-
-<div class="toolbar custom-toolbar">
-    <div class="toolbar-item">
+<input id="formId" value="EmployeeReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
+<div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label(new JS("formatMessage('Start Date')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Start Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(1)
-            )
+                .ID("frmdateBox")
+                .Label(new JS("formatMessage('Start Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Start Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label(new JS("formatMessage('End Date')"))
-.LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "End Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            )
+                .ID("todateBox")
+                .Label(new JS("formatMessage('End Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "End Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
+                )
     </div>
 
-    <div class="toolbar-item">
+    <div class="toolbar-item" style="flex: 1 1 150px;">
         @(Html.DevExtreme().TextBox()
-            .ID("accountIdLabel")
-            .Label(new JS("formatMessage('Ledger No')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Ledger No")
-            .ReadOnly(true)
-            .StylingMode(EditorStylingMode.Outlined)
-            .TabIndex(3)
-            )
+                .ID("accountIdLabel")
+                .Label(new JS("formatMessage('Ledger No')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger No")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(3)
+                )
     </div>
 
-    <div class="toolbar-item">
+    <!-- ✅ New Ledger Name textbox -->
+    <div class="toolbar-item" style="flex: 1 1 250px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("ledgerNameLabel")
+                .Label(new JS("formatMessage('Ledger Name')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger Name")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(4)
+                )
+    </div>
+
+    <div class="toolbar-item" style="flex: 0 0 auto;">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text(new JS("formatMessage('Show Records')"))
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-            })
-            )
+                .ID("ddBtnShowRecords")
+                .Text(new JS("formatMessage('Show Records')"))
+                .Icon("smalliconslayout")
+                .Width(180)
+                .ElementAttr("class", "button-alignment-down")
+                .TabIndex(5)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                )
     </div>
 </div>
 <div id="dataGrid" style="margin-top: 15px;"></div>
@@ -81,11 +114,30 @@
        $(function () {
          $("#employeesummaryreport").text(formatMessage("Employee Summary Report"));
     });
-    $(document).ready(function () {
-      
-        const accountId = getQueryParam('accountId');
-        $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
-    });
+     $(document).ready(function () {
+         const accountId = getQueryParam('accountId');
+
+         if (accountId) {
+             // Bind accountId to Ledger No textbox
+             $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
+
+             // Fetch Ledger Name from server
+             $.ajax({
+                 url: '/api/UCCostAnalysis/GetLedgerName', // adjust area/controller if needed
+                 type: 'GET',
+                 data: { accountId: accountId },
+                 success: function (response) {
+                     if (response && response.ledgerName) {
+                         $("#ledgerNameLabel").dxTextBox("instance").option("value", response.ledgerName);
+                     }
+                 },
+                 error: function (xhr) {
+                     console.error("Failed to load Ledger Name:", xhr.responseText);
+                     $("#ledgerNameLabel").dxTextBox("instance").option("value", "");
+                 }
+             });
+         }
+     });
 
     let dataGrid;
 
@@ -100,7 +152,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -117,72 +174,78 @@
         dataGrid.refresh();
     }
 
-    $(function () {
+         $(function () {
         dataGrid = $("#dataGrid").dxPivotGrid({
             showBorders: true,
             allowSorting: true,
             allowFiltering: true,
-            showFieldChooser: true, // Allows users to drag fields manually
+            showFieldChooser: true,
             fieldChooser: {
                 enabled: true,
-                height: 400
+                height: 400,
+                allowSearch: true
             },
             dataSource: {
                 fields: [
-                        { dataField: "Department", area: "row", caption: formatMessage("Department") },
-    { dataField: "EmployeeName", area: "row", caption: formatMessage("Employee Name") },
-    { dataField: "AmountAllocated", area: "row", caption: formatMessage("Amount Allocated") },
+                    { dataField: "Department", area: "row", caption: formatMessage("Department") },
+                    { dataField: "EmployeeName", area: "row", caption: formatMessage("Employee Name") },
+                   {
+                        dataField: "AmountAllocated",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Amount Allocated"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
 
-    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
-    { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
-    { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
-    { dataField: "EmpAllocDrCr", caption: formatMessage("Emp Alloc DrCr") },
-    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
-    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
-    { dataField: "AccountHead", caption: formatMessage("Account Head") },
-    { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
-    { dataField: "VoucherDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
-    { dataField: "EffectiveDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
-    { dataField: "CategoryTitle", caption: formatMessage("Category Title") },
-    { dataField: "NationalityEn", caption: formatMessage("Nationality En") },
-    { dataField: "VisaPositionTitle", caption: formatMessage("Visa Position Title") },
-    { dataField: "WorkSite", caption: formatMessage("Work Site") },
-    { dataField: "SponsorName", caption: formatMessage("Sponsor Name") },
-    { dataField: "NationalId", caption: formatMessage("National ID") },
-    { dataField: "IsDiscontinued", caption: formatMessage("Is Discontinued") },
-    { dataField: "EmployeeGroup", caption: formatMessage("Employee Group") },
-    { dataField: "JobTitle", caption: formatMessage("Job Title") },
-    { dataField: "CostCentreCode", caption: formatMessage("Cost Centre Code") },
-    { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") },
-    { dataField: "DepartmentCode", caption: formatMessage("Department Code") },
-    { dataField: "Department", caption: formatMessage("Department") },
-    { dataField: "EmployeeReferenceId", caption: formatMessage("Employee Reference Id") },
-    { dataField: "BankAccountNo", caption: formatMessage("Bank Account No") },
-    { dataField: "BankName", caption: formatMessage("Bank Name") },
-    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
-    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name") },
-    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
-    { dataField: "BillRemarks", caption: formatMessage("Bill Remarks") },
+                    { dataField: "VoucherNo",area: "filter", caption: formatMessage("Voucher No") },
+                    { dataField: "VoucherEntryId", area: "filter",caption: formatMessage("Voucher Entry Id") },
+                    { dataField: "EmployeeNo", area: "filter",caption: formatMessage("Employee No") },
+                    { dataField: "EmpAllocDrCr",area: "filter", caption: formatMessage("Emp Alloc DrCr") },
+                   
+                    { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
+                    { dataField: "AccountHead", area: "filter",caption: formatMessage("Account Head") },
+                 
+                    { dataField: "VoucherDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
+                    { dataField: "EffectiveDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
+                    { dataField: "CategoryTitle", area: "filter",caption: formatMessage("Category Title") },
+                    { dataField: "NationalityEn",area: "filter", caption: formatMessage("Nationality En") },
+                    { dataField: "VisaPositionTitle", area: "filter",caption: formatMessage("Visa Position Title") },
+                    { dataField: "WorkSite",area: "filter", caption: formatMessage("Work Site") },
+                    { dataField: "SponsorName",area: "filter", caption: formatMessage("Sponsor Name") },
+                    { dataField: "NationalId",area: "filter", caption: formatMessage("National ID") },
+                    { dataField: "IsDiscontinued",area: "filter", caption: formatMessage("Is Discontinued") },
+                    { dataField: "EmployeeGroup", area: "filter",caption: formatMessage("Employee Group") },
+                    { dataField: "JobTitle",area: "filter", caption: formatMessage("Job Title") },
+                    { dataField: "CostCentreCode", area: "filter",caption: formatMessage("Cost Centre Code") },
+                    { dataField: "CostCentreTitle",area: "filter", caption: formatMessage("Cost Centre Title") },
+                    { dataField: "DepartmentCode",area: "filter", caption: formatMessage("Department Code") },
+                    
+                    { dataField: "EmployeeReferenceId",area: "filter", caption: formatMessage("Employee Reference Id") },
+                    { dataField: "BankAccountNo", area: "filter",caption: formatMessage("Bank Account No") },
+                    { dataField: "BankName", area: "filter",caption: formatMessage("Bank Name") },
+                    { dataField: "VoucherType",area: "filter", caption: formatMessage("Voucher Type") },
+                    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"),area: "column",showTotals: false, showGrandTotals: false },
+                    { dataField: "VoucherNarration",area: "filter", caption: formatMessage("Voucher Narration") },
+                    { dataField: "BillRemarks",area: "filter", caption: formatMessage("Bill Remarks") }
 
                 ]
             },
             width: "100%",
             height: $(window).height() - 50,
             allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
             allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
             columnAutoWidth: true,
             allowColumnResizing: true,
-            rowHeaderLayout: "tree",
             wordWrapEnabled: true,
 
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true
-            },
             fieldPanel: {
                 visible: true,
                 allowFieldDragging: true,
@@ -191,42 +254,88 @@
                 showDataFields: true,
                 showFilterFields: true
             },
+
+            // Remove automatic totals & grand totals
             showColumnTotals: false,
             showColumnGrandTotals: false,
-            showDataHeaders: true,
             showRowTotals: false,
-            showRowGrandTotals: false
-        
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
-    
 
-        // Initial Load
+        // Load data
         loadCostPivotGrid();
     });
 
     function ddBtnShowRecords_click(option) {
-        const today = new Date();
+        let today = new Date();
         const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+        // Keep original date object safe (no mutation issues)
+        const currentDate = new Date();
+
         const setDates = {
-            'today': [today, today],
-            'yesterday': [new Date(today.setDate(today.getDate() - 1)), new Date()],
-            'week': [new Date(today.setDate(today.getDate() - today.getDay())), new Date()],
+            'today': [new Date(), new Date()],
+            'yesterday': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1),
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1)
+            ],
+            'week': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay()),
+                new Date()
+            ],
             'tillmonth': [startOfMonth, new Date()],
             'fullmonth': [startOfMonth, endOfMonth],
             'tillyear': [new Date(today.getFullYear(), 0, 1), new Date()],
             'fullyear': [new Date(today.getFullYear(), 0, 1), new Date(today.getFullYear(), 11, 31)],
-            'lastmonth': [new Date(today.getFullYear(), today.getMonth() - 1, 1), new Date(today.getFullYear(), today.getMonth(), 0)],
-            'lastyear': [new Date(today.getFullYear() - 1, 0, 1), new Date(today.getFullYear() - 1, 11, 31)],
-            'range': [$("#frmdateBox").dxDateBox("instance").option("value"), $("#todateBox").dxDateBox("instance").option("value")]
+            'lastmonth': [
+                new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                new Date(today.getFullYear(), today.getMonth(), 0)
+            ],
+            'lastyear': [
+                new Date(today.getFullYear() - 1, 0, 1),
+                new Date(today.getFullYear() - 1, 11, 31)
+            ],
+            'range': [
+                $("#frmdateBox").dxDateBox("instance").option("value"),
+                $("#todateBox").dxDateBox("instance").option("value")
+            ]
         };
 
-        const [from, to] = setDates[option] || [today, today];
+        const [from, to] = setDates[option] || [new Date(), new Date()];
         $("#frmdateBox").dxDateBox("instance").option("value", from);
         $("#todateBox").dxDateBox("instance").option("value", to);
 
-        loadCostPivotGrid({ fromDate: from, toDate: to });
+        // Pass selected dates directly to loadCostGrid
+        loaddateCostGrid(from, to);
+    }
+
+       function formatDateOnly(date) {
+        if (!(date instanceof Date)) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function loaddateCostGrid(fromDate, toDate) {
+        const accountId = getQueryParam('accountId');
+
+        dataGrid.option("dataSource", {
+            load: function () {
+                const params = new URLSearchParams();
+                if (accountId) params.append("accountId", accountId);
+
+                // ✅ Pass only date (yyyy-MM-dd) without time
+                if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
+                if (toDate) params.append("toDate", formatDateOnly(toDate));
+
+                return fetch(`/api/EmployeeReport/GetEmployeeAllocations?${params}`)
+                    .then(res => res.json());
+            }
+        });
+
+        dataGrid.refresh();
     }
     $(document).ready(function () {
 
@@ -241,6 +350,86 @@
         });
 
     });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if currently showing filter fields
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of your filter fields to toggle
+        const filterFields = [
+            "VoucherNo", "VoucherEntryId", "EmployeeNo", "EmpAllocDrCr",
+            "VoucherRefNo", "AccountHead", "VoucherDate",
+            "EffectiveDate", "CategoryTitle", "NationalityEn", "VisaPositionTitle",
+            "WorkSite", "SponsorName", "NationalId", "IsDiscontinued",
+            "EmployeeGroup", "JobTitle", "CostCentreCode", "CostCentreTitle",
+            "DepartmentCode",  "EmployeeReferenceId",
+            "BankAccountNo", "BankName", "VoucherType", "VoucherNarration", "BillRemarks"
+        ];
+
+        // Toggle area for all filter fields
+        fields.forEach((f, i) => {
+            if (filterFields.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Reload data source to apply change
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1500
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "Department");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+
 </script>
 
 <style>

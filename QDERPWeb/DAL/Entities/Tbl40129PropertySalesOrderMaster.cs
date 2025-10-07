@@ -91,6 +91,9 @@ public partial class Tbl40129PropertySalesOrderMaster
 
     public bool? IsApproved { get; set; }
 
+    public bool? IsSubmitted { get; set; }
+
+
     public byte? CompanyBranch { get; set; }
 
     public string PaymentMode { get; set; }
@@ -126,4 +129,14 @@ public partial class Tbl40129PropertySalesOrderMaster
     public byte? SoverifiedSign { get; set; }
 
     public byte? SoapprovedSign { get; set; }
+
+
+    public string VerifiedBy { get; set; }
+    public string ClientRefName { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
+
+
+
 }

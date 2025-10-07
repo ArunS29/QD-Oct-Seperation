@@ -12,12 +12,12 @@ using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
-	[Route("api/[controller]/[action]")]
-	[ApiController]
-	public class AddNewQuotationController : Controller
-	{
-		private readonly TenantDbContextHelper _tenantDbContextHelper;
-		private readonly ILogger<AddNewQuotationController> _logger;
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class AddNewQuotationController : Controller
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        private readonly ILogger<AddNewQuotationController> _logger;
         private readonly IUserActionLogger _userActionLogger;
 
 
@@ -25,16 +25,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
-			_logger = logger;
-		}
+            _logger = logger;
+        }
 
-		
 
-		[HttpGet]
-		public ActionResult<string> GetNewDebitNoteNoApi()
-		{
-			try
-			{
+
+        [HttpGet]
+        public ActionResult<string> GetNewDebitNoteNoApi()
+        {
+            try
+            {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
@@ -56,141 +56,141 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                    .FirstOrDefault(c => c.CompanyId == companyId);
 
                     if (company == null)
-					{
-						return NotFound("Company not found in Tbl901CompanyDetails.");
-					}
+                    {
+                        return NotFound("Company not found in Tbl901CompanyDetails.");
+                    }
 
-					// Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
-					int noOfDigits = dbContext.Tbl901CompanyDetails02s
-											  .Where(c => c.CompanyId == company.CompanyId)
-											  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
-											  .FirstOrDefault(); // Default to 4 if not found
+                    // Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
+                    int noOfDigits = dbContext.Tbl901CompanyDetails02s
+                                              .Where(c => c.CompanyId == company.CompanyId)
+                                              .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                                              .FirstOrDefault(); // Default to 4 if not found
 
-					// Step 5: Extract values for quotation number
-					string QuotationAbbrv = company.QuotationAbbrv;
-					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-					DateTime invoiceDate = DateTime.Now;
-					// Generate new debit note QuotationAbbrv
-					string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
-				
-					
-
-					return Ok(newDebitNoteNo);
-				}
-				else
-				{
-					return BadRequest("Tenant or DB Context not found.");
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
-				return StatusCode(500, "Internal server error: " + ex.Message);
-			}
-		}
+                    // Step 5: Extract values for quotation number
+                    string QuotationAbbrv = company.QuotationAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+                    DateTime invoiceDate = DateTime.Now;
+                    // Generate new debit note QuotationAbbrv
+                    string newDebitNoteNo = GetNewDebitNoteNo(QuotationAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, noOfDigits, dbContext);
 
 
 
-		private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
-		{
-			try
-			{
-				var mprNumbers = dbContext.Tbl60101quotationMasters
-					.Where(d => d.QuoteNo != null &&
-								d.QuoteNo.Length >= noOfDigits &&
-								(!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
-					.Select(d => d.QuoteNo)
-					.ToList();
+                    return Ok(newDebitNoteNo);
+                }
+                else
+                {
+                    return BadRequest("Tenant or DB Context not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetNewDebitNoteNoApi: {ex.Message}");
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
 
-				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
-					.DefaultIfEmpty(0)
-					.Max();
 
-				maxRunningNumber += 1;
 
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(noOfDigits, '0');
+        private string GetNewDebitNoteNo(string QuotationAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int noOfDigits, ERPMasterWtDataContext dbContext)
+        {
+            try
+            {
+                var mprNumbers = dbContext.Tbl60101quotationMasters
+                    .Where(d => d.QuoteNo != null &&
+                                d.QuoteNo.Length >= noOfDigits &&
+                                (!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
+                    .Select(d => d.QuoteNo)
+                    .ToList();
 
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				else
-					strYear = "";
+                int maxRunningNumber = mprNumbers
+                    .Select(no => int.TryParse(no.Substring(no.Length - noOfDigits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
 
-				return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
-			}
-			catch (Exception)
-			{
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				else
-					strYear = "";
+                maxRunningNumber += 1;
 
-				return $"{QuotationAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
-			}
-		}
+                string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(noOfDigits, '0');
 
-		[HttpGet]
-		public async Task<IActionResult> GetQuotationdataByCode(string QuoteNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				if (string.IsNullOrEmpty(QuoteNo))
-					return BadRequest("Quote No is required.");
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                else
+                    strYear = "";
 
-				try
-				{
+                return $"{QuotationAbbrv}{strYear}-{strNewDebitNoteNo}";
+            }
+            catch (Exception)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                else
+                    strYear = "";
 
-					var client = await dbContext.Tbl60101quotationMasters
-						.Where(c => c.QuoteNo == QuoteNo)
-						.FirstOrDefaultAsync();
+                return $"{QuotationAbbrv}{strYear}-{"1".PadLeft(noOfDigits, '0')}";
+            }
+        }
 
-					if (client == null)
-						return NotFound("Quotation not found.");
+        [HttpGet]
+        public async Task<IActionResult> GetQuotationdataByCode(string QuoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(QuoteNo))
+                    return BadRequest("Quote No is required.");
 
-					return Ok(client);
-				}
-				catch (Exception ex)
-				{
-					return StatusCode(500, $"Internal server error: {ex.Message}");
-				}
-			}
+                try
+                {
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpGet]
-		public async Task<ActionResult> GetQuotationChildren(string QuoteNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var resultWithDetails = new List<ExpandoObject>();
+                    var client = await dbContext.Tbl60101quotationMasters
+                        .Where(c => c.QuoteNo == QuoteNo)
+                        .FirstOrDefaultAsync();
 
-					// Query the Tbl60602purchaseRequestChildren table for the given Mprno
-					var result = dbContext.Qry60102quotationChildren
-						.Where(x => x.QuoteNo == QuoteNo)
-						.ToList();
+                    if (client == null)
+                        return NotFound("Quotation not found.");
 
-					foreach (var gridDetails in result)
-					{
-						dynamic item = new ExpandoObject();
-						var dict = (IDictionary<string, object>)item;
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-						// Copy all existing fields from gridDetails into dynamic object
-						var properties = gridDetails.GetType().GetProperties();
-						foreach (var prop in properties)
-						{
-							dict[prop.Name] = prop.GetValue(gridDetails);
-						}
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetQuotationChildren(string QuoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithDetails = new List<ExpandoObject>();
 
-						// Retrieve UnitDesc based on UnitCode
-						var unitDesc = await dbContext.Tbl40111PropertyUnitCodes
-							.Where(x => x.UnitCode == gridDetails.UnitRateMethod)
-							.Select(x => x.UnitDesc)
-							.FirstOrDefaultAsync();
+                    // Query the Tbl60602purchaseRequestChildren table for the given Mprno
+                    var result = dbContext.Qry60102quotationChildren
+                        .Where(x => x.QuoteNo == QuoteNo)
+                        .ToList();
+
+                    foreach (var gridDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Retrieve UnitDesc based on UnitCode
+                        var unitDesc = await dbContext.Tbl40111PropertyUnitCodes
+                            .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                            .Select(x => x.UnitDesc)
+                            .FirstOrDefaultAsync();
 
 
                         var currencyRate = await dbContext.Tbl60101quotationMasters
@@ -199,15 +199,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             .FirstOrDefaultAsync();
                         // Retrieve Gsdescription based on Gscode
                         var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
-							.Where(x => x.Gscode == gridDetails.Gscode)
-							.Select(x => x.Gsdescrpition)
-							.FirstOrDefaultAsync();
+                            .Where(x => x.Gscode == gridDetails.Gscode)
+                            .Select(x => x.Gsdescrpition)
+                            .FirstOrDefaultAsync();
 
-						// Add the retrieved values to the dynamic object
-						dict["UnitDesc"] = unitDesc;
+                        // Add the retrieved values to the dynamic object
+                        dict["UnitDesc"] = unitDesc;
 
-						dict["GsDescription"] = gsDescription;
-                       
+                        dict["GsDescription"] = gsDescription;
+
                         dict["GSCode"] = gridDetails.Gscode;
                         dict["CostPrice"] = gridDetails.CostPrice / currencyRate;
                         dict["QuotedUnitPrice"] = gridDetails.QuotedUnitPrice / currencyRate;
@@ -221,131 +221,131 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dict["LineTotalBeforeDiscount"] = gridDetails.LineTotalBeforeDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
-					}
+                    }
 
-					return Json(resultWithDetails);
-				}
-				catch (Exception ex)
-				{
-					return StatusCode(500, $"Internal server error: {ex.Message}");
-				}
-			}
+                    return Json(resultWithDetails);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-			return Unauthorized(new { message = "Invalid tenant.", success = false });
-		}
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdateQuotation([FromBody] QuotationViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateQuotation([FromBody] QuotationViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-			if (VM == null || string.IsNullOrEmpty(VM.QuoteNo))
-			{
-				return BadRequest(new { success = false, message = "Quote No. is required." });
-			}
+            if (VM == null || string.IsNullOrEmpty(VM.QuoteNo))
+            {
+                return BadRequest(new { success = false, message = "Quote No. is required." });
+            }
 
-			try
-			{
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60101quotationMasters
-					.FirstOrDefaultAsync(x => x.QuoteNo == VM.QuoteNo);
+            try
+            {
+                // Check if the master record exists
+                var existingMaster = await dbContext.Tbl60101quotationMasters
+                    .FirstOrDefaultAsync(x => x.QuoteNo == VM.QuoteNo);
 
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
+                if (existingMaster != null)
+                {
+                    //Update existing master with manual property mapping
 
 
-					existingMaster.QuoteDate = VM.QuoteDate;
-					existingMaster.ClientCode = VM.ClientCode;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
-					existingMaster.Mprno = VM.Mprno;
-					existingMaster.Attention = VM.Attention;
-					existingMaster.ClientContactEmail = VM.ClientContactEmail;
-					existingMaster.ClientContactNo = VM.ClientContactNo;
-					existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
-					existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-					existingMaster.Project = VM.Project;
-					existingMaster.SubjectTitle = VM.SubjectTitle;
-					existingMaster.QuotationSummary = VM.QuotationSummary;
-					existingMaster.QuoteIntro = VM.QuoteIntro;
-					existingMaster.QuoteThanksNote = VM.QuoteThanksNote;
-					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-					existingMaster.ClientRefNo = VM.ClientRefNo;
-					existingMaster.QuoteSubmittedBy = VM.QuoteSubmittedBy;
-					existingMaster.QuoteSubmittedOn = VM.QuoteSubmittedOn;
-					existingMaster.BidClosingDate = VM.BidClosingDate;
-					existingMaster.QuoteStatus = VM.QuoteStatus.HasValue ? (byte?)VM.QuoteStatus.Value : null;
-					existingMaster.TransportationScope = VM.TransportationScope;
-					existingMaster.AdditionsText = VM.AdditionsText;
-					existingMaster.QuoteTransport = VM.QuoteTransport;
-					existingMaster.DiscountsText = VM.DiscountsText;
-					existingMaster.QuoteDiscount = VM.QuoteDiscount;
-					existingMaster.QuoteSignatory = VM.QuoteSignatory.HasValue ? (byte?)VM.QuoteSignatory.Value : null;
-					existingMaster.VerifiedSignatory = VM.VerifiedSignatory.HasValue ? (byte?)VM.VerifiedSignatory.Value : null;
-					existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
-					existingMaster.RevisionNo = VM.RevisionNo;
-					existingMaster.QuoteValidity = VM.QuoteValidity;
+                    existingMaster.QuoteDate = VM.QuoteDate;
+                    existingMaster.ClientCode = VM.ClientCode;
+                    existingMaster.SalesPersonCode = VM.SalesPersonCode;
+                    existingMaster.Mprno = VM.Mprno;
+                    existingMaster.Attention = VM.Attention;
+                    existingMaster.ClientContactEmail = VM.ClientContactEmail;
+                    existingMaster.ClientContactNo = VM.ClientContactNo;
+                    existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
+                    existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
+                    existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
+                    existingMaster.Project = VM.Project;
+                    existingMaster.SubjectTitle = VM.SubjectTitle;
+                    existingMaster.QuotationSummary = VM.QuotationSummary;
+                    existingMaster.QuoteIntro = VM.QuoteIntro;
+                    existingMaster.QuoteThanksNote = VM.QuoteThanksNote;
+                    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+                    existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.ClientRefNo = VM.ClientRefNo;
+                    existingMaster.QuoteSubmittedBy = VM.QuoteSubmittedBy;
+                    existingMaster.QuoteSubmittedOn = VM.QuoteSubmittedOn;
+                    existingMaster.BidClosingDate = VM.BidClosingDate;
+                    existingMaster.QuoteStatus = VM.QuoteStatus.HasValue ? (byte?)VM.QuoteStatus.Value : null;
+                    existingMaster.TransportationScope = VM.TransportationScope;
+                    existingMaster.AdditionsText = VM.AdditionsText;
+                    existingMaster.QuoteTransport = VM.QuoteTransport;
+                    existingMaster.DiscountsText = VM.DiscountsText;
+                    existingMaster.QuoteDiscount = VM.QuoteDiscount;
+                    existingMaster.QuoteSignatory = VM.QuoteSignatory.HasValue ? (byte?)VM.QuoteSignatory.Value : null;
+                    existingMaster.VerifiedSignatory = VM.VerifiedSignatory.HasValue ? (byte?)VM.VerifiedSignatory.Value : null;
+                    existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
+                    existingMaster.RevisionNo = VM.RevisionNo;
+                    existingMaster.QuoteValidity = VM.QuoteValidity;
                     existingMaster.CurrencyId = VM.CurrencyId ?? 1;
                     existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
                     existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
 
                 }
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60101quotationMaster
-					{
+                else
+                {
+                    // Insert new master
+                    var newMaster = new Tbl60101quotationMaster
+                    {
 
-						 QuoteNo= VM.QuoteNo,
-                    QuoteDate= VM.QuoteDate,
-                    ClientCode= VM.ClientCode,
-                    SalesPersonCode= VM.SalesPersonCode,
-	                Mprno = VM.Mprno,
-                    Attention= VM.Attention,
-                    ClientContactEmail= VM.ClientContactEmail,
-                    ClientContactNo=VM.ClientContactNo,
-                    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
-                    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
-                    ProjectMasterCode= VM.ProjectMasterCode,
-                    Project=VM.Project,
-                    SubjectTitle= VM.SubjectTitle,
-                    QuotationSummary= VM.QuotationSummary,
-                    QuoteIntro= VM.QuoteIntro,
-                    QuoteThanksNote= VM.QuoteThanksNote,
-                    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-                    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
-                    ClientRefNo= VM.ClientRefNo,
-                    QuoteSubmittedBy= VM.QuoteSubmittedBy,
-                    QuoteSubmittedOn= VM.QuoteSubmittedOn,
-                    BidClosingDate= VM.BidClosingDate,
-                    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
-                    TransportationScope=VM.TransportationScope,
-                    AdditionsText= VM.AdditionsText,
-                    QuoteTransport= VM.QuoteTransport,
-                    DiscountsText= VM.DiscountsText,
-                    QuoteDiscount= VM.QuoteDiscount,
-                    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
-                    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
-                    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
-	                RevisionNo=VM.RevisionNo,
-	                QuoteValidity=VM.QuoteValidity,
-                    CurrencyId = VM.CurrencyId ?? 1,
-                    CurrencyRate = VM.CurrencyRate ?? 1,
-                    BaseCurrencyId = VM.BaseCurrencyId ?? 1,
+                        QuoteNo = VM.QuoteNo,
+                        QuoteDate = VM.QuoteDate,
+                        ClientCode = VM.ClientCode,
+                        SalesPersonCode = VM.SalesPersonCode,
+                        Mprno = VM.Mprno,
+                        Attention = VM.Attention,
+                        ClientContactEmail = VM.ClientContactEmail,
+                        ClientContactNo = VM.ClientContactNo,
+                        ModeOfRequest = Convert.ToByte(VM.ModeOfRequest),
+                        TypeOfRequest = Convert.ToByte(VM.TypeOfRequest),
+                        ProjectMasterCode = VM.ProjectMasterCode,
+                        Project = VM.Project,
+                        SubjectTitle = VM.SubjectTitle,
+                        QuotationSummary = VM.QuotationSummary,
+                        QuoteIntro = VM.QuoteIntro,
+                        QuoteThanksNote = VM.QuoteThanksNote,
+                        CompanyBranch = Convert.ToByte(VM.CompanyBranch),
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        ClientRefNo = VM.ClientRefNo,
+                        QuoteSubmittedBy = VM.QuoteSubmittedBy,
+                        QuoteSubmittedOn = VM.QuoteSubmittedOn,
+                        BidClosingDate = VM.BidClosingDate,
+                        QuoteStatus = Convert.ToByte(VM.QuoteStatus),
+                        TransportationScope = VM.TransportationScope,
+                        AdditionsText = VM.AdditionsText,
+                        QuoteTransport = VM.QuoteTransport,
+                        DiscountsText = VM.DiscountsText,
+                        QuoteDiscount = VM.QuoteDiscount,
+                        QuoteSignatory = Convert.ToByte(VM.QuoteSignatory),
+                        VerifiedSignatory = Convert.ToByte(VM.VerifiedSignatory),
+                        ApprovedSignatory = Convert.ToByte(VM.ApprovedSignatory),
+                        RevisionNo = VM.RevisionNo,
+                        QuoteValidity = VM.QuoteValidity,
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1,
 
                     };
 
-					await dbContext.Tbl60101quotationMasters.AddAsync(newMaster);
-				}
+                    await dbContext.Tbl60101quotationMasters.AddAsync(newMaster);
+                }
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60102quotationChildren
-					.Where(x => x.QuoteNo == VM.QuoteNo)
-					.ToListAsync();
+                // Handle child entries
+                var existingChildren = await dbContext.Tbl60102quotationChildren
+                    .Where(x => x.QuoteNo == VM.QuoteNo)
+                    .ToListAsync();
                 var currencyRate = await dbContext.Tbl60101quotationMasters
                             .Where(x => x.QuoteNo == VM.QuoteNo)
                             .Select(x => x.CurrencyRate)
@@ -369,77 +369,77 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
                 foreach (var child in VM.QuotationDetailses)
-				{
-					if (child.QuoteChildId == 0)
-					{
-						// New child entry
-						child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
-						child.CostPrice = child.CostPrice * currencyRate;
-						child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
-						child.QuotedDiscount = child.QuotedDiscount * currencyRate;
-						await dbContext.Tbl60102quotationChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
+                {
+                    if (child.QuoteChildId == 0)
+                    {
+                        // New child entry
+                        child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
+                        child.CostPrice = child.CostPrice * currencyRate;
+                        child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
+                        child.QuotedDiscount = child.QuotedDiscount * currencyRate;
+                        await dbContext.Tbl60102quotationChildren.AddAsync(child);
+                    }
+                    else
+                    {
+                        // Existing child entry
+                        var existingChild = existingChildren
+                            .FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
 
-				await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Save Quotation",
                    actionDetail: $"Saved Quotation: {VM.QuoteNo}",
                     documentNo: $"{VM.QuoteNo}"
                 );
 
-                return Ok(new { success = true, message = "Quotation Details saved/updated successfully.",quoteno=VM.QuoteNo });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { success = false, message = ex.Message });
-			}
-		}
-		[HttpDelete]
-		public async Task<IActionResult> DeleteQuotation([FromQuery] string QuoteNo)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+                return Ok(new { success = true, message = "Quotation Details saved/updated successfully.", quoteno = VM.QuoteNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteQuotation([FromQuery] string QuoteNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-			if (string.IsNullOrEmpty(QuoteNo))
-			{
-				return BadRequest(new { success = false, message = "QuoteNo. is required." });
-			}
+            if (string.IsNullOrEmpty(QuoteNo))
+            {
+                return BadRequest(new { success = false, message = "QuoteNo. is required." });
+            }
 
-			try
-			{
-				// Retrieve the master record
-				var masterRecord = await dbContext.Tbl60101quotationMasters
-					.FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
+            try
+            {
+                // Retrieve the master record
+                var masterRecord = await dbContext.Tbl60101quotationMasters
+                    .FirstOrDefaultAsync(x => x.QuoteNo == QuoteNo);
 
-				if (masterRecord == null)
-				{
-					return NotFound(new { success = false, message = "Quotation not found." });
-				}
+                if (masterRecord == null)
+                {
+                    return NotFound(new { success = false, message = "Quotation not found." });
+                }
 
-				// Retrieve and remove child records
-				var childRecords = dbContext.Tbl60102quotationChildren
-					.Where(x => x.QuoteNo == QuoteNo);
+                // Retrieve and remove child records
+                var childRecords = dbContext.Tbl60102quotationChildren
+                    .Where(x => x.QuoteNo == QuoteNo);
 
-				dbContext.Tbl60102quotationChildren.RemoveRange(childRecords);
+                dbContext.Tbl60102quotationChildren.RemoveRange(childRecords);
 
-				// Remove the master record
-				dbContext.Tbl60101quotationMasters.Remove(masterRecord);
+                // Remove the master record
+                dbContext.Tbl60101quotationMasters.Remove(masterRecord);
 
-				await dbContext.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Delete Quotation",
                    actionDetail: $"Quotation Deleted: {QuoteNo}",
@@ -447,12 +447,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 return Ok(new { success = true, message = "Quotation details deleted successfully." });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { success = false, message = ex.Message });
-			}
-		}
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
         private async Task<int?> GetSignatoryIDfromUserID(int? userId)
         {
             if (userId == null)
@@ -508,7 +508,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
 
 
-           // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
+            // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
 
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
@@ -563,7 +563,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 quotation.IsVerified = true;
                 quotation.VerifiedOn = DateTime.Now;
                 quotation.VerifiedBy = userName;
-              //  quotation.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
+                //  quotation.PurchaseRequestStatusId = 32; // Enquiry/Request Verified
 
                 var signatoryId = await GetSignatoryIDfromUserID(userId);
                 if (signatoryId.HasValue)
@@ -634,7 +634,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 voucher.IsApproved = true;
                 voucher.ApprovedOn = DateTime.Now;
                 voucher.ApprovedBy = userName;
-              //  voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
+                //  voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
 
                 var signatoryId = await GetSignatoryIDfromUserID(userId);
                 if (signatoryId.HasValue)
@@ -662,29 +662,29 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         [HttpGet]
-		public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var clients = dbContext.Tbl60107quotationStatuses.Select(i => new
-					{
-					i.QuoteStatusId,
-					i.QuoteStatus
-					});
+        public async Task<IActionResult> GetQuotationStatus(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl60107quotationStatuses.Select(i => new
+                    {
+                        i.QuoteStatusId,
+                        i.QuoteStatus
+                    });
 
-					return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"Error in GetClientDetails: {ex.Message}");
-					return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
-				}
-			}
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
 
-			return Unauthorized(new { message = "Invalid tenant", success = false });
-		}
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
         //IMS DetailDescription Form 
         [HttpGet]
         public async Task<IActionResult> GetDetailDescriptiondata(long QuoteChildId)
@@ -923,9 +923,214 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { Message = "Internal Server Error", Details = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult getGsDescriptionByCode(string gsCode)
+        {
+            if (string.IsNullOrEmpty(gsCode))
+                return BadRequest(new { message = "gsCode is required" });
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var record = dbContext.Tbl20164GoodsAndServicesMasters
+                .Where(x => x.Gscode == gsCode)
+                .Select(x => new
+                {
+
+                    GsDescription = x.Gsdescrpition
+
+                })
+                .FirstOrDefault();
+
+                if (record == null)
+                    return NotFound(new { message = $"No Goods/Service found for Code {gsCode}" });
+
+                return Ok(record);
+            }
+            return Unauthorized(new { message = "Invalid tenant context." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCostitem(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var costitem = dbContext.Tbl60105quotationCostMasters.Select(i => new
+                    {
+                        i.CostItemCode,
+                        i.CostItem
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(costitem, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateCostItem([FromBody] Tbl60104quotationItemCost model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    Tbl60104quotationItemCost record;
+                    // Check if record exists by StoreId (for update)
+                    var existing = await dbContext.Tbl60104quotationItemCosts
+                        .FirstOrDefaultAsync(x => x.QuoteCostSlNo == model.QuoteCostSlNo);
+
+                    // 🔍 If it's a new record (insert)
+                    if (existing == null)
+                    {
+                     
+
+                      record = dbContext.Tbl60104quotationItemCosts.Add(model).Entity;
+                    }
+                    else
+                    {
+                        // 🔁 Update logic
+                        existing.CostItemCode = model.CostItemCode;
+                        existing.CostPercentage = model.CostPercentage;
+                        existing.CostItemQty = model.CostItemQty;
+                        existing.CostItemPrice = model.CostItemPrice;
+                        //existing.QuoteChildId = model.QuoteChildId;
+                        record = existing;
+                        //existing.CostPercentage = model.CostPercentage;
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Project Document",
+                      actionDetail: $"Saved Project Document  {model.QuoteCostSlNo}",
+                      documentNo: $"{model.QuoteCostSlNo}"
+                    );
+
+                    return Ok(new { success = true, message = "Saved successfully", id = record.QuoteCostSlNo });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in SaveSignatory: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetCostItem1(long QuoteChildId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.Qry60114quotationItemCostEditViews
+                        .Where(i => i.QuoteChildId == QuoteChildId)
+                        .ToListAsync();
 
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+
+                    _logger.LogError($"Error in GetCostItem: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCostItemData()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var StoreData = await dbContext.Qry60114quotationItemCostEditViews
+                       .Select(i => new
+                       {
+                           i.QuoteCostSlNo,
+                           i.QuoteChildId,
+                           i.CostItemCode,
+                           i.CostItemDescription,
+                           i.CostPercentage,
+                           i.CostItemQty,
+                           i.CostItemPrice,
+                           i.CostItemSubTotal
+
+                       })
+                        .ToListAsync();
+
+                    return Json(StoreData); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCostItem([FromQuery] long QuoteChildId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (QuoteChildId <= 0)
+                return BadRequest(new { success = false, message = "QuoteChildId is required." });
+
+
+            try
+            {
+                // Retrieve the master record
+                var masterRecord = await dbContext.Tbl60104quotationItemCosts
+                    .FirstOrDefaultAsync(x => x.QuoteChildId == QuoteChildId);
+
+                if (masterRecord == null)
+                {
+                    return NotFound(new { success = false, message = "CostItem not found." });
+                }
+
+               
+
+                // Remove the master record
+                dbContext.Tbl60104quotationItemCosts.Remove(masterRecord);
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete CostItem",
+                   actionDetail: $"CostItem Deleted: {QuoteChildId}",
+                   documentNo: $"{QuoteChildId}"
+                );
+
+                return Ok(new { success = true, message = "CostItem details deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        //Calculator code
+        [HttpGet]
+        public IActionResult IMSPercentageCal(decimal amount, string quoteChildId = null)
+        {
+            ViewBag.Amount = amount;
+            ViewBag.QuoteChildId = quoteChildId; // Send to Razor page for modal
+            return PartialView("~/Areas/IMS/Pages/IMSPercentageCal.cshtml");
+        }
 
     }
 }

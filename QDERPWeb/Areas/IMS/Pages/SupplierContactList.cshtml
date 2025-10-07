@@ -191,7 +191,9 @@
                 .Width("100%")
                             .Label(new JS("formatMessage('Mobile Number (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+            )
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -204,7 +206,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Phone No (1)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -219,7 +222,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Mobile Number (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -232,7 +236,8 @@
                 .Width("100%")
                 .Label(new JS("formatMessage('Phone No (2)')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
             @(Html.DevExtreme().Button()
                 .Icon("tel") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -260,7 +265,8 @@
                 .Width("100%")
                  .Label(new JS("formatMessage('Email')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+                .ElementAttr("class", "white-bg")
+                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')"))))
             @(Html.DevExtreme().Button()
                 .Icon("email") // built-in person icon
                 .Type(ButtonType.Normal)
@@ -439,9 +445,15 @@
             data: JSON.stringify(SupplierContactSlNo), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+                 if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
+                if (window.parent && typeof window.parent.closeModal === "function") {
+        setTimeout(() => window.parent.closeModal(), 500);
+    }
             },
             error: function (xhr) {
                 const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
@@ -450,6 +462,16 @@
         });
     }
     function Goback() {
-        window.parent.closeModal();
+
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
+                if (window.parent && typeof window.parent.closeModal === "function") {
+                      setTimeout(() => window.parent.closeModal(), 500);
+                 }
     }
 </script>

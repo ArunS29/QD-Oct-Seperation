@@ -1,0 +1,187 @@
+﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("ddButtonLayout")
+            .Icon("smalliconslayout")
+            .Width("100%")
+            .Text(new JS("formatMessage('Layout')"))
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+            })
+            .ShowArrowIcon(false)
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+            .ID("rowHeightProperties")
+            .Icon("") // fallback to standard icon if "rowproperties" not working
+            .Width(50)
+            .Text(new JS("formatMessage('Set Row Height')"))
+            .DropDownOptions(options => options.Width(230))
+            .Items(items =>
+            {
+                items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Short
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('30'); }");
+
+                items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Medium
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('60'); }");
+
+                items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Tall
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('90'); }");
+
+                items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                @for (var i = 1; i <= 8; i++)
+                        {
+                            var y = 1 + (i - 1) * 2;
+                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                        }
+            </svg> Extra Tall
+        </text>)
+                .OnClick("function() { ChangeRowHeight('130'); }");
+            })
+            .ShowArrowIcon(false)
+        )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnPrint")
+            .Icon("print")
+            .Text(new JS("formatMessage('Print')"))
+            .OnClick("printFun")
+            )
+    </div>
+     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnToggleSearch")
+            .Icon("search")
+            .Text(new JS("formatMessage('Search')"))
+            .OnClick("toggleFilterRow")
+            )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btntoggleGroupPanel")
+            .Icon("hierarchy")
+            .Text(new JS("formatMessage('Group')"))
+            .OnClick("toggleGroupPanel")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnColumnChooser")
+            .Icon("columnchooser")
+            .Text(new JS("formatMessage('Column Chooser')"))
+            .OnClick("showColumnChooser")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnAddMaterialRequest")
+                .Icon("add")
+                .Width("100%")
+                .Text(new JS("formatMessage('Create New')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Add New Client Request')"))
+                    .Icon("user")
+                    .Option("key", "client")
+                    .Option("color", "#FF7043");
+
+                    items.Add()
+                    .Text(new JS("formatMessage('Add New Project Request')"))
+                    .Icon("event")
+                    .Option("key", "project")
+                    .Option("color", "#00ACC1");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div class="side-bar" style="background-color:<%- color || '#808080' %>;"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div class="item-title"><%- text %></div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("addNewMaterialRequest")
+                .ShowArrowIcon(false)
+                )
+    </div>
+
+   
+</div>
+
+<script>
+    
+        function showSubmenu(e) {
+            e.event.stopPropagation();
+            var $submenu = $('#submenuContainer');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+            var elementWidth = $target.outerWidth();
+
+            // Position submenu with a slight margin (e.g., 5px)
+            $submenu.css({
+                'width': 180,
+                'position': 'absolute',
+                'top': offset.top,
+                'left': offset.left + elementWidth + 5, // Add margin
+                'display': 'block'
+            });
+        }
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+             function addNewMaterialRequest(e) {
+            let url = ''; // Declare once
+            switch (e.itemData.text) {
+                case formatMessage('Add New Client Request'):
+                 url = `/${tenantName}/ERM/EquipmentClientRequest`;
+                    break;
+                case formatMessage('Add New Project Request'):
+                 url = `/${tenantName}/ERM/EquipmentProjectRequest`;
+                    break;
+                default:
+                    console.log("Clicked item: ", e.itemData.text);
+                    return;
+            }
+
+            window.location.href = url;
+        }
+     
+</script>

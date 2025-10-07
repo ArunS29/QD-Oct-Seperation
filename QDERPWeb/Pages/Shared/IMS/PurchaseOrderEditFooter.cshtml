@@ -220,12 +220,12 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Custom Report Designs").Icon("print").Option("color", "#4285F4");
-                    items.Add().Text("Preview Purchase Order").Icon("file").Option("color", "#34A853");
-                    items.Add().Text("Preview Purchase Order(Wt VAT)").Icon("file").Option("color", "#EA4335");
-                    items.Add().Text("Preview Purchase Order(Wt VAT / Wo Total Price)").Icon("file").Option("color", "#FBBC05");
-                    items.Add().Text("Preview Purchase Order(Foreign Currency)").Icon("file").Option("color", "#AB47BC");
-                    items.Add().Text("Distribute Discount Amount").Icon("file").Option("color", "#00ACC1");
+                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("print").Option("color", "#4285F4");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order')")).Icon("file").Option("color", "#34A853");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT)')")).Icon("file").Option("color", "#EA4335");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT / Wo Total Price)')")).Icon("file").Option("color", "#FBBC05");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Foreign Currency)')")).Icon("file").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Distribute Discount Amount')")).Icon("file").Option("color", "#00ACC1");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -1437,42 +1437,19 @@
 
 
 
-        const PurchaseMap = {
+         const purchaseReportMap = {
         "Preview Purchase Order": "PreviewPurchaseOrder",
-        "Preview Purchase Order(Wt VAT)":"PreviewPurchaseOrderWithoutVAT",
-         "Preview Purchase Order(Wt VAT / Wo Total Price)":"WithoutVATTotalPrice",
-          "Preview Purchase Order(Foreign Currency)":"PreviewPurchaseOrderForeignCurrency"
+        "Preview Purchase Order(Wt VAT)": "PreviewPurchaseOrderWithoutVAT",
+        "Preview Purchase Order(Wt VAT / Wo Total Price)": "WithoutVATTotalPrice",
+        "Preview Purchase Order(Foreign Currency)": "PreviewPurchaseOrderForeignCurrency"
     };
 
-    // function handlePurchase(e) {
-    //     const itemText = e.itemData?.text;
-    //     const tenantName = window.tenantName || "";
-    //     const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
-
-    //     if (!purchaseNo) {
-    //         alert("purchaseNo number is required.");
-    //         return;
-    //     }
-
-    //     const reportName = PurchaseMap[itemText];
-
-    //     if (!reportName) {
-    //         alert("Invalid report format selected.");
-    //         return;
-    //     }
-
-
-    // const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
-
-
-    //     window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    // }
-        function handlePurchase(e) {
+    function handlePurchase(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
-        const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+        const purchaseOrderNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
 
-        if (!purchaseNo) {
+        if (!purchaseOrderNo) {
             DevExpress.ui.notify("Purchase order number is required.", "error", 3000);
             return;
         }
@@ -1486,21 +1463,54 @@
             }
 
             // Normal report handling
-            const reportName = PurchaseMap[itemText];
-
+            const reportName = purchaseReportMap[itemText];
             if (!reportName) {
                 DevExpress.ui.notify("Invalid report format selected.", "error", 3000);
                 return;
             }
 
-            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseOrderNo)}`;
+
+            // Add extra params for specific reports if needed
+            const purchaseReports = [
+                "Preview Purchase Order",
+                "Preview Purchase Order(Wt VAT)",
+                "Preview Purchase Order(Wt VAT / Wo Total Price)",
+                "Preview Purchase Order(Foreign Currency)"
+            ];
+
+            if (purchaseReports.includes(itemText)) {
+                const params = {
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val(),
+
+                    pageBreakBefore: $("#hdnPageBreakBefore").val(),
+                    pageBreakAfter: $("#hdnPageAfterBefore").val(),
+                    ShowPaymentTermsShippingDetails: $("#hdnShowPaymentTermsShippingDetails").val(),
+                    ShowSignatoryPositionOnly: $("#hdnShowSignatoryPositionOnly").val(),
+                    ShowSimpleSuppilerAcceptance: $("#hdnShowSimpleSuppilerAcceptance").val(),
+                    ShowFullSupplierAcceptance: $("#hdnShowFullSupplierAcceptance").val(),
+
+                    ShowitemPartNumberinsteadStockCode: $("#hdnShowitemPartNumberinsteadStockCode").val(),
+                    ShowHSCodeinsteadStockCode: $("#hdnShowHSCodeinsteadStockCode").val()
+                };
+
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
+            }
+
+            window.open(url, "_blank", "width=1200,height=800,scrollbars=yes,resizable=yes");
 
         } catch (error) {
             console.error("Failed to open purchase report:", error);
             DevExpress.ui.notify("An error occurred while trying to open the report.", "error", 3000);
         }
     }
+
 
 
     function onIMSAttachmentButtonClick(e) {

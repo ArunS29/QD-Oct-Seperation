@@ -4,10 +4,14 @@
 }
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
-
+<style>
+    .titleCard-toggle1 {
+        display: none;
+    }
+</style>
 <div style="display: flex; gap: 10px; background-color: #e6f0fb; padding: 10px;">
     <div style="flex: 1; background-color: white; border: 1px solid #ccc;">
-        <div style="background-color: #c7d9f1; padding: 5px; font-weight: bold; font-size:18px;">Select Items for Distribution</div>
+        <div style="background-color: #c7d9f1; padding: 5px; font-weight: bold; font-size:18px;" id="selecteditemsfordistribute"></div>
 
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60102quotationChild>()
                 .ID("quotedItemsGrid")
@@ -19,11 +23,11 @@
                     columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')"));
                     columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Visible(false);
                     columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quotation No')")).Visible(false);
-                    columns.AddFor(m => m.QuoteChildId).Caption(new JS("formatMessage('Quote Child Id')")).Visible(false);
+                    columns.AddFor(m => m.QuoteChildId).Caption(new JS("formatMessage('Quote Child ID')")).Visible(false);
                     columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('UoM')"));
                     columns.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Qty')"));
                     columns.AddFor(m => m.CostPrice).Caption(new JS("formatMessage('Cost Price')"));
-                    columns.AddFor(m => m.TotalCostOfItem).Caption(new JS("formatMessage('Total Cost OfItem')")).Visible(false);
+                    columns.AddFor(m => m.TotalCostOfItem).Caption(new JS("formatMessage('Total Cost Of Item')")).Visible(false);
 
 
 
@@ -56,49 +60,62 @@
     <!-- Right Panel: Cost Distribution -->
     <div style="flex: 1.5; background-color: white; border: 1px solid #ccc;">
         <div style="display: flex; align-items: center; gap: 10px; background-color: #d9e9fd; padding: 10px;">
-            <label style="font-size:25px;"> $ Cost Discription</label>
-            <label style="font-size:15px;">Cost Item:</label>
-        
-            @(Html.DevExtreme().DropDownBox()
-                         .AcceptCustomValue(true)
-                        .DataSource(d => d.WebApi()
-                        .Controller("QuotedCostSummary")
-                        .LoadAction("GetCostItem")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("CostItemCode")
-                        )
-                        .ID("ddCostItemDropDown")
-                        .Width(900)
-                        .OpenOnFieldClick(false)//
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("CostItemCode")
-                        .DisplayExpr("CostItem")
-                        .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onOpened")
-                        .TabIndex(1)
-                        .Width("40%")
-                        .OnKeyDown("onKeyDown")
-                        .ContentTemplate(new TemplateName("GetCostItemContentTemplate"))
-                        )
+            <div style="font-size:25px;" id="costdiscriptions"></div>
+     
+       @(Html.DevExtreme().DropDownBox()
+    .Label(new JS("formatMessage('Cost Item:')"))
+    .AcceptCustomValue(true)
+    .DataSource(d => d.WebApi()
+        .Controller("QuotedCostSummary")
+        .LoadAction("GetCostItem")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("CostItemCode")
+    )
+    .ID("ddCostItemDropDown")
+    .OpenOnFieldClick(false)
+    .ValueChangeEvent("input")
+    .HoverStateEnabled(true)
+    .ValueExpr("CostItemCode")
+    .DisplayExpr("CostItem")
+    .OnInput("dropDownBoxOnInput")
+    .OnOpened("onOpened")
+    .TabIndex(1)
+    .Width("40%")
+    .OnKeyDown("onKeyDown")
+    .ContentTemplate(new TemplateName("GetCostItemContentTemplate"))
 
-            @(Html.DevExtreme().Button()
-                        .Icon("plus")
-                        .Type(ButtonType.Default)
-                        .StylingMode(ButtonStylingMode.Outlined)
-                        .OnClick("AddCostItem")
-            )
+    .Buttons(buttons => {
+        // Default clear button
+        buttons.Add()
+            .Name("clear");
 
-            <label style=" font-size:15px;">Percentage (%):</label>
+        // Custom Add button (inside the input)
+        buttons.Add()
+            .Name("AddDebits")
+            .Location(TextEditorButtonLocation.After) // places after the text field
+            .Widget(w => w.Button()
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Text) // keeps it minimal
+                .Icon("plus")
+                .OnClick("AddCostItem") // your handler
+            );
+
+        // Default dropdown button
+        buttons.Add()
+            .Name("dropDown");
+    })
+)
+
             @(Html.DevExtreme().NumberBox()
                         .Value(0)
+                        .Label(new JS("formatMessage('Percentage (%):')"))
                         .Min(0)
                         .Max(100)
                         .Format("#0.##")
                         .Width(80))
 
-            <label style="font-size:15px;">Cost Amount:</label>
             @(Html.DevExtreme().NumberBox()
+                        .Label(new JS("formatMessage('Cost Amount:')"))
                         .Value(0)
                         .Format("##,##0.00")
                         .Width(100))
@@ -139,8 +156,8 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                    columns.Add().DataField("CostItemCode");
-                columns.Add().DataField("CostItem");
+                    columns.Add().DataField("CostItemCode").Caption(new JS("formatMessage('Cost Item Code')"));
+                columns.Add().DataField("CostItem").Caption(new JS("formatMessage('Cost Item')"));
 
 
 
@@ -154,6 +171,7 @@
     $(function() {
       pivotGridInstance = $("#pivotGridContainer").dxPivotGrid({
         dataSource: {
+            
           fields: [
             { dataField: "Gscode", area: "row", caption: formatMessage("Stock Code") },
             { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Stock Description") },
@@ -177,6 +195,7 @@
         fieldChooser: { enabled: true, allowSearch: true },
         fieldPanel: { visible: true, allowFieldDragging: true },
         loadPanel: { enabled: true },
+          showRowGrandTotals: false ,
         height: 500
       }).dxPivotGrid("instance");
 
@@ -264,7 +283,7 @@
         }
          function AddCostItem(){
                         const url = `/${tenantName}/IMS/QuotationCostItems`;
-                 const title = "";
+                     const title = formatMessage("Quotation Cost Items");
                       openModal(url, title);
               }
 
@@ -345,6 +364,38 @@
             DevExpress.ui.notify("Insert failed: " + err.responseText, "error", 3000);
         });
     }
+         $(function () {
+            $("#selecteditemsfordistribute").text(formatMessage("Select Items for Distribution"));
+         });
+         $(function () {
+            $("#costdiscriptions").text(formatMessage("$ Cost Discription"));
+         });
+
+$("#btnShowRowTotals1").on("click", function (e) {
+      alert(ho000);
+        if (!pivotGridInstance) {
+            DevExpress.ui.notify("PivotGrid is not loaded yet.", "warning", 2000);
+            return;
+        }
+
+        const current = pivotGridInstance.option("showRowGrandTotals");
+        const newValue = !current;
+
+        pivotGridInstance.option("showRowGrandTotals", newValue);
+
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+            ? formatMessage("Hide Row Totals")
+            : formatMessage("Show Row Totals"));
+    });
+
+    $("#btnShowRowTotals").on("click", function (e) {
+   alert(hiii);
+    });
+
+
 
 </script>
 

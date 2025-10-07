@@ -1098,7 +1098,7 @@
                 </div>
             </div>
         </text>);
-		        item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+		        item.Add().Title(new JS("formatMessage('Deductions & Currency Details')")).Icon("card").Text("Deductions & Currency Details").Template(@<text>
     <div class="p-3">
     <table style="width:100%; font-size:14px; margin:5px;">
 					<tr>
@@ -1532,7 +1532,7 @@
                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                     .Columns(columns =>
                                     {
-                                        columns.Add().DataField("ModeOfRequest");
+                                        columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"));
 
 
 
@@ -1577,7 +1577,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("TypeOfRequest");
+                            columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
 
 
 
@@ -1623,7 +1623,7 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("SalesPersonName");
+                    columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 
 
@@ -1668,7 +1668,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("ClientName");
+                            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
 
 
 
@@ -1702,7 +1702,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("QuoteStatus");
+                                columns.Add().DataField("QuoteStatus").Caption(new JS("formatMessage('Quote Status')"));
 
 
 
@@ -1748,8 +1748,8 @@
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
                 {
-						columns.Add().DataField("ProjectId");
-						columns.Add().DataField("ProjectDescription");
+						columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project Id')"));
+						columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
 
 
 
@@ -2087,22 +2087,22 @@
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "Quotation Type Of Request";
+		const title = formatMessage("Quotation Type Of Request");
 		openModal(url, title);
 	}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
-		const title = "Quotation Status";
+		const title = formatMessage("Quotation Status");
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/IMS/SalesPersonMaster`;
-		const title = "Sales Person Master";
+		const title = formatMessage("Sales Person Master");
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = "Client Master";
+		const title = formatMessage("Client Master");
 		openModal(url, title);
 	}
 	function dataGridSelectionChanged3(e) {
@@ -2258,11 +2258,14 @@
 	let dropDownInstance;
 	let vatListInstance;
 
+	let QuoteNos=null;
+			
 
 
 	//View Quotation
 	let Approved=null;
 	let edit=false;
+	let GSDesc1=null;
 
 	$(document).ready(function () {
 
@@ -2276,32 +2279,11 @@
 			// If Mprno is present, load client details
 			loadClientDetails(QuoteNo);
 			edit=true;
-		} else {
-		NewNoGeneration();
-		}
+		} 
+		
 	});
 
-	function NewNoGeneration(){
-			// If QuoteNo is not present and IsCurrent is not "true", generate a Autogenerate request number
-			$.ajax({
-				url: "/api/AddNewQuotation/GetNewDebitNoteNoApi",
-				type: "GET",
-				success: function (data) {
-					console.log("Success:", data);
 
-					const invoiceBox = $("#txtQuotationNo").dxTextBox("instance");
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-					} else {
-						console.warn("Invoice TextBox not initialized.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load QuoteNo details.", "Error");
-				}
-			});
-	}
 	//For concurrency
 
 	function NewNoGeneration1() {
@@ -2321,7 +2303,7 @@
         if (response) {
 				
 
-					$("#btnSave").dxButton("instance").option("text", "Update");
+					$("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
 					// Populate DevExtreme controls with the response data
 
 					$('#txtQuotationNo').dxTextBox("instance").option("value", response.QuoteNo);
@@ -2588,18 +2570,18 @@ function checkDateLocking() {
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
 							if (!selectedItem) return;
-
+							
 							selectedItemData = selectedItem;
 							cellInfo.setValue(selectedItem.GSCode);
 							const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -2633,7 +2615,7 @@ function checkDateLocking() {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -2651,7 +2633,7 @@ function checkDateLocking() {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "Goods and Services", function () {
+					openModal(url, formatMessage("Goods and Services"), function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -2691,7 +2673,7 @@ function checkDateLocking() {
 						window.currentDescriptionCell = options;
 
 										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Detailed Description";
+						let title = formatMessage("Detailed Description");
 
 						openModal(url, title,"65%","60%");
 					}
@@ -2768,7 +2750,7 @@ placeholder: "Search..."
 
 										columns: [
 
-											{ dataField: "UnitCode", caption: "Code", caption: formatMessage("Code"), width: 80 },
+											{ dataField: "UnitCode",caption: formatMessage("Code"), width: 80 },
 
 											{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
 
@@ -2820,9 +2802,9 @@ placeholder: "Search..."
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, "Unit of Measure");
+									let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -2848,40 +2830,90 @@ placeholder: "Search..."
     width: 50,
     allowEditing: false,
     cellTemplate: function (container, options) {
+             const gsCode = options.data.GSCode;
         const quoteChildId = options.data.QuoteChildId;
-		// ✅ Get QuoteChildId from row
-        const url = `/${tenantName}/IMS/QuotationGridForm?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+        const costprice = options.data.CostPrice;
+        const unitPrice = options.data.QuotedUnitPrice;
+        const discount = options.data.QuotedDiscount;
+        const profitLoss = options.data.ItemProfitOrLoss;
+        const totalCost = options.data.TotalCostOfItem;
+        const total = options.data.LineTotalWithTax;
+        const VAT = options.data.LineTaxAmount;
+        const GSDesc1 = options.data.Descriptions; 
+		const QuotedQuantity = options.data.QuotedQuantity;
+			
+
+	
 
         $("<div>")
             .addClass("dx-link")
             .text("...")
             .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
             .on("click", function () {
-                openModal(url, ""); // ✅ Open the page with QuoteChildId
+				  const txtBox = $("#txtQuotationNo").dxTextBox("instance");
+  const QuoteNo = txtBox ? txtBox.option("value") : "";
+
+
+  if (!QuoteNo) {
+      DevExpress.ui.notify("Quotation No is missing!", "error", 2000);
+      return;
+  }
+		const GSDesc1 = options.data.Descriptions || "";
+		 window.currentGridformCell = options;
+  // ✅ build URL with Quotation No + row fields
+  const url = `/${tenantName}/IMS/QuotationGridForm`
+      + `?quoteChildId=${encodeURIComponent(quoteChildId||"")}`
+      + `&CostPrice=${encodeURIComponent(costprice)}`
+      + `&UnitPrice=${encodeURIComponent(unitPrice)}`
+      + `&Discount=${encodeURIComponent(discount)}`
+      + `&ProfitLoss=${encodeURIComponent(profitLoss)}`
+      + `&TotalCost=${encodeURIComponent(totalCost)}`
+      + `&Total=${encodeURIComponent(total)}`
+      + `&VAT=${encodeURIComponent(VAT)}`
+      + `&GsCode=${encodeURIComponent(gsCode)}`
+      + `&QuoteNos=${encodeURIComponent(QuoteNo||"")}`
+	  + `&QuotedQuantity=${encodeURIComponent(QuotedQuantity)}`
+      + `&GSDesc1=${encodeURIComponent(GSDesc1)}`;
+
+  console.log("🔗 Navigation URL:", url);
+
+  // ✅ open page
+  openModal(url, "");  // ✅ Open the page with QuoteChildId
             })
             .appendTo(container);
     }
 },
-				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit price'), width: 150 },
+				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
-								{
-						dataField: "DiscountDetails",
-						caption: "...",
-						cssClass: "center-header",
-						width: 100,
-						allowEditing: false,
-						cellTemplate: function (container, options) {  // ✅ fixed here
-							$("<div>").dxButton({
-								icon: "calculate", // or another valid icon
-								hint: "Open Discount Calculator",
-								stylingMode: "text",
-								width: 30,
-								onClick: function (e) {
-									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-								}
-							}).appendTo(container);
-						}
-					},
+{
+    dataField: "DiscountDetails",
+    caption: "Discount",
+    cssClass: "center-header",
+    width: 100,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "calculator",
+            hint: "Open Discount Calculator",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                const qty = options.data.QuotedQuantity || 0;
+                const unitPrice = options.data.QuotedUnitPrice || 0;
+                const quoteChildId = options.data.QuoteChildId ||""; // may be undefined in AddGrid
+
+                window.currentDiscountCell = options; // store the clicked cell
+
+                let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
+                let title = formatMessage("Discount / Calculation");
+
+                openModal(url, title, "45%", "40%");
+            }
+        }).appendTo(container);
+    }
+},
+
+
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -2953,9 +2985,9 @@ placeholder: "Search..."
 
 										columns: [
 
-											{ dataField: "TaxSlabCode", caption: "Code", width: 80 },
+											{ dataField: "TaxSlabCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
+											{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
 
 											
 
@@ -3270,13 +3302,13 @@ placeholder: "Search..."
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+							{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+							{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+							{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+							{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+							{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+							{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -3297,6 +3329,7 @@ placeholder: "Search..."
 
 								ItemNo = selectedItem.GSCode;
 								Gsdescrpition = selectedItem.GSDescrpition;
+								
 								GsdescriptionAr = selectedItem.GsdescriptionAr;
 								ItemPartNo = selectedItem.ItemPartNo;
 								CostPrice = selectedItem.CostPrice;
@@ -3316,7 +3349,7 @@ placeholder: "Search..."
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3327,7 +3360,7 @@ placeholder: "Search..."
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3355,7 +3388,7 @@ placeholder: "Search..."
                 window.currentDescriptionCell = options;
 
                 const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
-                const title = "Detailed Description";
+                const title = formatMessage("Detailed Description");
 
                 openModal(url, title,"65%","60%");
             }
@@ -3433,13 +3466,13 @@ placeholder: "Search..."
 										columns: [
 
 
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
+											{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
 
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
 
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+											{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
 
 										],
 
@@ -3471,9 +3504,9 @@ placeholder: "Search..."
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, "Unit of Measure");
+									let url = `/${tenantName}/IMS/UnitOfMeasure`; 
+                                         let title = "Unit of Measure";
+                                          openModal(url, title,"70%","70%");
 
 								},
 
@@ -3493,48 +3526,99 @@ placeholder: "Search..."
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
 
 				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
-				{
+{
     dataField: "Descriptions",
     caption: "...",
     width: 50,
     allowEditing: false,
     cellTemplate: function (container, options) {
-        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
-        const url = `/${tenantName}/IMS/QuotationGridForm?quoteChildId=${encodeURIComponent(quoteChildId)}`;
-
+        const gsCode = options.data.GSCode;
+        const quoteChildId = options.data.QuoteChildId;
+        const costprice = options.data.CostPrice;
+        const unitPrice = options.data.QuotedUnitPrice;
+        const discount = options.data.QuotedDiscount;
+        const profitLoss = options.data.ItemProfitOrLoss;
+        const totalCost = options.data.TotalCostOfItem;
+        const total = options.data.LineTotalWithTax;
+        const VAT = options.data.LineTaxAmount;
+        const GSDesc1 = options.data.Descriptions; // optional if you want to send this
+		const QuotedQuantity = options.data.QuotedQuantity;
         $("<div>")
             .addClass("dx-link")
             .text("...")
             .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
             .on("click", function () {
-                openModal(url, ""); // ✅ Open the page with QuoteChildId
+                // ✅ fetch Quotation No from your textbox
+                const txtBox = $("#txtQuotationNo").dxTextBox("instance");
+                const QuoteNo = txtBox ? txtBox.option("value") : "";
+
+
+                if (!QuoteNo) {
+                    DevExpress.ui.notify("Quotation No is missing!", "error", 2000);
+                    return;
+                }
+				const GSDesc1 = options.data.Descriptions || "";
+				 window.currentGridformCell = options;
+                // ✅ build URL with Quotation No + row fields
+                const url = `/${tenantName}/IMS/QuotationGridForm`
+                    + `?quoteChildId=${encodeURIComponent(quoteChildId)}`
+                    + `&CostPrice=${encodeURIComponent(costprice)}`
+                    + `&UnitPrice=${encodeURIComponent(unitPrice)}`
+                    + `&Discount=${encodeURIComponent(discount)}`
+                    + `&ProfitLoss=${encodeURIComponent(profitLoss)}`
+                    + `&TotalCost=${encodeURIComponent(totalCost)}`
+                    + `&Total=${encodeURIComponent(total)}`
+                    + `&VAT=${encodeURIComponent(VAT)}`
+                    + `&GsCode=${encodeURIComponent(gsCode)}`
+                    + `&QuoteNos=${encodeURIComponent(QuoteNo)}`
+					  + `&QuotedQuantity=${encodeURIComponent(QuotedQuantity)}`
+                    + `&GSDesc1=${encodeURIComponent(GSDesc1)}`;
+
+                console.log("🔗 Navigation URL:", url);
+
+                // ✅ open page
+                openModal(url, ""); 
+                // or: window.location.href = url;
             })
             .appendTo(container);
     }
 },
 
+
 			
-				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit price'), width: 150 },
+				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
-								{
-						dataField: "DiscountDetails",
-						caption: "...",
-						cssClass: "center-header",
-						width: 50,
-						allowEditing: false,
-						cellTemplate: function (container, options) {  // ✅ fixed here
-							$("<div>").dxButton({
-								icon: "fa fa-calculator", // or another valid icon
-								hint: "IMS Calculator",
-								stylingMode: "text",
-								width: 30,	
-								onClick: function (e) {
-									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-								}
-							}).appendTo(container);
-						}
-					},
+{
+    dataField: "DiscountDetails",
+    caption: "Discount",
+    cssClass: "center-header",
+    width: 100,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "calculator",
+            hint: "Open Discount Calculator",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                const qty = options.data.QuotedQuantity || 0;
+                const unitPrice = options.data.QuotedUnitPrice || 0;
+                const quoteChildId = options.data.QuoteChildId; // may be undefined in AddGrid
+
+                window.currentDiscountCell = options; // store the clicked cell
+
+                let url = `/${tenantName}/IMS/IMSPercentageCal?QuoteChildId=${encodeURIComponent(quoteChildId || "")}&qty=${encodeURIComponent(qty)}&unitPrice=${encodeURIComponent(unitPrice)}`;
+                let title = formatMessage("Discount / Calculation");
+
+                openModal(url, title, "40%", "40%");
+            }
+        }).appendTo(container);
+    }
+},
+
+
+
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -3607,9 +3691,9 @@ placeholder: "Search..."
 										columns: [
 
 
-											{ dataField: "TaxSlabCode", caption: "Code", width: 80 },
+											{ dataField: "TaxSlabCode", caption: formatMessage("Code"), width: 80 },
 
-											{ dataField: "TaxSlab", caption: "Tax Slab", width: 200 }
+											{ dataField: "TaxSlab", caption:formatMessage("TaxSlab"), width: 200 }
 
 
 										],
@@ -3802,9 +3886,7 @@ AddlDescription: null,
 		store.insert(newRow)
 			.then(() => {
 				grid.refresh(); // Ensure the UI updates with the new row
-					// ✅ Update Save button text here
-				var button = $("#btnSave").dxButton("instance");
-				button.option("text", "Update");
+			
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
@@ -5673,6 +5755,74 @@ AddlDescription: null,
 		DevExpress.ui.notify("Details saved", "success", 1500);
 	}
 
+// 🔹 Receive discount from popup
+function receiveModalFieldData1(modalData1) {
+		console.log("📦 Received from modal:", modalData1); // ✅ Step 1: Log
+
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentDiscountCell) {
+			console.warn("❌ No currentDiscountCell found");
+			return;
+		}
+
+		const key = window.currentDiscountCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData1)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
+
+	
+function receiveModalFieldData3(modalData3) {
+		console.log("📦 Received from modal:", modalData3); // ✅ Step 1: Log
+
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentGridformCell) {
+			console.warn("❌ No currentGridformCell found");
+			return;
+		}
+
+		const key = window.currentGridformCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData3)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
+
+
+
+
+
 	$("#btnSave").on("click", function (e) {
     const $btn = $(this).dxButton("instance");
 
@@ -5704,8 +5854,7 @@ AddlDescription: null,
     }
 });
 function saveQuotation(quotationNoNew, $btn) {
-    debugger;
-			let master = {
+    			let master = {
 				QuoteNo: quotationNoNew,
 				RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
@@ -5752,12 +5901,12 @@ function saveQuotation(quotationNoNew, $btn) {
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 			};
 
-			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+// if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -5770,25 +5919,15 @@ function saveQuotation(quotationNoNew, $btn) {
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
-					DevExpress.ui.notify(response.message, "success", 3000);
-					
-					
-              // ✅ Update textbox with final number from API
-					const quoteno = response.quoteno;
-				window.location.href=`/${tenantName}/IMS/AddNewQuotation?QuoteNo=${QuoteNo}`;
-                  
-				
-				 // loadChildDataAndBindGrid(quoteno);
-					// // Refresh parent DataGrid (ensure the correct selector is used)
-					// if (window.parent && window.parent.$("#dataGrid").length) {
-					// 	let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-					// 	if (dataGrid) {
-					// 		dataGrid.refresh();
-					// 	}
-					// }
-
-					  isVoucherSaved = true; // Mark Updated step as done
+					isVoucherSaved = true; 
                       updateWorkflowVisual(getWorkflowStatusFromFields());
+					DevExpress.ui.notify(response.message, "success", 3000);
+					$btn.option("disabled", false);
+				
+					const quoteno = response.quoteno;
+				loadClientDetails(quoteno);
+                  edit=true;
+				  
 				},
 				error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
@@ -5796,223 +5935,41 @@ function saveQuotation(quotationNoNew, $btn) {
 			}
 			});
 }
-function loadChildDataAndBindGrid(quoteno) {
-		debugger;
-    if (!quoteno) {
-        console.warn("No Quote number provided.");
+
+$("#btnSaveAndClose").on("click", function (e) {
+    const $btn = $(this).dxButton("instance");
+
+    // validate required field
+    const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+    const clientnameValidation = clientnameValidator.validate();
+    if (!clientnameValidation.isValid) {
+        DevExpress.ui.dialog.alert("Cannot continue saving with errors.", "Clear Errors");
         return;
     }
 
-    $.ajax({
-        type: "GET",
-		url: `/api/AddNewQuotation/GetQuotationChildren?QuoteNo=${encodeURIComponent(quoteno)}`,
-               dataType: "json",
-        success: function (gridResponse) {
-            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
-                console.warn("No child details found in the response.");
-                return;
-            }
+    $btn.option("disabled", true);
 
-            console.log("Grid Response:", gridResponse);
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var quotationNoNew = data;
+            $("#txtQuotationNo").dxTextBox("instance").option("value", quotationNoNew);
 
-            const rowData = gridResponse.map((item, index) => ({
-                SNo: index + 1,
-                ...item
-            }));
+            saveAndCloseQuotation(quotationNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var quotationNoNew = $("#txtQuotationNo").dxTextBox("instance").option("value");
+        saveAndCloseQuotation(quotationNoNew, $btn);
+    }
+});
 
-            // ✅ Bind data to existing B2B grid
-            const grid = $("#B2BdataGrid").dxDataGrid("instance");
-            if (grid) {
-                grid.option("dataSource", rowData);
-            } else {
-                console.error("B2B DataGrid instance not found.");
-            }
-        },
-        error: function (xhr, status, error) {
-            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
-            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
-            console.error("Error fetching grid data:", errorMsg);
-        }
-    });
-}
-
-// 	$("#btnSave").on("click", function (e) {
-// 		debugger;
-// 		const $btn = $(this).dxButton("instance");
-
-// 		// ✅ Step 1: Validate required field
-// 		const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-// 		const clientnameValidation = clientnameValidator.validate();
-
-// 		if (!clientnameValidation.isValid) {
-// 			DevExpress.ui.dialog.alert(
-// 				"Cannot continue saving with errors, please clear the errors and continue.",
-// 				"Clear Errors"
-// 			);
-// 			return;
-// 		}
-// 		var quotationNoNew = $('#txtQuotationNo').dxTextBox("instance").option("value");
-// 		if(edit==false){
-// 			quotationNoNew = NewNoGeneration();
-// 		}
-
-// 		// ✅ Step 2: Disable the button after validation passes
-// 		$btn.option("disabled", true);
-
-// 			let master = {
-// 				QuoteNo: quotationNoNew,
-// 				RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
-// 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
-// 				ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
-// 				SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-// 				Mprno: $('#MprNumber').dxTextBox("instance").option("value") || null,
-// 				Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
-// 				ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
-// 				ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
-// 				ModeOfRequest: $('#ddGetModeOfRequest').dxDropDownBox("instance").option("value") || null,
-// 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-// 				ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
-// 				Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
-// 				SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
-// 				QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
-// 				QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
-// 				QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
-// 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-
-
-// 				InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-// 				ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-// 				QuoteSubmittedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
-
-// 				QuoteSubmittedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
-// 				BidClosingDate: $("#BidClosingDate").dxDateBox("instance").option("value") || null,
-
-// 				QuoteStatus: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
-
-// 				TransportationScope: $("#txtTransportationScope").dxTextBox("instance").option("value") || null,
-
-// 				AdditionsText: $('#txtAdditions').dxTextBox("instance").option("value") || null,
-// 				QuoteTransport: $("#QuoteTransport").dxNumberBox("instance").option("value") || null,
-// 				DiscountsText: $("#txtDeductions").dxTextBox("instance").option("value") || null,
-// 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
-
-// 				QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-// 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-// 				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-// 				QuoteValidity: $("#ddQuoteValidity").dxSelectBox("instance").option("value") || null,
-// 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-// 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-// 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-// 			};
-
-// 			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
-
-// 			if (!children || children.length === 0) {
-// 				DevExpress.ui.notify("No child records to save.", "error", 3000);
-// 				return;
-// 			}
-
-// 			const model = {
-// 				...master,
-// 				QuotationDetailses: children
-// 			};
-
-// 			$.ajax({
-// 				type: "POST",
-// 				url: "/api/AddNewQuotation/SaveOrUpdateQuotation",
-// 				contentType: "application/json",
-// 				data: JSON.stringify(model),
-// 				success: function (response) {
-// 					DevExpress.ui.notify(response.message, "success", 3000);
-// 					  isVoucherSaved = true; // Mark Updated step as done
-//                       updateWorkflowVisual(getWorkflowStatusFromFields());
-					
-//               // ✅ Update textbox with final number from API
-// 					const quoteno = response.quoteno;
-					
-    
-    
-				
-// 				 loadChildDataAndBindGrid(quoteno);
-// 					// Refresh parent DataGrid (ensure the correct selector is used)
-// 					if (window.parent && window.parent.$("#dataGrid").length) {
-// 						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-// 						if (dataGrid) {
-// 							dataGrid.refresh();
-// 						}
-// 					}
-
-
-// 				},
-// 				error: function (xhr) {
-// 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-// 				$btn.option("disabled", false); // Re-enable on error
-// 			}
-// 			});
-		
-// 	});
-	
-	$("#btnDelete").on("click", function (e) {
-		e.preventDefault();
-		onDeleteButtonClick();
-	});
-	function onDeleteButtonClick(e) {
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
-			return;
-		}
-
-		DevExpress.ui.dialog.confirm(
-			"You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
-			"Confirm Deletion"
-		).done(function (dialogResult) {
-			if (dialogResult) {
-				// User clicked 'Yes'
-				$.ajax({
-					url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-					type: 'DELETE',
-					success: function (response) {
-						DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
-							window.location.href =`/${tenantName}/IMS/AddNewQuotation`
-						});
-					},
-					error: function (xhr) {
-						const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-						DevExpress.ui.notify(msg, 'error', 3000);
-					}
-				});
-			}
-			// else: user clicked 'No' - do nothing
-		});
-	}
-
-
-
-
-	$("#btnSaveAndClose").on("click", function (e) {
-
-		const $btn = $(this).dxButton("instance");
-
-		// ✅ Step 1: Validate required field
-		const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-		const clientnameValidation = clientnameValidator.validate();
-
-		if (!clientnameValidation.isValid) {
-			DevExpress.ui.dialog.alert(
-				"Cannot continue saving with errors, please clear the errors and continue.",
-				"Clear Errors"
-			);
-			return;
-		}
-
-		// ✅ Step 2: Disable the button after validation passes
-		$btn.option("disabled", true);
-
-			let master = {
-				QuoteNo: $('#txtQuotationNo').dxTextBox("instance").option("value") || null,
+function saveAndCloseQuotation(quotationNoNew, $btn) {
+    			let master = {
+				QuoteNo: quotationNoNew,
 				RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
 				ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
@@ -6058,12 +6015,12 @@ function loadChildDataAndBindGrid(quoteno) {
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
 			};
 
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+// if (!children || children.length === 0) {
+// 	DevExpress.ui.notify("No child records to save.", "error", 3000);
+// 	$btn.option("disabled", false); // Re-enable the button
+// 	return;
+// }
 
 			const model = {
 				...master,
@@ -6077,58 +6034,202 @@ function loadChildDataAndBindGrid(quoteno) {
 				data: JSON.stringify(model),
 				success: function (response) {
 					  isVoucherSaved = true; // Mark Updated step as done
-					updateWorkflowVisual(getWorkflowStatusFromFields());
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
-					// Refresh parent DataGrid (ensure the correct selector is used)
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
-
-
-				},
+					history.back();
+					
+             
+					},
 				error: function (xhr) {
 				DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
 				$btn.option("disabled", false); // Re-enable on error
 			}
 			});
+}
+function loadChildDataAndBindGrid(quoteno) {
+		    if (!quoteno) {
+        console.warn("No Quote number provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+		url: `/api/AddNewQuotation/GetQuotationChildren?QuoteNo=${encodeURIComponent(quoteno)}`,
+               dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
+	
+	$("#btnDelete").on("click", function (e) {
+		e.preventDefault();
+		onDeleteButtonClick();
 	});
+	function onDeleteButtonClick(e) {
+		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+
+		if (!QuoteNo) {
+			DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
+			return;
+		}
+
+		DevExpress.ui.dialog.confirm(
+			"You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
+			"Confirm Deletion"
+		).done(function (dialogResult) {
+			if (dialogResult) {
+				// User clicked 'Yes'
+				$.ajax({
+					url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+					type: 'DELETE',
+					success: function (response) {
+						DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
+							window.location.href =`/${tenantName}/IMS/AddNewQuotation`
+						});
+					},
+					error: function (xhr) {
+						const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+						DevExpress.ui.notify(msg, 'error', 3000);
+					}
+				});
+			}
+			// else: user clicked 'No' - do nothing
+		});
+	}
 
 
-	// $(document).ready(function () {
-	// 	$.ajax({
-	// 		url: "/api/VATModule/CreateNewInvoiceCounter",
-	// 		type: 'POST',
-	// 		success: function (data) {
-	// 			console.log("Success:", data);
 
-	// 			$("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error loading Payment Accounts:", error);
-	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+
+	// $("#btnSaveAndClose").on("click", function (e) {
+
+	// 	const $btn = $(this).dxButton("instance");
+
+	// 	// ✅ Step 1: Validate required field
+	// 	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+	// 	const clientnameValidation = clientnameValidator.validate();
+
+	// 	if (!clientnameValidation.isValid) {
+	// 		DevExpress.ui.dialog.alert(
+	// 			"Cannot continue saving with errors, please clear the errors and continue.",
+	// 			"Clear Errors"
+	// 		);
+	// 		return;
+	// 	}
+
+	// 	// ✅ Step 2: Disable the button after validation passes
+	// 	$btn.option("disabled", true);
+
+	// 		let master = {
+	// 			QuoteNo: $('#txtQuotationNo').dxTextBox("instance").option("value") || null,
+	// 			RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
+	// 			QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
+	// 			ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
+	// 			SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
+
+	// 			Mprno: $('#MprNumber').dxTextBox("instance").option("value") || null,
+	// 			Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
+	// 			ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
+	// 			ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
+	// 			ModeOfRequest: $('#ddGetModeOfRequest').dxDropDownBox("instance").option("value") || null,
+	// 			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+	// 			ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
+	// 			Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
+	// 			SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
+	// 			QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
+	// 			QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
+	// 			QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
+	// 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+
+
+	// 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+	// 			ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
+	// 			QuoteSubmittedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
+
+	// 			QuoteSubmittedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
+	// 			BidClosingDate: $("#BidClosingDate").dxDateBox("instance").option("value") || null,
+
+	// 			QuoteStatus: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
+
+	// 			TransportationScope: $("#txtTransportationScope").dxTextBox("instance").option("value") || null,
+
+	// 			AdditionsText: $('#txtAdditions').dxTextBox("instance").option("value") || null,
+	// 			QuoteTransport: $("#QuoteTransport").dxNumberBox("instance").option("value") || null,
+	// 			DiscountsText: $("#txtDeductions").dxTextBox("instance").option("value") || null,
+	// 			QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
+
+	// 			QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+	// 			VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+	// 			ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+	// 			QuoteValidity: $("#ddQuoteValidity").dxSelectBox("instance").option("value") || null,
+	// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+	// 			BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+	// 			CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+	// 		};
+
+	// 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+
+	// 		if (!children || children.length === 0) {
+	// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
+	// 			return;
 	// 		}
-	// 	});
+
+	// 		const model = {
+	// 			...master,
+	// 			QuotationDetailses: children
+	// 		};
+
+	// 		$.ajax({
+	// 			type: "POST",
+	// 			url: "/api/AddNewQuotation/SaveOrUpdateQuotation",
+	// 			contentType: "application/json",
+	// 			data: JSON.stringify(model),
+	// 			success: function (response) {
+	// 				  isVoucherSaved = true; // Mark Updated step as done
+	// 				updateWorkflowVisual(getWorkflowStatusFromFields());
+	// 				DevExpress.ui.notify(response.message, "success", 3000);
+	// 				// Refresh parent DataGrid (ensure the correct selector is used)
+	// 				if (window.parent && window.parent.$("#dataGrid").length) {
+	// 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+	// 					if (dataGrid) {
+	// 						dataGrid.refresh();
+	// 					}
+	// 				}
+
+
+	// 			},
+	// 			error: function (xhr) {
+	// 			DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+	// 			$btn.option("disabled", false); // Re-enable on error
+	// 		}
+	// 		});
 	// });
 
 
-	// $(document).ready(function () {
-	// 	$.ajax({
-	// 		url: "/api/VATModule/GenerateGuid",
-	// 		type: 'POST',
-	// 		success: function (data) {
-	// 			console.log("Success:", data);
 
-	// 			$("#UUID").dxTextBox("instance").option("value", data);
-	// 		},
-	// 		error: function (xhr, status, error) {
-	// 			console.error("Error loading Payment Accounts:", error);
-	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-	// 		}
-	// 	});
-	// });
 
 
 	function VATPercentage(newValue, rowIndex, TaxSlabCode) {
@@ -6241,8 +6342,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 	//MoveupDown functionality
 	function moveRowUp() {
-		debugger;
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Flatten the grouped data
 		//   var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -6270,8 +6370,7 @@ function loadChildDataAndBindGrid(quoteno) {
 
 
 	function moveRowDown() {
-		debugger;
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var dataSource = dataGrid.getDataSource();
 		var data = getFlatData(dataSource.items()); // Get flattened data
 		// var selectedRowKeys = dataGrid.option("selectedRowKeys");
@@ -7122,24 +7221,24 @@ function loadChildDataAndBindGrid(quoteno) {
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "Signatories";
+		const title = formatMessage("Signatories");
 		openModal(url, title,"","75%");
 	}
 
 	function AddReqUnit() {
 		const url = `/${tenantName}/IMS/ProjectSubUnits`;
-		const title = "Project SUb Unit";
+		const title = formatMessage("Project SUb Unit");
 		openModal(url, title);
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "Quotation Mode Of Request";
+		const title = formatMessage("Quotation Mode Of Request");
 		openModal(url, title);
 	}
 	
 	 function AddNewClient(){
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = "Client Master";
+		const title = formatMessage("Client Master");
 		openModal(url, title,"96%","75%");
 	}   
 
@@ -7199,7 +7298,7 @@ function onClientContactClick() {
             encodeURIComponent(clientCode) + '&clientName=' +
             encodeURIComponent(clientName);
 
-        openModal(url, 'Client Contact List');
+        openModal(url, formatMessage('Client Contact List'));
     });
 }
 
@@ -7368,21 +7467,21 @@ function saveField(fieldName, dxId,name) {
 
             if (index < status) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             } else if (index === status && status < 3) {
                 el.classList.add("current");
-                statusMsg.textContent = " - In Progress";
+                statusMsg.textContent = "In Progress";
                 icon.className = "fas fa-spinner fa-spin";
             } else {
                 el.classList.add("upcoming");
-                statusMsg.textContent = " - Pending";
+                statusMsg.textContent = "Pending";
             }
 
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
-                statusMsg.textContent = " - Done";
+                statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
             }
         });
@@ -7615,7 +7714,7 @@ function onIMSAttachmentButtonClick(e) {
         }
 		 function CurrencyClick() {
         let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-        let title = "Currency";
+        let title = formatMessage("Currency");
         openModal(url, title);
     }
 	  function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
@@ -7647,4 +7746,5 @@ function onIMSAttachmentButtonClick(e) {
             }
         }
     }
+	
 </script>

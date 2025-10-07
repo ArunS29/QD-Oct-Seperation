@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using QDERPWeb.Models;
-using System.Linq.Expressions;
 
 
 namespace QDWEB.Areas.Finance.Controllers
@@ -13,13 +14,15 @@ namespace QDWEB.Areas.Finance.Controllers
     [Route("api/[controller]/[action]")]
     public class VoucherApprovalController : Controller
     {
+
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherApprovalController> _logger;
-
+        private readonly IUserActionLogger _userActionLogger;
         private readonly FcmService _fcmService;
 
-        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
+        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _fcmService = fcmService;
@@ -122,6 +125,8 @@ namespace QDWEB.Areas.Finance.Controllers
         v.ConvertedCrAmount,
         v.ConvertedDrAmount,
         v.IsAuditVerified,
+        v.AuditVerifiedBy,
+        v.AuditVerifiedOn,
         company.CurrencyImage
 
     });
@@ -196,6 +201,11 @@ namespace QDWEB.Areas.Finance.Controllers
                             voucher.VoucherVerifiedBy = UserName;
                             voucher.VoucherVerifiedOn = DateTime.Now;
                             voucher.IsVerified = true;
+                            await _userActionLogger.LogAsync(
+                        module: "Finance > Voucher Verification",
+                        actionDetail: $"Verified: {voucher.VoucherNo}",
+                        documentNo: voucher.VoucherNo
+                    );
                         }
                         break;
 
@@ -205,6 +215,11 @@ namespace QDWEB.Areas.Finance.Controllers
                             voucher.VoucherApprovedBy = UserName;
                             voucher.VoucherApprovedOn = DateTime.Now;
                             voucher.IsApproved = true;
+                            await _userActionLogger.LogAsync(
+                       module: "Finance > Voucher Verification",
+                       actionDetail: $"Approved: {voucher.VoucherNo}",
+                       documentNo: voucher.VoucherNo
+                   );
                         }
                         break;
 
@@ -214,6 +229,11 @@ namespace QDWEB.Areas.Finance.Controllers
                             voucher.VoucherApprovedBy = null;
                             voucher.VoucherApprovedOn = null;
                             voucher.IsApproved = false;
+                            await _userActionLogger.LogAsync(
+                        module: "Finance > Voucher Verification",
+                        actionDetail: $"Unlocked: {voucher.VoucherNo}",
+                        documentNo: voucher.VoucherNo
+                    );
                         }
                         break;
 
@@ -269,8 +289,12 @@ namespace QDWEB.Areas.Finance.Controllers
                     voucher.IsVerified = true;
 
                     dbContext.SaveChanges();
-
-                       var notifyRequest = new NotificationRequest
+                    await _userActionLogger.LogAsync(
+                    module: "Finance > Voucher Verification",
+                    actionDetail: $"Verified: {voucherNo}",
+                    documentNo: voucherNo
+                    );
+                    var notifyRequest = new NotificationRequest
                                 {
                                     UserId = UserId, // or fetch from session/DB
                                     VoucherName = voucher.VoucherNo,
@@ -297,7 +321,7 @@ namespace QDWEB.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteVouchers([FromBody] VoucherUpdateRequest request)
+        public async Task<IActionResult> DeleteVouchersAsync([FromBody] VoucherUpdateRequest request)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -329,11 +353,15 @@ namespace QDWEB.Areas.Finance.Controllers
             dbContext.Tbl201VoucherMasters.RemoveRange(masters);
 
             dbContext.SaveChanges();
-
+            await _userActionLogger.LogAsync(
+        module: "Finance > Voucher Verification",
+        actionDetail: $"Deleted Vouchers: {request.VoucherNos}",
+         documentNo: string.Join(", ", request.VoucherNos)
+        );
             return Json(new { success = true, message = "Selected vouchers have been deleted successfully." });
         }
         [HttpPost]
-        public IActionResult UpdateAuditVerification(string voucherNo)
+        public async Task<IActionResult> UpdateAuditVerificationAsync(string voucherNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -350,6 +378,11 @@ namespace QDWEB.Areas.Finance.Controllers
             voucher.AuditVerifiedOn = now;
 
             dbContext.SaveChanges();
+            await _userActionLogger.LogAsync(
+                    module: "Finance > Voucher Verification",
+                    actionDetail: $"Audited: {voucherNo}",
+                    documentNo: voucherNo
+                    );
             return Ok();
         }
 
@@ -380,7 +413,11 @@ namespace QDWEB.Areas.Finance.Controllers
                     }
                     else if (docType == "BankCashReceipt")
                     {
-                        query = query.Where(v => v.VoucherType == "Bank Receipt" || v.VoucherType == "Cash Receipt");
+                        query = query.Where(v => v.VoucherType == "Bank Receipts" || v.VoucherType == "Cash Receipts");
+                    }
+                    else if (docType == "SalesPurchase")
+                    {
+                        query = query.Where(v => v.VoucherType == "Sales" || v.VoucherType == "Purchases");
                     }
                     else
                     {
@@ -414,20 +451,10 @@ namespace QDWEB.Areas.Finance.Controllers
                     v.VoucherApprovedBy,
                     v.VoucherApprovedOn,
                     v.VoucherType,
-
-                    // Add these so DataGrid can bind
-                    ConvertedDrAmount = v.DebitAmount,
-                    ConvertedCrAmount = v.CreditAmount,
-                    DrAmount = v.DebitAmount,
-                    CrAmount = v.CreditAmount,
-                    TransactionCurrencySymbol = company.CurrencyImage,
-
-                    // If you really need audit fields
-                    AuditVerifiedBy = v.AuditVerifiedBy,
-                    IsAuditVerified = v.IsAuditVerified,
-                    AuditVerifiedOn = v.AuditVerifiedOn
+                    v.DebitAmount,
+                    v.CreditAmount,
+                    company.CurrencyImage
                 }).ToList();
-
 
                 return Json(data);
             }

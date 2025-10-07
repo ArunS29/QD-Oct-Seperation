@@ -37,29 +37,29 @@
         width: 100%;
     }
 
-/* 
-    #pivotGridContainer .debit-pill, #pivotGridContainer .credit-pill, #pivotGridContainer .received-pill {
-        display: inline-block;
-        padding: 2px 10px;
-        border-radius: 14px;
-        font-weight: 600;
-        font-variant-numeric: tabular-nums;
-    }
+    /*
+        #pivotGridContainer .debit-pill, #pivotGridContainer .credit-pill, #pivotGridContainer .received-pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
 
-    #pivotGridContainer .debit-pill {
-        background: rgba(255, 77, 79, .15);
-        color: #ff4d4f;
-    }
+        #pivotGridContainer .debit-pill {
+            background: rgba(255, 77, 79, .15);
+            color: #ff4d4f;
+        }
 
-    #pivotGridContainer .credit-pill {
-        background: rgba(82, 196, 26, .15);
-        color: #52c41a;
-    }
+        #pivotGridContainer .credit-pill {
+            background: rgba(82, 196, 26, .15);
+            color: #52c41a;
+        }
 
-    #pivotGridContainer .received-pill {
-        background: rgba(255, 193, 7, 0.15); 
-        color: #ffc107;
-    } */
+        #pivotGridContainer .received-pill {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+        } */
 
     .credit-pill {
         background: rgba(82, 196, 26, 0.15);
@@ -98,138 +98,138 @@
     }
 
     .button-alignment-down {
-        margin-top: -2px!important;
+        margin-top: -2px !important;
     }
 </style>
 <input id="formId" value="uc20106TrialBalance" type="hidden" />
 <div class="content-container-top">
-<div class="title" id="kpiCarousel">
-    <div class="titleCard-cards">
+    <div class="title" id="kpiCarousel">
+        <div class="titleCard-cards">
 
-        <!-- STATIC -->
-        <div id="Static" class="titleCard-card vibrant-pink">
-            <div class="value-block">
+            <!-- STATIC -->
+            <div id="Static" class="titleCard-card vibrant-pink">
+                <div class="value-block">
 
-                <h2 id="costanalysis"></h2>
+                    <h2 id="costanalysis"></h2>
                     <h6 id="QuickDiceERPSolutions8"></h6>
 
-            </div>
-        </div>
-
-        <!-- BALANCE -->
-        <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header" id="costanalysisbalance"></div>
-            <div class="value-block">
-                <div class="value-slider">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
-                    <span>0.00</span>
-                    <span>0.00</span>
                 </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                <div class="detail">Today: 0.00</div>
-                <div class="detail">This Week: 0.00</div>
-                <div class="detail">This Month: 0.00</div>
-            </div>
-        </div>
 
-        <!-- DEBIT -->
-        <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header" id="costtotaldebit"></div>
-            <div class="value-block">
-                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            <!-- BALANCE -->
+            <div id="cardBalance" class="titleCard-card cool-blue">
+                <div class="header" id="costanalysisbalance"></div>
+                <div class="value-block">
+                    <div class="value-slider">
+                        <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                        <span>0.00</span>
+                        <span>0.00</span>
+                    </div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail">Today: 0.00</div>
+                    <div class="detail">This Week: 0.00</div>
+                    <div class="detail">This Month: 0.00</div>
+                </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                <div class="detail">Today: 0.00</div>
-                <div class="detail">This Week: 0.00</div>
-                <div class="detail">This Month: 0.00</div>
-            </div>
-        </div>
 
-        <!-- CREDIT -->
-        <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header" id="costtotalcredit"></div>
-            <div class="value-block">
-                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            <!-- DEBIT -->
+            <div id="cardDebit" class="titleCard-card deep-purple">
+                <div class="header" id="costtotaldebit"></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail">Today: 0.00</div>
+                    <div class="detail">This Week: 0.00</div>
+                    <div class="detail">This Month: 0.00</div>
+                </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                <div class="detail">Today: 0.00</div>
-                <div class="detail">This Week: 0.00</div>
-                <div class="detail">This Month: 0.00</div>
-            </div>
-        </div>
 
+            <!-- CREDIT -->
+            <div id="cardCredit" class="titleCard-card mint-green">
+                <div class="header" id="costtotalcredit"></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail">Today: 0.00</div>
+                    <div class="detail">This Week: 0.00</div>
+                    <div class="detail">This Month: 0.00</div>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
 
 
-@* <div class="title">
+    @* <div class="title">
     <div class="header-container">
         <div id="costAnalysis" class="no-border-input"></div>
     </div>
 </div> *@
-<div class="Head" style="margin-top:10px">
-  
+    <div class="Head" style="margin-top:10px">
+
         @await Html.PartialAsync("_GridFooterUCCA")
-    
-</div>
-<div id="loadPanel"></div>
-<div class="dx-fieldset horizontal-container">
-    <div class="dx-field">
-        @(Html.DevExtreme().DropDownBox()
-            .ID("requestedBy")
-            .DataSource(d => d.Mvc()
-            .Controller("UCCostAnalysis")
-            .LoadAction("GetUser")
-            .LoadMode(DataSourceLoadMode.Raw))
-            .Width(500)
-            .Label(new JS("formatMessage('Select a Cost Center')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ValueExpr("CostAllocationUnit")
-            .DisplayExpr("CostAllocationUnit")
-            .ShowClearButton(true)
-            .ContentTemplate(new TemplateName("CostCenterTemplate"))
-            )
+
     </div>
+    <div id="loadPanel"></div>
+    <div class="dx-fieldset horizontal-container">
+        <div class="dx-field">
+            @(Html.DevExtreme().DropDownBox()
+                        .ID("requestedBy")
+                        .DataSource(d => d.Mvc()
+                        .Controller("UCCostAnalysis")
+                        .LoadAction("GetUser")
+                        .LoadMode(DataSourceLoadMode.Raw))
+                        .Width(500)
+                        .Label(new JS("formatMessage('Select a Cost Center')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ValueExpr("CostAllocationUnit")
+                        .DisplayExpr("CostAllocationUnit")
+                        .ShowClearButton(true)
+                        .ContentTemplate(new TemplateName("CostCenterTemplate"))
+                        )
+        </div>
 
 
-    <div class="dx-field">
-        <!-- Start Date Picker -->
-        @(Html.DevExtreme().DateBox()
-            .ID("frmdateBox")
-            .Label(new JS("formatMessage('Start Date')"))
+        <div class="dx-field">
+            <!-- Start Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                        .ID("frmdateBox")
+                        .Label(new JS("formatMessage('Start Date')"))
 
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(2)
-            .ElementAttr("class", "dynamicFormatDateBox"))
-    </div>
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr("aria-label", "Date")
+                        .Type(DateBoxType.Date)
+                        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .TabIndex(2)
+                        .ElementAttr("class", "dynamicFormatDateBox"))
+        </div>
 
-    <div class="dx-field">
-        <!-- End Date Picker -->
-        @(Html.DevExtreme().DateBox()
-            .ID("todateBox")
-            .Label(new JS("formatMessage('End Date')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .InputAttr("aria-label", "Date")
-            .Type(DateBoxType.Date)
-            .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-            .DisplayFormat("dd-MMM-yyyy")
-            .TabIndex(3)
-            .ElementAttr("class", "dynamicFormatDateBox"))
-    </div>
+        <div class="dx-field">
+            <!-- End Date Picker -->
+            @(Html.DevExtreme().DateBox()
+                        .ID("todateBox")
+                        .Label(new JS("formatMessage('End Date')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr("aria-label", "Date")
+                        .Type(DateBoxType.Date)
+                        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .TabIndex(3)
+                        .ElementAttr("class", "dynamicFormatDateBox"))
+        </div>
 
-    <div id="check">
-        <!-- Use Effective Date Checkbox -->
+        <div id="check">
+            <!-- Use Effective Date Checkbox -->
             @(Html.DevExtreme().CheckBox()
                         .ID("useEffectiveDate")
                         .Text(new JS("formatMessage('Use Effective Date')"))
@@ -238,17 +238,17 @@
                         )
             <input type="hidden" id="hdnUseEffectiveDate" name="UseEffectiveDate" value="false" />
 
-        <!-- Dropdown Button to Show Records -->
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddBtnShowRecords")
-            .Text(new JS("formatMessage('Show Records')"))
-            .Icon("smalliconslayout")
-            .Width(180)
-            .ElementAttr("class", "button-alignment-down")
-            .TabIndex(4)
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
+            <!-- Dropdown Button to Show Records -->
+            @(Html.DevExtreme().DropDownButton()
+                        .ID("ddBtnShowRecords")
+                        .Text(new JS("formatMessage('Show Records')"))
+                        .Icon("smalliconslayout")
+                        .Width(180)
+                        .ElementAttr("class", "button-alignment-down")
+                        .TabIndex(4)
+                        .DropDownOptions(options => options.Width(230))
+                        .Items(items =>
+                        {
                             items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
                             items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
                             items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
@@ -259,8 +259,8 @@
                             items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
                             items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
                             items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-            })
-            .ItemTemplate(@<text>
+                        })
+                        .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
                     <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                     <div class="item-content">
@@ -271,44 +271,64 @@
                     </div>
                 </div>
             </text>)
-            )
+                        )
+        </div>
     </div>
-</div>
 
-@using (Html.DevExtreme().NamedTemplate("CostCenterTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
-                .ID("costcenter-datagrid")
-                .DataSource(d => d.Mvc()
-                    .Controller("UCCostAnalysis")
-                    .LoadAction("GetUser")
-                    .LoadMode(DataSourceLoadMode.Raw))
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-                .FilterRow(f => f.Visible(false))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .HoverStateEnabled(true)
-                .Height(300)
-                .SelectedRowKeys(new JS(@"component.option('value') ? [component.option('value')] : []"))
-                .OnSelectionChanged("onCostCenterSelected")
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Width(250);
-                    columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Group')")).Width(250);
-                })
+    @using (Html.DevExtreme().NamedTemplate("CostCenterTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("costcenter-datagrid")
+            .DataSource(d => d.Mvc()
+            .Controller("UCCostAnalysis")
+            .LoadAction("GetUser")
+            .LoadMode(DataSourceLoadMode.Raw))
+            .ShowBorders(true)
+            .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .HoverStateEnabled(true)
+            .Height(300)
+            .SelectedRowKeys(new JS(@"component.option('value') ? [component.option('value')] : []"))
+            .OnSelectionChanged("onCostCenterSelected")
+            .Columns(columns =>
+            {
+                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Width(250);
+                columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Group')")).Width(250);
+            })
             )
-}
+        }
 
-<!-- Pivot Grid Container --><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Pivot Grid Container --><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
-<div class="ledgerResult" id="pivotGridContainer"></div>
+    <div class="ledgerResult" id="pivotGridContainer"></div>
 </div>
-
+<div id="dataModePopup"></div>
 <script type="text/javascript">
-    let pivotData = [];
+
+
+         let selectedMode = "online"; // default
+        let allowDataMode = false;
+
+    $(function () {
+        $.getJSON('/api/TrialBalance/GetAllowDataModeSelection', function (res) {
+            if (res && res.allowDataMode === true) {
+                allowDataMode = true;
+                showDataModePopup(function (mode) {
+                    // Store selected mode, then trigger default record load
+                    ddBtnShowRecords_click("range", mode);
+                });
+            } else {
+                // No mode selection, proceed with default load
+                ddBtnShowRecords_click("range");
+            }
+        });
+    });
+
+     let pivotData = [];
     let slectedaccount;
 
     function onCostCenterSelected(e) {
@@ -375,132 +395,146 @@
         loadAllRecords();
     });
 
-    function loadAllRecords() {
-        console.log("Loading trial balance records...");
+    // function loadAllRecords() {
+    //     console.log("Loading trial balance records...");
 
-        const today = new Date();
-        const firstDay = new Date(today.getFullYear() - 1, 0, 1);
-        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    //     const today = new Date();
+    //     const firstDay = new Date(today.getFullYear() - 1, 0, 1);
+    //     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-        var loadPanel = $("#loadPanel").dxLoadPanel("instance");
-        loadPanel.show();
+    //     var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+    //     loadPanel.show();
 
-        $.ajax({
-            url: '/api/TransactionDetails/GetTrialBalance',
-            type: 'GET',
-            data: {
-                startDate: firstDay.toISOString().split('T')[0],
-                endDate: lastDay.toISOString().split('T')[0],
-                accountGroup: ""
-            },
-            success: function (data) {
-                if (Array.isArray(data)) {
-                    pivotData = data;
-                    initializePivotGrid(data);
+    //     $.ajax({
+    //         url: '/api/TransactionDetails/GetTrialBalance',
+    //         type: 'GET',
+    //         data: {
+    //             startDate: firstDay.toISOString().split('T')[0],
+    //             endDate: lastDay.toISOString().split('T')[0],
+    //             accountGroup: ""
+    //         },
+    //         success: function (data) {
+    //             if (Array.isArray(data)) {
+    //                 pivotData = data;
+    //                 initializePivotGrid(data);
 
-                    // ✅ Apply saved layout AFTER pivot grid is ready and has data
-                    let pivot = $("#pivotGridContainer").dxPivotGrid("instance");
-                    pivot.getDataSource().reload().done(function () {
-                        loadGridState();
-                    });
-                } else {
-                    console.error("Unexpected response format", data);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching trial balance records:", xhr.responseText || error);
-            },
-            complete: function () {
-                loadPanel.hide();
-            }
+    //                 // ✅ Apply saved layout AFTER pivot grid is ready and has data
+    //                 let pivot = $("#pivotGridContainer").dxPivotGrid("instance");
+    //                 pivot.getDataSource().reload().done(function () {
+    //                     loadGridState();
+    //                 });
+    //             } else {
+    //                 console.error("Unexpected response format", data);
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Error fetching trial balance records:", xhr.responseText || error);
+    //         },
+    //         complete: function () {
+    //             loadPanel.hide();
+    //         }
+    //     });
+    // }
+
+
+    // Ensure initial load delegates through the same path (respects selectedMode)
+        $(document).ready(function () {
+        // Load all records on page load (ignore default date values)
+            initializePivotGrid([]);
         });
-    }
+      function ddBtnShowRecords_click(option, mode = null) {
+          const effectiveMode = (mode || selectedMode || "online").toLowerCase();
+          const isOffline = effectiveMode === "offline";
 
+          var startDate, endDate;
+          let today = new Date();
+          let firstDay, lastDay;
 
-    function ddBtnShowRecords_click(option) {
-        var startDate, endDate;
+          switch (option) {
+              case 'today':
+                  startDate = today;
+                  endDate = today;
+                  break;
+              case 'yesterday':
+                  startDate = new Date();
+                  startDate.setDate(today.getDate() - 1);
+                  endDate = startDate;
+                  break;
+              case 'week':
+                  startDate = new Date();
+                  startDate.setDate(today.getDate() - today.getDay());
+                  endDate = today;
+                  break;
+              case 'tillmonth':
+                  startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                  endDate = today;
+                  break;
+              case 'fullmonth':
+                  startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                  endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+                  break;
+              case 'tillyear':
+                  startDate = new Date(today.getFullYear(), 0, 1);
+                  endDate = today;
+                  break;
+              case 'fullyear':
+                  startDate = new Date(today.getFullYear(), 0, 1);
+                  endDate = new Date(today.getFullYear(), 11, 31);
+                  break;
+              case 'lastmonth':
+                  firstDay = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                  lastDay = new Date(today.getFullYear(), today.getMonth(), 0);
+                  startDate = firstDay;
+                  endDate = lastDay;
+                  break;
+              case 'lastyear':
+                  firstDay = new Date(today.getFullYear() - 1, 0, 1);
+                  lastDay = new Date(today.getFullYear() - 1, 11, 31);
+                  startDate = firstDay;
+                  endDate = lastDay;
+                  break;
+              default:
+                  startDate = $("#frmdateBox").dxDateBox("instance").option("value");
+                  endDate = $("#todateBox").dxDateBox("instance").option("value");
+                  break;
+          }
 
-        let today = new Date();
-        let firstDay, lastDay;
+          $("#frmdateBox").dxDateBox("instance").option("value", startDate);
+          $("#todateBox").dxDateBox("instance").option("value", endDate);
 
-        switch (option) {
-            case 'today':
-                startDate = today;
-                endDate = today;
-                break;
-            case 'yesterday':
-                startDate = new Date();
-                startDate.setDate(today.getDate() - 1);
-                endDate = startDate;
-                break;
-            case 'week':
-                startDate = new Date();
-                startDate.setDate(today.getDate() - today.getDay());
-                endDate = today;
-                break;
-            case 'tillmonth':
-                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                endDate = today;
-                break;
-            case 'fullmonth':
-                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
-                endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-                break;
-            case 'tillyear':
-                startDate = new Date(today.getFullYear(), 0, 1);
-                endDate = today;
-                break;
-            case 'fullyear':
-                startDate = new Date(today.getFullYear(), 0, 1);
-                endDate = new Date(today.getFullYear(), 11, 31);
-                break;
-            case 'lastmonth':
-                firstDay = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                lastDay = new Date(today.getFullYear(), today.getMonth(), 0);
-                startDate = firstDay;
-                endDate = lastDay;
-                break;
-            case 'lastyear':
-                firstDay = new Date(today.getFullYear() - 1, 0, 1);
-                lastDay = new Date(today.getFullYear() - 1, 11, 31);
-                startDate = firstDay;
-                endDate = lastDay;
-                break;
-            default:
-                startDate = $("#frmdateBox").dxDateBox("instance").option("value");
-                endDate = $("#todateBox").dxDateBox("instance").option("value");
-                break;
-        }
+          console.log("Fetching records with:", {
+              startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
+              endDate: endDate ? endDate.toISOString().split('T')[0] : "All Dates",
+              accountGroup: slectedaccount,
+              mode: effectiveMode
+          });
 
-        $("#frmdateBox").dxDateBox("instance").option("value", startDate);
-        $("#todateBox").dxDateBox("instance").option("value", endDate);
+          const loadPanel = $("#loadPanel").dxLoadPanel("instance");
+          loadPanel && loadPanel.show();
 
+          $.ajax({
+              url: isOffline
+                  ? '/api/TransactionDetails/GetTrialBalanceOffline'
+                  : '/api/TransactionDetails/GetTrialBalance',
+              type: 'GET',
+              data: {
+                  startDate: startDate ? startDate.toISOString().split('T')[0] : null,
+                  endDate: endDate ? endDate.toISOString().split('T')[0] : null,
+                  accountGroup: slectedaccount
+              },
+              success: function (data) {
+                  initializePivotGrid(data);
+                  console.log("response", data);
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error fetching filtered records: ", error);
+              },
+              complete: function () {
+                  loadPanel && loadPanel.hide();
+              }
+          });
+      }
 
-
-        console.log("Fetching records with:", {
-            startDate: startDate ? startDate.toISOString().split('T')[0] : "All Dates",
-            endDate: endDate ? endDate.toISOString().split('T')[0] : "All Dates",
-            accountGroup: slectedaccount
-        });
-
-        $.ajax({
-            url: '/api/TransactionDetails/GetTrialBalance',
-            type: 'GET',
-            data: {
-                startDate: startDate ? startDate.toISOString().split('T')[0] : null,
-                endDate: endDate ? endDate.toISOString().split('T')[0] : null,
-                accountGroup: slectedaccount
-            },
-            success: function (data) {
-              
-                initializePivotGrid(data);
-                console.log("response", data)
-            },
-            error: function (xhr, status, error) {
-                console.error("Error fetching filtered records: ", error);
-            }
-        });
-    }
 
     // function initializePivotGrid(data) {
     //     $("#pivotGridContainer").dxPivotGrid({
@@ -542,7 +576,7 @@
     //         .appendTo(e.cellElement);
 
     //           }
-                
+
     //       }
     // },
     //         {
@@ -757,7 +791,7 @@
             // ✅ Cell rendering here
               onCellPrepared: function (e) {
         if (e.area === "data" && typeof e.cell.value === "number") {
-            
+
             const val = Math.abs(e.cell.value);
             const formatted = val.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
@@ -1068,8 +1102,8 @@
             return value.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
         }
     }
-    
-            
+
+
 
     function handleGridOptionChanged(e) {
         if (e.name === "columns" || e.name === "visible") {
@@ -1078,7 +1112,7 @@
         }
     }
     function injectHeaderSVG() {
-         
+
            let gridElement = $('#pivotGridContainer');
     let dataGrid = gridElement.dxDataGrid("instance");
     if (!dataGrid) return;
@@ -1157,5 +1191,125 @@
     $(function () {
         $("#costtotalcredit").text(formatMessage("Total Credit"));
     });
+
+        function showDataModePopup(callback) {
+
+
+        // ✅ Use your local tone from wwwroot/tones/
+        const playSound = () => {
+            const audio = new Audio("/tones/mixkit-correct-answer-tone-2870.wav");
+            audio.volume = 0.5;
+            audio.play().catch(err => console.warn("Audio play blocked by browser:", err));
+        };
+
+        $("#dataModePopup").dxPopup({
+            title: "✨ Select Data Mode",
+            contentTemplate: function (contentElement) {
+                const container = $("<div>").css({
+                    padding: "20px",
+                    fontFamily: "'Segoe UI', sans-serif",
+                    fontSize: "14px",
+                    lineHeight: "1.6",
+                    background: "#fdfdfd",
+                    borderRadius: "12px",
+                    boxShadow: "inset 0 0 3px rgba(0,0,0,0.05)"
+                }).appendTo(contentElement);
+
+                // 📌 Title
+                $("<div>").html(`
+                    <h3 style="margin: 0 0 10px; font-size: 18px; color: #333;">
+                        🧭 <span style="font-weight:600;">How do you want to load data?</span>
+                    </h3>
+                `).appendTo(container);
+
+                // 💬 Message Box
+                const messageBox = $("<div>").css({
+                    backgroundColor: "#e0f3ff",
+                    border: "2px dashed #4bb3fd",
+                    borderRadius: "8px",
+                    padding: "12px",
+                    color: "#01579b",
+                    fontSize: "14px",
+                    display: "none",
+                    marginTop: "12px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                }).appendTo(container);
+
+                // 📡 Radio Group
+                const radioGroup = $("<div>").dxRadioGroup({
+                    items: ["Online", "Offline"],
+                    layout: "horizontal",
+                    stylingMode: "outlined",
+                    value: null,
+                    onValueChanged: function (e) {
+                        selectedMode = e.value.toLowerCase();
+
+                        const msg = selectedMode === "online"
+                            ? "✅ You’ve selected <strong>Online Mode</strong>. This is real-time data.It will take Few minutes to load data. 🔄"
+                            : "🕓 You’ve selected <strong>Offline Mode</strong>. This is preloaded data till last night.if you need live data go online 📁";
+
+                        messageBox.html(msg).slideDown(200);
+                    }
+                }).css({
+                    marginTop: "20px",
+                    textAlign: "center"
+                });
+
+                $("<div>").addClass("dx-field-value").append(radioGroup).appendTo(container);
+            },
+            showCloseButton: true,
+            showTitle: true,
+            width: 500,
+            height: "auto",
+            dragEnabled: false,
+            shadingColor: "rgba(0,0,0,0.15)",
+            animation: {
+                show: {
+                    type: "slide",
+                    from: { top: -150, opacity: 0 },
+                    to: { top: 0, opacity: 1 },
+                    duration: 400
+                },
+                hide: {
+                    type: "fade",
+                    duration: 100
+                }
+            },
+            visible: true,
+            toolbarItems: [
+                {
+                    toolbar: "bottom",
+                    location: "after",
+                    widget: "dxButton",
+                    options: {
+                        text: "🎯 Confirm",
+                        type: "success",
+                        elementAttr: {
+                            style: "border-radius: 8px; font-weight: 600; min-width: 100px;"
+                        },
+                       onClick: function () {
+                        playSound();
+
+                        // Show deep hole animation
+                        // const hole = document.getElementById("deep-hole-overlay");
+                        // hole.style.display = "flex";
+
+                        // // Restart animation
+                        // hole.style.animation = "none";
+                        // void hole.offsetWidth; // Force reflow
+                        // hole.style.animation = "tunnelZoom 1.5s forwards";
+
+                        setTimeout(() => {
+                          //  hole.style.display = "none"; // Hide after animation
+                            $("#dataModePopup").dxPopup("instance").hide();
+                            callback(selectedMode); // Continue your logic
+                        }, 200); // Match animation duration
+                    }
+
+                    }
+                }
+            ]
+        });
+    }
 </script>
 

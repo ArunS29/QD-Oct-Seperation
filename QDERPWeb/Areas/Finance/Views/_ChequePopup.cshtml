@@ -434,19 +434,30 @@
         }
         // Initialize event when popup is shown
         popup.on("shown", function () {
-            const amountInSAR = $("#AmountinSAR").dxNumberBox("instance");
-            const amountInWords = $("#AmountinWords").dxTextBox("instance");
+                const amountInSAR = $("#AmountinSAR").dxNumberBox("instance");
+                const amountInWords = $("#AmountinWords").dxTextBox("instance");
+                const currencyRate = $("#txtchequeCurrencyRate").dxNumberBox("instance");
+                const originalAmount = $("#OriginalAmount").dxNumberBox("instance");
 
-            if (amountInSAR && amountInWords) {
-                // Attach valueChanged event to AmountinSAR NumberBox
-                amountInSAR.on("valueChanged", function (e) {
-                    const numValue = e.value || 0; // Get the new value, default to 0
+                if (amountInSAR && amountInWords) {
+                    // Attach valueChanged event to AmountinSAR NumberBox
+                    amountInSAR.on("valueChanged", function (e) {
+                        const numValue = e.value || 0; // new Amount in SAR
+                        const rate = currencyRate ? (currencyRate.option("value") || 1) : 1; // default 1 if not set
+                        const convertedValue = parseFloat((numValue / rate).toFixed(2));
 
-                    const words = numberToWords(numValue) + " Saudi Riyals Only"; // Convert to words and append
-                    amountInWords.option("value", words); // Update AmountinWords TextBox
-                });
-            }
+                        // Update Amount in Words
+                        const words = numberToWords(numValue) + " Saudi Riyals Only";
+                        amountInWords.option("value", words);
+
+                        // Update OriginalAmount
+                        if (originalAmount) {
+                            originalAmount.option("value", convertedValue);
+                        }
+                    });
+                }
         });
+
 
         // Number-to-words conversion function
         function numberToWords(number) {

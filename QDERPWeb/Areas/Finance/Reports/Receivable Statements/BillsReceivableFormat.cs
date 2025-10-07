@@ -91,7 +91,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
     if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
         addressArbLabel.Text = companyAddressArb;
 
-    ConfigureDataSource(accountId, frmDate, toDate);
+    ConfigureDataSource(accountId);
 }
 
 private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
@@ -114,39 +114,33 @@ private void AddOrUpdateParameter(string paramName, object paramValue, Type para
     }
 }
 
-private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime toDate)
-{
-    sqlDataSource1.Queries.Clear();
-
-    if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
-    {
-        sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
-
-        string querySql = @"SELECT * FROM qry201SubLedgerReceivablesMaster 
-                                WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)
-                                AND VoucherDate BETWEEN @StartDate AND @EndDate";
-
-        var customQuery = new CustomSqlQuery
+        private void ConfigureDataSource(string accountId)
         {
-            Name = "qry201SubLedgerReceivablesMaster",
-            Sql = querySql
-        };
+            sqlDataSource1.Queries.Clear();
 
-        customQuery.Parameters.AddRange(new[]
-        {
-                new QueryParameter("@AccountID", typeof(string), accountId),
-                new QueryParameter("@StartDate", typeof(DateTime), frmDate),
-                new QueryParameter("@EndDate", typeof(DateTime), toDate)
-            });
+            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            {
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
-        sqlDataSource1.Queries.Add(customQuery);
-        sqlDataSource1.Name = "sqlDataSource1";
-    }
-    else
-    {
-        throw new Exception("Unable to get tenant context. Please check session and cache.");
-    }
-}
+                string querySql = @"SELECT * FROM qry201SubLedgerReceivablesMaster 
+                            WHERE (@AccountID IS NULL OR AccountHeadNo = @AccountID)";
+
+                var customQuery = new CustomSqlQuery
+                {
+                    Name = "qry201SubLedgerReceivablesMaster",
+                    Sql = querySql
+                };
+
+                customQuery.Parameters.Add(new QueryParameter("@AccountID", typeof(string), accountId));
+
+                sqlDataSource1.Queries.Add(customQuery);
+                sqlDataSource1.Name = "sqlDataSource1";
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
         private void LoadCurrencySymbolAndImage()
         {
             try

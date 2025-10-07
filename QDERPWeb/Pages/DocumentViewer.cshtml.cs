@@ -295,12 +295,12 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                LoadReportFromDbOrFactory(reportName, () =>
-                      new AccountStatementFormat2Report(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
-                    )
-                );
+                Report = LoadReportFromDbOrFactory(reportName, () =>
+             new AccountStatementFormat2Report(
+                AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
+            )
+        );
             }
             else if (reportName == "AccountExportFromatReport")
             {
@@ -1479,7 +1479,7 @@ namespace QD.ERP.Web.Pages
                 FrmDate = frmDate.Value;
                 ToDate = toDate.Value;
 
-
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
@@ -1521,7 +1521,7 @@ namespace QD.ERP.Web.Pages
 
                 Report = new Payablelandscape(
                     AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, userName, companyAddressAr, _tenantDbContextHelper
                 );
             }
             else if (reportName == "payableRetention")

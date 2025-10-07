@@ -371,7 +371,7 @@
 </div>
 
 
-<div class="context-menuInvoice" id="contextMenu">
+@* <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
 		<i class="dx-icon-search" id="salesregisterview"></i>
 	</div>
@@ -391,7 +391,7 @@
 	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy" id="clonesalesregister"></i>
 	</div>
-</div>
+</div> *@
 
 
 <div class="horizontal-container">
@@ -1078,30 +1078,31 @@
 					});
 
 						// Add hidden columns for remaining model fields
-					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
-					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-					columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-					columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-					columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By (AR)").Visible(false);
-					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-					columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-					columns.AddFor(m => m.VerifiedByAr).Caption("Verified By (AR)").Visible(false);
-					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-					columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-					columns.AddFor(m => m.ApprovedByAr).Caption("Approved By (AR)").Visible(false);
-					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-					columns.AddFor(m => m.AddedByAr).Caption("Added By (AR)").Visible(false);
-					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-					columns.AddFor(m => m.ModifiedByAr).Caption("Modified By (AR)").Visible(false);
-					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-					columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-					columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+					columns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Visible(false);
+					columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
+					columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Visible(false);
+					columns.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Visible(false);
+					columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Visible(false);
+					columns.AddFor(m => m.SubmittedByAr).Caption(new JS("formatMessage('Submitted By (AR)')")).Visible(false);
+					columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Visible(false);
+					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Visible(false);
+					columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Visible(false);
+					columns.AddFor(m => m.VerifiedByAr).Caption(new JS("formatMessage('Verified By (AR)')")).Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Visible(false);
+					columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Visible(false);
+					columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Visible(false);
+					columns.AddFor(m => m.ApprovedByAr).Caption(new JS("formatMessage('Approved By (AR)')")).Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Visible(false);
+					columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+					columns.AddFor(m => m.AddedByAr).Caption(new JS("formatMessage('Added By (AR)')")).Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+					columns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('Modified By')")).Visible(false);
+					columns.AddFor(m => m.ModifiedByAr).Caption(new JS("formatMessage('Modified By (AR)')")).Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('Modified On')")).Visible(false);
+					columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Visible(false);
+					columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Visible(false);
+					columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Visible(false);
+
 
 		})
 		.Height("60vh") // <<< fixed height
@@ -1394,6 +1395,11 @@
 	const tabs = document.querySelectorAll(".tab-text");
 	const contents = document.querySelectorAll(".tab-content");
 
+	let currentTab = 0;
+	const intervalTime = 3000; // 3 seconds per tab
+	let tabInterval;
+
+	// Animate count numbers
 	function animateCount(el, target) {
 	  let i = 0;
 	  el.innerText = i;
@@ -1409,49 +1415,66 @@
 	  }, 30);
 	}
 
+	// Switch tab and update background
 	function switchTab(index) {
 	  tabs.forEach((tab, i) => {
 		tab.classList.toggle('active', i === index);
 		contents[i].classList.toggle('active', i === index);
 	  });
 
-	  // Change background class
 	  card.className = "card";
 	  if (index === 0) card.classList.add("today-bg");
 	  if (index === 1) card.classList.add("week-bg");
 	  if (index === 2) card.classList.add("month-bg");
 
-	  // Animate count
 	  animateCount(countEls[index], counts[index]);
 	}
 
-	// ✅ Count Approved Invoices From Grid
+	// ✅ Auto rotation
+	function startAutoTabs() {
+	  tabInterval = setInterval(() => {
+		currentTab = (currentTab + 1) % tabs.length;
+		switchTab(currentTab);
+	  }, intervalTime);
+	}
+	function stopAutoTabs() {
+	  clearInterval(tabInterval);
+	}
+
+	// Pause on hover
+	card.addEventListener("mouseenter", stopAutoTabs);
+	card.addEventListener("mouseleave", startAutoTabs);
+
+	// ✅ Count invoices from grid
 	function updateApprovedCountFromGrid() {
 	  const grid = $("#dataGrid").dxDataGrid("instance");
 	  const data = grid.getDataSource().items();
 
-	  // Update dynamic counts based on status
 	  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
 	  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
 	  counts[2] = data.filter(item => item.InvoiceStatus === "Submitted").length;
 
-	  // You can also update visible numbers immediately
 	  countEls[0].textContent = counts[0];
 	  countEls[1].textContent = counts[1];
 	  countEls[2].textContent = counts[2];
 
-	  // Optionally animate default tab (Today/Verified)
-	  animateCount(countEls[0], counts[0]);
+	  animateCount(countEls[0], counts[0]); // Start with Verified
 	}
-	document.getElementById("count0").textContent = counts[0]; // Verified count
 
-		function onGridContentReady(e) {
-		updateApprovedCountFromGrid();
-		const data = e.component.getDataSource().items();
-		updateInvoiceAmountCard(data);    // ✅ update invoice total too
-		updateTotalVATValue(data);        // ✅ now both values are set
-		injectHeaderSVG();
+	// ✅ On grid ready
+	function onGridContentReady(e) {
+	  updateApprovedCountFromGrid();
+	  const data = e.component.getDataSource().items();
+	  updateInvoiceAmountCard(data);
+	  updateTotalVATValue(data);
+	  injectHeaderSVG();
 	}
+
+	// ✅ Initialize
+	document.getElementById("count0").textContent = counts[0];
+	switchTab(currentTab);
+	startAutoTabs();
+
 
 
 
@@ -1713,36 +1736,137 @@
 			}
 		});
 	});
-	$(function () {
-		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
-			width: 600,
-			height: 400,
-			showTitle: true,
-			title: "Details",
-			visible: false,
-			dragEnabled: true,
-			closeOnOutsideClick: true,
-			contentTemplate: function () {
-				return $("<div>").attr("id", "popupFormContent");
+		$("#dataGrid").dxDataGrid({
+		// ... your other grid options ...
+		onContextMenuPreparing: function (e) {
+			e.items = [];
+
+			// --- Context Menu for Data Rows ---
+			if (e.target === "content" && e.row && e.row.rowType === "data") {
+				const rowData = e.row.data;
+
+				// Define your menu items with permission keys
+				const menuConfig = [
+					{
+						text: formatMessage("View VAT Invoice"),
+						icon: "search",
+						color: "#007bff",
+						permissionKey: "frm20162VATInvoiceMasterView_ViewInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							InvoiceType = rowData.InvoiceType;
+							viewInvoice();
+						}
+					},
+					{
+						text: formatMessage("Cancel/Amend this Invoice (Invoice Credit Note)"),
+						icon: "close",
+						color: "#dc3545",
+						permissionKey: "frm20162VATInvoiceMasterView_CancelInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							InvoiceType = rowData.InvoiceType;
+							cancelInvoice();
+						}
+					},
+					{
+						text: formatMessage("VAT Invoices (Obselete)"),
+						icon: "file",
+						color: "#17a2b8",
+						permissionKey: "frm20162VATInvoiceMasterView_CheckOldVATInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							checkIfOldVATInvoice(invoiceNo);
+						}
+					},
+					{
+						text: formatMessage("Clone e-Invoice"),
+						icon: "copy",
+						color: "#28a745",
+						permissionKey: "frm20162VATInvoiceMasterView_CloneEInvoice",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							cloneEInvoice();
+						}
+					}
+				];
+
+				// Apply permission visibility/enabled state dynamically
+				menuConfig.forEach(item => {
+					const perm = menuPermissions[item.permissionKey?.toLowerCase()];
+					if (perm && perm.visible) {
+						e.items.push({
+							...item,
+							disabled: !perm.enabled
+						});
+					}
+				});
 			}
-		}).dxPopup("instance");
-		var contextMenu = $("#contextMenu");
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-		$("#dataGrid").customizeGridContextMenu();
-		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-			e.preventDefault();
-			var rowIndex = $(this).index();
-			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-			 invoiceNo = rowData.InvoiceNo;
-			 InvoiceType = rowData.InvoiceSubType;
-			console.log("SalesRegisterData",rowData);
-			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-		});
+
+			// --- Context Menu for Header Area ---
+			if (e.target === "header") {
+				e.items.push(
+					{
+						text: "Column Chooser",
+						icon: "columnchooser",
+						color: "#007bff",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").showColumnChooser();
+						}
+					},
+					{
+						text: "Refresh Data",
+						icon: "refresh",
+						color: "#ffc107",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						}
+					}
+				);
+			}
+
+			// --- Prevent unwanted menu or highlight behavior ---
+			if (!e.items || e.items.length === 0) {
+				e.cancel = true; // cancel if no items available
+			}
+
+			if (e.target === "content" && !e.row) {
+				e.cancel = true; // cancel if clicking empty area below last row
+			}
+		}
 	});
 
-	
+
+	$(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+		const menuItems = $(".dx-context-menu .dx-menu-item");
+		currentIndex = menuItems.index(this);
+		highlightItem(this);
+	});
+
+	// ✅ Highlight helper
+	function highlightItem(item) {
+		$(".dx-context-menu .dx-menu-item").removeClass("highlighted"); // remove old highlight
+		if (item) $(item).addClass("highlighted"); // apply new highlight
+	}
+
+	// ✅ Custom CSS
+	$("<style>")
+		.prop("type", "text/css")
+		.html(`
+			/* Remove DevExtreme default hover/focus */
+			.dx-context-menu .dx-menu-item.dx-state-focused,
+			.dx-context-menu .dx-menu-item.dx-state-hover {
+					background-color: var(--title-background-color) !important;
+					color: white !important;
+			}
+
+			/* Our unified highlight */
+			.dx-context-menu .dx-menu-item.highlighted {
+				   background-color: var(--title-background-color) !important;
+				   color: white !important;
+			}
+		`)
+		.appendTo("head");
 	// function ddBtnShowRecords_click(duration, page) {
 	// 	var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 	// 	var toDateBox = $("#todateBox").dxDateBox("instance");

@@ -1,4 +1,8 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using DevExpress.Spreadsheet;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +10,7 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -18,11 +20,12 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<BillsReceivableController> _logger;
-
-        public BillsReceivableController(ILogger<BillsReceivableController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public BillsReceivableController(ILogger<BillsReceivableController> logger, IUserActionLogger userActionLogger, TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
         }
 
         [HttpGet]
@@ -53,6 +56,64 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         i.Less90to180,
                         i.Less180to365,
                         i.More365,
+                        i.OverdueDays,
+                        i.ConvertedReceivableAmount,
+                        i.ConvertedReceived,
+                        i.ConvertedBalance,
+                        company.CurrencyImage
+
+                    });
+
+                    if (filterType == "WithBalance")
+                    {
+                        query = query.Where(i => i.Balance > 0);
+                    }
+                    else if (filterType == "FullyReceived")
+                    {
+                        query = query.Where(i => i.Balance <= 0);
+                    }
+
+                    var result = await DataSourceLoader.LoadAsync(query, loadOptions);
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in Get: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Getoffline(DataSourceLoadOptions loadOptions, string filterType = null)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault();
+                    var query = dbContext.Tbl201SubLedgerReceivablesMaster.Select(i => new
+                    {
+                        i.AccountHeadNo,
+                        i.AccountHead,
+                        i.ReferenceNo,
+                        i.VoucherRefNo,
+                        i.VoucherDate,
+                        i.InvoiceDueDate,
+                        i.ReceivableAmount,
+                        i.Received,
+                        i.Balance,
+                        //i.NotOverdue,
+                        //i.Less30,
+                        //i.Less30to60,
+                        //i.Less60to90,
+                        //i.Less90to180,
+                        //i.Less180to365,
+                        //i.More365,
                         i.OverdueDays,
                         i.ConvertedReceivableAmount,
                         i.ConvertedReceived,
@@ -176,7 +237,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(new { success = true });
         }
         [HttpPost]
-        public IActionResult UpdateSubLedgerEntries([FromBody] List<Tbl201SubLedgerMaster> entries)
+        public async Task<IActionResult> UpdateSubLedgerEntriesAsync([FromBody] List<Tbl201SubLedgerMaster> entries)
         {
             // Resolve tenant-specific DB context
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -196,7 +257,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existingEntry = dbContext.Tbl201SubLedgerMasters
                         .FirstOrDefault(x => x.ReferenceNo == updatedEntry.ReferenceNo
                                           && x.SubLedgerId == updatedEntry.SubLedgerId);
-
+                    await _userActionLogger.LogAsync(
+              module: "Finance > Bills Receivable",
+              actionDetail: $"Updated: {existingEntry.VoucherNo}",
+              documentNo: existingEntry.VoucherNo
+              );
                     if (existingEntry != null)
                     {
                         existingEntry.Amount = updatedEntry.Amount;
@@ -213,7 +278,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
                 dbContext.SaveChanges();
-
+              
                 return Ok(new { success = true, message = "Ledger entries updated successfully." });
             }
             catch (Exception ex)
@@ -228,7 +293,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
         }
         [HttpPost]
-        public IActionResult DeleteSubLedgerEntry([FromBody] DeleteSubLedgerDto model)
+        public async Task<IActionResult> DeleteSubLedgerEntryAsync([FromBody] DeleteSubLedgerDto model)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
@@ -245,6 +310,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             dbContext.Tbl201SubLedgerMasters.Remove(entry);
             dbContext.SaveChanges();
 
+            await _userActionLogger.LogAsync(
+              module: "Finance > Bills Receivable",
+              actionDetail: $"Deleted: {entry.VoucherNo}",
+              documentNo: entry.VoucherNo
+              );
             return Ok(new { success = true });
         }
 

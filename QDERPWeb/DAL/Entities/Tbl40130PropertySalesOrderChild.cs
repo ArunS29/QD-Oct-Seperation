@@ -52,4 +52,21 @@ public partial class Tbl40130PropertySalesOrderChild
     public decimal? UnitRate3 { get; set; }
 
     public string AddlNotes { get; set; }
+
+    public string Certification { get; set; }
+
+    public string Capacity { get; set; }
+
+    public string Operator { get; set; }
+
+    public string Attachment { get; set; }
+
+    public string Notes { get; set; }
+
+    public string DeliveryDetails { get; set; }
+
+
+    public string HasEquipmentDetails { get; set; }
+    public string PropertyOrdered { get; set; }
+
 }

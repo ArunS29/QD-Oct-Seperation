@@ -121,7 +121,7 @@
         <div class="col-md-2">
             @(Html.DevExtreme().Button()
                 .ID("btnAddpurStatus")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Icon("plus")
                 .OnClick("function() { addQuotationStatus(); }")
                 .ElementAttr(new { @class = "custom-ui-button" })
@@ -155,10 +155,10 @@
             .OnRowUpdating("onpurchaseorderUpdating")// Handles saving
             .Columns(columns =>
             {
-            columns.Add().DataField("PocategoryId").Caption("Code").Width(80).AllowEditing(false);
-            columns.Add().DataField("PocategoryName").Caption("PO Categories").Width(200);
+            columns.Add().DataField("PocategoryId").Caption(new JS("formatMessage('Code')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("PocategoryName").Caption(new JS("formatMessage('PO Categories')")).Width(200);
             columns.Add()
-            .Caption("Action").Width(100)
+            .Caption(new JS("formatMessage('Action')")).Width(100)
             .Type(GridCommandColumnType.Buttons)
             .Buttons(buttons =>
             {
@@ -258,10 +258,19 @@
 
         
         function addQuotationStatus() {
+               var StatusValidator = $("#txtPurStatus").dxValidator("instance");
+
+             var StatusValidation = StatusValidator.validate();
+
+
+
+    // If the branch name is valid, proceed with the AJAX request
+    if ( StatusValidation.isValid) {
             
             const data = {
                   PocategoryName: $("#txtPurStatus").dxTextBox("instance").option("value"),
             };
+    
           $.ajax({
                 url: '/api/PurchaseOrder/SaveOrUpdatePurchaseOrderCategories',
                 method: "POST",
@@ -270,13 +279,20 @@
                 success: function () {
                     DevExpress.ui.notify("Quotation Status saved successfully!", "success", 2000);
                     $("#PurStatusGrid").dxDataGrid("instance").refresh();
+                     $("#txtPurStatus").dxTextBox("instance").option("value","")
+
+                   $("#txtPurStatus").dxValidator("instance").reset();
                 },
-                error: function () {
-                    DevExpress.ui.notify("Failed to save Purchase Order.", "error", 2000);
-                }
+                 error: function (xhr) {
+                const msg = xhr.responseJSON?.message || "Failed to save.";
+                DevExpress.ui.notify(msg, "error", 3000); // ✅ Shows backend message
+            }
             });
         
-
+            }else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
             }
         $("#btnUpdate").on("click", function () {
             const grid = $("#PurStatusGrid").dxDataGrid("instance");

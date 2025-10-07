@@ -193,32 +193,20 @@
 </style>
 
 <input id="formId" value="frm60123MaterialReceiptsDetails" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="MaterialRequest" class="no-border-input"></div>
 	</div>
-</div>
-
-@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
-
-
-<div class="context-menu" id="contextMenu">
-	<div class="context-menu-item">
-		<i class="dx-icon-search"></i> View e-Invoice Credit Note
-	</div>
-
-	<div class="context-menu-item has-submenu">
-		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
-		<div class="submenu">
-			<div class="context-menu-item">
-				<i class="dx-icon-file"></i> View VAT Credit Note
-			</div>
+</div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
 		</div>
+		<div id="MaterialRequest" class="titleText no-border-title"></div>
 	</div>
 </div>
-
-
-
+@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -441,16 +429,6 @@
 		)
 </div>
 
-<ul id="submenu" class="custom-submenu">
-	<li id="addCreditNote">Add new e-Invoice Credit Note</li>
-</ul>
-<div id="overlay" class="overlay">
-	<div class="overlay-content">
-		<span class="close-btn" onclick="closeOverlay()">&times;</span>
-		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
-	</div>
-</div>
-
 
 <script>
 
@@ -631,7 +609,7 @@
 
 			e.items = [
 				{
-					text: "Edit Material Receipt",
+					text: formatMessage("Edit Material Receipt"),
 					icon: "edit",
 					onItemClick: function () {
 						const url = `/${tenantName}/IMS/MaterialReceiptFromSupplier?ReceiptNo=${ReceiptNo}`;
@@ -644,14 +622,9 @@
 		}
 	}
 
-		$(function () {
-				$("#MaterialRequest").dxTextBox({
-					text: formatMessage("Material Receipt with Details"),
-				readOnly: true,
-				onContentReady: function (e) {
-					$(e.element).addClass("dx-textbox-heading");
-				}
-			});
-		});
 
+
+		 $(function () {
+							$("#MaterialRequest").text(formatMessage("Material Receipt with Details"));
+					 });
 </script>	

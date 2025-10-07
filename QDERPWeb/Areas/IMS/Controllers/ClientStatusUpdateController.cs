@@ -10,7 +10,7 @@ using QD.ERP.Web.Services.Logging;
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [ApiController]
+    [ApiController]  
     public class ClientStatusUpdateController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
@@ -20,7 +20,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         public ClientStatusUpdateController(ILogger<ClientStatusUpdateController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
             _userActionLogger = userActionLogger;
-            _tenantDbContextHelper = tenantDbContextHelper;
+            _tenantDbContextHelper = tenantDbContextHelper;   
             _logger = logger;
         }
 
@@ -219,15 +219,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 var userName = HttpContext.Session.GetString("UserName");
-                if (string.IsNullOrEmpty(userName))
-                {
-                    _logger.LogWarning("GetReportedByValue failed: UserName is missing in session.");
-                    return Unauthorized(new { success = false, message = "User is not logged in." });
-                }
 
-                _logger.LogInformation("Returning UserName: {UserName}", userName);
-
-                // ✅ Always return consistent JSON response
                 return Ok(new
                 {
                     success = true,
@@ -240,6 +232,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
 
 
     }
