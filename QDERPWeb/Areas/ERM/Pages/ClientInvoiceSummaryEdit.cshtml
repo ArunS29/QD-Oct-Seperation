@@ -349,7 +349,7 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<input id="formId" value="EquipmentEnquiryEdit" type="hidden" />
+<input id="formId" value="EquipmentEnquiryEdit" type="hidden"/>
 <div class="dx-card-container">
 	<div class="dx-card-header minimal-header">
 		<div class="card-title-icon">
@@ -376,15 +376,16 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-<div id="tab-content-1" class="tab-content" style="height: 200px;">
+<div id="tab-content-1" class="tab-content" style="height: 200px;padding: 1px 19px 3px 3px;">
 
 				<table style="width:100%;">
     <!-- Row 1 -->
-				<tr style="display:flex; gap:10px; align-items:end; width:100%;">
+				<tr style="display:flex; gap:10px;">
 					<td style="width:25%;">
 						@(Html.DevExtreme().TextBox()
 							.Label(new JS("formatMessage('Billing Summary Ref No')"))
 							.ID("txtBillingRefNo")
+							.ReadOnly(true)
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
 						)
@@ -483,7 +484,6 @@
 							.Width("100%")
 						)
 					</td>
-					<td style="width:25%;">
 						
 						<td style="width: 25%;">
 							@(Html.DevExtreme().TextBox()
@@ -565,6 +565,7 @@
 						@(Html.DevExtreme().TextBox()
 							.Label(new JS("formatMessage('VAT Invoice No')"))
 							.ID("txtVATInvoice")
+								.ReadOnly(true)
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
 						)
@@ -738,30 +739,46 @@
                 @* <h6>Additions & Deductions</h6> *@
 
                 <!-- Invoice Notes -->
-                @(Html.DevExtreme().TextArea()
-                    .ID("txtInvoiceNotes")
-                    .Label(new JS("formatMessage('Invoice Summary Notes:')"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .Height(80)
-                    .Width("100%")
-                )
+               <div class="row">
+    <!-- Invoice Notes -->
+    <div class="col-6">
+        @(Html.DevExtreme().TextArea()
+            .ID("txtInvoiceNotes")
+            .Label(new JS("formatMessage('Invoice Summary Notes:')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .Height(80)
+            .Width("100%")
+        )
+    </div>
 
-                <!-- VAT Dropdown -->
-                @(Html.DevExtreme().DropDownBox()
-                    .Label(new JS("formatMessage('VAT Applicable %')"))
-                    .DataSource(d => d.WebApi()
-                        .Controller("AddNewClientRequest1")
-                        .LoadAction("GetTax")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("PurchaseTaxSlabCode")
-                    )
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("ddGetTax")
-                    .ValueExpr("PurchaseTaxSlabCode")
-                    .DisplayExpr("PurchaseTaxSlab")
-                    .Width("100%")
-                    .ContentTemplate(new TemplateName("GetTaxContentTemplate"))
-                )
+    <!-- VAT Dropdown -->
+    <div class="col-6">
+
+		   @(Html.DevExtreme().DropDownBox()
+															.Label(new JS("formatMessage('VAT Applicable %')"))
+															.DataSource(d => d.WebApi()
+															.Controller("AddNewClientRequest1")
+															.LoadAction("GetTax")
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("PurchaseTaxSlabCode")
+															)
+															.LabelMode(EditorLabelMode.Floating)
+															.ID("ddGetTax")
+															.Width(900)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+															.ValueExpr("PurchaseTaxSlabCode")
+															.DisplayExpr("PurchaseTaxSlab")
+															.OnInput("dropDownBoxOnInput")
+															.OnOpened("onOpened")
+															.TabIndex(1)
+															.Width("100%")
+															.OnKeyDown("onKeyDown")
+															.ContentTemplate(new TemplateName("GetTaxContentTemplate"))
+															)
+    </div>
+</div>
 
                 <!-- Additions -->
                 <div class="row mt-2">
@@ -775,13 +792,17 @@
                         )
                     </div>
                     <div class="col-4">
-                        @(Html.DevExtreme().NumberBox()
-                            .ID("txtAdditionAmount")
-                            .Min(0)
-                            .Label(new JS("formatMessage('Amount')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                        )
+                       
+							@(Html.DevExtreme().NumberBox()
+																			.ID("txtAdditionAmount")
+																			.Label(new JS("formatMessage('Amount')"))
+																			.LabelMode(EditorLabelMode.Floating)
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Value(1)
+																			.Width("100%")
+                                     )
                     </div>
                 </div>
 
@@ -797,13 +818,16 @@
                         )
                     </div>
                     <div class="col-4">
-                        @(Html.DevExtreme().NumberBox()
-                            .ID("txtDeductionAmount")
-                            .Min(0)
-                            .Label(new JS("formatMessage('Amount')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                        )
+							@(Html.DevExtreme().NumberBox()
+																	.ID("txtDeductionAmount")
+																	.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																	.LabelMode(EditorLabelMode.Floating)
+																	.Min(1)
+																	.Step(1)
+																	.ShowSpinButtons(true)
+																	.Value(1)
+																	.Width("100%")
+     )
                     </div>
                 </div>
             @* </div> *@
@@ -919,61 +943,72 @@
 		</div>
 	</div>
 <div class="dx-field ledgerResult">
-				@(Html.DevExtreme().DataGrid()
-					.ID("itemGrid") 
-					.Height("38vh")
-					.DataSource(new JS("window.itemGridDataSource"))
-					.Selection(s => s
-					.Mode(SelectionMode.Multiple)
-					.ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
-					)
-					.Columns(columns =>
-					{
-						columns.Add().DataField("RequestChildSlNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate"));
-						columns.Add().DataField("PropertyType").Caption(new JS("formatMessage('Property Code')")).Width(120).AllowEditing(false)
-						.CellTemplate(new JS(@"
+				@(
+								Html.DevExtreme().DataGrid()
+									.ID("itemGrid") 
+									.Height("38vh")
+									.DataSource(new JS("window.itemGridDataSource"))
+									.Selection(s => s
+									.Mode(SelectionMode.Multiple)
+									.ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+									)
+									.Columns(columns =>
+									{
+										columns.Add().DataField("InvoiceChildSlNo").Caption("#").Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate"));
+										columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')")).Width(120).AllowEditing(false)
+										.CellTemplate(new JS(@"
 						function(container, options) {
-						container.text(options.data?.PropertyTypeId || '');
+						container.text(options.data?.PropertyNo || '');
 						}
 					"));
-						columns.Add()
-						.DataField("PropertyTypeId") 
-						.Caption(new JS("formatMessage('Description')"))
-						.Width(350)
-						.EditCellTemplate(new JS("descriptionDropDownTemplate"))
-						.CellTemplate(new JS(@"
+										columns.Add()
+										.DataField("DetailedDescription") 
+										.Caption(new JS("formatMessage('Description')"))
+										.Width(350)
+										.EditCellTemplate(new JS("descriptionDropDownTemplate"))
+										.CellTemplate(new JS(@"
 						function(container, options) {
-						const item = descriptionList.find(d => d.PropertyTypeId === options.value);
-						container.text(item ? item.PropertyType: options.value);
+						const item = descriptionList.find(d => d.PropertyNo === options.value);
+						container.text(item ? item.PropertyDescription: options.value);
 						}
 						"));
-						columns.Add()
-					.DataField("Descriptions")
-					.Caption("...")
-					.CssClass("center-header")
-					.Width(60)
-					.AllowEditing(false)
-					.CellTemplate(new JS("descriptionCellTemplate"));
+										columns.Add()
+									.DataField("Descriptions")
+									.Caption("...")
+									.CssClass("center-header")
+									.Width(60)
+									.AllowEditing(false)
+									.CellTemplate(new JS("descriptionCellTemplate"));
 
+										columns.Add()
+									.DataField("QuantityInvoiced")
+														.Caption(new JS("formatMessage('Qty')"))
+														.DataType(GridColumnDataType.Number) // ensures numeric
+														.Width(150)
+														.EditorOptions(new {
+															maxLength = 8
+														});
+
+										columns.Add()
+									.DataField("UoM")
+									.Caption(new JS("formatMessage('Unit')"))
+									.Alignment(HorizontalAlignment.Center)
+									.Width(100);
+										//.CustomizeText("function(cellInfo) { return cellInfo.value || 'Unit'; }");
 						columns.Add()
 						.DataField("UnitRateMethod")
 						.Caption(new JS("formatMessage('Unit Rate Method')"))
 						.Width(150)
 						.EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
 						.CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
-						columns.Add()
-										.DataField("QtyRequested")
-										.Caption(new JS("formatMessage('Qty')"))
-										.DataType(GridColumnDataType.Number) // ensures numeric
-										.Width(150)
-										.EditorOptions(new {
-											maxLength = 8
-										});
-									columns.Add().DataField("ExpectedUnitRate").Caption(new JS("formatMessage('Expected Rate')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+										
+									columns.Add().DataField("TotalHours").Caption(new JS("formatMessage('Hours')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Units Requested')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+									columns.Add().DataField("Othours").Caption(new JS("formatMessage('OT Hours')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+									columns.Add().DataField("UnitsRequested").Caption(new JS("formatMessage('Reg Rate')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
+									columns.Add().DataField("Otrate").Caption(new JS("formatMessage('OT Rate')")).DataType(GridColumnDataType.Number).EditorOptions(new {value = 0});
 
-									columns.Add().DataField("LineTotal").Caption(new JS("formatMessage('Line Total')")).DataType(GridColumnDataType.Number).AllowEditing(false);
+									columns.Add().DataField("CalculatedLineAmount").Caption(new JS("formatMessage('Total')")).DataType(GridColumnDataType.Number).AllowEditing(false);
 									columns.Add()
 							.Type(GridCommandColumnType.Buttons)
 							.Width(60)
@@ -1008,446 +1043,44 @@
 					)
 		</div>
 		<div class="footer-fixed">
-			@await Html.PartialAsync("/Pages/Shared/ERM/MaterialRequestFormFooter1.cshtml")
+			@await Html.PartialAsync("/Pages/Shared/ERM/ClientInvoiceSummaryEditfooter.cshtml")
 		</div>
-		@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
-{
-	@(Html.DevExtreme().DataGrid()
-
-											.ID("taxcurrecy-datagrid")
-											.DataSource(d => d.WebApi()
-											.Controller("VATModule")
-													.LoadAction("GetTaxCurrency")
-											.LoadMode(DataSourceLoadMode.Raw)
-													.Key("CurrencyExchangeId")
-
-											)
-											.WordWrapEnabled(true)
-											.ShowBorders(true)
-											.SearchPanel(sp => sp.HighlightSearchText(true))
-											.Selection(sl => sl.Mode(SelectionMode.Single)) 
-											.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
-											.OnInitialized("onBaseCurrencyInitialized")
-											// .HeaderFilter(p => p.Visible(true))
-											.ShowBorders(true)
-											.HoverStateEnabled(true)
-											.Paging(p => p.PageSize(15))
-											.FilterRow(f => f.Visible(true))
-											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-											.Height(345)
-											.Selection(s => s.Mode(SelectionMode.Single))
-											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-											.Columns(columns =>
-											{
-												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-
-
-											})
-
-										)
-
-}
-@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
-{
-	@(Html.DevExtreme().DataGrid()
-
-											.ID("invoicecurrecy-datagrid")
-										.DataSource(d => d.WebApi()
-										.Controller("VATModule")
-										.LoadAction("GetInvoiceCurrency")
-										.LoadMode(DataSourceLoadMode.Raw)
-										.Key("CurrencyExchangeId")
-										)		
-										.WordWrapEnabled(true)
-										.ShowBorders(true)
-										.SearchPanel(sp => sp.HighlightSearchText(true))
-										.Selection(sl => sl.Mode(SelectionMode.Single)) 
-										.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
-										.OnInitialized("onBaseCurrencyInitialized")
-										.ShowBorders(true)
-										.HoverStateEnabled(true)
-										.Paging(p => p.PageSize(15))
-										.FilterRow(f => f.Visible(false))
-										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-										.Height(345)
-										.Selection(s => s.Mode(SelectionMode.Single))
-										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-										.Columns(columns =>
-										{
-											columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
-											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
-											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-
-
-										})
-									)
-}
-			@using (Html.DevExtreme().NamedTemplate("GetProjectRequestTemplate"))
-			{
-				@(Html.DevExtreme().DataGrid()
-							.ID("GetProject-datagrid")
-							.DataSource(d => d.WebApi()
-							.Controller("AddNewClientRequest")
-							.LoadAction("GetProject")
-							.LoadMode(DataSourceLoadMode.Raw)
-							.Key("ProjectId")
-							)
-							.WordWrapEnabled(true)
-							.ShowBorders(true)
-							.Selection(sl => sl.Mode(SelectionMode.Single)) 
-							.OnSelectionChanged("dataGridSelectionChanged15")
-							.OnInitialized("dataGridInitialized15")
-							.HeaderFilter(p => p.Visible(true))
-							.ShowBorders(true)
-							.HoverStateEnabled(true)
-							.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(false))
-							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-							.Height(345)
-							.Selection(s => s.Mode(SelectionMode.Single))
-							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-							.Columns(columns =>
-							{
-								columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('ID')"));
-								columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Description')"));
+			@using (Html.DevExtreme().NamedTemplate("GetTaxContentTemplate"))
+	{
+		@(Html.DevExtreme().DataGrid()
+				.ID("GetTax-datagrid")
+				.DataSource(d => d.WebApi()
+				.Controller("AddNewClientRequest")
+				.LoadAction("GetTax")
+				.LoadMode(DataSourceLoadMode.Raw)
+				.Key("PurchaseTaxSlabCode")
+				)
+				.WordWrapEnabled(true)
+				.ShowBorders(true)
+				.Selection(sl => sl.Mode(SelectionMode.Single))
+				.OnSelectionChanged("dataGridSelectionChanged5")
+				.OnInitialized("dataGridInitialized5")
+				.HeaderFilter(p => p.Visible(true))
+				.FilterRow(f => f.Visible(false))
+				.ShowBorders(true)
+				.HoverStateEnabled(true)
+				.Paging(p => p.PageSize(15))
+				//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+				.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+				.Height(345)
+				.Selection(s => s.Mode(SelectionMode.Single))
+				.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+				.Columns(columns =>
+				{
+					columns.Add().Caption(new JS("formatMessage('Code')")).DataField("PurchaseTaxSlabCode").Width(80);
+					columns.Add().Caption(new JS("formatMessage('TabSlab')")).DataField("PurchaseTaxSlab");
 
 
 
-							})
-							)
-						}
-		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetProject-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetClientDetails")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("ClientCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged1")
-					.OnInitialized("dataGridInitialized1")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height("65vh")
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
-					})
-					)
-				}
-
-
-		@using (Html.DevExtreme().NamedTemplate("GetModeOfRequestContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetProject-datagrid1")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetModeofRequest")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("ModeOfRequestId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-					.OnSelectionChanged("dataGridSelectionChanged2")
-					.OnInitialized("dataGridInitialized2")
-					.HeaderFilter(p => p.Visible(true))
-					.FilterRow(f => f.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("ModeOfRequest").Caption(new JS("formatMessage('Mode Of Request')"));
-
-
-
-					})
-					)
-				}
-
-		@using (Html.DevExtreme().NamedTemplate("GetTypeOfRequestContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetTypeOfRequest-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetTypeOfRequest")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("TypeOfRequestId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged3")
-					.OnInitialized("dataGridInitialized3")
-					.HeaderFilter(p => p.Visible(true))
-					.FilterRow(f => f.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')"));
-
-
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetSalesPerson-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetSalesPerson")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("SalesPersonCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged4")
-					.OnInitialized("dataGridInitialized4")
-					.HeaderFilter(p => p.Visible(true))
-					.FilterRow(f => f.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Name')"));
-
-					})
-					)
-				}
-				@using (Html.DevExtreme().NamedTemplate("GetTaxContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetTax-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest1")
-					.LoadAction("GetTax")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("PurchaseTaxSlabCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))  
-					.OnSelectionChanged("dataGridSelectionChanged5")
-					.OnInitialized("dataGridInitialized5")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('Tax Code')")).DataField("PurchaseTaxSlabCode");
-						columns.Add().Caption(new JS("formatMessage('Tax Slab')")).DataField("PurchaseTaxSlab");
-					})
-					)
-		}
-		@using (Html.DevExtreme().NamedTemplate("GetTaxContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetTax-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetTax")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("PurchaseTaxSlabCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged5")
-					.OnInitialized("dataGridInitialized5")
-					.HeaderFilter(p => p.Visible(true))
-					.FilterRow(f => f.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('Code')")).DataField("PurchaseTaxSlabCode").Width(80);
-						columns.Add().Caption(new JS("formatMessage('Slab')")).DataField("PurchaseTaxSlab");
-
-
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("GetCompanyContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetCompany-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetCompany")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("CompanyId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single)) 
-					.OnSelectionChanged("dataGridSelectionChanged6")
-					.OnInitialized("dataGridInitialized6")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('Code')")).DataField("CompanyId").Width(80);
-						columns.Add().Caption(new JS("formatMessage('Name')")).DataField("CompanyName");
-
-
-
-					})
-					)
-		}@using (Html.DevExtreme().NamedTemplate("GetEnquiryContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetEnquiry-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetEnquiry")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("PurchaseRequestStatusId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged7")
-					.OnInitialized("dataGridInitialized7")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false)) 
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('Status')")).DataField("PurchaseRequestStatus");
-
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("GetInventoryGroupContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetInventoryGroup-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetInventoryGroup")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("InventoryMasterGroupId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))  
-					.OnSelectionChanged("dataGridSelectionChanged8")
-					.OnInitialized("dataGridInitialized8")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId").Width(80);
-						columns.Add().Caption(new JS("formatMessage('Inventory Master Group')")).DataField("InventoryMasterGroup");
-					})
-					)
-				}
-
-		@using (Html.DevExtreme().NamedTemplate("GetRequesstingUnitContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetRequesstingUnit-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetRequesstingUnit")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("ProjectSubUnitCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("dataGridSelectionChanged9")
-					.OnInitialized("dataGridInitialized9")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Width(352)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-
-						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(270);
-
-					})
-					)
-				}
-				@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
+				})
+				)
+			}
+			@using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
 				{
 					@(Html.DevExtreme().DataGrid()
 							.ID("GetPreparedby-datagrid")
@@ -1472,6 +1105,7 @@
 							.Selection(s => s.Mode(SelectionMode.Single))
 							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 							.Columns(columns =>
+
 							{
 								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
@@ -1480,376 +1114,28 @@
 							})
 							)
 						}
-		@using (Html.DevExtreme().NamedTemplate("GetVerifiedByContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetVerifiedby-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetSignatory")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("SignatoryId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single)) 
-					.OnSelectionChanged("dataGridSelectionChanged11")
-					.OnInitialized("dataGridInitialized11")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
-
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("GetApprovedByContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetApprovedby-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetSignatory")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("SignatoryId")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))  
-					.OnSelectionChanged("dataGridSelectionChanged12")
-					.OnInitialized("dataGridInitialized12")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
-
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("GetMPRRequesterByContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("GetMPRRequesterBy-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("AddNewClientRequest")
-					.LoadAction("GetMPRRequesterBy")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("RequestedByCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-					.OnSelectionChanged("dataGridSelectionChanged14")
-					.OnInitialized("dataGridInitialized14")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(false))//
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().Caption(new JS("formatMessage('RequestedByCode')")).DataField("RequestedByCode");
-						columns.Add().Caption(new JS("formatMessage('RequestedBy')")).DataField("RequestedBy");
-
-					})
-					)
-				}
-
-		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("paymentmeans-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetPaymentMeans")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("PaymentMeansTypeCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(true)
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
-					.OnInitialized("CommondataGridInitialized")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-										 		@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-			  		// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("PaymentMeansTypeCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(200);
-						columns.Add().DataField("PaymentMeansType").Caption(new JS("formatMessage('PaymentMeans Type')")).Alignment(HorizontalAlignment.Center);
-
-
-
-					})
-					)
-				}
-
-		@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("clientcode-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetClientCode")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountHead")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(true)
-					.FilterRow(f => f.Visible(false))
-					//.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("ClientCodedataGridSelectionChanged")
-					.OnInitialized("ClientCodedataGridInitialized")
-					//.OnRowPrepared("onClientCodeRowPrepared")
-					.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-			  		// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete").Alignment(HorizontalAlignment.Center);
-
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("clientname-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetClientCode")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountHead")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(false)
-					.FilterRow(f => f.Visible(false))
-					//.SearchPanel(sp => sp.HighlightSearchText(false))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("ClientNamedataGridSelectionChanged")
-					.OnInitialized("ClientCodedataGridInitialized")
-					//.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
-
-					})
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("clientname")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetVATInvoiceMaster")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("BuyerOtherIdtype")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(true)
-					.FilterRow(f => f.Visible(true))
-					//.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					//.HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Buyer ID Type')")).Alignment(HorizontalAlignment.Center);
-					})
-					.OnSelectionChanged("dataGridSelectionChanged")
-					.OnInitialized("dataGridInitialized")
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("DescriptionDropdownContentTemplate"))
-		{
-			@(
-					Html.DevExtreme().DataGrid()
-					.ID("accountDropDownBoxeditGrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetGoodsAndServices")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("Gscode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					//.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-					.SelectedRowKeys(new JS(@"component.option(""value"")"))
-					.OnSelectionChanged(@<text>
-								 			function(selectedItems) {
-								 			var keys = selectedItems.selectedRowKeys;
-								 			component.option("value", keys);
-								 			console.log(keys);
-								 			}
-								 		</text>)
-					.OnSelectionChanged("dataGridDescriptionSelectionChanged")
-					.OnInitialized("dataGridDescriptionInitialized")
-
-
-					// .HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-
-					)
-				}
-		@using (Html.DevExtreme().NamedTemplate("UnitRateMethodContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("unitRateDropDownBoxEditGrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetAccountGroups")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("UnitCode"))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.SelectedRowKeys(new JS("component.option('value')"))
-					.OnSelectionChanged(@<text>
-					function(e) {
-					var selectedItem = e.selectedRowsData[0];
-					if (selectedItem) {
-					component.option("value", selectedItem.UnitCode);
-
-				let grid = $("#B2BdataGrid").dxDataGrid("instance");
-				let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-				if (rowIndex !== -1) {
-				grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-				grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
-				}
-
-				component.close();
-				}
-				}
-			</text>)
-					.Columns(columns =>
-					{
-						columns.Add().DataField("UnitCode").Caption("Code").Width(100).Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("UnitDesc").Caption("Unit Rate Method").Width(300).Alignment(HorizontalAlignment.Center);
-					})
-					.Height(345)
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(10))
-				//	.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					)
-				}
-
-
-		@using (Html.DevExtreme().NamedTemplate("TaxSlabDropdownContentTemplate"))
-		{
-			@(
-					Html.DevExtreme().DataGrid()
-					.ID("TaxSlabDropDownBoxeditGrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetVatTaxSlabs")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("TaxSlabCode")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					//.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-					.SelectedRowKeys(new JS(@"component.option(""value"")"))
-					.OnSelectionChanged(@<text>
-								 			function(selectedItems) {
-								 			var keys = selectedItems.selectedRowKeys;
-								 			component.option("value", keys);
-								 			console.log(keys);
-								 			}
-								 		</text>)
-					.OnSelectionChanged("dataGridTaxSlabSelectionChanged")
-					.OnInitialized("dataGridTaxSlabInitialized")
-
-
-					// .HeaderFilter(p => p.Visible(true))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
-					.Selection(s => s.Mode(SelectionMode.Single))
-
-					)
-				}
-
-
-
-
 	</div>
 </div>
-	<script>
+</div>
+   <div id="GenerateEinvoicePopover"></div>
+    <script>
+
+		 //Tab events
+				let acgid, accgrp = "", accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = "";
+				let getidfromCOA;//IsChart=false;
+				$(document).ready(function () {
+ 
+					var selectedTabIndex = 0;
+					$("#tab-content-" + (selectedTabIndex + 1)).show();
+				});
+				function onTabSelectionChanged(e) {
+					// Hide all tab content
+					$(".tab-content").hide();
+ 
+					// Show the content of the selected tab
+					var selectedTabIndex = e.component.option("selectedIndex");
+					$("#tab-content-" + (selectedTabIndex + 1)).show();
+				}
 
 		 let unitCodesList = [];
 
@@ -1963,8 +1249,6 @@
 		}
 
 
-
-
 			 function serialTemplate(cellElement, cellInfo) {
 				 const grid = $("#itemGrid").dxDataGrid("instance");
 				 const rowIndex = grid.getRowIndexByKey(cellInfo.key);
@@ -2027,7 +1311,7 @@
 					);
 				}
 			}
-			function deleteChild(requestChildSlNo) {
+				function deleteChild(requestChildSlNo) {
 				DevExpress.ui.dialog.confirm(
 					"Do you want to delete this child record?",
 					"Confirmation"
@@ -2038,7 +1322,7 @@
 							type: "DELETE",
 							success: function (response) {
 							DevExpress.ui.notify(response.message, "success", 2000);
-
+			
 							const grid = $("#itemGrid").dxDataGrid("instance");
 							if (grid) {
 								const ds = grid.getDataSource();
@@ -2061,12 +1345,11 @@
 				});
 			}
 				//description DropDownTemplate DropDown
-					 //description DropDownTemplate DropDown
+		//			 description DropDownTemplate DropDown
 		let descriptionList = [];
 
 		$(function () {
-			// Load data once and reuse in dropdown
-			$.get("/api/AddNewProperty/GetAllPropertyTypes", function (data) {
+			$.get("/api/MaterialReceipt1/GetAllPropertyDescriptions", function (data) {
 				descriptionList = data;
 			});
 		});
@@ -2083,8 +1366,8 @@
 
 			const dropDown = $("<div>").dxDropDownBox({
 				value: cellInfo.value,
-				valueExpr: "PropertyTypeId",
-				displayExpr: "PropertyType",
+				valueExpr: "PropertyDescription",
+				displayExpr: "PropertyDescription",
 				dataSource: descriptionList,
 				showClearButton: true,
 				showDropDownButton: true,
@@ -2094,11 +1377,11 @@
 				contentTemplate: function (e) {
 					const dataGrid = $("<div>").dxDataGrid({
 						dataSource: descriptionList,
-						keyExpr: "PropertyTypeId",
+						keyExpr: "PropertyNo",
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "PropertyTypeId", caption: "ID" },
-							{ dataField: "PropertyType", caption: "Proeprty Type" },
+							{ dataField: "PropertyNo", caption: "Property No" },
+							{ dataField: "PropertyDescription", caption: "Proeprty Description" },
 						],
 						searchPanel: {
 							visible: true,
@@ -2108,11 +1391,11 @@
 						onSelectionChanged: function (selectedItems) {
 							const selected = selectedItems.selectedRowsData[0];
 							if (selected) {
-								cellInfo.setValue(selected.PropertyTypeId);
+								cellInfo.setValue(selected.PropertyDescription);
 								const grid = $("#itemGrid").dxDataGrid("instance");
 								const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-								grid.cellValue(rowIndex, "PropertyTypeId", selected.PropertyTypeId);
-								grid.cellValue(rowIndex, "PropertyType", selected.PropertyType);
+								grid.cellValue(rowIndex, "PropertyNo", selected.PropertyNo );
+								grid.cellValue(rowIndex, "PropertyDescription", selected.PropertyDescription);
 								e.component.close();
 							}
 						},
@@ -2136,155 +1419,323 @@
 			});
 
 			// Add Button (no edit button)
-			const addButton = $("<div>").dxButton({
-				icon: "plus",
-				hint: "Add new item",
-				stylingMode: "text",
-				onClick: function () {
-					const url = `/${tenantName}/ERM/PropertyType`;
-					openModal(url, "Property Type");
-				},
-				width: 50
-			});
+		
 
 			wrapper.append(dropDown, addButton);
 			cellElement.append(wrapper);
 		}
 
 
+			$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    let InvoiceNo = urlParams.get('InvoiceNo');   // ✅ Get from querystring
 
-				let Approved=null;
-
-				$(document).ready(function () {
-					const urlParams = new URLSearchParams(window.location.search);
-					let EqiupmentRequestNo = urlParams.get('code');
-					EqiupmentRequestNo = EqiupmentRequestNo ? EqiupmentRequestNo.split("?")[0] : null;
-
-
-						getSalesPersonByUser();
-						getDefaultCompany();
-					if (EqiupmentRequestNo ) {
-						// If Mprno is present, load client details
-						loadClientDetails(EqiupmentRequestNo );
-					} else  {
-						// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
-						$.ajax({
-							url: "/api/AddNewClientRequest1/GetNewInvoiceNo",
-							type: "GET",
-							success: function (data) {
-								console.log("Success:", data);
-
-								const invoiceBox = $("#txtRequestNo").dxTextBox("instance");
-								if (invoiceBox) {
-									invoiceBox.option("value", data || "");
-								} else {
-									console.warn("Invoice TextBox not initialized.");
-								}
-							},
-							error: function (xhr, status, error) {
-								console.error("Error loading Payment Accounts:", error);
-								DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
-							}
-						});
-					}
-				});
+    if (InvoiceNo) {
+        // If invoice exists → load client details
+        loadClientDetails(InvoiceNo);
+    } else 
 
 
-			function loadClientDetails(InvoiceNo) {
-				$.ajax({
-					url: `/api/AddNewClientRequest1/GetNewInvoiceNoteNo?EqNo=${encodeURIComponent(InvoiceNo )}`,
-					type: 'GET',
-					dataType: 'json',
-					success: function (response) {
+        // If new form → generate auto invoice no
+        $.ajax({
+            url: "/api/MaterialReceipt1/GetEquipmentInvoiceNo",
+            type: "GET",
+            success: function (data) {
+                console.log("Generated Invoice No:", data);
+                $("#txtBillingRefNo").dxTextBox("instance")?.option("value", data || "");
+            },
+            error: function () {
+                DevExpress.ui.dialog.alert("Failed to generate invoice number.", "Error");
+            }
+        });
+    
+});
+
+function bindInvoiceMasterData(data) {
+    if (!data) {
+        DevExpress.ui.notify("No data to bind.", "error", 3000);
+        return;
+    }
+
+    $("#btnSave").dxButton("instance").option("text", "Update");
+
+    // Binding each DevExtreme control
+    $("#txtBillingRefNo").dxTextBox("instance").option("value", data.InvoiceNo ?? "");
+    $("#InvoiceDate").dxDateBox("instance").option("value", data.InvoiceDate ?? null);
+    $("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.ClientCode ?? "");
+    $("#txtContactName").dxTextBox("instance").option("value", data.ClientReferenceName ?? "");
+    $("#txtReqEmail").dxTextBox("instance").option("value", data.ClientEmail ?? "");
+    $("#ContactNo").dxTextBox("instance").option("value", data.ClientContactNo ?? "");
+  //  $("#txtRemarks").dxTextArea("instance").option("value", data.Remarks ?? "");
+  //  $("#ddGetCompany").dxDropDownBox("instance").option("value", data.ClientCode ?? "");
+    
+    $("#ddPreparedby").dxDropDownBox("instance").option("value", data.QuoteSignatory ?? "");
+    $("#ddVerifiedby").dxDropDownBox("instance").option("value", data.VerifiedBy ?? "");
+    $("#ddApprovedby").dxDropDownBox("instance").option("value", data.ApprovedBy ?? "");
+
+    $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId ?? "");
+    $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId ?? "");
+    $("#currencyexchangerate").dxNumberBox("instance")?.option("value", data.CurrencyRate ?? 0);
+
+    $("#txtQuotationNo").dxTextBox("instance").option("value", data.QuotationNo ?? "");
+    $("#txtPONo").dxTextBox("instance").option("value", data.Pono ?? "");
+  //  $("#txtInvoiceSummary").dxTextArea("instance").option("value", data.InvoiceSummary ?? "");
+  //  $("#txtInvoiceIntro").dxTextArea("instance").option("value", data.InvoiceIntro ?? "");
+
+    console.log("Invoice data bound to UI:", data);
+}
+
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    let invoiceNo = urlParams.get("InvoiceNo"); // e.g. ?InvoiceNo=EQP-SUM-25-0002
+
+    if (invoiceNo) {
+        $.ajax({
+            url: `/api/MaterialReceipt1/GetInvoiceSummary?invoiceNo=${encodeURIComponent(invoiceNo)}`,
+            type: "GET",
+            dataType: "json",
+            success: function (res) {
+                if (res.Master) {
+                    bindInvoiceMasterData(res.Master);   // ✅ bind all header fields
+                }
+
+                // ✅ Bind details grid
+                $("#itemGrid").dxDataGrid("instance").option("dataSource", res.Details || []);
+
+                // ✅ Always load children
+                loadRequestChildren(invoiceNo);
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify(
+                    "Error loading invoice: " + (xhr.responseJSON?.message || error),
+                    "error",
+                    3000
+                );
+            }
+        });
+    } else {
+        // ✅ If new → auto-generate invoice no
+        $.get("/api/MaterialReceipt1/GetEquipmentInvoiceNo", function (data) {
+            $("#txtBillingRefNo").dxTextBox("instance").option("value", data || "");
+        });
+    }
+});
 
 
-						if (response) {
-							console.log("res",response);
-						Approved = response.IsApproved;
+// ===============================
+// ✅ Reusable binder for master data
+// ===============================
+function bindInvoiceMasterData(master) {
+    if (!master) return;
 
-				// ✅ Disable buttons if already approved
-				if (Approved === true) {
-						hideAllButtonsExcept([
-						"btnPrint1",
-						"ddButtonLayout",
-						"btnBack",
-						"btnAttach"
-					]);
-								disableAllDropDownsAndSelects();
-					const gridInstance = $("#ItemGrid").dxDataGrid("instance");
-				if (gridInstance) {
-					gridInstance.option({
-					editing: {
-						allowUpdating: false,
-						allowAdding: false,
-						allowDeleting: false
-					},
-					selection: {
-						mode: "none"
-					}
-			});
-		}
+  //  Row 1
+    $("#txtBillingRefNo").dxTextBox("instance").option("value", master.InvoiceNo ?? "");
+    $("#InvoiceDate").dxDateBox("instance").option("value", master.InvoiceDate ?? null);
+    $("#GetProjectDropDown").dxDropDownBox("instance").option("value", master.ClientCode ?? "");
+
+    //Row 2
+    $("#EffectiveDate").dxDateBox("instance").option("value", master.InvoiceEffectiveDate ?? null);
+    $("#txtContactName").dxTextBox("instance").option("value", master.ClientReferenceName ?? "");
+    $("#ContactNo").dxTextBox("instance").option("value", master.ClientContactNo ?? "");
+    $("#txtReqEmail").dxTextBox("instance").option("value", master.ClientEmail ?? "");
+
+   // Row 3
+    $("#txtQuotationNo").dxTextBox("instance").option("value", master.QuotationNo ?? "");
+    $("#txtPONo").dxTextBox("instance").option("value", master.Pono ?? "");
+    $("#PODate").dxDateBox("instance").option("value", master.Podates ?? null);
+    $("#txtProjectDeptPR").dxTextBox("instance").option("value", master.ReferenceNo ?? "");
+
+  //  Row 4
+    $("#txtDeliveryNotes").dxTextBox("instance").option("value", master.DeliveryNoteNos ?? "");
+    $("#txtVATInvoice").dxTextBox("instance").option("value", master.VatinvoiceNo ?? "");
+    $("#InvoiceStartDate").dxDateBox("instance").option("value", master.InvoiceStartDate ?? null);
+    $("#InvoiceEndDate").dxDateBox("instance").option("value", master.InvoiceEndDate ?? null);
+
+   // Tab 2
+    $("#Subject").dxTextBox("instance").option("value", master.SubjectTitle ?? "");
+    $("#QuoteSummary").dxTextArea("instance").option("value", master.InvoiceSummary ?? "");
+    $("#QuoteIntro").dxTextBox("instance").option("value", master.InvoiceIntro ?? "");
+
+  //  Tab 3
+    $("#ddPreparedby").dxDropDownBox("instance").option("value", master.QuoteSignatory ?? "");
+    $("#txtInvoiceNotes").dxTextArea("instance").option("value", master.Remarks ?? "");
+    $("#ddGetTax").dxDropDownBox("instance").option("value", master.VatapplicableRate ?? "");
+
+    $("#txtAdditionLabel").dxTextBox("instance").option("value", master.AdditionLabel ?? "");
+    $("#txtAdditionAmount").dxNumberBox("instance").option("value", master.AdditionAmount ?? 0);
+    $("#txtDeductionLabel").dxTextBox("instance").option("value", master.DeductionLabel ?? "");
+    $("#txtDeductionAmount").dxNumberBox("instance").option("value", master.DeductionAmount ?? 0);
+
+  //  Tab 4
+    $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", master.BaseCurrencyId ?? "");
+    $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", master.CurrencyId ?? "");
+    $("#currencyexchangerate").dxNumberBox("instance").option("value", master.CurrencyRate ?? 0);
+
+    console.log("✅ Invoice master data bound:", master);
+}
+
+
+function collectInvoiceData() {
+    return {
+        BillingRefNo: $("#txtBillingRefNo").dxTextBox("instance").option("value"),
+        InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value"),
+        ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+        EffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+        ContactName: $("#txtContactName").dxTextBox("instance").option("value"),
+        ClientContactNo: $("#ContactNo").dxTextBox("instance").option("value"),
+        ClientEmail: $("#txtReqEmail").dxTextBox("instance").option("value"),
+        QuotationNo: $("#txtQuotationNo").dxTextBox("instance").option("value"),
+        PONo: $("#txtPONo").dxTextBox("instance").option("value"),
+        Podates: $("#PODate").dxDateBox("instance").option("value"),
+        ReferenceNo: $("#txtProjectDeptPR").dxTextBox("instance").option("value"),
+        DeliveryNoteNos: $("#txtDeliveryNotes").dxTextBox("instance").option("value"),
+        VatinvoiceNo: $("#txtVATInvoice").dxTextBox("instance").option("value"),
+        InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value"),
+        InvoiceEndDate: $("#InvoiceEndDate").dxDateBox("instance").option("value"),
+        Subject: $("#Subject").dxTextBox("instance").option("value"),
+        QuoteSummary: $("#QuoteSummary").dxTextArea("instance").option("value"),
+        QuoteIntro: $("#QuoteIntro").dxTextBox("instance").option("value"),
+        QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
+        InvoiceNotes: $("#txtInvoiceNotes").dxTextArea("instance").option("value"),
+        VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance").option("value"),
+        AdditionLabel: $("#txtAdditionLabel").dxTextBox("instance").option("value"),
+        AdditionAmount: $("#txtAdditionAmount").dxNumberBox("instance").option("value"),
+        DeductionLabel: $("#txtDeductionLabel").dxTextBox("instance").option("value"),
+        DeductionAmount: $("#txtDeductionAmount").dxNumberBox("instance").option("value"),
+        BaseCurrency: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        InvoiceCurrency: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+        CurrencyExchangeRate: $("#currencyexchangerate").dxNumberBox("instance").option("value"),
+        Items: $("#itemGrid").dxDataGrid("instance").option("dataSource")
+    };
+}
+
+				  function onOpened(e) {
+					setTimeout(() => {
+						e.component.focus();
+					});
 				}
-					$("#btnSave").dxButton("instance").option("text", "Update");
-					// Populate DevExtreme controls with the response data
-						$('#txtRequestNo').dxTextBox("instance").option("value", response.EqiupmentRequestNo);
-						$("#InvoiceDueDate").dxDateBox("instance").option("value", response.RequestDate);
-						$("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.ClientCode);
-						$('#txtContactName').dxTextBox("instance").option("value", response.RequestedBy);
-						$('#txtReqEmail').dxTextBox("instance").option("value", response.RequesterContactEmail);
-						$('#ContactNo').dxTextBox("instance").option("value", response.RequesterContact);
-						$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", response.ModeOfRequest);
-						$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", response.TypeOfRequest);
-						$('#txtReferenceNo').dxTextBox("instance").option("value", response.ClientRefNo);
-						//$('#txtPurpose').dxTextBox("instance").option("value", response.PurposeOfRequest);
-						$("#txtExpectedDate").dxDateBox("instance").option("value", response.ExpectedDate);
-						$('#txtRemarks').dxTextArea("instance").option("value", response.Remarks);
-						$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
-					    $("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
-						// Optional (if you decide to use later)
-						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.SubmittedBy);
-						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
-						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
-						 $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
-						 $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
-						 $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
-
-
-						   // Fetch and initialize the data grid with invoice details
-							$.ajax({
-								type: "GET",
-								url: `/api/AddNewClientRequest/GetEnquiryProperty?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
-								dataType: 'json',
-								success: function (gridResponse) {
-									console.log("Grid", gridResponse);
-
-									const rowData = gridResponse.map((item, index) => ({
-										SNo: index + 1,
-										...item
-									}));
-
-									// Initialize the data grid with the fetched row data
-								//	initializeDataGrid(rowData);
-								},
-								error: function (xhr, status, error) {
-									console.error("Error fetching grid data:", error);
-								}
-							});
-
-						} else {
-							console.warn("No client details found in the response.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error fetching client details:", error);
+				function onKeyDown(e) {
+					const ddbInstance = e.component;
+					if (e.event.keyCode !== 40) return;
+					if (!ddbInstance.option("opened")) {
+						ddbInstance.open();
+					} else {
+						let focusedIndex = dataGrid.option("focusedRowIndex");
+						let visibleRows = dataGrid.getVisibleRows().length - 1;
+						if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+						dataGrid.focus(dataGrid.getRowElement(focusedIndex));
 					}
-				});
-			}
+				}
+
+				function dropDownBoxOnInput(e) {
+					const ddbInstance = e.component;
+					if (!ddbInstance.option("opened")) ddbInstance.open();
 
 
+					const text = ddbInstance.option("text");
+					if (dataGrid) {
+						dataGrid.option("searchPanel.text", text);
+					}
+				}
+				function dataGridSelectionChanged1(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
 
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+						 // Make an AJAX call to fetch contact details
+					$.ajax({
+						url: '/api/AddNewClientRequest/GetClientContactDetails',
+						type: 'GET',
+						data: { clientCode: selectedKey },
+						success: function (data) {
+							// Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
 
+					 $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
+					  $('#txtReqEmail').dxTextBox("instance").option("value",data.ClientEmail);
+					 $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
+						},
+						error: function (xhr, status, error) {
+							console.error('Error fetching contact details:', error);
+						}
+					});
+					}
+				}
+				function dataGridInitialized1(e) {
+					dataGrid = e.component;
+				}
+					function dataGridSelectionChanged2(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized2(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged3(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetTypeOfRequest").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized3(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged4(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized4(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged5(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetTax").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized5(e) {
+					dataGrid = e.component;
+				}
+
+				function dataGridSelectionChanged6(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetCompany").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
 				function getSalesPersonByUser() {
 				$.ajax({
 					type: "GET",
@@ -2370,7 +1821,7 @@
 							// Assuming 'data' contains ContactName, ContactEmail, and ContactMobile
 
 					 $('#txtContactName').dxTextBox("instance").option("value", data.ContactName);
-					  $('#txtReqEmail').dxTextBox("instance").option("value",data.ContactEmail);
+					  $('#txtReqEmail').dxTextBox("instance").option("value",data.ClientEmail);
 					 $('#ContactNo').dxTextBox("instance").option("value", data.ContactMobile);
 						},
 						error: function (xhr, status, error) {
@@ -3105,77 +2556,7 @@
 
 					}
 
-					function dataGridCompanyBranchHeadInitialized(e) {
-
-							dataGrid = e.component;
-
-						}
-
-						function dataGridCompanyBranchHeadSelectionChanged(e) {
-
-						const selectedKey = e.selectedRowKeys[0];
-
-						const ddbInstance = $("#ddlGoodsGroup7").dxDropDownBox("instance");
-
-						acchead = selectedKey;
-
-						if (selectedKey) {
-
-							ddbInstance.option("value", selectedKey);
-
-							if (ddbInstance.option("opened")) {
-
-								ddbInstance.close();
-
-							}
-								if(IsCurrent!="true")
-							{
-							var selectedRowData = $("#companybranch-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-							// Get ReferenceNo from selected row
-
-							if (selectedRowData.length > 0) {
-
-									companyid = selectedRowData[0].CompanyId;
-									alert(selectedRowData[0].SellerOtherIdtype)
-												  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
-												  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
-												   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
-												//  $("#OurClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-												  $("#OurCompanyNameinArabic").dxDropDownBox("instance").option("value",selectedRowData[0].CompanyNameAr)
-												  $("#OtherID1").dxTextBox("instance").option("value",selectedRowData[0].SellerOtherSellerId)
-												  dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].SellerOtherIdtype]});
-
-
-												  // Assuming these are standard inputs
-				$("#OurStreetName").val(selectedRowData[0].SellerAddressStreet);
-				$("#OurStreetNameArabic").val(selectedRowData[0].SellerAddressStreetAr);
-				$("#OurAdditionalAddress").val(selectedRowData[0].SellerAdditionalStreet);
-				$("#OurAdditionalAddressArabic").val(selectedRowData[0].SellerAdditionalStreetAr);
-				$("#OurBuildingNumber").val(selectedRowData[0].SellerBuildingNumber);
-				$("#OurClientCity").val(selectedRowData[0].SellerCity);
-				$("#OurClientCityArabic").val(selectedRowData[0].SellerCityAr);
-				$("#OurAdditionalNumber").val(selectedRowData[0].SellerAdditionalNumber);
-				$("#OurProvince").val(selectedRowData[0].SellerProvince);
-				$("#OurProvinceArabic").val(selectedRowData[0].SellerProvinceAr);
-				$("#OurPostalCode").val(selectedRowData[0].SellerPostalCode);
-
-				// Fix incorrect value assignments
-				$("#OurDistrict").val(selectedRowData[0].SellerNeighborhood); // was incorrectly using Arabic version key
-				$("#OurDistrictArabic").val(selectedRowData[0].SellerNeighborhoodAr); // was incorrectly using country code key
-
-							} else {
-
-								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-								return;
-
-							}
-							}
-
-						}
-
-					}
+					
 
 					function dataGridOtherIDTypeHeadInitialized(e) {
 
@@ -3269,395 +2650,391 @@
 						}
 
 					}
+				function dataGridInitialized6(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged7(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetEnquiry").dxDropDownBox("instance");
 
-					function dataGridCheckedByHeadInitialized(e) {
-
-							dataGrid = e.component;
-
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
 						}
-
-						function dataGridCheckedByHeadSelectionChanged(e) {
-
-						const selectedKey = e.selectedRowKeys[0];
-
-						const ddbInstance = $("#ddlGoodsGroup10").dxDropDownBox("instance");
-
-						acchead = selectedKey;
-
-						if (selectedKey) {
-
-							ddbInstance.option("value", selectedKey);
-
-							if (ddbInstance.option("opened")) {
-
-								ddbInstance.close();
-
-							}
-									if(IsCurrent!="true")
-								{
-
-							var selectedRowData = $("#checkedby-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-							// Get ReferenceNo from selected row
-
-							if (selectedRowData.length > 0) {
-									ChkbySignatoryID = selectedRowData[0].SignatoryID;
-
-							} else {
-
-								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-								return;
-
-							}
-								}
-
-						}
-
 					}
+				}
+				function dataGridInitialized7(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged8(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetInventoryGroup").dxDropDownBox("instance");
 
-					function dataGridApprovedByHeadInitialized(e) {
-
-							dataGrid = e.component;
-
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
 						}
-
-						function dataGridApprovedByHeadSelectionChanged(e) {
-
-						const selectedKey = e.selectedRowKeys[0];
-
-						const ddbInstance = $("#ddlGoodsGroup11").dxDropDownBox("instance");
-
-						acchead = selectedKey;
-
-						if (selectedKey) {
-
-							ddbInstance.option("value", selectedKey);
-
-							if (ddbInstance.option("opened")) {
-
-								ddbInstance.close();
-
-							}
-								if(IsCurrent!="true")
-							{
-							var selectedRowData = $("#approvedby-datagrid").dxDataGrid("instance").getSelectedRowsData();
-
-							// Get ReferenceNo from selected row
-
-							if (selectedRowData.length > 0) {
-									ApproedbySignatoryID = selectedRowData[0].SignatoryID;
-
-							} else {
-
-								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-								return;
-
-							}
-							}
-
-						}
-
 					}
+				}
+				function dataGridInitialized8(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged9(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddGetRequesstingUnit").dxDropDownBox("instance");
 
-
-								function syncVATNumbers(e) {
-							// Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-							$("#txtBillingVATRegNo").dxNumberBox("instance").option("value", e.value);
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
 						}
-						function syncSupVATNumbers(e) {
-							// Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-							$("#txtObsSupRegNo").dxNumberBox("instance").option("value", e.value);
+					}
+				}
+				function dataGridInitialized9(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged10(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
+
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
 						}
+					}
+				}
+				function dataGridInitialized10(e) {
+					dataGrid = e.component;
+				}
+					function dataGridSelectionChanged10(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddPreparedby").dxDropDownBox("instance");
 
-							$(function () {
-								$("#DefaultEntry").dxTextBox({
-									text: formatMessage("Default For Entry:"),
-									readOnly: true
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized10(e) {
+					dataGrid = e.component;
+				}
+				function dataGridInitialized10(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged11(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddVerifiedby").dxDropDownBox("instance");
 
-								});
-							});
-							$(function () {
-								$("#ProformaInvoiceEditForm").dxTextBox({
-									text: formatMessage("Proforma Invoice Edit Form"),
-									readOnly: true,
-												onContentReady: function(e) {
-												$(e.element).addClass("dx-textbox-heading");
-										}
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized11(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged12(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddApprovedby").dxDropDownBox("instance");
 
-								});
-							});
-							$(function () {
-								$("#OpeningBalance").dxTextBox({
-									text: formatMessage("Opening Balance:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#MaintainBillEntry").dxTextBox({
-									text: formatMessage("Maintain Bill By Bill:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#VoucherNoAbbr").dxTextBox({
-									text: formatMessage("Voucher No Abbr:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#NoDays").dxTextBox({
-									text: formatMessage("No of Days Credit:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#PropertyDBEntry").dxTextBox({
-									text: formatMessage("Link to Property DB:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#EmployeeDBEntry").dxTextBox({
-									text: formatMessage("Link to Employee DB:"),
-									readOnly: true
-								});
-							});
-							$(function () {
-								$("#LoanAccountEntry").dxTextBox({
-									text: formatMessage("Employees Loan Account:"),
-									readOnly: true
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized12(e) {
+					dataGrid = e.component;
+				}
+				function dataGridSelectionChanged14(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddRequestedBy").dxDropDownBox("instance");
 
-								});
-							});
-							// $(function () {
-							//     $("#LedgerActive").dxTextBox({
-							//         text: formatMessage("Ledger is Currently Active:"),
-							//         readOnly: true
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						if (ddbInstance.option("opened")) {
+							ddbInstance.close();
+						}
+					}
+				}
+				function dataGridInitialized14(e) {
+					dataGrid = e.component;
+				}
 
-
-							//     });
-							// });
-						   $(function () {
-							// Initialize the TextBox with default text
-							$("#LedgerActive").dxTextBox({
-								value: "Ledger is Currently Active:",
-								readOnly: true
-							});
-
-							// Get the instance of the switch
-							let switchInstance = $("#schLedgerActive").dxSwitch("instance");
-
-							// Handle value change event
-							switchInstance.option("onValueChanged", function (e) {
-								let textBoxInstance = $("#LedgerActive").dxTextBox("instance");
-
-								if (e.value) {
-									// When switched ON, update text and apply red color
-									textBoxInstance.option("value", "Ledger is set as obsolete:");
-									$("#LedgerActive .dx-texteditor-input").css("color", "red");
-								} else {
-									// When switched OFF, update text and reset color
-									textBoxInstance.option("value", "Ledger is Currently Active:");
-									$("#LedgerActive .dx-texteditor-input").css("color", "black");
-								}
-							});
+						function refreshModeOfRequestDropDown() {
+						const dropdown = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+					if (dropdown) {
+						const ds = dropdown.getDataSource();
+						ds.reload().done(() => {
+							dropdown.repaint();
 						});
+					}
+				}
+
+				function refreshTypeOfRequestDropDown() {
+				const dropdown = $("#ddGetTypeOfRequest").dxDropDownBox("instance");
+				if (dropdown) {
+					const ds = dropdown.getDataSource();
+					ds.reload().done(() => {
+						dropdown.repaint();
+					});
+				}
+			}
+			 function AddPreparedBy(){
+							const url = `/${tenantName}/IMS/Signatories`;
+						  const title = "Signatories";
+							  openModal(url, title);
+					  }
+
+					   function AddReqUnit(){
+							const url = `/${tenantName}/IMS/ProjectSubUnits`;
+						  const title = "Project Sub Units";
+							  openModal(url, title);
+					  }
+						 function AddModeReq(){
+							const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
+						  const title = "Quotation Mode Of Request";
+							  openModal(url, title);
+					  }
+						 function AddTypeReq(){
+							const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
+						  const title = "Quotation Type Of Request";
+							  openModal(url, title);
+					  }
+						 function AddNewClient(){
+							const url = `/${tenantName}/IMS/ClientLeadMaster`;
+							  const title = "Client Master";
+							  openModal(url, title);
+						  }
+
+						  function setContactName(name) {
+							$('#txtContactName').dxTextBox("instance").option("value", name);
+
+						}
+
+
+					function getUnitRateMethods() {
+						return $.ajax({
+							url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
+							method: "GET",
+							dataType: "json"
+						}).then(function (response) {
+							console.log("Unit Rate Data", response);
+							return response.map(item => ({
+								UnitCode: item.UnitCode,
+								UnitDesc: item.UnitDesc,
+								UnitType: item.UnitType,
+
+								UnitDescAr: item.UnitDescAr
+							}));
+						});
+					}
+				function getUnitRateMethods2() {
+					return $.ajax({
+						url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
+						method: "GET",
+						dataType: "json"
+					}).then(function (response) {
+						console.log("Unit Rate Data", response);
+						return response.map(item => ({
+							GroupCode: item.GroupCode,
+							GroupName: item.GroupName,
+							QuoteGroupItemSlNo:item.QuoteGroupItemSlNo
+						}));
+					});
+				}
+			function getUnitRateMethods1(mprNo) {
+			return $.ajax({
+				url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+				method: "GET",
+				data: { mprNo: mprNo }, // ✅ pass as query param
+				dataType: "json"
+			}).then(function (response) {
+				console.log("SubGroup Data for MPR:", mprNo, response);
+				return response.map(item => ({
+					GroupCode: item.GroupCode,
+					GroupName: item.GroupName,
+					QuoteGroupItemSlNo: item.QuoteGroupItemSlNo
+				}));
+			});
+		}
+			  function onClientCodeRowPrepared(e) {
+						if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
+							e.rowElement.css("background-color", "#ffcccc"); // light red
+						}
+					}
+
+
+
+						  function ClientCodedataGridSelectionChanged(e) {
+							const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+							const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
+
+							if (selectedKey) {
+								ddbInstance.option("value", selectedKey);
+								 ddbInstance.close();
+							}
+							if(IsCurrent!="true")
+							{
+					 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
+											// Get ReferenceNo from selected row
+											if (selectedRowData.length > 0) {
+												accheadid = selectedRowData[0].AccountId;
+
+											  let  accheadname = selectedRowData[0].AccountHead;
+												  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
+													  // DevExtreme widgets
+				$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
+				$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
+				$("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
+				$("#OtherIDType").dxDropDownBox("instance").option("value", selectedRowData[0].ClientOtherIdtype);
+
+				// Assuming these are standard inputs
+				$("#StreetName").val(selectedRowData[0].ClientAddressStreet);
+				$("#StreetNameArabic").val(selectedRowData[0].ClientAddressStreetAr);
+				$("#AdditionalAddress").val(selectedRowData[0].ClientAdditionalStreet);
+				$("#AdditionalAddressArabic").val(selectedRowData[0].ClientAdditionalStreetAr);
+				$("#BuildingNumber").val(selectedRowData[0].ClientBuildingNumber);
+				$("#ClientCity").val(selectedRowData[0].ClientCity);
+				$("#ClientCityArabic").val(selectedRowData[0].ClientCityAr);
+				$("#AdditionalNumber").val(selectedRowData[0].ClientAdditionalNumber);
+				$("#Province").val(selectedRowData[0].ClientProvince);
+				$("#ProvinceArabic").val(selectedRowData[0].ClientProvinceAr);
+				$("#PostalCode").val(selectedRowData[0].ClientPostalCode);
+
+				// Fix incorrect value assignments
+				$("#District").val(selectedRowData[0].ClientNeighborhood); // was incorrectly using Arabic version key
+				$("#DistrictArabic").val(selectedRowData[0].ClientNeighborhoodAr); // was incorrectly using country code key
+
+
+
+											} else {
+												DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+												return;
+											}
+							}
+
+						}
+
+
+
+
+								   function onOpened(e) {
+									setTimeout(() => {
+										e.component.focus();
+									});
+								}
 
 
 					
 
-							//Tab events
-							let acgid, accgrp = "", accgrpunder = null, IsAccGrp = false, accunderid = null, accountgroup = "";
-							let getidfromCOA;//IsChart=false;
-							$(document).ready(function () {
-
-								var selectedTabIndex = 0;
-								$("#tab-content-" + (selectedTabIndex + 1)).show();
-							});
-							function onTabSelectionChanged(e) {
-								// Hide all tab content
-								$(".tab-content").hide();
-
-								// Show the content of the selected tab
-								var selectedTabIndex = e.component.option("selectedIndex");
-								$("#tab-content-" + (selectedTabIndex + 1)).show();
-							}
-
  
 		$("#btnSave").on("click", function (e) {
-			debugger;
-			const $btn = $(this).dxButton("instance");
+    const $btn = $(this).dxButton("instance");
 
-			// ✅ Step 1: Validate required field
-			const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-			const clientnameValidation = clientnameValidator.validate();
+    // ✅ Step 1: Validate required field
+    const clientValidator = $("#GetProjectDropDown").dxValidator("instance");
+    const clientValidation = clientValidator.validate();
 
-			if (!clientnameValidation.isValid) {
-				DevExpress.ui.dialog.alert(
-					"Cannot continue saving with errors, please clear the errors and continue.",
-					"Clear Errors"
-				);
-				return;
-			}
+    if (!clientValidation.isValid) {
+        DevExpress.ui.dialog.alert(
+            "Cannot continue saving with errors, please clear the errors and continue.",
+            "Clear Errors"
+        );
+        return;
+    }
 
-			// ✅ Step 3: Build master object
-			const master = {
-				EqiupmentRequestNo: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
-				RequestDate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
-				ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-				RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-				RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-				RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
-				ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
-				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-				ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
-				ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
-				Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
-				TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
-				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-				ERverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-				ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-				RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-				PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-			};
+    // ✅ Step 2: Build master object
+    const master = {
+        BillingRefNo: $("#txtBillingRefNo").dxTextBox("instance").option("value"),
+        InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value"),
+        ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value"),
+        EffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value"),
+        ContactName: $("#txtContactName").dxTextBox("instance").option("value"),
+        ClientContactNo: $("#ContactNo").dxTextBox("instance").option("value"),
+        ClientEmail: $("#txtReqEmail").dxTextBox("instance").option("value"),
+        QuotationNo: $("#txtQuotationNo").dxTextBox("instance").option("value"),
+        PONo: $("#txtPONo").dxTextBox("instance").option("value"),
+        Podates: $("#PODate").dxDateBox("instance").option("value"),
+        ReferenceNo: $("#txtProjectDeptPR").dxTextBox("instance").option("value"),
+        DeliveryNoteNos: $("#txtDeliveryNotes").dxTextBox("instance").option("value"),
+        VatinvoiceNo: $("#txtVATInvoice").dxTextBox("instance").option("value"),
+        InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value"),
+        InvoiceEndDate: $("#InvoiceEndDate").dxDateBox("instance").option("value"),
+        Subject: $("#Subject").dxTextBox("instance").option("value"),
+        QuoteSummary: $("#QuoteSummary").dxTextArea("instance").option("value"),
+        QuoteIntro: $("#QuoteIntro").dxTextBox("instance").option("value"),
+        QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value"),
+        InvoiceNotes: $("#txtInvoiceNotes").dxTextArea("instance").option("value"),
+        VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance").option("value"),
+        AdditionLabel: $("#txtAdditionLabel").dxTextBox("instance").option("value"),
+        AdditionAmount: $("#txtAdditionAmount").dxNumberBox("instance").option("value"),
+        DeductionLabel: $("#txtDeductionLabel").dxTextBox("instance").option("value"),
+        DeductionAmount: $("#txtDeductionAmount").dxNumberBox("instance").option("value"),
+        BaseCurrency: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        InvoiceCurrency: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+        CurrencyExchangeRate: $("#currencyexchangerate").dxNumberBox("instance").option("value")
+    };
 
-			// ✅ Step 4: Get child records
-			const children = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
+    // ✅ Step 3: Collect child items
+    const items = $("#itemGrid").dxDataGrid("instance").getDataSource().items();
 
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				$btn.option("disabled", false);
-				return;
-			}
+    if (!items || items.length === 0) {
+        DevExpress.ui.notify("No invoice items to save.", "error", 3000);
+        return;
+    }
 
-			const model = {
-				...master,
-				EquipmentPropertychild: children
-			};
+    const model = {
+        ...master,
+        Items: items
+    };
 
-			// ✅ Step 5: Send data via AJAX
-			$.ajax({
-				type: "POST",
-				url: "/api/AddNewClientRequest1/SaveOrUpdatePropertyRequest",
-				contentType: "application/json",
-				data: JSON.stringify(model),
-				success: function (response) {
-					isVoucherSaved = true; // Mark Updated step as done
-					// updateWorkflowVisual(getWorkflowStatusFromFields());
-
-					DevExpress.ui.notify(response.message, "success", 3000);
-
-					// Refresh parent DataGrid if present
-					if (window.parent && window.parent.$("#dataGrid").length) {
-						const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-						if (dataGrid) {
-							dataGrid.refresh();
-						}
-					}
-				},
-				error: function (xhr) {
-					DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-				}
-			});
-		});
-
-
-
-		let EqiupmentRequestNo = null;
-		let isApproved = null;
-
-		$(document).ready(function () {
-			const urlParams = new URLSearchParams(window.location.search);
-			EqiupmentRequestNo = urlParams.get("code"); // 👈 match your URL
-
-			if (EqiupmentRequestNo) {
-				loadRequestData(EqiupmentRequestNo);
-			}
-		});
-
-
-		// Master data fetch
-		function loadRequestData(EqiupmentRequestNo) {
-			$.ajax({
-				url: `/api/AddNewClientRequest1/GetEnquiryProperty?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
-				type: "GET",
-				dataType: "json",
-				success: function (data) {
-					if (!data) {
-						DevExpress.ui.notify("No data found.", "error", 3000);
-						return;
-					}
-
-					console.log("Master Response:", data);
-
-					// ✅ Capture approval flag
-					isApproved = data.IsApproved;
-
-					// ✅ Disable UI if already approved
-					if (isApproved === true) {
-						hideAllButtonsExcept([
-							"btnPrint1",
-							"ddButtonLayout",
-							"btnBack",
-							"btnAttach"
-						]);
-						disableAllDropDownsAndSelects();
-
-						const gridInstance = $("#itemGrid").dxDataGrid("instance");
-						if (gridInstance) {
-							gridInstance.option({
-								editing: {
-									allowUpdating: false,
-									allowAdding: false,
-									allowDeleting: false
-								},
-								selection: {
-									mode: "none"
-								}
-							});
-						}
-					}
-
-					$("#btnSave").dxButton("instance").option("text", "Update");
-						// ✅ Populate master fields
-					$("#txtRequestNo").dxTextBox("instance").option("value", data.EqiupmentRequestNo ?? "");
-					$("#InvoiceDueDate").dxDateBox("instance").option("value", data.RequestDate ?? null);
-					$("#GetProjectDropDown").dxDropDownBox("instance").option("value", data.ClientCode ?? "");
-					$("#txtContactName").dxTextBox("instance").option("value", data.RequestedBy ?? "");
-					$("#txtReqEmail").dxTextBox("instance").option("value", data.RequesterContactEmail ?? "");
-					$("#ContactNo").dxTextBox("instance").option("value", data.RequesterContact ?? "");
-					$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", data.ModeOfRequest ?? "");
-					$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", data.TypeOfRequest ?? "");
-					$("#txtReferenceNo").dxTextBox("instance").option("value", data.ClientRefNo ?? "");
-					$("#txtExpectedDate").dxDateBox("instance").option("value", data.ExpectedDate ?? null);
-					$("#txtRemarks").dxTextArea("instance").option("value", data.Remarks ?? "");
-					$("#ddRequestedBy").dxDropDownBox("instance").option("value", data.TypeOfMpr ?? "");
-					$("#ddGetCompany").dxDropDownBox("instance").option("value", data.CompanyBranch ?? "");
-					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
-					$("#ddVerifiedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
-					$("#ddApprovedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
-					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", data.CurrencyRate);
-					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId);
-					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId);
-
-					loadRequestChildren(EqiupmentRequestNo);
-
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading master request data:", error);
-					DevExpress.ui.notify("Error loading request data: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-				}
-			});
-		}
-
-		function loadRequestChildren(EqiupmentRequestNo) {
+    // ✅ Step 4: Save via API
     $.ajax({
-        url: `/api/AddNewClientRequest1/GetEnquiryChildren?EquipmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
+        type: "POST",
+        url: "/api/MaterialReceipt1/SaveOrUpdateInvoice",
+        contentType: "application/json",
+        data: JSON.stringify(model),
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 3000);
+
+            // Refresh parent DataGrid
+            if (window.parent && window.parent.$("#dataGrid").length) {
+                const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                if (dataGrid) dataGrid.refresh();
+            }
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+        }
+    });
+});
+
+
+let invoiceNo = null;
+
+$(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    invoiceNo = urlParams.get("code"); // 👈 match your URL
+
+    if (invoiceNo) {
+        loadRequestData(invoiceNo);
+    }
+});
+
+
+		function loadRequestChildren(InvoiceNo) {
+			debugger;
+    $.ajax({
+        url: `/api/MaterialReceipt1/GetInvoiceChildren?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
         type: "GET",
         dataType: "json",
         success: function (gridData) {
@@ -3671,14 +3048,17 @@
             // ✅ Map ALL fields needed by the grid
             const rowData = gridData.map((item, index) => ({
                 SNo: index + 1,
-                RequestChildSlNo: item.RequestChildSlNo,
-                PropertyType: item.PropertyType,
-                PropertyTypeId: item.PropertyTypeId,
+                PropertyNo: item.PropertyNo,
+                DetailedDescription: item.DetailedDescription,
                 UnitRateMethod: item.UnitRateMethod,
-                QtyRequested: item.QtyRequested,
-                ExpectedUnitRate: item.ExpectedUnitRate,
-                UnitsRequested: item.UnitsRequested,
-                LineTotal: item.LineTotal,
+                CalculatedLineAmount: item.CalculatedLineAmount,
+                UnitRate: item.UnitRate,	
+                QuantityInvoiced: item.QuantityInvoiced,	
+                Otrate: item.Otrate,
+				TaxRate: item.TaxRate,
+				TotalHours:item.TotalHours,
+                UoM: item.UoM,
+                Othours: item.Othours
             }));
 
             // ✅ Bind into grid
@@ -3719,8 +3099,8 @@
 				RequestDate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
 				ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
 				RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-				RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-				RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+				ClientEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+				ClientContactNo: $('#ContactNo').dxTextBox("instance").option("value") || null,
 				ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
 				ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
@@ -3730,7 +3110,7 @@
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ERverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
 				ERapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-				RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+				QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
@@ -3785,117 +3165,6 @@
 
 
 
-						 $(document).ready(function () {
-							$.ajax({
-								url: "/api/VATModule/CreateNewInvoiceCounter",
-								type: 'POST',
-								success: function (data) {
-									console.log("Success:", data);
-
-								   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-								},
-								error: function (xhr, status, error) {
-									console.error("Error loading Payment Accounts:", error);
-									DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-								}
-							});
-						});
-
-
-						 $(document).ready(function () {
-							$.ajax({
-								url: "/api/VATModule/GenerateGuid",
-								type: 'POST',
-								success: function (data) {
-									console.log("Success:", data);
-
-								   $("#UUID").dxTextBox("instance").option("value", data);
-								},
-								error: function (xhr, status, error) {
-									console.error("Error loading Payment Accounts:", error);
-									DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-								}
-							});
-						});
-
-
-						function VATPercentage(newValue, rowIndex,TaxSlabCode) {
-							let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-							// Get current row values
-							let qty = grid.cellValue(rowIndex, "Qty") || 0;
-
-
-							let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
-							let vatRateStr = newValue || "0%";
-
-
-							//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-							let vatRate = parseFloat(vatRateStr);
-
-
-							// Calculate amount and VAT
-							let amount = qty * unitPrice;
-							let vatValue = amount * vatRate;
-							let totalValue = amount + vatValue;
-							//alert(vatValue)
-										// Update values in the grid
-									grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-									grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-									grid.cellValue(rowIndex, "Unit Price",amount);
-									grid.cellValue(rowIndex, "Qty",qty);
-									grid.cellValue(rowIndex, "VAT%",vatRateStr);
-									 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
-
-						}
-
-
-							function ViewInvoiceVATPercentage(newValue, rowIndex,TaxSlabCode) {
-								let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-								// Get current row values
-									let qty = grid.cellValue(rowIndex, "UnitsToBill") || 0;
-
-
-								let unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
-								let vatRateStr = newValue || "0%";
-
-
-								//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-								let vatRate = parseFloat(vatRateStr);
-
-
-								// Calculate amount and VAT
-								let amount = qty * unitPrice;
-								let vatValue = amount * vatRate;
-								let totalValue = amount + vatValue;
-								//alert(vatValue)
-											// Update values in the grid
-										grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-										grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-										grid.cellValue(rowIndex, "Unit Price",amount);
-										grid.cellValue(rowIndex, "Qty",qty);
-										grid.cellValue(rowIndex, "VAT%",vatRateStr);
-										 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
-
-							}
-						 function getFlatData(items) {
-							var flatData = [];
-
-							function flatten(items) {
-								items.forEach(item => {
-									if (item.items) {
-										flatten(item.items); // Recursively flatten groups
-									} else {
-										flatData.push(item); // Push raw row data
-									}
-								});
-							}
-
-							flatten(items); // Flatten all grouped items
-
-							return flatData;
-						}
 
 						  //MoveupDown functionality
 						function moveRowUp() {
@@ -3981,233 +3250,7 @@
 						});
 
 
-			$("#btnSubmit").on("click", function () {
-				const $btn = $(this);
-				$btn.prop("disabled", true);
-
-				const SubmitButton = $("#btnSubmit").dxButton("instance");
-				SubmitButton.option("disabled", true);
-
-				const EqiupmentRequestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
-
-				if (!EqiupmentRequestNo) {
-					DevExpress.ui.notify("Eqiupment number is required!", "error", 2000);
-					$btn.prop("disabled", false);
-					SubmitButton.option("disabled", false);
-					return;
-				}
-
-				DevExpress.ui.dialog.custom({
-					title: "Confirm Submission",
-					message: "Are you sure you want to submit Enquiry Request?",
-					buttons: [
-						{ text: "Yes", onClick: () => true },
-						{ text: "No", onClick: () => false }
-					],
-					showTitle: true
-				}).show().done(function (dialogResult) {
-					if (dialogResult) {
-						$.ajax({
-							type: "POST",
-							url: `/api/AddNewClientRequest1/SubmitMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
-							contentType: "application/json",
-							success: function (response) {
-								console.log("Submit API Response:", response);
-
-								// ✅ Always pick success message (API or fallback)
-								const message = response && response.message
-									? response.message
-									: "Enquiry Request has been submitted for Approval.";
-
-								// ✅ Show success message
-								DevExpress.ui.notify(message, "success", 3000);
-
-								// ✅ Update dropdown if exists
-								const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
-								if (preparedByBox && response && response.VoucherApprovedBy) {
-									preparedByBox.option("value", response.VoucherApprovedBy);
-								}
-
-								// ✅ Sync workflow fields
-								syncWorkflowFromFields();
-
-								// ✅ Re-enable button after success
-								$btn.prop("disabled", false);
-								SubmitButton.option("disabled", false);
-							},
-							error: function (xhr, status, error) {
-								$btn.prop("disabled", false);
-								SubmitButton.option("disabled", false);
-
-								let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-									? xhr.responseJSON.message
-									: "Submission failed.";
-								DevExpress.ui.notify(errorMessage, "error", 2000);
-							}
-						});
-					} else {
-						// ✅ User cancelled → re-enable button
-						$btn.prop("disabled", false);
-						SubmitButton.option("disabled", false);
-					}
-				});
-			});
-
-						$("#btnVerify").on("click", function (e) {
-								const dataGrid = $("#itemGrid").dxDataGrid("instance");
-							IsDirect = false;
-							// Ensure dataGrid exists
-							if (!dataGrid) {
-								console.error("DataGrid instance not found.");
-								return;
-							}
-
-							const rowCount = dataGrid.getVisibleRows().length;
-
-
-							// Check if DataGrid contains rows
-							if (rowCount === 0) {
-								DevExpress.ui.dialog.custom({
-									title: "Enquiry Request verification has failed.",
-							message: "Enquiry Request has not been Verified. Please enter transactions to proceed with verification.",
-									buttons: [{ text: "Ok", onClick: () => false }],
-									showTitle: true
-								}).show();
-							} else {
-								DevExpress.ui.dialog.custom({
-									title: "Confirm Verification",
-									// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-									message: "Are you sure want to verify this Enquiry Request?",
-									buttons: [
-										{ text: "Yes", onClick: () => true },
-										{ text: "No", onClick: () => false }
-									],
-									showTitle: true
-								}).show().done(function (dialogResult) {
-									if (dialogResult) {
-										proceedWithVerification(); // Proceed if user clicks Yes
-									}
-								});
-							}
-						});
-				function proceedWithVerification() {
-					const VerifyButton = $("#btnVerify").dxButton("instance");
-					VerifyButton.option("disabled", true);
-
-						const EqiupmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
-
-					if (!EqiupmentRequestNo) {
-						DevExpress.ui.notify("Voucher number is required!", "error", 2000);
-						return;
-					}
-
-					$.ajax({
-						type: "POST",
-							url: `/api/AddNewClientRequest1/VerifyMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
-						contentType: "application/json",
-						success: function (response) {
-						console.log("API Response:", response);
-
-						// ✅ Always pick up message or fallback
-						const message = response && response.message
-							? response.message
-							: "Enquiry Request has been Verified successfully!";
-
-						// ✅ Update dropdown if value exists
-						const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
-						if (approvedByBox && response && response.VoucherApprovedBy) {
-							approvedByBox.option("value", response.VoucherApprovedBy);
-						}
-
-						// ✅ Show success message
-						DevExpress.ui.notify(message, "success", 3000);
-
-						// ✅ Call workflow sync
-						syncWorkflowFromFields();
-
-						// location.reload(); // keep commented if you don’t want refresh
-					},
-						error: function (xhr, status, error) {
-							VerifyButton.option("disabled", false);
-							let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-								? xhr.responseJSON.message
-								: "An error occurred.";
-							DevExpress.ui.notify(errorMessage, "error", 2000);
-						}
-					});
-				}
-
-
-
-		$("#btnApprove").on("click", function () {
-				debugger;
-				const dataGrid = $("#itemGrid").dxDataGrid("instance");
-				if (!dataGrid) {
-					console.error("DataGrid instance not found.");
-					return;
-				}
-
-				const rowCount = dataGrid.getVisibleRows().length;
-				if (rowCount === 0) {
-					DevExpress.ui.dialog.custom({
-							title: "Equipment Enquiry Request approval has failed.",
-							message: "Equipment Enquiry Request has not been Approved. Please enter transactions to proceed with approval.",
-						buttons: [{ text: "Ok", onClick: () => false }],
-						showTitle: true
-					}).show();
-					return;
-				}
-
-				DevExpress.ui.dialog.custom({
-					title: "Confirm Approval",
-					message: "Are you sure want to approve this Enquiry Request?",
-					buttons: [
-						{ text: "Yes", onClick: () => true },
-						{ text: "No", onClick: () => false }
-					],
-					showTitle: true
-				}).show().done(function (dialogResult) {
-					if (dialogResult) {
-						proceedWithApproval();
-					}
-				});
-			});
-
-			function proceedWithApproval() {
-				const eqiupmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value")?.trim();
-
-				if (!eqiupmentRequestNo) {
-					DevExpress.ui.notify("Enter Request No first.", "error", 2000);
-					return;
-				}
-
-				$.ajax({
-					url: '/api/AddNewClientRequest1/ApproveMPR?EqiupmentRequestNo=' + encodeURIComponent(eqiupmentRequestNo),
-					type: 'POST',
-					contentType: 'application/json',
-					success: function (response) {
-						if (response && (response.success || response.Message)) {
-							DevExpress.ui.notify(response.message || response.Message, "success", 2000);
-							disableAllControls();
-							// Optionally update workflow or dropdowns here
-							if (response.VoucherApprovedBy) {
-								const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
-								if (approvedByBox) {
-									approvedByBox.option("value", response.VoucherApprovedBy);
-								}
-							}
-							syncWorkflowFromFields && syncWorkflowFromFields();
-						} else {
-							DevExpress.ui.notify(response.message || "Approval failed.", "error", 2000);
-						}
-					},
-					error: function (xhr) {
-						const errMsg = xhr.responseJSON?.message || xhr.responseJSON?.Message || "Unexpected error.";
-						DevExpress.ui.notify(errMsg, "error", 2000);
-					}
-				});
-			}
-
+		
 			function disableAllControls() {
 				// Disable all relevant DevExtreme controls
 				const componentTypes = [
@@ -4322,395 +3365,6 @@
 		}
 
 
-				$("#btnCancel").on("click", function (e) {
-					const dataGrid = $("#itemGrid").dxDataGrid("instance");
-
-					// Ensure dataGrid exists
-					if (!dataGrid) {
-						console.error("DataGrid instance not found.");
-						return;
-					}
-
-					const rowCount = dataGrid.getVisibleRows().length;
-
-					// Check if DataGrid contains rows
-					if (rowCount === 0) {
-						DevExpress.ui.dialog.custom({
-							title: "Enquiry Request cancellation has failed.",
-							message: "Enquiry Request has not been Cancelled. Please enter transactions to proceed with cancellation.",
-							buttons: [{ text: "Ok", onClick: () => false }],
-							showTitle: true
-						}).show();
-					} else {
-						DevExpress.ui.dialog.custom({
-							title: "Confirm Cancellation",
-							message: "Are you sure you want to cancel this Enquiry Request?",
-							buttons: [
-								{ text: "Yes", onClick: () => true },
-								{ text: "No", onClick: () => false }
-							],
-							showTitle: true
-						}).show().done(function (dialogResult) {
-							if (dialogResult) {
-								proceedWithCancellation(); // Proceed if user clicks Yes
-							}
-						});
-					}
-				});
-				function proceedWithCancellation() {
-					const mprNo = $('#txtRequestNo').dxTextBox("instance").option("value");
-
-					if (!mprNo) {
-						DevExpress.ui.notify("Invoice number is required!", "error", 2000);
-						return;
-					}
-
-					$.ajax({
-						type: "POST",
-						url: `/api/AddNewClientRequest1/CancelMPR?mprNo=${encodeURIComponent(mprNo)}`,
-						contentType: "application/json",
-							success: function (response) {
-							if (response && response.Message) {
-								DevExpress.ui.dialog.alert(
-									response.Message,
-									"Cancelled"
-								).done(() => {
-									//disableEditing(); // Function to disable editing controls
-								});
-							} else {
-								DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-							}
-						},
-						error: function (xhr, status, error) {
-							let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-								? xhr.responseJSON.Message
-								: "An error occurred.";
-							DevExpress.ui.notify(errorMessage, "error", 2000);
-						}
-					});
-				}
-						$(function () {
-							const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-
-							// On initial load - set checkboxes
-							const selectedVals = dropDown.option("value") || [];
-							selectedVals.forEach(id => {
-								$(`input[name="vatOption"][value="${id}"]`)
-									.prop("checked", true)
-									.closest(".vat-item").addClass("selected");
-							});
-						});
-
-						// Handle checkbox change
-						$(document).on("change", 'input[name="vatOption"]', function () {
-							const selectedIds = $('input[name="vatOption"]:checked')
-								.map(function () { return parseInt(this.value); }).get();
-
-							const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-							dropDown.option("value", selectedIds);
-
-							// Highlight selected
-							$(".vat-item").removeClass("selected");
-							$('input[name="vatOption"]:checked').each(function () {
-								$(this).closest(".vat-item").addClass("selected");
-							});
-						});
-
-						// Close only on outside click
-						$(document).on("click", function (e) {
-							const $target = $(e.target);
-							const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
-
-							if (!isInside) {
-								const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-								dropDown.close();
-							}
-						});
-					// Function to handle selection change in the DataGrid
-
-
-					// Function to handle initialization of the DataGrid (optional)
-					function dataGridInitialized(e) {
-						console.log("DataGrid Initialized");
-						// Perform any initialization logic if needed
-					}
-
-
-						  function dataGridSelectionChanged(e) {
-								const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-								const ddbInstance = $("#OtherIDType").dxDropDownBox("instance");
-
-								if (selectedKey) {
-									ddbInstance.option("value", selectedKey);
-										ddbInstance.close();
-								}
-							  if(IsCurrent!="true")
-								{
-								var selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
-								  if (selectedRowData.length > 0) {
-												paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
-
-											} else {
-												DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-												return;
-											}
-								}
-
-							}
-
-
-
-					 async function convertToArabic() {
-
-						// Get the TextBox1 (input) instance
-
-						const textBox1Instance = $("#txtInvoiceNotes").dxTextArea("instance");
-
-						// Get the TextBox2 (output) instance
-
-						const textBox2Instance = $("#txtNotesinArabic").dxTextArea("instance");
-
-						// Ensure both instances are initialized
-
-						if (!textBox1Instance || !textBox2Instance) {
-
-							console.error("TextBox instances are not properly initialized.");
-
-							return;
-
-						}
-
-
-						// Get the value from TextBox1
-
-						const englishText = textBox1Instance.option("value");
-
-						alert(englishText)
-
-						// Validate input
-
-						if (!englishText || englishText.trim() === "") {
-
-							alert("Please enter text to translate.");
-
-							return;
-
-						}
-
-						// Perform translation
-
-						const arabicTranslation = await translateToArabic(englishText);
-
-						// Update TextBox2 with the Arabic translation
-
-						textBox2Instance.option("value", arabicTranslation);
-
-					}
-
-					 async function AdvanceconvertToArabic() {
-
-						// Get the TextBox1 (input) instance
-
-						const textBox1Instance = $("#LessAdvance").dxTextBox("instance");
-
-						// Get the TextBox2 (output) instance
-
-						const textBox2Instance = $("#LessAdvanceAr").dxTextBox("instance");
-
-						// Ensure both instances are initialized
-
-						if (!textBox1Instance || !textBox2Instance) {
-
-							console.error("TextBox instances are not properly initialized.");
-
-							return;
-
-						}
-
-
-						// Get the value from TextBox1
-
-						const englishText = textBox1Instance.option("value");
-
-						// Validate input
-
-						if (!englishText || englishText.trim() === "") {
-
-							alert("Please enter text to translate.");
-
-							return;
-
-						}
-
-						// Perform translation
-
-						const arabicTranslation = await translateToArabic(englishText);
-
-						// Update TextBox2 with the Arabic translation
-
-						textBox2Instance.option("value", arabicTranslation);
-
-					}
-
-
-					 async function OtherDeductionsconvertToArabic() {
-
-						// Get the TextBox1 (input) instance
-
-						const textBox1Instance = $("#LessOtherDeductions").dxTextBox("instance");
-
-						// Get the TextBox2 (output) instance
-
-						const textBox2Instance = $("#LessAdvanceAr1").dxTextBox("instance");
-
-						// Ensure both instances are initialized
-
-						if (!textBox1Instance || !textBox2Instance) {
-
-							console.error("TextBox instances are not properly initialized.");
-
-							return;
-
-						}
-
-
-						// Get the value from TextBox1
-
-						const englishText = textBox1Instance.option("value");
-
-						// Validate input
-
-						if (!englishText || englishText.trim() === "") {
-
-							alert("Please enter text to translate.");
-
-							return;
-
-						}
-
-						// Perform translation
-
-						const arabicTranslation = await translateToArabic(englishText);
-
-						// Update TextBox2 with the Arabic translation
-
-						textBox2Instance.option("value", arabicTranslation);
-
-					}
-
-					 async function RetentionconvertToArabic() {
-
-						// Get the TextBox1 (input) instance
-
-						const textBox1Instance = $("#LessRetention").dxTextBox("instance");
-
-						// Get the TextBox2 (output) instance
-
-						const textBox2Instance = $("#LessAdvanceAr2").dxTextBox("instance");
-
-						// Ensure both instances are initialized
-
-						if (!textBox1Instance || !textBox2Instance) {
-
-							console.error("TextBox instances are not properly initialized.");
-
-							return;
-
-						}
-
-
-						// Get the value from TextBox1
-
-						const englishText = textBox1Instance.option("value");
-
-						// Validate input
-
-						if (!englishText || englishText.trim() === "") {
-
-							alert("Please enter text to translate.");
-
-							return;
-
-						}
-
-						// Perform translation
-
-						const arabicTranslation = await translateToArabic(englishText);
-
-						// Update TextBox2 with the Arabic translation
-
-						textBox2Instance.option("value", arabicTranslation);
-
-					}
-
-					// 	$(document).ready(function () {
-					// 	var button = $("#btnSave").dxButton("instance");
-					// 	button.option("text", "Update");
-					// });
-
-
-
-					function handleFileSelection() {
-						const fileInput = document.getElementById("fileInput");
-
-						const isMultiple = true; // or false based on your requirement
-
-						if (fileInput) {
-							fileInput.multiple = isMultiple;
-							fileInput.click();
-						} else {
-							console.error("fileInput element not found");
-						}
-					}
-
-					// function onDropDownInitialized(e) {
-					// 	   dropDownInstance = e.component;
-
-					// 	   $("#tagBoxContainer").dxTagBox({
-					// 		   dataSource: [
-					// 			   { ID: 1, Name: "3rd Party Tax Invoice" },
-					// 			   { ID: 2, Name: "Nominal Tax Invoice" },
-					// 			   { ID: 3, Name: "Export Tax Invoice" },
-					// 			   { ID: 4, Name: "Summary Tax Invoice" },
-					// 			   { ID: 5, Name: "Self Billed Tax Invoice" }
-					// 		   ],
-					// 		   valueExpr: "ID",
-					// 		   displayExpr: "Name",
-					// 		   onValueChanged: function(data) {
-					// 			   dropDownInstance.option("value", data.value);
-					// 		   },
-					// 		   showSelectionControls: true,
-					// 		   applyValueMode: "useButtons",
-					// 		   multiline: false
-					// 	   });
-					//    }
-
-					//    function setInvoiceTransactionCode() {
-					// 	   let strTransactionCode = "";
-					// 	 //  let subtype = document.getElementById("txtInvoiceSubTypeCode").value; // Adjust based on your input
-
-
-					// 		   strTransactionCode = "01";
-
-					// 		   let selectedIds = dropDownInstance.option("value") || [];
-
-					// 		   for (let i = 1; i <= 5; i++) {
-					// 			   strTransactionCode += selectedIds.includes(i) ? "1" : "0";
-					// 		   }
-
-
-					// 	   return strTransactionCode;
-					//    }
-
-
-						$("#InvoiceTransactionsCode").dxDropDownBox({
-						dataSource: [],
-						valueExpr: "code",
-						displayExpr: "code",
-						value: ""
-					});
-
-
 
 					function onDropDownInitialized(e) {
 					dropDownInstance = e.component;
@@ -4764,49 +3418,6 @@
 					}
 
 
-						$(function () {
-						var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
-						dropDownBox.open(); // Forces it to open on load
-						dropDownBox.close(); // Forces it to open on load
-					});
-
-							$(function () {
-							var dropDownBox = $("#OurAddressDetails").dxDropDownBox("instance");
-						dropDownBox.open(); // Forces it to open on load
-						dropDownBox.close(); // Forces it to open on load
-					});
-
-					 function AddPreparedBy(){
-							const url = `/${tenantName}/IMS/Signatories`;
-						  const title = "Signatories";
-							  openModal(url, title);
-					  }
-
-					   function AddReqUnit(){
-							const url = `/${tenantName}/IMS/ProjectSubUnits`;
-						  const title = "Project Sub Units";
-							  openModal(url, title);
-					  }
-						 function AddModeReq(){
-							const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-						  const title = "Quotation Mode Of Request";
-							  openModal(url, title);
-					  }
-						 function AddTypeReq(){
-							const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-						  const title = "Quotation Type Of Request";
-							  openModal(url, title);
-					  }
-						 function AddNewClient(){
-							const url = `/${tenantName}/IMS/ClientLeadMaster`;
-							  const title = "Client Master";
-							  openModal(url, title);
-						  }
-
-						  function setContactName(name) {
-							$('#txtContactName').dxTextBox("instance").option("value", name);
-
-						}
 
 							  function AddContactName() {
 				var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
@@ -4938,53 +3549,7 @@
 				return d.toLocaleDateString() + " " + d.toLocaleTimeString();
 			}
 
-			function initWorkflowTippyPopovers() {
-				// 🧼 Clean up any old tippy instances
-				tippy.hideAll();
-				document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
-				 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
-				const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
-				const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
 
-				console.log("🧪 Tooltip data:", {
-					verifiedBy, verifiedOn, approvedBy, approvedOn
-				});
-
-				// 🟩 Verified Popover
-				tippy('#circle-verify', {
-					content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
-					allowHTML: true,
-					followCursor: 'horizontal',
-					placement: 'top',
-					animation: 'shift-away',
-					theme: 'light-border',
-					trigger: 'mouseenter focus',
-					delay: [100, 100],
-				});
-
-				// 🟩 Approved Popover
-				tippy('#circle-approve', {
-					content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
-					allowHTML: true,
-					followCursor: 'horizontal',
-					placement: 'top',
-					animation: 'shift-away',
-					theme: 'light-border',
-					trigger: 'mouseenter focus',
-					delay: [100, 100],
-
-				});
-					tippy('#circle-submit', {
-				content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
-				allowHTML: true,
-				followCursor: 'horizontal',
-				placement: 'top',
-				animation: 'shift-away',
-				theme: 'light-border',
-				trigger: 'mouseenter focus',
-				delay: [100, 100],
-			});
-			}
 			// Attachment
 		function onIMSAttachmentButtonClick(e) {
 			debugger;
@@ -5070,90 +3635,90 @@
 			}
 
 
-		$(document).ready(function () {
-			console.log('Start permission handling AccountingLedgers');
-			// Form ID
-				var formId = "EquipmentEnquiryEdit";
+		// $(document).ready(function () {
+		// 	console.log('Start permission handling AccountingLedgers');
+		// 	// Form ID
+		// 		var formId = "EquipmentEnquiryEdit";
 
-			// Call the API to get permissions
-			$.ajax({
-				url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-				type: 'GET',
-				contentType: 'application/json',
-				success: function (response) {
-					console.log("API Response:", response); // Log the API response
+		// 	// Call the API to get permissions
+		// 	$.ajax({
+		// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+		// 		type: 'GET',
+		// 		contentType: 'application/json',
+		// 		success: function (response) {
+		// 			console.log("API Response:", response); // Log the API response
 
-					if (response.success && response.permissions) {
-						// Default visibility and enable status for buttons
-						var controlStates = {
-							"ddButtonLayout": { "Visible": false, "Enabled": false },
-							"rowHeightProperties": { "Visible": false, "Enabled": false },
-							"btnMoveUp": { "Visible": false, "Enabled": false },
-							"btnMoveDown": { "Visible": false, "Enabled": false },
-							"btnSave": { "Visible": false, "Enabled": false },
-							"btnSaveAndClose": { "Visible": false, "Enabled": false },
-							"btnPrint1": { "Visible": false, "Enabled": false },
-							"btnAddNew": { "Visible": false, "Enabled": false },
-							"btnDelete": { "Visible": false, "Enabled": false },
-							"btnBack": { "Visible": false, "Enabled": false },
-							"btnSubmit": { "Visible": false, "Enabled": false },
-							"btnVerify": { "Visible": false, "Enabled": false },
-							"btnApprove": { "Visible": false, "Enabled": false },
-							"btnCancel": { "Visible": false, "Enabled": false },
-							"btnAttach": { "Visible": false, "Enabled": false },
-							"btnUpload": { "Visible": false, "Enabled": false },
-						};
+		// 			if (response.success && response.permissions) {
+		// 				// Default visibility and enable status for buttons
+		// 				var controlStates = {
+		// 					"ddButtonLayout": { "Visible": false, "Enabled": false },
+		// 					"rowHeightProperties": { "Visible": false, "Enabled": false },
+		// 					"btnMoveUp": { "Visible": false, "Enabled": false },
+		// 					"btnMoveDown": { "Visible": false, "Enabled": false },
+		// 					"btnSave": { "Visible": false, "Enabled": false },
+		// 					"btnSaveAndClose": { "Visible": false, "Enabled": false },
+		// 					"btnPrint1": { "Visible": false, "Enabled": false },
+		// 					"btnAddNew": { "Visible": false, "Enabled": false },
+		// 					"btnDelete": { "Visible": false, "Enabled": false },
+		// 					"btnBack": { "Visible": false, "Enabled": false },
+		// 					"btnSubmit": { "Visible": false, "Enabled": false },
+		// 					"btnVerify": { "Visible": false, "Enabled": false },
+		// 					"btnApprove": { "Visible": false, "Enabled": false },
+		// 					"btnCancel": { "Visible": false, "Enabled": false },
+		// 					"btnAttach": { "Visible": false, "Enabled": false },
+		// 					"btnUpload": { "Visible": false, "Enabled": false },
+		// 				};
 
-						// Check for full access
-						var fullAccess = response.permissions.find(p =>
-							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-						);
+		// 				// Check for full access
+		// 				var fullAccess = response.permissions.find(p =>
+		// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+		// 				);
 
-						if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-							// Grant full access: make all controls visible and enabled
-							Object.keys(controlStates).forEach(key => {
-								controlStates[key] = { "Visible": true, "Enabled": true };
-							});
-						} else {
-							// Update states based on specific permissions for each control
-							Object.keys(controlStates).forEach(key => {
-								var controlPermission = response.permissions.find(p =>
-									p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-								);
-								if (controlPermission) {
-									controlStates[key] = {
-										"Visible": controlPermission.ItemVisible || false,
-										"Enabled": controlPermission.ItemEnabled || false
-									};
-								}
-							});
-						}
+		// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+		// 					// Grant full access: make all controls visible and enabled
+		// 					Object.keys(controlStates).forEach(key => {
+		// 						controlStates[key] = { "Visible": true, "Enabled": true };
+		// 					});
+		// 				} else {
+		// 					// Update states based on specific permissions for each control
+		// 					Object.keys(controlStates).forEach(key => {
+		// 						var controlPermission = response.permissions.find(p =>
+		// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+		// 						);
+		// 						if (controlPermission) {
+		// 							controlStates[key] = {
+		// 								"Visible": controlPermission.ItemVisible || false,
+		// 								"Enabled": controlPermission.ItemEnabled || false
+		// 							};
+		// 						}
+		// 					});
+		// 				}
 
-						console.log("Control States:", controlStates);
-						Object.keys(controlStates).forEach(key => {
-							var button = document.getElementById(key);
-							if (button) {
-								// Handle visibility
-								button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-								// Handle enable/disable state
-								button.disabled = !controlStates[key].Enabled;
-								console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-							} else {
-								console.warn(`Button with ID "${key}" not found in the DOM.`);
-							}
-						});
-					} else {
-						console.warn("Failed to fetch permissions or no permissions available.");
-					}
-				},
-				error: function (xhr, status, error) {
-					console.error("Error fetching permissions:", error);
-					alert('An error occurred while fetching permissions. Please try again.');
-				}
-			});
+		// 				console.log("Control States:", controlStates);
+		// 				Object.keys(controlStates).forEach(key => {
+		// 					var button = document.getElementById(key);
+		// 					if (button) {
+		// 						// Handle visibility
+		// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+		// 						// Handle enable/disable state
+		// 						button.disabled = !controlStates[key].Enabled;
+		// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+		// 					} else {
+		// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
+		// 					}
+		// 				});
+		// 			} else {
+		// 				console.warn("Failed to fetch permissions or no permissions available.");
+		// 			}
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			console.error("Error fetching permissions:", error);
+		// 			alert('An error occurred while fetching permissions. Please try again.');
+		// 		}
+		// 	});
 
-			console.log('End permission handling');
-		});
+		// 	console.log('End permission handling');
+		// });
 				function dataGridSelectionChanged15(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddProject").dxDropDownBox("instance");
@@ -5229,44 +3794,7 @@
             renderPopoverForm(rowIndex);
         }
     });
-		$(document).ready(function () {
-				const urlParams = new URLSearchParams(window.location.search);
-				const invoiceNoFromUrl = urlParams.get("invoiceNo");
-				const isCreateMode = urlParams.get("mode") === "create";
-
-				const invoiceBox = $("#txtBillingRefNo").dxTextBox("instance");
-
-				if (isCreateMode && invoiceNoFromUrl) {
-					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
-					if (invoiceBox) {
-						invoiceBox.option("value", invoiceNoFromUrl);
-						getDocumentCount();
-					}
-				} else {
-					// 🔄 Otherwise, get default auto-generated invoice from API
-					if (IsCurrent !== "true") {
-						$.ajax({
-							url: "/api/MaterialReceipt1/GetEquipmentInvoiceNo",	
-							type: "GET",
-							success: function (data) {
-								if (invoiceBox) {
-									
-									InvoiceOPenToSave(data)
-									invoiceBox.option("value", data || "");
-										getDocumentCount();
-									
-								} else {
-									console.warn("Invoice TextBox not initialized.");
-								}
-							},
-							error: function (xhr, status, error) {
-								console.error("Error fetching invoice number:", error);
-								DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
-							}
-						});
-					}
-				}
-			});
+		
 
   function AddSignatory(){
              var selectBox = $("#preparedBy2").dxSelectBox("instance");
@@ -5276,4 +3804,81 @@
         const title = "Signatories";
             openModal(url, title);
     }
+	
+    @section Scripts {
+        <script>
+            // ✅ Initialize the popover *first* after the DOM is ready
+            $(function () {
+                $("#GenerateEinvoicePopover").dxPopover({
+                    showTitle: true,
+                    title: "Generate eInvoice",
+                    width: 460,
+                    height: "auto",
+                    shading: true,
+                    closeOnOutsideClick: true,
+                    position: "bottom",
+                    contentTemplate: function (contentElement) {
+                        const html = `
+                            <div style="background-color:#e7eff9; padding:18px; border-radius:8px;">
+
+                                <div id="btnSummaryInvoice" style="background-color:#3b3b3b; color:#fff; padding:12px 14px; border-radius:8px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; margin-bottom:14px;">
+                                    <div>
+                                        <div style="font-size:16px; font-weight:600;">Create Summary VAT Invoice</div>
+                                        <div style="font-size:12px; color:#d8d8d8; margin-top:5px;">
+                                            * Generate eInvoice with Single Summary Line in Invoice as Total.
+                                        </div>
+                                    </div>
+                                    <i class="dx-icon dx-icon-rowfield" style="font-size:22px;"></i>
+                                </div>
+
+                                <div id="btnDetailedInvoice" style="background-color:#3b3b3b; color:#fff; padding:12px 14px; border-radius:8px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;">
+                                    <div>
+                                        <div style="font-size:16px; font-weight:600;">Create Detailed VAT Invoice</div>
+                                        <div style="font-size:12px; color:#d8d8d8; margin-top:5px;">
+                                            * Generate eInvoice with Multiple Line Items in Invoice Detailed.
+                                        </div>
+                                    </div>
+                                    <i class="dx-icon dx-icon-detailslayout" style="font-size:22px;"></i>
+                                </div>
+
+                                <div style="text-align:right; margin-top:18px;">
+                                    <div id="btnCloseEinvoicePopover"></div>
+                                </div>
+                            </div>
+                        `;
+                        contentElement.html(html);
+
+                        // ✅ Initialize DevExtreme button for Close
+                        $("#btnCloseEinvoicePopover").dxButton({
+                            text: "Close",
+                            type: "danger",
+                            icon: "close",
+                            onClick: function () {
+                                $("#GenerateEinvoicePopover").dxPopover("instance").hide();
+                            }
+                        });
+
+                        // Optional: add click actions
+                        $("#btnSummaryInvoice").on("click", function () {
+                            DevExpress.ui.notify("Summary VAT Invoice selected", "info", 2000);
+                        });
+
+                        $("#btnDetailedInvoice").on("click", function () {
+                            DevExpress.ui.notify("Detailed VAT Invoice selected", "info", 2000);
+                        });
+                    }
+                });
+            });
+
+            // ✅ This function only shows the already-initialized popover
+            function showGenerateEinvoicePopover(e) {
+                const popover = $("#GenerateEinvoicePopover").dxPopover("instance");
+                if (popover) {
+                    popover.option("target", e.element);
+                    popover.show();
+                }
+            }
+        </script>
+    }
+
  </script>

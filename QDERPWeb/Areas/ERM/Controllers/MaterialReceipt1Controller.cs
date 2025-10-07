@@ -329,7 +329,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     DateTime invoiceDate = DateTime.Now;
 
                     // Generate new Equipment Invoice No
-                    string newInvoiceNo = GetEquipmentInvoiceNoAPI(
+                    string newInvoiceNo = GetInvoiceNoAPI(
                         invoiceAbbrv,
                         invoiceYearDigits,
                         invoiceDate,
@@ -350,7 +350,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             }
         }
 
-        public string GetEquipmentInvoiceNoAPI(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int NoOfDigitsInInvoiceNo)
+        public string GetInvoiceNoAPI(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear, int NoOfDigitsInInvoiceNo)
         {
             string strYear = "";
             try
@@ -412,6 +412,216 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "" : invoiceAbbr)}-{strYear}-000001";
             }
+        }
+        [HttpGet]
+        public IActionResult GetInvoiceSummary(string invoiceNo)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var master = dbContext.Tbl40118PropertyInvoiceMasters
+                        .FirstOrDefault(x => x.InvoiceNo == invoiceNo);
+
+                    if (master == null)
+                    {
+                        return NotFound("Invoice not found.");
+                    }
+
+                    var details = dbContext.Tbl40118PropertyInvoiceMasters
+                        .Where(x => x.InvoiceNo == invoiceNo)
+                        .ToList();
+
+                    return Ok(new
+                    {
+                        Master = master,
+                        Details = details
+                    });
+                }
+                else
+                {
+                    return BadRequest("Tenant or DB Context not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error fetching invoice: " + ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetAllPropertyDescriptions()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var propertyTypes = dbContext.Tbl40101PropertyMasters
+                        .Select(s => new
+                        {
+                            s.PropertyNo,
+                            s.PropertyDescription
+                        })
+                        .ToList();
+
+                    return Ok(propertyTypes);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error loading Property Types: {ex.Message}");
+                    return StatusCode(500, new { message = "Failed to load Property Types.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceDetails(DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return BadRequest(new { message = "Unable to resolve tenant or DbContext." });
+
+                // Default date range: first day → last day of current month
+                fromDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                toDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+                var query = dbContext.Qry40115PropertyInvoiceDetails.AsQueryable();
+
+                // Apply optional date filter if InvoiceDate exists
+                if (fromDate.HasValue && toDate.HasValue)
+                {
+                    query = query.Where(i => i.InvoiceDate >= fromDate && i.InvoiceDate <= toDate);
+                }
+
+                var data = await query.Select(i => new
+                {
+                    i.InvoiceNo,
+                    i.InvoiceDate,
+                    i.InvoicePeriod,
+                    i.ClientCode,
+                    i.ClientName,
+                    i.PropertyNo,
+                    i.PropertyDescription,
+                    i.QuantityInvoiced,
+                    i.UnitRate,
+                    i.UoM,
+                    i.TotalAmount,
+                    i.TotalAdditions,
+                    i.TotalDeductions,
+                    i.NetAmount,
+                    i.TotalVatamount,
+                    i.TotalWithVatamount,
+                    i.VatinvoiceNo,
+                    i.TaxRateInWord,
+                    i.Remarks,
+                    i.DeliveryNoteNos
+                }).ToListAsync();
+
+                _logger.LogInformation($"GetInvoiceDetails returned {data.Count} rows for tenant {tenant.Name}.");
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in VATModule/GetInvoiceDetails");
+                return StatusCode(500, new { message = "Error while fetching invoice details.", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSummary(string invoiceNo, DateTime invoiceDueDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            try
+            {
+                // Call your stored procedure
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC stpro401_08InsertToEquipInvoiceFromBillSummary @p0",
+                    invoiceNo
+                );
+
+                // Update InvoiceDueDate
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "UPDATE tbl20161VATInvoiceMaster SET InvoiceDueDate = {0} WHERE InvoiceNo = {1}",
+                    invoiceDueDate, invoiceNo
+                );
+
+                return Json(new { success = true, invoiceNo });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+       
+
+        [HttpGet]
+        public async Task<ActionResult> GetInvoiceChildren(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithDetails = new List<ExpandoObject>();
+
+                    // Query the Tbl40137PropertyRequestChildren table for the given EquipmentRequestNo
+                    var result = dbContext.Qry40119PropertyInvoiceChildWithCalcs
+                        .Where(x => x.InvoiceNo == InvoiceNo)
+                        .ToList();
+
+                    foreach (var gridDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        // Retrieve UnitDesc based on UnitCode
+                        var unitDesc = await dbContext.Tbl40111PropertyUnitCodes
+                            .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
+                            .Select(x => x.UnitDesc)
+                            .FirstOrDefaultAsync();
+
+                        var PropertyDescription = await dbContext.Tbl40101PropertyMasters
+                            .Where(x => x.PropertyNo == gridDetails.DetailedDescription)
+                            .Select(x => x.PropertyDescription)
+                            .FirstOrDefaultAsync();
+
+                        // Retrieve GroupName based on QuoteGroupItemSlNo
+
+                        //var currencyRate = await dbContext.Tbl40136PropertyRequestMasters
+                        // .Where(x => x.EqiupmentRequestNo == EquipmentRequestNo)
+                        // .Select(x => x.CurrencyRate)
+                        // .FirstOrDefaultAsync();
+
+                        //dict["LineTotal"] = gridDetails.LineTotal / currencyRate;
+                        //dict["ExpectedUnitRate"] = gridDetails.ExpectedUnitRate / currencyRate;
+
+                        resultWithDetails.Add(item);
+                    }
+
+                    return Json(resultWithDetails);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 
@@ -503,119 +713,216 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdateMaterialReceipt([FromBody] MaterialReceiptViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateInvoice([FromBody] Tbl40118PropertyInvoiceMaster VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
 
-			if (VM == null || string.IsNullOrEmpty(VM.ReceiptNo))
-			{
-				return BadRequest(new { success = false, message = "Receipt No is required." });
-			}
+            if (VM == null || string.IsNullOrEmpty(VM.InvoiceNo))
+                return BadRequest(new { success = false, message = "Invoice No is required." });
 
-			try//
-			{
-				// Ensure child list is initialized
-				//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
+            try
+            {
+                // ===== MASTER =====
+                var existingInvoice = await dbContext.Tbl40118PropertyInvoiceMasters
+                    .FirstOrDefaultAsync(x => x.InvoiceNo == VM.InvoiceNo);
 
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60501materialReceiptMasters
-					.FirstOrDefaultAsync(x => x.ReceiptNo == VM.ReceiptNo);
+                if (existingInvoice != null)
+                {
+                    existingInvoice.InvoiceDate = VM.InvoiceDate;
+                    existingInvoice.ClientCode = VM.ClientCode;
+                    existingInvoice.QuotationNo = VM.QuotationNo;
+                    existingInvoice.ClientReferenceName = VM.ClientReferenceName;
+                    existingInvoice.ClientEmail = VM.ClientEmail;
+                    existingInvoice.ClientContactNo = VM.ClientContactNo;
+                    existingInvoice.TypeOfInvoice = VM.TypeOfInvoice;
+                    existingInvoice.Podates = VM.Podates;
+                    existingInvoice.VatinvoiceNo = VM.VatinvoiceNo;
+                    existingInvoice.DeliveryNoteNos = VM.DeliveryNoteNos;
+                    existingInvoice.Pono = VM.Pono;
+                    existingInvoice.InvoiceStartDate = VM.InvoiceStartDate;
+                    existingInvoice.InvoiceEndDate = VM.InvoiceEndDate;
+                    existingInvoice.Remarks = VM.Remarks;
+                    existingInvoice.ModifiedBy = "System";
+                    existingInvoice.ModifiedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    var newInvoice = new Tbl40118PropertyInvoiceMaster
+                    {
+                        InvoiceNo = VM.InvoiceNo,
+                        InvoiceDate = VM.InvoiceDate,
+                        ClientCode = VM.ClientCode,
+                        QuotationNo = VM.QuotationNo,
+                        ClientReferenceName = VM.ClientReferenceName,
+                        ClientEmail = VM.ClientEmail,
+                        ClientContactNo = VM.ClientContactNo,
+                        TypeOfInvoice = VM.TypeOfInvoice,
+                        Podates = VM.Podates,
+                        VatinvoiceNo = VM.VatinvoiceNo,
+                        DeliveryNoteNos = VM.DeliveryNoteNos,
+                        Pono = VM.Pono,
+                        InvoiceStartDate = VM.InvoiceStartDate,
+                        InvoiceEndDate = VM.InvoiceEndDate,
+                        Remarks = VM.Remarks,
+                        AddedBy = "System",
+                        AddedOn = DateTime.UtcNow
+                    };
 
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
-					existingMaster.ReceiptDate = VM.ReceiptDate;
-					existingMaster.SupplierDeliveryNoteNo = VM.SupplierDeliveryNoteNo;
-					existingMaster.SupplierCode = VM.SupplierCode;
-					existingMaster.Mprno = VM.Mprno;
-					existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
-					existingMaster.JobCode = VM.JobCode;
-					existingMaster.ClientCode = VM.ClientCode;
-					existingMaster.Rfqno = VM.Rfqno;
-					existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
-					existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-				    existingMaster.ReceiptSignatory = VM.ReceiptSignatory.HasValue ? (byte?)VM.ReceiptSignatory.Value : null;
-					existingMaster.IssueRemarks = VM.IssueRemarks;
-				    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-					existingMaster.ModeOfReceiptId = VM.ModeOfReceiptId.HasValue ? (byte?)VM.ModeOfReceiptId.Value : null;
+                    await dbContext.Tbl40118PropertyInvoiceMasters.AddAsync(newInvoice);
+                }
+
+                // ===== CHILDREN =====
+                if (VM.Items != null && VM.Items.Any())
+                {
+                    var existingItems = await dbContext.Tbl40119PropertyInvoiceChildren
+                        .Where(i => i.InvoiceNo == VM.InvoiceNo)
+                        .ToListAsync();
+
+                    var postedIds = VM.Items.Where(x => x.InvoiceChildSlNo > 0).Select(x => x.InvoiceChildSlNo).ToList();
+                    var toDelete = existingItems.Where(x => !postedIds.Contains(x.InvoiceChildSlNo)).ToList();
+                    dbContext.Tbl40119PropertyInvoiceChildren.RemoveRange(toDelete);
+
+                    foreach (var item in VM.Items)
+                    {
+                        var existingItem = existingItems.FirstOrDefault(x => x.InvoiceChildSlNo == item.InvoiceChildSlNo);
+
+                        if (existingItem == null)
+                        {
+                            await dbContext.Tbl40119PropertyInvoiceChildren.AddAsync(item);
+                        }
+                        else
+                        {
+                            dbContext.Entry(existingItem).CurrentValues.SetValues(item);
+                        }
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+                return Ok(new { success = true, message = "Invoice saved/updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in SaveOrUpdateInvoice: {ex.Message}", ex);
+                return StatusCode(500, new { success = false, message = "Internal server error. Please try again later." });
+            }
+        }
 
 
-				}
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60501materialReceiptMaster
-					{
+        //[HttpPost]
+        //public async Task<IActionResult> SaveOrUpdateMaterialReceipt([FromBody] MaterialReceiptViewModel VM)
+        //{
+        //	if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //	{
+        //		return Unauthorized(new { success = false, message = "Invalid tenant context." });
+        //	}
 
-				ReceiptNo=VM.ReceiptNo,
-				ReceiptDate=VM.ReceiptDate,
-				SupplierDeliveryNoteNo=VM.SupplierDeliveryNoteNo,
-				SupplierCode=VM.SupplierCode,
-				Mprno=VM.Mprno,
-				SupplierQuotationNo=VM.SupplierQuotationNo,
-				JobCode=VM.JobCode,
-				ClientCode=VM.ClientCode,
-				Rfqno = VM.Rfqno,
-				OurPurchaseOrderNo=VM.OurPurchaseOrderNo,
-				SalesPersonCode=VM.SalesPersonCode,
-				StoreReceivedIn=VM.StoreReceivedIn,
-				ProjectMasterCode=VM.ProjectMasterCode,
-				ReceiptSignatory=Convert.ToByte(VM.ReceiptSignatory),
-				IssueRemarks=VM.IssueRemarks,
-				CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-				InventoryMasterGroupId =Convert.ToByte(VM.InventoryMasterGroupId),
-				ModeOfReceiptId=Convert.ToByte(VM.ModeOfReceiptId)
-			
-			
-					};
+        //	if (VM == null || string.IsNullOrEmpty(VM.ReceiptNo))
+        //	{
+        //		return BadRequest(new { success = false, message = "Receipt No is required." });
+        //	}
 
-					await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
-				}
+        //	try//
+        //	{
+        //		// Ensure child list is initialized
+        //		//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60502materialReceiptChildren
-					.Where(x => x.ReceiptNo == VM.ReceiptNo)
-					.ToListAsync();
+        //		// Check if the master record exists
+        //		var existingMaster = await dbContext.Tbl60501materialReceiptMasters
+        //			.FirstOrDefaultAsync(x => x.ReceiptNo == VM.ReceiptNo);
 
-				foreach (var child in VM.MaterialReceiptDetailses)
-				{
-					if (child.ReceiptChildSlNo == 0)
-					{
-						// New child entry
-						child.ReceiptNo = VM.ReceiptNo; // Ensure foreign key is set
-						await dbContext.Tbl60502materialReceiptChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.ReceiptChildSlNo == child.ReceiptChildSlNo);
+        //		if (existingMaster != null)
+        //		{
+        //			//Update existing master with manual property mapping
+        //			existingMaster.ReceiptDate = VM.ReceiptDate;
+        //			existingMaster.SupplierDeliveryNoteNo = VM.SupplierDeliveryNoteNo;
+        //			existingMaster.SupplierCode = VM.SupplierCode;
+        //			existingMaster.Mprno = VM.Mprno;
+        //			existingMaster.SupplierQuotationNo = VM.SupplierQuotationNo;
+        //			existingMaster.JobCode = VM.JobCode;
+        //			existingMaster.ClientCode = VM.ClientCode;
+        //			existingMaster.Rfqno = VM.Rfqno;
+        //			existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
+        //			existingMaster.SalesPersonCode = VM.SalesPersonCode;
+        //			existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
+        //			existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
+        //		    existingMaster.ReceiptSignatory = VM.ReceiptSignatory.HasValue ? (byte?)VM.ReceiptSignatory.Value : null;
+        //			existingMaster.IssueRemarks = VM.IssueRemarks;
+        //		    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+        //			existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+        //			existingMaster.ModeOfReceiptId = VM.ModeOfReceiptId.HasValue ? (byte?)VM.ModeOfReceiptId.Value : null;
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
 
-				await dbContext.SaveChangesAsync();
+        //		}
+        //		else
+        //		{
+        //			// Insert new master
+        //			var newMaster = new Tbl60501materialReceiptMaster
+        //			{
 
-				return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
-		}
-		[HttpDelete]
+        //		ReceiptNo=VM.ReceiptNo,
+        //		ReceiptDate=VM.ReceiptDate,
+        //		SupplierDeliveryNoteNo=VM.SupplierDeliveryNoteNo,
+        //		SupplierCode=VM.SupplierCode,
+        //		Mprno=VM.Mprno,
+        //		SupplierQuotationNo=VM.SupplierQuotationNo,
+        //		JobCode=VM.JobCode,
+        //		ClientCode=VM.ClientCode,
+        //		Rfqno = VM.Rfqno,
+        //		OurPurchaseOrderNo=VM.OurPurchaseOrderNo,
+        //		SalesPersonCode=VM.SalesPersonCode,
+        //		StoreReceivedIn=VM.StoreReceivedIn,
+        //		ProjectMasterCode=VM.ProjectMasterCode,
+        //		ReceiptSignatory=Convert.ToByte(VM.ReceiptSignatory),
+        //		IssueRemarks=VM.IssueRemarks,
+        //		CompanyBranch=Convert.ToByte(VM.CompanyBranch),
+        //		InventoryMasterGroupId =Convert.ToByte(VM.InventoryMasterGroupId),
+        //		ModeOfReceiptId=Convert.ToByte(VM.ModeOfReceiptId)
+
+
+        //			};
+
+        //			await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
+        //		}
+
+        //		// Handle child entries
+        //		var existingChildren = await dbContext.Tbl60502materialReceiptChildren
+        //			.Where(x => x.ReceiptNo == VM.ReceiptNo)
+        //			.ToListAsync();
+
+        //		foreach (var child in VM.MaterialReceiptDetailses)
+        //		{
+        //			if (child.ReceiptChildSlNo == 0)
+        //			{
+        //				// New child entry
+        //				child.ReceiptNo = VM.ReceiptNo; // Ensure foreign key is set
+        //				await dbContext.Tbl60502materialReceiptChildren.AddAsync(child);
+        //			}
+        //			else
+        //			{
+        //				// Existing child entry
+        //				var existingChild = existingChildren
+        //					.FirstOrDefault(x => x.ReceiptChildSlNo == child.ReceiptChildSlNo);
+
+        //				if (existingChild != null)
+        //				{
+        //					dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+        //				}
+        //			}
+        //		}
+
+        //		await dbContext.SaveChangesAsync();
+
+        //		return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
+        //	}
+        //	catch (Exception ex)
+        //	{
+        //		_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+        //		return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+        //	}
+        //}
+        [HttpDelete]
 		public async Task<IActionResult> DeleteMaterialReceipt([FromQuery] string ReceiptNo)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -659,187 +966,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			}
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> SubmitMaterialReceipt(string ReceiptNo)
-		{
-			try
-			{
-				// Validate tenant context
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					return Unauthorized(new { success = false, message = "Invalid tenant context." });
-				}
-
-				// Validate Receipt number
-				if (string.IsNullOrEmpty(ReceiptNo))
-				{
-					return BadRequest(new { success = false, message = "Receipt No. is required." });
-				}
-
-				// Retrieve MPR master record
-				var master = await dbContext.Tbl60501materialReceiptMasters.FirstOrDefaultAsync(x => x.ReceiptNo == ReceiptNo);
-				if (master == null)
-				{
-					return NotFound(new { success = false, message = "Material Receipt not found." });
-				}
-
-				// Retrieve session values
-				var userName = HttpContext.Session.GetString("UserName");
-				var userIdString = HttpContext.Session.GetString("UserId");
-
-				if (!int.TryParse(userIdString, out int userId))
-				{
-					return Unauthorized(new { success = false, message = "Invalid or missing UserId in session." });
-				}
-
-				// Update MPR master record
-				master.IsSubmitted = true;
-				master.SubmittedBy = userName;
-				master.SubmittedOn = DateTime.Now;
-				master.ModifiedBy = userName;
-				master.ModifiedOn = DateTime.Now;
-
-				// Optional: Assign signatory if required
-				/*
-				var signatoryId = await GetSignatoryIDfromUserID(userId);
-				if (signatoryId.HasValue)
-				{
-					master.RequestSignatory = (byte)signatoryId.Value;
-				}
-				else
-				{
-					master.RequestSignatory = null;
-				}
-				*/
-
-				// Save changes
-				await dbContext.SaveChangesAsync();
-
-				return Ok(new { success = true, message = "Material Receipt submitted successfully." });
-			}
-			catch (Exception ex)
-			{
-				// Log exception here (e.g., using a logging framework like Serilog or NLog)
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> VerifyMaterialReceipt(string ReceiptNo)
-		{
-			try
-			{
-				if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					return Unauthorized(new { message = "Invalid tenant context." });
-				}
-
-				if (string.IsNullOrEmpty(ReceiptNo))
-				{
-					return BadRequest(new { message = "Material Receipt is required." });
-				}
-
-				var voucher = await dbContext.Tbl60501materialReceiptMasters
-					.FirstOrDefaultAsync(v => v.ReceiptNo == ReceiptNo);
-
-				if (voucher == null)
-				{
-					return NotFound(new { message = "Credit note not found." });
-				}
-
-				var userName = HttpContext.Session.GetString("UserName");
-				var userIdString = HttpContext.Session.GetString("UserId");
-
-				if (!int.TryParse(userIdString, out int userId))
-				{
-					return Unauthorized(new { message = "Invalid or missing UserId in session." });
-				}
-
-				// Update voucher fields
-				voucher.IsVerified = true;
-				voucher.VerifiedOn = DateTime.Now;
-				voucher.VerifiedBy = userName;
-
-				// Optional: Assign signatory if needed
-				/*
-				var signatoryId = await GetSignatoryIDfromUserID(userId);
-				if (signatoryId.HasValue)
-				{
-					voucher.MprverifiedSign = (byte)signatoryId.Value;
-				}
-				*/
-
-				await dbContext.SaveChangesAsync();
-
-				return Ok(new
-				{
-					message = "Material Receipt has been Verified and processed for Approval."
-				});
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-				return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-			}
-		}
-
-		[HttpPost]
-		public async Task<ActionResult> ApproveMaterialReceipt(string ReceiptNo)
-		{
-			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				try
-				{
-					var userName = HttpContext.Session.GetString("UserName");
-					var userIdString = HttpContext.Session.GetString("UserId");
-					if (!int.TryParse(userIdString, out int userId))
-					{
-						return Unauthorized(new { message = "Invalid or missing UserId in session." });
-					}
+		
 
 
-					if (string.IsNullOrEmpty(ReceiptNo))
-					{
-						return BadRequest(new { Message = "Receipt number is required." });
-					}
-
-					var voucher = dbContext.Tbl60501materialReceiptMasters
-										   .FirstOrDefault(v => v.ReceiptNo == ReceiptNo);
-
-					if (voucher == null)
-					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
-					}
-
-					// Update approval details
-					voucher.IsApproved = true;
-					voucher.ApprovedOn = DateTime.Now;
-					voucher.ApprovedBy = userName;
-					//voucher.PurchaseRequestStatusId = 33; // Status: Enquiry/Request Approved
-					//var signatoryId = await GetSignatoryIDfromUserID(userId);
-					//if (signatoryId.HasValue)
-					//{
-					//	voucher.MprapprovedSign = (byte)signatoryId.Value;
-					//}
-
-					dbContext.SaveChanges();
-
-					return Ok(new
-					{
-						Message = "Material Receipt has been Approved.",
-						VoucherApprovedBy = userName
-					});
-				}
-				catch (Exception ex)
-				{
-					_logger.LogError($"An error occurred while fetching the data : {ex.Message}");
-					return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
-				}
-			}
-
-			return Unauthorized(new { Message = "Invalid tenant.", Success = false });
-		}
+		
 
 	}
 }
