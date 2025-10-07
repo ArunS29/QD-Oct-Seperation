@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.ERM.Reports.DevileryNote
+namespace QD.ERP.Web.Areas.ERM.Reports.servieceandmaintenance
 {
-    public partial class PreviewDeliveryNote : DevExpress.XtraReports.UI.XtraReport
+    public partial class ServicesandMaintenanceEdit1 : DevExpress.XtraReports.UI.XtraReport
     {
-        public PreviewDeliveryNote()
+        public ServicesandMaintenanceEdit1()
         {
             InitializeComponent();
         }

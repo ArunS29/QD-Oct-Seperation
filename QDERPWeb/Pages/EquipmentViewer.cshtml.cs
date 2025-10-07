@@ -1,9 +1,12 @@
 ﻿using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using QD.ERP.Web.Areas.ERM.Reports.DevileryNote;
 using QD.ERP.Web.Areas.ERM.Reports.Enquiry;
 using QD.ERP.Web.Areas.ERM.Reports.PurchaseOrder;
+using QD.ERP.Web.Areas.ERM.Reports.PurchaseOrder;
 using QD.ERP.Web.Areas.ERM.Reports.Quotation;
+using QD.ERP.Web.Areas.ERM.Reports.SalesOrder;
 using QD.ERP.Web.Areas.Finance.Reports;
 using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
 using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
@@ -256,7 +259,7 @@ namespace QD.ERP.Web.Pages
             }
 
 
-            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
+            if (reportName == "PreviewSalesOrder" || reportName == "PreviewSalesOrderYardCopy")
             {
                 if (string.IsNullOrEmpty(salesOrderNo))
                 {
@@ -265,15 +268,15 @@ namespace QD.ERP.Web.Pages
 
                 salesOrderNo = salesOrderNo;
 
-                if (reportName == "SalesOrderReport")
+                if (reportName == "PreviewSalesOrder")
 
                 {
-                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewSalesOrder(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
-                else if (reportName == "SalesOrderReportWithoutPrice")
+                else if (reportName == "PreviewSalesOrderYardCopy")
 
                 {
-                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewSalesOrderYardCopy(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
 
 
@@ -286,7 +289,7 @@ namespace QD.ERP.Web.Pages
 
 
 
-            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
+            if (reportName == "PreviewDeliveryNotes" || reportName == "PreviewDeliveryNotePreprintForm")
             {
                 if (string.IsNullOrEmpty(deliveryNoteNo))
                 {
@@ -295,31 +298,17 @@ namespace QD.ERP.Web.Pages
 
                 deliveryNoteNo = deliveryNoteNo;
 
-                if (reportName == "PreviewDeliveryNote")
+                if (reportName == "PreviewDeliveryNotes")
 
                 {
-                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewDeliveryNotes(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
-                if (reportName == "ReportforMaterialIssueNote")
+                if (reportName == "PreviewDeliveryNotePreprintForm")
 
                 {
-                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    Report = new PreviewDeliveryNotePreprintForm(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                 }
-                if (reportName == "PreviewDeliveryNotewithPrice")
-
-                {
-                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                }
-                if (reportName == "DotMatrics")
-
-                {
-                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                }
-                if (reportName == "DeliveryNoteWithCostPrice")
-
-                {
-                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                }
+               
 
 
 

@@ -6,30 +6,32 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
+namespace QD.ERP.Web.Areas.ERM.Reports.DevileryNote
 {
-    public partial class PreviewSalesOrderYardCopy : DevExpress.XtraReports.UI.XtraReport
+    public partial class PreviewDeliveryNotes : DevExpress.XtraReports.UI.XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public PreviewSalesOrderYardCopy()
+        public PreviewDeliveryNotes()
         {
             InitializeComponent();
         }
 
-        public PreviewSalesOrderYardCopy(
-             bool showSeal,
+        public PreviewDeliveryNotes(
+             bool PrintFooterAtBottom,
+            bool ShowItemLineNo,
+            bool printItemPartArabicDesc,
+            bool showSeal,
             bool showSignature,
             bool printLetterhead,
-            string salesorderNo,
+            bool printItemCodeDesc,
+            bool printItemPartNoDesc,
+            string deliveryNoteNo,
             string tenantName,
             string companyName,
             Image logoImage,
             Image sealImage,
             string companyAddress,
-            string companyPhone,
-            string companyEmail,
-            string companyWebsite,
             string companyNameAr,
             string companyAddressAr,
             string username,
@@ -38,15 +40,14 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(showSeal, showSignature, printLetterhead, salesorderNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyPhone, companyEmail, companyWebsite, companyNameAr, companyAddressAr, username);
-            LoadReportData(salesorderNo);
-            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead);
+            SetReportParameters(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr, username);
+            LoadReportData(deliveryNoteNo);
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead, PrintFooterAtBottom);
         }
 
-        private void SetReportParameters(bool showSeal, bool showSignature, bool printLetterhead,
-            string salesorderNo, string tenantName, string companyName, Image logoImage, Image sealImage,
-            string companyAddress, string companyPhone, string companyEmail, string companyWebsite,
-            string companyNameAr, string companyAddressAr, string username)
+        private void SetReportParameters(bool PrintFooterAtBottom, bool ShowItemLineNo, bool printItemPartArabicDesc, bool showSeal, bool showSignature, bool printLetterhead, bool printItemCodeDesc, bool printItemPartNoDesc,
+            string deliveryNoteNo, string tenantName, string companyName, Image logoImage, Image sealImage,
+            string companyAddress, string companyNameAr, string companyAddressAr, string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -67,17 +68,21 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
                 }
             }
 
-            AddOrUpdateParameter("SalesorderNo", salesorderNo, typeof(string));
+            AddOrUpdateParameter("DeliveryNoteNo", deliveryNoteNo, typeof(string));
             AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyPhone", companyPhone ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyEmailAddress", companyEmail ?? "", typeof(string));
-            AddOrUpdateParameter("CompanyWebsite", companyWebsite ?? "", typeof(string));
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string));
 
+            AddOrUpdateParameter("printItemCodeDesc", printItemCodeDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartNoDesc", printItemPartNoDesc, typeof(bool), false);
+            AddOrUpdateParameter("printItemPartArabicDesc", printItemPartArabicDesc, typeof(bool), false);
+            AddOrUpdateParameter("ShowItemLineNo", ShowItemLineNo, typeof(bool), false);
+
+
+            // Set control values (adjust control names accordingly in your .repx/.cs layout)
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -101,20 +106,25 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
 
             if (FindControl("xrPictureBox2", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
-
-            if (FindControl("xrLabelCompanyPhone", true) is XRLabel phoneLabel)
-                phoneLabel.Text = companyPhone;
-
-            if (FindControl("xrLabelCompanyEmailAddress", true) is XRLabel emailLabel)
-                emailLabel.Text = companyEmail;
-
-            if (FindControl("xrLabelCompanyWebsite", true) is XRLabel websiteLabel)
-                websiteLabel.Text = companyWebsite;
         }
 
-        private void LoadReportData(string salesorderNo)
+        //private void LoadReportData(string deliveryNoteNo)
+        //{
+        //    DataTable dt = GetReportData(deliveryNoteNo);
+
+        //    if (dt.Rows.Count == 0)
+        //    {
+        //        this.DataSource = null;
+        //    }
+        //    else
+        //    {
+        //        this.DataSource = dt;
+        //        this.DataMember = ""; // or set to a named dataset if used
+        //    }
+        //}
+        private void LoadReportData(string deliveryNoteNo)
         {
-            DataTable dt = GetReportData(salesorderNo);
+            DataTable dt = GetReportData(deliveryNoteNo);
 
             if (dt.Rows.Count == 0)
             {
@@ -133,7 +143,7 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
 
                 if (!string.IsNullOrEmpty(svgXml))
                 {
-                    foreach (string pictureBoxName in new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8" })
+                    foreach (string pictureBoxName in new[] { "xrPictureBox3" })
                     {
                         if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
                         {
@@ -158,44 +168,56 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
             }
         }
 
-        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead)
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead, bool printFooterAtBottom)
+
+
         {
+            // 🔹 Hide GroupFooter2 if PrintFooterAtBottom = true
+            if (FindControl("GroupFooter2", true) is GroupFooterBand footerBand)
+                footerBand.Visible = printFooterAtBottom;
+
             // 🔹 Seal logic (xrPictureBox1)
             if (FindControl("xrPictureBox2", true) is XRPictureBox sealPicture)
                 sealPicture.Visible = showSeal;
 
             // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
-            foreach (string signatureBox in new[] { "xrPictureBox9", "xrPictureBox0", "xrPictureBox0" })
+            foreach (string signatureBox in new[] { "xrPictureBox1", "xrPictureBox0", "xrPictureBox0" })
             {
                 if (FindControl(signatureBox, true) is XRPictureBox sigBox)
                     sigBox.Visible = showSignature;
             }
 
             // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
-            if (FindControl("xrLabel53", true) is XRLabel lbl53)
-                lbl53.Visible = printLetterhead;
+            if (FindControl("xrLabel76", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
 
-            if (FindControl("xrLabel58", true) is XRLabel lbl58)
-                lbl58.Visible = printLetterhead;
-            if (FindControl("xrLabel88", true) is XRLabel lbl88)
-                lbl88.Visible = printLetterhead;
-            if (FindControl("xrLabel64", true) is XRLabel lbl64)
-                lbl64.Visible = printLetterhead;
-            if (FindControl("xrLabel52", true) is XRLabel lbl52)
-                lbl52.Visible = printLetterhead;
-            if (FindControl("xrLabel60", true) is XRLabel lbl60)
-                lbl60.Visible = printLetterhead;
+            if (FindControl("xrLabel75", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+            if (FindControl("xrLabel68", true) is XRLabel lbl68)
+                lbl68.Visible = printLetterhead;
+            if (FindControl("xrLabel69", true) is XRLabel lbl69)
+                lbl69.Visible = printLetterhead;
+            if (FindControl("xrLabel70", true) is XRLabel lbl70)
+                lbl70.Visible = printLetterhead;
             if (FindControl("xrLabel87", true) is XRLabel lbl87)
                 lbl87.Visible = printLetterhead;
+            if (FindControl("xrLabel88", true) is XRLabel lbl88)
+                lbl88.Visible = printLetterhead;
 
             if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
                 logoBox.Visible = printLetterhead;
 
             if (FindControl("xrLine3", true) is XRLine line3)
                 line3.Visible = printLetterhead;
+
+            if (FindControl("xrLine7", true) is XRLine line7)
+                line7.Visible = printLetterhead;
+            if (FindControl("xrLine8", true) is XRLine line8)
+                line8.Visible = printLetterhead;
         }
 
-        private DataTable GetReportData(string salesorderNo)
+        private DataTable GetReportData(string deliveryNoteNo)
         {
             DataTable dt = new DataTable();
 
@@ -207,12 +229,12 @@ namespace QD.ERP.Web.Areas.ERM.Reports.SalesOrder
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry602_13SalesOrderReport WHERE SalesOrderNo = @SalesorderNo";
+                        string query = "SELECT * FROM qry40118RptPropertyDeliveryNote WHERE DeliveryNoteNo = @DeliveryNoteNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@SalesorderNo", salesorderNo);
+                            cmd.Parameters.AddWithValue("@DeliveryNoteNo", deliveryNoteNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
