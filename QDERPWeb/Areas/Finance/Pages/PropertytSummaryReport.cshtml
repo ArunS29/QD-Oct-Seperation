@@ -1,7 +1,10 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.PropertytSummaryReportModel
 <h2 id="employeesummaryreport"></h2>
-
+<input id="formId" value="PropertyReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -360,6 +363,83 @@
 
         });
 
+    });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if filter fields are currently visible
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of all fields that belong to the filter area (from your config)
+        const filterFieldNames = [
+            "VoucherRefNo", "AccountHead", "AccountHeadName", "VoucherDate",
+            "EntryNarration", "AccountGroup", "MasterGroup", "PlateNo", "DoorNo",
+            "ChassisNo", "PropertyCategoryName", "PropertyGroup", "PropertyType",
+            "CostAndRevenueClubbed", "CostCenterCode", "CostCenterUnit",
+            "VoucherType", "VoucherNarration"
+        ];
+
+        // Toggle filter fields: remove if shown, restore if hidden
+        fields.forEach((f, i) => {
+            if (filterFieldNames.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Apply the updated layout
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1200
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "PropertyNo");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
     });
 </script>
 
