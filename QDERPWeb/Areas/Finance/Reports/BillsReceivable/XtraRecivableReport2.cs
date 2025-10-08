@@ -3,21 +3,18 @@ using DevExpress.DataAccess.Sql;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.Parameters;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service; // Needed for TenantDbContextHelper
 using Svg;
-using System;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 
 namespace QD.ERP.Web.Areas.Finance.Reports
 {
-    public partial class XtraRecivableReport : XtraReport
+    public partial class XtraRecivableReport2 : XtraReport
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
-        public XtraRecivableReport(
+        public XtraRecivableReport2(
              string username,
             object[] selectedValues,
             string selectionType, // <-- Add this
@@ -31,17 +28,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters( username,selectedValues, selectionType, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
+            SetReportParameters(username, selectedValues, selectionType, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb);
             LoadCurrencySymbolAndImage();
         }
 
-        public XtraRecivableReport()
+        public XtraRecivableReport2()
         {
             InitializeComponent();
-            SetReportParameters("",null, "", "", "", "", null, "", "");
+            SetReportParameters("", null, "", "", "", "", null, "", "");
         }
 
-        private void SetReportParameters( string username,object[] selectedValues, string selectionType, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
+        private void SetReportParameters(string username, object[] selectedValues, string selectionType, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressArb)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -68,7 +65,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string));
             AddOrUpdateParameter("SelectedValues", selectedValues ?? new object[0], typeof(object[]));
-            AddOrUpdateParameter("SelectionType", selectionType ?? "", typeof(string)); 
+            AddOrUpdateParameter("SelectionType", selectionType ?? "", typeof(string));
 
             SetLabelText("xrLabelTenantName", tenantName);
             SetLabelText("xrLabelCompanyName", companyName);
@@ -123,17 +120,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                     return;
                 }
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE AccountHeadNo IN ({selectedFilter})";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerPayablesMaster WHERE AccountHeadNo IN ({selectedFilter})";
             }
             else if (selectionType == "SalesPerson")
             {
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE SalesPersonName IN ({selectedFilter})";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerPayablesMaster WHERE SalesPersonName IN ({selectedFilter})";
             }
             else if (selectionType == "Branch")
             {
                 selectQuery.Name = "qry20105BillsReceivableAgeingView";
-                selectQuery.Sql = $"SELECT * FROM qry20105BillsReceivableAgeingView WHERE DivisionName IN ({selectedFilter})";
+                selectQuery.Sql = $"SELECT * FROM qry201SubLedgerPayablesMaster WHERE DivisionName IN ({selectedFilter})";
             }
             else
             {
@@ -189,15 +186,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             return int.TryParse(value, out int num) && (num >= 1 && num <= 99);
         }
         private bool IsSalesPersonName(List<string> values)
-{
-    
-    return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
-}
+        {
 
-private bool IsBranchName(List<string> values)
-{
-    return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
-}
+            return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
+        }
+
+        private bool IsBranchName(List<string> values)
+        {
+            return values.All(v => !string.IsNullOrWhiteSpace(v) && !v.StartsWith("L") && !v.All(char.IsDigit));
+        }
 
         protected override void OnDataSourceDemanded(EventArgs e)
         {
@@ -290,7 +287,7 @@ private bool IsBranchName(List<string> values)
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2",  "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12" };
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12" };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -379,7 +376,7 @@ private bool IsBranchName(List<string> values)
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5",  };
+            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)

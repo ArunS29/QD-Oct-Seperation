@@ -121,6 +121,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Areas\Finance\Reports\BillsReceivable\XtraRecivableReport2.cs">
+	    <SubType>XtraReport</SubType>
+	  </Compile>
 	  <Compile Update="Areas\Finance\Reports\cashPayments\cashPayments.cs">
 	    <SubType>XtraReport</SubType>
 	  </Compile>
