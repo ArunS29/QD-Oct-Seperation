@@ -289,6 +289,13 @@
 }
 
 <script>
+    const tenantName = window.location.pathname.split('/')[1];
+    
+    // Get selectedMode from URL parameter (passed from parent page)
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedMode = urlParams.get('mode') || 'online';
+    console.log(`ReportsBySupplier received mode: ${selectedMode}`);
+    
     let dataGrid;
 
     // --- DropDownBox helpers ---
@@ -366,7 +373,13 @@
             return;
         }
 
-        const reportName = "XtraRecivableReport";
+        let reportName = "XtraRecivableReport";
+        
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReportImport";
+        }
+        
         const downloadUrl = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
         window.location.href = downloadUrl;
     }
@@ -389,7 +402,14 @@
             return;
         }
 
-        const reportName = "XtraRecivableReport2";
+        let reportName = "XtraRecivableReport2";
+        
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReport2Import";
+        }
+        
+        console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
         const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
         window.open(reportUrl, "_blank", "width=1200,height=800,scrollbars=yes,resizable=yes");
     }
