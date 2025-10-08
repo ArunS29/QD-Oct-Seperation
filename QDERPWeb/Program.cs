@@ -1,18 +1,10 @@
 ﻿using DevExpress.AspNetCore;
 using DevExpress.AspNetCore.Reporting;
-using DevExpress.Spreadsheet.Charts;
-using DevExpress.XtraCharts;
-using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Mvc;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.FileProviders;
 using QD.ERP.Web;
 using QD.ERP.Web.DAL.Entities;
@@ -22,16 +14,12 @@ using QD.ERP.Web.Models.DALCommon;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Service.ReportService;
 using QD.ERP.Web.Services.Logging;
-using SaasKit.Multitenancy;
 using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2; 
-
-
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 
 if (FirebaseApp.DefaultInstance == null)
 {
@@ -49,8 +37,11 @@ if (FirebaseApp.DefaultInstance == null)
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services
+    .AddRazorPages()
+    .AddRazorRuntimeCompilation();
 
-// builder.WebHost.UseUrls("http://*:44300");
+// builder.WebHost.UseUrls("http://*:6001");
 
 #region **1. Configure Services**
 
