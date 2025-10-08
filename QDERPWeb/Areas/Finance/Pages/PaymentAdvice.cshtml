@@ -191,6 +191,7 @@
                 success: function (response) {
                     if (response.success) {
                         DevExpress.ui.notify("Payment advice saved successfully.", "success", 2000);
+                        handlePaymentAdvicePreview(voucherNo);
                     } else {
                         DevExpress.ui.notify(response.message || "Failed to save payment advice.", "error", 2000);
                     }
@@ -201,6 +202,22 @@
             });
         });
     });
+    function handlePaymentAdvicePreview(voucherNo) {
+        if (!voucherNo) {
+            DevExpress.ui.notify("Voucher No is required.", "error", 2000);
+            return;
+        }
+
+        // Get full screen dimensions
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=PaymentsAdviceSupplierPayments&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+            '_blank',
+            `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+        );
+    }
 
 
      $(function () {
