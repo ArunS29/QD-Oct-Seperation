@@ -3849,23 +3849,64 @@ $(document).ready(function () {
                         contentElement.html(html);
 
                         // ✅ Initialize DevExtreme button for Close
-                        $("#btnCloseEinvoicePopover").dxButton({
-                            text: "Close",
-                            type: "danger",
-                            icon: "close",
-                            onClick: function () {
-                                $("#GenerateEinvoicePopover").dxPopover("instance").hide();
-                            }
-                        });
+    function handleInvoiceCreation(buttonType) {
+    var grid = $("#itemGrid").dxDataGrid("instance");
+    var selectedItems = grid.getSelectedRowsData();
 
-                        // Optional: add click actions
-                        $("#btnSummaryInvoice").on("click", function () {
-                            DevExpress.ui.notify("Summary VAT Invoice selected", "info", 2000);
-                        });
+    if (!selectedItems || selectedItems.length === 0) {
+        DevExpress.ui.notify("Please select at least one row.", "warning", 2000);
+        return;
+    }
 
-                        $("#btnDetailedInvoice").on("click", function () {
-                            DevExpress.ui.notify("Detailed VAT Invoice selected", "info", 2000);
-                        });
+    // Single selection → btnSummaryInvoice, Multiple → btnDetailedInvoice
+    if (buttonType === "summary" && selectedItems.length > 1) {
+        DevExpress.ui.notify("Please select only one row for Summary Invoice.", "warning", 2000);
+        return;
+    }
+
+    var payload = selectedItems.map(function(item) {
+        return {
+            BillingSummaryNo: item.PropertyNo, // your summary number field
+            InvoiceDueDate: item.InvoiceDueDate || new Date().toISOString().split("T")[0]
+        };
+    });
+
+    $.ajax({
+        url: '/api/MaterialReceipt1/CreateOrUpdateInvoice',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function(response) {
+            if (response.success) {
+                response.results.forEach(function(r) {
+                    if (r.status === "Created") {
+                        DevExpress.ui.notify("VAT Invoice created for " + r.BillingSummaryNo, "success", 2000);
+                        window.open("/VAT/frm20161VATInvoiceEdit?InvoiceNo=" + r.invoiceNo, "_blank");
+                    } else if (r.status === "Updated") {
+                        DevExpress.ui.notify("Invoice due date updated for " + r.BillingSummaryNo, "info", 2000);
+                    } else if (r.status === "Failed") {
+                        DevExpress.ui.notify("Failed to create invoice for " + r.BillingSummaryNo, "error", 2000);
+                    }
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            DevExpress.ui.notify("Server Error: " + error, "error", 2000);
+        }
+    });
+}
+
+// Bind buttons
+$("#btnSummaryInvoice").on("click", function() {
+    handleInvoiceCreation("summary");
+});
+
+$("#btnDetailedInvoice").on("click", function() {
+    handleInvoiceCreation("detailed");
+});
+
+
+
                     }
                 });
             });

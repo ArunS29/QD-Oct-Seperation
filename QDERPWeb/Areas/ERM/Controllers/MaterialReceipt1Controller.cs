@@ -560,7 +560,117 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
-       
+        [HttpPost]
+        public async Task<IActionResult> CreateVatInvoiceFromSummary([FromBody] string billSummaryNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant not found.");
+
+            try
+            {
+                // 🔹 Call your stored procedure
+                var result = await dbContext.Database
+                    .SqlQueryRaw<string>("EXEC stpro401_08InsertToEquipInvoiceFromBillSummary @BillSummaryNo = {0}", billSummaryNo)
+                    .ToListAsync();
+
+                // Assume SP returns new InvoiceNo
+                string newInvoiceNo = result.FirstOrDefault();
+
+                // ✅ Optional: update Due Date logic
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "UPDATE tbl20161VATInvoiceMaster SET InvoiceDueDate = DATEADD(DAY, 30, InvoiceDate) WHERE InvoiceNo = {0}",
+                    newInvoiceNo
+                );
+
+                return Ok(new { success = true, invoiceNo = newInvoiceNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+      [HttpPost("CreateOrUpdateDetailedInvoice")]
+public async Task<IActionResult> CreateOrUpdateDetailedInvoice([FromBody] List<BillingInvoiceRequest> requests)
+{
+    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        return Json(new { success = false, message = "Tenant or DB context not found." });
+
+    var resultList = new List<object>();
+
+    foreach (var request in requests)
+    {
+        try
+        {
+            // 1️⃣ Check if invoice already exists
+            var existingInvoice = dbContext.Tbl20161VatinvoiceMasters
+                .FirstOrDefault(x => x.InvoiceSummNo == request.BillingSummaryNo);
+
+            if (existingInvoice != null)
+            {
+                // 2️⃣ Update the Due Date using raw SQL
+                var updateSql = $"UPDATE tbl20161VATInvoiceMaster SET InvoiceDueDate = '{request.InvoiceDueDate:yyyy-MM-dd}' WHERE InvoiceNo = '{existingInvoice.InvoiceNo}'";
+                await dbContext.Database.ExecuteSqlRawAsync(updateSql);
+
+                resultList.Add(new
+                {
+                    BillingSummaryNo = request.BillingSummaryNo,
+                    status = "Updated",
+                    invoiceNo = existingInvoice.InvoiceNo
+                });
+
+                continue;
+            }
+
+            // 3️⃣ Execute stored procedure to create invoice
+            await dbContext.Database.ExecuteSqlRawAsync(
+                "EXEC stpro401_08InsertToEquipDetailedInvoiceFromBillSummary @BillingSummaryNo = {0}",
+                request.BillingSummaryNo
+            );
+
+            // 4️⃣ Retrieve the newly created invoice
+            var newInvoice = dbContext.Tbl20161VatinvoiceMasters
+                .OrderByDescending(x => x.AddedOn)
+                .FirstOrDefault(x => x.InvoiceSummNo == request.BillingSummaryNo);
+
+            if (newInvoice != null)
+            {
+                resultList.Add(new
+                {
+                    BillingSummaryNo = request.BillingSummaryNo,
+                    status = "Created",
+                    invoiceNo = newInvoice.InvoiceNo
+                });
+            }
+            else
+            {
+                resultList.Add(new
+                {
+                    BillingSummaryNo = request.BillingSummaryNo,
+                    status = "Failed",
+                    invoiceNo = ""
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            resultList.Add(new
+            {
+                BillingSummaryNo = request.BillingSummaryNo,
+                status = "Error",
+                message = ex.Message
+            });
+        }
+    }
+
+    return Json(new { success = true, results = resultList });
+}
+
+public class BillingInvoiceRequest
+{
+    public string BillingSummaryNo { get; set; }
+    public DateTime InvoiceDueDate { get; set; }
+}
+
 
         [HttpGet]
         public async Task<ActionResult> GetInvoiceChildren(string InvoiceNo)
