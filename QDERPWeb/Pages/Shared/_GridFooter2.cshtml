@@ -374,16 +374,24 @@
     }
 
     function ReportsByClient() {
-       
-        let url = `/${tenantName}/Finance/ReportsByClients`;
+        let url = `/${tenantName}/Finance/ReportsBySupplier`;
 
-
-        $("#popupIframe").attr("src", url);
-
-        // Open the popup
+        // Get popup instance
         let popup = $("#reportsByClientPopup").dxPopup("instance");
+
+        // Set iframe src BEFORE showing the popup
+        let iframe = $("#popupIframe");
+        iframe.attr("src", url);
+
+        // Optional: force reload in case browser caches blank
+        iframe.off("load").on("load", function () {
+            console.log("Iframe loaded successfully.");
+        });
+
+        // Show the popup
         popup.show();
     }
+
 
     const reportMappings = {
         "Bills Payable": "BIllsPayable",
@@ -414,7 +422,7 @@ function handleReportClick(e) {
         $("#reportsByClientPopup").dxPopup({
             width: 600,
             height: 750,
-            title: "Reports by Clients",
+            title: "Reports by Suppliers",
             visible: false,
             showCloseButton: true,
             closeOnOutsideClick: true,

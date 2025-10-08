@@ -807,8 +807,13 @@
         }else if (selectedText === formatMessage('Claim /Request Form Entry Checking')) {
             reportName = "ClaimEntryCheck";
         }else if (selectedText === formatMessage('Payment Advice(Supplier Payments)')) {
-            // reportName = "PaymentsAdviceSupplierPayments";
-            openModal(`/${tenantName}/Finance/PaymentAdvice`,formatMessage("Payment Advice"),"50%","50%");
+            // Pass VoucherNo in the URL for modal
+            openModal(
+                `/${tenantName}/Finance/PaymentAdvice?voucherNo=${encodeURIComponent(voucherNo)}`,
+                formatMessage("Payment Advice"),
+                "50%",
+                "50%"
+            );
             return;
         }
 

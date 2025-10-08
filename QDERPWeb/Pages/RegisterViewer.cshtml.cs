@@ -264,6 +264,9 @@ namespace QD.ERP.Web.Pages
                     case "XtraRecivableReport":
                         Report = new XtraRecivableReport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
+                    case "XtraRecivableReport2":
+                        Report = new XtraRecivableReport2(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
                     default:
                         return NotFound("Report not found.");
                 }

@@ -1,5 +1,7 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.PettyCashRequestModel
+@using Microsoft.AspNetCore.Http
+
 @{
     // pull your session value (“2”) into baseCurrencyIdnew
     var sessionID = HttpContext.Session.GetString("currencyID");
@@ -1483,8 +1485,17 @@
                                         options.totalValue = 0;
                                     }
                                     if (options.summaryProcess === "calculate") {
-                                        if (options.value && typeof options.value.ExpenseDescription === "string" &&
-                                            options.value.ExpenseDescription.trim() !== "") {
+                                        // ✅ Check if the row has any meaningful data (not deleted/empty row)
+                                        const row = options.value;
+
+                                        if (row && (
+                                            (row.ExpenseDescription && row.ExpenseDescription.trim() !== "") ||
+                                            (row.ClaimedAmount && row.ClaimedAmount > 0) ||
+                                            (row.ApprovedAmount && row.ApprovedAmount > 0) ||
+                                            (row.BillRefNo && row.BillRefNo.trim() !== "") ||
+                                            (row.AccountId && row.AccountId !== null) ||
+                                            (row.CostCenterCode && row.CostCenterCode !== null)
+                                        )) {
                                             options.totalValue++;
                                         }
                                     }
@@ -2555,45 +2566,127 @@
                     }
                 }, 400);
             }
-            function onexpenserowremoving(e) {
-                const claimChildNo = e.data.ClaimChildNo;
+                       function onexpenserowremoving(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const row = e.data;
+        const rowCount = grid.getVisibleRows().length;
 
-                if (claimChildNo) {
-                    e.cancel = true; // Prevent default DevExtreme behavior
+        // ✅ Check if row is completely empty (no data in major fields)
+        const isEmptyRow =
+            (!row.ExpenseDescription || row.ExpenseDescription.trim() === "") &&
+            (!row.BillRefNo || row.BillRefNo.trim() === "") &&
+            (!row.BillDate) &&
+            (!row.ClaimedAmount || row.ClaimedAmount === 0) &&
+            (!row.ApprovedAmount || row.ApprovedAmount === 0) &&
+            (!row.AccountId || row.AccountId === null) &&
+            (!row.CostCenterCode || row.CostCenterCode === null);
 
-                    $.ajax({
-                        url: '/api/ExpenseClaim/DeleteExpenseChild', // adjust path based on your area/controller
-                        type: 'POST',
-                        data: JSON.stringify(claimChildNo),
-                        contentType: 'application/json',
-                        success: function (response) {
-                            if (response.success) {
-                                var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-                                loadExpenseGridData(voucherNo);
+        const claimChildNo = row.ClaimChildNo;
 
-
-                            } else {
-                                DevExpress.ui.notify(response.message || "Delete failed", "error", 2000);
+        // 🧩 Helper: add a new blank row
+        function addBlankRow() {
+               const dataSource = grid.option("dataSource") || [];
+                   const voucherNoField = $("#VoucherNo").dxTextBox("instance");
+                            if (!Array.isArray(dataSource)) {
+                                return;
                             }
-                        },
-                        error: function () {
-                            DevExpress.ui.notify("Server error during delete", "error", 2000);
-                        }
-                    });
-                }
-            }
-            function loadExpenseGridData(voucherNo) {
-                $.ajax({
-                    url: "/api/ExpenseClaim/GetChildClaimsByVoucherNo",
-                    type: "GET",
-                    data: { voucherNo: voucherNo },
-                    success: function (data) {
-                        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                        dataGrid.option("dataSource", data);
+                            if (Issubmitted || Isverified || Isapproved) {
+                                return;
+                            }
 
-                    }
-                });
+                            if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
+                                dataSource.push({
+                                    ClaimedAmount: 0.00,
+                                    ApprovedAmount: 0.00,
+                                    VoucherNo: voucherNoField
+                                });
+                                grid.option("dataSource", dataSource);
+                            }
+        }
+
+        // 🧭 CASE 1: Empty unsaved row
+        if (isEmptyRow && !claimChildNo) {
+            // DevExpress.ui.notify("Empty row removed successfully", "success", 2000);
+            e.cancel = true; // allow DevExtreme to remove it
+
+            // If this was the only row → add a new blank one
+            if (rowCount === 1) {
+                setTimeout(addBlankRow, 300);
             }
+            return;
+        }
+
+        // 🧭 CASE 2: Saved row (ClaimChildNo exists) — delete via API
+        if (claimChildNo) {
+            e.cancel = true; // Prevent default DevExtreme deletion behavior
+
+            $.ajax({
+                url: '/api/ExpenseClaim/DeleteExpenseChild',
+                type: 'POST',
+                data: JSON.stringify(claimChildNo),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response.success) {
+                        // DevExpress.ui.notify("Expense row deleted successfully", "success", 2000);
+
+                        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                        loadExpenseGridData(voucherNo);
+
+                        // ✅ If it was the only row → add a new blank row
+                        if (rowCount === 1  ) {
+                            setTimeout(addBlankRow, 300);
+                        }
+                    } else {
+                        DevExpress.ui.notify(response.message || "Delete failed", "error", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Server error during delete", "error", 2000);
+                }
+            });
+            return;
+        }
+
+        // 🧭 CASE 3: No ClaimChildNo but has partial data — just remove it locally
+        DevExpress.ui.notify("Row removed", "success", 2000);
+        e.cancel = false;
+        if (rowCount === 1) {
+            setTimeout(addBlankRow, 300);
+        }
+    }
+
+
+        function loadExpenseGridData(voucherNo) {
+            $.ajax({
+                url: "/api/ExpenseClaim/GetChildClaimsByVoucherNo",
+                type: "GET",
+                data: { voucherNo: voucherNo },
+                success: function (data) {
+                       
+                             const gridInstance = $("#dataGrid").dxDataGrid("instance");
+
+                            gridInstance.option("dataSource", data);
+                                 if (!Isapproved && !Isverified && !Issubmitted) {
+                                          const dataSource = gridInstance.option("dataSource") || [];
+                                           dataSource.push({
+                                        ClaimedAmount: 0.00,
+                                        ApprovedAmount: 0.00,
+                                        VoucherNo: claimRefNo
+                                    });
+                                    gridInstance.option("dataSource", dataSource);
+
+
+                                 }
+
+                            gridInstance.refresh();
+
+
+
+
+
+                }
+            });
+        }
 
         function onAttachmentButtonClick() {
             // const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");

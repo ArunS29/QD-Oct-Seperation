@@ -1522,7 +1522,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public Dictionary<string, object> UpdatedFields { get; set; }
     }
 
-
+    public class PaymentAdviceUpdateDto
+    {
+        public string VoucherNo { get; set; }
+        public string PaymentMode { get; set; }
+        public string InstrumentNo { get; set; }
+        public DateTime? InstrumentDate { get; set; }
+        public string TransferedtoBankName { get; set; }
+        public string TransferedToAccNo { get; set; }
+    }
 
 }
 
