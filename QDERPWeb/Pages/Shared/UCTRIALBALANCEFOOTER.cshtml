@@ -163,6 +163,45 @@
         color: white;
     }
 
+    .preview-button .dx-button {
+        background-color: #9c27b0; /* Purple */
+        color: white;
+        background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+        font-weight: 600;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(156, 39, 176, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .preview-button .dx-button:hover {
+        background: linear-gradient(135deg, #8e24aa, #6a1b9a);
+        box-shadow: 0 4px 8px rgba(156, 39, 176, 0.4);
+        transform: translateY(-1px);
+    }
+
+    /* Download progress indicator styles */
+    .download-indicator {
+        position: fixed;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        z-index: 10000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .download-indicator.show {
+        display: block;
+        animation: slideInRight 0.3s ease-out;
+    }
+
+   
+
     /* Optional: Add hover effect */
     .dx-button:hover {
         opacity: 0.9;
@@ -892,20 +931,285 @@
           "Property Allocation Report":"PropertAllocationReport",
 
       };
-    function handleReportsClick(e) {
-        const selectedText = e.itemData.text;
-        let reportName = e.itemData.reportName; // Use reportName from menu item
 
-        // 👇 Use global selectedMode or default to "online"
+       // Function to show format selection popup
+       function showFormatSelectionPopup(reportName, frmDateStr, toDateStr, accountGroup, tenantName) {
+           console.log("showFormatSelectionPopup called with:", {reportName, frmDateStr, toDateStr, accountGroup, tenantName});
+           
+           try {
+               // Create popup container and append to body first
+               const popupDiv = $("<div>").appendTo("body");
+               
+               // Create popup for format selection
+               const popupInstance = popupDiv.dxPopup({
+                   title: "📄 Select Report Action",
+                   contentTemplate: function (contentElement) {
+                       const container = $("<div>").css({
+                           padding: "25px",
+                           fontFamily: "'Segoe UI', sans-serif",
+                           fontSize: "14px",
+                           textAlign: "center"
+                       }).appendTo(contentElement);
+
+                       // Title
+                       $("<h3>").text("Choose your preferred action:").css({
+                           marginBottom: "25px",
+                           color: "#333",
+                           fontSize: "16px"
+                       }).appendTo(container);
+
+                       // Preview Section
+                       const previewContainer = $("<div>").css({
+                           marginBottom: "25px",
+                           padding: "15px",
+                           backgroundColor: "#f8f9fa",
+                           borderRadius: "8px",
+                           border: "2px solid #e9ecef"
+                       }).appendTo(container);
+
+                       $("<h4>").text("📋 Preview Report").css({
+                           marginBottom: "10px",
+                           color: "#495057",
+                           fontSize: "14px"
+                       }).appendTo(previewContainer);
+
+                       // Preview Button
+                       const previewButton = $("<div>").dxButton({
+                           text: "🔍 Open Preview",
+                           type: "default",
+                           stylingMode: "contained",
+                           width: 200,
+                           height: 45,
+                           elementAttr: {
+                               style: "background: linear-gradient(135deg, #6f42c1, #5a32a3); color: white; border-radius: 8px; font-weight: 600; box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);"
+                           },
+                           onClick: function() {
+                               popupDiv.dxPopup("instance").hide();
+                               openPreviewReport(reportName, frmDateStr, toDateStr, accountGroup, tenantName);
+                               setTimeout(() => popupDiv.remove(), 300);
+                           }
+                       }).appendTo(previewContainer);
+
+                       // Download Section
+                       const downloadContainer = $("<div>").css({
+                           padding: "15px",
+                           backgroundColor: "#f1f3f4",
+                           borderRadius: "8px",
+                           border: "2px solid #dee2e6"
+                       }).appendTo(container);
+
+                       $("<h4>").text("📥 Download Report").css({
+                           marginBottom: "15px",
+                           color: "#495057",
+                           fontSize: "14px"
+                       }).appendTo(downloadContainer);
+
+                       // Format buttons container
+                       const buttonContainer = $("<div>").css({
+                           display: "flex",
+                           justifyContent: "center",
+                           gap: "15px"
+                       }).appendTo(downloadContainer);
+
+                       // PDF Button
+                       const pdfButton = $("<div>").dxButton({
+                           text: "📄 PDF",
+                           type: "default",
+                           stylingMode: "contained",
+                           width: 120,
+                           height: 45,
+                           elementAttr: {
+                               style: "background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border-radius: 8px; font-weight: 600;"
+                           },
+                           onClick: function() {
+                               popupDiv.dxPopup("instance").hide();
+                               downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, "pdf");
+                               setTimeout(() => popupDiv.remove(), 300);
+                           }
+                       }).appendTo(buttonContainer);
+
+                       // Excel Button
+                       const excelButton = $("<div>").dxButton({
+                           text: "📊 Excel",
+                           type: "default",
+                           stylingMode: "contained",
+                           width: 120,
+                           height: 45,
+                           elementAttr: {
+                               style: "background: linear-gradient(135deg, #27ae60, #229954); color: white; border-radius: 8px; font-weight: 600;"
+                           },
+                           onClick: function() {
+                               popupDiv.dxPopup("instance").hide();
+                               downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, "excel");
+                               setTimeout(() => popupDiv.remove(), 300);
+                           }
+                       }).appendTo(buttonContainer);
+                   },
+                   showCloseButton: true,
+                   width: 450,
+                   height: 350,
+                   dragEnabled: false,
+                   shadingColor: "rgba(0,0,0,0.4)",
+                   animation: {
+                       show: {
+                           type: "fade",
+                           from: 0,
+                           to: 1,
+                           duration: 300
+                       },
+                       hide: {
+                           type: "fade",
+                           duration: 200
+                       }
+                   },
+                   onHidden: function() {
+                       setTimeout(() => popupDiv.remove(), 100);
+                   },
+                   visible: false
+               });
+               
+               // Show the popup
+               popupDiv.dxPopup("instance").show();
+               console.log("Popup created and shown successfully");
+           } catch (error) {
+               console.error("Error creating popup:", error);
+               // Fallback - show simple confirm dialog
+               const action = prompt("Choose action:\n1 = Preview\n2 = PDF Download\n3 = Excel Download", "1");
+               if (action === "1") {
+                   openPreviewReport(reportName, frmDateStr, toDateStr, accountGroup, tenantName);
+               } else if (action === "2") {
+                   downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, "pdf");
+               } else if (action === "3") {
+                   downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, "excel");
+               }
+           }
+       }
+
+       // Function to open preview report in DocumentViewer
+       function openPreviewReport(reportName, frmDateStr, toDateStr, accountGroup, tenantName) {
+           console.log("openPreviewReport called with:", {reportName, frmDateStr, toDateStr, accountGroup, tenantName});
+           
+           // Show preview notification
+           DevExpress.ui.notify("🔍 Opening report preview...", "info", 2000);
+           
+           // Build preview URL using DocumentViewer
+           var previewUrl = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
+           
+           console.log("Preview URL:", previewUrl);
+           
+           try {
+               // Open in new tab
+               window.open(previewUrl, '_blank');
+               
+               // Success notification after short delay
+               setTimeout(() => {
+                   DevExpress.ui.notify("✅ Preview opened successfully!", "success", 2000);
+               }, 500);
+           } catch (error) {
+               console.error('Preview error:', error);
+               DevExpress.ui.notify("❌ Failed to open preview", "error", 3000);
+           }
+       }
+
+       // Native browser download with progress notifications
+       function downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, format) {
+           const formatText = format === "pdf" ? "PDF" : "Excel";
+           console.log(`downloadReportWithIndicator called: ${reportName}, ${format}`);
+           
+           // Build download URL with format parameter
+           var downloadUrl = `/api/Report/DownloadReports?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}&format=${encodeURIComponent(format)}`;
+           
+           const fileExtension = format === "pdf" ? "pdf" : "xlsx";
+           const fileName = `${reportName}_${frmDateStr}_to_${toDateStr}.${fileExtension}`;
+           
+           // Show enhanced notifications
+           DevExpress.ui.notify({
+               message: `� Generating ${formatText} report...\nThis may take several minutes for large reports.`,
+               type: "info",
+               displayTime: 4000,
+               position: {
+                   my: "top center",
+                   at: "top center"
+               }
+           });
+           
+           // Add timestamp for cache busting
+           const timestampedUrl = downloadUrl + `&_t=${Date.now()}`;
+           
+           // Trigger native browser download - this will show in browser's Downloads section
+           const downloadLink = document.createElement('a');
+           downloadLink.href = timestampedUrl;
+           downloadLink.download = fileName;
+           downloadLink.style.display = 'none';
+           
+           document.body.appendChild(downloadLink);
+           downloadLink.click();
+           document.body.removeChild(downloadLink);
+           
+           // Show follow-up notifications
+           setTimeout(() => {
+               DevExpress.ui.notify({
+                   message: `📥 ${formatText} download started!\nCheck your browser's Downloads section for progress.`,
+                   type: "success",
+                   displayTime: 5000,
+                   position: {
+                       my: "top right",
+                       at: "top right"
+                   }
+               });
+           }, 2000);
+           
+           // Show reminder after longer delay
+           setTimeout(() => {
+               DevExpress.ui.notify({
+                   message: `💡 Tip: Large reports may take 5-20 minutes to generate.\nDownload progress will appear in your browser's Downloads area.`,
+                   type: "info",
+                   displayTime: 6000,
+                   position: {
+                       my: "bottom right",
+                       at: "bottom right"
+                   }
+               });
+           }, 8000);
+       }
+
+       // Legacy function for backward compatibility
+       function downloadReport(reportName, frmDateStr, toDateStr, accountGroup, format) {
+           downloadReportWithIndicator(reportName, frmDateStr, toDateStr, accountGroup, format);
+       }
+
+       function handleReportsClick(e) {
+        console.log("handleReportsClick called with:", e);
+        console.log("itemData:", e.itemData);
+        const selectedText = e.itemData.text;
+        console.log("selectedText:", selectedText);
+        
+        // **Skip parent menu items that don't have actual reports**
+        if (!e.itemData.reportName && !reportMappingss[selectedText]) {
+            console.log("Clicked parent menu item:", selectedText);
+            return; // Don't process parent menu items
+        }
+        
+        // **Get report name from reportMappingss object instead of itemData**
+        let reportName = reportMappingss[selectedText];
+
+        // Use global selectedMode or default to "online"
         const mode = selectedMode || "online";
-        var accountGroup = selectBox;
+        var requestedByBox = $("#requestedBy").dxSelectBox("instance");
+        var accountGroup = requestedByBox ? requestedByBox.option("value") : ""; // Get accountGroup value
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
 
-        var frmDate = frmDateBox.option("value");
-        var toDate = toDateBox.option("value");
+        var frmDate = frmDateBox ? frmDateBox.option("value") : null;
+        var toDate = toDateBox ? toDateBox.option("value") : null;
 
-        // 👇 Override report name if Trial Balance and mode is offline
+        // Validation
+        if (!frmDate || !toDate) {
+            DevExpress.ui.notify("Please select both from and to dates.", "error", 2000);
+            return;
+        }
+
+        // Override report name if Trial Balance and mode is offline
         if (selectedText === "Trial Balance" && mode === "offline") {
             reportName = "TrialBalancePreReport";
             DevExpress.ui.notify({
@@ -916,49 +1220,48 @@
                     my: "top center",
                     at: "top center"
                 }
-            }, "info", 3000);
+            });
         }
 
         function formatDate(date) {
+            if (!date) return "";
             let dateObj = new Date(date);
-            let day = dateObj.getDate();
-            let month = dateObj.toLocaleString('en-US', { month: 'short' });
+            let day = dateObj.getDate().toString().padStart(2, '0');
+            let month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
             let year = dateObj.getFullYear();
-            return `${day}-${month}-${year}`;
+            return `${year}-${month}-${day}`; // Use ISO format for better parsing
         }
 
         var frmDateStr = formatDate(frmDate);
         var toDateStr = formatDate(toDate);
+        
+        // Get tenantName from global variable or extract from URL
+        var tenantName = window.tenantName || document.location.pathname.split('/')[1];
 
-        if (reportName) {
+        console.log("reportName from mapping:", reportName);
+        console.log("frmDateStr:", frmDateStr);
+        console.log("toDateStr:", toDateStr);
+        console.log("accountGroup:", accountGroup);
+        console.log("tenantName:", tenantName);
+
+        if (reportName && reportName !== "") {
+            // **Special handling for navigation-based reports**
             if (selectedText === "Cash Flow Statements") {
-                const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
-                const formattedToDate = new Date(toDate).toISOString().split('T')[0];
-                var url = `/${tenantName}/Finance/CashInflow?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+                var url = `/${tenantName}/Finance/CashInflow?fromDate=${frmDateStr}&toDate=${toDateStr}`;
                 window.open(url, '_blank');
             } else if (selectedText === "Property Allocation Report") {
-                const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
-                const formattedToDate = new Date(toDate).toISOString().split('T')[0];
-                var url = `/${tenantName}/Finance/PropertAllocationReport?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
+                var url = `/${tenantName}/Finance/PropertAllocationReport?fromDate=${frmDateStr}&toDate=${toDateStr}`;
                 window.open(url, '_blank');
             } else {
-                let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
-
-                const screenWidth = window.screen.availWidth;
-                const screenHeight = window.screen.availHeight;
-
-                window.open(
-                    url,
-                    '_blank',
-                    `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
-                );
+                console.log("About to call showFormatSelectionPopup...");
+                // **Show format selection popup**
+                showFormatSelectionPopup(reportName, frmDateStr, toDateStr, accountGroup, tenantName);
             }
         } else {
             console.warn("No report mapping found for:", selectedText);
+            DevExpress.ui.notify("Report not found for: " + selectedText, "warning", 2000);
         }
     }
-
-
 
 
 </script>

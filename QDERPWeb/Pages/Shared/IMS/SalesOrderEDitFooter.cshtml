@@ -303,7 +303,7 @@
 
 <script>
           const salesReportMap = {
-        "Preview  Sales Order": "SalesOrderReport", // two spaces!
+        "Preview Sales Order": "SalesOrderReport", // Fixed: using single space to match formatMessage
         "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
     };
     
@@ -329,7 +329,7 @@
 
             let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
               const salesReport= [
-                "Preview  Sales Order", 
+                "Preview Sales Order", 
                 "Preview Sales Order(without Price)"
               ];
 
