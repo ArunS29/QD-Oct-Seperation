@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Reports;
+using QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
@@ -264,6 +265,9 @@ namespace QD.ERP.Web.Pages
                     case "XtraRecivableReport":
                         Report = new XtraRecivableReport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
+                    case "XtraRecivableReportImport":
+                        Report = new XtraRecivableReportImport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
                     default:
                         return NotFound("Report not found.");
                 }
@@ -280,6 +284,7 @@ namespace QD.ERP.Web.Pages
             {
                 switch (reportName)
                 {
+                    // Regular Reports
                     case "XtraReportAgeingreportsummary":
                         Report = new XtraReportAgeingreportsummary(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
@@ -301,11 +306,36 @@ namespace QD.ERP.Web.Pages
                     case "BillsRecivableReport1":
                         Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
-
                     case "InventoryReportWithExpireDates":
                         Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
                         break;
 
+                    // Import Reports (Offline versions)
+                    case "XtraReportAgeingreportsummaryImport":
+                        Report = new XtraReportAgeingreportsummaryImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "XtraReportBillsReceivableAgeingReportImport":
+                        Report = new XtraReportBillsReceivableAgeingReportImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "BIllsPayableImport":
+                        Report = new BIllsPayableImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "SummaryImport":
+                        Report = new SummaryImport(userName,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "BillsReceivableAgeingReportImport":
+                        Report = new BillsReceivableAgeingReportImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "ReceivableReportEffectiveDateImport":
+                        Report = new ReceivableReportEffectiveDateImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "BillsRecivableReport1Import":
+                        Report = new BillsRecivableReport1Import(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+
+                    //case "InventoryReportWithExpireDatesImport":
+                    //    Report = new InventoryReportWithExpireDatesImport(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
+                    //    break;
 
                     default:
                         return NotFound("Report not found.");

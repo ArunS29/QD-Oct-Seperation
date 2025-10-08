@@ -248,18 +248,19 @@
 				<div class="month-btn" data-month="12">December</div>
 			</div>
 
-			<!-- Year Selector -->
-				<!-- Year Selector -->
-				<select id="yearSelect" class="year-select" onchange="toggleYerInput(this)">
-					<option value="2020">2020</option>
-					<option value="2021">2021</option>
-					<option value="2022">2022</option>
-					<option value="2023">2023</option>
-					<option value="2024" selected="selected">2024</option>
-					<option value="2025">2025</option>
-					<option value="2026">2026</option>
-					<option value="custom">Other...</option>
-				</select>
+		<!-- Year Selector -->
+				<select id="yearSelect" style="width:100%; padding:10px; font-size:20px; font-weight:600;
+						   text-align:center; background:#444; color:white;
+						   border:none; border-radius:5px;" onchange="toggleYerInput(this)">
+							<option value="2020">2020</option>
+							<option value="2021">2021</option>
+							<option value="2022">2022</option>
+							<option value="2023">2023</option>
+							<option value="2024" selected="selected">2020</option>
+							<option value="2025">2025</option>
+							<option value="2026">2026</option>
+							<option value="custom">Other...</option>
+						</select>
 
 				<!-- Hidden input for custom year -->
 				<input type="number" id="customYearInput" placeholder="Enter year" style="display:none; margin-top:10px; width:100%; padding:10px;

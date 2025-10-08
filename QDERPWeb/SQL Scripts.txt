@@ -4557,6 +4557,17 @@ VALUES
     (1088,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnNewPurchaseOrder','Print', 1, 1,null, 'ERM',null,null,null,null),
     (1089,'Equipment PO Main view Screen', 'EQPurchaseOrder_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
 
+Service Maintenance
+===================
+INSERT INTO dbo.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1099,'Equipment Service Edit','ServiceMaintenanceEdit_btnSave','Save',1,1,null,'ERM',null,null,null,null), 
+    (1100,'Equipment Service Edit','ServiceMaintenanceEdit_btnSaveAndClose','Save and Close',1,1,null,'ERM',null,null,null,null), 
+    (1101,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnDelete','Delete',1,1,null,'ERM',null,null,null,null), 
+    (1102,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null), 
+    (1103,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnPrint4','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1104,'Equipment Service Edit', 'ServiceMaintenanceEdit_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
 
     -- tbl40126_PropertyPOMaster
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
@@ -4710,6 +4721,38 @@ BEGIN
     ADD PurchaseRequestStatusID tinyint NULL;
 END
 GO
+
+Service Maintenance
+===================
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'CurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD CurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'CurrencyRate')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'BaseCurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+END
+GO 
 
 Equipment Qutation New Column and change data type
 ---------------------------------------------------
