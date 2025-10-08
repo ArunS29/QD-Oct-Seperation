@@ -749,7 +749,7 @@ columns.Add()
         </text>).Visible(true).AllowEditing(false);
 
                 })
-            .Height("100%")
+            .Height("85%")
             .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Scrolling(scrolling => scrolling
@@ -774,6 +774,7 @@ columns.Add()
             .ShowBorders(true)
             .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
                 .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+               
 
                 .OnOptionChanged("handleGridOptionChanged")
             .Summary(s => s
@@ -803,6 +804,7 @@ columns.Add()
 
                 );
             }))
+             .OnCellPrepared("onCellPrepared")
             )
     </div>
     @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
@@ -1024,6 +1026,7 @@ columns.Add()
     // });
 
     // ✅ Mouse hover sync
+
     $(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
         const menuItems = $(".dx-context-menu .dx-menu-item");
         currentIndex = menuItems.index(this);
@@ -1733,6 +1736,27 @@ columns.Add()
              injectCurrencyToCards();// slight delay to wait for DOM re-render
         }
     }
+        function onCellPrepared(e) {
+        if (e.rowType === "totalFooter" && e.column) {
+            if (e.column.dataField === "ClaimedAmountTotal") {
+                e.cellElement.css({ "color": "red", "font-weight": "bold" });
+            }
+            if (e.column.dataField === "ApprovedAmountTotal") {
+                e.cellElement.css({ "color": "green", "font-weight": "bold" });
+            }
+        }
+
+        // Optional: also color group footers
+        if (e.rowType === "groupFooter" && e.column) {
+            if (e.column.dataField === "ClaimedAmountTotal") {
+                e.cellElement.css({ "color": "red", "font-weight": "bold" });
+            }
+            if (e.column.dataField === "ApprovedAmountTotal") {
+                e.cellElement.css({ "color": "green", "font-weight": "bold" });
+            }
+        }
+    }
+
     $(function () {
         $("#Expensesclaim").text(formatMessage("Expenses Claim Request"));
     });
