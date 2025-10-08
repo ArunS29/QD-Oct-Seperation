@@ -393,7 +393,7 @@
     function ReportsByClient() {
         // Pass the current selectedMode to the ReportsByClients page via URL parameter
         const currentMode = typeof selectedMode !== "undefined" ? selectedMode : "online";
-        let url = `/${tenantName}/Finance/ReportsBySupplier?tab=${tabIndex}&mode=${encodeURIComponent(currentMode)}`;
+        let url = `/${tenantName}/Finance/ReportsBySupplier?&mode=${encodeURIComponent(currentMode)}`;
         // Get popup instance
         let popup = $("#reportsByClientPopup").dxPopup("instance");
 

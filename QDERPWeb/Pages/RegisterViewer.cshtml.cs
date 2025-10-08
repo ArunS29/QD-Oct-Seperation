@@ -346,9 +346,13 @@ namespace QD.ERP.Web.Pages
                         break;
                     case "XtraRecivableReportImport":
                         Report = new XtraRecivableReportImport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
                     case "XtraRecivableReport2":
                         Report = new XtraRecivableReport2(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
+                    case "XtraRecivableReport2Import":
+                    Report = new XtraRecivableReport2Import(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
                     default:
                         return NotFound("Report not found.");
                 }
