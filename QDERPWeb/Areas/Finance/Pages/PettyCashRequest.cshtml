@@ -1,5 +1,7 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.PettyCashRequestModel
+@using Microsoft.AspNetCore.Http
+
 @{
     // pull your session value (“2”) into baseCurrencyIdnew
     var sessionID = HttpContext.Session.GetString("currencyID");
@@ -2660,7 +2662,7 @@
                 type: "GET",
                 data: { voucherNo: voucherNo },
                 success: function (data) {
-                       if (data.length === 0) {
+                       
                              const gridInstance = $("#dataGrid").dxDataGrid("instance");
 
                             gridInstance.option("dataSource", data);
@@ -2680,7 +2682,6 @@
 
 
 
-                       }
 
 
                 }
