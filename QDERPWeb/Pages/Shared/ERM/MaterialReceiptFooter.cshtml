@@ -1,6 +1,114 @@
-﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+
+    /* Button Styling */
+    .dx-button {
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+    .dx-icon {
+        font-size: 20px !important; /* Adjust size if needed */
+        color: gray !important; /* Adjust color if needed */
+    }
+
+    .dx-button-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dx-dropdownbutton .dx-button-content {
+        padding: 0 !important;
+    }
+
+    /* .modalTitle{ */
+    /*     display:none; */
+    /* } */
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
 
 
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    .update-button {
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: #e0e7f0;
+        border-radius: 6px;
+    }
+
+
+    .multiline-button .dx-button-text {
+        white-space: normal;
+    }
+</style>
+
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
@@ -109,10 +217,10 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnMaterialReceiptDetails")
+            .ID("btnMaterialReceiptDetails1")
             .Icon("overflow")
-            .Text(new JS("formatMessage('Material Receipt Details')"))
-            .OnClick("MaterialReceiptDetails")
+            .Text(new JS("formatMessage('Invoice Summary Details')"))
+           .OnClick("MaterialReceiptDetails")
             )
 
     </div>
@@ -170,7 +278,7 @@
         }
   
         function MaterialReceiptDetails() {
-            window.location.href = `/${tenantName}/ERM/MaterialReceiptDetails`;
+            window.location.href = `/${tenantName}/ERM/ERMInvoiceSummaryDetails`;
         }
         function addNewMaterialReceipt(e) {
             let url = ''; // Declare once

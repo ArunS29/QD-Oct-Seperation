@@ -94,4 +94,6 @@ public partial class Tbl40118PropertyInvoiceMaster
     public byte? VatapplicableRate { get; set; }
 
     public string Podates { get; set; }
+
+    public List<Tbl40119PropertyInvoiceChild> Items { get; set; } = new();
 }
