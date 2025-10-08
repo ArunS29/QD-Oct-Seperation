@@ -1308,6 +1308,15 @@
 														.ShowSpinButtons(true)
 														.Value(1)
 														.Width("100%")
+														.OnInput(@"
+                                                             function(e) {
+                                                                 let value = e.event.target.value;
+                                                                 // Allow only digits and one decimal point
+                                                                 if (!/^\d*\.?\d*$/.test(value)) {
+                                                                     e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                 }
+                                                             }
+                                                         ")
 														)
 						</td>
 								<td>
@@ -1387,6 +1396,15 @@
 																			.ShowSpinButtons(true)
 																			.Width("100%")
 																			.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+																			 .OnInput(@"
+                                                                             function(e) {
+                                                                                 let value = e.event.target.value;
+                                                                                 // Allow only digits and one decimal point
+                                                                                 if (!/^\d*\.?\d*$/.test(value)) {
+                                                                                     e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                                 }
+                                                                             }
+                                                                         ")
 									)
 								</td>
 								<td>
@@ -3750,9 +3768,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						let newValue = args.value;
 
 						// Get existing values or updated ones
-							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,`${formatMessage('QuantityInvoiced')}`) || 0;
-							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, `${formatMessage('UnitRate')}`) || 0;
-						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex,`${formatMessage('Discount')}`) || 0;
+							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,'QuantityInvoiced') || 0;
+							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, 'UnitRate') || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex,'Discount') || 0;
 
 						// VAT rate handling
 						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,`${formatMessage('VAT Description')}`) || "0%";
@@ -6223,9 +6241,9 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				let newValue = args.value;
 
 				// Get existing values or updated ones
-					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('QuantityInvoiced')}`) || 0;
-					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,  `${formatMessage('UnitRate')}`) || 0;
-				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, `${formatMessage('Discount')}`) || 0;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex,  'QuantityInvoiced') || 0;
+					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, 'UnitRate') || 0;
+				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, 'Discount') || 0;
 
 				// VAT rate handling
 				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VAT%')}`) || "0%";
