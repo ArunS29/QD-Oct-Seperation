@@ -228,7 +228,7 @@
 </div>
 @await Html.PartialAsync("/Pages/Shared/ERM/PurchaseOrderFooter.cshtml")
 
-<div class="dx-fieldset horizontal-container">
+<div class="dx-fieldset horizontal-container" style="padding:10px;">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
@@ -318,7 +318,7 @@
 			});
 			
 		})
-		.Height(680)
+		.Height("60vh")
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
