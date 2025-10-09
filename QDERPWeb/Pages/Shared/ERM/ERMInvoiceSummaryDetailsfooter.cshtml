@@ -1,0 +1,378 @@
+﻿
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+
+    /* Button Styling */
+    .dx-button {
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+    .dx-icon {
+        font-size: 20px !important; /* Adjust size if needed */
+        color: gray !important; /* Adjust color if needed */
+    }
+
+    .dx-button-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .dx-dropdownbutton .dx-button-content {
+        padding: 0 !important;
+    }
+
+    /* .modalTitle{ */
+    /*     display:none; */
+    /* } */
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
+    }
+
+    .button-alignment-down {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: 1px !important;
+    }
+
+
+    /* Custom styles for context menu */
+    .context-menu {
+        display: none;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    .update-button {
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: #e0e7f0;
+        border-radius: 6px;
+    }
+
+
+    .multiline-button .dx-button-text {
+        white-space: normal;
+    }
+</style>
+
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .Text(new JS("formatMessage('Layout')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
+   
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .ElementAttr(new { style = "display: none;" })
+                .Width("100%")
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleSearch")
+                .Icon("search")
+                .Text(new JS("formatMessage('Search')"))
+                .OnClick("toggleFilterRow")
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btntoggleGroupPanel")
+                .Icon("hierarchy")
+                .Width("100%")
+                .Text(new JS("formatMessage('Group')"))
+                .ElementAttr(new { style = "display: none;" })
+                .OnClick("toggleGroupPanel")
+                )
+    </div>
+   
+
+    <!-- Hidden anchor for submenu positioning -->
+    <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
+
+    <!-- Submenu placeholder -->
+    <div id="additionalFormatsSubmenu"></div>
+
+
+
+
+</div>
+
+
+
+<script type="text/javascript">
+
+          
+        function loadGridState() {
+            var form = $('#formId').val();
+            // Call the API to get the grid state
+            $.ajax({
+                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                method: 'GET',
+                data: {
+                    form: form
+                },
+                success: function (response) {
+                    // Get the DataGrid instance
+                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                    // Load the state into the DataGrid
+                    if (response) {
+                        try {
+                            // Parse the JSON string from the file
+                            const layout = JSON.parse(response);
+
+                            // Restore the grid state
+                            dataGrid.state(layout);
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading grid state:", error);
+                }
+            });
+        }
+
+     
+
+
+        function closeOverlay() {
+            $("#overlay").fadeOut();
+            $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
+        }
+
+
+        function closeSubmenu() {
+            $("#submenuContainer").hide();
+        }
+        // Handle the file selection
+        $("#loadLayoutInput").on("change", function (event) {
+            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    try {
+
+                        const layout = JSON.parse(e.target.result);
+
+
+                        dataGrid.state(layout);
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        alert("Failed to load layout. Please ensure the file is valid JSON.");
+                    }
+                };
+
+
+                reader.readAsText(file);
+            }
+        });
+
+
+        function AccountGroupsOrdering() {
+
+            window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
+
+        }
+        function showSubmenu8(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide others first
+
+            var $submenu = $('#submenuContainer8');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+
+            // Always position to the right of the button
+            const submenuWidth = 273;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth() + 10;
+
+            $submenu.css({
+                'width': submenuWidth + 'px',
+                'position': 'absolute',
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
+                'display': 'block',
+                'background': '#fff',
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
+            });
+
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu8").on("click.submenu8", function (event) {
+                if (!$(event.target).closest('#submenuContainer8, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click.submenu8");
+                }
+            });
+    }
+
+
+    $(document).ready(function () {
+            console.log('Start permission handling');
+            // Form ID
+            var formId = "frm20162VATInvoiceMasterView";
+
+            // Call the API to get permissions
+            $.ajax({
+                url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log("API Response:", response); // Log the API response
+
+                    if (response.success && response.permissions) {
+                        // Default visibility and enable status for buttons
+                        var controlStates = {
+                            "ddButtonLayout": { "Visible": true, "Enabled": false },
+                            "btnPrint": { "Visible": true, "Enabled": false },
+                            "btnToggleSearch": { "Visible": true, "Enabled": false },
+                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+                            "btnInvoiceDetails": { "Visible": true, "Enabled": false },
+                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+                            "ddReports": { "Visible": true, "Enabled": false },
+                            "ddButtonPayment": { "Visible": true, "Enabled": false },
+                            "btnColumnChooser": { "Visible": true, "Enabled": false }
+
+                        };
+
+
+                        // Check for full access
+                        var fullAccess = response.permissions.find(p =>
+                            p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                        );
+
+                        if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                            // Grant full access: make all controls visible and enabled
+                            Object.keys(controlStates).forEach(key => {
+                                controlStates[key] = { "Visible": true, "Enabled": true };
+                            });
+                        } else {
+                            // Update states based on specific permissions for each control
+                            Object.keys(controlStates).forEach(key => {
+                                var controlPermission = response.permissions.find(p =>
+                                    p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                );
+                                if (controlPermission) {
+                                    controlStates[key] = {
+                                        "Visible": controlPermission.ItemVisible || false,
+                                        "Enabled": controlPermission.ItemEnabled || false
+                                    };
+                                }
+                            });
+                        }
+
+                        console.log("Control States:", controlStates); // Log the control states
+
+                        // Dynamically update button visibility and enabled state
+                        Object.keys(controlStates).forEach(key => {
+                            var button = document.getElementById(key);
+                            if (button) {
+                                // Handle visibility
+                                button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                                // Handle enable/disable state
+                                button.disabled = !controlStates[key].Enabled;
+                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            } else {
+                                console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                    } else {
+                        console.warn("Failed to fetch permissions or no permissions available.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching permissions:", error);
+                    alert('An error occurred while fetching permissions. Please try again.');
+                }
+            });
+            showColumnChooser();
+            console.log('End permission handling');
+        });
+
+
+</script>

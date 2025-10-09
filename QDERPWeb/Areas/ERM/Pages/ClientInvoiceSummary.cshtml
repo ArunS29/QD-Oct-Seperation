@@ -14,6 +14,9 @@
 		z-index: 1000;
 	}
 
+	.titleCard-toggle1 {
+		display: none;
+	}
 	.overlay-content {
 		position: absolute;
 		top: 50%;
@@ -135,13 +138,15 @@
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="ClientInvoiceSummary" class="no-border-input"></div>
+<div class="dx-card-header minimal-header">
+	<div class="card-title-icon">
+		<i class="fas fa-file-invoice-dollar"></i>
 	</div>
+	<div id="ClientInvoiceSummary" class="titleText no-border-title"></div>
 </div>
 
 @await Html.PartialAsync("/Pages/Shared/ERM/MaterialReceiptFooter.cshtml")
+
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -259,14 +264,9 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
-		 $(function () {
-	$("#ClientInvoiceSummary").dxTextBox({
-	text: formatMessage("Client Invoice Summary"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
+	
+	  $(function () {
+	 $("#ClientInvoiceSummary").text(formatMessage("Client Invoice Summary"));
 	});
 	$(function () {
 			var now = new Date();
