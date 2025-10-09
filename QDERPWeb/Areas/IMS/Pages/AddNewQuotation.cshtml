@@ -6109,7 +6109,7 @@ function loadChildDataAndBindGrid(quoteno) {
 					type: 'DELETE',
 					success: function (response) {
 						DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
-							window.location.href =`/${tenantName}/IMS/AddNewQuotation`
+							window.location.href =`/${tenantName}/IMS/Quotation`;
 						});
 					},
 					error: function (xhr) {

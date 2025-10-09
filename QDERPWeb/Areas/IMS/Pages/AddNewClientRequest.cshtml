@@ -5312,9 +5312,9 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 				type: 'Delete',
 						   success: function (response) {
 					DevExpress.ui.notify(response.message, 'success', 3000);
-						 setTimeout(function () {
+						setTimeout(function(){
 						window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
-				}, 1500);
+						},1000);
 				},
 				error: function (xhr) {
 					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';

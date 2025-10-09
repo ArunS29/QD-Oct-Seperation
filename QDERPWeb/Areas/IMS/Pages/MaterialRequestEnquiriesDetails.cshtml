@@ -1422,9 +1422,8 @@
 		}
 	},
 
-	
 		{
-			text:  formatMessage("Create a Quotation"),
+		text: formatMessage("Create a Quotation"),
 		icon: "plus",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1435,44 +1434,35 @@
 				return;
 			}
 
-			// Step 1: Check approval status
-			$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-				.done(function (isApproved) {
-					if (!isApproved) {
-							DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-						return;
-					}
-
-					// Step 2: Confirm
-					DevExpress.ui.dialog.confirm("You are about to create a new Quotation. Proceed?", "Confirmation")
-						.done(function (confirmResult) {
-							if (confirmResult) {
-								// Step 3: Call API
-								$.ajax({
-									url: "/api/MaterialRequestEnquiriesDetails/CreateQuotationFromMpr",
-									method: "POST",
-									contentType: "application/json",
-									data: JSON.stringify(mprNo),
-									success: function (result) {
-										if (result.success) {
-											DevExpress.ui.notify(result.message, "success", 2000);
-														window.location.href = `/${tenantName}/IMS/AddNewQuotation?MPRNo=${encodeURIComponent(mprNo)}&QuoteNo=${encodeURIComponent(result.quoteno)}`;
-										} else {
-											DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 2000);
-										}
-									},
-									error: function () {
-										DevExpress.ui.notify("Error while creating Quotation.", "error", 2000);
-									}
-								});
+			// Step 1: Confirm directly
+			DevExpress.ui.dialog.confirm(
+				"You are about to create a new Quotation. Proceed?",
+				"Confirmation"
+			).done(function (confirmResult) {
+				if (confirmResult) {
+					// Step 2: Call API directly
+					$.ajax({
+						url: "/api/MaterialRequestEnquiriesDetails/CreateQuotationFromMpr",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(mprNo),
+						success: function (result) {
+							if (result.success) {
+								DevExpress.ui.notify(result.message, "success", 2000);
+								window.location.href = `/${tenantName}/IMS/AddNewQuotation?MPRNo=${encodeURIComponent(mprNo)}&QuoteNo=${encodeURIComponent(result.quoteno)}`;
+							} else {
+								DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 2000);
 							}
-						});
-				})
-				.fail(function () {
-					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
-				});
+						},
+						error: function () {
+							DevExpress.ui.notify("Error while creating Quotation.", "error", 2000);
+						}
+					});
+				}
+			});
 		}
 	},
+
 
 					{
 			text:  formatMessage("Create PO"),
