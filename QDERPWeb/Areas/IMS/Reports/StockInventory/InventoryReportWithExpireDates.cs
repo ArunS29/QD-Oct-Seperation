@@ -26,7 +26,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
+            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
             LoadCurrencySymbolAndImage();
 
             try
@@ -305,6 +305,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
                     }
                 };
             }
+        }
+
+        private void InventoryReportWithExpireDates_BeforePrint(object sender, CancelEventArgs e)
+        {
+
         }
     }
 }

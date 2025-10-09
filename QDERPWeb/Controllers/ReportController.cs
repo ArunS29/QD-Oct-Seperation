@@ -244,7 +244,7 @@ namespace QD.ERP.Web.Controllers
                 {
                     // Trial Balance Reports
                     case "TrialBalanceReport":
-                        report = new TrialBalanceReport(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper);
+                        report = new TrialBalanceReport(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper,username);
                         break;
 
                     case "TrialBalanceExportFormat":
