@@ -3359,6 +3359,7 @@
 						contentType: "application/json",
 						data: JSON.stringify(InvoiceMaster),
 						success: function () {
+							getDocumentCount();
 						}
 
 					});
@@ -9011,8 +9012,8 @@
 			folderId2 = [
 					invoiceData.SalesOrderNo,
 					invoiceData.QuotationNo,
-					invoiceData.DeliveryNoteNos,
-					invoiceData.ProformaInvoiceNo
+					invoiceData.DeliveryNoteNos
+					//invoiceData.ProformaInvoiceNo
 			]
 			.filter(Boolean)   // remove null/empty
 			.join(",");
