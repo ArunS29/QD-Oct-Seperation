@@ -2756,7 +2756,7 @@ documentNo: InvoiceNo
                         //var totalValue = amount + vatValue;
 
                         // Add new dynamic column
-                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
                         //dict["VAT"] = vatValue;
@@ -7234,19 +7234,19 @@ documentNo: InvChildSlNo
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByTaxSlabCode(int taxSlabCode)
+        [HttpGet("GetByTaxSlabCode")]
+        public async Task<IActionResult> GetByTaxSlabCode(int TaxSlabCode)
         {
             try
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     var reasons = await dbContext.Tbl00110TaxExemptionReasons
-                        .Where(r => r.TaxSlabCode == taxSlabCode)
+                        .Where(r => r.TaxSlabCode == TaxSlabCode)
                         .ToListAsync();
 
                     if (reasons == null || !reasons.Any())
-                        return NotFound(new { message = $"No records found for TaxSlabCode = {taxSlabCode}", success = false });
+                        return NotFound(new { message = $"No records found for TaxSlabCode = {TaxSlabCode}", success = false });
 
                     return Ok(new { data = reasons, success = true });
                 }

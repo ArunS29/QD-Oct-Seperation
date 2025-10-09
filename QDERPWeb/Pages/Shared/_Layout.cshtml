@@ -3278,12 +3278,12 @@
                         readOnly: true
                     });
                       $("#AccountDebtors").dxTextBox({
-                        text: formatMessage("Account Debtors"),
+                        text: formatMessage("Account Confirmation Letter (Debtors)"),
                         width:400,
                         readOnly: true
                     });
                     $("#AccountConfirmationLetter").dxTextBox({
-                        text: formatMessage("Account Confirmation Letter"),
+                        text: formatMessage("Cash Imprest Account Confirmation Letter"),
                         width:400,
                         readOnly: true
                     });
@@ -3578,6 +3578,7 @@
                         sessionStorage.setItem('TokenExpiry', tokenExpiry);
                         monitorTokenExpiry();
                         // Initialize idle timeout handling
+
                         setupIdleTimeout();
                         $('.modal-backdrop').remove();
                         // Function to monitor token expiry and extend session
@@ -4935,13 +4936,36 @@
 
                 // Function to handle submenu report clicks
                 function handleClickreport(reportKey) {
+                    console.log('handleClickreport called with:', reportKey);
+                    
                     if (reportKey === "Receivables Ageing Report (Customizable)") {
                         window.location.href = `/${tenantName}/Finance/ReportBillsReceivable`;
                     } else if (reportKey === "Receivables Ageing Summary (Customizable)") {
                         window.location.href = `/${tenantName}/Finance/SalesBillsReceivable`;
                     } else if (ageingReportMappings[reportKey]) {
-                        const reportName = ageingReportMappings[reportKey];
-                        console.log(`Opening report: ${reportName}`);
+                        let reportName = ageingReportMappings[reportKey];
+                        
+                        // Check if selectedMode is offline and modify report name accordingly
+                        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+                            // Map online report names to their offline (Import) versions
+                            switch (reportName) {
+                                case "XtraReportBillsReceivableAgeingReport":
+                                    reportName = "XtraReportBillsReceivableAgeingReportImport";
+                                    break;
+                                case "XtraReportAgeingreportsummary":
+                                    reportName = "XtraReportAgeingreportsummaryImport";
+                                    break;
+                                case "BillsReceivableAgeingReport":
+                                    reportName = "BillsReceivableAgeingReportImport";
+                                    break;
+                                // Add more mappings as needed
+                                default:
+                                    // For reports that don't have Import versions, keep the original name
+                                    break;
+                            }
+                        }
+                        
+                        console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
 
                         // Open Document Viewer with selected report
                         window.open(
@@ -5433,511 +5457,511 @@
 
 
 
-             $(document).ready(function () {
-            const cardMap = [
-                { id: "#payments-verified", module: "Payments", status: "ToBeVerified" },
-                { id: "#payments-approved", module: "Payments", status: "ToBeApproved" },
-                { id: "#payments-audited", module: "Payments", status: "ToBeAudited" },
+        //      $(document).ready(function () {
+        //     const cardMap = [
+        //         { id: "#payments-verified", module: "Payments", status: "ToBeVerified" },
+        //         { id: "#payments-approved", module: "Payments", status: "ToBeApproved" },
+        //         { id: "#payments-audited", module: "Payments", status: "ToBeAudited" },
 
-                { id: "#receipt-verified", module: "Receipts", status: "ToBeVerified" },
-                { id: "#receipt-approved", module: "Receipts", status: "ToBeApproved" },
-                { id: "#receipt-audited", module: "Receipts", status: "ToBeAudited" },
+        //         { id: "#receipt-verified", module: "Receipts", status: "ToBeVerified" },
+        //         { id: "#receipt-approved", module: "Receipts", status: "ToBeApproved" },
+        //         { id: "#receipt-audited", module: "Receipts", status: "ToBeAudited" },
 
-                { id: "#salespurchase-verified", module: "SalesPurchase", status: "ToBeVerified" },
-                { id: "#salespurchase-approved", module: "SalesPurchase", status: "ToBeApproved" },
-                { id: "#salespurchase-audited", module: "SalesPurchase", status: "ToBeAudited" },
+        //         { id: "#salespurchase-verified", module: "SalesPurchase", status: "ToBeVerified" },
+        //         { id: "#salespurchase-approved", module: "SalesPurchase", status: "ToBeApproved" },
+        //         { id: "#salespurchase-audited", module: "SalesPurchase", status: "ToBeAudited" },
 
-                { id: "#journals-verified", module: "Journals", status: "ToBeVerified" },
-                { id: "#journals-approved", module: "Journals", status: "ToBeApproved" },
-                { id: "#journals-audited", module: "Journals", status: "ToBeAudited" },
+        //         { id: "#journals-verified", module: "Journals", status: "ToBeVerified" },
+        //         { id: "#journals-approved", module: "Journals", status: "ToBeApproved" },
+        //         { id: "#journals-audited", module: "Journals", status: "ToBeAudited" },
 
-                { id: "#expenseclaims-verified", module: "ExpenseClaims", status: "ToBeVerified" },
-                { id: "#expenseclaims-approved", module: "ExpenseClaims", status: "ToBeApproved" },
-                { id: "#expenseclaims-audited", module: "ExpenseClaims", status: "ToBeAudited" },
-            ];
+        //         { id: "#expenseclaims-verified", module: "ExpenseClaims", status: "ToBeVerified" },
+        //         { id: "#expenseclaims-approved", module: "ExpenseClaims", status: "ToBeApproved" },
+        //         { id: "#expenseclaims-audited", module: "ExpenseClaims", status: "ToBeAudited" },
+        //     ];
 
-            cardMap.forEach(item => {
-                $(item.id).closest(".status-item").css("cursor", "pointer").click(function () {
-                    goToVoucherApproval(item.module, item.status);
-                });
-            });
-        });
+        //     cardMap.forEach(item => {
+        //         $(item.id).closest(".status-item").css("cursor", "pointer").click(function () {
+        //             goToVoucherApproval(item.module, item.status);
+        //         });
+        //     });
+        // });
 
-        /**
-         * Redirection logic
-         * Payments → BankCash
-         * Receipts → BankCashReceipt
-         */
-                function goToVoucherApproval(module, status) {
-            let docType = module;
-            if (module === "Payments") docType = "BankCashPayment";
-            if (module === "Receipts") docType = "BankCashReceipt";
-            if (module === "SalesPurchase") docType = "SalesPurchase";
-            if (module === "Journals") docType = "Journal";
-            if (module === "ExpenseClaims") docType = "ExpenseClaim";
+        // /**
+        //  * Redirection logic
+        //  * Payments → BankCash
+        //  * Receipts → BankCashReceipt
+        //  */
+        //         function goToVoucherApproval(module, status) {
+        //     let docType = module;
+        //     if (module === "Payments") docType = "BankCashPayment";
+        //     if (module === "Receipts") docType = "BankCashReceipt";
+        //     if (module === "SalesPurchase") docType = "SalesPurchase";
+        //     if (module === "Journals") docType = "Journal";
+        //     if (module === "ExpenseClaims") docType = "ExpenseClaim";
 
-            window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
-        }
+        //     window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
+        // }
 
-              // Open sidebar when bell clicked
-        document.getElementById('bellButton').addEventListener('click', function(e) {
-            const sidebar = document.getElementById('notificationSidebar');
-            if (!sidebar) return;
+        //       // Open sidebar when bell clicked
+        // document.getElementById('bellButton').addEventListener('click', function(e) {
+        //     const sidebar = document.getElementById('notificationSidebar');
+        //     if (!sidebar) return;
 
-            sidebar.classList.add('open');
+        //     sidebar.classList.add('open');
 
-            // Stop the click from propagating to document
-            e.stopPropagation();
-        });
+        //     // Stop the click from propagating to document
+        //     e.stopPropagation();
+        // });
 
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(e) {
-            const sidebar = document.getElementById('notificationSidebar');
-            if (!sidebar) return;
+        // // Close sidebar when clicking outside
+        // document.addEventListener('click', function(e) {
+        //     const sidebar = document.getElementById('notificationSidebar');
+        //     if (!sidebar) return;
 
-            // If sidebar is open and click is outside sidebar & bell
-            if (sidebar.classList.contains('open') &&
-                !sidebar.contains(e.target) &&
-                !e.target.closest('#bellButton')) {
-                sidebar.classList.remove('open');
-            }
-        });
-                $(document).ready(function() {
-            $(".category-tab").click(function() {
-                // Remove active from all tabs
-                $(".category-tab").removeClass("active").addClass("inactive");
-                // Add active to clicked tab
-                $(this).removeClass("inactive").addClass("active");
+        //     // If sidebar is open and click is outside sidebar & bell
+        //     if (sidebar.classList.contains('open') &&
+        //         !sidebar.contains(e.target) &&
+        //         !e.target.closest('#bellButton')) {
+        //         sidebar.classList.remove('open');
+        //     }
+        // });
+        //         $(document).ready(function() {
+        //     $(".category-tab").click(function() {
+        //         // Remove active from all tabs
+        //         $(".category-tab").removeClass("active").addClass("inactive");
+        //         // Add active to clicked tab
+        //         $(this).removeClass("inactive").addClass("active");
 
-                // Show the associated tab content
-                var tabId = $(this).data("tab");
-                $(".tab-content").hide();
-                $("#" + tabId).show();
-            });
-        });
-        $(document).ready(function () {
+        //         // Show the associated tab content
+        //         var tabId = $(this).data("tab");
+        //         $(".tab-content").hide();
+        //         $("#" + tabId).show();
+        //     });
+        // });
+        // $(document).ready(function () {
 
-            function updateBellBadge(extraCount) {
-                let currentCount = parseInt($("#bellBadge").text()) || 0;
-                $("#bellBadge").text(currentCount + extraCount);
-            }
+        //     function updateBellBadge(extraCount) {
+        //         let currentCount = parseInt($("#bellBadge").text()) || 0;
+        //         $("#bellBadge").text(currentCount + extraCount);
+        //     }
 
-            function loadOthersNotifications() {
-                $.getJSON('/api/Notification/GetUserNotifications', function (res) {
-                    const notifications = res.data || [];
-                    const list = $("#othersNotificationList");
-                    list.empty();
+        //     function loadOthersNotifications() {
+        //         $.getJSON('/api/Notification/GetUserNotifications', function (res) {
+        //             const notifications = res.data || [];
+        //             const list = $("#othersNotificationList");
+        //             list.empty();
 
-                    if (notifications.length > 0) {
-                        notifications.forEach(function (notif) {
-                            const item = $(`
-                                <div class="notification-item">
-                                    <div class="notification-avatar">O</div>
-                                    <div class="notification-content-text">
-                                        <div class="notification-title">${notif.AlertUserMessage}</div>
-                                        <div class="notification-time">${new Date(notif.AlertUserOn).toLocaleString()}</div>
-                                    </div>
-                                </div>
-                            `);
-                            list.append(item);
-                        });
-                    } else {
-                        list.append('<div class="notification-empty">No notifications</div>');
-                    }
+        //             if (notifications.length > 0) {
+        //                 notifications.forEach(function (notif) {
+        //                     const item = $(`
+        //                         <div class="notification-item">
+        //                             <div class="notification-avatar">O</div>
+        //                             <div class="notification-content-text">
+        //                                 <div class="notification-title">${notif.AlertUserMessage}</div>
+        //                                 <div class="notification-time">${new Date(notif.AlertUserOn).toLocaleString()}</div>
+        //                             </div>
+        //                         </div>
+        //                     `);
+        //                     list.append(item);
+        //                 });
+        //             } else {
+        //                 list.append('<div class="notification-empty">No notifications</div>');
+        //             }
 
-                    // Count
-                    const totalCount = res.totalCount || notifications.length;
+        //             // Count
+        //             const totalCount = res.totalCount || notifications.length;
 
-                    // Update Others tab
-                    $("#othersTab").text(`${formatMessage("Others")} ${totalCount}`);
+        //             // Update Others tab
+        //             $("#othersTab").text(`${formatMessage("Others")} ${totalCount}`);
 
-                    // Add this section's count to the bell badge
-                    updateBellBadge(totalCount);
-                });
-            }
+        //             // Add this section's count to the bell badge
+        //             updateBellBadge(totalCount);
+        //         });
+        //     }
 
-            // Initial load
-            loadOthersNotifications();
+        //     // Initial load
+        //     loadOthersNotifications();
 
-            // Clear All button click
-            $("#clearAllOthers").on("click", function () {
-                $("#othersNotificationList .notification-item").fadeOut(300, function () {
-                    $(this).remove();
-                });
-                $("#othersTab").text(`${formatMessage("Others")} 0`);
+        //     // Clear All button click
+        //     $("#clearAllOthers").on("click", function () {
+        //         $("#othersNotificationList .notification-item").fadeOut(300, function () {
+        //             $(this).remove();
+        //         });
+        //         $("#othersTab").text(`${formatMessage("Others")} 0`);
 
-                // Reduce bell badge count accordingly
-                let currentCount = parseInt($("#bellBadge").text()) || 0;
-                $("#bellBadge").text(Math.max(0, currentCount - ($("#othersNotificationList .notification-item").length)));
-            });
+        //         // Reduce bell badge count accordingly
+        //         let currentCount = parseInt($("#bellBadge").text()) || 0;
+        //         $("#bellBadge").text(Math.max(0, currentCount - ($("#othersNotificationList .notification-item").length)));
+        //     });
 
-        });
+        // });
 
-               $(document).ready(function () {
-            const $vatSalesList = $("#notificationVATList");
-            const $vatDebitList = $("#notificationVATList");
-            const $vatCreditList = $("#notificationVATList");
-              const $vatPurchaseList = $("#notificationVATList");
+        //        $(document).ready(function () {
+        //     const $vatSalesList = $("#notificationVATList");
+        //     const $vatDebitList = $("#notificationVATList");
+        //     const $vatCreditList = $("#notificationVATList");
+        //       const $vatPurchaseList = $("#notificationVATList");
 
-            let vatSalesPrevIds = new Set();
-            let vatDebitPrevIds = new Set();
-            let vatCreditPrevIds = new Set();
-               let vatPurchasePrevIds = new Set();
-            let totalVatCount = 0;
+        //     let vatSalesPrevIds = new Set();
+        //     let vatDebitPrevIds = new Set();
+        //     let vatCreditPrevIds = new Set();
+        //        let vatPurchasePrevIds = new Set();
+        //     let totalVatCount = 0;
 
-            function updateVatTab() {
-                $("#vatTab").text(`${formatMessage("VAT")} ${totalVatCount}`);
-            }
+        //     function updateVatTab() {
+        //         $("#vatTab").text(`${formatMessage("VAT")} ${totalVatCount}`);
+        //     }
 
-            // ---------------- VAT Sales ----------------
-            $.getJSON('/api/Notification/GetVatSalesNotificationSummary', function (data) {
-                if (!data.success) return;
+        //     // ---------------- VAT Sales ----------------
+        //     $.getJSON('/api/Notification/GetVatSalesNotificationSummary', function (data) {
+        //         if (!data.success) return;
 
-                $("#vatsales-verified").text(data.Summary.ToBeVerified);
-                $("#vatsales-approved").text(data.Summary.ToBeApproved);
-                $("#vatsales-audited").text(data.Summary.ToBeAudited);
+        //         $("#vatsales-verified").text(data.Summary.ToBeVerified);
+        //         $("#vatsales-approved").text(data.Summary.ToBeApproved);
+        //         $("#vatsales-audited").text(data.Summary.ToBeAudited);
 
-                $("#vatsales-verified-dot").toggle(data.Summary.ToBeVerified > 0);
-                $("#vatsales-approved-dot").toggle(data.Summary.ToBeApproved > 0);
-                $("#vatsales-audited-dot").toggle(data.Summary.ToBeAudited > 0);
+        //         $("#vatsales-verified-dot").toggle(data.Summary.ToBeVerified > 0);
+        //         $("#vatsales-approved-dot").toggle(data.Summary.ToBeApproved > 0);
+        //         $("#vatsales-audited-dot").toggle(data.Summary.ToBeAudited > 0);
 
-                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
-                updateVatTab();
+        //         totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+        //         updateVatTab();
 
-                data.Notifications.forEach(n => {
-                    const date = new Date(n.CreatedOn);
-                    const userName = n.User || "Unknown";
-                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+        //         data.Notifications.forEach(n => {
+        //             const date = new Date(n.CreatedOn);
+        //             const userName = n.User || "Unknown";
+        //             const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
 
-                    if (!vatSalesPrevIds.has(uniqueId)) {
-                        vatSalesPrevIds.add(uniqueId);
-                        const $item = $(`
-                            <div class="notification-item" id="vatsales-notif-${uniqueId}">
-                                <div class="notification-avatar">${userName.charAt(0)}</div>
-                                <div class="notification-content-text">
-                                    <div class="notification-title">
-                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
-                                    </div>
-                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                </div>
-                            </div>
-                        `);
-                        $vatSalesList.prepend($item.hide().slideDown(300));
-                    }
-                });
-            });
+        //             if (!vatSalesPrevIds.has(uniqueId)) {
+        //                 vatSalesPrevIds.add(uniqueId);
+        //                 const $item = $(`
+        //                     <div class="notification-item" id="vatsales-notif-${uniqueId}">
+        //                         <div class="notification-avatar">${userName.charAt(0)}</div>
+        //                         <div class="notification-content-text">
+        //                             <div class="notification-title">
+        //                                 ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+        //                             </div>
+        //                             <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        //                         </div>
+        //                     </div>
+        //                 `);
+        //                 $vatSalesList.prepend($item.hide().slideDown(300));
+        //             }
+        //         });
+        //     });
 
-            // ---------------- VAT Debit ----------------
-            $.getJSON('/api/Notification/GetVatDebitNotificationSummary', function (data) {
-                if (!data.success) return;
+        //     // ---------------- VAT Debit ----------------
+        //     $.getJSON('/api/Notification/GetVatDebitNotificationSummary', function (data) {
+        //         if (!data.success) return;
 
-                $("#vatdebit-verified").text(data.Summary.ToBeVerified);
-                $("#vatdebit-approved").text(data.Summary.ToBeApproved);
-                $("#vatdebit-audited").text(data.Summary.ToBeAudited);
+        //         $("#vatdebit-verified").text(data.Summary.ToBeVerified);
+        //         $("#vatdebit-approved").text(data.Summary.ToBeApproved);
+        //         $("#vatdebit-audited").text(data.Summary.ToBeAudited);
 
-                $("#vatdebit-verified-dot").toggle(data.Summary.ToBeVerified > 0);
-                $("#vatdebit-approved-dot").toggle(data.Summary.ToBeApproved > 0);
-                $("#vatdebit-audited-dot").toggle(data.Summary.ToBeAudited > 0);
+        //         $("#vatdebit-verified-dot").toggle(data.Summary.ToBeVerified > 0);
+        //         $("#vatdebit-approved-dot").toggle(data.Summary.ToBeApproved > 0);
+        //         $("#vatdebit-audited-dot").toggle(data.Summary.ToBeAudited > 0);
 
-                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
-                updateVatTab();
+        //         totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+        //         updateVatTab();
 
-                data.Notifications.forEach(n => {
-                    const date = new Date(n.CreatedOn);
-                    const userName = n.User || "Unknown";
-                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+        //         data.Notifications.forEach(n => {
+        //             const date = new Date(n.CreatedOn);
+        //             const userName = n.User || "Unknown";
+        //             const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
 
-                    if (!vatDebitPrevIds.has(uniqueId)) {
-                        vatDebitPrevIds.add(uniqueId);
-                        const $item = $(`
-                            <div class="notification-item" id="vatdebit-notif-${uniqueId}">
-                                <div class="notification-avatar">${userName.charAt(0)}</div>
-                                <div class="notification-content-text">
-                                    <div class="notification-title">
-                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
-                                    </div>
-                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                </div>
-                            </div>
-                        `);
-                        $vatDebitList.prepend($item.hide().slideDown(300));
-                    }
-                });
-            });
+        //             if (!vatDebitPrevIds.has(uniqueId)) {
+        //                 vatDebitPrevIds.add(uniqueId);
+        //                 const $item = $(`
+        //                     <div class="notification-item" id="vatdebit-notif-${uniqueId}">
+        //                         <div class="notification-avatar">${userName.charAt(0)}</div>
+        //                         <div class="notification-content-text">
+        //                             <div class="notification-title">
+        //                                 ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+        //                             </div>
+        //                             <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        //                         </div>
+        //                     </div>
+        //                 `);
+        //                 $vatDebitList.prepend($item.hide().slideDown(300));
+        //             }
+        //         });
+        //     });
 
-            // ---------------- VAT Credit ----------------
-            $.getJSON('/api/Notification/GetVatCreditNotificationSummary', function (data) {
-                if (!data.success) return;
+        //     // ---------------- VAT Credit ----------------
+        //     $.getJSON('/api/Notification/GetVatCreditNotificationSummary', function (data) {
+        //         if (!data.success) return;
 
-                $("#vatcredit-verified").text(data.Summary.ToBeVerified);
-                $("#vatcredit-approved").text(data.Summary.ToBeApproved);
-                $("#vatcredit-audited").text(data.Summary.ToBeAudited);
+        //         $("#vatcredit-verified").text(data.Summary.ToBeVerified);
+        //         $("#vatcredit-approved").text(data.Summary.ToBeApproved);
+        //         $("#vatcredit-audited").text(data.Summary.ToBeAudited);
 
-                $("#vatcredit-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
+        //         $("#vatcredit-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
 
-                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
-                updateVatTab();
+        //         totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+        //         updateVatTab();
 
-                data.Notifications.forEach(n => {
-                    const date = new Date(n.CreatedOn);
-                    const userName = n.User || "Unknown";
-                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+        //         data.Notifications.forEach(n => {
+        //             const date = new Date(n.CreatedOn);
+        //             const userName = n.User || "Unknown";
+        //             const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
 
-                    if (!vatCreditPrevIds.has(uniqueId)) {
-                        vatCreditPrevIds.add(uniqueId);
-                        const $item = $(`
-                            <div class="notification-item" id="vatcredit-notif-${uniqueId}">
-                                <div class="notification-avatar">${userName.charAt(0)}</div>
-                                <div class="notification-content-text">
-                                    <div class="notification-title">
-                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
-                                    </div>
-                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                </div>
-                            </div>
-                        `);
-                        $vatCreditList.prepend($item.hide().slideDown(300));
-                    }
-                });
-            });
-            // Purchase and Expense Report
-                    $.getJSON('/api/Notification/GetVatPurchaseNotificationSummary', function (data) {
-            if (!data.success) return;
+        //             if (!vatCreditPrevIds.has(uniqueId)) {
+        //                 vatCreditPrevIds.add(uniqueId);
+        //                 const $item = $(`
+        //                     <div class="notification-item" id="vatcredit-notif-${uniqueId}">
+        //                         <div class="notification-avatar">${userName.charAt(0)}</div>
+        //                         <div class="notification-content-text">
+        //                             <div class="notification-title">
+        //                                 ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+        //                             </div>
+        //                             <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        //                         </div>
+        //                     </div>
+        //                 `);
+        //                 $vatCreditList.prepend($item.hide().slideDown(300));
+        //             }
+        //         });
+        //     });
+        //     // Purchase and Expense Report
+        //             $.getJSON('/api/Notification/GetVatPurchaseNotificationSummary', function (data) {
+        //     if (!data.success) return;
 
-            $("#vatpurchase-verified").text(data.Summary.ToBeVerified);
-            $("#vatpurchase-approved").text(data.Summary.ToBeApproved);
-            $("#vatpurchase-audited").text(data.Summary.ToBeAudited);
+        //     $("#vatpurchase-verified").text(data.Summary.ToBeVerified);
+        //     $("#vatpurchase-approved").text(data.Summary.ToBeApproved);
+        //     $("#vatpurchase-audited").text(data.Summary.ToBeAudited);
 
-            $("#vatpurchase-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
+        //     $("#vatpurchase-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
 
-            // Update VAT Tab total
-            const totalCount = data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
-            const currentVatCount = parseInt($("#vatTab").text().replace(/\D/g, "")) || 0;
-            $("#vatTab").text(`${formatMessage("VAT")} ${currentVatCount + totalCount}`);
+        //     // Update VAT Tab total
+        //     const totalCount = data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+        //     const currentVatCount = parseInt($("#vatTab").text().replace(/\D/g, "")) || 0;
+        //     $("#vatTab").text(`${formatMessage("VAT")} ${currentVatCount + totalCount}`);
 
-            // Render notifications
-            data.Notifications.forEach(n => {
-                const date = new Date(n.CreatedOn);
-                const userName = n.User || "Unknown";
-                const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+        //     // Render notifications
+        //     data.Notifications.forEach(n => {
+        //         const date = new Date(n.CreatedOn);
+        //         const userName = n.User || "Unknown";
+        //         const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
 
-                if (!vatPurchasePrevIds.has(uniqueId)) {
-                    vatPurchasePrevIds.add(uniqueId);
-                    const $item = $(`
-                        <div class="notification-item" id="vatpurchase-notif-${uniqueId}">
-                            <div class="notification-avatar">${userName.charAt(0)}</div>
-                            <div class="notification-content-text">
-                                <div class="notification-title">
-                                    ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
-                                </div>
-                                <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                            </div>
-                        </div>
-                    `);
-                    $vatPurchaseList.prepend($item.hide().slideDown(300));
-                }
-            });
-        });
-
-
-
-            // ---------------- Clear All ----------------
-            $("#clearAllNotifications").on("click", function () {
-                $vatSalesList.empty(); vatSalesPrevIds.clear();
-                $vatDebitList.empty(); vatDebitPrevIds.clear();
-                $vatCreditList.empty(); vatCreditPrevIds.clear();
-                totalVatCount = 0;
-                updateVatTab();
-            });
-        });
+        //         if (!vatPurchasePrevIds.has(uniqueId)) {
+        //             vatPurchasePrevIds.add(uniqueId);
+        //             const $item = $(`
+        //                 <div class="notification-item" id="vatpurchase-notif-${uniqueId}">
+        //                     <div class="notification-avatar">${userName.charAt(0)}</div>
+        //                     <div class="notification-content-text">
+        //                         <div class="notification-title">
+        //                             ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+        //                         </div>
+        //                         <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        //                     </div>
+        //                 </div>
+        //             `);
+        //             $vatPurchaseList.prepend($item.hide().slideDown(300));
+        //         }
+        //     });
+        // });
 
 
 
-            function VATSales(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //     // ---------------- Clear All ----------------
+        //     $("#clearAllNotifications").on("click", function () {
+        //         $vatSalesList.empty(); vatSalesPrevIds.clear();
+        //         $vatDebitList.empty(); vatDebitPrevIds.clear();
+        //         $vatCreditList.empty(); vatCreditPrevIds.clear();
+        //         totalVatCount = 0;
+        //         updateVatTab();
+        //     });
+        // });
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/VAT/SalesRegisterVAT?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+
+
+        //     function VATSales(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/VAT/SalesRegisterVAT?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
           
-        }
+        // }
 
-            function VATDebit(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //     function VATDebit(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/VAT/VATDebitNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
-
-
-        }
-
-         function VATCredit(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
-
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/VAT/VATCreditNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/VAT/VATDebitNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
 
-        }
+        // }
 
-            function VATPurchase(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //  function VATCredit(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/VAT/VATPurchaseMasterView?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
-
-
-        }
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/VAT/VATCreditNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
 
-                $(document).ready(function () {
-            // Keep track of previous IDs for each module
-            let prevIds = {
-                MaterialRequest: new Set(),
-                Quotation: new Set(),
-                SalesOrder: new Set(),
-                RFQ: new Set(),
-                PurchaseOrder: new Set()
-            };
+        // }
 
-            let totalInventoryCount = 0;
+        //     function VATPurchase(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            function updateInventoryTab() {
-                $("#inventoryTab").text(`${formatMessage("Inventory")} ${totalInventoryCount}`);
-            }
-
-            // Generic function for fetching and updating summaries
-                    function loadInventorySummary(moduleName, apiUrl, idPrefix) {
-            $.getJSON(apiUrl, function (data) {
-                if (!data.success) return;
-
-                // Determine where summary is
-                const summary = data.Summary || data.data;
-                if (!summary) return;
-
-                let moduleCount = 0;
-
-                Object.keys(summary).forEach(key => {
-                    const value = summary[key] || 0;
-
-                    // Make sure your HTML IDs match key names (case-insensitive)
-                    $(`#${idPrefix}-${key.toLowerCase()}`).text(value);
-
-                    // Use class for dot
-                    $(`#${idPrefix}-${key.toLowerCase()}-dot`).toggle(value > 0);
-
-                    moduleCount += value;
-                });
-
-                totalInventoryCount += moduleCount;
-                updateInventoryTab();
-            });
-        }
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/VAT/VATPurchaseMasterView?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
 
-            // Call loaders for each module
-            loadInventorySummary("MaterialRequest", "/api/Notification/GetMaterialRequestSummary", "materialrequest");
-            loadInventorySummary("Quotation", "/api/Notification/GetQuotationSummary", "quotation");
-            loadInventorySummary("SalesOrder", "/api/Notification/GetSalesOrderSummary", "salesorder");
-            loadInventorySummary("RFQ", "/api/Notification/GetRFQSummary", "rfq");
-            //loadInventorySummary("PurchaseOrder", "/api/Notification/GetPurchaseOrderSummary", "purchaseorder");
-
-            // ---------------- Clear All ----------------
-            $("#clearAllInventoryNotifications").on("click", function () {
-                Object.keys(prevIds).forEach(module => {
-                    $(`#notification${module}List`).empty();
-                    prevIds[module].clear();
-                });
-                totalInventoryCount = 0;
-                updateInventoryTab();
-            });
-        });
-             function InventoryAction1(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
-
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+        // }
 
 
-        }
+        //         $(document).ready(function () {
+        //     // Keep track of previous IDs for each module
+        //     let prevIds = {
+        //         MaterialRequest: new Set(),
+        //         Quotation: new Set(),
+        //         SalesOrder: new Set(),
+        //         RFQ: new Set(),
+        //         PurchaseOrder: new Set()
+        //     };
 
-            function InventoryAction2(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //     let totalInventoryCount = 0;
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/IMS/Quotation?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+        //     function updateInventoryTab() {
+        //         $("#inventoryTab").text(`${formatMessage("Inventory")} ${totalInventoryCount}`);
+        //     }
+
+        //     // Generic function for fetching and updating summaries
+        //             function loadInventorySummary(moduleName, apiUrl, idPrefix) {
+        //     $.getJSON(apiUrl, function (data) {
+        //         if (!data.success) return;
+
+        //         // Determine where summary is
+        //         const summary = data.Summary || data.data;
+        //         if (!summary) return;
+
+        //         let moduleCount = 0;
+
+        //         Object.keys(summary).forEach(key => {
+        //             const value = summary[key] || 0;
+
+        //             // Make sure your HTML IDs match key names (case-insensitive)
+        //             $(`#${idPrefix}-${key.toLowerCase()}`).text(value);
+
+        //             // Use class for dot
+        //             $(`#${idPrefix}-${key.toLowerCase()}-dot`).toggle(value > 0);
+
+        //             moduleCount += value;
+        //         });
+
+        //         totalInventoryCount += moduleCount;
+        //         updateInventoryTab();
+        //     });
+        // }
 
 
-        }
+        //     // Call loaders for each module
+        //     loadInventorySummary("MaterialRequest", "/api/Notification/GetMaterialRequestSummary", "materialrequest");
+        //     loadInventorySummary("Quotation", "/api/Notification/GetQuotationSummary", "quotation");
+        //     loadInventorySummary("SalesOrder", "/api/Notification/GetSalesOrderSummary", "salesorder");
+        //     loadInventorySummary("RFQ", "/api/Notification/GetRFQSummary", "rfq");
+        //     //loadInventorySummary("PurchaseOrder", "/api/Notification/GetPurchaseOrderSummary", "purchaseorder");
 
-         function InventoryAction3(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //     // ---------------- Clear All ----------------
+        //     $("#clearAllInventoryNotifications").on("click", function () {
+        //         Object.keys(prevIds).forEach(module => {
+        //             $(`#notification${module}List`).empty();
+        //             prevIds[module].clear();
+        //         });
+        //         totalInventoryCount = 0;
+        //         updateInventoryTab();
+        //     });
+        // });
+        //      function InventoryAction1(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/IMS/SalesOrders?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
 
-        }
+        // }
 
-            function InventoryAction4(module, status) {
-            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+        //     function InventoryAction2(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            if (!onVatPage) {
-                window.location.href = `/${tenantName}/IMS/RequestforQuotationList?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
-                return;
-            }
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/IMS/Quotation?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
 
-        }
-                // Helper to update tab text with localization
-                     function updateTabText(tabId, labelKey, count) {
-            const label = formatMessage(labelKey); // localized label
-            $(`#${tabId}`).text(`${label} ${count}`);
-        }
+        // }
 
-        $(function () {
-            // --- Initial setup for tabs with 0 ---
-            updateTabText("financeTab", "Finance", 0);
-            updateTabText("vatTab", "VAT", 0);
-            updateTabText("inventoryTab", "Inventory", 0);
-            updateTabText("othersTab", "Others", 0);
+        //  function InventoryAction3(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            // --- Initial badges ---
-            $("#bellBadge, #sidebarBadge").text(0);
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/IMS/SalesOrders?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
-            // --- Update tabs dynamically ---
-            const totalFinanceCount = data.Summary.Finance ?? 0;
-            updateTabText("financeTab", "Finance", totalFinanceCount);
 
-            const totalVatCount = (data.Summary.ToBeVerified ?? 0) +
-                                  (data.Summary.ToBeApproved ?? 0) +
-                                  (data.Summary.ToBeAudited ?? 0);
-            updateTabText("vatTab", "VAT", totalVatCount);
+        // }
 
-            const totalInventoryCount = data.Summary.Inventory ?? 0;
-            updateTabText("inventoryTab", "Inventory", totalInventoryCount);
+        //     function InventoryAction4(module, status) {
+        //     var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
-            const totalOthersCount = data.Summary.Others ?? 0;
-            updateTabText("othersTab", "Others", totalOthersCount);
+        //     if (!onVatPage) {
+        //         window.location.href = `/${tenantName}/IMS/RequestforQuotationList?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+        //         return;
+        //     }
 
-            // --- Update total badges dynamically ---
-            const totalNotifications = totalFinanceCount + totalVatCount + totalInventoryCount + totalOthersCount;
-            $("#bellBadge, #sidebarBadge").text(totalNotifications);
-        });
+
+        // }
+        //         // Helper to update tab text with localization
+        //              function updateTabText(tabId, labelKey, count) {
+        //     const label = formatMessage(labelKey); // localized label
+        //     $(`#${tabId}`).text(`${label} ${count}`);
+        // }
+
+        // $(function () {
+        //     // --- Initial setup for tabs with 0 ---
+        //     updateTabText("financeTab", "Finance", 0);
+        //     updateTabText("vatTab", "VAT", 0);
+        //     updateTabText("inventoryTab", "Inventory", 0);
+        //     updateTabText("othersTab", "Others", 0);
+
+        //     // --- Initial badges ---
+        //     $("#bellBadge, #sidebarBadge").text(0);
+
+        //     // --- Update tabs dynamically ---
+        //     const totalFinanceCount = data.Summary.Finance ?? 0;
+        //     updateTabText("financeTab", "Finance", totalFinanceCount);
+
+        //     const totalVatCount = (data.Summary.ToBeVerified ?? 0) +
+        //                           (data.Summary.ToBeApproved ?? 0) +
+        //                           (data.Summary.ToBeAudited ?? 0);
+        //     updateTabText("vatTab", "VAT", totalVatCount);
+
+        //     const totalInventoryCount = data.Summary.Inventory ?? 0;
+        //     updateTabText("inventoryTab", "Inventory", totalInventoryCount);
+
+        //     const totalOthersCount = data.Summary.Others ?? 0;
+        //     updateTabText("othersTab", "Others", totalOthersCount);
+
+        //     // --- Update total badges dynamically ---
+        //     const totalNotifications = totalFinanceCount + totalVatCount + totalInventoryCount + totalOthersCount;
+        //     $("#bellBadge, #sidebarBadge").text(totalNotifications);
+        // });
 
 
          $(function () {
