@@ -306,5 +306,10 @@ namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
                 };
             }
         }
+
+        private void InventoryReportWithExpireDates_BeforePrint(object sender, CancelEventArgs e)
+        {
+
+        }
     }
 }
