@@ -422,49 +422,62 @@
                     type: "buttons",
                     width: 100,
                     buttons: [
-                        {
-                            icon: "trash",
-                            hint: "Delete",
-                            onClick: function (e) {
-                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
-                                var selectedData = e.row.data;
-                                var QuoteGroupItemSlNo = selectedData.QuoteGroupItemSlNo;
+                  {
+        icon: "trash",
+        hint: "Delete",
+        onClick: function (e) {
+            var dataGrid = $("#gridContainer").dxDataGrid("instance");
+            var selectedData = e.row.data;
+            var QuoteGroupItemSlNo = selectedData.QuoteGroupItemSlNo;
 
-                                // Send delete request to the API
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/api/addNewQuotationItemSubGroup/DeleteSubGroup",
-                                    data: JSON.stringify({ QuoteGroupItemSlNo: QuoteGroupItemSlNo }),
-                                    contentType: "application/json",
-                                    success: function (response) {
-                                        if (response.success) {
-                                            dataGrid.refresh(); // Refresh the grid
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: 'Success',
-                                                text: formatMessage(' deleted successfully.'),
-                                                confirmButtonText: 'OK'
-                                            });
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Error',
-                                                text: response.message,
-                                                confirmButtonText: 'OK'
-                                            });
-                                        }
-                                    },
-                                    error: function (xhr) {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error',
-                                            text: xhr.responseText,
-                                            confirmButtonText: 'OK'
-                                        });
-                                    }
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Do you really want to delete this item?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/addNewQuotationItemSubGroup/DeleteSubGroup",
+                        data: JSON.stringify({ QuoteGroupItemSlNo: QuoteGroupItemSlNo }),
+                        contentType: "application/json",
+                        success: function (response) {
+                            if (response.success) {
+                                dataGrid.refresh();
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: 'The item has been deleted successfully.',
+                                    confirmButtonText: 'OK'
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message,
+                                    confirmButtonText: 'OK'
                                 });
                             }
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: xhr.responseText || 'Something went wrong.',
+                                confirmButtonText: 'OK'
+                            });
                         }
+                    });
+                }
+            });
+        }
+    }
+
                     ]
                 }
             ],

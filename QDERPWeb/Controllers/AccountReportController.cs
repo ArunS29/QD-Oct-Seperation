@@ -9,6 +9,9 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
+using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
+using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
 using QD.ERP.Web.Reports;
@@ -145,6 +148,263 @@ namespace QD.ERP.Web.Controllers
 
             report.CreateDocument();
             return report;
+        }
+
+        private XtraReport GenerateIMSReport(
+            string reportName,
+            string documentNo,
+            bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
+            bool pageBreakBefore,
+            bool pageBreakAfter,
+            bool clientAcknowledgement,
+            bool printItemCodeDesc,
+            bool printItemPartNoDesc,
+            bool printItemPartArabicDesc,
+            bool ShowFullSupplierAcceptance,
+            bool ShowSimpleSuppilerAcceptance,
+            bool ShowSignatoryPositionOnly,
+            bool ShowPaymentTermsShippingDetails,
+            bool ShowitemPartNumberinsteadStockCode,
+            bool ShowHSCodeinsteadStockCode,
+            bool showSign1,
+            bool isApproved,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            Image sealImage,
+            string companyNameAr,
+            string companyAddressAr,
+            string companyPhone,
+            string companyEmail,
+            string companyWebsite,
+            string username,
+            TenantDbContextHelper tenantHelper)
+        {
+            XtraReport report = reportName switch
+            {
+                "MaterialRequestInventory" => new QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports.MaterialRequestInventory(
+                    logoImage,
+                    sealImage,
+                    showSeal,
+                    showSignature,
+                    printLetterhead,
+                    documentNo,
+                    showSign1,
+                    tenantName,
+                    companyName,
+                    companyAddress,
+                    companyNameAr,
+                    companyAddressAr,
+                    isApproved,
+                    tenantHelper),
+
+                "PreviewQuotations" => new QD.ERP.Web.Areas.IMS.Reports.InventoryReports.PreviewQuotations(
+                    showSeal,
+                    showSignature,
+                    printLetterhead,
+                    pageBreakBefore,
+                    pageBreakAfter,
+                    clientAcknowledgement,
+                    printItemCodeDesc,
+                    printItemPartNoDesc,
+                    printItemPartArabicDesc,
+                    documentNo,
+                    tenantName,
+                    companyName,
+                    logoImage,
+                    sealImage,
+                    companyAddress,
+                    companyNameAr,
+                    companyAddressAr,
+                    tenantHelper),
+
+                "SalesOrderReport" => new QD.ERP.Web.Areas.IMS.Reports.InventoryReports.SalesOrderReport(
+                    showSeal,
+                    showSignature,
+                    printLetterhead,
+                    documentNo,
+                    tenantName,
+                    companyName,
+                    logoImage,
+                    sealImage,
+                    companyAddress,
+                    companyPhone,
+                    companyEmail,
+                    companyWebsite,
+                    companyNameAr,
+                    companyAddressAr,
+                    username,
+                    tenantHelper),
+
+                "PreviewPurchaseOrder" => new QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder.PreviewPurchaseOrder(
+                    companyPhone,
+                    companyEmail,
+                    companyWebsite,
+                    logoImage,
+                    ShowFullSupplierAcceptance,
+                    ShowSimpleSuppilerAcceptance,
+                    ShowSignatoryPositionOnly,
+                    ShowPaymentTermsShippingDetails,
+                    ShowitemPartNumberinsteadStockCode,
+                    ShowHSCodeinsteadStockCode,
+                    showSeal,
+                    showSignature,
+                    printLetterhead,
+                    pageBreakBefore,
+                    pageBreakAfter,
+                    documentNo,
+                    tenantName,
+                    companyName,
+                    sealImage,
+                    companyAddress,
+                    companyNameAr,
+                    companyAddressAr,
+                    tenantHelper),
+
+                _ => throw new ArgumentException($"Invalid IMS report name: {reportName}")
+            };
+
+            report.CreateDocument();
+            return report;
+        }
+
+        [HttpGet("DownloadIMS")]
+        public IActionResult DownloadIMSReport(
+            string reportName,
+            string documentNo = null,
+            bool showSeal = false,
+            bool showSignature = false,
+            bool printLetterhead = true,
+            bool pageBreakBefore = false,
+            bool pageBreakAfter = false,
+            bool clientAcknowledgement = false,
+            bool printItemCodeDesc = false,
+            bool printItemPartNoDesc = false,
+            bool printItemPartArabicDesc = false,
+            bool ShowFullSupplierAcceptance = false,
+            bool ShowSimpleSuppilerAcceptance = false,
+            bool ShowSignatoryPositionOnly = false,
+            bool ShowPaymentTermsShippingDetails = false,
+            bool ShowitemPartNumberinsteadStockCode = false,
+            bool ShowHSCodeinsteadStockCode = false,
+            bool showSign1 = false,
+            bool isApproved = false)
+        {
+            if (string.IsNullOrEmpty(reportName) || string.IsNullOrEmpty(documentNo))
+                return BadRequest("Invalid report parameters.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return StatusCode(500, "Tenant or DbContext could not be resolved.");
+
+            // Get session data
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "DefaultTenant";
+            var username = HttpContext.Session.GetString("UserName") ?? "DefaultUser";
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                defaultCompanyId = 0;
+
+            string companyName = "", companyAddress = "", companyNameAr = "", companyAddressAr = "";
+            string companyPhone = "", companyWebsite = "", companyEmail = "";
+            Image logoImage = null, sealImage = null;
+
+            var companyDetails = dbContext.Tbl901CompanyDetails
+                .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
+
+            if (companyDetails != null)
+            {
+                companyName = companyDetails.CompanyName ?? "";
+                companyAddress = companyDetails.CompanyFullAddress ?? "";
+                companyAddressAr = companyDetails.CompanyFullAddressAr ?? "";
+                companyNameAr = companyDetails.CompanyNameAr ?? "";
+                companyPhone = companyDetails.CompanyPhone ?? "";
+                companyWebsite = companyDetails.Website ?? "";
+                companyEmail = companyDetails.EmailAddress ?? "";
+
+                if (companyDetails.CompanyLogo?.Length > 0)
+                {
+                    try
+                    {
+                        using var ms = new MemoryStream(companyDetails.CompanyLogo);
+                        logoImage = Image.FromStream(ms);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error reading company logo: " + ex.Message);
+                    }
+                }
+
+                if (companyDetails.CompanySeal?.Length > 0)
+                {
+                    try
+                    {
+                        using var ms = new MemoryStream(companyDetails.CompanySeal);
+                        sealImage = Image.FromStream(ms);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error reading company seal: " + ex.Message);
+                    }
+                }
+            }
+
+            var report = GenerateIMSReport(
+                reportName,
+                documentNo,
+                showSeal,
+                showSignature,
+                printLetterhead,
+                pageBreakBefore,
+                pageBreakAfter,
+                clientAcknowledgement,
+                printItemCodeDesc,
+                printItemPartNoDesc,
+                printItemPartArabicDesc,
+                ShowFullSupplierAcceptance,
+                ShowSimpleSuppilerAcceptance,
+                ShowSignatoryPositionOnly,
+                ShowPaymentTermsShippingDetails,
+                ShowitemPartNumberinsteadStockCode,
+                ShowHSCodeinsteadStockCode,
+                showSign1,
+                isApproved,
+                tenantName,
+                companyName,
+                companyAddress,
+                logoImage,
+                sealImage,
+                companyNameAr,
+                companyAddressAr,
+                companyPhone,
+                companyEmail,
+                companyWebsite,
+                username,
+                _tenantDbContextHelper
+            );
+
+            byte[] fileBytes;
+            string contentType;
+            string fileName;
+            string fileExtension = "pdf";
+            
+            using (var stream = new MemoryStream())
+            {
+                report.ExportToPdf(stream);
+                fileBytes = stream.ToArray();
+                contentType = "application/pdf";
+                fileName = $"{reportName}_{documentNo}.{fileExtension}";
+            }
+
+            // Set proper headers for download progress
+            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+            Response.Headers.Add("Content-Length", fileBytes.Length.ToString());
+            Response.Headers.Add("Content-Type", contentType);
+            Response.Headers.Add("Accept-Ranges", "bytes");
+            
+            return File(fileBytes, contentType, fileName);
         }
 
         [HttpGet("DownloadVAT")]

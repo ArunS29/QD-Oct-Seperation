@@ -44,7 +44,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             x.QuoteGroupItemSlNo,
                             x.GroupCode,
                             x.GroupName,
-                            x.Mprno
+                            x.Mprno,
+                            x.GroupRemarks,
+                           x.IsShowLineItemsTotal
                         })
                         .ToListAsync();
 

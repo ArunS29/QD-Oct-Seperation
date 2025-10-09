@@ -844,9 +844,13 @@
 												//.Value(new[] { 1 }) // Default selected value
 												.Value("0100000")
 												.ValueExpr("ID")
-												.DisplayExpr("ID")
+												.DisplayExpr("Name")
 												.LabelMode(EditorLabelMode.Floating)
+												.AcceptCustomValue(true)
+												.OpenOnFieldClick(false)
+												.ValueChangeEvent("input")
 												.Placeholder("Choose VAT Transaction Types")
+												.HoverStateEnabled(true)
 												.ContentTemplate(new JS("VATTransactionTemplate"))
 																.DataSource(new JS(@"[
 																{ ID: 1, Name: formatMessage('3rd Party Tax Invoice') },
@@ -1118,7 +1122,7 @@
 											.Controller("VATModule")
 											.LoadAction("GetInvoiceCurrency")
 											.Key("CurrencyExchangeId"))
-										.Value("Saudi Arabian Riyals")
+										.Value(1)
 										.ShowClearButton(true)
 										.AcceptCustomValue(true)
 										.OpenOnFieldClick(false)
@@ -1166,6 +1170,15 @@
 																			.ShowSpinButtons(true)
 																			.Width("90%")
 																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+																.OnInput(@"
+																function(e) {
+																let value = e.event.target.value;
+																// Allow only digits and one decimal point
+																if (!/^\d*\.?\d*$/.test(value)) {
+																e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+																}
+																}
+																")
 									) <!-- Fixed pixel size -->
 
 								</td>
@@ -1257,6 +1270,15 @@
 																			.ShowSpinButtons(true)
 																			.Width("90%")
 																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+																.OnInput(@"
+																function(e) {
+																let value = e.event.target.value;
+																// Allow only digits and one decimal point
+																if (!/^\d*\.?\d*$/.test(value)) {
+																e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+																}
+																}
+																")
 									)
 								</td>
 								<td>
@@ -1304,6 +1326,15 @@
 																			.ShowSpinButtons(true)
 																			.Value(1)
 																			.Width("100%")
+																.OnInput(@"
+																function(e) {
+																let value = e.event.target.value;
+																// Allow only digits and one decimal point
+																if (!/^\d*\.?\d*$/.test(value)) {
+																e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+																}
+																}
+																")
                                      )
 								</td>
 								<td >
@@ -1321,6 +1352,15 @@
 																			.ShowSpinButtons(true)
 																			.Width("90%")
 																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+																.OnInput(@"
+																function(e) {
+																let value = e.event.target.value;
+																// Allow only digits and one decimal point
+																if (!/^\d*\.?\d*$/.test(value)) {
+																e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+																}
+																}
+																")
 									)
 								</td>
 								<td>
@@ -1844,9 +1884,9 @@
 			</div>
 		</div>
 
-		<div style="margin: 10px;">
+	@* 	<div style="margin: 10px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATChildGridFooter.cshtml")
-		</div>
+		</div> *@
 
 
 
@@ -3617,6 +3657,7 @@
 
 				var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
 					 ddl3.getDataSource().load().done(function(data) {
+						 debugger;
 						 // Check if SignatoryID exists in the loaded list
 						 var match = data.find(x => x.CurrencyExchangeId === account.Currency);
 						 if (match) {
@@ -3772,10 +3813,17 @@
 		$("#InvoiceCounterValue").dxTextBox("instance").option("value", account.InvoiceCounterValue || null);
 		$("#ddlInvoiceNo").dxDropDownBox("instance").option("value", account.InvoiceNo || null);
 
-		$("#EffectiveDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate || null);
-		$("#InvoiceStartDate").dxDateBox("instance").option("value", account.InvoiceStartDate || null);
-		$("#InvoiceEndDate").dxDateBox("instance").option("value", account.InvoiceEndDate || null);
-		$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+			$("#EffectiveDate").dxDateBox("instance").option("value", account.CreditNoteEffectiveDate || null);
+				$("#InvoiceStartDate").dxDateBox("instance").option("value", account.CreditStartDate || null);
+					$("#InvoiceEndDate").dxDateBox("instance").option("value", account.CreditStartDate || null);
+				$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value", account.CostCenterCode || null);
+
+				$("#ddlSalesPerson").dxDropDownBox("instance").option("value",account.InvoiceSalesPerson || null);
+				$("#CreditNoteSubmittedBy").dxTextBox("instance").option("value",account.SubmittedBy ||null);
+				$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode || null);
+				$("#ddlRevenueAccount").dxDropDownBox("instance").option("value",account.RevenueAccount || null);
+
+		
 		$("#txtInvoiceNotes").dxTextArea("instance").option("value", account.CreditNoteRemarks || null);
 		$("#txtNotesinArabic").dxTextArea("instance").option("value", account.CreditNoteRemarksAr || null);
 

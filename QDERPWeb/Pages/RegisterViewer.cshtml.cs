@@ -9,6 +9,8 @@ using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Web.Areas.Finance.Reports.ImportReports;
+using QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable;
 using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
 using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
@@ -143,8 +145,8 @@ namespace QD.ERP.Web.Pages
                     
                     case "SummaryReport":
                         // **Handle requestedBy being empty or null**
-                        string requestedByValue = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
-                        Report = new CostCenterSummaryReport(requestedByValue, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        string summaryReportRequestedBy = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
+                        Report = new CostCenterSummaryReport(summaryReportRequestedBy, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
                     case "SummaryReportByDate":
                         Report = new SummaryReport_ByDate_(
@@ -247,6 +249,83 @@ namespace QD.ERP.Web.Pages
                     case "VATReturnsform":
                         Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
+
+
+
+                    //Import Reports 
+
+                    case "CostcenterBydateImport":
+                        Report = new CostcenterBydateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
+                        );
+                        break;
+                    case "CostcenterGroupByDateImport":
+                        Report = new CostcenterGroupByDateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
+                        );
+                        break;
+                    case "CostCenterGroupReportImport":
+                        Report = new CostCenterGroupReportImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "CostCenterMasterGroupImport":
+                        Report = new CostCenterMasterGroupImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "CostcenterRepoerImport":
+                        Report = new CostcenterRepoerImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "CostCenterSummaryReportImport":
+                        // **Handle requestedBy being empty or null**
+                        string summaryImportRequestedBy = string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy;
+                        Report = new CostCenterSummaryReportImport(summaryImportRequestedBy, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
+                        break;
+                    case "DetailedBydateImport":
+                        Report = new DetailedBydateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "DetailedGroupImport":
+                        Report = new DetailedGroupImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "detailedMasterByDateImport":
+                        Report = new detailedMasterByDateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "detailGroupBydateImport":
+                        Report = new detailGroupBydateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "DetailReportImport":
+                        Report = new DetailReportImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                        );
+                        break;
+                    case "SummaryReportByDateImport":
+                        Report = new SummaryReportByDateImport(
+                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                            FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
+                        );
+                        break;
+
                     default:
                         return NotFound("cost analysis report not found.");
 
@@ -268,6 +347,12 @@ namespace QD.ERP.Web.Pages
                     case "XtraRecivableReportImport":
                         Report = new XtraRecivableReportImport(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
+                    case "XtraRecivableReport2":
+                        Report = new XtraRecivableReport2(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "XtraRecivableReport2Import":
+                    Report = new XtraRecivableReport2Import(userName, SelectedValues.ToArray(),  selectionType,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
                     default:
                         return NotFound("Report not found.");
                 }
