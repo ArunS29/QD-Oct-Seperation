@@ -224,12 +224,12 @@ namespace QD.ERP.Web.Pages
                 case "TrialBalanceExportFormat":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalance_ExportFormat_(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalance_ExportFormat_(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, username);
                     break;
                 case "TrialBalanceDrCr":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceDrCr(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceDrCr(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, username);
                     break;
                 case "IncomeStatements":
                     if (string.IsNullOrEmpty(accountGroup))
