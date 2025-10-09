@@ -668,18 +668,19 @@
          getSalesPersonByUser();
         if (cleanClientCode) {
             loadClientDetails(cleanClientCode); 
-        }else{
-                 $.ajax({
-                 url: "/api/ClientLeadMaster/GetNewClientCode",
-                method: "GET",
-                success: function (newCode) {
-                        $("#txtClientCode").dxTextBox("instance").option("value", newCode);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error generating new Client Code", "error", 3000);
-                }
-            });
-        }
+         }
+         //else{
+        //          $.ajax({
+        //          url: "/api/ClientLeadMaster/GetNewClientCode",
+        //         method: "GET",
+        //         success: function (newCode) {
+        //                 $("#txtClientCode").dxTextBox("instance").option("value", newCode);
+        //         },
+        //         error: function () {
+        //             DevExpress.ui.notify("Error generating new Client Code", "error", 3000);
+        //         }
+        //     });
+        // }
     
     });
 

@@ -282,6 +282,7 @@
             if (e.target === "content" && e.row) {
                 e.items = [{
                     text: formatMessage("Supplier Edit"),
+                     id: "editSupplier",
                     onItemClick: function () {
                         let supplierCode = e.row.data.SupplierCode;
                         let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
@@ -306,82 +307,113 @@
             e.cellElement.css("font-weight", "bold");
         }
     }
-    $(document).ready(function () {
-		console.log('Start permission handling AccountingLedgers');
-		// Form ID
-		var formId = "frm30110SupplierMaster";
+       $(document).ready(function () {
+        console.log('🔹 Start permission handling: Supplier Master');
 
-		// Call the API to get permissions
-		$.ajax({	
-			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-			type: 'GET',
-			contentType: 'application/json',
-			success: function (response) {
-				console.log("API Response:", response); // Log the API response
+        var formId = "frm30110SupplierMaster";
 
-				if (response.success && response.permissions) {
-					// Default visibility and enable status for buttons
-					var controlStates = {
-						"ddButtonLayout": { "Visible": false, "Enabled": false },
-						"rowHeightProperties": { "Visible": false, "Enabled": false },
-						"btnPrint": { "Visible": false, "Enabled": false },
-						"btnToggleSearch": { "Visible": false, "Enabled": false },
-						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+        // Call the API to get permissions
+        $.ajax({
+            url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("✅ API Response:", response);
+
+                if (response.success && response.permissions) {
+                    // Default visibility and enable status for buttons
+                    var controlStates = {
+                        "ddButtonLayout": { "Visible": false, "Enabled": false },
+                        "rowHeightProperties": { "Visible": false, "Enabled": false },
+                        "btnPrint": { "Visible": false, "Enabled": false },
+                        "btnToggleSearch": { "Visible": false, "Enabled": false },
+                        "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
                         "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
-						"btnColumnChooser": { "Visible": false, "Enabled": false },
-						"btnAddSuppliers": { "Visible": false, "Enabled": false },
-					};
+                        "btnColumnChooser": { "Visible": false, "Enabled": false },
+                        "btnAddSuppliers": { "Visible": false, "Enabled": false },
+                    };
 
-					// Check for full access
-					var fullAccess = response.permissions.find(p =>
-						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-					);
+                    // ✅ Check for full access
+                    var fullAccess = response.permissions.find(p =>
+                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                    );
 
-					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-						// Grant full access: make all controls visible and enabled
-						Object.keys(controlStates).forEach(key => {
-							controlStates[key] = { "Visible": true, "Enabled": true };
-						});
-					} else {
-						// Update states based on specific permissions for each control
-						Object.keys(controlStates).forEach(key => {
-							var controlPermission = response.permissions.find(p =>
-								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-							);
-							if (controlPermission) {
-								controlStates[key] = {
-									"Visible": controlPermission.ItemVisible || false,
-									"Enabled": controlPermission.ItemEnabled || false
-								};
-							}
-						});
-					}
+                    if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                        // Grant full access to all controls
+                        Object.keys(controlStates).forEach(key => {
+                            controlStates[key] = { "Visible": true, "Enabled": true };
+                        });
+                    } else {
+                        // Apply specific control permissions
+                        Object.keys(controlStates).forEach(key => {
+                            var controlPermission = response.permissions.find(p =>
+                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                            );
+                            if (controlPermission) {
+                                controlStates[key] = {
+                                    "Visible": controlPermission.ItemVisible || false,
+                                    "Enabled": controlPermission.ItemEnabled || false
+                                };
+                            }
+                        });
+                    }
 
-					console.log("Control States:", controlStates);
-					Object.keys(controlStates).forEach(key => {
-						var button = document.getElementById(key);
-						if (button) {
-							// Handle visibility
-							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-							// Handle enable/disable state
-							button.disabled = !controlStates[key].Enabled;
-							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-						} else {
-							console.warn(`Button with ID "${key}" not found in the DOM.`);
-						}
-					});
-				} else {
-					console.warn("Failed to fetch permissions or no permissions available.");
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching permissions:", error);
-				alert('An error occurred while fetching permissions. Please try again.');
-			}
-		});
+                    console.log("🎛 Control States:", controlStates);
 
-		console.log('End permission handling');
-	});
+                    // ✅ Apply visibility and enable state for buttons
+                    Object.keys(controlStates).forEach(key => {
+                        var button = document.getElementById(key);
+                        if (button) {
+                            button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                            button.disabled = !controlStates[key].Enabled;
+                            console.log(`🔸 Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`);
+                        } else {
+                            console.warn(`⚠️ Button with ID "${key}" not found in DOM.`);
+                        }
+                    });
+
+                    // ✅ Handle context menu items (like editSupplier)
+                    if (typeof menuItems !== "undefined" && Array.isArray(menuItems)) {
+                        const restrictedMenuItems = [
+                            { id: "editSupplier", permissionSuffix: "editSupplier" } // 👈 Add your menu item here
+                        ];
+
+                        restrictedMenuItems.forEach(mapping => {
+                            const menuItem = menuItems.find(m => m.id === mapping.id);
+                            if (menuItem) {
+                                const perm = response.permissions.find(p =>
+                                    p.ItemName && p.ItemName.trim().toLowerCase() ===
+                                    (formId + "_" + mapping.permissionSuffix).trim().toLowerCase()
+                                );
+
+                                if (!perm || !perm.ItemVisible) {
+                                    menuItem.hidden = true; // hide if no permission
+                                    console.log(`❌ Context menu "${mapping.id}" hidden (no visibility permission).`);
+                                } else if (!perm.ItemEnabled) {
+                                    menuItem.disabled = true; // disable if not enabled
+                                    console.log(`⚠️ Context menu "${mapping.id}" disabled (no enable permission).`);
+                                } else {
+                                    console.log(`✅ Context menu "${mapping.id}" visible and enabled.`);
+                                }
+                            }
+                        });
+                    } else {
+                        console.warn("⚠️ menuItems variable is undefined or not an array.");
+                    }
+
+                } else {
+                    console.warn("⚠️ Failed to fetch permissions or no permissions available.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("❌ Error fetching permissions:", error);
+                DevExpress.ui.notify('Error fetching permissions. Please try again.', 'error', 3000);
+            }
+        });
+
+        console.log('🔹 End permission handling');
+    });
+
         
 
     function addImageTooltip(cellElement, imageUrl) {
