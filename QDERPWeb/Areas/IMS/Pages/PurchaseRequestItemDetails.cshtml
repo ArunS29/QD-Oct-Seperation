@@ -462,7 +462,7 @@
 		.ColumnAutoWidth(true)
 		.Width("98%")
 				.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.OnCellClick("handleCellClick")
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)

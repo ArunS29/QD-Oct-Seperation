@@ -206,7 +206,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in UpdateClientCategories: {ex.Message}");
+                _logger.LogError($"Error in UpdateClient: {ex.Message}");
                 return StatusCode(500, $"Update failed: {ex.Message}");
             }
         }
