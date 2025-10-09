@@ -2924,9 +2924,6 @@ function collectInvoiceData() {
 
 						}
 
-
-
-
 								   function onOpened(e) {
 									setTimeout(() => {
 										e.component.focus();
@@ -3872,7 +3869,7 @@ $(document).ready(function () {
     });
 
     $.ajax({
-        url: '/api/MaterialReceipt1/CreateOrUpdateInvoice',
+        url: '/api/MaterialReceipt1/CreateOrUpdateDetailedInvoice',
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(payload),
