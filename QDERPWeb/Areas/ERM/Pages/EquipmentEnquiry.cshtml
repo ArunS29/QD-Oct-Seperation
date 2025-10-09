@@ -117,7 +117,7 @@
 
 <div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
-		.ID("frmdateBox")
+		.ID("frmdateBox")																																																				
 		.Label(new JS("formatMessage('Start Date')"))
 		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
@@ -254,6 +254,10 @@
                     .Visible(false);
 					subColumns.AddFor(m => m.IsSubmitted)
 					.Caption(new JS("formatMessage('IsSubmitted')"))
+                    .Alignment(HorizontalAlignment.Center)
+                    .Visible(false);
+					subColumns.AddFor(m => m.ClientCode)
+					.Caption(new JS("formatMessage('Client code')"))
                     .Alignment(HorizontalAlignment.Center)
                     .Visible(false);
 				    });
@@ -587,36 +591,30 @@
 	function onContextMenuPreparing(e) {
 		
 		if (e.target === "content" && e.row) {
+				const rowData = e.row.data; // capture row data here
 			e.items = [
-					{
-						text: "Edit Request / Enquiry",
-						icon: "edit",
-						onItemClick: function () {
-						const rowData = e.row.data;
-						if (!rowData) {
-							console.error("Row data is unavailable.");
-							return;
-						}
-							const { EqiupmentRequestNo, RequestType} = rowData;
-							const tenantName = window.tenantName || "defaultTenant";
-							let url = "";
-							let title = "";
-									switch (RequestType) {
-									case "Client Request":
-									url = `/${tenantName}/ERM/EquipmentClientRequest?code=${EqiupmentRequestNo}`;
-									title = "";
-									break;
-									case "Project Request":
-										url = `/${tenantName}/ERM/EquipmentProjectRequest?code=${EqiupmentRequestNo}`;
-									title = "";
-									break;
-								default:
-									console.warn("Unknown RequestEnquiry type:", RequestType);
-									return;
-							}
-							window.location.href=url;
-						}
-					},
+				{
+					text: "Edit Request / Enquiry",
+					icon: "edit",
+					onItemClick: function () {
+					if (!rowData) {
+						console.error("Row data is unavailable.");
+						return;
+					}
+
+					const { EqiupmentRequestNo, ClientCode } = rowData;
+					const tenantName = window.tenantName || "defaultTenant";
+					let url = "";
+
+					if (ClientCode && ClientCode.trim() !== "") {
+						url = `/${tenantName}/ERM/EquipmentClientRequest?code=${EqiupmentRequestNo}`;
+					} else {
+						url = `/${tenantName}/ERM/EquipmentProjectRequest?code=${EqiupmentRequestNo}`;
+					}
+
+					window.location.href = url;
+					}
+				},
 				{
 					text: "Delete Request / Enquiry",
 					icon: "trash",

@@ -590,13 +590,14 @@
         <div id="nested-tab-2" class="nested-tab-content" style="display:none;">
             <style>
                 .two-column-spec-table {
-                    width: 97%;
-                    border-spacing: 20px 15px; /* space between columns and rows */
+                    width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 10px 8px; /* adds spacing between rows/columns */
                 }
 
                     .two-column-spec-table td {
                         vertical-align: top;
-                        width: 50%;
+                        width: 33%;
                     }
             </style>
 
@@ -616,6 +617,13 @@
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("97%"))
                     </td>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                        .ID("IstimaraExpiry")
+                        .Label(new JS("formatMessage('Istimara Expiry Date')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width("97%"))
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -632,6 +640,13 @@
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .Width("97%"))
                     </td>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                        .ID("InsuranceExpiry")
+                        .Label(new JS("formatMessage('Insurance Expiry Date')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width("97%"))
+                    </td>
                 </tr>
                 <tr>
                     <td>
@@ -647,6 +662,20 @@
                                                 .Label(new JS("formatMessage('Field 3:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .Width("97%"))
+                    </td>
+                    <td>
+                        @(Html.DevExtreme().DateBox()
+                        .ID("Inspection Expiry")
+                        .Label(new JS("formatMessage('Inspection Expiry Date')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr("aria-label", "Time")
+                        .Type(DateBoxType.Date)
+                        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                        .DisplayFormat("dd-MMM-yyyy")
+                        .ApplyValueMode(EditorApplyValueMode.UseButtons)
+                        .ShowClearButton(true)
+                        .ElementAttr("class", "dynamicFormatDateBox")
+                        .Width("97%"))
                     </td>
                 </tr>
             </table>
@@ -1127,11 +1156,12 @@
         <!-- Toolbar -->
         <div class="custom-toolbar">
             @(Html.DevExtreme().Button()
-                        .ID("Printdata")
-                        .Icon("print")
-                        .Text(new JS("formatMessage('Print Mobilization Data')"))
-                        .Width("20%")
-                        )
+            .ID("Printdata")
+            .Icon("print")
+            .Text(new JS("formatMessage('Print Mobilization Data')"))
+            .Width("20%")
+            .OnClick("printmomb")
+            )
         </div>
 
         <!-- Document DataGrid -->
@@ -1229,18 +1259,19 @@
     <div id="tab-content-7" class="tab-content" style="display:none;">
         <div class="custom-toolbar">
             @(Html.DevExtreme().Button()
-                        .ID("Printbtn")
-                        .Icon("print")
-                        .Text(new JS("formatMessage('Print')"))
-                        .Width(130)
-                        )
-            @(Html.DevExtreme().Button()
-                        .ID("Checkclick")
-                        .Icon("smalliconslayout")
-                        .Text(new JS("formatMessage('Details Report By Date')"))
-                        .OnClick("ShowDatePopup")
+            .ID("Printbtn")
+            .Icon("print")
+            .Text(new JS("formatMessage('Print')"))
+            .Width(130)
+            .OnClick("printCostsum")
             )
-                        
+            @(Html.DevExtreme().Button()
+            .ID("Checkclick")
+            .Icon("smalliconslayout")
+            .Text(new JS("formatMessage('Details Report By Date')"))
+            .OnClick("ShowDatePopup")
+            )
+
         </div>
 
         <!-- Document DataGrid -->
@@ -1599,8 +1630,69 @@
         }
     }
 
+    function printmomb() {
+        exportDataGridToPDF('mombGrid');
+    }
 
+    function printCostsum() {
+        exportDataGridToPDF('Costsummary');
+    }
 
+    function setDefaultLayoutClick(gridId) {
+        var grid = $(gridId).dxDataGrid("instance");
+
+        if (!grid) {
+            DevExpress.ui.notify("Grid not found: " + gridId, "error", 2000);
+            return;
+        }
+
+        var form = $('#formId').val() || "DefaultForm";
+        var layout = grid.state();
+        var layoutJson = JSON.stringify(layout, null, 2);
+
+        console.log("Saving layout for", gridId, layoutJson);
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            data: {
+                layout: layoutJson,
+                form: form
+            },
+            success: function () {
+                DevExpress.ui.notify("Layout saved successfully for " + gridId, "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while saving layout for " + gridId, "error", 2000);
+            }
+        });
+    }
+
+    function resetLayoutClick(gridId) {
+        var grid = $(gridId).dxDataGrid("instance");
+        var form = $('#formId').val() || "DefaultForm";
+
+        if (!grid) {
+            DevExpress.ui.notify("Grid not found: " + gridId, "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            data: {
+                layout: null,
+                form: form
+            },
+            success: function () {
+                grid.state({}); // clear layout
+                DevExpress.ui.notify("Layout reset successful for " + gridId, "success", 2000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while resetting layout for " + gridId, "error", 2000);
+            }
+        });
+    }
 
 
 
@@ -2091,12 +2183,23 @@
                                     var modalUrl = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
                                   openModal(modalUrl, "Property Operators", "70%", "70%");
                                 }
-                              function ShowDatePopup() {
-                               var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
-                               var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
-                                 var url =  `/${tenantName}/ERM/DetailsCostSummary?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
-                               window.location.href = url;
-                                 }
+                                  function ShowDatePopup() {
+                                        // Get the values first
+                                        var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
+                                        var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
+
+                                        // Validate PropertyNo
+                                        if (!PropertyNo) {
+                                            DevExpress.ui.notify("Please enter a Property No.", "warning", 2000);
+                                            return;
+                                        }
+
+                                        // Build the URL safely
+                                        var url = `/${tenantName}/ERM/DetailsCostSummary?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+
+                                        // Redirect
+                                        window.location.href = url;
+                                    }
         function Progroup(){
                   const url = `/${tenantName}/ERM/PropertyGroup`;
                 const title = "Property Group";
@@ -2121,19 +2224,24 @@
             $("#tab-content-" + (selectedTabIndex + 1)).show();
         });
 
+     // $(document).ready(function () {
+     //    const urlParams = new URLSearchParams(window.location.search);
+     //    const mode = urlParams.get("mode");
+
+     //         $("#PropertyGroup").dxDropDownBox({
+     //            onValueChanged: function (e) {
+     //                const mode = new URLSearchParams(window.location.search).get("mode");
+     //                if (mode === "add") {
+     //                    generatePropertyNo(e.value);
+     //                }
+     //            }
+     //        });
+     // });
+
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
         const mode = urlParams.get("mode");
-
-            $("#PropertyGroup").dxDropDownBox({
-            onValueChanged: function (e) {
-                // Only generate PropertyNo if NOT in edit mode
-                if (mode !== "edit") {
-                    generatePropertyNo(e.value);
-                }
-            }
-        });
 
        if (mode === "edit") {
             $("#btnSave").dxButton("instance").option("text", "Update");
@@ -2414,7 +2522,7 @@
            // Log and build URL
             console.log("Property No", PropertyNo);
            console.log("Equipment Property");
-           const isMaster = false;
+           const isMaster = true;
            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(PropertyNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
            const title = "Transaction Documents";
 
@@ -2492,11 +2600,12 @@
             });
         }
     }
-  
-    function onStockGroupChange(e) {
-        var PropertyGroupId = e.value;
 
-        if (PropertyGroupId) {
+        function onStockGroupChange(e) {
+        var PropertyGroupId = e.value;
+        // Get mode from URL (add/edit)
+        var mode = new URLSearchParams(window.location.search).get("mode");
+        if (mode === "add" && PropertyGroupId) {
             $.get('/api/AddNewProperty/GetNextStockNumber', { PropertyGroupId: PropertyGroupId }, function (data) {
                 $("#PropertyNo").dxTextBox("instance").option("value", data);
             });

@@ -6,13 +6,13 @@
 @using DevExtreme.AspNet.Mvc.Builders
 
 <div>
-	<h1>Equipment's Client Timesheet Records</h1>
+      <div> Equipment's Client Timesheet Records </div> 
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp40109Eqp_Cost_ClientTimesheetResult>()
         .ID("gridClientTimesheet")
         .ShowBorders(true)
          .DataSource(d => d.WebApi()
-        .Controller("AddNewClientRequest1")   // matches your API controller
-        .LoadAction("GetEqpCostClientTimesheet") // matches your GET method
+        .Controller("AddNewClientRequest1")
+        .LoadAction("GetEqpCostClientTimesheet")
     )
         .ColumnAutoWidth(true)
         .Columns(columns => {
@@ -72,7 +72,7 @@
     )
 
     <br />
-	<h1>Equipment's Invoice Summary Records</h1>
+    <div> Equipment's Invoice Summary Records </div>
     <!-- 2️⃣  -->
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp40110Eqp_Cost_InvSummaryResult>()
         .ID("gridInvoiceSummary")
@@ -136,7 +136,7 @@
     )
 
     <br />
-		<h1>Equipment's Revenue Allocation - Finance Records</h1>
+        <div> Equipment's Revenue Allocation - Finance Records </div>
     <!-- 3️⃣  -->
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp40111Eqp_Cost_RevenueAllocatedResult>()
         .ID("gridRevenueAllocation")
@@ -197,8 +197,7 @@
     )
 
     <br />
-
-		<h1>Equipment's Expenses Allocation - Finance Records</h1>
+        <div> Equipment's Expenses Allocation - Finance Records </div>
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp40112Eqp_Cost_ExpensesAllocatedResult>()
         .ID("gridExpensesAllocation")
         .ShowBorders(true)
@@ -258,7 +257,9 @@
     )
 </div>
 <script>
+
 	function loadClientTimesheet() {
+
     $.ajax({
         url: `/api/AddNewClientRequest1/GetEqpCostClientTimesheet`,
         type: 'GET',
@@ -277,6 +278,8 @@
 $(document).ready(function () {
     loadClientTimesheet();
 });
+
+
 
 
 </script>

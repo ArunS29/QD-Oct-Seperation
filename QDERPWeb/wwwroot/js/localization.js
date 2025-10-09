@@ -2,6 +2,10 @@
 var dictionary = {
 
     "en": {
+
+        "Istimara Expiry Date":"Istimara Expiry Date",
+        "Insurance Expiry Date":"Insurance Expiry Date",
+        "Inspection Expiry Date":"Inspection Expiry Date",
         "Client Item Reference No":"Client Item Reference No",
         "Property Complaint":"Property Complaint",
         "Service Template":"Service Template",
@@ -5603,6 +5607,9 @@ var dictionary = {
     //Arabic Language Translations
 
     ar: {
+        "Istimara Expiry Date": "تاريخ انتهاء الاستمارة",
+        "Insurance Expiry Date": "تاريخ انتهاء التأمين",
+        "Inspection Expiry Date": "تاريخ انتهاء الفحص",
         "Mobilization Details": "تفاصيل التعبئة",
         "Add New Property": "إضافة خاصية جديدة",
         "Equipment/Assets": "المعدات/الأصول",
@@ -10900,6 +10907,9 @@ var dictionary = {
         "Specification 3:": "规格 3",
         "Field 3:": "字段 3",
         "Purchased Date:": "购买日期",
+        "Istimara Expiry Date": "行驶证到期日期",
+        "Insurance Expiry Date": "保险到期日期",
+        "Inspection Expiry Date": "检验到期日期",
         "Purchased from:": "购买来源",
         "Purchased as:": "购买形式",
         "Current Condition:": "当前状态",
@@ -15088,6 +15098,9 @@ var dictionary = {
 
     // Hindi Language Translation
     hi: {
+        "Istimara Expiry Date": "इस्तिमारा समाप्ति तिथि",
+        "Insurance Expiry Date": "बीमा समाप्ति तिथि",
+        "Inspection Expiry Date": "निरीक्षण समाप्ति तिथि",
         "Purchase Request with Item": "आइटम के साथ खरीद अनुरोध",
         "Terms & Conditions List": "नियम व शर्तें सूची",
         "Approve All select DN": "चयनित डिलीवरी नोट को सभी स्वीकृत करें",
@@ -19758,6 +19771,9 @@ var dictionary = {
 
     // Urdu Language Translation
     ur: {
+        "Istimara Expiry Date": "استمارہ کی میعاد ختم ہونے کی تاریخ",
+        "Insurance Expiry Date": "انشورنس کی میعاد ختم ہونے کی تاریخ",
+        "Inspection Expiry Date": "معائنہ کی میعاد ختم ہونے کی تاریخ",
         "Purchase Request with Item": "آئٹم کے ساتھ خریداری کی درخواست",
         "Terms & Conditions List": "شرائط و ضوابط کی فہرست",
         "Approve All select DN": "منتخب ڈی این کو سب منظور کریں",
@@ -24492,6 +24508,9 @@ var dictionary = {
 
     // Korean Language Translation
     ko: {
+        "Istimara Expiry Date": "차량 등록증 만료일",
+        "Insurance Expiry Date": "보험 만료일",
+        "Inspection Expiry Date": "검사 만료일",
         "Purchase Request with Item": "품목 포함 구매 요청",
         "Terms & Conditions List": "약관 목록",
         "Approve All select DN": "선택된 전달서 모두 승인",
