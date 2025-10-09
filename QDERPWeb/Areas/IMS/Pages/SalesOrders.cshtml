@@ -959,7 +959,7 @@
 			}
 
 			// Check if Client Ledger exists via API
-			$.get("/api/Client/HasLedger", { clientCode: clientCode })
+				$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
 				.done(function (ledgerExists) {
 					if (!ledgerExists) {
 						DevExpress.ui.dialog.alert(

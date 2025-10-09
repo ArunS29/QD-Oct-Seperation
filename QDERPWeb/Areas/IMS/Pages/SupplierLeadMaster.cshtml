@@ -621,19 +621,20 @@
 
             if (cleanSupplierCode) {
                 loadSupplierDetails(cleanSupplierCode);
-            }else{
-                      $.ajax({
-                   url: "/api/SupplierMaster/GetNewSupplierNo",
-                    method: "GET",
-                    success: function (newCode) {
-                            $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
-                    },
-                    error: function () {
-                        DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
-                    }
-                });
-
             }
+            // else{
+            //           $.ajax({
+            //        url: "/api/SupplierMaster/GetNewSupplierNo",
+            //         method: "GET",
+            //         success: function (newCode) {
+            //                 $("#txtSupplierCode").dxTextBox("instance").option("value", newCode);
+            //         },
+            //         error: function () {
+            //             DevExpress.ui.notify("Failed to generate Supplier Code", "error", 3000);
+            //         }
+            //     });
+
+            // }
         });
         function loadSupplierDetails(cleanSupplierCode) {
 
@@ -1006,7 +1007,24 @@
                 contentType: "application/json",
                 data: JSON.stringify(SupplierCode), // send plain string
                 success: function (response) {
-                    DevExpress.ui.notify(response.message, "success", 3000);
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                                    // Attachment Delete
+                                var module = "inventory";
+                                $.ajax({
+                                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(SupplierCode)}&module=${encodeURIComponent(module)}`,
+                                    type: "POST",
+                                    success: function (response) {
+                                        if (response.success) {
+                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                        } else {
+                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                    }
+                                });
+                    
 
                      if (window.parent && window.parent.$("#dataGrid").length) {
                                 let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");

@@ -126,9 +126,10 @@
                 return;
         }
 
-        const fullUrl = `/${tenant}/${targetPage}?Mprno=${encodeURIComponent(mprNo)}`;
-        window.open(fullUrl, "_blank");  // Open in new tab
+          window.location.href = `/${tenant}/${targetPage}?Mprno=${encodeURIComponent(mprNo)}&modal=true`;
+        
     }
+  
 
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);

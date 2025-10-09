@@ -661,18 +661,23 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         RequestedBy = VM.RequestedBy,
                         RequesterContactEmail = VM.RequesterContactEmail,
                         RequesterContact = VM.RequesterContact,
-                        ModeOfRequest = Convert.ToByte(VM.ModeOfRequest),
-                        TypeOfRequest = Convert.ToByte(VM.TypeOfRequest),
+                       // ModeOfRequest = Convert.ToByte(VM.ModeOfRequest),
+                        //TypeOfRequest = Convert.ToByte(VM.TypeOfRequest),
+                        ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null,
+                        TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null,
+
                         SalesPersonCode = VM.SalesPersonCode,
                         ClientRefNo = VM.ClientRefNo,
                         PurposeOfRequest = VM.PurposeOfRequest,
                         Priority = VM.Priority,
                         CostCenterText = VM.CostCenterText,
                         ExpectedDate = VM.ExpectedDate,
-                        ExpectedVatrate = Convert.ToByte(VM.ExpectedVatrate),
+                        //ExpectedVatrate = Convert.ToByte(VM.ExpectedVatrate),
+                        ExpectedVatrate = VM.ExpectedVatrate.HasValue ? (byte?)VM.ExpectedVatrate.Value : null,
                         Remarks = VM.Remarks,
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        PurchaseRequestStatusId = Convert.ToByte(VM.PurchaseRequestStatusId),
+                        //PurchaseRequestStatusId = Convert.ToByte(VM.PurchaseRequestStatusId),
+                        PurchaseRequestStatusId = VM.PurchaseRequestStatusId.HasValue ? (byte?)VM.PurchaseRequestStatusId.Value : null,
                         InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
                         ProjectMasterCode = VM.ProjectMasterCode,
                         BidClosingDate = VM.BidClosingDate,
@@ -681,7 +686,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         RequestSignatory = VM.RequestSignatory,
                         MprverifiedSign = VM.MprverifiedSign,
                         MprapprovedSign = VM.MprapprovedSign,
-                        ProjectSubUnitCode = Convert.ToByte(VM.ProjectSubUnitCode),
+                        // ProjectSubUnitCode = Convert.ToByte(VM.ProjectSubUnitCode),
+                        ProjectSubUnitCode = VM.ProjectSubUnitCode.HasValue ? (byte?)VM.ProjectSubUnitCode.Value : null,
                         StoreCode = VM.StoreCode,
                         TypeOfMpr = Convert.ToByte(VM.TypeOfMpr),
                         CurrencyId = VM.CurrencyId ?? 1,
@@ -689,6 +695,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         BaseCurrencyId = VM.BaseCurrencyId ?? 1,
 
                     };
+
+
 
                     await dbContext.Tbl60601purchaseRequestMasters.AddAsync(newMaster);
                 }

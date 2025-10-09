@@ -374,9 +374,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     {
                         // New child entry
                         child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
-                        child.CostPrice = child.CostPrice * currencyRate;
-                        child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
-                        child.QuotedDiscount = child.QuotedDiscount * currencyRate;
+                        child.CostPrice = child.CostPrice * VM.CurrencyRate;
+                        child.QuotedUnitPrice = child.QuotedUnitPrice * VM.CurrencyRate;
+                        child.QuotedDiscount = child.QuotedDiscount * VM.CurrencyRate;
                         await dbContext.Tbl60102quotationChildren.AddAsync(child);
                     }
                     else
