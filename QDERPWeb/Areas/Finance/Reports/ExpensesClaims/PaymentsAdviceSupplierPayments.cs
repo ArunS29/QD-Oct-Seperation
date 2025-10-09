@@ -105,7 +105,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims
 
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    string query = "SELECT * FROM tbl20103ExpenseClaimChild WHERE ClaimRefNo=@ClaimRefNo";
+                    string query = "SELECT * FROM tbl20102ExpenseClaimMaster WHERE ClaimRefNo=@ClaimRefNo";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {

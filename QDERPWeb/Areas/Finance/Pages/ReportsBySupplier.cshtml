@@ -10,622 +10,476 @@
 
 
 <style>
+    .container {
+        display: none !important;
+        background-color: transparent;
+    }
 
+    .frame {
+        display: none !important;
+    }
 
-        .dx-datagrid .dx-row {
-            border-bottom: 1px solid #ccc; /* Border between rows */
-        }
+    .footerContainer {
+        display: none !important;
+    }
 
-        .dx-tabpanel .dx-tab {
-            color: black !important; /* Set the tab text color to black */
-            font-weight: bold; /* Optionally make the text bold */
-            font-size: 14px; /* Adjust font size for better visibility */
-            padding: 10px 15px; /* Increase padding for better appearance */
-        }
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
 
-           
-            .dx-tabpanel .dx-tab.dx-selection {
-              /*  background-color: lightblue; */ /* Highlight selected tab with a background */
-              /*   color: white !important; */ /* Set selected tab text color */
-            }
+    .mainContainer {
+        margin-top: 1em;
+    }
 
-        .form-container {
-            margin: 25px;
-         background-color: #cfddee; 
-            border: 1px solid black; /* Add a black border */
-            padding: 5px; /* Optional: Add some padding inside the border */
-            border-radius: 1px; /* Optional: Rounded corners */
-        }
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px;
+        margin-left: 0px;
+        width: 96%;
+        height: 100vh;
+        overflow: hidden;
+        padding: 0px;
+    }
 
-        ul {
-            list-style: none;
-            padding: 15px;
-        }
+    .dx-tabpanel {
+        background-color: #f9fafb;
+        border-radius: 10px;
+        overflow: hidden;
+    }
 
-        li {
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-        }
+    .dx-tab {
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-        label {
-            margin-left: 8px;
-        }
+    .dx-tab-selected {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
 
-        #errorMessage {
-            color: red;
-            margin-top: 20px;
-        }
+    .form-group {
+        padding: 15px;
+    }
 
-        /* Styling for the Save PDF button */
-        #savePdfBtn {
-            margin-top: 15px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+    .dx-dropdownbox {
+        width: 100% !important;
+    }
 
-            #savePdfBtn:hover {
-                background-color: #45a049;
-            }
 
     .card {
-        height: 500px;
+        height: 600px;
+        background-color: white;
+        width: 580px;
+    }
+
+    .dx-tabpanel-tabs .dx-tabs:not(.dx-tabs-vertical) .dx-tabpanel-tab {
+        max-width: 190px !important;
     }
 </style>
 
 <div class="card">
-    @*  <div class="content-container-top">  *@
-    <div class="card-header" style="background-color: #c0dceb; color: black; font-weight: bold;">
-        Bills Payable Reports
-    </div>
 
-    <!-- Tab Menu -->
+
+
+
     @(
         Html.DevExtreme().TabPanel()
         .ID("AssetTabs")
+        .DeferRendering(false)
         .Items(item =>
         {
-            item.Add().Title("BillsPayableBySupplier").Text("Bills Payable By Supplier").Template(@<text>
-        <div class="form-group">
-
-            <label for="Branch">AccountHead:</label>
-            <br />
-
-            @(Html.DevExtreme().DropDownBox()
-            .ID("GetAccountHeadDropDown")
-            .DataSource(d => d.WebApi()
-            .Controller("ReportsBySupplier")
-            .LoadAction("GetAccountHead")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AccountId")
-            )
-            .LabelMode(EditorLabelMode.Floating)
-            .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("AccountId") // Ensure correct mapping
-            .DisplayExpr("AccountHead")
-            .ContentTemplate(new TemplateName("GetAccountHeadContentTemplate"))
-            .OnValueChanged("onDropDownValueChanged")
-            )
+            item.Add().Title("BillsReceivableByClient").Text("Bills Payable By Suppliers").Template(@<text>
+                                                                                                         <div class="form-group">
 
 
 
-
-        </div>
-
-    </text>);
-            item.Add().Title("BillsPayableBySalesPerson").Text("Bills Payable By SalesPerson").Template(@<text>
-        <div class="form-group">
-
-            <label for="Branch">Sales Person:</label>
-            <br />
-            @(Html.DevExtreme().DropDownBox()
-            .ID("GetSalesPersonDropDown")
-            .DataSource(d => d.WebApi()
-            .Controller("ReportsBySupplier")
-            .LoadAction("GetSalesPerson")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("SalesPersonCode")
-            )
-            .LabelMode(EditorLabelMode.Floating)
-            .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("SalesPersonCode") // Ensure correct mapping
-            .DisplayExpr("SalesPersonName")
-            .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-            )
+                <label for="Branch">AccountHead:</label>
+                <br />
+                @(Html.DevExtreme().DropDownBox()
+                            .ID("GetAccountHeadDropDown")
+                            .DataSource(d => d.WebApi()
+                            .Controller("ReportsByClients")
+                            .LoadAction("GetAccountHeads")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("AccountId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(true)
+                            .OpenOnFieldClick(true)
+                            .ValueExpr("AccountId")
+                            .DisplayExpr("AccountHead")
+                            .ContentTemplate(new TemplateName("GetAccountHeadContentTemplate"))
+                            .OnValueChanged("onDropDownValueChanged")
+                            )
 
 
-        </div>
-
-    </text>);
-            item.Add().Title("BillsPayableByBranch").Text("Bills Payable By Branch/Division").Template(@<text>
-
-        <div class="form-group">
-
-            <label for="Branch">Division/Branch:</label>
-            <br />
-            @(Html.DevExtreme().DropDownBox()
-            .ID("GetCompanyBranchDropDown")
-            .DataSource(d => d.WebApi()
-            .Controller("ReportsBySupplier")
-            .LoadAction("GetCompanyBranch")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("BranchCode")
-            )
-            .LabelMode(EditorLabelMode.Floating)
-            .ShowClearButton(true)
-            .AcceptCustomValue(true)
-            .OpenOnFieldClick(true) // Allow opening on click
-            .ValueExpr("BranchCode") // Ensure correct mapping
-            .DisplayExpr("BranchName")
-            .ContentTemplate(new TemplateName("GetCompanyBranchContentTemplate"))
-            )
 
 
-        </div>
+            </div>
+
+        </text>);
+            item.Add().Title("BillsReceivableBySalesPerson").Text("Bills Payable By Sales Person").Template(@<text>
+                                                                                                                    <div class="form-group">
+
+                <label for="Branch">Sales Person:</label>
+                <br />
+                @(Html.DevExtreme().DropDownBox()
+                            .ID("GetSalesPersonDropDown")
+                            .DataSource(d => d.WebApi()
+                            .Controller("ReportsByClients")
+                            .LoadAction("GetSalesPerson")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("SalesPersonCode")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(true)
+                            .OpenOnFieldClick(true)
+                            .ValueExpr("SalesPersonCode")
+                            .DisplayExpr("SalesPersonName")
+                            .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                            )
 
 
-    </text>
-        );
+            </div>
+
+        </text>);
+            item.Add().Title("BillsReceivableByBranch").Text("Bills Payable By Branch/Division").Template(@<text>
+
+            <div class="form-group">
+
+                <label for="Branch">Division/Branch:</label>
+                <br />
+                @(Html.DevExtreme().DropDownBox()
+                            .ID("GetCompanyBranchDropDown")
+                            .DataSource(d => d.WebApi()
+                            .Controller("ReportsByClients")
+                            .LoadAction("GetCompanyBranch")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("BranchCode")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(true)
+                            .OpenOnFieldClick(true)
+                            .ValueExpr("BranchCode")
+                            .DisplayExpr("BranchName")
+                            .ContentTemplate(new TemplateName("GetCompanyBranchContentTemplate"))
+                            )
+
+
+                </div>
+
+
+            </text>
+            );
         })
         )
-
-
-    @*  <div class="card-footer">
-    @await Html.PartialAsync("_ReportFooter") <!-- Existing Footer -->
-    </div> *@
 </div>
+
+
 @using (Html.DevExtreme().NamedTemplate("GetAccountHeadContentTemplate"))
 {
-    <div class="toolbar-container">
-        <div id="gridToolbar">
-            @(Html.DevExtreme().Button()
+
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetAccountHead-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("ReportsByClients")
+                    .LoadAction("GetAccountHeads")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("AccountId")
+                    )
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp
+                    .Visible(true)
+                    .HighlightSearchText(true)
+                    )
+                    .Selection(sl => sl
+                    .Mode(SelectionMode.Multiple)
+                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                    )
+                    .OnSelectionChanged("dataGridSelectionChanged1")
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(400)
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("AccountHead").Caption("Account Name");
+                    })
+                    )
+
+}
+<div class="toolbar-container">
+    <div id="gridToolbar">
+        @(Html.DevExtreme().Button()
                 .Text("Save as PDF")
                 .Icon("exportpdf")
                 .OnClick("saveGridAsPDF")
                 )
-            @(Html.DevExtreme().Button()
+        @(Html.DevExtreme().Button()
                 .Text("Print")
                 .Icon("print")
-               // .OnClick("printGrid")
+                .OnClick("downloadSelectedReport")
                 )
-        </div>
     </div>
-    @(Html.DevExtreme().DataGrid()
-            .ID("GetAccountHead-datagrid")
-            .DataSource(d => d.WebApi()
-            .Controller("ReportsBySupplier")
-            .LoadAction("GetAccountHead")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("AccountId")
-            )
-            .ShowBorders(true)
-            .SearchPanel(sp => sp
-            .Visible(true)  // Enables search bar
-            .HighlightSearchText(true)
-            )
-            .Selection(sl => sl
-            .Mode(SelectionMode.Multiple)  // Allows multiple selection
-            .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
-            )
-            .OnSelectionChanged("dataGridSelectionChanged1") // Handle selection
-            .Paging(p => p.PageSize(15))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-            .Height(345)
-            .Columns(columns =>
-            {
-                // columns.Add().DataField("AccountId").Caption("ID");
-                columns.Add().DataField("AccountHead").Caption("Account Name");
-            })
-            )
-}
+</div>
 @using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
 {
-    <div class="toolbar-container">
-        <div id="gridToolbar">
 
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
-                // .OnClick("printGrid1")
-                )
-        </div>
-    </div>
     @(Html.DevExtreme().DataGrid()
-            .ID("GetSalesPerson-datagrid")
-            .DataSource(d => d.WebApi()
-            .Controller("ReportsBySupplier")
-            .LoadAction("GetSalesPerson")
-            .LoadMode(DataSourceLoadMode.Raw)
-            .Key("SalesPersonCode")
-            )
-            .ShowBorders(true)
-            .SearchPanel(sp => sp
-            .Visible(true)  // Enables search bar
-            .HighlightSearchText(true)
-            )
-            .Selection(sl => sl
-            .Mode(SelectionMode.Multiple)  // Allows multiple selection
-            .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
-            )
-            .OnSelectionChanged("dataGridSelectionChanged2") // Handle selection
-            .Paging(p => p.PageSize(15))
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-            .Height(345)
-            .Columns(columns =>
-            {
-                // columns.Add().DataField("AccountId").Caption("ID");
-                columns.Add().DataField("SalesPersonName").Caption("SalesPerson Name");
-            })
-            )
+                    .ID("GetSalesPerson-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("ReportsByClients")
+                    .LoadAction("GetSalesPerson")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SalesPersonCode")
+                    )
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp
+                    .Visible(true)
+                    .HighlightSearchText(true)
+                    )
+                    .Selection(sl => sl
+                    .Mode(SelectionMode.Multiple)
+                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                    )
+                    .OnSelectionChanged("dataGridSelectionChanged2")
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(400)
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SalesPersonName").Caption("SalesPerson Name");
+                    })
+                    )
+
 }
 @using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
 {
-    <div class="toolbar-container">
-        <div id="gridToolbar">
 
-            @(Html.DevExtreme().Button()
-                .Text("Print")
-                .Icon("print")
-               // .OnClick("printGrid2")
-                )
-        </div>
-    </div>
     @(Html.DevExtreme().DataGrid()
-                    .ID("GetCompanyBranch-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("ReportsBySupplier")
-                    .LoadAction("GetCompanyBranch")
-                .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("BranchCode")
-                )
-                .ShowBorders(true)
-                .SearchPanel(sp => sp
-                .Visible(true)  // Enables search bar
-                .HighlightSearchText(true)
-                )
-                .Selection(sl => sl
-                .Mode(SelectionMode.Multiple)  // Allows multiple selection
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // Always show checkboxes
-                )
-                .OnSelectionChanged("dataGridSelectionChanged3") // Handle selection
-                .Paging(p => p.PageSize(15))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) // Enable virtual scrolling
-                .Height(345)
-                .Columns(columns =>
-                {
-                    // columns.Add().DataField("AccountId").Caption("ID");
-                    columns.Add().DataField("BranchName").Caption("Branch Name");
-                })
-                )
+                            .ID("GetCompanyBranch-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("ReportsByClients")
+                            .LoadAction("GetCompanyBranch")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("BranchCode")
+                        )
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp
+                        .Visible(true)
+                        .HighlightSearchText(true)
+                        )
+                        .Selection(sl => sl
+                        .Mode(SelectionMode.Multiple)
+                        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+                        )
+                        .OnSelectionChanged("dataGridSelectionChanged3")
+                        .Paging(p => p.PageSize(15))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(400)
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("BranchName").Caption("Branch Name");
+                        })
+                        )
+
 }
 
-
-
-
-@* </div> *@
-
 <script>
-
+    const tenantName = window.location.pathname.split('/')[1];
+    
+    // Get selectedMode from URL parameter (passed from parent page)
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedMode = urlParams.get('mode') || 'online';
+    console.log(`ReportsBySupplier received mode: ${selectedMode}`);
+    
     let dataGrid;
+
+    // --- DropDownBox helpers ---
     function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
-
 
         const text = ddbInstance.option("text");
         if (dataGrid) {
             dataGrid.option("searchPanel.text", text);
         }
     }
-    function onOpened() {
-        console.log("DropDownBox opened");
-    }
 
-    function onKeyDown(event) {
-        console.log("Key pressed:", event.key);
-    }
+    function onOpened() { console.log("DropDownBox opened"); }
+    function onKeyDown(event) { console.log("Key pressed:", event.key); }
 
+    // --- Selection arrays ---
+    let selectedAccountValues = [];
+    let selectedSalesValues = [];
+    let selectedSalesNames = [];
+    let selectedBranchValues = [];
+    let selectedBranchNames = [];
 
-    let selectedValues = []; // Array to store selected values
+    // --- AccountHead ---
     function dataGridSelectionChanged1(e) {
-        selectedKeys = e.selectedRowKeys; // Get all selected values
-        console.log("Selected Values:", selectedValues);
-       const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
-
-       ddbInstance.option("value", selectedKeys); // Assign array of selected values
+        selectedAccountValues = e.selectedRowKeys;
+        console.log("Selected Account IDs:", selectedAccountValues);
+        const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
+        if (ddbInstance) ddbInstance.option("value", selectedAccountValues);
     }
-    // Update DropDownBox value when selection changes
     function onDropDownValueChanged(e) {
-        selectedValues = e.value || []; // Store selected values in the array
+        selectedAccountValues = e.value || [];
     }
-    function dataGridInitialized1(e) {
-        dataGrid = e.component;
-    }
+    function dataGridInitialized1(e) { dataGrid = e.component; }
 
-
-    let selectedValues1 = []; // Store selected values
-
+    // --- SalesPerson ---
     function dataGridSelectionChanged2(e) {
-        selectedValues1 = e.selectedRowKeys; // Update array with selected keys
-        console.log("Selected Values1:", selectedValues1);
-
-        // Ensure DropDownBox updates correctly
+        selectedSalesValues = e.selectedRowKeys;
+        selectedSalesNames = e.selectedRowsData.map(d => d.SalesPersonName); // get display names
+        console.log("Selected Sales Codes:", selectedSalesValues);
+        console.log("Selected Sales Names:", selectedSalesNames);
         const ddbInstance = $("#GetSalesPersonDropDown").dxDropDownBox("instance");
-        if (ddbInstance) {
-            ddbInstance.option("value", selectedValues1);
-        }
+        if (ddbInstance) ddbInstance.option("value", selectedSalesValues);
     }
+    function onDropDownValueChanged1(e) { selectedSalesValues = e.value || []; }
+    function dataGridInitialized2(e) { dataGrid = e.component; }
 
-      function onDropDownValueChanged1(e) {
-        selectedValues1 = e.value || []; // Store selected values in the array
-    }
-
-
-    function dataGridInitialized2(e) {
-        dataGrid = e.component;
-    }
-    let selectedValues2 = []; // Store selected Branch values
-
+    // --- Branch ---
     function dataGridSelectionChanged3(e) {
-        selectedValues2 = e.selectedRowKeys; // Update array with selected keys
-        console.log("Selected Branch Records:", selectedValues2);
-
-        // Ensure DropDownBox updates correctly
+        selectedBranchValues = e.selectedRowKeys;
+        selectedBranchNames = e.selectedRowsData.map(d => d.BranchName); // get display names
+        console.log("Selected Branch Codes:", selectedBranchValues);
+        console.log("Selected Branch Names:", selectedBranchNames);
         const ddbInstance = $("#GetCompanyBranchDropDown").dxDropDownBox("instance");
-        if (ddbInstance) {
-            ddbInstance.option("value", selectedValues2);
-        }
+        if (ddbInstance) ddbInstance.option("value", selectedBranchValues);
     }
+    function dataGridInitialized3(e) { dataGrid = e.component; }
 
-    function dataGridInitialized3(e) {
-        dataGrid = e.component;
-    }
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const BillsReceivableByClient = document.getElementById('BillsReceivableByClient');
-    //     const BillsReceivableBySalesPerson = document.getElementById('BillsReceivableBySalesPerson');
-    //     const errorMessage = document.getElementById('errorMessage');
-    //     const errorMessage1 = document.getElementById('errorMessage1');
-    //     const selectAllBtn = document.getElementById('btnSelectAll'); // Button from _ReportFooter
-    //     const clearAllBtn = document.getElementById('btnClearAll'); // Button from _ReportFooter
-    //     const printBtn = document.getElementById('btnPrint'); // Button for printing
+    // --- Download / PDF functions ---
+    function downloadSelectedReport() {
+        let selectedParams = "";
+        let selectionType = "";
 
-    //     // Function to fetch data from an API
-    //     async function fetchData(apiURL, errorMessageElement) {
-    //         try {
-    //             errorMessageElement.textContent = ''; // Clear previous errors
-    //             const response = await fetch(apiURL);
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! Status: ${response.status}`);
-    //             }
-    //             const data = await response.json();
-    //             return data.data; // Assuming the API response contains the data in a 'data' property
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error);
-    //             errorMessageElement.textContent = 'Failed to fetch data. Please try again later.';
-    //             return null;
-    //         }
-    //     }
-
-    //     // Function to display data with checkboxes
-    //     async function displayData(apiURL, listElement, errorMessageElement, labelFields) {
-    //         const data = await fetchData(apiURL, errorMessageElement);
-    //         listElement.innerHTML = ''; // Clear the list before rendering new data
-
-    //         if (!data || !Array.isArray(data)) {
-    //             errorMessageElement.textContent = 'No data available.';
-    //             return;
-    //         }
-
-    //         data.slice(0, 10).forEach((item) => { // Limiting to 10 items for demonstration
-    //             const listItem = document.createElement('li');
-
-    //             const checkbox = document.createElement('input');
-    //             checkbox.type = 'checkbox';
-    //             checkbox.className = 'tab-checkbox'; // Add a class for easier selection
-    //             checkbox.id = `item-${item[labelFields.idField]}`;
-    //             checkbox.value = item[labelFields.idField];
-
-    //             const label = document.createElement('label');
-    //             label.htmlFor = `item-${item[labelFields.idField]}`;
-    //             label.textContent = `${item[labelFields.idField]} - ${item[labelFields.nameField]}`; // Display fields dynamically
-
-    //             listItem.appendChild(checkbox);
-    //             listItem.appendChild(label);
-    //             listElement.appendChild(listItem);
-    //         });
-    //     }
-
-    //     // Function to load data based on the active tab
-    //     function loadActiveTabData() {
-
-    
-    //         const activeTabIndex = document.querySelector('.dx-tabpanel .dx-item.dx-item-selected');
-    //         if (activeTabIndex) {
-    //             if (activeTabIndex.contains(BillsReceivableByClient)) {
-    //                 displayData(
-    //                     '/api/ReportsBySupplier/GetAccountHead',
-    //                     BillsReceivableByClient,
-    //                     errorMessage,
-    //                     { idField: 'AccountId', nameField: 'AccountHead' }
-    //                 );
-    //             } else if (activeTabIndex.contains(BillsReceivableBySalesPerson)) {
-    //                 displayData(
-    //                     '/api/ReportsBySupplier/GetSalesPerson',
-    //                     BillsReceivableBySalesPerson,
-    //                     errorMessage1,
-    //                     { idField: 'SalesPersonCode', nameField: 'SalesPersonName' }
-    //                 );
-    //             }
-    //         }
-    //     }
-
-    //     // Automatically load data when the page loads or tab changes
-    //     document.querySelector('.dx-tabpanel').addEventListener('click', loadActiveTabData);
-    //     loadActiveTabData();
-
-    //     // Function to select all checkboxes in the active tab
-    //     function selectAllCheckboxes() {
-    //         const activeTabContent = document.querySelector('.dx-tabpanel .dx-item.dx-item-selected');
-    //         if (!activeTabContent) return;
-
-    //         const checkboxes = activeTabContent.querySelectorAll('.tab-checkbox');
-    //         checkboxes.forEach(checkbox => {
-    //             checkbox.checked = true;
-    //         });
-    //     }
-
-    //     // Function to clear all checkboxes in the active tab
-    //     function clearAllCheckboxes() {
-    //         const activeTabContent = document.querySelector('.dx-tabpanel .dx-item.dx-item-selected');
-    //         if (!activeTabContent) return;
-
-    //         const checkboxes = activeTabContent.querySelectorAll('.tab-checkbox');
-    //         checkboxes.forEach(checkbox => {
-    //             checkbox.checked = false;
-    //         });
-    //     }
-
-    //     // Attach event listeners to the footer buttons
-    //     if (selectAllBtn) {
-    //         selectAllBtn.addEventListener('click', selectAllCheckboxes);
-    //     } else {
-    //         console.error('Button with ID "btnSelectAll" not found.');
-    //     }
-
-    //     if (clearAllBtn) {
-    //         clearAllBtn.addEventListener('click', clearAllCheckboxes);
-    //     } else {
-    //         console.error('Button with ID "btnClearAll" not found.');
-    //     }
-    //       // Print button functionality (Export as PDF)
-    //  document.getElementById("btnPrint").addEventListener("click", showReport);
-    //     // Print button functionality (Export as PDF)
-    //        function showReport() {
-    //     // Open the report in a new tab
-    //         window.open('/api/ReportsBySupplier/GenerateAgeingreportsummaryReport', '_blank');
-    // }
-
-    // });
-
-    async function saveGridAsPDF() {
-        const dataGrid = $("#GetAccountHead-datagrid").dxDataGrid("instance");
-
-        // Load jsPDF from the global `window.jspdf`
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-
-        // Get selected rows
-        const selectedRows = dataGrid.getSelectedRowsData();
-        console.log("Selected Row:", selectedRows);
-
-        if (selectedRows.length > 0) {
-            DevExpress.pdfExporter.exportDataGrid({
-                component: dataGrid,
-                jsPDFDocument: doc,
-                autoTableOptions: {
-
-                    headStyles: { fontStyle: 'bold' }, // Bold headers
-                    bodyStyles: { fontStyle: 'normal' },
-                },
-                selectedRowsOnly: true // Ensure only selected rows are exported
-            }).then(() => {
-                doc.save("SelectedGridData.pdf");
-            });
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
         } else {
-            alert("Please select rows to export.");
+            alert("Please select at least one record.");
+            return;
         }
+
+        let reportName = "XtraRecivableReport";
+        
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReportImport";
+        }
+        
+        const downloadUrl = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.location.href = downloadUrl;
     }
 
-    // Print Grid with Selected Records
+    function saveGridAsPDF() {
+        let selectedParams = "";
+        let selectionType = "";
+
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
+        } else {
+            alert("Please select at least one record.");
+            return;
+        }
+
+        let reportName = "XtraRecivableReport2";
+        
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReport2Import";
+        }
+        
+        console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
+        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.open(reportUrl, "_blank", "width=1200,height=800,scrollbars=yes,resizable=yes");
+    }
+
+    // --- Print functions ---
     function printGrid() {
-        if (selectedValues.length === 0) {
+        if (selectedAccountValues.length === 0) {
             alert("Please select at least one record to print.");
             return;
         }
 
-        // Send selected values using POST request
-        fetch("/api/ReportsBySupplier/GenerateReport", {
+        fetch("/api/ReportsByClients/GenerateReportAccountHead", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues)  // Send array as JSON
+            body: JSON.stringify(selectedAccountValues)
         })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
     }
 
-
-
-    // Print Grid with Selected Records
-    function printGrid1() {
-        if (selectedValues1.length === 0) {
+    function printGridSales() {
+        if (selectedSalesNames.length === 0) {
             alert("Please select at least one record to print.");
             return;
         }
 
-        // Send selected values using POST request
-        fetch("/api/ReportsBySupplier/GenerateReportSalesPerson", {
+        fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues1)  // Send array as JSON
+            body: JSON.stringify(selectedSalesNames)
         })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
     }
 
-
-
-    // Print Grid with Selected Records
-    function printGrid2() {
-        if (selectedValues2.length === 0) {
+    function printGridBranch() {
+        if (selectedBranchNames.length === 0) {
             alert("Please select at least one record to print.");
             return;
         }
 
-        // Send selected values using POST request
-        fetch("/api/ReportsBySupplier/GenerateReportBranch", {
+        fetch("/api/ReportsByClients/GenerateReportBranch", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedValues2)  // Send array as JSON
+            body: JSON.stringify(selectedBranchNames)
         })
-            .then(response => {
-                if (response.redirected) {
-                    window.location.href = response.url; // Redirect to report page
-                } else {
-                    return response.text();
-                }
-            })
-            .then(data => {
-                if (data) console.error("Error:", data);
-            })
-            .catch(error => console.error("Error:", error));
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
     }
 
+    // --- Preload data and activate tab ---
+    $(function () {
+        const tabPanel = $("#AssetTabs").dxTabPanel("instance");
 
+        $.getJSON(`/${tenantName}/ReportsByClients/GetAccountHead`, function(data) {
+            $("#GetAccountHeadDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+        $.getJSON(`/${tenantName}/ReportsByClients/GetSalesPerson`, function(data) {
+            $("#GetSalesPersonDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+        $.getJSON(`/${tenantName}/ReportsByClients/GetCompanyBranch`, function(data) {
+            $("#GetCompanyBranchDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabIndex = parseInt(urlParams.get("tab"), 10);
+        if (!isNaN(tabIndex)) tabPanel.option("selectedIndex", tabIndex);
+    });
 </script>
+

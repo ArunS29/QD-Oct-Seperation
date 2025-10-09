@@ -1476,14 +1476,24 @@
 											  							</td>
 											  							<td>
       						@(Html.DevExtreme().NumberBox()
-                                 .ID("currencyexchangerate3")
-                                 .Min(1)
-                                 .Max(99999999) // restricts the number itself
-                                 .Step(1)
-                                 .ShowSpinButtons(true)
-                                 .Width("90%")
-								 .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
-                             )
+                            .ID("currencyexchangerate3")
+                            .Min(0)
+                            .Max(99999999)
+                            .Step(1)
+                            .ShowSpinButtons(true)
+                            .Width("90%")
+                            .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+                            .OnInput(@"
+                                function(e) {
+                                    let value = e.event.target.value;
+                                    // Allow only digits and one decimal point
+                                    if (!/^\d*\.?\d*$/.test(value)) {
+                                        e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                    }
+                                }
+                            ")
+                        )
+
       							</td>
 							<td>
 								@* <span class="input-group-prepend" style="width: 0px;"> *@
@@ -1587,14 +1597,24 @@
 
 							<td>
 								@(Html.DevExtreme().NumberBox()
-																.ID("currencyexchangerate4")
-																.Min(1)
-																.Step(1)
-																.ShowSpinButtons(true)
-																.Max(99999999)
-																.Width("90%")
-																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
-								)
+                               .ID("currencyexchangerate4")
+                               .Min(1)
+                               .Step(1)
+                               .ShowSpinButtons(true)
+                               .Max(99999999)
+                               .Width("90%")
+                               .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+                                .OnInput(@"
+                                function(e) {
+                                    let value = e.event.target.value;
+                                    // Allow only digits and one decimal point
+                                    if (!/^\d*\.?\d*$/.test(value)) {
+                                        e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                    }
+                                }
+                            ")
+                           )
+
 											  							</td>
 											  							<td>
 											  								<span class="input-group-prepend" style="margin-right: 10px;">
@@ -1657,6 +1677,15 @@
 																 .Format("#,##0.00") 
 																.Value(1)
 																.Width("100%")
+																.OnInput(@"
+                                                                       function(e) {
+                                                                           let value = e.event.target.value;
+                                                                           // Allow only digits and one decimal point
+                                                                           if (!/^\d*\.?\d*$/.test(value)) {
+                                                                               e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                           }
+                                                                       }
+                                                                   ")
 																)
 							</td>
 								<td >
@@ -1677,7 +1706,16 @@
 																			.ShowSpinButtons(true)
 																			.Width("90%")
 																			.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
-									)
+																			.OnInput(@"
+                                                                             function(e) {
+                                                                                 let value = e.event.target.value;
+                                                                                 // Allow only digits and one decimal point
+                                                                                 if (!/^\d*\.?\d*$/.test(value)) {
+                                                                                     e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                                 }
+                                                                             }
+                                                                         ")
+								                      	)
 								</td>
 								<td>
 									<span class="input-group-prepend" style="margin-right: 10px;">
@@ -4008,6 +4046,7 @@
 										$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
                                         $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
 										$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+					                    $("#ddpaymentmeans").dxDropDownBox("instance").option("value",account.PaymentMeansTypeCode);
 
 										// $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value",account.InvoiceCheckedBy); 
 										// $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value",account.InvoicePreparedBy); 
@@ -5486,9 +5525,10 @@ if (popover.option("visible")) {
 
 			   
 			//Signatories
-			InvoicePreparedBy: SignatoryID|| null,
-		    InvoiceCheckedBy: ChkbySignatoryID|| null,
-		    InvoiceApprovedBy: ApproedbySignatoryID|| null
+			InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value") || null,
+		    InvoiceCheckedBy: $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value") || null,
+		    InvoiceApprovedBy: $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value") || null
+
 			};
 				
 			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
@@ -6493,9 +6533,9 @@ if (popover.option("visible")) {
 
 			   
 			//Signatories
-			InvoicePreparedBy: SignatoryID|| null,
-		    InvoiceCheckedBy: ChkbySignatoryID|| null,
-		    InvoiceApprovedBy: ApproedbySignatoryID|| null
+			InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value") || null,
+		    InvoiceCheckedBy: $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value") || null,
+		    InvoiceApprovedBy: $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value") || null
 
 			};
 
@@ -6720,9 +6760,9 @@ if (popover.option("visible")) {
 
 
 			//Signatories
-			InvoicePreparedBy: SignatoryID|| null,
-		InvoiceCheckedBy: ChkbySignatoryID|| null,
-		InvoiceApprovedBy: ApproedbySignatoryID|| null
+		    InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value") || null,
+		    InvoiceCheckedBy: $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value") || null,
+		    InvoiceApprovedBy: $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value") || null
 
 			};
 
@@ -6825,8 +6865,10 @@ if (popover.option("visible")) {
 		 }
 
 
-
+      
 		 $(document).ready(function () {
+		 if(IsCurrent!="true")
+	      {
 			$.ajax({
 				url: "/api/VATModule/CreateNewInvoiceCounter",
 				type: 'POST',
@@ -6840,7 +6882,9 @@ if (popover.option("visible")) {
 				DevExpress.ui.notify("Failed to load account details.", "error", 2000);
 				}
 			});
+	      }
 		});
+	   
 
 
 		 $(document).ready(function () {

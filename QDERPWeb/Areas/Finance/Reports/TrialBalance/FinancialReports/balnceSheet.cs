@@ -32,6 +32,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 
             InitializeComponent();
             SetReportParameters(accountGroup, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate,username);
+            sqlDataSource1.ConnectionOptions.CommandTimeout = 3600; // 60 minutes timeout
             LoadCurrencySymbolAndImage();
             try
             {
