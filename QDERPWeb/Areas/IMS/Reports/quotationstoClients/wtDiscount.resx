@@ -149,6 +149,13 @@
 )
 </value>
   </data>
+  <data name="xrTableCell19.ExpressionBindings" xml:space="preserve">
+    <value>Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,
+    Iif(IsNull([LineTotalAfterDiscount]), 0, [LineTotalAfterDiscount]),
+    Iif(IsNull([LineTotalAfterDiscount]), 0, [LineTotalAfterDiscount] / [CurrencyRate])
+)
+</value>
+  </data>
   <data name="xrLabel44.ExpressionBindings" xml:space="preserve">
     <value>Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,
     Iif(IsNull([TotalBeforeDiscount]), 0, [TotalBeforeDiscount]),

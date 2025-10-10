@@ -225,9 +225,9 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text(new JS("formatMessage('Preview Sales Order')")).Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text(new JS("formatMessage('Preview Sales Order(without Price)')")).Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("folder").Option("color", "#FF7043").Option("reportName", "CustomReport");
+                    items.Add().Text(new JS("formatMessage('Preview Sales Order')")).Icon("folder").Option("color", "#00ACC1").Option("reportName", "SalesOrderReport");
+                    items.Add().Text(new JS("formatMessage('Preview Sales Order(without Price)')")).Icon("folder").Option("color", "#AB47BC").Option("reportName", "SalesOrderReportWithoutPrice");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -312,6 +312,7 @@
 
          function handleSales(e) {
         const itemText = e.itemData?.text;
+        const reportName = e.itemData?.reportName;
         const tenantName = window.tenantName || "";
         const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
 
@@ -320,7 +321,11 @@
             return;
         }
           try {
-            const reportName = salesReportMap[itemText];
+            // Handle Custom Report Designs
+            if (reportName === "CustomReport") {
+                alert("Custom Report Designs functionality to be implemented.");
+                return;
+            }
 
             if (!reportName) {
                 alert("Invalid report format selected.");
@@ -328,14 +333,14 @@
             }
 
             let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
-              const salesReport= [
-                "Preview Sales Order", 
-                "Preview Sales Order(without Price)"
+              const salesReports = [
+                "SalesOrderReport", 
+                "SalesOrderReportWithoutPrice"
               ];
 
            
 
-        if (salesReport.includes(itemText)) {
+        if (salesReports.includes(reportName)) {
                 // Collect parameters only if true
                 const params = {
                     showSeal: $("#hdnshowSeal").val(),

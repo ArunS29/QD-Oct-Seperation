@@ -223,17 +223,17 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Preview Quotation')")).Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O Discount Column)')")).Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT)')")).Icon("folder").Option("color", "#AB47BC");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT & W/O Total Price)')")).Icon("folder").Option("color", "#FBBC05");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT & W/O Discount)')")).Icon("folder").Option("color", "#EA4335");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Addl Details)')")).Icon("folder").Option("color", "#34A853");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (Without Price)')")).Icon("folder").Option("color", "#4285F4");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Item Image)')")).Icon("folder").Option("color", "#FF7043");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Group Code)')")).Icon("folder").Option("color", "#00ACC1");
-                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Sub Group)')")).Icon("folder").Option("color", "#AB47BC");
-                    items.Add().Text(new JS("formatMessage('Prepare Cost Sheet')")).Icon("money").Option("color", "#34A853");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation')")).Icon("folder").Option("color", "#FF7043").Option("reportName", "PreviewQuotations");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O Discount Column)')")).Icon("folder").Option("color", "#00ACC1").Option("reportName", "wtDiscount");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT)')")).Icon("folder").Option("color", "#AB47BC").Option("reportName", "QuotationWOvat");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT & W/O Total Price)')")).Icon("folder").Option("color", "#FBBC05").Option("reportName", "vatTotalPricewithout");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (W/O VAT & W/O Discount)')")).Icon("folder").Option("color", "#EA4335").Option("reportName", "withoutvatDiscount");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Addl Details)')")).Icon("folder").Option("color", "#34A853").Option("reportName", "PreviewQuotationwithadditionalDetails");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (Without Price)')")).Icon("folder").Option("color", "#4285F4").Option("reportName", "PreviewQuotationwithoutPrice");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Item Image)')")).Icon("folder").Option("color", "#FF7043").Option("reportName", "PreviewQuotationWithImage");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Group Code)')")).Icon("folder").Option("color", "#00ACC1").Option("reportName", "GroupCode");
+                    items.Add().Text(new JS("formatMessage('Preview Quotation (With Sub Group)')")).Icon("folder").Option("color", "#AB47BC").Option("reportName", "PreviewQuotationWithSubGroup");
+                    items.Add().Text(new JS("formatMessage('Prepare Cost Sheet')")).Icon("money").Option("color", "#34A853").Option("reportName", "CostSheet");
 
                 })
                 .ItemTemplate(@<text>
@@ -452,6 +452,7 @@
 
     function handleQuatation(e) {
         const itemText = e.itemData?.text;
+        const reportName = e.itemData?.reportName;
         const tenantName = window.tenantName || "";
         const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 
@@ -473,8 +474,6 @@
             }
 
             // 🔹 Normal quotation reports
-            const reportName = quotationReportMap[itemText];
-
             if (!reportName) {
                 alert("Invalid report format selected.");
                 return;
@@ -484,19 +483,19 @@
 
             // For all quotation reports, add conditional parameters
             const quotationReports = [
-                "Preview Quotation",
-                "Preview Quotation (W/O Discount Column)",
-                "Preview Quotation (W/O VAT)",
-                "Preview Quotation (W/O VAT & W/O Total Price)",
-                "Preview Quotation (W/O VAT & W/O Discount)",
-                "Preview Quotation (With Addl Details)",
-                "Preview Quotation (Without Price)",
-                "Preview Quotation (With Item Image)",
-                "Preview Quotation (With Group Code)",
-                "Preview Quotation (With Sub Group)"
+                "PreviewQuotations",
+                "wtDiscount",
+                "QuotationWOvat",
+                "vatTotalPricewithout",
+                "withoutvatDiscount",
+                "PreviewQuotationwithadditionalDetails",
+                "PreviewQuotationwithoutPrice",
+                "PreviewQuotationWithImage",
+                "GroupCode",
+                "PreviewQuotationWithSubGroup"
             ];
 
-            if (quotationReports.includes(itemText)) {
+            if (quotationReports.includes(reportName)) {
                 // Collect parameters only if true
                 const params = {
                     pageBreakBefore: $("#hdnPageBreakBefore").val(),
