@@ -1,33 +1,33 @@
-﻿//using DevExpress.DataAccess.ConnectionParameters;
-//using DevExpress.DataAccess.Sql;
-//using DevExpress.XtraPrinting;
-//using DevExpress.XtraReports.UI;
-//using Svg;
-//using System;
-//using System.Collections;
-//using System.ComponentModel;
-//using System.Data.SqlClient;
-//using System.Drawing;
-//using System.Text;
+﻿using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.DataAccess.Sql;
+using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using Svg;
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Text;
 
-//namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
-//{
-//    public partial class InventoryReportWithExpireDates : DevExpress.XtraReports.UI.XtraReport
-//    {
-//        private readonly TenantDbContextHelper _tenantDbContextHelper;
-//        public InventoryReportWithExpireDates(string tenantName,
-//            string company_Name,
-//            string company_address,
-//            Image logoImage,
-//            string Company_Name_Ar,
-//            string company_address_arb,
-//            string username,
-//            TenantDbContextHelper tenantDbContextHelper)
-//        {
-//            _tenantDbContextHelper = tenantDbContextHelper;
-//            InitializeComponent();
-//            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
-//            LoadCurrencySymbolAndImage();
+namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
+{
+    public partial class InventoryReportWithExpireDates : DevExpress.XtraReports.UI.XtraReport
+    {
+        private readonly TenantDbContextHelper _tenantDbContextHelper;
+        public InventoryReportWithExpireDates(string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            string username,
+            TenantDbContextHelper tenantDbContextHelper)
+        {
+            _tenantDbContextHelper = tenantDbContextHelper;
+            InitializeComponent();
+            SetReportParameters(tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
+            LoadCurrencySymbolAndImage();
 
 //            try
 //            {
@@ -301,10 +301,15 @@
 //                        float posX = rightEdge - textWidth - iconWidth - 15f - spaceWidth;
 
 
-//                        pictureBox.LocationF = new PointF(posX, posY);
-//                    }
-//                };
-//            }
-//        }
-//    }
-//}
+                        pictureBox.LocationF = new PointF(posX, posY);
+                    }
+                };
+            }
+        }
+
+        private void InventoryReportWithExpireDates_BeforePrint(object sender, CancelEventArgs e)
+        {
+
+        }
+    }
+}
