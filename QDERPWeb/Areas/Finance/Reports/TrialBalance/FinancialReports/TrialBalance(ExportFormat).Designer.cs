@@ -139,7 +139,7 @@
             this.xrLabel29.Multiline = true;
             this.xrLabel29.Name = "xrLabel29";
             this.xrLabel29.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel29.SizeF = new System.Drawing.SizeF(289.4098F, 23F);
+            this.xrLabel29.SizeF = new System.Drawing.SizeF(289.4098F, 13.00002F);
             this.xrLabel29.StylePriority.UseBackColor = false;
             this.xrLabel29.StylePriority.UseFont = false;
             this.xrLabel29.StylePriority.UseForeColor = false;
@@ -163,12 +163,12 @@
             // 
             // xrPageInfo1
             // 
-            this.xrPageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(374.8281F, 3.166368F);
+            this.xrPageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(363.717F, 0F);
             this.xrPageInfo1.Name = "xrPageInfo1";
-            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(108.8888F, 12.33355F);
+            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(108.8888F, 15.49992F);
             this.xrPageInfo1.StyleName = "PageInfo";
             this.xrPageInfo1.StylePriority.UseTextAlignment = false;
-            this.xrPageInfo1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrPageInfo1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrPageInfo1.TextFormatString = "Page No: {0} of {1}";
             // 
             // ReportHeader
