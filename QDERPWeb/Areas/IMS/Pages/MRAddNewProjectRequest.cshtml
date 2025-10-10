@@ -5570,27 +5570,50 @@ $("#btnSave").on("click", function (e) {
 			e.preventDefault();
 			onDeleteButtonClick();
 		});
-		function onDeleteButtonClick(e) {
-			var Mprno= $('#txtRequestNo').dxTextBox("instance").option("value");
-			if (!Mprno) {
-				DevExpress.ui.notify("Please enter or select a Client  Request to delete.", "warning", 3000);
-				return;
-			}
-			$.ajax({
-				url: `/api/AddNewClientRequest/DeletePurchaseRequest?Mprno=${encodeURIComponent(Mprno)}`,
-				type: 'Delete',
-						   success: function (response) {
-					DevExpress.ui.notify(response.message, 'success', 3000);
-					    setTimeout(function(){
-						window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
-                        },1000);
-				},
-				error: function (xhr) {
-					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-					DevExpress.ui.notify(msg, 'error', 3000);
-				}
-			});
+				function onDeleteButtonClick() {
+		var Mprno = $('#txtRequestNo').dxTextBox("instance").option("value");
+
+		if (!Mprno) {
+			DevExpress.ui.notify("Please enter or select a Client Request to delete.", "warning", 3000);
+			return;
 		}
+
+		$.ajax({
+			url: `/api/AddNewClientRequest/DeletePurchaseRequest?Mprno=${encodeURIComponent(Mprno)}`,
+			type: 'DELETE',
+			success: function (response) {
+				DevExpress.ui.notify(response.message, 'success', 4000);
+
+				// 🔹 Attachment Delete after request deletion
+				var module = "inventory";
+				$.ajax({
+					url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(Mprno)}&module=${encodeURIComponent(module)}`,
+					type: "POST",
+					success: function (response) {
+						if (response.success) {
+							DevExpress.ui.notify("Attachments deleted successfully.", "success", 2000);
+						} else {
+							DevExpress.ui.notify("There are no attachments to delete.", "info", 2000);
+						}
+					},
+					error: function (xhr, status, error) {
+						DevExpress.ui.notify("Error while deleting attachments: " + error, "error", 2000);
+					},
+					complete: function () {
+						// ✅ Redirect always runs after attachment deletion finishes
+						setTimeout(function () {
+							window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
+						}, 3500);
+					}
+				});
+			},
+			error: function (xhr) {
+				const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+				DevExpress.ui.notify(msg, 'error', 3000);
+			}
+		});
+	}
+
 	// 		$("#btnSaveAndClose").on("click", function (e) {
 	// 			const $btn = $(this).dxButton("instance");
 	// 				$btn.option("disabled", true);
