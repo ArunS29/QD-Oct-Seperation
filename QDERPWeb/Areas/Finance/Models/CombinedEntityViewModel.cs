@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace QD.ERP.Web.Areas.Finance.Models
 {
@@ -17,6 +17,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string AdditionalFieldFromSecondEntity { get; set; } // Example
         public string SalaryPayableLedgerNo { get; set; }
     }
+    
     //public partial class qry20103GetBankAccountsResult
     //{
     //    public string AccountHead { get; set; }
@@ -145,6 +146,30 @@ namespace QD.ERP.Web.Areas.Finance.Models
     {
         public DateTime? frmDate { get; set; }
         public DateTime? toDate { get; set; }
+    }
+
+    public partial class EquipmentRevenueCostReport
+    {
+        public string PropertyNo { get; set; }
+        public decimal? ClientRegHoursTotal { get; set; }
+        public decimal? ClientRegAmountTotal { get; set; }
+        public decimal? ClientOTHoursTotal { get; set; }
+        public decimal? ClientOTAmountTotal { get; set; }
+        public decimal? ClientAmountTotal { get; set; }
+        public decimal? SuppRegHoursTotal { get; set; }
+        public decimal? SuppRegAmountTotal { get; set; }
+        public decimal? SuppOTHoursTotal { get; set; }
+        public decimal? SuppOTAmountTotal { get; set; }
+        public decimal? SuppAmountTotal { get; set; }
+        public decimal? InvoicedAmountTotal { get; set; }
+        public decimal? RevenueAllocTotal { get; set; }
+        public decimal? ExpensesAllocTotal { get; set; }
+        public byte? PropertyCategory { get; set; }
+        public string PlateNo { get; set; }
+        public string DoorNo { get; set; }
+        public string ChassisNo { get; set; }
+        public string PropertyDescription { get; set; }
+        public string PropertyType { get; set; }
     }
     public class AccountLedger
     {
@@ -1521,7 +1546,15 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public Dictionary<string, object> UpdatedFields { get; set; }
     }
 
-
+    public class PaymentAdviceUpdateDto
+    {
+        public string VoucherNo { get; set; }
+        public string PaymentMode { get; set; }
+        public string InstrumentNo { get; set; }
+        public DateTime? InstrumentDate { get; set; }
+        public string TransferedtoBankName { get; set; }
+        public string TransferedToAccNo { get; set; }
+    }
 
 }
 

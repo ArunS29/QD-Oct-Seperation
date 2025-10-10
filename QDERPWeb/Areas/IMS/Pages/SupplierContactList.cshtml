@@ -445,9 +445,15 @@
             data: JSON.stringify(SupplierContactSlNo), // 👈 plain string
             success: function (response) {
                 DevExpress.ui.notify(response.message, 'success', 3000);
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
+                 if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
+                if (window.parent && typeof window.parent.closeModal === "function") {
+        setTimeout(() => window.parent.closeModal(), 500);
+    }
             },
             error: function (xhr) {
                 const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
@@ -456,6 +462,16 @@
         });
     }
     function Goback() {
-        window.parent.closeModal();
+
+                     // Refresh parent DataGrid with fresh data
+                if (window.parent && typeof window.parent.loadSupplierContactListGrid === "function") {
+                    const SupplierCode = $("#txtSupplierCode").dxTextBox("instance").option("value");
+                    if (SupplierCode) {
+                        window.parent.loadSupplierContactListGrid(SupplierCode);
+                    }
+                }
+                if (window.parent && typeof window.parent.closeModal === "function") {
+                      setTimeout(() => window.parent.closeModal(), 500);
+                 }
     }
 </script>

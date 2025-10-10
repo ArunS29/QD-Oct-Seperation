@@ -366,6 +366,7 @@
 							subColumns.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Delivery Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 							subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
+				            subColumns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
 						});
 						columns.Add().Caption(new JS("formatMessage('No Of Items')"))
 						.Columns(subColumns =>
@@ -931,17 +932,81 @@
 	});
 		}
 	},
-						
-						{
-							text: formatMessage("Create Proforma Invoice"),
-							icon: "plus",
-							onItemClick: function () {
-					const salesOrderNo = e.row.data.SalesOrderNo;
-					checkIfApprovedAndProceed(salesOrderNo, function () {
-						onCreateRFQ(e.row.data);
-					}, "Proforma Invoice");
-				}
-						},
+			{
+		text: formatMessage("Create Proforma Invoice"),
+		icon: "plus",
+		onItemClick: function () {
+			const selectedRowData = e.row?.data;
+			if (!selectedRowData) {
+				DevExpress.ui.notify("⚠ Please select a Sales Order.", "warning", 2000);
+				return;
+			}
+
+			const salesOrderNo = selectedRowData.SalesOrderNo;
+			const clientCode = selectedRowData.ClientCode; // Use client code for ledger check
+			const tenantName = window.tenantName || "defaultTenant";
+
+			// Check if Sales Order is approved
+			if (selectedRowData.IsApproved === false) {
+				DevExpress.ui.notify("❌ Sales Order is not approved. Cannot create Proforma Invoice.", "error", 3000);
+				return;
+			}
+
+			// Check if Proforma Invoice already exists
+			if (selectedRowData.HasProformaInvoice) {
+				DevExpress.ui.notify("⚠ Proforma Invoice already exists for this Sales Order.", "warning", 3000);
+				return;
+			}
+
+			// Check if Client Ledger exists via API
+				$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
+				.done(function (ledgerExists) {
+					if (!ledgerExists) {
+						DevExpress.ui.dialog.alert(
+							"Client Ledger is not created. Please map the client ledger as per finance books.",
+							"Cannot Generate Invoice"
+						);
+						return;
+					}
+
+					// Confirm with user
+					DevExpress.ui.dialog.confirm(
+						"You are about to create a new Proforma Invoice.\nAre you sure you want to continue?",
+						"Confirm creating Proforma Invoice"
+					).done(function (dialogResult) {
+						if (!dialogResult) return;
+
+						// Call backend API to create Proforma Invoice
+						$.ajax({
+							url: "/api/ProformaInvoice/CreateFromSalesOrder",
+							method: "POST",
+							contentType: "application/json",
+							data: JSON.stringify({ salesOrderNo: salesOrderNo, clientCode: clientCode }),
+							success: function (result) {
+								if (result.success) {
+									DevExpress.ui.notify(result.message, "success", 2000);
+
+									// Redirect to Proforma Invoice Edit form
+									window.location.href =
+												`/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(result.invoiceNo)}&IsEditflag=true`;
+								} else {
+									DevExpress.ui.notify(result.message, "warning", 3000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("❌ Error while creating Proforma Invoice.", "error", 3000);
+							}
+						});
+					});
+				})
+				.fail(function () {
+					DevExpress.ui.notify("❌ Failed to check client ledger.", "error", 3000);
+				});
+		}
+	},
+
+
+
 							{
 		text: formatMessage("Create Partial Delivery for this Sales Order"),
 		icon: "plus",

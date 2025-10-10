@@ -46,6 +46,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAccountHeads(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var AccountHeadData = dbContext.Qry20110SundryCreditors.Select(i => new
+                    {
+                        i.AccountId,
+                        i.AccountHead
+                    });
+                    return Json(await DataSourceLoader.LoadAsync(AccountHeadData, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetAccountHead: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetSalesPerson(DataSourceLoadOptions loadOptions)

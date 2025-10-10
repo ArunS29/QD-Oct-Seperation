@@ -623,21 +623,32 @@
 
                             <!-- Branch & Divisions -->
                             <div style="padding: 10px; border-radius: 6px; flex: 1;">
-                                @(Html.DevExtreme().SelectBox()
-                                    .ID("CompanyName")
-                                    .Label(new JS("formatMessage('Company Branch')"))
-                                    .DataSource(d => d.Mvc()
-                                        .Controller("DeliveryNote")
-                                        .LoadAction("GetCompanyBranch")
-                                    )
-                                    .DisplayExpr("CompanyName")
-                                    .ValueExpr("CompanyId")
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    .SearchEnabled(true)
-                                    .SearchExpr("CompanyName")
-                                    .Option("searchMode", "contains")
-                                )
+                                 @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .Label(new JS("formatMessage('Company Branch/Division:')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest")
+                            .LoadAction("GetCompany")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CompanyId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ddGetCompany")
+                            .Width(900)
+                            @*  .ShowClearButton(true)
+                            .AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("CompanyId")
+                            .DisplayExpr("CompanyName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
+                            )
                             </div>
 
                             <!-- Shipment & Discounts -->
@@ -827,25 +838,32 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal2").Value(true).Text(new JS("formatMessage('Show Company Seal')")))
+                                   @(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature2").Value(true).Text(new JS("formatMessage('Show Signature')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead2").Value(true).Text(new JS("formatMessage('Print in Letter Head')")))
+                                       @(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+									<br />        
+                                   @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore2").Text(new JS("formatMessage('Page Break before Terms')")))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter2").Text(new JS("formatMessage('Page Break after Terms')")))
+                                  @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
+									<br />
+									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
+									<input type="hidden" id="hdnPageAfterBefore" name="hdnPageAfterBefore" value="false" />
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("ShowFullSupplierAcceptance").Text(new JS("formatMessage('Print Supplier Acceptance')")))
+                                    @(Html.DevExtreme().CheckBox().ID("ShowFullSupplierAcceptance").Value(false).Text(new JS("formatMessage('Show Full Supplier Acceptance')")))
+                                    <input type="hidden" id="hdnShowFullSupplierAcceptance" name="hdnShowFullSupplierAcceptance" value="false" />
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("ShowSignatoryPositionOnly").Text(new JS("formatMessage('Show Signatory Position Only')")))
+                                   @(Html.DevExtreme().CheckBox().ID("ShowSignatoryPositionOnly").Value(false).Text(new JS("formatMessage('Show Signatory Position Only')")))
+                                     <input type="hidden" id="hdnShowSignatoryPositionOnly" name="hdnShowSignatoryPositionOnly" value="false" />
                                 </td>
                             </tr>
                         </tbody>
@@ -1035,6 +1053,41 @@
 					})
 					)
 		}
+        @using (Html.DevExtreme().NamedTemplate("GetCompanyContentTemplate"))
+         {
+           @(Html.DevExtreme().DataGrid()
+                        .ID("GetCompany-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetCompany")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("CompanyId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged6")
+                        .OnInitialized("dataGridInitialized6")
+                        .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(false))//
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().Caption(new JS("formatMessage('Code')")).DataField("CompanyId").Width(80);
+                            columns.Add().Caption(new JS("formatMessage('Name')")).DataField("CompanyName");
+
+
+
+                        })
+                        )
+}
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1145,6 +1198,76 @@
 		</div>
 
 <script>
+    function dataGridInitialized6(e) {
+		dataGrid = e.component;
+	}
+    	function dataGridSelectionChanged6(e) {
+		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+		const ddbInstance = $("#ddGetCompany").dxDropDownBox("instance");
+
+		if (selectedKey) {
+			ddbInstance.option("value", selectedKey);
+			if (ddbInstance.option("opened")) {
+				ddbInstance.close();
+			}
+		}
+	}
+      $(function() {
+        $("#pageBreakBefore").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageBreakBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+  
+	  $(function() {
+        $("#pageBreakAfter").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageAfterBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  
+	  $(function() {
+        $("#ShowSignatoryPositionOnly").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowSignatoryPositionOnly").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  
+   
+	  $(function() {
+        $("#ShowFullSupplierAcceptance").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnShowFullSupplierAcceptance").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	 
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
     function onSelectBoxOpened(e) {
     const ds = e.component.getDataSource();
     if (ds) {
@@ -1164,9 +1287,7 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     let Pono = urlParams.get('code');
                     Pono = Pono ? Pono.split("?")[0] : null;
-
                     getSalesPersonByUser();
-                    getDefaultCompany();
 
                     if (Pono) {
                         // If Pono is present, load client details
@@ -1252,7 +1373,7 @@
                                     setDxFieldValue("ShipmentHandlingMethod", response.Master.AdditionsAmount ?? "");
                                     setDxFieldValue("DiscountMethod", response.Master.DeductionsAmount ?? "");
                                     setDxFieldValue("ddGetTax", response.Master.VatapplicableRate ?? "");
-                                    setDxFieldValue("CompanyName", response.Master.CompanyBranch ?? "");
+                                    setDxFieldValue("ddGetCompany", response.Master.CompanyBranch ?? "");
                                     setDxFieldValue("preparedBy2", response.Master.SubmittedBy ?? "");
                                     $("#Discount").dxTextBox("instance")?.option("value", response.Master.DiscountsText ?? "");
                                     $("#Subject").dxTextArea("instance")?.option("value", response.Master.SubjectTitle ?? "");
@@ -1318,30 +1439,7 @@
 					}
 				});
 			}
-            function setDxFieldValue(CompanyName, value) {
-                    const editor = $(`#${CompanyName}`).dxSelectBox("instance");
-                    if (editor) {
-                        editor.option("value", value);
-                    }
-                }
-	       $(function () { // on document ready
-                getDefaultCompany();
-            });
-
-            function getDefaultCompany() {
-              $.ajax({
-                    type: "GET",
-                    url: "/api/AddNewClientRequest/GetDefaultCompany",
-                    success: function (data) {
-                        if (data && data.CompanyId) {
-                            setDxFieldValue("CompanyName", data.CompanyId);
-                        }
-                    },
-                    error: function (xhr) {
-                        console.error("Company fetch failed:", xhr.responseText);
-                    }
-                });
-            }
+	      
 
     $(function () {
     $("#PurchaseOrder").dxTextBox({
@@ -2198,7 +2296,7 @@ $("#btnSave").on("click", function () {
         AdditionsAmount: $("#ShipmentHandlingMethod").dxNumberBox("instance")?.option("value"),
         DiscountsText: $("#Discount").dxTextBox("instance")?.option("value"),
         DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance")?.option("value"),
-        CompanyBranch: $("#CompanyName").dxSelectBox("instance")?.option("value"),
+        CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance")?.option("value"),
         VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance")?.option("value"),
         SubmittedBy: $("#preparedBy2").dxSelectBox("instance")?.option("value"),
         VerifiedBy: $("#verifiedBy2").dxSelectBox("instance")?.option("value"),
@@ -2295,7 +2393,7 @@ $("#btnSave").on("click", function () {
         DiscountsText: $("#Discount").dxTextBox("instance")?.option("value"),
         DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance")?.option("value"),
 
-        CompanyBranch: $("#CompanyName").dxSelectBox("instance")?.option("value"),
+        CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance")?.option("value"),
         VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance")?.option("value"),
 
         SubmittedBy: $("#preparedBy2").dxSelectBox("instance")?.option("value"),
@@ -2412,7 +2510,7 @@ function loadPurchaseOrder(poNo) {
                 setDxFieldValue("ShipmentHandlingMethod", data.Master.AdditionsAmount ?? "");
                 setDxFieldValue("DiscountMethod", data.Master.DeductionsAmount ?? "");
                 setDxFieldValue("ddGetTax", data.Master.VatapplicableRate ?? "");
-                setDxFieldValue("CompanyName", data.Master.CompanyBranch ?? "");
+                setDxFieldValue("ddGetCompany", data.Master.CompanyBranch ?? "");
                 setDxFieldValue("preparedBy2", data.Master.SubmittedBy ?? "");
                 // $("#ShipmentHandlingMethod").dxNumberBox("instance")?.option("value", data.Master.AdditionsAmount ?? 0);
                 // $("#DiscountMethod").dxNumberBox("instance")?.option("value", data.Master.DeductionsAmount ?? 0);
@@ -2502,7 +2600,7 @@ function makeAllWidgetsReadOnly() {
             { id: "#DeliveryPeriod", type: "dxSelectBox" },
             { id: "#ShippingAddress", type: "dxTextArea" },
             { id: "#BillingAddress", type: "dxTextArea" },
-            { id: "#CompanyName", type: "dxSelectBox" },
+            { id: "#ddGetCompany", type: "dxDropDownBox" },
             { id: "#RequestType", type: "dxSelectBox" },
             { id: "#POCategory", type: "dxSelectBox" },
             { id: "#InventoryGroup", type: "dxSelectBox" },

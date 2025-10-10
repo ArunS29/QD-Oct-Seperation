@@ -1442,6 +1442,15 @@
 																.ShowSpinButtons(true)
 																.Width("90%")
 																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+															 .OnInput(@"
+                                                                function(e) {
+                                                                    let value = e.event.target.value;
+                                                                    // Allow only digits and one decimal point
+                                                                    if (!/^\d*\.?\d*$/.test(value)) {
+                                                                        e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                    }
+                                                                }
+                                                            ")
 								) <!-- Fixed pixel size -->
 
 							</td>
@@ -1552,6 +1561,15 @@
 																.Max(99999999)
 																.Width("90%")
 																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+                                                           	    .OnInput(@"
+                                                                function(e) {
+                                                                    let value = e.event.target.value;
+                                                                    // Allow only digits and one decimal point
+                                                                    if (!/^\d*\.?\d*$/.test(value)) {
+                                                                        e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                    }
+                                                                }
+                                                            ")
 
 								)
 											  							</td>
@@ -1615,6 +1633,15 @@
 																.ShowSpinButtons(true)
 																.Value(1)
 																.Width("100%")
+																.OnInput(@"
+                                                                      function(e) {
+                                                                          let value = e.event.target.value;
+                                                                          // Allow only digits and one decimal point
+                                                                          if (!/^\d*\.?\d*$/.test(value)) {
+                                                                              e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                          }
+                                                                      }
+                                                                  ")
 																)
 							</td>
 							<td>
@@ -1633,6 +1660,15 @@
 																.Width("90%")
 																.Max(99999999)
 															 	.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+																  .OnInput(@"
+                                                                  function(e) {
+                                                                      let value = e.event.target.value;
+                                                                      // Allow only digits and one decimal point
+                                                                      if (!/^\d*\.?\d*$/.test(value)) {
+                                                                          e.event.target.value = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+                                                                      }
+                                                                  }
+                                                              ")
 
 								)
 											  							</td>
@@ -2685,38 +2721,7 @@
 											})
 								)
 		}
-		@* 	@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("clientname")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetVATInvoiceMaster")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("BuyerOtherIdtype")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(false)
-					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.HeaderFilter(p => p.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code");
-						columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type");
-					})
-					.OnSelectionChanged("dataGridSelectionChanged")
-					.OnInitialized("dataGridInitialized")
-					)
-		} *@
+	
 		@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -4146,25 +4151,22 @@
 				//keyExpr: "SNo",
 
 				columns: [
-							  {
+					{
 
-									dataField: "InvoiceChildSLNo",
-									caption: "InvoiceChildSLNo",
-									width: 100,
-									allowEditing: false, // Prevent manual editing
-									visible: false // Hide the column
-								},
+				         dataField: "InvoiceChildSLNo",
+				         caption: "InvoiceChildSLNo",
+				         width: 100,
+				         allowEditing: false, // Prevent manual editing
+				         visible: false // Hide the column
+					},
 
 					{
 
 						dataField: "SNo",
-
 						caption: "#",
-
-							cssClass: "center-header",
-								 sortOrder: "asc", // auto-sort
+				     	cssClass: "center-header",
+					    sortOrder: "asc", // auto-sort
 						width: 100,
-
 						allowEditing: false // Prevent manual editing
 
 					},
@@ -4172,26 +4174,19 @@
 					{
 
 						dataField: "ItemCode",
-
 						caption: formatMessage('Item Code'),
-
 						cssClass: "center-header",
-
 						width: 200,
-							allowEditing: false
+						allowEditing: false
 
 					},
 
 					{
 
-							dataField: "DetailedDescription",
-
+						dataField: "DetailedDescription",
 						caption: formatMessage('Description'),
-
 						cssClass: "center-header",
-
 						width: 550,
-
 						editCellTemplate: function (cellElement, cellInfo) {
 	let $container = $("<div>").css({
 		display: "flex",
@@ -4221,9 +4216,7 @@
 					totalCount: response.totalCount
 				};
 			});
-			//}
-
-
+			//
 		},
 		byKey: function (key) {
 		   // return $.getJSON(`/api/VATModule/GetDropdownItemByCode?code=${encodeURIComponent(key)}`);
@@ -4862,6 +4855,66 @@
 
 				showBorders: true,
 
+				onEditorPreparing: function (e) {
+		if (e.parentType === "dataRow" && ["QuantityInvoiced", "UnitRate", "Discount"].includes(e.dataField)) {
+			e.editorOptions.onValueChanged = function (args) {
+				    debugger;
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					let rowIndex = e.row.rowIndex;
+					rowIx=rowIndex;
+						
+					let newValue = args.value;
+					//let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityInvoiced')}`) || 0;
+     let qty = (e.dataField === "QuantityInvoiced")
+         ? newValue
+         : (grid.cellValue(rowIndex, "QuantityInvoiced") ?? 0);
+
+	                if (qty <= 0) {
+
+					DevExpress.ui.dialog.alert(
+						"Quantity cannot be zero or negative.",
+						"Quantity Error"
+						)
+                 	}
+					else
+					{
+					    let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, 'UnitRate') || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, 'Discount') || 0;
+			            let TotalAmtBeforeDiscount = e.dataField === "CalcLineAmountBeforeDiscount" ? newValue : grid.cellValue(rowIndex,'CalcLineAmountBeforeDiscount') || 0;
+
+						// VAT rate handling
+						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VAT%')}`) || "0%";
+						let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+
+						// Calculate amount
+						let amount = qty * unitPrice;
+						let discountedAmount = amount - discount;
+
+						// Ensure discountedAmount doesn't go negative
+						if (discountedAmount < 0) discountedAmount = 0;
+
+						let vatValue = discountedAmount * vatRate;
+						let totalValue = discountedAmount + vatValue;
+
+						grid.cellValue(rowIndex, `${formatMessage('VAT')}`, formatAmount(vatValue));
+                        grid.cellValue(rowIndex, `${formatMessage('Total')}`, formatAmount(totalValue));
+                        grid.cellValue(rowIndex, `${formatMessage('Unit Price')}`, formatAmount(unitPrice));
+                      //  grid.cellValue(rowIndex, `${formatMessage('Total Before Discount')}`, formatAmount(TotalAmtBeforeDiscount));
+                        grid.cellValue(rowIndex,`${formatMessage('Amount')}`, formatAmount(amount));
+                        grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
+                        grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
+                        grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
+								// Commit changes to underlying store
+                        grid.saveEditData();
+							//applyDiscount(formatAmount(amount));
+							currentAmount = formatAmount(amount);
+
+							updateInvoiceChildren();
+					}
+			};
+		}
+	}
+
 			}).dxDataGrid("instance");
 
 		});
@@ -5326,14 +5379,14 @@ if (popover.option("visible")) {
 
 			console.log("InvoiceMaster:", InvoiceMaster);
 			console.log("InvoiceChildren:", updatedDataSource);
-
+				getDocumentCount();
 			$.ajax({
 				type: "POST",
 				url: `/api/VoucherMaster/UpdateInvoiceMasterDetails`,
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function () {
-
+					getDocumentCount();
 				}
 
 			});
@@ -5830,21 +5883,22 @@ $(function () {
 									  dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].SellerOtherIdtype]});
 
 										  // Assuming these are standard inputs
-			$("#OurStreetName").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreet);
-			$("#OurStreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreetAr);
-			$("#OurAdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreet);
-			$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreetAr);
-			$("#OurBuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerBuildingNumber);
-			$("#OurClientCity").dxTextBox("instance").option("value", selectedRowData[0].SellerCity);
-				$("#OurClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerCityAr);
-				$("#OurAdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalNumber);
-				$("#OurProvince").dxTextBox("instance").option("value", selectedRowData[0].SellerProvince);
-				$("#OurProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerProvinceAr);
-				$("#OurPostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
-				$("#OurDistrict").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
-				$("#OurDistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
+			                          $("#OurStreetName").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreet);
+			                          $("#OurStreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreetAr);
+			                          $("#OurAdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreet);
+			                          $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreetAr);
+			                          $("#OurBuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerBuildingNumber);
+			                          $("#OurClientCity").dxTextBox("instance").option("value", selectedRowData[0].SellerCity);
+				                      $("#OurClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerCityAr);
+				                      $("#OurAdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalNumber);
+				                      $("#OurProvince").dxTextBox("instance").option("value", selectedRowData[0].SellerProvince);
+				                      $("#OurProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerProvinceAr);
+				                      $("#OurPostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
+				                      $("#OurDistrict").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
+				                      $("#OurDistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
 
-				} else {
+				} 
+				else {
 
 					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
 
@@ -6170,9 +6224,10 @@ $(function () {
                         grid.cellValue(rowIndex, `${formatMessage('Discount')}`, formatAmount(discount));
                         grid.cellValue(rowIndex, `${formatMessage('Qty')}`, formatAmount(qty));
                         grid.cellValue(rowIndex,`${formatMessage('VAT%')}`, vatRateStr); // % can remain as string
-
+						grid.saveEditData();
 				  // Store value for use in popover
 				   currentAmount = formatAmount(amount);
+				   updateInvoiceChildren();
 				   }
 
 				};
@@ -6233,10 +6288,10 @@ $(function () {
 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
 				 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-				BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
-			BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
-			BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
-			BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+			    BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+			    BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+			    BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+			    BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
 				BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
 				BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
 				BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
@@ -8326,32 +8381,37 @@ SaveAndClosebtn.option("disabled", false);
 
 
 
-					function btnPostToLedgerdisableEditing() {
-					// Disable all input fields and buttons except for specific ones
-					$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
+				
+				function btnPostToLedgerdisableEditing() { 
+    // Disable all input fields and buttons except for specific ones
+    $('input, select, textarea').prop('disabled', true);  
 
-						const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack','btnPostTag', 'btnPrint1'];
+    const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack', 'btnPrint1'];
 
-					// Disable all dxButton and dxDropDownButton controls
-					$('.dx-button, .dx-dropdownbutton').each(function () {
-						const id = $(this).attr('id');
-						if (id && !allowedButtons.includes(id)) {
-							// Disable dxButton and dxDropDownButton widgets except for allowed ones
-							if ($(this).data('dxButton')) {
-								$(this).dxButton('option', 'disabled', true);
-							} else if ($(this).data('dxDropDownButton')) {
-								$(this).dxDropDownButton('option', 'disabled', true);
-							}
-						}
-					});
+    // Disable all dxButton and dxDropDownButton controls
+    $('.dx-button, .dx-dropdownbutton').each(function () {
+        const id = $(this).attr('id');
+        if (id && !allowedButtons.includes(id)) {
+            if ($(this).data('dxButton')) {
+                $(this).dxButton('option', 'disabled', true);
+            } else if ($(this).data('dxDropDownButton')) {
+                $(this).dxDropDownButton('option', 'disabled', true);
+            }
+        }
+    });
 
-					// Disable DataGrid Editing and Deleting
-					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-					if (dataGrid) {
-						dataGrid.option("editing.allowUpdating", false);
-						dataGrid.option("editing.allowDeleting", false);
-					}
-				}
+    // Disable DataGrid Editing and Deleting
+    var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+    if (dataGrid) {
+        dataGrid.option("editing.allowUpdating", false);
+        dataGrid.option("editing.allowDeleting", false);
+    }
+
+    // Disable custom context menu
+    $("#contextMenu").hide();  // Hide immediately
+    $("#contextMenu").addClass("disabled"); // Optional marker class
+    $(document).off("contextmenu", ".dx-datagrid-rowsview .dx-row"); // Remove right-click binding
+}
 
 
 					function btnVerifydisableEditing() {
@@ -8696,43 +8756,43 @@ $(function () {
         $("#b2cQuotationDeliveryDetails").text(formatMessage("Quotation / Delivery Details"));
     });
 
+	
 
 	// Attachment Count
-//1. Get Document Count from Grid Load in Ledger Documents
-function setAttachCount(count) {
-	updateAttachButtonCount("#btnAttach", count);
-}
-//2. Get Document Count
-async function getDocumentCount() {
-	const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-	const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-	var menuType = "vat";
-	var formType ="Sales Invoice B2C";
-	const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
-	const invoiceData = await invoiceRes.json();
- 
-	let folderId2 = "";
-	if (invoiceData) {
-		folderId2 = [
-			invoiceData.SalesOrderNo,
-			invoiceData.QuotationNo,
-			invoiceData.DeliveryNoteNos,
-			invoiceData.ProformaInvoiceNo
-		]
-		.filter(Boolean)   // remove null/empty
-		.join(",");
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+		const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+		const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+		var menuType = "vat";
+		var formType ="Sales Invoice B2C";
+		const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+		const invoiceData = await invoiceRes.json();
+
+		let folderId2 = "";
+		if (invoiceData) {
+			folderId2 = [
+				invoiceData.SalesOrderNo,
+				invoiceData.QuotationNo,
+				invoiceData.DeliveryNoteNos,
+				invoiceData.ProformaInvoiceNo
+			]
+			.filter(Boolean)   // remove null/empty
+			.join(",");
+		}
+					
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
 	}
 
- 
-	const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
-	const docs = await res.json();
-	const count = docs.length;
- 
-	updateAttachButtonCount("#btnAttach", count);
-}
-
-
-function getExemptionCode(rowIndex, callback) { 
+	function getExemptionCode(rowIndex, callback) { 
   const grid = $("#B2BdataGrid").dxDataGrid("instance");
   const TaxSlabCode = grid.cellValue(rowIndex, "TaxSlabCode") || 0;
 

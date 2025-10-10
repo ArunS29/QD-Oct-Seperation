@@ -1665,6 +1665,206 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
             return Json(result);
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteChildById(int childId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var child = await dbContext.Tbl60202salesOrderChildren
+                    .FirstOrDefaultAsync(x => x.SalesOrderChildId == childId);
+
+                if (child == null)
+                {
+                    return NotFound(new { success = false, message = "Child record not found." });
+                }
+
+                dbContext.Tbl60202salesOrderChildren.Remove(child);
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                    actionDetail: $"Deleted Child By Id: {childId}",
+                    documentNo: $"{childId}"
+                );
+
+                return Ok(new { success = true, message = "Child row deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error in DeleteChildById for ChildId={ChildId}", childId);
+                return StatusCode(500, new { success = false, message = $"Error: {ex.Message}" });
+            }
+
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteMultipleChild([FromBody] long[] childIds)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+            try
+            {
+                var children = dbContext.Tbl60202salesOrderChildren
+                                .Where(x => childIds.Contains(x.SalesOrderChildId)).ToList();
+
+                if (!children.Any())
+                    return NotFound(new { success = false, message = "No child records found." });
+
+                dbContext.Tbl60202salesOrderChildren.RemoveRange(children);
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                    actionDetail: $"Deleted Child IDs: {string.Join(",", childIds)}",
+                    documentNo: $"{string.Join(",", childIds)}"
+                );
+
+                return Ok(new { success = true, message = $"{children.Count} row(s) deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in DeleteMultipleChild for ChildId={ChildId}", childIds);
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+
+        //Create Performa Invoice
+
+        public class CreateProformaInvoiceRequest
+        {
+            public string SalesOrderNo { get; set; }
+            public string ClientCode { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateFromSalesOrder([FromBody] CreateProformaInvoiceRequest request)
+        {
+            if (request == null || string.IsNullOrWhiteSpace(request.SalesOrderNo))
+                return BadRequest(new { success = false, message = "Sales Order No is required." });
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+                // 1️⃣ Check if Sales Order exists
+                var salesOrder = await dbContext.Tbl60201salesOrderMasters
+                    .FirstOrDefaultAsync(s => s.SalesOrderNo == request.SalesOrderNo);
+
+                if (salesOrder == null)
+                    return NotFound(new { success = false, message = "Sales Order not found." });
+
+                // Optional: check if approved
+                if ((bool)!salesOrder.IsApproved)
+                    return BadRequest(new { success = false, message = "Sales Order is not approved." });
+
+                // 2️⃣ Check if Proforma Invoice already exists
+                bool proformaExists = dbContext.Tbl20181ProformaInvoiceMasters
+                    .Any(p => p.SalesOrderNo == request.SalesOrderNo);
+
+                if (proformaExists)
+                    return BadRequest(new { success = false, message = "Proforma Invoice already exists for this Sales Order." });
+
+                // 3️⃣ Generate new Proforma Invoice No
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyId == defaultCompanyByte);
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                string invoiceAbbrv = company.InvoiceAbbrv;
+                int yearDigits = company.InvoiceYearDigits ?? 0;
+                bool isResetByYear = company.IsResetInvoiceInYear ?? false;
+
+                string newProformaInvoiceNo = GetNewProformaInvoiceNo(invoiceAbbrv, yearDigits, DateTime.Now, isResetByYear, dbContext);
+
+                // 4️⃣ Get Due Date
+                int noOfDaysDue = GetDueDateOfInvoice(request.ClientCode, dbContext); // implement as per your logic
+                DateTime dueDate = DateTime.Today.AddDays(noOfDaysDue);
+
+                // 5️⃣ AddedBy
+                string addedBy = HttpContext.Session.GetString("UserName");
+
+                // 6️⃣ Call SP to insert Master and Child
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_05InsertToProformaFromSalesOrder @ProformaInvoiceNo={0}, @SalesOrderNo={1}, @ClientLedgerNo={2}, @DueDate={3}, @AddedBy={4}",
+                    newProformaInvoiceNo, request.SalesOrderNo, request.ClientCode, dueDate, addedBy
+                );
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Proforma Invoice created successfully.",
+                    invoiceNo = newProformaInvoiceNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        // Helper: Generate Proforma Invoice No
+        private string GetNewProformaInvoiceNo(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+        {
+            try
+            {
+                int maxNumber = 0;
+                var query = dbContext.Tbl20181ProformaInvoiceMasters.AsQueryable();
+
+                if (isResetByYear)
+                {
+                    query = query.Where(d => d.ProformaInvoiceDate.HasValue && d.ProformaInvoiceDate.Value.Year == invoiceDate.Year);
+                }
+
+                maxNumber = query
+                    .Select(d => d.ProformaInvoiceNo)
+                    .Where(no => !string.IsNullOrEmpty(no) && no.Length >= 6)
+                    .AsEnumerable()
+                    .Select(no => int.TryParse(no.Substring(no.Length - 6), out int number) ? number : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
+
+                maxNumber += 1;
+
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-{maxNumber.ToString().PadLeft(6, '0')}";
+            }
+            catch
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                else
+                    strYear = "";
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "PRO" : invoiceAbbr)}-{strYear}-000001";
+            }
+        }
+
+        // Dummy placeholder: implement your due date logic
+        private int GetDueDateOfInvoice(string clientCode, ERPMasterWtDataContext dbContext)
+        {
+            // Example: fetch from ledger or default 30
+            return 30;
+        }
     }
 
 

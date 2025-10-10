@@ -835,7 +835,7 @@ VALUES
 
 (37, 'ERP Module Access', 'Finance', 'CAMP Management Home Page', 1, 1, NULL, 'CAMP'),  
 
-(38, 'ERP Module Access', 'Finance', 'IMS Home Page', 1, 1, NULL, 'IMS'),  
+(38, 'ERP Module Access', 'IMS', 'IMS Home Page', 1, 1, NULL, 'IMS'),  
 
 (39, 'ERP Module Access', 'Finance', 'HR Home Page', 1, 1, NULL, 'HR'),  
 
@@ -1035,33 +1035,33 @@ INSERT INTO [Aicon].[tbl901UserAccessMasterWeb] (
 
 VALUES  
 
-(212, 'Inventory Menu', 'Stock Inventory', 'Stock Inventory', 1, 1, NULL, 'Inventory'),
+(212, 'Inventory Menu', 'Stock Inventory', 'Stock Inventory', 1, 1, NULL, 'IMS'),
 
-(213, 'Inventory Menu', 'Material Requests', 'Material Requests', 1, 1, NULL, 'Inventory'),
+(213, 'Inventory Menu', 'Material Requests', 'Material Requests', 1, 1, NULL, 'IMS'),
 
-(214, 'Inventory Menu', 'Quotations To Clients', 'Quotations To Clients', 1, 1, NULL, 'Inventory'),
+(214, 'Inventory Menu', 'Quotations To Clients', 'Quotations To Clients', 1, 1, NULL, 'IMS'),
 
-(215, 'Inventory Menu', 'Sales Orders', 'Sales Orders', 1, 1, NULL, 'Inventory'),
+(215, 'Inventory Menu', 'Sales Orders', 'Sales Orders', 1, 1, NULL, 'IMS'),
 
-(216, 'Inventory Menu', 'Delivery Note', 'Delivery Note', 1, 1, NULL, 'Inventory'),
+(216, 'Inventory Menu', 'Delivery Note', 'Delivery Note', 1, 1, NULL, 'IMS'),
 
-(217, 'Inventory Menu', 'RFQ Database', 'RFQ Database', 1, 1, NULL, 'Inventory'),
+(217, 'Inventory Menu', 'RFQ Database', 'RFQ Database', 1, 1, NULL, 'IMS'),
 
-(218, 'Inventory Menu', 'Quotation Analysis', 'Quotation Analysis', 1, 1, NULL, 'Inventory'),
+(218, 'Inventory Menu', 'Quotation Analysis', 'Quotation Analysis', 1, 1, NULL, 'IMS'),
 
-(219, 'Inventory Menu', 'Purchase Orders', 'Purchase Orders', 1, 1, NULL, 'Inventory'),
+(219, 'Inventory Menu', 'Purchase Orders', 'Purchase Orders', 1, 1, NULL, 'IMS'),
 
-(220, 'Inventory Menu', 'Material Receipts', 'Material Receipts', 1, 1, NULL, 'Inventory'),
+(220, 'Inventory Menu', 'Material Receipts', 'Material Receipts', 1, 1, NULL, 'IMS'),
 
-(221, 'Inventory Menu', 'Client Leads', 'Client Leads', 1, 1, NULL, 'Inventory'),
+(221, 'Inventory Menu', 'Client Leads', 'Client Leads', 1, 1, NULL, 'IMS'),
 
-(222, 'Inventory Menu', 'Suppliers', 'Suppliers', 1, 1, NULL, 'Inventory'),
+(222, 'Inventory Menu', 'Suppliers', 'Suppliers', 1, 1, NULL, 'IMS'),
 
-(223, 'Inventory Menu', 'Job Orders', 'Job Orders', 1, 1, NULL, 'Inventory'),
+(223, 'Inventory Menu', 'Job Orders', 'Job Orders', 1, 1, NULL, 'IMS'),
 
-(224, 'Inventory Menu', 'Stock Adjustments', 'Stock Adjustments', 1, 1, NULL, 'Inventory'),
+(224, 'Inventory Menu', 'Stock Adjustments', 'Stock Adjustments', 1, 1, NULL, 'IMS'),
 
-(225, 'Inventory Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'Inventory'),
+(225, 'Inventory Menu', 'My Dashboard', 'My Dashboard', 1, 1, NULL, 'IMS'),
 
 (226, 'Equipment Rental Menu', 'frm401Dashboard', 'Equipments Dashboard', 1, 1, NULL, 'Equipment Rental'),
 
@@ -4557,6 +4557,17 @@ VALUES
     (1088,'Equipment PO Main view Screen', 'EQPurchaseOrder_btnNewPurchaseOrder','Print', 1, 1,null, 'ERM',null,null,null,null),
     (1089,'Equipment PO Main view Screen', 'EQPurchaseOrder_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
 
+Service Maintenance
+===================
+INSERT INTO dbo.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1099,'Equipment Service Edit','ServiceMaintenanceEdit_btnSave','Save',1,1,null,'ERM',null,null,null,null), 
+    (1100,'Equipment Service Edit','ServiceMaintenanceEdit_btnSaveAndClose','Save and Close',1,1,null,'ERM',null,null,null,null), 
+    (1101,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnDelete','Delete',1,1,null,'ERM',null,null,null,null), 
+    (1102,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null), 
+    (1103,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnPrint4','Print', 1, 1,null, 'ERM',null,null,null,null), 
+    (1104,'Equipment Service Edit', 'ServiceMaintenanceEdit_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
 
     -- tbl40126_PropertyPOMaster
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
@@ -4710,6 +4721,38 @@ BEGIN
     ADD PurchaseRequestStatusID tinyint NULL;
 END
 GO
+
+Service Maintenance
+===================
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'CurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD CurrencyId INT NOT NULL DEFAULT 1;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'CurrencyRate')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+               WHERE TABLE_SCHEMA = 'Aicon' 
+                 AND TABLE_NAME = 'tbl40132_PropertyServiceMaster' 
+                 AND COLUMN_NAME = 'BaseCurrencyId')
+BEGIN
+    ALTER TABLE Aicon.tbl40132_PropertyServiceMaster 
+    ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+END
+GO 
 
 Equipment Qutation New Column and change data type
 ---------------------------------------------------
@@ -4907,4 +4950,21 @@ ClientRefNo, PurposeOfRequest, Priority, ExpectedDate, Remarks, ProjectMasterCod
 FROM   Aicon.qry406_01PropertyRequestView
 GO
 
+
+//If any Issues in UserAccess script in IMS use this 
+UPDATE tbl901UserAccessMasterWeb
+SET itemName = 'IMS'
+WHERE SlNo = 38;
+
+UPDATE tbl901UserAccessMasterWeb
+SET module = 'IMS'
+WHERE Module = 'Inventory';
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
+    (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+    (1090,'VAT Module SalesRegister Main View Screen','frm20162VATInvoiceMasterView_ViewInvoice','View Invoice',1,1,null,'VAT',null,null,null,null), 
+    (1091,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CancelInvoice','Cancel Invoice',1, 1,null,'VAT',null,null,null,null), 
+    (1092,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CheckOldVATInvoice','Check Old VATInvoice', 1, 1,null, 'VAT',null,null,null,null), 
+    (1093,'VAT Module SalesRegister Main View Screen', 'frm20162VATInvoiceMasterView_CloneEInvoice','Clone E Invoice', 1, 1,null, 'VAT',null,null,null,null)
 

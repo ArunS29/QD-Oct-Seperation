@@ -3,149 +3,10 @@
 @{
 }
 
-<style>
-	.overlay {
-		display: none;
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		z-index: 1000;
-	}
-
-	.overlay-content {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		height: 80%;
-		background: #fff;
-		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-	#overlay-frame {
-		width: 100%;
-		height: 100%;
-	}
-
-	
-
-	.close-btn {
-		position: absolute;
-		top: 10px;
-		right: 20px;
-		font-size: 30px;
-		cursor: pointer;
-	}
-
-	.custom-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.filter-btn {
-		background-color: #007bff;
-		color: white;
-		border: none;
-		padding: 6px 12px;
-		border-radius: 5px;
-		cursor: pointer;
-		font-family: 'Inter', sans-serif;
-	}
-
-		.filter-btn:hover {
-			background-color: #0056b3;
-		}
-
-	.dx-texteditor {
-		background-color: transparent !important;
-		border: 1px solid #d6e4f0 !important;
-		border-radius: 4px !important;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-		font-size: 14px !important;
-		transition: all 0.2s ease-in-out !important;
-		height: 39px !important;
-	}
-
-		.dx-texteditor:hover,
-		.dx-texteditor.dx-state-hover,
-		.dx-button:hover {
-			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
-			border-color: #86b7fe !important;
-		}
-
-		.dx-texteditor.dx-state-focused {
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-			border-color: #508ae1 !important;
-		}
-
-	.no-border-input {
-		border: none !important;
-		outline: none !important;
-		box-shadow: none !important;
-		background: transparent !important;
-		font-weight: bold;
-		font-size: 16px;
-		color: black;
-		pointer-events: none;
-	}
-
-	.context-menuInvoice {
-		position: absolute;
-		background: #fff;
-		border-radius: 8px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-		width: 200px;
-		display: none;
-		flex-direction: column;
-		padding: 5px 0;
-		z-index: 1000;
-	}
-
-	.context-menu-itemInvoice {
-		display: flex;
-		align-items: center;
-		padding: 10px 15px;
-		font-size: 14px;
-		cursor: pointer;
-		transition: background 0.2s ease-in-out;
-		color: #333;
-	}
-
-		.context-menu-itemInvoice i {
-			margin-right: 10px;
-			font-size: 16px;
-			color: #007bff;
-		}
-
-		.context-menu-itemInvoice:hover {
-			background: #f0f0f0;
-		}
-
-		.context-menu-itemInvoice:not(:last-child) {
-			border-bottom: 1px solid #e0e0e0;
-		}
-
-	.ledgerResult{
-		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
-		width: 100%;
-	}
-
-	.mainContainer {
-		width: 100%;
-		overflow: hidden;
-	}
-</style>
-
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="RequestforQuotationList" class="no-border-input"></div>
+		<div id="RequestforQuotationList" class="no-border-input">Details Cost summary</div>
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
@@ -230,7 +91,7 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-		columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Details Cost summary')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.PropertyNo).Caption(new JS("formatMessage('Property No')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				subColumns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -323,13 +184,16 @@
 			if ($("#PropertyDescription").data("dxTextBox")) {
 				$("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
 			}
+			 if (PropertyNo) {
+				ddBtnShowRecords_click('range');
+			}
 		}, 300);
 	});
 
 		 $(function () {
 		ddBtnShowRecords_click('range');
 	$("#RequestforQuotationList").dxTextBox({
-	text: formatMessage("RFQ with Item Details"),
+	text: formatMessage("Details Cost summary"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
@@ -393,30 +257,40 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
-				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+			frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			FromDate = frmDate;
+			ToDate = toDate;
+
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
+
+
+		var propertyNoBox = $("#PropertyNo").dxTextBox("instance");
+		var propertyNo = propertyNoBox ? propertyNoBox.option("value") : "";
+
+		if (!propertyNo) {
+			DevExpress.ui.notify("Please enter a Property No.", "warning", 2000);
+			return;
+		}
+
 
 				$.ajax({
-			url: '/api/AddNewProperty/GetCostDetails',
-		type: 'GET',
-		data: {
-			fromDate: frmDate,
-			toDate: toDate
-		},
-		success: function (data) {
-			console.log("Returned Data: ", data); // debug
-			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		},
-		error: function (xhr) {
-			console.log("AJAX Error", xhr.responseText); // debug
-			DevExpress.ui.notify("Error while loading data", "error", 2000);
-		}
-	});
-
-
-
-	}
-
-
-
+				url: '/api/AddNewProperty/GetCostDetails',
+				type: 'GET',
+				data: {
+					fromDate: frmDate,
+					toDate: toDate,
+					propertyNo: propertyNo
+				},
+					success: function (data) {
+						console.log("Returned Data: ", data); // debug
+						$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+					},
+					error: function (xhr) {
+						console.log("AJAX Error", xhr.responseText); // debug
+						DevExpress.ui.notify("Error while loading data", "error", 2000);
+					}
+				});
+			}
 </script>

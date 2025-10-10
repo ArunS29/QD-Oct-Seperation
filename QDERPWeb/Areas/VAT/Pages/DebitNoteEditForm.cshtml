@@ -4521,16 +4521,6 @@
 
 		}
 
-
-					function syncVATNumbers(e) {
-				// Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-				$("#txtBillingVATRegNo").dxNumberBox("instance").option("value", e.value);
-			}
-			function syncSupVATNumbers(e) {
-				// Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-				$("#txtObsSupRegNo").dxNumberBox("instance").option("value", e.value);
-			}
-
 				$(function () {
 					$("#DefaultEntry").dxTextBox({
 						text: formatMessage("Default For Entry:"),
@@ -5257,269 +5247,6 @@
 				}
 			});
 		}
-		   function onsaveLedgerAccountClick(e) {
-
-			   var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
-			   var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
-			   var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
-			   var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
-			   var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
-			   acgid = sAccountGroup;
-			   //Setting Tab Values
-			   var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
-			   var sCreditDebit = $('#ddlCreditDebit').dxDropDownBox('option', 'value');
-			   var isDefaultEntryChecked = $("#chkDefaultEntry").dxCheckBox("instance").option("value");
-			   var sVoucherAbbr = $('#txtVoucherNoAbbr').dxTextBox("instance").option("value");
-			   var isMaintainBillEntryChecked = $("#chkMaintainBillEntry").dxCheckBox("instance").option("value");
-			   var sNodays = $('#txtNoDays').dxNumberBox("instance").option("value");
-			   var chkEmployeeDBEntryChecked = $("#chkEmployeeDBEntry").dxCheckBox("instance").option("value");
-			   var chkPropertyDBEntryChecked = $("#chkPropertyDBEntry").dxCheckBox("instance").option("value");
-			   var chkLoanAccountEntryChecked = $("#chkLoanAccountEntry").dxCheckBox("instance").option("value");
-			   var schIsLedgerObselete = $("#schLedgerActive").dxSwitch("instance").option("value");
-			   //ContactDetails Tab
-			   var cdBranch = $('#ddlbranch').dxDropDownBox('option', 'value');
-			   var cdSubGroup = $('#ddlSubgroup').dxDropDownBox('option', 'value');
-			   var cdSales = $('#ddlSales').dxDropDownBox('option', 'value');
-			   var cdContact = $('#txtContactPerson').dxTextBox("instance").option("value");
-			   var cdTitle = $('#txtPersonTitle').dxTextBox("instance").option("value");
-			   var cdMobile = $('#txtPersonMobile').dxTextBox("instance").option("value");
-			   var cdEmail = $('#txtEmail').dxTextBox("instance").option("value");
-			   var cdRemarks = $('#txtRemarks').dxTextBox("instance").option("value");
-			   // Bank Details
-			   var bdAccountName = $('#txtBankAccountName').dxTextBox("instance").option("value");
-			   var bdAccountNamear = $('#txtBankAccountNameAr').dxTextBox("instance").option("value");
-			   var bdBankName = $('#txtBankName').dxTextBox("instance").option("value");
-			   var bdBankNamear = $('#txtBankNameAr').dxTextBox("instance").option("value");
-			   var bdBankBranch = $('#txtBankBranch').dxTextBox("instance").option("value");
-			   var bdBankBranchar = $('#txtBankBranchAr').dxTextBox("instance").option("value");
-
-			   var bdBankAccountNo = $('#txtBankAccountNo').dxTextBox("instance").option("value");
-			   var bdIBAN = $('#txtBankIBAN').dxTextBox("instance").option("value");
-			   var bdSwiftCode = $('#txtSwiftCode').dxTextBox("instance").option("value");
-			   //Client Details Tab
-			   var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
-			   var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
-			   var cntVATNo = $('#txtClientVATNo').dxNumberBox('option', 'value');
-			   var cntGroupVATNo = $('#txtGrouptVATNo').dxNumberBox('option', 'value');
-			   var cntOtherType = $('#ddlOtherType').dxDropDownBox('option', 'value');
-			   var cntOtherID = $('#txtOtherId').dxTextBox('option', 'value');
-			   var cntAddress = $('#txtClientAddress').dxTextBox('option', 'value');
-			   var cntAddressar = $('#txtClientAddressAr').dxTextBox('option', 'value');
-			   var cntAdditionalAddress = $('#txtClientAdditionalAddress').dxTextBox('option', 'value');
-			   var cntAdditionalAddressar = $('#txtClientAdditionalAddressAr').dxTextBox('option', 'value');
-			   var cntBuildingNo = $('#txtBuildingNo').dxNumberBox('option', 'value');
-			   var cntCity = $('#txtClientCity').dxTextBox('option', 'value');
-			   var cntCityar = $('#txtClientCityAr').dxTextBox('option', 'value');
-			   var cntAdditionalNo = $('#txtAdditionalNo').dxNumberBox('option', 'value');
-			   var cntState = $('#txtState').dxTextBox('option', 'value');
-			   var cntStatear = $('#txtStateAr').dxTextBox('option', 'value');
-			   var cntPostalCode = $('#txtPostalCode').dxNumberBox('option', 'value');
-			   var cntDistrict = $('#txtDistrict').dxTextBox('option', 'value');
-			   var cntDistrictAr = $('#txtDistrictAr').dxTextBox('option', 'value');
-			   var cntCountryCode = $('#ddlCountryCode').dxDropDownBox('option', 'value');
-			   //SupplierDetails Tab
-			   var supBillingName = $('#txtSupBilling').dxTextBox('option', 'value');
-			   var supBillingNamear = $('#txtSupBillingAr').dxTextBox('option', 'value');
-			   var supVATNo = $('#txtSupVATNo').dxNumberBox('option', 'value');
-			   var supGroupVATNo = $('#txtSupGroupVATNo').dxNumberBox('option', 'value');
-			   var cntSupOtherType = $('#ddlSupOtherType').dxDropDownBox('option', 'value');
-			   var cntSupOtherID = $('#txtSupOtherId').dxTextBox('option', 'value');
-			   var supAddress = $('#txtSupAddress').dxTextBox('option', 'value');
-			   var supAddressAr = $('#txtSupAddressAr1').dxTextBox('option', 'value');
-
-			   var supAdditionalAddress = $('#txtSupAdditionalAddress').dxTextBox('option', 'value');
-			   var supAdditionalAddressAr = $('#txtSupAdditionalAddressAr1').dxTextBox('option', 'value');
-
-			   var supBuildingNo = $('#txtSupBuildingNo').dxNumberBox('option', 'value');
-			   var supCity = $('#txtSupCity').dxTextBox('option', 'value');
-			   var supCityAr = $('#txtSupCityAr1').dxTextBox('option', 'value');
-			   var supAdditionalNo = $('#txtSupAdditionalNo').dxNumberBox('option', 'value');
-			   var supState = $('#txtSupState').dxTextBox('option', 'value');
-			   var supStateAr = $('#txtSupStateAr1').dxTextBox('option', 'value');
-			   var supPostalCode = $('#txtSupPostalCode').dxNumberBox('option', 'value');
-			   var supDistrict = $('#txtSupDistrict').dxTextBox('option', 'value');
-			   var supDistrictAr = $('#txtSupDistrictAr1').dxTextBox('option', 'value');
-			   var cntSupCountryCode = $('#ddlSupCountryCode').dxDropDownBox('option', 'value');
-
-			   // AttachmentTab
-			   // --Right now Attachment details values is not completed.
-			   //Billing Details tab
-			   var bClientBillingName = $('#txtClientBillingName').dxTextBox('option', 'value');
-
-			   var bBillingAddress = $('#txtBillingAddress').dxTextArea('option', 'value');
-			   var bBillingAddressAr = $('#txtBillingAddressAr').dxTextArea('option', 'value');
-
-			   var bVATNO = $('#txtBillingVATRegNo').dxNumberBox('option', 'value');
-
-			  // var bVATNOAR = $('#txtBillingVATRegNoArabic').dxNumberBox('option', 'value');
-			   var bTIN = $('#txtBillingTIN').dxNumberBox('option', 'value');
-			   var bContactPerson = $('#txtBillingContactPerson').dxTextBox('option', 'value');
-			   var bContactNo = $('#txtBillingContactNumber').dxTextBox('option', 'value');
-			   var bFaxNo = $('#txtBillingFaxNo').dxTextBox('option', 'value');
-			   var bVendorNo = $('#txtBillingVendorNo').dxTextBox('option', 'value');
-			   var bBillingTitle = $('#txtBillingContactPersonTitle').dxTextBox('option', 'value');
-			   var bBillingPayment = $('#ddlBillingPayment').dxDropDownBox('option', 'value');
-			   //Obselte (Old Version)
-			   var obAddress = $('#txtObsSupAddress').dxTextBox('option', 'value');
-			   //   var obAddressar = $('#txtObsSupAddressAr').dxTextBox('option', 'value');
-
-			   var obVATNo = $('#txtObsSupRegNo').dxNumberBox('option', 'value');
-			   //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
-
-			   // if (sAcccountHead == null || sAcccountHead == "undefined" || sAcccountHead == "") {
-			   //     alert("Account Head Name cannot be empty");
-			   //     return false;
-			   // }
-
-			   // if (sAccountGroup == null || sAccountGroup == "undefined" || sAccountGroup == "") {
-			   //     alert("Account group cannot be empty");
-			   //     return false;
-			   // }
-
-
-			   var accountHeadValidator = $("#txtAccountHead").dxValidator("instance");
-			   var AccountGroupValidator = $("#ddlAccountGroup").dxValidator("instance");
-
-			   var accountHeadValidation = accountHeadValidator.validate();
-			   var AccountGroupValidation = AccountGroupValidator.validate();
-
-			   if (accountHeadValidation.isValid && AccountGroupValidation.isValid) {
-
-				   const data = {
-					   AccountID: sAccountID,
-					   ReferenceNo: sRefNo,
-					   AccountHead: sAcccountHead,
-					   AccountGroupId: sAccountGroup,
-					   OpeningBalance: sOpeningBalance,
-					   OpeningBalanceDrCr: sCreditDebit,
-					   IsDefaultForCash: isDefaultEntryChecked,
-					   VoucherAbbr: sVoucherAbbr,
-					   IsMaintainBillByBill: isMaintainBillEntryChecked,
-					   NoOfDaysCreditPeriod: sNodays,
-					   IsEmployeeAllocated: chkEmployeeDBEntryChecked,
-					   IsPropertyAllocated: chkPropertyDBEntryChecked,
-					   IsEmployeePaymentAc: chkLoanAccountEntryChecked,
-					   // LedgerActiveChecked: schLedgerActiveChecked,
-					   IsLedgerObselete: schIsLedgerObselete,
-					   AccountBranch: cdBranch,
-					   AccountSubGroup: cdSubGroup,
-					   SalesPersonCode: cdSales,
-					   AccountsContactName: cdContact,
-					   AccountsContactTitle: cdTitle,
-					   AccountsContactMobile: cdMobile,
-					   EmailAddress: cdEmail,
-					   LedgerRemarks: cdRemarks,
-					   BankAccountName: bdAccountName,
-					   BankAccountNameAr: bdAccountNamear,
-					   AccountHeadArabic: sAcccountHeadAr,
-					   BankName: bdBankName,
-					   BankNameAr: bdBankNamear,
-					   BankBranch: bdBankBranch,
-					   BankBranchAr: bdBankBranchar,
-
-					   BankAccountNo: bdBankAccountNo,
-					   BankIBAN: bdIBAN,
-					   BankSwiftCode: bdSwiftCode,
-					   BillingName: cntBillingName,
-					   BillingNameAr: cntBillingNamear,
-
-					   VATRegistrationNo: String(cntVATNo),
-					   ClientGroupVATNumber:String(cntGroupVATNo),
-					   ClientOtherIDType: cntOtherType,
-					   ClientOtherID: cntOtherID,
-					   ClientAddressStreet: cntAddress,
-					   ClientAddressStreetAr: cntAddressar,
-					   ClientAdditionalStreet: cntAdditionalAddress,
-					   ClientAdditionalStreetAr: cntAdditionalAddressar,
-					   ClientBuildingNumber:String(cntBuildingNo),
-					   ClientCity: cntCity,
-					   ClientCityAr: cntCityar,
-					   ClientAdditionalNumber:String(cntAdditionalNo),
-					   ClientProvince: cntState,
-					   ClientProvinceAr: cntStatear,
-					   ClientPostalCode:String(cntPostalCode),
-					   ClientNeighborhood: cntDistrict,
-					  ClientNeighborhoodAr: cntDistrictAr,
-
-					   ClientCountryCode: cntCountryCode,
-					   SupplierName: supBillingName,
-					   SupplierNameAr: supBillingNamear,
-					   SupplierVATNo: String(supVATNo),
-					   SupplierGroupVATNumber:String(supGroupVATNo),
-					   SupplierOtherIdtype: cntSupOtherType,
-					   SupplierOtherId: cntSupOtherID,
-					   SupplierAddressStreet: supAddress,
-					   SupplierAddressStreetAr: supAddressAr,
-					   SupplierAdditionalStreet: supAdditionalAddress,
-					   SupplierAdditionalStreetAr: supAdditionalAddressAr,
-					   SupplierBuildingNumber:String(supBuildingNo),
-					   SupplierCity: supCity,
-					   SupplierCityAr: supCityAr,
-					   SupplierAdditionalNumber:String(supAdditionalNo),
-					   SupplierProvince: supState,
-					   SupplierProvinceAr: supStateAr,
-					   SupplierPostalCode:String(supPostalCode),
-					   SupplierNeighborhood: supDistrict,
-					   SupplierNeighborhoodAr: supDistrictAr,
-					   SupplierCountryCode: cntSupCountryCode,
-					   BillingName: bClientBillingName,
-					   BillingAddress: bBillingAddress,
-					   BillingAddressAr: bBillingAddressAr,
-					   VATRegistrationNo: String(bVATNO),
-					   ClientTIN:String(bTIN),
-					   BillingContactPerson: bContactPerson,
-					   BillingPhoneNo: bContactNo,
-					   BillingFaxNo: bFaxNo,
-					   ClientVendorNo: bVendorNo,
-					   BillingContactPersonTitle: bBillingTitle,
-					   BillingBankAccount: bBillingPayment,
-					   SupplierAddress: obAddress,
-					   SupplierVATNo:String(obVATNo)
-				   };
-
-				   console.log(data);
-
-				   const values = JSON.stringify(data);
-				   // console.log("val: " + values);
-
-
-				   $.ajax({
-					   //url: '/api/ledgeraccount/InsertLedgerAccount',
-					   url: `/api/VATModule/UpdateInvoiceDetails?AccountGroupID=${encodeURIComponent(acgid)}`,
-					   type: 'POST',
-					   contentType: 'application/json',  // Set the content type to JSON
-					   data: values,  // Convert the object to JSON
-					   success: function (response) {
-						   if (response.success) {
-							   //alert(response.message);
-							   DevExpress.ui.notify(response.message, "success", 3000)
-							 setTimeout(function () {
-				   window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-				   window.parent.$("#popupContainer").dxPopup("instance").hide();
-			   }, 2000);
-								// window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-								// window.parent.$("#popupContainer").dxPopup("instance").hide();
-							   // window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
-
-						   } else {
-							   DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
-						   }
-					   },
-					   error: function (xhr, status, error) {
-						   // Handle any error that occurred during the request
-						   console.log("Error: " + error);
-					   }
-				   });
-
-
-
-			   }else {
-							   DevExpress.ui.notify("Please Fill All the Required Fields", "error", 3000);
-						   }
-		   }
-
-
-
 			 function gridBox_valueChanged(e) {
 					var $dataGrid = $("#dataGrid");
 
@@ -5563,19 +5290,19 @@
 				let newValue = args.value;
 				console.log("gridnewvalue",newValue)
 				// Get existing values
-				let qty = e.dataField === "QuantityDebited" ? newValue : grid.cellValue(rowIndex, `${formatMessage('QuantityDebited')}`) || 0;
+				let qty = e.dataField === "QuantityDebited" ? newValue : grid.cellValue(rowIndex, 'QuantityDebited') || 0;
 				console.log("qty",qty)
 
-				 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+				 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex,'UnitRate') || 0;
 				 console.log("unitPrice",unitPrice)
 				// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-				let vatval=grid.cellValue(rowIndex, `${formatMessage('VATPercentage')}`);
+				let vatval=grid.cellValue(rowIndex, 'VATPercentage');
 				 console.log("VATVal",vatval)
 
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, `${formatMessage('VATPercentage')}`) || "0%";
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex,'VATPercentage') || "0%";
 				console.log("vatRateStr",vatRateStr)
 
-				let UnitsToBillAmt = e.dataField === "UnitsToDebited" ? newValue : grid.cellValue(rowIndex,`${formatMessage('UnitsToDebited')}`) || "1";
+				let UnitsToBillAmt = e.dataField === "UnitsToDebited" ? newValue : grid.cellValue(rowIndex,'UnitsToDebited') || "1";
 				console.log("UnitsToDebited",UnitsToBillAmt)
 
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
@@ -5882,12 +5609,12 @@ button.option("disabled", false);
 		let grid = $("#B2BdataGrid").dxDataGrid("instance");
 		debugger;
 		// Get current row values
-		let qty = grid.cellValue(rowIndex,`${formatMessage('QuantityDebited')}`) || 0;
+		let qty = grid.cellValue(rowIndex,'QuantityDebited') || 0;
 
-		let unitPrice = grid.cellValue(rowIndex,`${formatMessage('UnitRate')}`) || 0;
+		let unitPrice = grid.cellValue(rowIndex,'UnitRate') || 0;
 		let vatRateStr = newValue || "0%";
 
-		let UnitsToBillAmt = grid.cellValue(rowIndex,`${formatMessage('UnitsToDebited')}`) || "1";
+		let UnitsToBillAmt = grid.cellValue(rowIndex,'UnitsToDebited') || "1";
 		console.log("UnitsToDebited",UnitsToBillAmt)
 
 @* 

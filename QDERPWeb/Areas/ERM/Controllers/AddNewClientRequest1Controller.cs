@@ -81,7 +81,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 		}
 
 
-		private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+		private string GetNewDebitNoteNo(string EquipmentRequestAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
 		{
 			try
 			{
@@ -113,7 +113,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					strYear = "";
 				}
 
-				return $"{invoiceAbbrv}{strYear}-{strNewDebitNoteNo}";
+				return $"{EquipmentRequestAbbrv}{strYear}-{strNewDebitNoteNo}";
 			}
 			catch (Exception)
 			{
@@ -127,7 +127,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 					strYear = "";
 				}
 
-				return $"{invoiceAbbrv}{strYear}-00001";
+				return $"{EquipmentRequestAbbrv}{strYear}-00001";
 			}
 		}
         [HttpGet]

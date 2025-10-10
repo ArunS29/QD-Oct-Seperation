@@ -180,41 +180,73 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             try
             {
-                if (model.PropertyOperatorCode > 0) // Use Primary Key for update
+                if (model.PropertyOperatorCode > 0)
                 {
-                    // Update existing record+
+                    // ✅ UPDATE LOGIC
+
+                    // Find existing record
                     var existing = dbContext.Tbl40107PropertyOperators
                         .FirstOrDefault(o => o.PropertyOperatorCode == model.PropertyOperatorCode);
 
-                    if (existing != null)
-                    {
-                        existing.EquipmentNo = model.EquipmentNo;
-                        existing.PropertyOperatorTypeId = model.PropertyOperatorTypeId;
-                        existing.OperatorName = model.OperatorName;
-                        existing.OperatorRegHourlyRate = model.OperatorRegHourlyRate;
-                        existing.OperatorOthourlyRate = model.OperatorOthourlyRate;
-                        existing.WorkStartDate = model.WorkStartDate;
-                        existing.WorkEndDate = model.WorkEndDate;
-                        existing.OperatorRemarks = model.OperatorRemarks;
-                        existing.WorkingShift = model.WorkingShift;
-                        existing.EmployeeId = model.EmployeeId;
-
-                        dbContext.SaveChanges();
-
-                        return Ok(new
-                        {
-                            success = true,
-                            message = "Property Operator updated successfully",
-                            propertyOperatorTypeId = existing.PropertyOperatorTypeId
-                        });
-                    }
-                    else
+                    if (existing == null)
                     {
                         return NotFound(new { success = false, message = "Record not found." });
                     }
+
+                    // Check for duplicates against other records
+                    bool duplicateExists = dbContext.Tbl40107PropertyOperators
+                        .Any(o => o.EquipmentNo == model.EquipmentNo
+                               && o.EmployeeId == model.EmployeeId
+                               && o.PropertyOperatorCode != model.PropertyOperatorCode);
+
+                    if (duplicateExists)
+                    {
+                        return Ok(new
+                        {
+                            success = false,
+                            message = "You cannot assign. This Equipment/Property already has the same operator assigned."
+                        });
+                    }
+
+                    // Update fields
+                    existing.EquipmentNo = model.EquipmentNo;
+                    existing.PropertyOperatorTypeId = model.PropertyOperatorTypeId;
+                    existing.OperatorName = model.OperatorName;
+                    existing.OperatorRegHourlyRate = model.OperatorRegHourlyRate;
+                    existing.OperatorOthourlyRate = model.OperatorOthourlyRate;
+                    existing.WorkStartDate = model.WorkStartDate;
+                    existing.WorkEndDate = model.WorkEndDate;
+                    existing.OperatorRemarks = model.OperatorRemarks;
+                    existing.WorkingShift = model.WorkingShift;
+                    existing.EmployeeId = model.EmployeeId;
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Property Operator updated successfully",
+                        propertyOperatorTypeId = existing.PropertyOperatorTypeId
+                    });
                 }
                 else
                 {
+                    // ✅ INSERT LOGIC
+
+                    // Check if Employee is already assigned to the same Equipment
+                    bool duplicateExists = dbContext.Tbl40107PropertyOperators
+                        .Any(o => o.EquipmentNo == model.EquipmentNo && o.EmployeeId == model.EmployeeId);
+
+                    if (duplicateExists)
+                    {
+                        return Ok(new
+                        {
+                            success = false,
+                            message = "You cannot assign. This Equipment/Property already has the same operator assigned."
+                        });
+                    }
+
+                    // Create new record
                     var entity = new Tbl40107PropertyOperator
                     {
                         EquipmentNo = model.EquipmentNo,
@@ -230,18 +262,14 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     };
 
                     dbContext.Tbl40107PropertyOperators.Add(entity);
-
-                    // ✅ Get number of rows affected
-                    int rowsAffected = dbContext.SaveChanges();
+                    dbContext.SaveChanges();
 
                     return Ok(new
                     {
                         success = true,
-                        message = $"Property Operator saved successfully.{rowsAffected}",
-                        rowsAffected = rowsAffected,
+                        message = "Property Operator saved successfully",
                         propertyOperatorTypeId = entity.PropertyOperatorTypeId
                     });
-
                 }
             }
             catch (Exception ex)
@@ -250,6 +278,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = "Error saving data: " + ex.Message });
             }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetByEquipmentNo(string equipmentNo)

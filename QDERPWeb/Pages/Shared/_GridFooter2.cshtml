@@ -1,5 +1,22 @@
 ﻿
 <style type="text/css">
+    #reportsByClientPopup .dx-overlay-content {
+        max-width: 90vw !important; /* Adjust width */
+        max-height: 85vh !important; /* Adjust height */
+        overflow: hidden !important;
+    }
+
+    /* Style for inner iframe */
+    #popupIframe {
+        border-radius: 8px;
+        padding: 0px;
+        overflow: auto;
+    }
+
+    .dx-popup-content {
+        padding: 0px;
+    }
+
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -218,7 +235,7 @@
             {
                     items.Add().Text(new JS("formatMessage('Bills Payable')")).Option("reportName", "BIllsPayable").Option("color", "#4285F4").Icon("search");
                     items.Add().Text(new JS("formatMessage('Payable Summary')")) .Option("reportName", "Summary").Option("color", "#34A853").Icon("search");
-                    items.Add().Text(new JS("formatMessage('Report by Supplier')")).Option("color", "#EA4335").Icon("search").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Report by Supplier')")).Option("color", "#EA4335").Icon("search").OnClick("function() { ReportsByClient(0); }");
                     items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Option("reportName", "BillsPayableUnmapped").Option("color", "#FBBC05").Icon("smalliconslayout").Visible(false).OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
             })
             .OnItemClick("handleReportClick")
@@ -374,16 +391,25 @@
     }
 
     function ReportsByClient() {
-       
-        let url = `/${tenantName}/Finance/ReportsByClients`;
-
-
-        $("#popupIframe").attr("src", url);
-
-        // Open the popup
+        // Pass the current selectedMode to the ReportsByClients page via URL parameter
+        const currentMode = typeof selectedMode !== "undefined" ? selectedMode : "online";
+        let url = `/${tenantName}/Finance/ReportsBySupplier?&mode=${encodeURIComponent(currentMode)}`;
+        // Get popup instance
         let popup = $("#reportsByClientPopup").dxPopup("instance");
+
+        // Set iframe src BEFORE showing the popup
+        let iframe = $("#popupIframe");
+        iframe.attr("src", url);
+
+        // Optional: force reload in case browser caches blank
+        iframe.off("load").on("load", function () {
+            console.log("Iframe loaded successfully.");
+        });
+
+        // Show the popup
         popup.show();
     }
+
 
     const reportMappings = {
         "Bills Payable": "BIllsPayable",
@@ -393,12 +419,30 @@
     };
 
 function handleReportClick(e) {
-    const reportName = e.itemData.reportName;
+    let reportName = e.itemData.reportName;
     if (reportName) {
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            // Map online report names to their offline (Import) versions
+            switch (reportName) {
+                case "BIllsPayable":
+                    reportName = "BIllsPayableImport";
+                    break;
+                case "Summary":
+                    reportName = "SummaryImport";
+                    break;
+                // Add more mappings if needed in the future
+                default:
+                    // For reports that don't have Import versions, keep the original name
+                    break;
+            }
+        }
+        
         if (typeof tenantName === "undefined") {
             console.error("tenantName is not defined.");
             return;
         }
+        
         window.open(
             `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}`,
             '_blank',
@@ -414,7 +458,7 @@ function handleReportClick(e) {
         $("#reportsByClientPopup").dxPopup({
             width: 600,
             height: 750,
-            title: "Reports by Clients",
+            title: "Reports by Suppliers",
             visible: false,
             showCloseButton: true,
             closeOnOutsideClick: true,

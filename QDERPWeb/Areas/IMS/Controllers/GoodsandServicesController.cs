@@ -142,6 +142,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
                     else
                     {
+                        bool exists = dbContext.Tbl20164GoodsAndServicesMasters
+                     .Any(x => x.Gsdescrpition.ToLower().Trim() == clientMaster.Gsdescrpition.ToLower().Trim());
+
+                        if (exists)
+                        {
+                            return BadRequest(new
+                            {
+                                success = false,
+                                message = "This Stock/Service Description is already in the database. Please check again."
+                            });
+                        }
                         // Insert new record
                         var newClient = new Tbl20164GoodsAndServicesMaster
                         {
