@@ -3438,6 +3438,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<PostDeliveryNoteRequest> PostDeliveryNoteRequests { get; set; }
     public DbSet<MaterialReceiptDto> MaterialReceiptDtos { get; set; }
     public DbSet<MaterialReceiptChildDto> MaterialReceiptChildDtos { get; set; }
+    public DbSet<EquipmentRevenueCostReport> EquipmentRevenueCostReports { get; set; }
 
 
     public DbSet<ApproveDeliveryNoteDto> ApproveDeliveryNoteDtos { get; set; }
@@ -3457,6 +3458,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<AccountMasterResult>().HasNoKey(); // Mark as keyless
         modelBuilder.Entity<AccountMasterAR>().HasNoKey();
         modelBuilder.Entity<AccountLedger>().HasNoKey();// Mark as keyless
+        modelBuilder.Entity<EquipmentRevenueCostReport>().HasNoKey();// Mark as keyless
         modelBuilder.Entity<GetDataForGeneratingTimesheet>().HasNoKey().ToView(null);
         modelBuilder.Entity<VoucherViewModel>().HasNoKey();
         modelBuilder.Entity<AccountRegister>().HasNoKey();// Mark as keyless

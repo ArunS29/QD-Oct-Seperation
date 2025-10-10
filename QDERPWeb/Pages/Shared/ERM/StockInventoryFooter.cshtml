@@ -404,11 +404,8 @@
         }
     });
      
-
-
-
     function addStock() {
-        var url = `/${tenantName}/ERM/AddNewProperty`;
+        var url = `/${tenantName}/ERM/AddNewProperty?mode=add`;
         window.location.href = url;
     }
 
@@ -418,7 +415,7 @@
     }
 
     function EqrevenueCostsum() {
-        var url = `/${tenantName}/ERM/EquipmentsRevenue&CostDetails`;
+        var url = `/${tenantName}/ERM/EquipmentRevenueCostSummary`;
         window.location.href = url;
     }
 

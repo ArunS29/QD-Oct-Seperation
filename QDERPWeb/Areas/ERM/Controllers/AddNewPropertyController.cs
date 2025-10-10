@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
+using Microsoft.Data.SqlClient;
 using QD.ERP.Web.Areas.ERM.Pages;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -195,13 +196,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
+
         [HttpGet]
-        public async Task<IActionResult> GetCostDetails(DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> GetCostDetails(DateTime? fromDate, DateTime? toDate, string propertyNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var query = dbContext.Qry20184PropertyAllocationWtLedgers.AsQueryable();
-
 
                 // Default dates if not provided
                 if (!fromDate.HasValue)
@@ -214,28 +215,109 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
                 }
 
-                // Filtering by date range
+                // 🔹 Filter by date range
                 query = query.Where(i => i.VoucherDate >= fromDate && i.VoucherDate <= toDate);
 
-                // Fetching the data
-                var data = await query.Select(i => new
+                // 🔹 Filter by Property No if provided
+                if (!string.IsNullOrEmpty(propertyNo))
                 {
-                    i.VoucherNo,
-                    i.VoucherNarration,
-                    i.VoucherDate,
-                    i.PropertyDescription,
-                    i.AccountHeadName,
-                    i.RevenueAmount,
-                    i.ExpenseAmount,
-                    i.PropertyNo,
-                    i.CostAndRevenueClubbed
-                }).ToListAsync();
+                    query = query.Where(i => i.PropertyNo == propertyNo);
+                }
+
+                // 🔹 Fetch the data
+                var data = await query
+                    .Select(i => new
+                    {
+                        i.VoucherNo,
+                        i.VoucherNarration,
+                        i.VoucherDate,
+                        i.PropertyDescription,
+                        i.AccountHeadName,
+                        i.RevenueAmount,
+                        i.ExpenseAmount,
+                        i.PropertyNo,
+                        i.CostAndRevenueClubbed
+                    })
+                    .ToListAsync();
 
                 return Json(data);
             }
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEquipmentRevenueCostReport(DateTime? startDate, DateTime? endDate)
+            {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Default dates if not provided
+                    if (!startDate.HasValue)
+                        startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                    if (!endDate.HasValue)
+                        endDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month,
+                                  DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+                    // SQL parameters
+                    var startDateParam = new SqlParameter("@StartDate", startDate);
+                    var endDateParam = new SqlParameter("@EndDate", endDate);
+
+                    // Execute stored procedure
+                    var result = await dbContext.EquipmentRevenueCostReports
+                        .FromSqlRaw("EXEC sp40108EquipmentRevenueCostReport @StartDate, @EndDate", startDateParam, endDateParam)
+                        .ToListAsync();
+
+                    // Optional grouping or structuring logic (similar to your TimeGrid)
+                    var groupedData = result
+                         .GroupBy(r => new
+                         {
+                             Year = startDate?.Year ?? DateTime.Now.Year,
+                             Month = startDate?.Month ?? DateTime.Now.Month
+                         })
+                         .Select(g => new
+                         {
+                             g.Key.Year,
+                             g.Key.Month,
+                             Records = g.Select(i => new
+                             {
+                                 i.PropertyNo,
+                                 i.PropertyType,
+                                 i.PropertyCategory,
+                                 i.PropertyDescription,
+                                 i.ClientRegHoursTotal,
+                                 i.ClientRegAmountTotal,
+                                 i.ClientOTHoursTotal,
+                                 i.ClientOTAmountTotal,
+                                 i.ClientAmountTotal,
+                                 i.SuppRegHoursTotal,
+                                 i.SuppRegAmountTotal,
+                                 i.SuppOTHoursTotal,
+                                 i.SuppOTAmountTotal,
+                                 i.SuppAmountTotal,
+                                 i.InvoicedAmountTotal,
+                                 i.RevenueAllocTotal,
+                                 i.ExpensesAllocTotal
+                             }).ToList()
+                         })
+                         .OrderBy(x => x.Year)
+                         .ThenBy(x => x.Month)
+                         .ToList();
+
+                    return Json(groupedData);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetEquipmentRevenueCostReport: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+
         [HttpGet]
         public IActionResult GetAllPropertyTypes()
         {
