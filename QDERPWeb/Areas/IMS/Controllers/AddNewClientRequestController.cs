@@ -995,6 +995,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 return await dbContext.Tbl90104DocumentSignatories
                     .Where(x => x.UserId == userId)
+                    .OrderBy(x => x.SignatoryId)
                     .Select(x => x.SignatoryId)
                     .FirstOrDefaultAsync();
             }

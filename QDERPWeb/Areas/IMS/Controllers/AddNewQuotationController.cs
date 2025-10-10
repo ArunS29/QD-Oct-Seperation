@@ -169,7 +169,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     var resultWithDetails = new List<ExpandoObject>();
 
-                    // Query the Tbl60602purchaseRequestChildren table for the given Mprno
+                    // Query the Tbl60602purchaseRequestChildren table for the given Mprno 
                     var result = dbContext.Qry60102quotationChildren
                         .Where(x => x.QuoteNo == QuoteNo)
                         .ToList();
@@ -188,6 +188,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         // Retrieve UnitDesc based on UnitCode
                         var unitDesc = await dbContext.Tbl40111PropertyUnitCodes
+
                             .Where(x => x.UnitCode == gridDetails.UnitRateMethod)
                             .Select(x => x.UnitDesc)
                             .FirstOrDefaultAsync();
@@ -471,6 +472,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 return await dbContext.Tbl90104DocumentSignatories
                     .Where(x => x.UserId == userId)
+                       .OrderBy(x => x.SignatoryId)
                     .Select(x => x.SignatoryId)
                     .FirstOrDefaultAsync();
             }
@@ -515,11 +517,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 master.QuoteSignatory = null;
             }
+          
 
 
             // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
 
             await dbContext.SaveChangesAsync();
+          
+
             await _userActionLogger.LogAsync(
                    module: "IMS > Submit Quotation",
                    actionDetail: $"Quotation Submitted: {QuoteNo}",
@@ -530,7 +535,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 success = true,
                 message = "Quotation submitted successfully.",
-                VoucherApprovedBy = signatoryId
+                VoucherApprovedBy = signatoryId,
+                SubmittedOn=master.SubmittedOn
+              
             });
         }
 
@@ -590,7 +597,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return Ok(new
                 {
                     message = "Quotation has been verified and processed for Approval.",
-                    VerifiedBy = signatoryId
+                    VerifiedBy = signatoryId,
+                    VerifiedOn = quotation.VerifiedOn
                 });
             }
             catch (Exception ex)
@@ -660,7 +668,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return Ok(new
                 {
                     Message = "Quotation has been Approved.",
-                    VoucherApprovedBy = signatoryId  // or userName
+                    VoucherApprovedBy = signatoryId,  // or userName
+                    ApprovedOn = voucher.ApprovedOn
                 });
             }
             catch (Exception ex)
