@@ -1936,6 +1936,7 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 // Parse it to int (you may want to use long or Guid if that's your actual ID type)
                 if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
@@ -1974,7 +1975,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new TrialBalance_ExportFormat_(
                      FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                 );
             }
             else if (reportName == "TrialBalanceDrCr")
@@ -1991,6 +1992,7 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+                var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 // Parse it to int (you may want to use long or Guid if that's your actual ID type)
                 if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
@@ -2029,7 +2031,7 @@ namespace QD.ERP.Web.Pages
                 }
                 Report = new TrialBalanceDrCr(
                      FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
                 );
             }
             else if (reportName == "IncomeStatements")

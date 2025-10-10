@@ -248,11 +248,11 @@ namespace QD.ERP.Web.Controllers
                         break;
 
                     case "TrialBalanceExportFormat":
-                        report = new TrialBalance_ExportFormat_(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper);
+                        report = new TrialBalance_ExportFormat_(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper, username);
                         break;
 
                     case "TrialBalanceDrCr":
-                        report = new TrialBalanceDrCr(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper);
+                        report = new TrialBalanceDrCr(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper, username);
                         break;
 
                     // Account Group Reports
