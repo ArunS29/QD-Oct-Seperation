@@ -1164,9 +1164,9 @@
             // pageInfo2
             // 
             this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Cambria", 8.25F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(484.9479F, 0F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(510.2747F, 0F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(81.91489F, 22.99998F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(72.92792F, 22.99998F);
             this.pageInfo2.StylePriority.UseFont = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.pageInfo2.TextFormatString = "Page {0} of {1}";

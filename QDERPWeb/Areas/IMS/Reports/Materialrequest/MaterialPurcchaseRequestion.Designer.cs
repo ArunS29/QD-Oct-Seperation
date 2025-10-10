@@ -1795,11 +1795,11 @@
             this.xrLabel16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[MPRNo]")});
             this.xrLabel16.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
-            this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(307F, 0F);
+            this.xrLabel16.LocationFloat = new DevExpress.Utils.PointFloat(91.1666F, 0F);
             this.xrLabel16.Multiline = true;
             this.xrLabel16.Name = "xrLabel16";
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel16.SizeF = new System.Drawing.SizeF(189.1667F, 23F);
+            this.xrLabel16.SizeF = new System.Drawing.SizeF(594.5834F, 23F);
             this.xrLabel16.StylePriority.UseFont = false;
             this.xrLabel16.StylePriority.UseTextAlignment = false;
             this.xrLabel16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;

@@ -229,12 +229,14 @@
                     items.Add()
                         .Text(new JS("formatMessage('Custom Report Designs')"))
                         .Icon("print")
-                        .Option("color", "#FF7043"); // Orange
+                        .Option("color", "#FF7043") // Orange
+                        .Option("reportName", "CustomRFQ");
 
                     items.Add()
                         .Text(new JS("formatMessage('Preview RFQ')"))
                         .Icon("file")
-                        .Option("color", "#00ACC1"); // Cyan
+                        .Option("color", "#00ACC1") // Cyan
+                        .Option("reportName", "RFQEdit");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -444,6 +446,7 @@
 
     function handleRFQ(e) {
         const itemText = e.itemData?.text;
+        const reportName = e.itemData?.reportName;
         const tenantName = window.tenantName || "";
         const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
 
@@ -453,7 +456,11 @@
         }
 
          try {
-            const reportName = RFQMap[itemText];
+            // Handle Custom Report Designs
+            if (reportName === "CustomRFQ") {
+                alert("Custom Report Designs functionality to be implemented.");
+                return;
+            }
 
             if (!reportName) {
                 alert("Invalid report format selected.");
@@ -461,10 +468,10 @@
             }
         let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&rfqNo=${encodeURIComponent(rfqNo)}`;
 
-                const RFQ = [
-                    "Preview RFQ"
+                const RFQReports = [
+                    "RFQEdit"
                 ];
-        if (RFQ.includes(itemText)) {
+        if (RFQReports.includes(reportName)) {
                 // Collect parameters only if true
                 const params = {
                     showSeal: $("#hdnshowSeal").val(),
