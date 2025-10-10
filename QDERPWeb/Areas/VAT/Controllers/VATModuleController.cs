@@ -607,6 +607,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                         i.AccountId,
                         i.AccountHead,
+                        i.AccountGroup,
                         i.VatregistrationNo,
                         i.ReferenceNo,
                         i.IsLedgerObselete,
@@ -1421,21 +1422,24 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         model.CreatedOn = now;
                         model.CreatedBy = "User"; // TODO: Replace with actual user identity
 
-                        var query = from c in dbContext.Tbl20162VatinvoiceChildren
-                                    where c.InvoiceChildSlNo == InvChildSlNo
-                                    select c;
-
-                        var child = query.FirstOrDefault();
-                        if (child != null)
-                        {
-                            child.DetailedDescription = model.Gsdescrpition;
-                            child.ItemCode = model.Gscode;
-                        }
-
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
 
 
                     }
+                    var query = from c in dbContext.Tbl20162VatinvoiceChildren
+                                where c.InvoiceChildSlNo == InvChildSlNo
+                                select c;
+
+                    var child = query.FirstOrDefault();
+                    if (child != null)
+                    {
+                        child.DetailedDescription = model.Gsdescrpition;
+                        child.UnitRate = model.GssellingRate;
+                        child.UnitRateMethod = model.GsuoM;
+                        child.ItemCode = model.Gscode;
+                    }
+
+                    dbContext.Tbl20162VatinvoiceChildren.Add(child);
 
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
@@ -3122,6 +3126,10 @@ documentNo: CreditNoteNo
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+                    if (string.IsNullOrEmpty(accheadid))
+                    {
+                        return Ok(new List<object>());
+                    }
                     var result = dbContext.Qry60210ordersBalanceToInvoices
      .Where(o => o.ClientAccountLedgerNo == accheadid)
      .Select(o => new
@@ -3139,7 +3147,6 @@ documentNo: CreditNoteNo
          o.BalanceToInvoiceWoTax
      })
      .ToList();
-
 
                     return Ok(result);
                 }
@@ -7234,7 +7241,7 @@ documentNo: InvChildSlNo
 
         }
 
-        [HttpGet("GetByTaxSlabCode")]
+        [HttpGet]
         public async Task<IActionResult> GetByTaxSlabCode(int TaxSlabCode)
         {
             try
@@ -7592,6 +7599,261 @@ documentNo: InvChildSlNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public IActionResult GetVoucherSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                DateTime today = DateTime.Today;
+                DateTime startDate = today.AddYears(-5);
+
+                var last5YearsCount = dbContext.Qry201607vatinvoiceRegisterMainViews
+                    .Count(v => v.InvoiceDate >= startDate && v.InvoiceDate <= today);
+
+                var todayCount = dbContext.Qry201607vatinvoiceRegisterMainViews
+                    .Count(v => v.InvoiceDate == today);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Voucher summary fetched successfully.",
+                    last5YearsCount,
+                    todayCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, message = ex.Message });
+            }
+        }
+        //[HttpGet]
+        //public async Task<IActionResult> GetCosgsPostingInvoiceList(DateTime fromDate, DateTime toDate)
+        //{
+        //    // ✅ Step 1: Get tenant and db context
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        return Unauthorized("Invalid tenant or database context.");
+        //    }
+
+        //    try
+        //    {
+        //        // ✅ Step 2: Query the SQL View
+        //        var invoices = await dbContext.Qry201625invoiceListForBulkCostPostings
+        //            .Where(x => x.InvoiceDate >= fromDate && x.InvoiceDate <= toDate)
+        //            .ToListAsync();
+
+        //        // ✅ Step 3: Return result
+        //        return Ok(invoices);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // ✅ Step 4: Return error info
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
+        [HttpGet]
+        public async Task<IActionResult> GetCosgsPostingInvoiceList(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant or database context.");
+
+            try
+            {
+                // ✅ Default & range validation
+                var from = (fromDate.HasValue && fromDate.Value >= new DateTime(1753, 1, 1))
+                    ? fromDate.Value
+                    : DateTime.Today.AddMonths(-1);
+
+                var to = (toDate.HasValue && toDate.Value >= new DateTime(1753, 1, 1))
+                    ? toDate.Value
+                    : DateTime.Today;
+
+                var invoices = await dbContext.Qry201625invoiceListForBulkCostPostings
+                    .Where(x => x.InvoiceDate != null && x.InvoiceDate >= from && x.InvoiceDate <= to)
+                    .ToListAsync();
+
+                return Ok(invoices);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.InnerException?.Message ?? ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateInvoiceNotesDefault(string DefaultInvoiceNotes, string DefaultInvoiceNotesAr)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    const string ReportType = "INV-%";
+
+                    // ✅ Update English note
+                    await dbContext.Database.ExecuteSqlInterpolatedAsync(
+                        $"EXEC sp901_02UpdateReportDefault {DefaultInvoiceNotes}, {"ReportThanksNote"}, {ReportType}"
+                    );
+
+                    // ✅ Update Arabic note
+                    await dbContext.Database.ExecuteSqlInterpolatedAsync(
+                        $"EXEC sp901_02UpdateReportDefault {DefaultInvoiceNotesAr}, {"ReportThanksNoteAr"}, {ReportType}"
+                    );
+
+                    return Ok(new
+                    {
+                        Message = "Invoice notes have been set as default.",
+                        DefaultInvoiceNotes,
+                        DefaultInvoiceNotesAr
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        Message = "Error updating invoice notes.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            // ❌ Tenant not found
+            return BadRequest(new { Message = "Tenant or database context not found." });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetLastInvoiceThanksNote()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // 🧩 Get both ReportThanksNote and ReportThanksNoteAr from the last INV- report
+                    var lastNote = await dbContext.Tbl90112ReportAttributes
+                        .Where(r => r.ReportNo.StartsWith("INV-"))
+                        .OrderByDescending(r => r.ReportNo)
+                        .Select(r => new
+                        {
+                            r.ReportThanksNote,
+                            r.ReportThanksNoteAr
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (lastNote == null)
+                        return Ok(new { Message = "No report notes found for INV-%", ReportThanksNote = "", ReportThanksNoteAr = "" });
+
+                    return Ok(new
+                    {
+                        ReportThanksNote = lastNote.ReportThanksNote,
+                        ReportThanksNoteAr = lastNote.ReportThanksNoteAr
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        Message = "Error fetching report notes.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            return BadRequest(new { Message = "Tenant or database context not found." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultRevenueAccount()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // ✅ Query the default revenue account
+                    var accountId = await dbContext.Tbl201ChartOfAccounts
+                        .Where(a => a.AccountGroupId == "A015" && (a.IsDefaultForCash ?? false))
+                        .Select(a => a.AccountId)
+                        .FirstOrDefaultAsync();
+
+                    if (accountId == null)
+                    {
+                        return NotFound(new { Message = "No default revenue account found." });
+                    }
+
+                    return Ok(new
+                    {
+                        AccountId = accountId
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        Message = "Error fetching default revenue account.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            return BadRequest(new { Message = "Tenant or database context not found." });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserStore()
+        {
+            // ✅ Ensure tenant context is valid
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // ✅ Get UserId from session safely
+                    var userIdStr = HttpContext.Session.GetString("UserId");
+
+                    if (string.IsNullOrEmpty(userIdStr))
+                        return Unauthorized(new { Message = "User session expired or UserId not found in session." });
+
+                    // ✅ Convert string to byte
+                    if (!byte.TryParse(userIdStr, out byte userId))
+                        return BadRequest(new { Message = "Invalid UserId format in session." });
+
+                    var result = await dbContext.TblUserMasters
+                        .Where(u => u.UserId == userId)
+                        .Select(u => new
+                        {
+                            u.UserId,
+                            StoreId = u.StoreId ?? string.Empty
+                        })
+                        .FirstOrDefaultAsync();
+
+
+                    // ✅ Handle user not found
+                    if (result == null)
+                        return NotFound(new { Message = $"User '{userId}' not found." });
+
+                    // ✅ Return result
+                    return Ok(result);
+                }
+                catch (Exception ex)
+                {
+                    // ✅ Catch any DB or runtime errors
+                    return StatusCode(500, new
+                    {
+                        Message = "Error fetching user store details.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            // ❌ Tenant not resolved
+            return BadRequest(new { Message = "Tenant or database context not found." });
+        }
+
+
         [HttpGet]
         public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
         {

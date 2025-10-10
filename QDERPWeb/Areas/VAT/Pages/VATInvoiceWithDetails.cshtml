@@ -209,6 +209,7 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+		        	items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -253,18 +254,28 @@
 				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Quantity Invoiced')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Unit Rate')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption(new JS("formatMessage('Amount Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Unit Rate')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption(new JS("formatMessage('Amount Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
 				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Right).CellTemplate(@<text>
 					   		<%- (data.Discount == null || data.Discount === 0)
 					   		? '0.00'
-					   		: data.Discount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+		         	   		: data.Discount.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
 					   	</text>)
 			.Visible(true);
 
-				subColumns.AddFor(m => m.AmountAfterDiscount).Caption(new JS("formatMessage('Amount After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.VatAmount).Caption(new JS("formatMessage('VAT Amount')")).Alignment(HorizontalAlignment.Right).Visible(true);
-				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.AmountAfterDiscount).Caption(new JS("formatMessage('Amount After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.VatAmount).Caption(new JS("formatMessage('VAT Amount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
 			});
 
 			columns.Add().Caption(new JS("formatMessage('Cost Of Goods Sold')")).Columns(cogsColumns =>
@@ -277,7 +288,7 @@
 			.CellTemplate(@<text>
 					   		<%- (data.CostOfGoodsSold == null || data.CostOfGoodsSold === 0)
 					   		? '0.00'
-					   		: data.CostOfGoodsSold.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+					   		: data.CostOfGoodsSold.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
 					   	</text>)
 			.Visible(true);
 
@@ -287,7 +298,7 @@
 			.CellTemplate(@<text>
 					   		<%- (data.ProfitOnSales == null || data.ProfitOnSales === 0)
 					   		? '0.00'
-					   		: data.ProfitOnSales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+					   		: data.ProfitOnSales.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
 					   	</text>)
 			.Visible(true);
 
@@ -350,19 +361,19 @@
 			.Column("Discount")
 			.SummaryType(SummaryType.Sum)
 			.ShowInGroupFooter(true)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 				items.Add()
 			.Column("VatAmount")
 			.SummaryType(SummaryType.Sum)
 			.ShowInGroupFooter(true)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 				items.Add()
 			.Column("Total")
 			.SummaryType(SummaryType.Sum)
 			.ShowInGroupFooter(true)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 			   items.Add()
 			.Column("CostOfGoodsSold")
@@ -371,8 +382,8 @@
 			.CustomizeText(@"function(e) {
 				if (e.value === null || e.value === undefined) return '';
 				return e.value.toLocaleString(undefined, {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 				});
 				}");
 
@@ -383,8 +394,8 @@
 			.CustomizeText(@"function(e) {
 				if (e.value === null || e.value === undefined) return '';
 				return e.value.toLocaleString(undefined, {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 				});
 				}");
 			});
@@ -404,44 +415,44 @@
 				items.Add()
 			.Column("Discount")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 				items.Add()
 			.Column("VatAmount")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 				items.Add()
 			.Column("Total")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
 
 				items.Add()
 			.Column("NoOfUnitsSold")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 				items.Add()
 			.Column("SalesAmount")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 				items.Add()
 			.Column("AmountBeforeDiscount")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 				items.Add()
 			.Column("AmountAfterDiscount")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 
@@ -449,14 +460,14 @@
 			.Column("CostOfGoodsSold")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 				items.Add()
 			.Column("ProfitOnSales")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"function(e) {
-		return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		}");
 
 			});
@@ -485,6 +496,7 @@
 
 
 <script>
+	let currencyDecimals = 2;
 		function showColumnChooser() {
 		var dataGrid = $("#dataGrid").dxDataGrid("instance");
 		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
@@ -739,4 +751,83 @@
 			   $(function () {
 	 $("#viwwstockdetailscredit").text(formatMessage("View Stock Details"));
 	});
+
+
+							function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+			function openQuarterMenu(targetElement) {
+		if ($("#quarterMenu").data("dxContextMenu")) {
+			$("#quarterMenu").dxContextMenu("instance").dispose();
+		}
+
+		$("#quarterMenu").dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+				{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function(e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function(itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance").show();
+	}
+
+		// Fetch from API on page load
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			if (decimals != null) {
+				currencyDecimals = decimals;
+			}
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load decimals, using 2", "warning", 3000);
+		});
+
+			function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
 </script>

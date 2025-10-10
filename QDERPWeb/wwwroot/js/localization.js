@@ -5580,7 +5580,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "Account Confirmation Letter (Debtors)",
         "Cash Imprest Account Confirmation Letter": "Cash Imprest Account Confirmation Letter",
         "VAT Credit Notes (Obsolete)": "VAT Credit Notes (Obsolete)",
-        "View VAT Credit Note": "View VAT Credit Note"
+        "View VAT Credit Note": "View VAT Credit Note",
+        "Database Master Module : Unit of Measure": "Database Master Module : Unit of Measure",
+        "Payment Means*": "Payment Means*",
+        "Supply Date*":"Supply Date*"
+
         
 
     },
@@ -10479,7 +10483,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "خطاب تأكيد الحساب (المدينون)",
         "Cash Imprest Account Confirmation Letter": "خطاب تأكيد حساب السلفة النقدية",
         "VAT Credit Notes (Obsolete)": "ملاحظات ضريبة القيمة المضافة (ملغاة)",
-        "View VAT Credit Note": "عرض إشعار ضريبة القيمة المضافة"
+        "View VAT Credit Note": "عرض إشعار ضريبة القيمة المضافة",
+        "Database Master Module: Unit of Measure": "وحدة قاعدة بيانات الوحدة الرئيسية: وحدة القياس",
+        "Payment Means*": "وسيلة الدفع*",
+        "Supply Date*": "تاريخ التوريد*"
 
     },
 
@@ -15034,9 +15041,6 @@ var dictionary = {
         "Client PO End Date": "客户采购订单结束日期",
         "Client PO Type": "客户采购订单类型",
         "Client PO Value": "客户采购订单金额",
-
-
-
         "Validations": "验证",
         "Item Details": "项目明细",
         "Payment Details": "付款明细",
@@ -15053,9 +15057,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "账户确认函（债务人）",
         "Cash Imprest Account Confirmation Letter": "现金备用金账户确认函",
         "VAT Credit Notes (Obsolete)": "增值税贷方票据（已废止）",
-        "View VAT Credit Note": "查看增值税贷方票据"
-
-
+        "View VAT Credit Note": "查看增值税贷方票据",
+        "Database Master Module : Unit of Measure": "数据库主模块：计量单位",
+        "Payment Means*": "付款方式",
+        "Supply Date*": "供货日期*"
 
     },
 
@@ -19722,7 +19727,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "खाता पुष्टि पत्र (ऋणी)",
         "Cash Imprest Account Confirmation Letter": "नकद इम्प्रेस्ट खाता पुष्टि पत्र",
         "VAT Credit Notes (Obsolete)": "वैट क्रेडिट नोट्स (अप्रचलित)",
-        "View VAT Credit Note": "वैट क्रेडिट नोट देखें"
+        "View VAT Credit Note": "वैट क्रेडिट नोट देखें",
+        "Database Master Module : Unit of Measure": "डाटाबेस मास्टर मॉड्यूल : माप की इकाई",
+        "Payment Means*": "भुगतान का माध्यम*",
+        "Supply Date*": "आपूर्ति की तिथि*"
+
 
     },
 
@@ -24452,7 +24461,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "اکاؤنٹ تصدیقی خط (قرض داران)",
         "Cash Imprest Account Confirmation Letter": "نقدی امپریسٹ اکاؤنٹ تصدیقی خط",
         "VAT Credit Notes (Obsolete)": "وی اے ٹی کریڈٹ نوٹس (غیر فعال)",
-        "View VAT Credit Note": "وی اے ٹی کریڈٹ نوٹ دیکھیں"
+        "View VAT Credit Note": "وی اے ٹی کریڈٹ نوٹ دیکھیں",
+        "Database Master Module : Unit of Measure": "ڈیٹا بیس ماسٹر ماڈیول : اکائی پیمائش",
+        "Payment Means*": "ادائیگی کا ذریعہ*",
+        "Supply Date*": "فراہمی کی تاریخ*"
+
 
     },
 
@@ -28977,7 +28990,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "계정 확인서 (채무자)",
         "Cash Imprest Account Confirmation Letter": "현금 임프레스트 계정 확인서",
         "VAT Credit Notes (Obsolete)": "부가가치세 대변 메모 (사용 중지됨)",
-        "View VAT Credit Note": "부가가치세 대변 메모 보기"
+        "View VAT Credit Note": "부가가치세 대변 메모 보기",
+        "Database Master Module : Unit of Measure": "데이터베이스 마스터 모듈 : 측정 단위",
+        "Payment Means*": "지불 수단*",
+        "Supply Date*": "공급일자*"
 
 
     }

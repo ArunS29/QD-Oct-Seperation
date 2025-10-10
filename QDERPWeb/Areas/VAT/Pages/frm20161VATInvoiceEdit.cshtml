@@ -841,7 +841,7 @@
 								</td>
 							<td>
     @(Html.DevExtreme().DateBox()
-        .Label(new JS("formatMessage('Supply Date')"))
+        .Label(new JS("formatMessage('Supply Date*')"))
         .ID("SupplyDate")
         .Type(DateBoxType.Date)
         .DisplayFormat("dd-MMM-yyyy")
@@ -1005,7 +1005,7 @@
 													.HoverStateEnabled(true)
 													.Value(null)
 													.ValueExpr("CountryCodeAlpha2")
-													.DisplayExpr("CountryCodeAlpha2")
+													.DisplayExpr("CountryName")
 													.Width("100%")
 													.TabIndex(1)
 													.DropDownOptions(o => o.Width(1000))
@@ -1072,7 +1072,7 @@
 								</td>
 								<td>
 
-									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means')"))
+									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Payment Means*')"))
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeansTypeCode"))
 																			.ID("ddpaymentmeans")
 																			.ShowClearButton(true)
@@ -1166,8 +1166,17 @@
 				
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy")
+								.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Invoice Due Date should be entered')"));
+														}).Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Effective Date should be entered')"));
+														}).Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
 
 						
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
@@ -1242,6 +1251,15 @@
 																		.OnClick("onSetDefaultClick")
 																		)
 									@(Html.DevExtreme().Button()
+																		.ID("btnGetDefaultVal")
+																		//.Icon("")
+																		.Text("AB")
+																		//.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onGetDefaultValClick")
+																		)
+									@(Html.DevExtreme().Button()
 																		.ID("btnClearNotes")
 																		.Icon("clear")
 																		.Hint("Clear notes")
@@ -1291,6 +1309,11 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("CostAllocationUnitId")
 														)
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Cost Center Account should be entered')"));
+														})
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddlGoodsGroup1")
 														.ShowClearButton(true)
@@ -1919,7 +1942,7 @@
 </td>
 
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Floating).Width("100%").MaxLength(200))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%").MaxLength(400))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%").MaxLength(400).ReadOnly(true))</td>
 							
 							<td>
 								@(Html.DevExtreme().DateBox()
@@ -2215,7 +2238,7 @@
                 .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus")
-                    .Hint("Add Prepared By")
+                    //.Hint("Add Prepared By")
                     .OnClick("navigateToLedgerAccountForm") // JS function you already have
                 );
         })
@@ -2254,7 +2277,7 @@
                 .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus") // You can change to any DevExtreme icon
-                    .Hint("Add Checked By")
+                    //.Hint("Add Checked By")
                     .OnClick("navigateToLedgerAccountForm") // 👈 Your existing JS function
                 );
         })
@@ -2293,7 +2316,7 @@
                 .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus")
-                    .Hint("Add Approved By")
+                   // .Hint("Add Approved By")
                     .OnClick("navigateToLedgerAccountForm") // 👈 Same function reused
                 );
         })
@@ -3261,9 +3284,9 @@
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
 												{
-													columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')")).Alignment(HorizontalAlignment.Center);
+												@* 	columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Branch Code')")).Alignment(HorizontalAlignment.Center); *@
+													columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch/Division')")).Alignment(HorizontalAlignment.Center);
+													@* columns.Add().DataField("BranchNameAr").Caption(new JS("formatMessage('BranchNameAr')")).Alignment(HorizontalAlignment.Center); *@
 												})
 
 											)
@@ -3859,7 +3882,16 @@
 
 <script>
 
-	let companyBranchList = [], currencyDecimals = 2; // fallback if API fails;
+	let companyBranchList = [], currencyDecimals = 2,AccGroup=""; // fallback if API fails;
+					  // Detect if the page load was caused by a refresh
+    // const isPageReload = window.performance
+    //     .getEntriesByType("navigation")[0]
+    //     .type === "reload";
+
+    // if (isPageReload) {
+    //     console.log("🔁 Page refreshed — skipping invoice initialization.");
+    //     return; // ❌ Stop executing further code
+    // }
 
 	$(async function () {
 		// Fetch company list from API
@@ -4613,10 +4645,10 @@
                         $("#Remarks").dxTextBox({ label: formatMessage("Remarks"), labelMode: "outside" });
 
                         // Previous sales section
-                        $("#PrevSaleInvoicedOns").dxDateBox({ label: formatMessage("Invoiced On"), labelMode: "outside", width: "100%" });
-                        $("#PrevSaleQtyInvoiceds").dxNumberBox({ label: formatMessage("Qty Invoiced"), labelMode: "outside", width: "100%" });
-                        $("#PrevSaleUoMs").dxTextBox({ label: formatMessage("UoM"), labelMode: "outside", width: "100%" });
-                        $("#PrevSaleUnitPrices").dxNumberBox({ label: formatMessage("Unit Price"), format: "#,##0.00", labelMode: "outside", width: "100%" });
+                        $("#PrevSaleInvoicedOns").dxDateBox({ label: formatMessage("Invoiced On"), labelMode: "outside", width: "100%", readOnly: true });
+                        $("#PrevSaleQtyInvoiceds").dxNumberBox({ label: formatMessage("Qty Invoiced"), labelMode: "outside", width: "100%", readOnly: true });
+                        $("#PrevSaleUoMs").dxTextBox({ label: formatMessage("UoM"), labelMode: "outside", width: "100%", readOnly: true });
+                        $("#PrevSaleUnitPrices").dxNumberBox({ label: formatMessage("Unit Price"), format: "#,##0.00", labelMode: "outside", width: "100%", readOnly: true });
                     }, 0);
 
                     return $container;
@@ -4624,129 +4656,78 @@
             });
     }
 		},
-				{
-						dataField: "UnitRateMethod",
-					caption: formatMessage('Unit Rate Method'),
-				    cssClass: "center-header",
-					width: 200,
-					editCellTemplate: function (cellElement, cellInfo) {
-						getUnitRateMethods().done(function (unitRates) {
-							// Create container for dropdown + button
-							let $container = $("<div>").css({
-								display: "flex",
-								alignItems: "center",
-								gap: "5px",
-								width: "100%"
-							}).appendTo(cellElement);
+	{
+	dataField: "UnitRateMethod",
+	caption: formatMessage('Unit Rate Method'),
+	cssClass: "center-header",
+	width: 200,
+	editCellTemplate: function (cellElement, cellInfo) {
+		getUnitRateMethods().done(function (unitRates) {
+			let $container = $("<div>").css({
+				display: "flex",
+				alignItems: "center",
+				gap: "5px",
+				width: "100%"
+			}).appendTo(cellElement);
 
-							// DropDownBox inside container
-
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-								dataSource: unitRates,
-
-								valueExpr: "UnitCode",
-
-								displayExpr: "UnitDesc",
-
-								value: cellInfo.value || null,
-
-								placeholder: "Select Unit Rate Method",
-
-								dropDownOptions: { width: 600 },
-
-								contentTemplate: function (e) {
-
-									return $("<div>").dxDataGrid({
-
-										dataSource: unitRates,
-
-										keyExpr: "UnitCode",
-
-										selection: { mode: "single" },
-
-										height: 300,
-
-										scrolling: { mode: "virtual" },
-												 searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 130,
-													placeholder: "Search..."
-													},
-
-										columns: [
-
-									    { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
-                                        { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
-                                        { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
-                                        { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
-
-										],
-
-										onSelectionChanged: function (selectedItems) {
-
-											let selectedItem = selectedItems.selectedRowsData[0];
-
-											if (selectedItem) {
-												
-												e.component.option("value", selectedItem.UnitDesc);
-
-												cellInfo.setValue(selectedItem.UnitDesc);
-
-												let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-												if (rowIndex !== -1) {
-
-												    grid.cellValue(rowIndex, `${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
-													UnitCode=selectedItem.UnitCode;
-
-												}
-												updateInvoiceChildren();
-												   grid.saveEditData();
-
-												e.component.close();
-
-											}
-
-										}
-
-									});
-
+			$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+				dataSource: unitRates,
+				valueExpr: "UnitCode",
+				displayExpr: "UnitDesc",
+				value: cellInfo.value || null,
+				placeholder: "Select Unit Rate Method",
+				dropDownOptions: { width: 600 },
+				contentTemplate: function (e) {
+					return $("<div>").dxDataGrid({
+						dataSource: unitRates,
+						keyExpr: "UnitCode",
+						selection: { mode: "single" },
+						height: 300,
+						scrolling: { mode: "virtual" },
+						searchPanel: {
+							visible: true,
+							width: 240,
+							placeholder: "Search..."
+						},
+					
+						columns: [
+							{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+                            { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+                            { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+                            { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
+						],
+						onSelectionChanged: function (selectedItems) {
+							let selectedItem = selectedItems.selectedRowsData[0];
+							if (selectedItem) {
+								e.component.option("value", selectedItem.UnitDesc);
+								cellInfo.setValue(selectedItem.UnitDesc);
+								let grid = $("#B2BdataGrid").dxDataGrid("instance");
+								let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+								if (rowIndex !== -1) {
+									grid.cellValue(rowIndex,`${formatMessage('DescriptionDetailsText')}`, selectedItem.UnitDesc);
+									UnitCode = selectedItem.UnitCode;
 								}
+								e.component.close();
+							}
+						}
+					});
+				}
+			});
 
-							});
-
-							// ✅ Add Button
-
-							$("<div>").dxButton({
-
-								icon: "plus",
-
-								hint: "Add new item",
-
-								onClick: function () {
-
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-									 let title = formatMessage("Unit of Measure");
-									openModal(url, title);
-									//window.location.href = url;
-
-								},
-
-								width: 60,
-
-								height: 30
-
-							}).appendTo($container);
-
-						});
-
-					}
-
+			$("<div>").dxButton({
+				icon: "plus",
+				hint: "Add new item",
+				onClick: function () {
+					let url = `/${tenantName}/VAT/VATMasterModule`;
+					let title = formatMessage("Unit of Measure");
+					openModal(url, title);
 				},
+				width: 60,
+				height: 30
+			}).appendTo($container);
+		});
+	}
+},
 
 
 				//{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'),cssClass: "center-header", width: 150 },
@@ -5374,7 +5355,7 @@ if (popover.option("visible")) {
 			});
 		}
 				$(document).ready(function () {
-
+	
 				const urlParams = new URLSearchParams(window.location.search);
 				const invoiceNoFromUrl = urlParams.get("invoiceNo");
 				const isCreateMode = urlParams.get("mode") === "create";
@@ -5596,6 +5577,7 @@ if (popover.option("visible")) {
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
+										AccGroup=selectedRowData[0].AccountGroup;
 			                            var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
 			                            									// Set the value
 			                            var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity,selectedRowData[0].ClientBuildingNumber].filter(Boolean).join(", ");
@@ -5621,7 +5603,7 @@ if (popover.option("visible")) {
 			                            $("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
 		                                $("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 			                            $("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
-				                        $("#CountryCodeNumeric").dxDropDownBox("instance").option("value", selectedRowData[0].ClientCountryCode);
+				                        $("#CountryCodeNumeric").dxDropDownBox("instance").option("value", selectedRowData[0].CountryName);
 				                        $("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 
 
@@ -6040,6 +6022,10 @@ if (popover.option("visible")) {
 				                      $("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
 				                      $("#District").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
 				                      $("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
+									   var dropDownBox = $("#OurAddressDetails").dxDropDownBox("instance");
+			                            									// Set the value
+			                            var fullAddress = [selectedRowData[0].SellerPostalCode,selectedRowData[0].SellerAddressStreet, selectedRowData[0].SellerCity,selectedRowData[0].SellerBuildingNumber].filter(Boolean).join(", ");
+			                            dropDownBox.option("value", fullAddress);
 
 				}
 				}
@@ -7224,7 +7210,16 @@ if (popover.option("visible")) {
 			var PostToLedgerValidator = $("#ddlGoodsGroup2").dxValidator("instance");
 			var PostToLedgerValidation = PostToLedgerValidator.validate();
 
-			if(PostToLedgerValidation.isValid)
+			var InvoiceDueDateValidator = $("#InvoiceDueDate").dxValidator("instance");
+			var InvoiceDueDateValidation = InvoiceDueDateValidator.validate();
+
+			var EffectiveDateValidator = $("#EffectiveDate").dxValidator("instance");
+			var EffectiveDateValidation = EffectiveDateValidator.validate();
+
+			var CostCenterAccountValidator = $("#ddlGoodsGroup1").dxValidator("instance");
+			var CostCenterAccountValidation = CostCenterAccountValidator.validate();
+
+			if(PostToLedgerValidation.isValid && InvoiceDueDateValidation.isValid && EffectiveDateValidation.isValid && CostCenterAccountValidation.isValid)
 		   {
 			// Ensure dataGrid exists
 			if (!dataGrid) {
@@ -7263,13 +7258,13 @@ if (popover.option("visible")) {
 			}
 			else{
 				DevExpress.ui.dialog.custom({
-						title: "Invoice postal has failed.",
-						message: "The invoice has not been posted. Please specify the Revenue Account.",
+						title: "Clear Errors",
+						message: "Cannot continue saving without errors,Please clear the errors and continue.",
 						buttons: [{ text: "Ok", onClick: () => false }],
 						showTitle: true
 					}).show();
-				 $(".tab-content").hide();
-                 $("#tab-content-2").show();
+				 //$(".tab-content").hide();
+                 //$("#tab-content-2").show();
 			}
 			}
 		});
@@ -7807,9 +7802,7 @@ if (popover.option("visible")) {
 			}, 300);
 		}
 
-			function onSetDefaultClick() {
-			DevExpress.ui.dialog.alert("Invoice Notes has been set as default.", "Set as default");
-		}
+	
 	function onAddSalesPersonClick() {
 
 		    let url = `/${tenantName}/VAT/SalesPersonMaster`; // Example edit page
@@ -8603,6 +8596,117 @@ $("<style>")
 				dateBox.option("displayFormat", "dd-MMM-yyyy");
 			});
 		});
+
+		$(function () {
+				const dateBox = $("#InvoiceStartDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#InvoiceStartDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#InvoiceStartDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+		$(function () {
+				const dateBox = $("#ServiceStartDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#ServiceStartDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#ServiceStartDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+		$(function () {
+				const dateBox = $("#ServiceEndDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#ServiceEndDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#ServiceEndDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+		$(function () {
+				const dateBox = $("#ExpiryDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#ExpiryDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#ExpiryDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+		$(function () {
+				const dateBox = $("#PrevSaleInvoicedOns").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#PrevSaleInvoicedOns").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#PrevSaleInvoicedOns").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+		$(function () {
+				const dateBox = $("#ddlinvoicesubmittedon").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#ddlinvoicesubmittedon").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#ddlinvoicesubmittedon").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+		$(function () {
+				const dateBox = $("#PODate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#PODate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#PODate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+
+	    $(function () {
+				const dateBox = $("#InvoiceEndDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+				$("#InvoiceEndDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#InvoiceEndDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
 			 $(function () {
 				const dateBox = $("#InvoiceDueDate").dxDateBox("instance");
 
@@ -8911,8 +9015,7 @@ function onClientLinkClick(e) {
     var dropDownBox = $("#ddclientname").dxDropDownBox("instance");
     var accountId = dropDownBox.option("value");
 	debugger;
-    if (!accountId) {
-        DevExpress.ui.notify("Please select a Client Name first", "warning", 2000);
+    if (!accountId || AccGroup=="SUNDRY DEBTORS") {
         return;
     }
 
@@ -9108,7 +9211,7 @@ async function getDocumentCount() {
     if (!clientCode) {
         DevExpress.ui.notify("Please select Client Code.", "warning", 2000);
         e.cancel = true; // ✅ prevent opening
-    }
+    }	
 }
 
 function updateInvoiceChildren() {
@@ -9169,6 +9272,88 @@ function updateInvoiceChildren() {
         }
     });
 }
+
+		function onSetDefaultClick() {
+			 //  const defaultNote = $("#txtInvoiceNotes").val();
+    // const defaultNoteAr = $("#txtNotesinArabic").val();
+
+		 const defaultNote = $('#txtInvoiceNotes').dxTextArea("instance").option("value");
+		 const defaultNoteAr = $('#txtNotesinArabic').dxTextArea("instance").option("value");
+
+    $.ajax({
+        url: "/api/VATModule/UpdateInvoiceNotesDefault", // ✅ your API endpoint
+        type: "POST",
+        data: {
+            DefaultInvoiceNotes: defaultNote,
+            DefaultInvoiceNotesAr: defaultNoteAr
+        },
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 2000);
+            console.log("Response:", response);
+        },
+        error: function (xhr, status, error) {
+            console.error("Error:", xhr.responseText);
+            DevExpress.ui.notify("Error updating invoice notes!", "error", 2000);
+        }
+    });
+
+		}
+
+function onGetDefaultValClick() {
+  
+	$.ajax({
+    url: "/api/VATModule/GetLastInvoiceThanksNote",
+    type: "GET",
+    success: function (res) {
+        if (res.ReportThanksNote)
+
+			  	  $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", res.ReportThanksNote);
+				  $('#txtNotesinArabic').dxTextArea("instance")?.option("value", res.ReportThanksNoteAr);
+
+        //DevExpress.ui.notify("Loaded last invoice note successfully", "success", 2000);
+    },
+    error: function () {
+        DevExpress.ui.notify("Error fetching invoice note", "error", 2000);
+    }
+});
+
+}
+
+$(document).ready(function () {
+    $.ajax({
+        url: '/api/VATModule/GetDefaultRevenueAccount',
+        type: 'GET',
+        success: function (data) {
+            if (data && data.accountId) {
+                var ddl = $("#ddlGoodsGroup2").dxDropDownBox("instance");
+                ddl.option("value", data.accountId);
+            }
+        },
+        error: function (xhr) {
+            console.error("Failed to fetch default revenue account:", xhr.responseText);
+        }
+    });
+});
+
+
+
+$(document).ready(function () {
+    $.ajax({
+        url: '/api/VATModule/GetUserStore',
+        type: 'GET',
+        success: function (data) {
+            if (data && data.accountId) {
+                var ddl = $("#ddlItemsStore").dxDropDownBox("instance");
+                ddl.option("value", data.accountId);
+            }
+        },
+        error: function (xhr) {
+            console.error("Failed to fetch default revenue account:", xhr.responseText);
+        }
+    });
+});
+
+
 
 
 </script>

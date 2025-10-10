@@ -1205,6 +1205,16 @@
 																		.StylingMode(ButtonStylingMode.Contained)
 																		.OnClick("onSetDefaultClick")
 																		)
+
+											                            @(Html.DevExtreme().Button()
+																		.ID("btnGetDefaultVal")
+																		//.Icon("")
+																		.Text("AB")
+																		//.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onGetDefaultValClick")
+																		)
 									@(Html.DevExtreme().Button()
 																		.ID("btnClearNotes")
 																		.Icon("clear")
@@ -2119,7 +2129,7 @@
                 .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus")
-                    .Hint("Add Prepared By")
+                    //.Hint("Add Prepared By")
                     .OnClick("navigateToLedgerAccountForm") // JS function you already have
                 );
         })
@@ -2150,19 +2160,19 @@
 																													.ContentTemplate(new TemplateName("CheckedByTemplate"))
 																													.Width("100%")
 																													 .Buttons(buttons =>
-        {
-            buttons.Add().Name("dropDown"); // Standard dropdown arrow
-            buttons.Add()
-                .Name("addCheckedBy")
-                .Location(TextEditorButtonLocation.After)
-                .Widget(w => w.Button()
-                    .Type(ButtonType.Default)
-                    .Icon("plus") // You can change to any DevExtreme icon
-                    .Hint("Add Checked By")
-                    .OnClick("navigateToLedgerAccountForm") // 👈 Your existing JS function
-                );
-        })
-    )
+                                                                        {
+                                                                            buttons.Add().Name("dropDown"); // Standard dropdown arrow
+                                                                            buttons.Add()
+                                                                                .Name("addCheckedBy")
+                                                                                .Location(TextEditorButtonLocation.After)
+                                                                                .Widget(w => w.Button()
+                                                                                    .Type(ButtonType.Default)
+                                                                                    .Icon("plus") // You can change to any DevExtreme icon
+                                                                                    //.Hint("Add Checked By")
+                                                                                    .OnClick("navigateToLedgerAccountForm") // 👈 Your existing JS function
+                                                                                );
+                                                                        })
+                                                                    )
 							</td>
 							<td>
 						
@@ -2197,7 +2207,7 @@
                 .Widget(w => w.Button()
                     .Type(ButtonType.Default)
                     .Icon("plus")
-                    .Hint("Add Approved By")
+                   // .Hint("Add Approved By")
                     .OnClick("navigateToLedgerAccountForm") // 👈 Same function reused
                 );
         })
@@ -3778,7 +3788,7 @@
 
 <script>
 
-	let companyBranchList = [],currencyDecimals = 2;
+	let companyBranchList = [],currencyDecimals = 2,AccGroup="";
 
 	$(async function () {
 		// Fetch company list from API
@@ -5436,7 +5446,7 @@ if (popover.option("visible")) {
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].BillingName;
-
+								  AccGroup=selectedRowData[0].AccountGroup;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
@@ -5896,6 +5906,11 @@ $(function () {
 				                      $("#OurPostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
 				                      $("#OurDistrict").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
 				                      $("#OurDistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
+
+									  var dropDownBox = $("#OurAddressDetails").dxDropDownBox("instance");
+                           									// Set the value
+                                      var fullAddress = [selectedRowData[0].SellerPostalCode,selectedRowData[0].SellerAddressStreet, selectedRowData[0].SellerCity,selectedRowData[0].SellerBuildingNumber].filter(Boolean).join(", ");
+                                      dropDownBox.option("value", fullAddress);
 
 				} 
 				else {
@@ -8756,7 +8771,7 @@ function onClientLinkClick(e) {
     var dropDownBox = $("#ddclientname").dxDropDownBox("instance");
     var accountId = dropDownBox.option("value");
 	debugger;
-    if (!accountId) {
+    if (!accountId || AccGroup=="SUNDRY DEBTORS") {
         DevExpress.ui.notify("Please select a Client Name first", "warning", 2000);
         return;
     }
@@ -8980,6 +8995,38 @@ function updateInvoiceChildren() {
         }
     });
 }
-				
+			
+$(document).ready(function () {
+    $.ajax({
+        url: '/api/VATModule/GetDefaultRevenueAccount',
+        type: 'GET',
+        success: function (data) {
+            if (data && data.accountId) {
+                var ddl = $("#ddlGoodsGroup2").dxDropDownBox("instance");
+                ddl.option("value", data.accountId);
+            }
+        },
+        error: function (xhr) {
+            console.error("Failed to fetch default revenue account:", xhr.responseText);
+        }
+    });
+});
+
+
+// $(document).ready(function () {
+//     $.ajax({
+//         url: '/api/VATModule/GetUserStore',
+//         type: 'GET',
+//         success: function (data) {
+//             if (data && data.accountId) {
+//                 var ddl = $("#ddlItemsStore").dxDropDownBox("instance");
+//                 ddl.option("value", data.accountId);
+//             }
+//         },
+//         error: function (xhr) {
+//             console.error("Failed to fetch default revenue account:", xhr.responseText);
+//         }
+//     });
+// });
 </script>
 
