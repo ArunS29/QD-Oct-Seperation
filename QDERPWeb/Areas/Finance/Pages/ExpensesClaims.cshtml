@@ -906,102 +906,102 @@ columns.Add()
         getJournalOnLoad();
          let currentIndex = -1;
 
-    $("#dataGrid").dxDataGrid({
-        // ... your grid options ...
-        onContextMenuPreparing: function (e) {
-            e.items = [];
+        $("#dataGrid").dxDataGrid({
+            // ... your grid options ...
+            onContextMenuPreparing: function (e) {
+                e.items = [];
 
-             if (e.target === "content" && e.row && e.row.rowType === "data") {
-            const rowData = e.row.data;
+                if (e.target === "content" && e.row && e.row.rowType === "data") {
+                    const rowData = e.row.data;
 
-             // Define context menu items with permission keys
-            let menuConfig = [
-                {
-                    text: "Edit Claim",
-                    icon: "edit",
-                    color: "#28a745",
-                    permissionKey: "frm20107ExpenseClaimView_EditClaim",
-                    onItemClick: function () {
-                        if (rowData.ClaimRefNo && rowData.ClaimRefNo.trim() !== "") {
-                            let targetUrl = '';
-                            if (rowData.ClaimRefNo.startsWith('EXP')) {
-                                targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
-                            } else if (rowData.ClaimRefNo.startsWith('PCQ')) {
-                                targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
-                            } else if (rowData.ClaimRefNo.startsWith('SRQ')) {
-                                targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                    // Define context menu items with custom CSS icon classes and formatMessage text
+                    let menuConfig = [
+                        {
+                            text: formatMessage("Edit Claim"),
+                            icon: "edit",
+                            cssClass: "menu-icon-propertyallocation custom-menu-item",
+                            permissionKey: "frm20107ExpenseClaimView_EditClaim",
+                            onItemClick: function () {
+                                if (rowData.ClaimRefNo && rowData.ClaimRefNo.trim() !== "") {
+                                    let targetUrl = '';
+                                    if (rowData.ClaimRefNo.startsWith('EXP')) {
+                                        targetUrl = `/${tenantName}/finance/ExpensesClaimRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                                    } else if (rowData.ClaimRefNo.startsWith('PCQ')) {
+                                        targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                                    } else if (rowData.ClaimRefNo.startsWith('SRQ')) {
+                                        targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(rowData.ClaimRefNo)}`;
+                                    }
+                                    if (targetUrl) window.location.href = targetUrl;
+                                } else {
+                                    DevExpress.ui.notify(formatMessage("Claim Reference Number is missing."), "warning", 2000);
+                                }
                             }
-                            if (targetUrl) window.location.href = targetUrl;
-                        } else {
-                            alert("Claim Reference Number is missing.");
+                        },
+                        {
+                            text: formatMessage("Unlock Claim"),
+                            icon: "unlock",
+                            cssClass: "menu-icon-costallocation custom-menu-item",
+                            permissionKey: "frm20107ExpenseClaimView_UnlockClaim",
+                            onItemClick: function () {
+                                handleUnlockJournalEntry(rowData.ClaimRefNo, rowData.IsPaid);
+                            }
+                        },
+                        {
+                            text: formatMessage("Delete Claim"),
+                            icon: "trash",
+                            cssClass: "menu-icon-deleteallselectedlineitems custom-menu-item",
+                            permissionKey: "frm20107ExpenseClaimView_DeleteClaim",
+                            onItemClick: function () {
+                                handleDeleteJournalEntry(rowData.ClaimRefNo);
+                            }
                         }
-                    }
-                },
-                {
-                    text: "Unlock Claim",
-                    icon: "unlock",
-                    color: "#17a2b8",
-                    permissionKey: "frm20107ExpenseClaimView_UnlockClaim",
-                    onItemClick: function () {
-                        handleUnlockJournalEntry(rowData.ClaimRefNo, rowData.IsPaid);
-                    }
-                },
-                {
-                    text: "Delete Claim",
-                    icon: "trash",
-                    color: "#dc3545",
-                    permissionKey: "frm20107ExpenseClaimView_DeleteClaim",
-                    onItemClick: function () {
-                        handleDeleteJournalEntry(rowData.ClaimRefNo);
-                    }
-                }
-            ];
+                    ];
 
-            // Apply permissions
-            menuConfig.forEach(item => {
-                let perm = menuPermissions[item.permissionKey?.toLowerCase()];
-                if (perm && perm.visible) {
-                    e.items.push({
-                        ...item,
-                        disabled: !perm.enabled
+                    // Apply permissions
+                    menuConfig.forEach(item => {
+                        let perm = menuPermissions[item.permissionKey?.toLowerCase()];
+                        if (perm && perm.visible) {
+                            e.items.push({
+                                ...item,
+                                disabled: !perm.enabled
+                            });
+                        }
                     });
                 }
-            });
-        }
-        
 
-            if (e.target === "header") {
-                e.items.push(
-                    {
-                        text: "Column Chooser",
-                        icon: "columnchooser",
-                        color: "#007bff",
-                        onItemClick: function () {
-                            $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                if (e.target === "header") {
+                    e.items.push(
+                        {
+                            text: formatMessage("Column Chooser"),
+                            icon: "columnchooser",
+                            cssClass: "menu-icon-employeeallocation custom-menu-item",
+                            onItemClick: function () {
+                                $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                            }
+                        },
+                        {
+                            text: formatMessage("Refresh"),
+                            icon: "refresh",
+                            cssClass: "menu-icon-propertyallocation custom-menu-item",
+                            onItemClick: function () {
+                                getJournalOnLoad();
+                            }
                         }
-                    },
-                    {
-                        text: "Refresh Data",
-                        icon: "refresh",
-                        color: "#ffc107",
-                        onItemClick: function () {
-                            $("#dataGrid").dxDataGrid("instance").refresh();
-                        }
-                    }
-                );
-            }
+                    );
+                }
 
-            // ❌ prevent menu & line when no items
-            if (!e.items || e.items.length === 0) {
-                e.cancel = true;
-            }
+                // ❌ Prevent menu & line when no items
+                if (!e.items || e.items.length === 0) {
+                    e.cancel = true;
+                }
 
-            // ❌ prevent highlight line when clicking below last row
-            if (e.target === "content" && !e.row) {
-                e.cancel = true;
+                // ❌ Prevent highlight when clicking below last row
+                if (e.target === "content" && !e.row) {
+                    e.cancel = true;
+                }
             }
-        }
-    });
+        });
+
 
     // // ✅ Keyboard navigation
     // $(document).on("keydown", function (e) {

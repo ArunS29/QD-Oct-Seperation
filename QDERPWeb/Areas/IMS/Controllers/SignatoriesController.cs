@@ -190,8 +190,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+        [HttpDelete]
+        public IActionResult DeleteSignatory(byte id)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var entity = dbContext.Tbl90104DocumentSignatories
+                    .FirstOrDefault(x => x.SignatoryId == id);
 
+                if (entity == null)
+                    return Ok(new { success = false, message = "Record not found." });
 
+                dbContext.Tbl90104DocumentSignatories.Remove(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true });
+            }
+
+            return Unauthorized(new { success = false, message = "Tenant not found." });
+        }
 
 
     }

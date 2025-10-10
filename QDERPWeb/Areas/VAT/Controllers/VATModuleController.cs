@@ -7592,7 +7592,25 @@ documentNo: InvChildSlNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var users = dbContext.TblUserMasters.Select(u => new { u.UserId, u.UserName });
+                    return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserddl: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
+            }
 
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
 
