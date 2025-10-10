@@ -8,7 +8,8 @@
         public string TenantName { get; set; }
         public Boolean ResetPassword { get; set; }
         public string otp { get; set; }
-
-
+        // Optional client-provided device details
+        public string DeviceName { get; set; }
+        public string MacAddress { get; set; }
     }
 }
