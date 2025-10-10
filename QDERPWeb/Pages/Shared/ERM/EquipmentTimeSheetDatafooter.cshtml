@@ -323,7 +323,7 @@
 </div>
 
 <script>
-     function handleShowTimesheet() {
+     function handleShowTimesheet(e) {
         switch(e.itemData.text) {
             case "Show All Timesheet":
                 showAllTimesheet();
@@ -356,23 +356,24 @@
                 columns: [
                     { dataField: "PropertyNo", caption: formatMessage("Property No"), width: 120,  alignment: "center" },
                     { dataField: "TimeSheetDate", caption: formatMessage("Date"), dataType: "date",  alignment: "center" },
-                    {
-                        dataField: "WorkStatus",
-                        caption: formatMessage("Status"),
-                        width: 200,
-                        alignment: "center",
-                        editCellTemplate: function(cellElement, cellInfo) {
-                        workStatusDropDownEditor(cellElement, cellInfo);
-                        },
-                        cellTemplate: function(container, options) {
-                            if (Array.isArray(workStatusList)) {
-                                var item = workStatusList.find(function(d) { return d.DayCode === options.value; });
-                                container.text(item ? item.DayDescription : (options.value || ''));
-                            } else {
-                                container.text(options.value || '');
-                            }
-                        }
-                    }
+                  {
+    dataField: "WorkStatus",
+    caption: "Status",
+    width: 200,
+    alignment: "center",
+    editCellTemplate: function(cellElement, cellInfo) {
+        workStatusDropDownEditor(cellElement, cellInfo);
+    },
+    cellTemplate: function(container, options) {
+        if (Array.isArray(workStatusList)) {
+            var item = workStatusList.find(function(d) { return d.DaySlNo === options.value; });
+            container.text(item ? item.DayDescription : (options.value || ''));
+        } else {
+            container.text(options.value || '');
+        }
+    }
+}
+
                 ]
             },
                {
@@ -440,7 +441,7 @@
                {
         caption: formatMessage("Day Shift Operator TimeSheet Details"), alignment: "center",
         columns: [
-            { dataField: "EmployeeName", caption: formatMessage("Day Operator Name"),  alignment: "center"  },
+            { dataField: "EmployeeName", caption: formatMessage("Day Operator Name"),  alignment: "center"  }, 
             {
                 dataField: "OprtRegHoursInMin",
                 caption: formatMessage("Reg Hours (Day)"),
@@ -509,7 +510,7 @@
 
         grid.option("columns", [
             {
-                caption: formatMessage("Equipment TimeSheet Details", alignment: "center",
+                caption: formatMessage("Equipment TimeSheet Details"), alignment: "center",
                 columns: [
                     { dataField: "PropertyNo", caption: formatMessage("Property No"), width: 120,  alignment: "center" },
                     { dataField: "TimeSheetDate", caption: formatMessage("Date"), dataType: "date",  alignment: "center"  },

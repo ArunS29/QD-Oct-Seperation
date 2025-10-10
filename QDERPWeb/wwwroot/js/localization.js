@@ -3283,6 +3283,8 @@ var dictionary = {
         "Po Date": "Po Date",
         "Total Amount With Tax": "Total Amount With Tax",
         "Net Amount": "Net Amount",
+        "Night Shift Operator": "Night Shift Operator",
+        "TimeSheet Master Id":"TimeSheet Master Id",
         "Property Type Id": "Property Type Id",
         "Operator Id":"Operator Id",
         "Receipt No": "Receipt No",
