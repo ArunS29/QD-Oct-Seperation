@@ -215,9 +215,21 @@
             columns.Add().DataField("AccountNoInSubLedger").Caption(new JS("formatMessage('Account No In SubLedger')"));
             columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')"));
             columns.Add().DataField("ReferenceNoInSubLedger").Caption(new JS("formatMessage('Reference No In SubLedger')"));
-            columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Amount In Voucher Formatted')"));
-            columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Amount In SubLedger Formatted')"));
-            columns.Add().DataField("TotalAmount").Caption(new JS("formatMessage('Total Amount')"));
+            columns.Add().DataField("AmountInVoucherFormatted")
+            .Caption(new JS("formatMessage('Amount In Voucher Formatted')"))
+            .DataType(GridColumnDataType.Number)
+            .Format("###,##0.00");
+
+            columns.Add().DataField("AmountInSubLedgerFormatted")
+            .Caption(new JS("formatMessage('Amount In SubLedger Formatted')"))
+            .DataType(GridColumnDataType.Number)
+            .Format("###,##0.00");
+
+            columns.Add().DataField("TotalAmount")
+            .Caption(new JS("formatMessage('Total Amount')"))
+            .DataType(GridColumnDataType.Number)
+            .Format("###,##0.00");
+
             columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping')"));
 
         })

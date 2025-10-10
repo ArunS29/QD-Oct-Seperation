@@ -6,7 +6,10 @@
 
 
 <h2 id="employeesummaryreport"></h2>
-
+<input id="formId" value="EmployeeReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -17,7 +20,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -30,7 +36,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -143,7 +152,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -191,36 +205,36 @@
                         }
                     },
 
-                    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
-                    { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
-                    { dataField: "EmployeeNo", caption: formatMessage("Employee No") },
-                    { dataField: "EmpAllocDrCr", caption: formatMessage("Emp Alloc DrCr") },
-                    { dataField: "AmountAllocated", summaryType: "sum", displayFormat: "currency", caption: formatMessage("Amount Allocated") },
-                    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
-                    { dataField: "AccountHead", caption: formatMessage("Account Head") },
-                    { dataField: "EmployeeName", caption: formatMessage("Employee Name") },
-                    { dataField: "VoucherDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
-                    { dataField: "EffectiveDate", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
-                    { dataField: "CategoryTitle", caption: formatMessage("Category Title") },
-                    { dataField: "NationalityEn", caption: formatMessage("Nationality En") },
-                    { dataField: "VisaPositionTitle", caption: formatMessage("Visa Position Title") },
-                    { dataField: "WorkSite", caption: formatMessage("Work Site") },
-                    { dataField: "SponsorName", caption: formatMessage("Sponsor Name") },
-                    { dataField: "NationalId", caption: formatMessage("National ID") },
-                    { dataField: "IsDiscontinued", caption: formatMessage("Is Discontinued") },
-                    { dataField: "EmployeeGroup", caption: formatMessage("Employee Group") },
-                    { dataField: "JobTitle", caption: formatMessage("Job Title") },
-                    { dataField: "CostCentreCode", caption: formatMessage("Cost Centre Code") },
-                    { dataField: "CostCentreTitle", caption: formatMessage("Cost Centre Title") },
-                    { dataField: "DepartmentCode", caption: formatMessage("Department Code") },
-                    { dataField: "Department", caption: formatMessage("Department") },
-                    { dataField: "EmployeeReferenceId", caption: formatMessage("Employee Reference Id") },
-                    { dataField: "BankAccountNo", caption: formatMessage("Bank Account No") },
-                    { dataField: "BankName", caption: formatMessage("Bank Name") },
-                    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
+                    { dataField: "VoucherNo",area: "filter", caption: formatMessage("Voucher No") },
+                    { dataField: "VoucherEntryId", area: "filter",caption: formatMessage("Voucher Entry Id") },
+                    { dataField: "EmployeeNo", area: "filter",caption: formatMessage("Employee No") },
+                    { dataField: "EmpAllocDrCr",area: "filter", caption: formatMessage("Emp Alloc DrCr") },
+                   
+                    { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
+                    { dataField: "AccountHead", area: "filter",caption: formatMessage("Account Head") },
+                 
+                    { dataField: "VoucherDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Voucher Date") },
+                    { dataField: "EffectiveDate",area: "filter", dataType: "date", displayFormat: "dd-MMM-yyyy", caption: formatMessage("Effective Date") },
+                    { dataField: "CategoryTitle", area: "filter",caption: formatMessage("Category Title") },
+                    { dataField: "NationalityEn",area: "filter", caption: formatMessage("Nationality En") },
+                    { dataField: "VisaPositionTitle", area: "filter",caption: formatMessage("Visa Position Title") },
+                    { dataField: "WorkSite",area: "filter", caption: formatMessage("Work Site") },
+                    { dataField: "SponsorName",area: "filter", caption: formatMessage("Sponsor Name") },
+                    { dataField: "NationalId",area: "filter", caption: formatMessage("National ID") },
+                    { dataField: "IsDiscontinued",area: "filter", caption: formatMessage("Is Discontinued") },
+                    { dataField: "EmployeeGroup", area: "filter",caption: formatMessage("Employee Group") },
+                    { dataField: "JobTitle",area: "filter", caption: formatMessage("Job Title") },
+                    { dataField: "CostCentreCode", area: "filter",caption: formatMessage("Cost Centre Code") },
+                    { dataField: "CostCentreTitle",area: "filter", caption: formatMessage("Cost Centre Title") },
+                    { dataField: "DepartmentCode",area: "filter", caption: formatMessage("Department Code") },
+                    
+                    { dataField: "EmployeeReferenceId",area: "filter", caption: formatMessage("Employee Reference Id") },
+                    { dataField: "BankAccountNo", area: "filter",caption: formatMessage("Bank Account No") },
+                    { dataField: "BankName", area: "filter",caption: formatMessage("Bank Name") },
+                    { dataField: "VoucherType",area: "filter", caption: formatMessage("Voucher Type") },
                     { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"),area: "column",showTotals: false, showGrandTotals: false },
-                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
-                    { dataField: "BillRemarks", caption: formatMessage("Bill Remarks") }
+                    { dataField: "VoucherNarration",area: "filter", caption: formatMessage("Voucher Narration") },
+                    { dataField: "BillRemarks",area: "filter", caption: formatMessage("Bill Remarks") }
 
                 ]
             },
@@ -245,7 +259,7 @@
             showColumnTotals: false,
             showColumnGrandTotals: false,
             showRowTotals: false,
-            showRowGrandTotals: false
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
         // Load data
@@ -336,6 +350,86 @@
         });
 
     });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if currently showing filter fields
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of your filter fields to toggle
+        const filterFields = [
+            "VoucherNo", "VoucherEntryId", "EmployeeNo", "EmpAllocDrCr",
+            "VoucherRefNo", "AccountHead", "VoucherDate",
+            "EffectiveDate", "CategoryTitle", "NationalityEn", "VisaPositionTitle",
+            "WorkSite", "SponsorName", "NationalId", "IsDiscontinued",
+            "EmployeeGroup", "JobTitle", "CostCentreCode", "CostCentreTitle",
+            "DepartmentCode",  "EmployeeReferenceId",
+            "BankAccountNo", "BankName", "VoucherType", "VoucherNarration", "BillRemarks"
+        ];
+
+        // Toggle area for all filter fields
+        fields.forEach((f, i) => {
+            if (filterFields.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Reload data source to apply change
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1500
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "Department");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+
 </script>
 
 <style>

@@ -60,17 +60,17 @@
 
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container" style="text-align:center;">
         <div id="TransactionDetails" class="no-border-input"></div>
     </div>
 </div>
-
+ *@
 <div>
     @await Html.PartialAsync("TransactionDetailsFooter")
 </div>
 
-
+<input id="formId" value="DTReport" type="hidden" />
     <div class="dx-field ledgerResult">
         @*    <div class="horizontal-container">
             @foreach (var btn in new[] {
@@ -243,13 +243,39 @@ function loadPivotGridData() {
         $("#btnShowRowTotals").on("click", function (e) {
             e.preventDefault();
 
-            const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+            const pivot = $("#pivotGridContainer").dxPivotGrid("instance");
+            if (!pivot) return;
 
-            if (pivotGrid) {
-                const currentSetting = pivotGrid.option("showRowTotals");
-                pivotGrid.option("showRowTotals", !currentSetting);
+            const ds = pivot.getDataSource();
+            const currentlyShowing = !!pivot.option("showRowTotals");
+
+            if (currentlyShowing) {
+                // Turn off row totals globally
+                pivot.option("showRowTotals", false);
+                // (optional) reset per-field showTotals back to true if you want defaults restored:
+                // ds.fields().forEach((f, i) => ds.field(i, { showTotals: true }));
+                // ds.load();
+                return;
             }
+
+            // Enable row totals globally, but make totals visible only for VoucherNo
+            const fields = ds.fields(); // read current fields array
+            fields.forEach((f, idx) => {
+                // Only adjust row fields (you can modify the condition if you want column/data fields affected too)
+                if (f.area === "row") {
+                    const show = (f.dataField === "VoucherNo");
+                    // Use PivotGridDataSource.field(id, options) to update the field
+                    ds.field(idx, { showTotals: show });
+                }
+            });
+
+            // Apply changes (call load() to update the PivotGrid)
+            ds.load().then(function () {
+                // Finally enable the global flag so totals are drawn (the per-field showTotals controls which field shows totals).
+                pivot.option("showRowTotals", true);
+            });
         });
+
 
         $("#btnShowFields").on("click", function (e) {
             e.preventDefault();
@@ -376,14 +402,14 @@ function loadPivotGridData() {
                }, 500); // Small delay to ensure the textbox is ready
            }
        });
-       $(function () {
-            $("#TransactionDetails").dxTextBox({
-            text: formatMessage("Detailed Transaction Report"),
-            readOnly: true,
-            onContentReady: function (e) {
-            $(e.element).addClass("dx-textbox-heading");
-            }
-            });
-        });
+       // $(function () {
+       //      $("#TransactionDetails").dxTextBox({
+       //      text: formatMessage("Detailed Transaction Report"),
+       //      readOnly: true,
+       //      onContentReady: function (e) {
+       //      $(e.element).addClass("dx-textbox-heading");
+       //      }
+       //      });
+       //  });
 
 </script>

@@ -99,7 +99,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var query = dbContext.Qry201126propertyAllocationFullWtDetails.AsQueryable();
+                    var query = dbContext.Qry20184PropertyAllocationWtLedgers.AsQueryable();
 
                     if (!string.IsNullOrEmpty(accountId))
                         query = query.Where(x => x.AccountHead == accountId);
@@ -116,7 +116,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var result = rawData.Select(item => new
                     {
                         item.VoucherNo,
-                        item.VoucherEntryNo,
+                        item.VoucherEntryId,
                         item.PropertyNo,
                         item.PropertyDescription,
                         item.AmountAllocated,
@@ -125,21 +125,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.AccountHeadName,
                         VoucherDate = item.VoucherDate?.ToString("dd-MMM-yyyy"),
                        
-                        item.EntryNarration,
-                        item.AccountGroup,
-                        item.MasterGroup,
-                        item.PlateNo,
-                        item.DoorNo,
-                        item.ChassisNo,
-                        item.PropertyCategoryName,
-                        item.PropertyGroup,
+                        item.PropertyAllocDrCr,
+                        item.AllocationEffectiveDate,
+                       
                         item.PropertyType,
                         item.ExpenseAmount,
                         item.RevenueAmount,
                         item.CostAndRevenueClubbed,
                         item.CostCenterCode,
                         item.CostCenterUnit,
-                       
+                       item.BillRemarks,
                         item.VoucherType,
                       
                         item.VoucherNarration

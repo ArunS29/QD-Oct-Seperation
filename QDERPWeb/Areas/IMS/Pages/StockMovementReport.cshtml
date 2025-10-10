@@ -147,6 +147,11 @@
 	.titleCard-toggle1 {
 		display: none;
 	}
+
+	.loader {
+		display: block !important;
+		top: 70% !important;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -155,6 +160,10 @@
 		<div id="stockMovementReport" class="no-border-input"></div>
 	</div>
 </div> *@
+<div id="loadingSpinner" class="spinner-overlay">
+	<div class="loader"></div>
+</div>
+
 <div class="Head">
 	<div class="footer-fixed1" style="margin:10px;">
 		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
@@ -239,7 +248,8 @@
 				subColumns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TransactionDate).Caption(new JS("formatMessage('Transaction Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.Transactions).Caption(new JS("formatMessage('Transaction Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('Item code')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+								subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Stock Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.StockReceivedQty).Caption(new JS("formatMessage('Quantity')")).Alignment(HorizontalAlignment.Center).Visible(true);

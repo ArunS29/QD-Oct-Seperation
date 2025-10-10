@@ -1990,82 +1990,77 @@ function disableSpecificControls() {
     }
 
 $("#btnSave").on("click", function () {
-    debugger;
-        $("#btnSave").dxButton("instance").option("text", "Update");
+    const btn = $("#btnSave").dxButton("instance");
+    btn.option("text", "Update");
+    btn.option("disabled", true); // prevent double-click saves
 
+    // 🔹 Validate Supplier selection
     const supplier = $("#SupplierName").dxSelectBox("instance")?.option("value");
     if (!supplier) {
         DevExpress.ui.notify("Please select a Supplier.", "error", 3000);
-        $("#SupplierName").dxValidator("instance")?.validate(); // trigger built-in dxValidator if attached
+        $("#SupplierName").dxValidator("instance")?.validate();
+        btn.option("disabled", false);
         return;
     }
-    const master = {
 
-        Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
-        Podate: $("#PoDate").dxDateBox("instance").option("value"),
-        SupplierCode: $("#SupplierName").dxSelectBox("instance").option("value"),
-        PorevisionNo: $("#RevNo").dxSelectBox("instance").option("value"),
-        SupplierQuoteNo: $("#SupplierQuotationNo").dxTextBox("instance").option("value"),
-        SupplierQuoteDate: $("#SupplierQuoteDate").dxDateBox("instance").option("value"),
-        Attention: $("#AttentionTo").dxTextBox("instance").option("value"),
-        SupplierContactNo: $("#SupplierContactNo").dxTextBox("instance").option("value"),
-        SupplierContactEmail: $("#SupplierEmail").dxTextBox("instance").option("value"),
-        ProjectMasterCode: $("#Project").dxSelectBox("instance").option("value"),
-        Project: $("#ClientProjectRef").dxTextBox("instance").option("value"),
-        Posummary: $("#PoSummary").dxTextArea("instance").option("value"),
-        Pointroduction: $("#PoIntro").dxTextArea("instance").option("value"),
-        PothanksNote: $("#Thanks").dxTextArea("instance").option("value"),
-        SubjectTitle: $("#Subject").dxTextArea("instance").option("value"),
-        CancellationRemarks: $("#Cancellation").dxTextArea("instance").option("value"),
-        AdditionsText: $("#ShipmentHandling").dxTextBox("instance").option("value"),
-        AdditionsAmount: $("#ShipmentHandlingMethod").dxNumberBox("instance").option("value"),
-        DiscountsText: $("#Discount").dxTextBox("instance").option("value"),
-        DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance").option("value"),
-        CompanyBranch: $("#CompanyName").dxSelectBox("instance").option("value"),
-        VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance").option("value"),
-        SubmittedBy: $("#preparedBy2").dxSelectBox("instance").option("value"),
-        VerifiedBy: $("#verifiedBy2").dxSelectBox("instance").option("value"),
-        SupplierRefNo: $("#ReferenceNo").dxTextBox("instance").option("value"),
-        ApprovedBy: $("#approvedBy2").dxSelectBox("instance").option("value"),
-        CurrencyRate: $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+    // 🔹 Collect Master data
+    const master = {
+        Pono: $("#PurchaseOrderNo").dxTextBox("instance")?.option("value"),
+        Podate: $("#PoDate").dxDateBox("instance")?.option("value"),
+        SupplierCode: supplier,
+        PorevisionNo: $("#RevNo").dxSelectBox("instance")?.option("value"),
+        SupplierQuoteNo: $("#SupplierQuotationNo").dxTextBox("instance")?.option("value"),
+        SupplierQuoteDate: $("#SupplierQuoteDate").dxDateBox("instance")?.option("value"),
+        Attention: $("#AttentionTo").dxTextBox("instance")?.option("value"),
+        SupplierContactNo: $("#SupplierContactNo").dxTextBox("instance")?.option("value"),
+        SupplierContactEmail: $("#SupplierEmail").dxTextBox("instance")?.option("value"),
+        ProjectMasterCode: $("#Project").dxSelectBox("instance")?.option("value"),
+        Project: $("#ClientProjectRef").dxTextBox("instance")?.option("value"),
+        Posummary: $("#PoSummary").dxTextArea("instance")?.option("value"),
+        Pointroduction: $("#PoIntro").dxTextArea("instance")?.option("value"),
+        PothanksNote: $("#Thanks").dxTextArea("instance")?.option("value"),
+        SubjectTitle: $("#Subject").dxTextArea("instance")?.option("value"),
+        CancellationRemarks: $("#Cancellation").dxTextArea("instance")?.option("value"),
+        AdditionsText: $("#ShipmentHandling").dxTextBox("instance")?.option("value"),
+        AdditionsAmount: $("#ShipmentHandlingMethod").dxNumberBox("instance")?.option("value"),
+        DiscountsText: $("#Discount").dxTextBox("instance")?.option("value"),
+        DeductionsAmount: $("#DiscountMethod").dxNumberBox("instance")?.option("value"),
+        CompanyBranch: $("#CompanyName").dxSelectBox("instance")?.option("value"),
+        VatapplicableRate: $("#ddGetTax").dxDropDownBox("instance")?.option("value"),
+        SubmittedBy: $("#preparedBy2").dxSelectBox("instance")?.option("value"),
+        VerifiedBy: $("#verifiedBy2").dxSelectBox("instance")?.option("value"),
+        SupplierRefNo: $("#ReferenceNo").dxTextBox("instance")?.option("value"),
+        ApprovedBy: $("#approvedBy2").dxSelectBox("instance")?.option("value"),
+        CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance")?.option("value"),
+        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance")?.option("value"),
     };
 
-    // Ensure PO number exists
+    // 🔹 Validate PO number
     if (!master.Pono) {
         DevExpress.ui.notify("PO number is missing. Please refresh and try again.", "error", 3000);
+        btn.option("disabled", false);
         return;
     }
-   
-    // Finalize grid edits before reading children
-     const grid = $("#itemGrid").dxDataGrid("instance");
-      if (!children || children.length === 0) {
-			DevExpress.ui.notify("No child records to save.", "error", 3000);
-			$btn.option("disabled", false); // Re-enable the button
-			return;
-		}
-            if (!grid) {
-                console.warn("itemGrid is not initialized");
-                return;
-            }
 
-            // Commit any pending edits first
-            grid.saveEditData();
+    // 🔹 Validate grid
+    const grid = $("#itemGrid").dxDataGrid("instance");
+    if (!grid) {
+        console.warn("itemGrid is not initialized");
+        btn.option("disabled", false);
+        return;
+    }
 
-            // Get the actual grid data
-           let children = grid.getDataSource().items().map(({ PropertyPochildNo, ...rest }) => rest);
+    grid.saveEditData();
+    let children = grid.getDataSource()?.items() || [];
+    children = children.map(({ PropertyPochildNo, ...rest }) => rest); // remove ID if needed
 
-            // ✅ Now you can send children in your AJAX request
-            console.log("Children:", children);
-
-
-    // AJAX call
+    // 🔹 Send AJAX request
     $.ajax({
-        url: '/api/EQPurchaseOrder/SavePurchaseOrder',
-        type: 'POST',
-        data: JSON.stringify({ master: master, children: children }),
-        contentType: 'application/json',
+        url: "/api/EQPurchaseOrder/SavePurchaseOrder",
+        type: "POST",
+        data: JSON.stringify({ master, children }),
+        contentType: "application/json",
         success: function (res) {
             if (res.success) {
                 DevExpress.ui.notify(res.message, "success", 3000);
@@ -2082,13 +2077,14 @@ $("#btnSave").on("click", function () {
             } else {
                 DevExpress.ui.notify(res.message, "error", 3000);
             }
+            btn.option("disabled", false);
         },
         error: function (xhr) {
             DevExpress.ui.notify("Failed to save: " + (xhr.responseText || xhr.statusText), "error", 3000);
+            btn.option("disabled", false);
         }
     });
 });
-
 
 
  $("#btnSaveAndClose").on("click", function () {
@@ -2145,6 +2141,7 @@ $("#btnSave").on("click", function () {
         return;
     }
     const grid = $("#itemGrid").dxDataGrid("instance");
+
     if (!grid) {
         console.warn("itemGrid is not initialized");
         return;

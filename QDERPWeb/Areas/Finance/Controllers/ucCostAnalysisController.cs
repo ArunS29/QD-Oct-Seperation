@@ -213,7 +213,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var query = dbContext.Qry20106CostAnalyses.AsQueryable();
+                    var query = dbContext.Qry20181CostAllocationWtLedgers.AsQueryable();
 
                     if (!string.IsNullOrEmpty(accountId))
                     {
@@ -247,7 +247,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.CostAllocDrCr,
                         item.AmountAllocated,
                         item.CostAllocRemarks,
-                        item.IsDisabled,
+                       
                         item.AccountHead,
                         item.AccountGroup,
                         item.MasterGroup,
@@ -255,10 +255,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.AccountId,
                         item.VoucherNo,
                         item.VoucherType,
-                        item.VoucherTypeAndNo,
-                        item.CostCenterIncharge,
-                        item.EntryNarration,
-                        item.SysRemarks,
+                       
                         item.VoucherMonth,
                         item.VoucherYear,
                         item.EffectiveMonth,

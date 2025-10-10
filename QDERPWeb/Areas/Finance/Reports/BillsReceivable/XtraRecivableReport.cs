@@ -143,27 +143,27 @@ namespace QD.ERP.Web.Areas.Finance.Reports
 
             try
             {
-                if (this.sqlDataSource2 == null)
-                    this.sqlDataSource2 = new SqlDataSource();
+                if (this.sqlDataSource1 == null)
+                    this.sqlDataSource1 = new SqlDataSource();
 
-                this.sqlDataSource2.Queries.Clear();
-                this.sqlDataSource2.Queries.Add(selectQuery);
+                this.sqlDataSource1.Queries.Clear();
+                this.sqlDataSource1.Queries.Add(selectQuery);
 
                 // Multitenant database connection setup
                 if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
                     var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
-                    this.sqlDataSource2.ConnectionParameters = connectionParams;
+                    this.sqlDataSource1.ConnectionParameters = connectionParams;
                 }
                 else
                 {
                     throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
 
-                this.sqlDataSource2.RebuildResultSchema();
-                this.sqlDataSource2.Fill();
+                this.sqlDataSource1.RebuildResultSchema();
+                this.sqlDataSource1.Fill();
 
-                this.DataSource = sqlDataSource2;
+                this.DataSource = sqlDataSource1;
                 this.DataMember = selectQuery.Name;
 
                 Console.WriteLine("Report Data Loaded Successfully.");
@@ -307,6 +307,53 @@ private bool IsBranchName(List<string> values)
                 SetCurrencyImageNull();
             }
         }
+        private void RemoveGroupHeaders(bool showByBranch, bool showBySalesPerson, bool showByCompany)
+        {
+            try
+            {
+                // Example: assumes you have these group headers defined in the report designer
+                var groupHeaderBranch = this.Bands["GroupHeaderBranch"];
+                var groupHeaderSalesPerson = this.Bands["GroupHeaderSalesPerson"];
+                var groupHeaderCompany = this.Bands["GroupHeaderCompany"];
+
+                if (showByCompany)
+                {
+                    if (groupHeaderBranch != null) this.Bands.Remove(groupHeaderBranch);
+                    if (groupHeaderSalesPerson != null) this.Bands.Remove(groupHeaderSalesPerson);
+                }
+                else
+                {
+                    if (showByBranch && groupHeaderBranch != null)
+                        this.Bands.Remove(groupHeaderBranch);
+
+                    if (showBySalesPerson && groupHeaderSalesPerson != null)
+                        this.Bands.Remove(groupHeaderSalesPerson);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error removing group headers: {ex.Message}");
+            }
+        }
+        private void XtraRecivableReport_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+        {
+            try
+            {
+                // Example flags – you can bind these from your report parameters or elsewhere
+                bool showByBranch = Convert.ToBoolean(Parameters["ShowReportByBranch"]?.Value ?? false);
+                bool showBySalesPerson = Convert.ToBoolean(Parameters["ShowReportBySalesPerson"]?.Value ?? false);
+                bool showByCompany = Convert.ToBoolean(Parameters["ShowReportByCompany"]?.Value ?? false);
+
+                RemoveGroupHeaders(showByBranch, showBySalesPerson, showByCompany);
+
+                if (FindControl("xrLabelUserPrinting", true) is XRLabel lblUser)
+                    lblUser.Text = $"Reported By: {Parameters["UserName"]?.Value} on {DateTime.Now:dd-MMM-yyyy hh:mm tt}";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in BeforePrint: {ex.Message}");
+            }
+        }
 
 
 
@@ -390,5 +437,7 @@ private bool IsBranchName(List<string> values)
                 };
             }
         }
+
     }
+
 }

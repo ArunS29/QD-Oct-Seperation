@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, username);
-            ConfigureDataSource(accountId, toDate); // ✅ include toDate for stored procedure
+            ConfigureDataSource(accountId, DateTime.Today); // ✅ use current date (today) for stored procedure
             LoadCurrencySymbolAndImage();
         }
 
@@ -43,10 +43,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             InitializeComponent();
         }
 
-        private void ConfigureDataSource(string accountId, DateTime toDate)
+        private void ConfigureDataSource(string accountId, DateTime currentDate)
         {
-            // ✅ Step 1: Execute Stored Procedure First
-            ExecuteAgeingStoredProcedure(toDate);
+            // ✅ Step 1: Execute Stored Procedure with current date (today)
+            ExecuteAgeingStoredProcedure(currentDate);
 
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
@@ -76,7 +76,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
         }
 
-        private void ExecuteAgeingStoredProcedure(DateTime endDate)
+        private void ExecuteAgeingStoredProcedure(DateTime currentDate)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context for stored procedure.");
@@ -85,20 +85,20 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             {
                 connection.Open();
 
-                // Step 1: Execute sp20125AgeingPayableReportsWtAdvances
+                // Step 1: Execute sp20124AgeingReports with current date
                 using (var command = new SqlCommand("sp20124AgeingReports", connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.Parameters.AddWithValue("@EndDate", currentDate);
                     command.CommandTimeout = 120;
                     command.ExecuteNonQuery();
                 }
 
-                // Step 2: Execute sp20125AgeingPayableReports
+                // Step 2: Execute sp20125AgeingPayableReports with current date
                 using (var command = new SqlCommand("sp20125AgeingPayableReports", connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.Parameters.AddWithValue("@EndDate", currentDate);
                     command.CommandTimeout = 120;
                     command.ExecuteNonQuery();
                 }

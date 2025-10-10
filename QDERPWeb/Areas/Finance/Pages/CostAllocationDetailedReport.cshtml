@@ -7,7 +7,10 @@
 
 
 <h2 id="costallocationdetailsreport"></h2>
-
+<input id="formId" value="CostReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -18,7 +21,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -31,7 +37,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -97,9 +106,7 @@
     </div>
 </div>
 <div id="dataGrid" style="margin-top: 15px;"></div>
-<div class="limited-footer">
-    @await Html.PartialAsync("_GridFooter")
-</div>
+
 <div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
 
 <script>
@@ -140,7 +147,12 @@
         const accountId = getQueryParam('accountId');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -173,7 +185,20 @@
                     { dataField: "AccountHead", area: "column", caption: formatMessage("Account Head"), showTotals: false, showGrandTotals: false },
 
                     // === COLUMN FIELDS ===
-                    { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Allocation Master Group"), showTotals: false, showGrandTotals: false },
+                     {
+                    dataField: "CostAllocationMasterGroup",
+                    area: "row",
+                    caption: formatMessage("Cost Allocation Master Group"),
+                    showTotals: true,            // ✅ Enable totals for this field
+                    showGrandTotals: true,       // ✅ Show grand totals
+                    customizeText: function (cellInfo) {
+                        // Customize only TOTAL cells
+                        if (cellInfo.cell && cellInfo.cell.type === "T") {
+                            return cellInfo.valueText + " Total:";
+                        }
+                        return cellInfo.valueText;
+                    }
+                },
                     { dataField: "CostAllocationGroup", caption: formatMessage("Cost Group"), showTotals: false, showGrandTotals: false },
                     { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Center Unit"), showTotals: false, showGrandTotals: false },
 
@@ -195,39 +220,39 @@
                     },
 
                     // === EXTRA FIELDS (available in chooser but not visible initially) ===
-                    { dataField: "CostAmount", summaryType: "sum", caption: formatMessage("Cost Amount") },
-                    { dataField: "Income", summaryType: "sum", caption: formatMessage("Income") },
-                    { dataField: "Expenses", summaryType: "sum", caption: formatMessage("Expenses") },
-                    { dataField: "VoucherDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Voucher Date") },
-                    { dataField: "EffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Effective Date") },
-                    { dataField: "AllocationEffectiveDate", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Allocation Effective Date") },
-                    { dataField: "CostAllocationId", caption: formatMessage("Cost Allocation Id") },
-                    { dataField: "VoucherEntryId", caption: formatMessage("Voucher Entry Id") },
-                    { dataField: "CostAllocationUnitId", caption: formatMessage("Cost Allocation Unit Id") },
-                    { dataField: "CostAllocDrCr" , caption: formatMessage("Cost Alloc DrCr") },
-                    { dataField: "CostAllocRemarks", caption: formatMessage("Cost Alloc Remarks") },
-                    { dataField: "IsDisabled", caption: formatMessage("Is Disabled") },
-                    { dataField: "AccountGroup" , caption: formatMessage("Account Group") },
-                    { dataField: "MasterGroup", caption: formatMessage("Master Group") },
+                    { dataField: "CostAmount",area: "filter", summaryType: "sum", caption: formatMessage("Cost Amount") },
+                    { dataField: "Income",area: "filter", summaryType: "sum", caption: formatMessage("Income") },
+                    { dataField: "Expenses",area: "filter", summaryType: "sum", caption: formatMessage("Expenses") },
+                    { dataField: "VoucherDate",area: "filter", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Voucher Date") },
+                    { dataField: "EffectiveDate",area: "filter", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Effective Date") },
+                    { dataField: "AllocationEffectiveDate",area: "filter", dataType: "date", displayFormat: "MMM-yyyy", caption: formatMessage("Allocation Effective Date") },
+                    { dataField: "CostAllocationId",area: "filter", caption: formatMessage("Cost Allocation Id") },
+                    { dataField: "VoucherEntryId",area: "filter", caption: formatMessage("Voucher Entry Id") },
+                    { dataField: "CostAllocationUnitId", area: "filter",caption: formatMessage("Cost Allocation Unit Id") },
+                    { dataField: "CostAllocDrCr" ,area: "filter", caption: formatMessage("Cost Alloc DrCr") },
+                    { dataField: "CostAllocRemarks",area: "filter", caption: formatMessage("Cost Alloc Remarks") },
+                    { dataField: "IsDisabled", area: "filter",caption: formatMessage("Is Disabled") },
+                    { dataField: "AccountGroup" ,area: "filter", caption: formatMessage("Account Group") },
+                    { dataField: "MasterGroup", area: "filter",caption: formatMessage("Master Group") },
                     { dataField: "Pl" , caption: formatMessage("Pl") },
-                    { dataField: "AccountId", caption: formatMessage("Account Id") },
-                    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
-                    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
-                    { dataField: "VoucherTypeAndNo", caption: formatMessage("Voucher Type And No") },
-                    { dataField: "CostCenterIncharge", caption: formatMessage("Cost Center Incharge") },
-                    { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
-                    { dataField: "SysRemarks", caption: formatMessage("Sys Remarks") },
-                    { dataField: "VoucherMonth", caption: formatMessage("Voucher Month") },
-                    { dataField: "VoucherYear", caption: formatMessage("Voucher Year") },
-                    { dataField: "EffectiveMonth", caption: formatMessage("Effective Month") },
-                    { dataField: "EffectiveYear", caption: formatMessage("Effective Year") },
-                    { dataField: "AllocationEffectiveMonth", caption: formatMessage("Allocation Effective Month") },
-                    { dataField: "AllocationEffectiveYear", caption: formatMessage("Allocation Effective Year") },
-                    { dataField: "ProjectMasterCode" , caption: formatMessage("Project Master Code") },
-                    { dataField: "BranchCode", caption: formatMessage("Branch Code") },
-                    { dataField: "BranchName", caption: formatMessage("Branch Name") },
-                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
-                    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") }
+                    { dataField: "AccountId",area: "filter", caption: formatMessage("Account Id") },
+                    { dataField: "VoucherNo",area: "filter", caption: formatMessage("Voucher No") },
+                    { dataField: "VoucherType",area: "filter", caption: formatMessage("Voucher Type") },
+                    { dataField: "VoucherTypeAndNo",area: "filter", caption: formatMessage("Voucher Type And No") },
+                    { dataField: "CostCenterIncharge",area: "filter", caption: formatMessage("Cost Center Incharge") },
+                    { dataField: "EntryNarration",area: "filter", caption: formatMessage("Entry Narration") },
+                    { dataField: "SysRemarks",area: "filter", caption: formatMessage("Sys Remarks") },
+                    { dataField: "VoucherMonth", area: "filter",caption: formatMessage("Voucher Month") },
+                    { dataField: "VoucherYear", area: "filter",caption: formatMessage("Voucher Year") },
+                    { dataField: "EffectiveMonth",area: "filter", caption: formatMessage("Effective Month") },
+                    { dataField: "EffectiveYear",area: "filter", caption: formatMessage("Effective Year") },
+                    { dataField: "AllocationEffectiveMonth",area: "filter", caption: formatMessage("Allocation Effective Month") },
+                    { dataField: "AllocationEffectiveYear",area: "filter", caption: formatMessage("Allocation Effective Year") },
+                    { dataField: "ProjectMasterCode" ,area: "filter", caption: formatMessage("Project Master Code") },
+                    { dataField: "BranchCode", area: "filter",caption: formatMessage("Branch Code") },
+                    { dataField: "BranchName",area: "filter", caption: formatMessage("Branch Name") },
+                    { dataField: "VoucherNarration", area: "filter",caption: formatMessage("Voucher Narration") },
+                    { dataField: "VoucherRefNo", area: "filter",caption: formatMessage("Voucher Ref No") }
                 ]
             },
             width: "100%",
@@ -251,7 +276,7 @@
             showColumnTotals: false,
             showColumnGrandTotals: false,
             showRowTotals: false,
-            showRowGrandTotals: false
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
         // Load data
@@ -346,6 +371,87 @@
     $(function () {
            $("#costallocationdetailsreport").text(formatMessage("Cost Allocation Details for Ledger Account"));
       });
+          // === SHOW / HIDE FILTER FIELDS ===
+    $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Determine if currently visible (any field in filter area)
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        fields.forEach((f, i) => {
+            // Only toggle fields that were originally filter fields
+            const originallyFilterField = [
+                "CostAmount", "Income", "Expenses", "VoucherDate", "EffectiveDate",
+                "AllocationEffectiveDate", "CostAllocationId", "VoucherEntryId", "CostAllocationUnitId",
+                "CostAllocDrCr", "CostAllocRemarks", "IsDisabled", "AccountGroup", "MasterGroup",
+                "AccountId", "VoucherNo", "VoucherType", "VoucherTypeAndNo", "CostCenterIncharge",
+                "EntryNarration", "SysRemarks", "VoucherMonth", "VoucherYear",
+                "EffectiveMonth", "EffectiveYear", "AllocationEffectiveMonth", "AllocationEffectiveYear",
+                "ProjectMasterCode", "BranchCode", "BranchName", "VoucherNarration", "VoucherRefNo"
+            ].includes(f.dataField);
+
+            if (originallyFilterField) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1500
+            // );
+        });
+    });
+
+
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "CostAllocationMasterGroup");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+
 </script>
 
 <style>

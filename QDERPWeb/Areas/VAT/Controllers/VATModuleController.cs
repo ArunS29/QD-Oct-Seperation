@@ -1319,13 +1319,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public async Task<ActionResult> SaveGoodsAndServices([FromBody] Tbl20164GoodsAndServicesMaster model,int InvoiceChildSLNo)
+        public async Task<ActionResult> SaveGoodsAndServices([FromBody] SaveGoodsAndServicesRequest request)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    var model = request.Model;  // your formData mapped here
+                    var InvChildSlNo = request.invoiceChildSlNo;
+
                     var now = DateTime.Now;
+                   
 
                     var existing = await dbContext.Tbl20164GoodsAndServicesMasters
                         .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
@@ -1418,7 +1422,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         model.CreatedBy = "User"; // TODO: Replace with actual user identity
 
                         var query = from c in dbContext.Tbl20162VatinvoiceChildren
-                                    where c.InvoiceChildSlNo == InvoiceChildSLNo
+                                    where c.InvoiceChildSlNo == InvChildSlNo
                                     select c;
 
                         var child = query.FirstOrDefault();
@@ -1463,7 +1467,6 @@ documentNo: model.Gscode
                     {
                         g.CostAllocationUnitId,
                         g.CostAllocationUnit
-
 
                     })
                     .ToListAsync();
@@ -2753,7 +2756,7 @@ documentNo: InvoiceNo
                         //var totalValue = amount + vatValue;
 
                         // Add new dynamic column
-                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
                         //dict["VAT"] = vatValue;
@@ -7231,19 +7234,19 @@ documentNo: InvChildSlNo
 
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetByTaxSlabCode(int taxSlabCode)
+        [HttpGet("GetByTaxSlabCode")]
+        public async Task<IActionResult> GetByTaxSlabCode(int TaxSlabCode)
         {
             try
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     var reasons = await dbContext.Tbl00110TaxExemptionReasons
-                        .Where(r => r.TaxSlabCode == taxSlabCode)
+                        .Where(r => r.TaxSlabCode == TaxSlabCode)
                         .ToListAsync();
 
                     if (reasons == null || !reasons.Any())
-                        return NotFound(new { message = $"No records found for TaxSlabCode = {taxSlabCode}", success = false });
+                        return NotFound(new { message = $"No records found for TaxSlabCode = {TaxSlabCode}", success = false });
 
                     return Ok(new { data = reasons, success = true });
                 }

@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb,username);
-            ConfigureDataSource(accountId);
+            ConfigureDataSource(accountId, toDate);
             LoadCurrencySymbolAndImage();
 
         }
@@ -44,8 +44,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             InitializeComponent();
         }
 
-        private void ConfigureDataSource(string accountId)
+        private void ConfigureDataSource(string accountId, DateTime toDate)
         {
+            ExecuteAgeingStoredProcedure(toDate);
+
             sqlDataSource1.Queries.Clear();
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
@@ -92,7 +94,34 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 throw new Exception("Error loading data: " + ex.Message, ex);
             }
         }
+        private void ExecuteAgeingStoredProcedure(DateTime endDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context for stored procedure.");
 
+            using (var connection = new SqlConnection(tenant.ConnectionString))
+            {
+                connection.Open();
+
+                // Step 1: Execute sp20125AgeingPayableReportsWtAdvances
+                using (var command = new SqlCommand("sp20125AgeingPayableReports", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
+
+                // Step 2: Execute sp20125AgeingPayableReports
+                using (var command = new SqlCommand("sp20125AgeingPayableReportsWtAdvances", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
         private void SetReportParameters(
             string accountId,
             DateTime frmDate,

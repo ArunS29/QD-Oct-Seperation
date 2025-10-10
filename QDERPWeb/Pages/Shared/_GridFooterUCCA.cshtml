@@ -796,7 +796,53 @@
 
     function handleReportsClick(e) {
         // Use reportName property from itemData instead of reportMappings
-        const reportName = e.itemData.reportName;
+        let reportName = e.itemData.reportName;
+
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            // Map online report names to their offline (Import) versions
+            switch (reportName) {
+                case "SummaryReport":
+                    reportName = "CostCenterSummaryReportImport";
+                    break;
+                case "SummaryReportByDate":
+                    reportName = "SummaryReportByDateImport";
+                    break;
+                case "CostCenterReport":
+                    reportName = "CostcenterRepoerImport";
+                    break;
+                case "CostCenterReportByDate":
+                    reportName = "CostcenterBydateImport";
+                    break;
+                case "CostCenterGroupReport":
+                    reportName = "CostCenterGroupReportImport";
+                    break;
+                case "CostCenterGroupReportByDate":
+                    reportName = "CostcenterGroupByDateImport";
+                    break;
+                case "DetailReport":
+                    reportName = "DetailReportImport";
+                    break;
+                case "DetailedBydate":
+                    reportName = "DetailedBydateImport";
+                    break;
+                case "DetailedGroup":
+                    reportName = "DetailedGroupImport";
+                    break;
+                case "detailGroupBydate":
+                    reportName = "detailGroupBydateImport";
+                    break;
+                case "CostCenterMasterGroup":
+                    reportName = "CostCenterMasterGroupImport";
+                    break;
+                case "detailedMasterByDate":
+                    reportName = "detailedMasterByDateImport";
+                    break;
+                default:
+                    // For reports that don't have Import versions, keep the original name
+                    break;
+            }
+        }
 
         // Get instances of SelectBox and DateBox components
         var dropDownBox = $("#requestedBy").dxDropDownBox("instance");
@@ -828,6 +874,8 @@
         var toDateStr = formatDate(toDate);
 
         if (reportName) {
+            console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
+            
             // Construct the URL with frmDate and toDate (always required)
             let url = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}`;
 
@@ -856,7 +904,7 @@
         if (wasHidden) {
             gridContainer.show();
         }
-        exportDataGridToPDF('costcenter-datagrid');
+        exportPivotGridToPDF('costcenter-datagrid');
         if (wasHidden) {
             gridContainer.hide();
         }

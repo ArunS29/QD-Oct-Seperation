@@ -1583,20 +1583,29 @@ buttons.Add()
 					return;
 				}
 
-					var lastRow = response.data[response.data.length - 1]; // Get the last row
+					 // Filter only rows where DrCr == "Cr"
+				const creditRows = response.data.filter(x => x.DrCr === "Cr");
+
+				if (creditRows.length > 0) {
+					// Sort by AddedOn descending to get the latest
+					const latestCreditRow = creditRows.sort((a, b) => new Date(b.AddedOn) - new Date(a.AddedOn))[0];
+
 					var dropDownBox = $("#accountDropDownBox").dxDropDownBox("instance");
 
 					if (dropDownBox) {
-						//IsClientName=true;
-						// Set selected value based on what the DropDownBox expects
-						// Assuming ValueExpr is "AccountId", and AccountId is present in `lastRow`
-						//dropDownBox.option("value", lastRow.AccountHead); // or lastRow.AccountId if available
-						 console.log("lastRow",lastRow)
-						 accheadid=lastRow.AccountId;
-						 accheadname=lastRow.AccountHead;
-						 dropDownBox.option("value", lastRow.AccountHead);
-						// dataGridSelectionChanged({ selectedRowKeys: [lastRow.AccountHead] });
+						IsClientName = true;
+
+						console.log("latestCreditRow", latestCreditRow);
+
+						paymentaccheadId = latestCreditRow.AccountId;
+						paymentaccheadname = latestCreditRow.AccountHead;
+
+						// Set DropDownBox value (you can switch to AccountId if ValueExpr is AccountId)
+						dropDownBox.option("value", latestCreditRow.AccountHead);
 					}
+				} else {
+					console.warn("No rows with DrCr = 'Cr' found.");
+				}
 				var voucherTextBox = $("#VoucherNo").dxTextBox("instance");
 				if (voucherTextBox) {
 					voucherTextBox.option("readOnly", true);

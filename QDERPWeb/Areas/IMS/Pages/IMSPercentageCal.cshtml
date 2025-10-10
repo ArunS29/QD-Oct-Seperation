@@ -1,0 +1,161 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.IMSPercentageCalModel
+@{
+}
+
+
+<style>
+    .dx-card {
+        background-color: var(--title-background-color);
+        padding: 20px;
+        width: 520px;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .white-box .dx-texteditor-input {
+        background-color: white !important;
+    }
+
+    .white-button .dx-button-content {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    
+    .percentage-button .dx-button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+
+
+    .ok-button .dx-button {
+        height: 38px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+    }
+
+
+    .percentage-grid {
+        margin-top: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 550px;
+    }
+
+        .percentage-grid .white-button {
+            width: 90px;
+        }
+</style>
+
+<div class="dx-card">
+    <!-- Total Amount -->
+    <div class="white-box">
+        @(Html.DevExtreme().NumberBox()
+            .Label("Total Amount")
+            .LabelMode(EditorLabelMode.Floating)
+            .ID("totalAmount")
+            .Min(0)
+            .Format("#,##0.00")
+            .Value(0)
+            )
+    </div>
+
+    <!-- Discount and OK side by side -->
+    <div style="margin-top: 10px; display: flex; align-items: baseline;">
+        <div class="white-box" style="flex: 1;">
+            @(Html.DevExtreme().NumberBox()
+                .Label("Discount")
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("discount")
+                .Min(0)
+                .Format("#,##0.00")
+                .Value(0)
+                )
+        </div>
+        <div class="btn ok-button">
+            @(Html.DevExtreme().Button()
+                .ID("okButton")
+                .Text("OK")
+                        .OnClick("applyAndClose")
+                .Width(70)
+                )
+        </div>
+
+    </div>
+        
+    <!-- Percentage Buttons Grid -->
+    <div class="percentage-grid">
+        @foreach (var percent in new[] { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 })
+        {
+            <div class="white-button percentage-button">
+                @(Html.DevExtreme().Button()
+                    .Text(percent + " %")
+                    .OnClick($"function() {{ setDiscount({percent}) }}")
+                    )
+            </div>
+        }
+    </div>
+
+</div>
+<script>
+
+       $(function() {
+        const params = new URLSearchParams(window.location.search);
+        const qty = parseFloat(params.get('qty')) || 0;
+        const unitPrice = parseFloat(params.get('unitPrice')) || 0;
+
+        const amount = qty * unitPrice;
+        $("#totalAmount").dxNumberBox("instance").option("value", amount);
+    });
+
+    // Set discount based on percentage
+    function setDiscount(percent) {
+        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+        const discountValue = total * (percent / 100);
+        $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));
+    }
+
+    // Collect modal fields
+    function collectModalFields() {
+        return {
+            QuotedDiscount: $("#discount").dxNumberBox("instance").option("value")
+        };
+    }
+
+    // Send data to parent when modal is closing (optional)
+    window.onbeforeunload = function () {
+        if (window.opener && typeof window.opener.receiveModalFieldData1 === "function") {
+            const fieldValues = collectModalFields();
+            window.opener.receiveModalFieldData1(fieldValues);
+        }
+    };
+
+    // Apply discount and close modal
+    function applyAndClose() {
+        const modalData1 = {
+            QuotedDiscount: $("#discount").dxNumberBox("instance").option("value")
+        };
+
+        console.log("📤 Sending to parent:", modalData1);
+
+        if (window.parent && typeof window.parent.receiveModalFieldData1 === "function") {
+            window.parent.receiveModalFieldData1(modalData1);
+            window.parent.closeModal(); // your custom modal close logic
+        } else {
+            alert("❌ Could not send discount data to parent.");
+        }
+    }
+
+
+
+
+
+
+
+
+</script>

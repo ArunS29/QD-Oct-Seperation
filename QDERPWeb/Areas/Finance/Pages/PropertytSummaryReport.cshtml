@@ -1,7 +1,10 @@
 ﻿@page
 @model QD.ERP.Web.Areas.Finance.Pages.PropertytSummaryReportModel
 <h2 id="employeesummaryreport"></h2>
-
+<input id="formId" value="PropertyReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
 <div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
     <div class="toolbar-item" style="flex: 1 1 180px;">
         @(Html.DevExtreme().DateBox()
@@ -12,7 +15,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -25,7 +31,10 @@
                 .Type(DateBoxType.Date)
                 .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
                 .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                 .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
                 )
     </div>
 
@@ -138,7 +147,12 @@
         const accountHead = getQueryParam('accountHead');
         const fromDate = getQueryParam('fromDate');
         const toDate = getQueryParam('toDate');
-
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
         dataGrid.option("dataSource", {
             load: function () {
                 const params = new URLSearchParams();
@@ -187,19 +201,19 @@
                             return "";
                         }
                     },
-                    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
-                    { dataField: "AccountHead", caption: formatMessage("Account Head") },
-                    { dataField: "AccountHeadName", caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
-                    { dataField: "VoucherDate", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
-                    { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
-                    { dataField: "AccountGroup", caption: formatMessage("Account Group") },
-                    { dataField: "MasterGroup", caption: formatMessage("Master Group") },
-                    { dataField: "PlateNo", caption: formatMessage("Plate No") },
-                    { dataField: "DoorNo", caption: formatMessage("Door No") },
-                    { dataField: "ChassisNo", caption: formatMessage("Chassis No") },
-                    { dataField: "PropertyCategoryName", caption: formatMessage("Property Category Name") },
-                    { dataField: "PropertyGroup", caption: formatMessage("Property Group") },
-                    { dataField: "PropertyType", caption: formatMessage("Property Type") },
+                    { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
+                    { dataField: "AccountHead",area: "filter", caption: formatMessage("Account Head") },
+                    { dataField: "AccountHeadName", area: "filter",caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
+                    { dataField: "VoucherDate",area: "filter", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
+                    { dataField: "EntryNarration",area: "filter", caption: formatMessage("Entry Narration") },
+                    { dataField: "AccountGroup",area: "filter", caption: formatMessage("Account Group") },
+                    { dataField: "MasterGroup", area: "filter",caption: formatMessage("Master Group") },
+                    { dataField: "PlateNo", area: "filter",caption: formatMessage("Plate No") },
+                    { dataField: "DoorNo", area: "filter",caption: formatMessage("Door No") },
+                    { dataField: "ChassisNo",area: "filter", caption: formatMessage("Chassis No") },
+                    { dataField: "PropertyCategoryName",area: "filter", caption: formatMessage("Property Category Name") },
+                    { dataField: "PropertyGroup",area: "filter", caption: formatMessage("Property Group") },
+                    { dataField: "PropertyType",area: "filter", caption: formatMessage("Property Type") },
                        {
                         dataField: "RevenueAmount",
                         area: "data",
@@ -230,11 +244,11 @@
                             return "";
                         }
                     },
-                    { dataField: "CostAndRevenueClubbed", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
-                    { dataField: "CostCenterCode", caption: formatMessage("Cost Center Code") },
-                    { dataField: "CostCenterUnit", caption: formatMessage("Cost Center Unit") },
-                    { dataField: "VoucherType", caption: formatMessage("Voucher Type") },
-                    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") }
+                    { dataField: "CostAndRevenueClubbed",area: "filter", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
+                    { dataField: "CostCenterCode", area: "filter",caption: formatMessage("Cost Center Code") },
+                    { dataField: "CostCenterUnit",area: "filter", caption: formatMessage("Cost Center Unit") },
+                    { dataField: "VoucherType", area: "filter",caption: formatMessage("Voucher Type") },
+                    { dataField: "VoucherNarration", area: "filter",caption: formatMessage("Voucher Narration") }
 
                 ]
             },
@@ -259,7 +273,7 @@
             showColumnTotals: false,
             showColumnGrandTotals: true,
             showRowTotals: false,
-            showRowGrandTotals: false
+            showRowGrandTotals: true
         }).dxPivotGrid("instance");
 
         // Load data
@@ -349,6 +363,83 @@
 
         });
 
+    });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if filter fields are currently visible
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of all fields that belong to the filter area (from your config)
+        const filterFieldNames = [
+            "VoucherRefNo", "AccountHead", "AccountHeadName", "VoucherDate",
+            "EntryNarration", "AccountGroup", "MasterGroup", "PlateNo", "DoorNo",
+            "ChassisNo", "PropertyCategoryName", "PropertyGroup", "PropertyType",
+            "CostAndRevenueClubbed", "CostCenterCode", "CostCenterUnit",
+            "VoucherType", "VoucherNarration"
+        ];
+
+        // Toggle filter fields: remove if shown, restore if hidden
+        fields.forEach((f, i) => {
+            if (filterFieldNames.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Apply the updated layout
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1200
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "PropertyNo");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
     });
 </script>
 

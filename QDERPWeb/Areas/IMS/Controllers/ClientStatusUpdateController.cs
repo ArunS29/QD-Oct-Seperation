@@ -20,7 +20,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         public ClientStatusUpdateController(ILogger<ClientStatusUpdateController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
             _userActionLogger = userActionLogger;
-            _tenantDbContextHelper = tenantDbContextHelper;
+            _tenantDbContextHelper = tenantDbContextHelper;   
             _logger = logger;
         }
 

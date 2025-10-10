@@ -1144,7 +1144,8 @@
 
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
-						console.log(e.row.data.IsCancelled);
+			debugger;
+			console.log(e.row.data.IsCancelled);
 			if (e.row.data.IsCancelled) {
             e.items = [
                 {
@@ -1190,7 +1191,7 @@
 						let Mprno = e.row.data.Mprno;
 						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
 						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
-							let title = `Material Request Revised History - ${Mprno}`;
+							let title = `Material Request Revised History`;
 						openModal(url, title);
 						
 					}
@@ -1421,9 +1422,8 @@
 		}
 	},
 
-	
 		{
-			text:  formatMessage("Create a Quotation"),
+		text: formatMessage("Create a Quotation"),
 		icon: "plus",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1434,47 +1434,37 @@
 				return;
 			}
 
-			// Step 1: Check approval status
-			$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-				.done(function (isApproved) {
-					if (!isApproved) {
-							DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-						return;
-					}
-
-					// Step 2: Confirm
-					DevExpress.ui.dialog.confirm("You are about to create a new Quotation. Proceed?", "Confirmation")
-						.done(function (confirmResult) {
-							if (confirmResult) {
-								// Step 3: Call API
-								$.ajax({
-									url: "/api/MaterialRequestEnquiriesDetails/CreateQuotationFromMpr",
-									method: "POST",
-									contentType: "application/json",
-									data: JSON.stringify(mprNo),
-									success: function (result) {
-										if (result.success) {
-											DevExpress.ui.notify(result.message, "success", 2000);
-														window.location.href = `/${tenantName}/IMS/AddNewQuotation?MPRNo=${encodeURIComponent(mprNo)}&QuoteNo=${encodeURIComponent(result.quoteno)}`;
-										} else {
-											DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 2000);
-										}
-									},
-									error: function () {
-										DevExpress.ui.notify("Error while creating Quotation.", "error", 2000);
-									}
-								});
+			// Step 1: Confirm directly
+			DevExpress.ui.dialog.confirm(
+				"You are about to create a new Quotation. Proceed?",
+				"Confirmation"
+			).done(function (confirmResult) {
+				if (confirmResult) {
+					// Step 2: Call API directly
+					$.ajax({
+						url: "/api/MaterialRequestEnquiriesDetails/CreateQuotationFromMpr",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(mprNo),
+						success: function (result) {
+							if (result.success) {
+								DevExpress.ui.notify(result.message, "success", 2000);
+								window.location.href = `/${tenantName}/IMS/AddNewQuotation?MPRNo=${encodeURIComponent(mprNo)}&QuoteNo=${encodeURIComponent(result.quoteno)}`;
+							} else {
+								DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 2000);
 							}
-						});
-				})
-				.fail(function () {
-					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
-				});
+						},
+						error: function () {
+							DevExpress.ui.notify("Error while creating Quotation.", "error", 2000);
+						}
+					});
+				}
+			});
 		}
 	},
 
-					{
-			text:  formatMessage("Create PO"),
+		{
+		text: formatMessage("Create PO"),
 		icon: "cart",
 		onItemClick: function () {
 			const mprNo = e.row.data.Mprno;
@@ -1484,99 +1474,75 @@
 				DevExpress.ui.notify("MPR No is missing.", "error", 2000);
 				return;
 			}
-				// Step 1: Check approval status
-		          $.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-			      .done(function (isApproved) {
-				if (!isApproved) {
-						DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-					return;
-				}
-				// Step 2: Confirm with user
-					  DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this MPR?", "Confirmation")
+
+			// Directly confirm with user without approval check
+			DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this MPR?", "Confirmation")
 				.done(function (dialogResult) {
 					if (!dialogResult) return;
 
 					// Call backend to create PO, run SP, and update MPR status
 					$.ajax({
-							url: "/api/MaterialRequestEnquiriesDetails/CreatePOFromMpr",
+						url: "/api/MaterialRequestEnquiriesDetails/CreatePOFromMpr",
 						type: "POST",
 						contentType: "application/json",
-							  data: JSON.stringify(mprNo),
+						data: JSON.stringify(mprNo),
 						success: function (res) {
 							if (res.success) {
 								DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
 
 								// Redirect to AddNewPurchaseOrder page with PO No
-							window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
-							
+								window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
 							} else {
 								DevExpress.ui.notify(res.message || "Failed to create PO.", "error", 3000);
 							}
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Server error while creating PO.", "error", 3000);
-
 						}
 					});
-				});
-					})
-				.fail(function () {
-					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
 				});
 		}
 	},
 
+	{
+		text: formatMessage("Create Material Receipt"),
+		icon: "plus",
+		onItemClick: function () {
+			const mprNo = e.row.data.Mprno;
+			const tenantName = window.tenantName || "defaultTenant";
 
-					{
-			text: formatMessage("Create Material Receipt"),
-			icon: "plus",
-			onItemClick: function () {
-				const mprNo = e.row.data.Mprno;
-				const tenantName = window.tenantName || "defaultTenant";
-
-				if (!mprNo) {
-					DevExpress.ui.notify("MPR No not available.", "error", 2000);
-					return;
-				}
-
-				// Step 1: Check approval status
-				$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-					.done(function (isApproved) {
-						if (!isApproved) {
-							DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-							return;
-						}
-
-						// Step 2: Confirm
-							DevExpress.ui.dialog.confirm("You are about to create a new  Material Receipt. Proceed?", "Confirmation")
-							.done(function (confirmResult) {
-								if (confirmResult) {
-									// Step 3: Call API
-									$.ajax({
-											url: "/api/MaterialRequestEnquiriesDetails/CreateMaterialReceiptFromMpr",
-										method: "POST",
-										contentType: "application/json",
-										data: JSON.stringify(mprNo),
-										success: function (result) {
-											if (result.success) {
-												DevExpress.ui.notify(result.message, "success", 2000);
-																			window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?MPRNo=${encodeURIComponent(mprNo)}&ReceiptNo=${encodeURIComponent(result.receiptNo)}`;
-											} else {
-												DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 2000);
-											}
-										},
-										error: function () {
-											DevExpress.ui.notify("Error while creating Quotation.", "error", 2000);
-										}
-									});
-								}
-							});
-					})
-					.fail(function () {
-						DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
-					});
+			if (!mprNo) {
+				DevExpress.ui.notify("MPR No not available.", "error", 2000);
+				return;
 			}
-		},
+
+			// Directly confirm without approval check
+			DevExpress.ui.dialog.confirm("You are about to create a new Material Receipt. Proceed?", "Confirmation")
+				.done(function (confirmResult) {
+					if (confirmResult) {
+						// Call API
+						$.ajax({
+							url: "/api/MaterialRequestEnquiriesDetails/CreateMaterialReceiptFromMpr",
+							method: "POST",
+							contentType: "application/json",
+							data: JSON.stringify(mprNo),
+							success: function (result) {
+								if (result.success) {
+									DevExpress.ui.notify(result.message, "success", 2000);
+									window.location.href = `/${tenantName}/IMS/MaterialReceiptFromSupplier?MPRNo=${encodeURIComponent(mprNo)}&ReceiptNo=${encodeURIComponent(result.receiptNo)}`;
+								} else {
+									DevExpress.ui.notify(result.message || "Failed to create Material Receipt.", "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Error while creating Material Receipt.", "error", 2000);
+							}
+						});
+					}
+				});
+		}
+	},
+
 				{
 						text:  formatMessage("Create Material Issue Note"),
 					icon: "export",
@@ -1591,7 +1557,7 @@
 						let Mprno = e.row.data.Mprno;
 						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
 						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
-							let title = `Material Request Revised History - ${Mprno}`;
+							let title = `Material Request Revised History`;
 						openModal(url, title);
 						
 					}

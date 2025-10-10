@@ -317,6 +317,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return BadRequest(new { success = false, message = "Failed to clone journal entry." });
             }
         }
+       
 
 
     }

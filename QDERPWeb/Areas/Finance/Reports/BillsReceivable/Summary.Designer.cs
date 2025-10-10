@@ -124,7 +124,7 @@
             this.xrLabel3.SizeF = new System.Drawing.SizeF(1603F, 28.83336F);
             this.xrLabel3.StylePriority.UseFont = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;
-            this.xrLabel3.Text = "Bills Receivable  Summary Report";
+            this.xrLabel3.Text = "Bills Payable Summary Report";
             this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrLabel2
@@ -182,7 +182,7 @@
             this.crossTab1.ColumnDefinitions.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition[] {
             crossTabColumnDefinition1,
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(102.8333F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000004F),
+            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000005F),
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(124.1666F)});
             crossTabColumnField1.FieldName = "MonthCode";
             crossTabColumnField2.FieldName = "MonthAndYear";
@@ -271,7 +271,7 @@
             this.xrCrossTabCell8.ColumnIndex = 3;
             this.xrCrossTabCell8.Name = "xrCrossTabCell8";
             this.xrCrossTabCell8.RowIndex = 2;
-            this.xrCrossTabCell8.TextFormatString = "{0:0.00}";
+            this.xrCrossTabCell8.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
             // 
             // xrCrossTabCell9
             // 
@@ -293,7 +293,7 @@
             this.xrCrossTabCell11.ColumnIndex = 1;
             this.xrCrossTabCell11.Name = "xrCrossTabCell11";
             this.xrCrossTabCell11.RowIndex = 3;
-            this.xrCrossTabCell11.TextFormatString = "{0:0.00}";
+            this.xrCrossTabCell11.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
             // 
             // xrCrossTabCell12
             // 
@@ -309,7 +309,7 @@
             this.xrCrossTabCell13.ColumnIndex = 3;
             this.xrCrossTabCell13.Name = "xrCrossTabCell13";
             this.xrCrossTabCell13.RowIndex = 3;
-            this.xrCrossTabCell13.TextFormatString = "{0:0.00}";
+            this.xrCrossTabCell13.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
             // 
             // sqlDataSource1
             // 
@@ -377,7 +377,7 @@
             this.xrLabel14,
             this.xrLabel22,
             this.pageInfo2});
-            this.BottomMargin.HeightF = 107.5F;
+            this.BottomMargin.HeightF = 108.1666F;
             this.BottomMargin.Name = "BottomMargin";
             // 
             // xrLabel14
@@ -486,7 +486,7 @@
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.HorizontalContentSplitting = DevExpress.XtraPrinting.HorizontalContentSplitting.Smart;
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 13.33333F, 107.5F);
+            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 13.33333F, 108.1666F);
             this.PageHeight = 1169;
             this.PageWidth = 1654;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.A3;

@@ -171,6 +171,7 @@
     $(function() {
       pivotGridInstance = $("#pivotGridContainer").dxPivotGrid({
         dataSource: {
+            
           fields: [
             { dataField: "Gscode", area: "row", caption: formatMessage("Stock Code") },
             { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Stock Description") },
@@ -194,6 +195,7 @@
         fieldChooser: { enabled: true, allowSearch: true },
         fieldPanel: { visible: true, allowFieldDragging: true },
         loadPanel: { enabled: true },
+          showRowGrandTotals: false ,
         height: 500
       }).dxPivotGrid("instance");
 
@@ -368,6 +370,33 @@
          $(function () {
             $("#costdiscriptions").text(formatMessage("$ Cost Discription"));
          });
+
+@* $("#btnShowRowTotals1").on("click", function (e) {
+      alert(ho000);
+        if (!pivotGridInstance) {
+            DevExpress.ui.notify("PivotGrid is not loaded yet.", "warning", 2000);
+            return;
+        }
+
+        const current = pivotGridInstance.option("showRowGrandTotals");
+        const newValue = !current;
+
+        pivotGridInstance.option("showRowGrandTotals", newValue);
+
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+            ? formatMessage("Hide Row Totals")
+            : formatMessage("Show Row Totals"));
+    });
+
+    $("#btnShowRowTotals").on("click", function (e) {
+   alert(hiii);
+    }); *@
+
+
+
 </script>
 
 

@@ -174,7 +174,8 @@
                                         .ID("SignatoryContact")
                                         .Label(new JS("formatMessage('Signatory Contact No.')"))
                                         .LabelMode(EditorLabelMode.Floating)
-                                        .InputAttr(new { type = "text", maxlength = "20" }) // allow for + and spaces
+                                        .InputAttr(new { type = "text", maxlength = "20" })
+                                        .OnValueChanged("onSignatoryContactChanged") // triggers revalidation live
                                         .ValidationRules(rules =>
                                         {
                                             rules.AddCustom()
@@ -182,6 +183,7 @@
                                             .Message("Contact number must be 7–15 digits (digits, +, and spaces allowed)");
                                         })
                                         )
+
                 </div>
 
 
@@ -455,7 +457,7 @@ columns.Add().DataField("SignatoryEmail")
     </div>
 </div>
  <script>
-             function validateContact(e) {
+               function validateContact(e) {
         if (!e.value) return false;
 
         // Allow + and spaces, but require 7–15 digits total
@@ -464,6 +466,15 @@ columns.Add().DataField("SignatoryEmail")
 
         return isValid;
     }
+
+    // This ensures the red border disappears once value becomes valid
+    function onSignatoryContactChanged(e) {
+        const validator = $("#SignatoryContact").dxValidator("instance");
+        if (validator) {
+            validator.validate();
+        }
+    }
+
 
     $(document).ready(function () {
 
@@ -571,6 +582,7 @@ columns.Add().DataField("SignatoryEmail")
 
             $("#SignatoryPosition").dxValidator("instance").reset();
                    $("#SignatoryName").dxValidator("instance").reset();
+            $("#SignatoryContact").dxValidator("instance").reset();
 
 
             },
@@ -622,21 +634,38 @@ columns.Add().DataField("SignatoryEmail")
         var grid = $("#SignatoryGrid").dxDataGrid("instance");
         var key = e.row.data.SignatoryID; // get the ID of the row
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/Signatories/Delete?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    // Refresh the grid after delete
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
-                }
-            });
-        }
+        // Use DevExtreme confirm dialog for better UI (optional)
+        var result = DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Confirm Delete"
+        );
+
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/Signatories/Delete?key=' + key,
+                    type: 'DELETE',
+                    success: function (response) {
+                        // ✅ Show backend message if available, otherwise default
+                        let msg = response && response.message ? response.message : "Deleted successfully";
+                        DevExpress.ui.notify(msg, "success", 2000);
+
+                        // Refresh the grid
+                        grid.refresh();
+                    },
+                    error: function (xhr) {
+                        // ✅ Show backend error message if available
+                        let msg = "Delete failed";
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        DevExpress.ui.notify(msg, "error", 3000);
+                    }
+                });
+            }
+        });
     }
+
 
 
 

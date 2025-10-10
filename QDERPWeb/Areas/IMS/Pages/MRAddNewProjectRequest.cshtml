@@ -380,7 +380,7 @@
 														.OnKeyDown("onKeyDown")
 														.Disabled(true)
 														//.OnValueChanged("dropDownBoxValueChanged")
-														.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+														.ContentTemplate(new TemplateName("GetProjectContentTemplate1"))
 														.Buttons(buttons =>
  															{
  																buttons.Add()
@@ -420,6 +420,7 @@
 							.LoadMode(DataSourceLoadMode.Raw)
 							.Key("StoreId")
 							)
+														.Option("ddStoreCodeDropDown", "GetStoreCode-datagrid")
 							.LabelMode(EditorLabelMode.Floating)
 							.ID("ddStoreCodeDropDown")
 							.Width(900)
@@ -517,6 +518,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("ModeOfRequestId")
 														)
+														.Option("ddGetModeOfRequest", "GetProject-datagrid1")
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetModeOfRequest")
 														.Width(900)
@@ -557,6 +559,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("TypeOfRequestId")
 														)
+														.Option("ddGetTypeOfRequest", "GetTypeOfRequest-datagrid")
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetTypeOfRequest")
 														.Width(900)
@@ -633,6 +636,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("ProjectId")
 														)
+														.Option("ddProject", "GetProject-datagrid")
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddProject")
 														.Width(900)
@@ -880,7 +884,8 @@
 																				.LoadMode(DataSourceLoadMode.Raw)
 																				.Key("ProjectSubUnitCode")
 																				)
-																				.LabelMode(EditorLabelMode.Floating)
+																.Option("ddGetRequesstingUnit", "GetRequesstingUnit-datagrid")
+																.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddGetRequesstingUnit")
 																				.Width(900)
 																							@*  .ShowClearButton(true)
@@ -912,16 +917,7 @@
 																					.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																					.OnClick("AddReqUnit")
 																					);
-																					// Custom editLedger button
-																					buttons.Add()
-																					.Name("EditReqUnit")
-																					.Location(TextEditorButtonLocation.After)
-																					.Widget(w => w.Button()
-																					.Type(ButtonType.Default)
-																					.Icon("edit")
-																					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-																																					//.OnClick("showLedgerAccountEditPopup")
-																					);
+																				
 																					buttons.Add()
 																					.Name("dropDown");
 																				})
@@ -975,6 +971,7 @@
 												.LoadMode(DataSourceLoadMode.Raw)
 												.Key("SignatoryId")
 												)
+												.Option("ddPreparedby", "GetPreparedby-datagrid")
 												.LabelMode(EditorLabelMode.Floating)
 												.ID("ddPreparedby")
 												.Width(900)
@@ -1093,6 +1090,7 @@
 						<input type="hidden" id="hdntxtShowSign1" name="hdntxtShowSign1" value="false" /
 					</div>
 				</div>
+			</div>
 			</div>
 			<div id="tab-content-5" class="tab-content" style="height:155px;">
 				<div class="p-3">
@@ -1614,6 +1612,39 @@
 					})
 					)
 				}
+	@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate1"))
+	{
+		@(Html.DevExtreme().DataGrid()
+			.ID("GetProject-datagrid1")
+			.DataSource(d => d.WebApi()
+			.Controller("AddNewClientRequest")
+			.LoadAction("GetProject")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("ProjectId")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+						   	@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+			.OnSelectionChanged("dataGridSelectionChanged15")
+			.OnInitialized("dataGridInitialized15")
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(false))//
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+			.Columns(columns =>
+			{
+				columns.Add().DataField("ProjectId").Caption(new JS("formatMessage('Project Id')"));
+				columns.Add().DataField("ProjectDescription").Caption(new JS("formatMessage('Project Description')"));
+
+			})
+			)
+		}
 		@using (Html.DevExtreme().NamedTemplate("GetTaxContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -2239,11 +2270,18 @@
 			}
 		});
 	});
-		  function onOpened(e) {
-			setTimeout(() => {
-				e.component.focus();
-			});
-		}
+		   function onOpened(e) {
+		   const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+		   const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+		   if (grid) {
+			   grid.getDataSource().reload(); // refresh data
+		   }
+
+		   setTimeout(() => {
+			   e.component.focus();
+		   });
+	   }
 		function onKeyDown(e) {
 			const ddbInstance = e.component;
 			if (e.event.keyCode !== 40) return;
@@ -3367,7 +3405,7 @@
 	}
 						},
 					{
-						dataField: "GSCode",
+							dataField: "GSCode",
 						caption: formatMessage('Item Code'),
 						width: 200
 					},
@@ -3833,7 +3871,7 @@
 			LineOrderNo: nextLineOrderNo,
 			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
 			QuoteGroupItemSlNo:null,
-	GSCode: ItemNo,
+		GSCode: null,
 	Description:null,
 	UnitRateMethod:null,
 	QtyRequested: 0,
@@ -5543,9 +5581,9 @@ $("#btnSave").on("click", function (e) {
 				type: 'Delete',
 						   success: function (response) {
 					DevExpress.ui.notify(response.message, 'success', 3000);
-					setTimeout(function () {
-						location.reload();
-					}, 1000);
+					    setTimeout(function(){
+						window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
+                        },1000);
 				},
 				error: function (xhr) {
 					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';

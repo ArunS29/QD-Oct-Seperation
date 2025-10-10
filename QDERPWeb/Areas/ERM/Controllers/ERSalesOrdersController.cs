@@ -39,7 +39,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var query = dbContext.Qry60204salesOrderViewMasters.AsQueryable();
+                    var query = dbContext.Tbl40129PropertySalesOrderMasters.AsQueryable();
 
 
                     // Default dates if not provided
@@ -61,18 +61,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     {
                         i.SalesOrderNo,
                         i.SalesOrderDate,
-                        i.ClientName,
+                        i.ClientRefName,
                         i.ClientPono,
-                        i.Mprno,
-                        i.QuoteNo,
-                        i.InvoiceStatus,
-                        i.OrderStatus,
-                        i.NoOfItems,
-                        i.TotalBeforeDiscount,
-                        i.Discount,
-                        i.TotalAfterDiscount,
-                        i.TotalTaxAmount,
-                        i.TotalWithTax,
+                       
                     }).ToListAsync();
 
                     return Json(data);
@@ -141,6 +132,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
+
 
 
         [HttpGet]
@@ -602,12 +594,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public decimal? CreditLimit { get; set; }
 
 
-            public string RefNo { get; set; }
 
 
-            public string ClientName { get; set; }
+            public string ClientRefName { get; set; }
 
-
+           
 
 
 
@@ -663,10 +654,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 {
                     isUpdate = true;
                     existingEntity.SalesOrderDate = model.SalesOrderDate;
-                    existingEntity.ClientName = model.ClientName;
+                    existingEntity.ClientCode = model.ClientCode;
                     existingEntity.QuoteNo = model.QuoteNo;
                     existingEntity.QuoteDate = model.QuoteDate;
-                    existingEntity.ClientRefNo = model.ClientRefNo;
+                    existingEntity.ClientRefName = model.ClientRefName;
                     existingEntity.ClientContactNo = model.ClientContactNo;
                     existingEntity.ClientPono = model.ClientPono;
                     existingEntity.ClientPodate = model.ClientPodate;
@@ -686,7 +677,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     existingEntity.CreditLimit = model.CreditLimit;
                     existingEntity.CompanyBranch = model.CompanyBranch;
                     existingEntity.SalesPersonCode = model.SalesPersonCode;
-                    existingEntity.RefNo = model.RefNo;
+                    existingEntity.ClientRefNo = model.ClientRefNo;
                     existingEntity.OrderExpiryDate = model.OrderExpiryDate;
                     existingEntity.PreparedBy = model.PreparedBy;
                     existingEntity.VerifiedBy = model.VerifiedBy;
@@ -694,8 +685,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     existingEntity.AddedOn = DateTime.Now;
                    // existingEntity.IsVerified = true;
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
+                    existingEntity.CurrencyId = model.CurrencyId ?? 1;
+                    existingEntity.CurrencyRate = model.CurrencyRate ?? 1;
+                    existingEntity.BaseCurrencyId = model.BaseCurrencyId ?? 1;
 
-                  
+
 
                     dbContext.Tbl40129PropertySalesOrderMasters.Update(existingEntity);
                 }
@@ -704,11 +698,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     var entity = new Tbl40129PropertySalesOrderMaster
                     {
                         SalesOrderNo = salesOrderNo,
-                        ClientName=model.ClientName,
+                        ClientCode = model.ClientCode,
                         SalesOrderDate = model.SalesOrderDate,
                         QuoteNo = model.QuoteNo,
                         QuoteDate = model.QuoteDate,
-                        ClientRefNo = model.ClientRefNo,
+                        ClientRefName = model.ClientRefName,
                         ClientContactNo = model.ClientContactNo,
                         ClientPono = model.ClientPono,
                         ClientPodate = model.ClientPodate,
@@ -728,7 +722,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         CreditLimit = model.CreditLimit,
                         CompanyBranch = model.CompanyBranch,
                         SalesPersonCode = model.SalesPersonCode,
-                        RefNo = model.RefNo,
+                        ClientRefNo = model.ClientRefNo,
                         OrderExpiryDate = model.OrderExpiryDate,
                         PreparedBy = model.PreparedBy,
                         VerifiedBy = model.VerifiedBy,
@@ -736,6 +730,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         IsApproved = false,
                         IsVerified = false,
                         IsSubmitted = false,
+                        CurrencyId = model.CurrencyId ?? 1,
+                        CurrencyRate = model.CurrencyRate ?? 1,
+                        BaseCurrencyId = model.BaseCurrencyId ?? 1,
 
 
 
@@ -743,7 +740,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
                         //Attention = model.Attention,
-                        ClientCode = model.ClientCode,                       
+                        //ClientCode = model.ClientCode,                       
                         //QuoteTransport = model.QuoteTransport,
                         //QuoteDiscount = model.QuoteDiscount,                        
                         //TypeOfRequest = model.TypeOfRequest,
@@ -751,12 +748,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         //ProjectMasterCode = model.ProjectMasterCode,
                         //InventoryMasterGroupId = model.InventoryMasterGroupId,
                         //AdditionsText = model.AdditionsText,
-                       // SalesOrderRemarks = model.SalesOrderRemarks,
+                        // SalesOrderRemarks = model.SalesOrderRemarks,
                         //ExpectedDeliveryDate = model.ExpectedDeliveryDate,
                         //DeliveryPeriod = model.DeliveryPeriod,
                         //DeliveryTerms = model.DeliveryTerms,
                         //DiscountsText = model.DiscountsText,
-                       // CostAllocationMasterGroup = model.CostAllocationMasterGroup,
+                        // CostAllocationMasterGroup = model.CostAllocationMasterGroup,
                         AddedBy = model.AddedBy ?? User.Identity?.Name,
                         AddedOn = DateTime.Now,
                         
@@ -871,9 +868,9 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string Capacity { get; set; }
             public string Operator { get; set; }
             public string Attachment { get; set; }
-            public string UnitRateMethod2 { get; set; }
+            public byte? UnitRateMethod2 { get; set; }
             public decimal? UnitRate2 { get; set; }
-            public string UnitRateMethod3 { get; set; }
+            public byte? UnitRateMethod3 { get; set; }
             public decimal? UnitRate3 { get; set; }
             public string Notes { get; set; }
             public string AdditionalNotes { get; set; }
@@ -1043,7 +1040,16 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
             if (order == null)
                 return NotFound();
 
-                        var children = await (
+
+            var currencyRate = await dbContext.Tbl40103PropertyQuoteMasters
+                       .Where(x => x.SalesOrderNo == salesOrderNo)
+                       .Select(x => x.CurrencyRate)
+                       .FirstOrDefaultAsync();
+
+
+
+
+            var children = await (
                 from c in dbContext.Tbl40130PropertySalesOrderChildren
                 where c.SalesOrderNo == salesOrderNo
                 select new
@@ -1052,9 +1058,15 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                     c.PropertyOrdered,
                     c.UnitRateMethod,
                     c.QuotedQuantity,
-                    UnitRate = c.UnitRate,
-                    c.MobRate,
-                    c.DemobRate
+                    //c.UnitRate,
+                    //c.MobRate,
+                    //c.DemobRate,
+                    UnitRate = c.UnitRate / currencyRate,
+                    MobRate = c.MobRate / currencyRate,
+                    DemobRate = c.DemobRate / currencyRate
+
+
+
                 }
             ).ToListAsync();
 
@@ -1063,16 +1075,29 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
             return Ok(new
             {
                 order.SalesOrderNo,
-                order.ClientName,
+                order.ClientCode,
                 order.SalesOrderDate,
                 order.ClientPono,
                 order.ClientPodate,
                 order.QuoteNo,
                 order.QuoteDate,
-                order.ClientRefNo,
-                order.ClientCode,
+                order.ClientRefName,
+                //order.ClientCode,
                 order.Project,
+                order.DeliveryContactPerson,
+                order.DeliveryContactMobile,
+                order.DeliveryContactEmail,
+                order.DeliveryLocation,
+                order.DeliveryRegion,
+                order.OrderDuration,
+                order.PaymentMode,
+                order.MobChargesBy,
+                order.AdvanceAmount,
+                order.CustomsChargesBy,
+                order.CreditPeriod,
+                order.CreditLimit,
                 order.SalesPersonCode,
+                order.ClientRefNo,
                 order.ClientContactEmail,
                 order.ClientContactNo,
                 order.TypeOfRequest,
@@ -1105,22 +1130,22 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 return Unauthorized(new { message = "Invalid tenant." });
 
             // Fetch the master record
-            var entity = await dbContext.Tbl60201salesOrderMasters
+            var entity = await dbContext.Tbl40129PropertySalesOrderMasters
                 .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
 
             if (entity == null)
                 return NotFound(new { message = "Sales order not found." });
 
             // Fetch and delete all child records
-            var children = await dbContext.Tbl60202salesOrderChildren
+            var children = await dbContext.Tbl40130PropertySalesOrderChildren
                 .Where(x => x.SalesOrderNo == salesOrderNo)
                 .ToListAsync();
 
             if (children.Any())
-                dbContext.Tbl60202salesOrderChildren.RemoveRange(children);
+                dbContext.Tbl40130PropertySalesOrderChildren.RemoveRange(children);
 
             // Delete master record
-            dbContext.Tbl60201salesOrderMasters.Remove(entity);
+            dbContext.Tbl40129PropertySalesOrderMasters.Remove(entity);
 
             await dbContext.SaveChangesAsync();
 
@@ -1316,6 +1341,8 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
         //}
 
         [HttpPost]
+
+        [Route("/api/ERSalesOrders/SubmitSalesOrder")]
         public async Task<IActionResult> SubmitSalesOrder([FromBody] string salesOrderNo)
         {
             try
@@ -1326,14 +1353,14 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Invalid Sales Order No." });
 
-                var existingEntity = await dbContext.Tbl60201salesOrderMasters
+                var existingEntity = await dbContext.Tbl40129PropertySalesOrderMasters
                     .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
 
                 if (existingEntity == null)
                     return NotFound(new { success = false, message = "Sales Order not found. Please save it first." });
 
                 existingEntity.IsSubmitted = true;
-                dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+                dbContext.Tbl40129PropertySalesOrderMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
 
                 return Ok(new { success = true, message = "Sales Order submitted successfully." });
@@ -1346,6 +1373,8 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
         }
 
         [HttpPost]
+
+        [Route("/api/ERSalesOrders/VerifySalesOrder")]
         public async Task<IActionResult> VerifySalesOrder([FromBody] string salesOrderNo)
         {
             try
@@ -1353,7 +1382,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                var order = await dbContext.Tbl60201salesOrderMasters
+                var order = await dbContext.Tbl40129PropertySalesOrderMasters
                     .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
 
                 if (order == null)
@@ -1365,7 +1394,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 order.IsVerified = true;
 
                 // ✅ Add this line to mark entity as modified
-                dbContext.Tbl60201salesOrderMasters.Update(order);
+                dbContext.Tbl40129PropertySalesOrderMasters.Update(order);
 
                 await dbContext.SaveChangesAsync();
 
@@ -1380,6 +1409,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
 
 
         [HttpPost]
+        [Route("/api/ERSalesOrders/ApproveSalesOrder")]
         public async Task<IActionResult> ApproveSalesOrder([FromBody] string salesOrderNo)
         {
             try
@@ -1390,7 +1420,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                 if (string.IsNullOrWhiteSpace(salesOrderNo))
                     return BadRequest(new { success = false, message = "Sales Order No is required." });
 
-                var order = await dbContext.Tbl60201salesOrderMasters
+                var order = await dbContext.Tbl40129PropertySalesOrderMasters
                     .FirstOrDefaultAsync(x => x.SalesOrderNo == salesOrderNo);
 
                 if (order == null)
@@ -1400,7 +1430,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
                     return BadRequest(new { success = false, message = "Sales Order must be verified before approval." });
 
                 order.IsApproved = true;
-                dbContext.Tbl60201salesOrderMasters.Update(order);
+                dbContext.Tbl40129PropertySalesOrderMasters.Update(order);
                 await dbContext.SaveChangesAsync();
 
                 return Ok(new { success = true, message = "Sales Order approved successfully." });
@@ -1453,7 +1483,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
 				if (string.IsNullOrWhiteSpace(request?.SalesOrderNo))
 					return BadRequest(new { success = false, message = "Sales Order No is required." });
 
-				var existingEntity = await dbContext.Tbl60201salesOrderMasters
+				var existingEntity = await dbContext.Tbl40129PropertySalesOrderMasters
 					.FirstOrDefaultAsync(x => x.SalesOrderNo == request.SalesOrderNo);
 
 				if (existingEntity == null)
@@ -1463,7 +1493,7 @@ public async Task<IActionResult> GenerateJobOrders([FromBody] SalesorderViewMode
 					return Ok(new { success = false, message = "Sales Order is already unlocked." });
 
 				existingEntity.IsApproved = false;
-				dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
+				dbContext.Tbl40129PropertySalesOrderMasters.Update(existingEntity);
 				await dbContext.SaveChangesAsync();
 
 				return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
