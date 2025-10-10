@@ -451,7 +451,7 @@
 
 		vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.ExportsTax)
+				subColumns.AddFor(m => m.ConvertedExportsTax)
 		.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right)
 			.Visible(true)
