@@ -90,8 +90,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
-                sealPictureBox.Image = sealImage;
+            if (FindControl("imgCompanySeal", true) is XRPictureBox imgCompanySeal)
+                imgCompanySeal.Image = sealImage;
             if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
                 companyphoneLabel.Text = companyPhone;
 

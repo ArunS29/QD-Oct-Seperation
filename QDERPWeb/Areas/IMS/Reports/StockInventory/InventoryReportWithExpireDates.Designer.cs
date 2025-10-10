@@ -1,26 +1,26 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
-{
-    partial class InventoryReportWithExpireDates
-    {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
-        private System.ComponentModel.IContainer components = null;
+﻿//namespace QD.ERP.Web.Areas.VAT.Reports.InventoryReports
+//{
+//    partial class InventoryReportWithExpireDates
+//    {
+//        /// <summary>
+//        /// Required designer variable.
+//        /// </summary>
+//        private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+//        /// <summary> 
+//        /// Clean up any resources being used.
+//        /// </summary>
+//        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+//        protected override void Dispose(bool disposing)
+//        {
+//            if (disposing && (components != null))
+//            {
+//                components.Dispose();
+//            }
+//            base.Dispose(disposing);
+//        }
 
-        #region Designer generated code
+//        #region Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -1217,9 +1217,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.XrTable3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
         private DevExpress.XtraReports.UI.DetailBand Detail;
         private DevExpress.XtraReports.UI.XRTable XrTable1;

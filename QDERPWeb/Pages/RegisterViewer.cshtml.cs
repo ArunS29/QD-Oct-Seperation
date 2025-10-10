@@ -11,7 +11,7 @@ using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Web.Areas.Finance.Reports.ImportReports;
 using QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable;
-using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
+//using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
 using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
@@ -391,9 +391,9 @@ namespace QD.ERP.Web.Pages
                     case "BillsRecivableReport1":
                         Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
-                    case "InventoryReportWithExpireDates":
-                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
-                        break;
+                    //case "InventoryReportWithExpireDates":
+                    //    Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  userName,_tenantDbContextHelper);
+                    //    break;
 
                     // Import Reports (Offline versions)
                     case "XtraReportAgeingreportsummaryImport":
