@@ -31,6 +31,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports
 
             InitializeComponent();
             SetReportParameters(tenantName, toDate, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, accountGroup, frmDate,username);
+            sqlDataSource1.ConnectionOptions.CommandTimeout = 3600; // 60 minutes timeout
             LoadCurrencySymbolAndImage();
 
             try

@@ -1,5 +1,7 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+@using Microsoft.AspNetCore.Http
+
 @{
     var userIdString = HttpContext.Session.GetString("UserId");
     byte requesterIdByte = 0;

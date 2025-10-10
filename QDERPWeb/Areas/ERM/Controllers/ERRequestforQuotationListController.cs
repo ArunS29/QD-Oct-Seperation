@@ -128,28 +128,90 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public string PropertyNo { get; set; }
             public int TimeSheetMasterID { get; set; }
         }
-        [HttpPost]
-        public IActionResult CopyClientToSuppliers([FromBody] List<TimesheetCopyDto> timesheets)
-        {
-            if (timesheets == null || timesheets.Count == 0)
-                return BadRequest("No data provided");
 
-            _db.Open();
-            foreach (var ts in timesheets)
+        [HttpPost]
+
+public IActionResult CopyClientToSuppliers([FromBody] List<TimesheetCopyDto> timesheets)
+{
+     if (timesheets == null || timesheets.Count == 0)
+         return BadRequest(new { message = "No data provided", success = false });
+ 
+     // ✅ Try to get the correct tenant context
+     if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+         return Unauthorized(new { message = "Invalid tenant", success = false });
+ 
+     try
+     {
+         // ✅ Use connection from current tenant context
+         using (var connection = (SqlConnection)dbContext.Database.GetDbConnection())
+         {
+             connection.Open();
+             foreach (var ts in timesheets)
+             {
+                 using (var cmd = new SqlCommand("stpro401_17CopyClientTStoSupplierTS", connection))
+                 {
+                     cmd.CommandType = CommandType.StoredProcedure;
+                     cmd.Parameters.AddWithValue("@PropertyNo", ts.PropertyNo);
+                     cmd.Parameters.AddWithValue("@TimeSheetMasterID", ts.TimeSheetMasterID);
+                     cmd.ExecuteNonQuery();
+                 }
+             }
+             connection.Close();
+         }
+ 
+         return Ok(new { message = "Timesheets copied successfully!", success = true });
+     }
+     catch (Exception ex)
+     {
+         return StatusCode(500, new { message = "An error occurred while copying timesheets.", details = ex.Message, success = false });
+     }
+}
+        //[HttpPost]
+        //public IActionResult CopyClientToSuppliers([FromBody] List<TimesheetCopyDto> timesheets)
+        //{
+        //    if (timesheets == null || timesheets.Count == 0)
+        //        return BadRequest("No data provided");
+
+        //    _db.Open();
+        //    foreach (var ts in timesheets)
+        //    {
+        //        using (var cmd = new SqlCommand("stpro401_17CopyClientTStoSupplierTS", _db))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@PropertyNo", ts.PropertyNo);
+        //            cmd.Parameters.AddWithValue("@TimeSheetMasterID", ts.TimeSheetMasterID);
+        //            cmd.ExecuteNonQuery();
+        //        }
+        //    }
+        //    _db.Close();
+
+        //    return Ok(new { message = "Timesheets copied successfully!" });
+        //}
+        [HttpGet]
+        public async Task<IActionResult> GetTimeSlots()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                using (var cmd = new SqlCommand("stpro401_17CopyClientTStoSupplierTS", _db))
+                try
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@PropertyNo", ts.PropertyNo);
-                    cmd.Parameters.AddWithValue("@TimeSheetMasterID", ts.TimeSheetMasterID);
-                    cmd.ExecuteNonQuery();
+                    var timeSlots = await dbContext.Tbl101TimeSlots
+                        .Select(i => new
+                        {
+                            i.TimeSlot
+
+                        }).ToListAsync();
+
+                    return Json(timeSlots);  // ✅ returns array
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetTimeSlots: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching timeslots.", error = ex.Message });
                 }
             }
-            _db.Close();
 
-            return Ok(new { message = "Timesheets copied successfully!" });
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
         [HttpGet]
         public async Task<IActionResult> GetTimesheetGrid(DataSourceLoadOptions loadOptions, string propertyNo, int? timeSheetMaster)
         {
@@ -163,7 +225,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     if (timeSheetMaster.HasValue)
                         query = query.Where(x => x.TimeSheetMasterId == timeSheetMaster.Value);
 
-                    // 🔹 Project all fields
                     var projectedQuery = query.Select(x => new
                     {
                         x.TimeSheetId,
@@ -210,7 +271,32 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         x.NightOperatorName
                     });
 
-                    return Json(await DataSourceLoader.LoadAsync(projectedQuery, loadOptions));
+                    var projectedList = await projectedQuery.ToListAsync();
+
+                    var statusLookup = dbContext.Tbl40123TimeSheetDayStatuses
+                        .ToDictionary(x => x.DaySlNo, x => x.DayDescription);
+
+                    var resultWithVAT = new List<ExpandoObject>();
+
+                    foreach (var gridDetails in projectedList)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        foreach (var prop in gridDetails.GetType().GetProperties())
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        dict["WorkStatus"] = statusLookup.TryGetValue(gridDetails.WorkStatus ?? 0, out var desc)
+                            ? desc
+                            : null;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    // ✅ Return through DataSourceLoader for paging/filtering
+                    return Json(DataSourceLoader.Load(resultWithVAT, loadOptions));
                 }
                 catch (Exception ex)
                 {
@@ -428,7 +514,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         await command.ExecuteNonQueryAsync();
                     }
                 }
-
+                
                 // 3️⃣ Update Day Shift Operators
                 await using (var command = connection.CreateCommand())
                 {
@@ -467,33 +553,62 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return BadRequest(new { success = false, message = ex.Message });
             }
         }
-        [HttpGet]
-        public async Task<IActionResult> GetWorkStatus(DataSourceLoadOptions loadOptions)
+
+        [HttpGet("GetWorkStatus")]
+        public async Task<ActionResult> GetWorkStatus()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var WorkDay = dbContext.Tbl40123TimeSheetDayStatuses.Select(i => new
-                    {
-                        i.DayCode,
-                        i.DayDescription,
-                        i.DaySlNo
+                    var workStatuses = dbContext.Tbl40123TimeSheetDayStatuses
+                        .Select(x => new
+                        {
+                            x.DaySlNo,
+                            x.DayCode,
+                            x.DayDescription
+                        })
+                        .OrderBy(x => x.DaySlNo)
+                        .ToList();
 
-                    });
-
-                    return Json(await DataSourceLoader.LoadAsync(WorkDay, loadOptions));
+                    return Json(workStatuses);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetProject: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-     
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetWorkStatus()
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var workDay = await dbContext.Tbl40123TimeSheetDayStatuses
+        //                .Select(i => new {
+        //                    i.DayCode,
+        //                    i.DayDescription
+        //                }).ToListAsync();
+
+        //            return Json(workDay);   // 👈 just return array
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error in GetWorkStatus: {ex.Message}");
+        //            return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+        //        }
+        //    }
+
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> SubmitRFQ(string Rfqno)

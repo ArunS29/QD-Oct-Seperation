@@ -670,10 +670,10 @@
                         DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.log("Error: " + error);
-                    DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
-                }
+                   error: function (xhr) {
+            const msg = xhr.responseJSON?.message || "Error occurred while saving.";
+            DevExpress.ui.notify(msg, "error", 3000);
+        }
             });
         } else {
             DevExpress.ui.notify("Please fill all required fields", "error", 3000);
@@ -745,10 +745,10 @@
                             DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.log("Error: " + error);
-                        DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
-                    }
+                       error: function (xhr) {
+            const msg = xhr.responseJSON?.message || "Error occurred while saving.";
+            DevExpress.ui.notify(msg, "error", 3000);
+        }
                 });
             } else {
                 DevExpress.ui.notify("Please fill all required fields", "error", 3000);
