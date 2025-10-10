@@ -336,7 +336,7 @@
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATCreditNoteRegisterFooter.cshtml")
 </div>
 
-<div class="context-menu" id="contextMenu">
+@* <div class="context-menu" id="contextMenu">
 	<div class="context-menu-item" onclick="viewInvoiceCreditNote()">
 		<i class="dx-icon-search" id="einvoicecredit"></i>
 	</div>
@@ -349,7 +349,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> *@
 
 <div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -1161,19 +1161,123 @@
 				return $("<div>").attr("id", "popupFormContent");
 			}
 		}).dxPopup("instance");
-		var contextMenu = $("#contextMenu");
-		$(document).on("click", function () {
-			contextMenu.hide();
-		});
-		$("#dataGrid").customizeGridContextMenu();
-		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-			e.preventDefault();
-			var rowIndex = $(this).index();
-			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-					CreditNoteNo = rowData.CreditNoteNo;
-			console.log(rowData);
-			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-		});
+		$("#dataGrid").dxDataGrid({
+		// ... your other grid options ...
+		onContextMenuPreparing: function (e) {
+			e.items = [];
+
+			// --- Context Menu for Data Rows ---
+			if (e.target === "content" && e.row && e.row.rowType === "data") {
+				const rowData = e.row.data;
+
+				// Define your menu items with permission keys
+				const menuConfig = [
+					{
+						text: formatMessage("View e-Invoice Credit Note"),
+						icon: "search",
+						color: "#007bff",
+						permissionKey: "frm20169VATCreditNoteView_ViewCreditNote",
+						onItemClick: function () {
+							CreditNoteNo = rowData.CreditNoteNo;
+							InvoiceType = rowData.InvoiceType;
+							viewInvoiceCreditNote();
+						}
+					},
+					{
+						text: formatMessage("VAT Credit Notes (Obsolete)"),
+						icon: "close",
+						color: "#dc3545",
+						permissionKey: "frm20169VATCreditNoteView_CreditNoteObselete",
+						onItemClick: function () {
+							invoiceNo = rowData.InvoiceNo;
+							InvoiceType = rowData.InvoiceType;
+							viewVATCreditNote();
+						}
+					}
+					
+				];
+
+				// Apply permission visibility/enabled state dynamically
+				menuConfig.forEach(item => {
+					const perm = menuPermissions[item.permissionKey?.toLowerCase()];
+					if (perm && perm.visible) {
+						e.items.push({
+							...item,
+							disabled: !perm.enabled
+						});
+					}
+				});
+			}
+
+			// --- Context Menu for Header Area ---
+			if (e.target === "header") {
+				e.items.push(
+					{
+						text: "Column Chooser",
+						icon: "columnchooser",
+						color: "#007bff",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").showColumnChooser();
+						}
+					},
+					{
+						text: "Refresh Data",
+						icon: "refresh",
+						color: "#ffc107",
+						onItemClick: function () {
+							$("#dataGrid").dxDataGrid("instance").refresh();
+						}
+					}
+				);
+			}
+
+			// --- Prevent unwanted menu or highlight behavior ---
+			if (!e.items || e.items.length === 0) {
+				e.cancel = true; // cancel if no items available
+			}
+
+			if (e.target === "content" && !e.row) {
+				e.cancel = true; // cancel if clicking empty area below last row
+			}
+		}
+	});
+
+
+	$(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+		const menuItems = $(".dx-context-menu .dx-menu-item");
+		currentIndex = menuItems.index(this);
+		highlightItem(this);
+	});
+
+	// ✅ Highlight helper
+	function highlightItem(item) {
+		$(".dx-context-menu .dx-menu-item").removeClass("highlighted"); // remove old highlight
+		if (item) $(item).addClass("highlighted"); // apply new highlight
+	}
+
+	// ✅ Custom CSS
+	$("<style>")
+		.prop("type", "text/css")
+		.html(`
+			/* Remove DevExtreme default hover/focus */
+			.dx-context-menu .dx-menu-item.dx-state-focused,
+			.dx-context-menu .dx-menu-item.dx-state-hover {
+					background-color: var(--title-background-color) !important;
+					color: white !important;
+			}
+
+			/* Our unified highlight */
+			.dx-context-menu .dx-menu-item.highlighted {
+				   background-color: var(--title-background-color) !important;
+				   color: white !important;
+			}
+			/* ✅ Remove border and shadow for context menu */
+			.dx-context-menu {
+				border: none !important;
+				box-shadow: none !important;
+			}
+		`)
+		.appendTo("head");
 	});
 
 		function ddBtnShowRecords_click(duration) {
@@ -1330,7 +1434,7 @@
 
 		return [day, strmonth, year].join('-');
 	}
-
+	let menuPermissions = {};
 				$(document).ready(function () {
 						console.log('Start permission handling');
 						// Form ID
@@ -1395,6 +1499,14 @@
 											console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
 										} else {
 											console.warn(`Button with ID "${key}" not found in the DOM.`);
+										}
+									});
+									response.permissions.forEach(p => {
+										if (p.ItemName) {
+											menuPermissions[p.ItemName.trim().toLowerCase()] = {
+												visible: p.ItemVisible || false,
+												enabled: p.ItemEnabled || false
+											};
 										}
 									});
 								} else {
