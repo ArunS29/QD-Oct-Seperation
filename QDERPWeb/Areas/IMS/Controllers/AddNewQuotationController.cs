@@ -370,27 +370,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 foreach (var child in VM.QuotationDetailses)
                 {
+                    // Always make sure FK is set
+                    child.QuoteNo = VM.QuoteNo;
+
                     if (child.QuoteChildId == 0)
                     {
-                        // New child entry
-                        child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
-                        child.CostPrice = child.CostPrice * VM.CurrencyRate;
-                        child.QuotedUnitPrice = child.QuotedUnitPrice * VM.CurrencyRate;
-                        child.QuotedDiscount = child.QuotedDiscount * VM.CurrencyRate;
+                        // 🆕 New child entry — multiply by currency rate
+                        child.CostPrice = (child.CostPrice ?? 0) * (VM.CurrencyRate ?? 1);
+                        child.QuotedUnitPrice = (child.QuotedUnitPrice ?? 0) * (VM.CurrencyRate ?? 1);
+                        child.QuotedDiscount = (child.QuotedDiscount ?? 0) * (VM.CurrencyRate ?? 1);
+
                         await dbContext.Tbl60102quotationChildren.AddAsync(child);
                     }
                     else
                     {
-                        // Existing child entry
-                        var existingChild = existingChildren
-                            .FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
-
+                        // ✏️ Existing child entry — update with multiplied values
+                        var existingChild = existingChildren.FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
                         if (existingChild != null)
                         {
+                            // First update all other properties
                             dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+
+                            // Then override currency-dependent fields after multiplication
+                            existingChild.CostPrice = (child.CostPrice ?? 0) * (VM.CurrencyRate ?? 1);
+                            existingChild.QuotedUnitPrice = (child.QuotedUnitPrice ?? 0) * (VM.CurrencyRate ?? 1);
+                            existingChild.QuotedDiscount = (child.QuotedDiscount ?? 0) * (VM.CurrencyRate ?? 1);
                         }
                     }
                 }
+
+
 
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
