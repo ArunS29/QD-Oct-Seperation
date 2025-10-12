@@ -1913,9 +1913,60 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
-
         [HttpGet]
-        public async Task<IActionResult> GetStockMomentReport(DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> GetStockMomentReport(DateTime? toDate)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    // if you're using tenant helper as in your app; otherwise use _dbContext directly
+                    return Unauthorized(new { message = "Invalid tenant." });
+                }
+
+                // if caller didn't provide toDate, take end of current day
+                if (!toDate.HasValue)
+                {
+                    toDate = DateTime.Today; // up to today
+                }
+
+                // Ensure the filter uses date only (inclusive up to end of day)
+                var toDateInclusive = toDate.Value.Date.AddDays(1).AddTicks(-1);
+
+                var query = dbContext.Qry665MtlStockMasterAvgCost03WtDetail002s.AsQueryable();
+
+                // Filter: TransactionDate <= toDateInclusive
+                query = query.Where(i => i.TransactionDate <= toDateInclusive);
+
+                var data = await query
+                    .OrderBy(i => i.Gscode)
+                    .ThenBy(i => i.TransactionDate)
+                    .Select(i => new
+                    {
+                        i.ReceiptNo,
+                        i.IsServicesGroup,
+                        i.TransactionDate,
+                        i.UnitPrice,
+                        i.Transactions,
+                        i.Gscode,
+                        i.Gsdescrpition,
+                        i.UnitDesc,
+                        i.StockReceivedQty,
+                        i.GsgroupName,
+                        i.TransactionTotal
+                    })
+                    .ToListAsync();
+
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error in GetStockMomentReport");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetStockMomentReport1(DateTime? fromDate, DateTime? toDate)
         {
             try
             {

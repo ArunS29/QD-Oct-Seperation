@@ -1,5 +1,6 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
+@using Microsoft.AspNetCore.Http
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
      var sessionID = HttpContext.Session.GetString("currencyID");
@@ -3360,7 +3361,7 @@ function syncSupVATNumbers(e) {
                       if(IsClientAdd=='true')
                      { 
                  
-                      disableTabs(["tab-content-3", "tab-content-7"]);
+                      disableTabs(["tab-content-5"]);
                      var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
                  
                  // Set the value

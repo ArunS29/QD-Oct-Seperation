@@ -2548,6 +2548,12 @@ function checkDateLocking() {
 				minSearchLength: 3,
 				deferRendering: true,
 				dropDownOptions: { width: 800 },
+				 onOpened: function (e) {
+        const ds = e.component.getDataSource();
+        if (ds && ds.store()) {
+            ds.reload(); // ✅ Refresh data from /api/GoodsandServices/GetGoodsAndServices
+        }
+    },
 				
 				contentTemplate: function (e) {
 					return $("<div>").dxDataGrid({
@@ -2589,11 +2595,19 @@ function checkDateLocking() {
 
 							if (rowIndex !== -1) {
 								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+								dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || 0);
 								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 								dataGrid.cellValue(rowIndex, "Qty", 1);
 								dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
+								                           // Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "QuotedTaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	}); 
+	dataGrid.cellValue(rowIndex, "VAT%", "15%");
 
 								ItemNo = selectedItem.GSCode;
 								Gsdescrpition = selectedItem.GSDescrpition;
@@ -2603,6 +2617,7 @@ function checkDateLocking() {
 								GssellingRate = selectedItem.GSSellingRate;
 								ReorderQty = selectedItem.ReorderQty;
 								UnitOfMeasure = selectedItem.GsuoM;
+
 							}
 
 							e.component.close();
@@ -2727,6 +2742,11 @@ function checkDateLocking() {
 								placeholder: "Select Unit Rate Method",
 
 								dropDownOptions: { width: 530 },
+								 onOpened: function (e) {
+                getUnitRateMethods().done(function (unitRates) {
+                    e.component.option("dataSource", unitRates);
+                });
+            },
 
 								contentTemplate: function (e) {
 
@@ -3280,7 +3300,12 @@ placeholder: "Search..."
 				minSearchLength: 3,
 				deferRendering: true,
 				dropDownOptions: { width: 800 },
-				
+				 onOpened: function (e) {
+        const ds = e.component.getDataSource();
+        if (ds && ds.store()) {
+            ds.reload(); // ✅ Refresh data from /api/GoodsandServices/GetGoodsAndServices
+        }
+    },
 				contentTemplate: function (e) {
 					return $("<div>").dxDataGrid({
 						dataSource: e.component.getDataSource(),
@@ -3321,12 +3346,19 @@ placeholder: "Search..."
 
 							if (rowIndex !== -1) {
 								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+								dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || 0);
 								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 								dataGrid.cellValue(rowIndex, "Qty", 1);
 								dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
-
+								                           // Set PotaxSlab to correct value
+	getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "QuotedTaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
+	dataGrid.cellValue(rowIndex, "VAT%", "15%");
 								ItemNo = selectedItem.GSCode;
 								Gsdescrpition = selectedItem.GSDescrpition;
 								
@@ -3442,6 +3474,11 @@ placeholder: "Search..."
 								placeholder: "Select Unit Rate Method",
 
 								dropDownOptions: { width: 280 },
+								 onOpened: function (e) {
+                getUnitRateMethods().done(function (unitRates) {
+                    e.component.option("dataSource", unitRates);
+                });
+            },
 
 								contentTemplate: function (e) {
 
@@ -6091,36 +6128,87 @@ function loadChildDataAndBindGrid(quoteno) {
 		onDeleteButtonClick();
 	});
 	function onDeleteButtonClick(e) {
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+    var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
 
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
-			return;
-		}
+    if (!QuoteNo) {
+        DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
+        return;
+    }
 
-		DevExpress.ui.dialog.confirm(
-			"You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
-			"Confirm Deletion"
-		).done(function (dialogResult) {
-			if (dialogResult) {
-				// User clicked 'Yes'
-				$.ajax({
-					url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-					type: 'DELETE',
-					success: function (response) {
-						DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
-							window.location.href =`/${tenantName}/IMS/Quotation`;
-						});
-					},
-					error: function (xhr) {
-						const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-						DevExpress.ui.notify(msg, 'error', 3000);
-					}
-				});
-			}
-			// else: user clicked 'No' - do nothing
-		});
-	}
+    DevExpress.ui.dialog.confirm(
+        "You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
+        "Confirm Deletion"
+    ).done(function (dialogResult) {
+        if (dialogResult) {
+            // User clicked 'Yes'
+            $.ajax({
+                url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+                type: 'DELETE',
+                success: function (response) {
+                    DevExpress.ui.notify("Quotation has been successfully removed from the database.", "success", 3000);
+
+                    // 🔹 Attachment Delete
+                    var module = "inventory";
+                    $.ajax({
+                        url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(QuoteNo)}&module=${encodeURIComponent(module)}`,
+                        type: "POST",
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.notify("Attachments deleted successfully.", "success", 1500);
+                            } else {
+                                DevExpress.ui.notify("There are no attachments to delete.", "info", 1500);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Error while deleting attachments: " + error, "error", 1500);
+                        }
+                    });
+
+                    // 🔹 Redirect after all deletions
+                    DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
+                        window.location.href = `/${tenantName}/IMS/Quotation`;
+                    });
+                },
+                error: function (xhr) {
+                    const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+                    DevExpress.ui.notify(msg, 'error', 3000);
+                }
+            });
+        }
+    });
+}
+
+	// function onDeleteButtonClick(e) {
+	// 	var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+
+	// 	if (!QuoteNo) {
+	// 		DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
+	// 		return;
+	// 	}
+
+	// 	DevExpress.ui.dialog.confirm(
+	// 		"You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
+	// 		"Confirm Deletion"
+	// 	).done(function (dialogResult) {
+	// 		if (dialogResult) {
+	// 			// User clicked 'Yes'
+	// 			$.ajax({
+	// 				url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+	// 				type: 'DELETE',
+	// 				success: function (response) {
+	// 					DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
+	// 						window.location.href =`/${tenantName}/IMS/Quotation`;
+	// 					});
+	// 				},
+	// 				error: function (xhr) {
+	// 					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+	// 					DevExpress.ui.notify(msg, 'error', 3000);
+	// 				}
+	// 			});
+	// 		}
+	// 		// else: user clicked 'No' - do nothing
+	// 	});
+	// }
 
 
 
@@ -6419,7 +6507,7 @@ function loadChildDataAndBindGrid(quoteno) {
 	});
 
 
-
+	let Approvedtime=null; let Verifiedtime=null;let Submittedtime=null;
 
 	$("#btnSubmit").on("click", function () {
   const $btn = $(this);
@@ -6458,7 +6546,8 @@ function loadChildDataAndBindGrid(quoteno) {
       success: function (response) {
 		   syncWorkflowFromFields();
        DevExpress.ui.notify("Quotation has been submitted for approval.", "success", 3000);
-         
+           Submittedtime=response.SubmittedOn;
+		   console.log("submittime",Submittedtime);
             const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
             if (preparedByBox && response.VoucherApprovedBy) {
               preparedByBox.option("value", response.VoucherApprovedBy);
@@ -6541,6 +6630,8 @@ function loadChildDataAndBindGrid(quoteno) {
     contentType: "application/json",
     success: function (response) {
       if (response?.message) {
+		  Verifiedtime=response.VerifiedOn;
+		   console.log("Verifiedtime",Verifiedtime);
         const verifiedBy = response.VerifiedBy;
         const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
 
@@ -6625,6 +6716,9 @@ function loadChildDataAndBindGrid(quoteno) {
         contentType: "application/json",
         success: function (response) {
             if (response && response.Message) {
+				
+				Approvedtime=response.ApprovedOn;
+				 console.log("Approvedtime",Approvedtime);
                 if (response.VoucherApprovedBy) {
                     const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
                     if (approvedByBox) {
@@ -7527,14 +7621,18 @@ function saveField(fieldName, dxId,name) {
 		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
 		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
-
+		const verifiedOn=Verifiedtime;
+		const approvedOn=Approvedtime;
+		const submittedOn=Submittedtime;
         console.log("🧪 Tooltip data:", {
-            verifiedBy, verifiedOn, approvedBy, approvedOn
+            submittedBy, submittedOn: Submittedtime,
+        verifiedBy, verifiedOn: Verifiedtime,
+        approvedBy, approvedOn: Approvedtime
         });
 
         // 🟩 Verified Popover
         tippy('#circle-verify', {
-            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${Submittedtime || "N/A"}`,
             allowHTML: true,
             followCursor: 'horizontal',
             placement: 'top',
@@ -7546,7 +7644,7 @@ function saveField(fieldName, dxId,name) {
 
         // 🟩 Approved Popover
         tippy('#circle-approve', {
-            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${Verifiedtime || "N/A"}`,
             allowHTML: true,
             followCursor: 'horizontal',
             placement: 'top',
@@ -7557,7 +7655,7 @@ function saveField(fieldName, dxId,name) {
 
         });
             tippy('#circle-submit', {
-        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On:${Approvedtime || "N/A"}`,
         allowHTML: true,
         followCursor: 'horizontal',
         placement: 'top',
