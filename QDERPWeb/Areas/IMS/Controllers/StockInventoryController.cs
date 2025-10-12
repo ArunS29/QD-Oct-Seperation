@@ -2025,7 +2025,6 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     var query = dbContext.Qry65320storeStockBalanceWtStoreCodes.AsQueryable();
 
-                    // Fetching the data
                     var data = await query.Select(i => new
                     {
                         i.Gscode,
@@ -2039,7 +2038,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.CurrentyQty,
                         i.UnitDesc,
                         i.GsgroupName
-                        }).ToListAsync();
+                    }).ToListAsync();
 
                     return Json(data);
                 }
@@ -2048,10 +2047,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetProject: {ex.Message}");
+                _logger.LogError($"Error in GetStockPivotData: {ex.Message}");
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
+
         [HttpDelete]
         public IActionResult DeleteStock(int key)
         {

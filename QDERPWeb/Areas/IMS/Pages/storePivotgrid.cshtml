@@ -1,0 +1,102 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.storePivotgridModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<title>Quotation Analysis PivotGrid</title>
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+
+<div style="padding: 10px; background-color:white;">
+    <input id="formId" value="frm60115QuotationAnalysis1" type="hidden" />
+    <div id="pivotGridContainerId" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+let pivotGridInstance = null;
+let currentPivotRawData = [];
+
+$(document).ready(function () {
+    pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
+        allowSortingBySummary: true,
+        allowSorting: true,
+        allowFiltering: true,
+        allowExpandAll: true,
+        showBorders: true,
+        height: 500,
+        fieldChooser: { enabled: true, allowSearch: true },
+        fieldPanel: { visible: true },
+        loadPanel: { enabled: true },
+        wordWrapEnabled: true,
+        dataSource: {
+            fields: [
+                { dataField: "Gsdescrpition", area: "row", caption: "Item Description" },
+                { dataField: "QuotedQuantity", area: "row", caption: "Quantity" },
+                { dataField: "SupplierName", area: "column", caption: "Supplier Name" },
+                { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
+                { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                { dataField: "IsWonForPo", area: "data", caption: "IsWonForPo", summaryType: "max", dataType: "boolean" },
+                { dataField: "Mprno", visible: false },
+                { dataField: "Gscode", visible: false },
+                { dataField: "LineTotalAfterDisc", visible: false },
+                { dataField: "UnitDesc", visible: false },
+                { dataField: "RfqchildSlNo", visible: false }
+            ],
+            store: [] // empty initially
+        },
+        onCellPrepared: function(e) {
+            if (e.area === "data" && e.cell?.dataType === "boolean") {
+                const $cell = $(e.cellElement);
+                $cell.empty();
+                const checkbox = $("<input>")
+                    .attr("type", "checkbox")
+                    .prop("checked", !!e.cell.value)
+                    .on("change", function () {
+                        const rowPath = e.cell?.rowPath || [];
+                        const columnPath = e.cell?.columnPath || [];
+                        const match = currentPivotRawData.find(item =>
+                            item.Gsdescrpition === rowPath[0] &&
+                            item.SupplierName === columnPath[0] &&
+                            (rowPath.length === 1 || item.QuotedQuantity == rowPath[1])
+                        );
+                        if (match) openSelectionDetailsPopup(match.Mprno, match.RfqchildSlNo, match.Gscode);
+                    });
+                $cell.append(checkbox);
+            }
+        }
+    }).dxPivotGrid("instance");
+
+    // Auto-load pivot grid data on page load
+    loadPivotGridData();
+});
+
+function loadPivotGridData() {
+    $.ajax({
+        url: '/api/QuotationAnalysis/GetQuotationAnalysisPvg', // your API
+        type: 'GET',
+        success: function (data) {
+            currentPivotRawData = data;
+            pivotGridInstance.getDataSource().store().clear(); // clear existing
+            pivotGridInstance.getDataSource().store().push(data); // add new data
+            pivotGridInstance.getDataSource().reload();
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching data: ", error);
+            DevExpress.ui.notify("Error loading pivot data.", "error", 2000);
+        }
+    });
+}
+
+function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode) {
+    const tenantName = window.tenantName || "defaultTenant";
+    const url = `/${tenantName}/IMS/ReasonForQA?mprno=${mprno}&rfqchildSlNo=${rfqchildSlNo}&gsCode=${gsCode}`;
+    openModal(url,"Selection Details", "70%","33%");
+}
+</script>
+
