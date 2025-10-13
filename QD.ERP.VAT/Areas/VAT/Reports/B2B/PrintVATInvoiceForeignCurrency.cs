@@ -1,7 +1,7 @@
 ﻿using DevExpress.XtraPrinting;
 using DevExpress.XtraPrinting.Drawing;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Areas.VAT.Reports.B2B;
+using QD.ERP.VAT.Areas.VAT.Reports.B2B;
 using Svg;
 using System;
 using System.Collections;
@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 {
     public partial class PrintVATInvoiceForeignCurrency : DevExpress.XtraReports.UI.XtraReport
     {

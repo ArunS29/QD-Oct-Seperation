@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Bcpg.OpenPgp;
-using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Shared.Models;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using SkiaSharp;
 using System.ComponentModel.Design;
 using System.Data;
@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
 {

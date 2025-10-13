@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote
 {
     partial class creditnote
     {

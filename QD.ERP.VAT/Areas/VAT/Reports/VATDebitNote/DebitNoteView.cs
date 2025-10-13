@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
+namespace QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote
 {
 	public partial class DebitNoteView : DevExpress.XtraReports.UI.XtraReport
     {

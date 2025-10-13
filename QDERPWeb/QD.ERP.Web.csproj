@@ -67,6 +67,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\QD.ERP.Finance\QD.ERP.Finance.csproj" />
 	  <ProjectReference Include="..\QD.ERP.Shared\QD.ERP.Shared.csproj" />
+	  <ProjectReference Include="..\QD.ERP.VAT\QD.ERP.VAT.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

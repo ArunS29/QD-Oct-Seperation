@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
+namespace QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister
 {
     public partial class TaxSummaryReportPurchaseInArabic : DevExpress.XtraReports.UI.XtraReport
     {

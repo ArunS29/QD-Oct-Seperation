@@ -12,6 +12,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Svg" Version="3.4.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QD.ERP.Shared\QD.ERP.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Areas\IMS\Reports\DeliveryNote\DeliveryNoteWithCostPrice.cs">
       <SubType>XtraReport</SubType>
     </Compile>

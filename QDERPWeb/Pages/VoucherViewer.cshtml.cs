@@ -18,10 +18,10 @@ using QD.ERP.Finance.Areas.Finance.Reports.test;
 //using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
 //using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
 //using QD.ERP.Web.Areas.IMS.Reports.SalesOrder;
-//using QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE;
-//using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
-//using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
-//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE;
+//using QD.ERP.VAT.Areas.VAT.Reports.Inventory_Reports;
+using QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Models.DAL;
 using System;
@@ -168,249 +168,249 @@ namespace QD.ERP.Web.Pages
                 }
             }
 
-//            if (reportName == "DebitNoteView")
-//            {
-//                if (string.IsNullOrEmpty(debitNoteNo))
-//                {
-//                    return BadRequest("Debit Note No is required for debit note reports.");
-//                }
-//                debitNoteNo = debitNoteNo;
+            if (reportName == "DebitNoteView")
+            {
+                if (string.IsNullOrEmpty(debitNoteNo))
+                {
+                    return BadRequest("Debit Note No is required for debit note reports.");
+                }
+                debitNoteNo = debitNoteNo;
 
-//                Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
-//                    debitNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, username, _tenantDbContextHelper);
+                Report = new QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+                    debitNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, username, _tenantDbContextHelper);
 
-//                return Page();
-//            }
-//            if (string.IsNullOrEmpty(reportName))
-//                return BadRequest("Report name is required.");
+                return Page();
+            }
+            if (string.IsNullOrEmpty(reportName))
+                return BadRequest("Report name is required.");
 
-//            if (
-//                  reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
-//                  reportName == "PrintRegularTaxInvoiceWithOutDiscounts" ||
-//                  reportName == "PrintVATInvoiceEnglishOnly" ||
-//                  reportName == "PrintVATInvoiceForeignCurrency" ||
-//                  reportName == "PrintsimplifiedTaxInvoices" ||
-//                  reportName == "PrintSimplifiedTaxInvoiceWithOutDiscount" ||
-//                  reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
-//                  reportName == "Foreigncurrency1" ||
-//                  reportName == "PrintRegularInvoiceFormat02" ||
-//                  reportName == "PrintRegularInvoiceFormat02WithDiscount" ||
-//                  reportName == "ForeignCurrencyProforma" ||
-//                  reportName == "ForeignCurrencyProformaWithoutDiscount" ||
-//                  reportName == "ForeignEnglishProforma" ||
-//                  reportName == "ProformaInvoiceEnglish" ||
-//                  reportName == "ProformaPreviewInvoice" ||
-//                  reportName == "ProformaNewFormat" ||
-//                  reportName == "BillsPurchases" ||
-//                  reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
-//                  reportName == "Withoutsignatories" ||
-//                  reportName == "withsignatories" ||
-//                  reportName == "RegularTaxInvoiceFormat06" ||
-//                  reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_" ||
-//                  reportName == "taxinvoicewithSignatoriesWithSymbols" ||
-//                  reportName == "WithoutDiscountInvoice" ||
-//                  reportName == "Wtdiscountpreviewinvoice")
+            if (
+                  reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+                  reportName == "PrintRegularTaxInvoiceWithOutDiscounts" ||
+                  reportName == "PrintVATInvoiceEnglishOnly" ||
+                  reportName == "PrintVATInvoiceForeignCurrency" ||
+                  reportName == "PrintsimplifiedTaxInvoices" ||
+                  reportName == "PrintSimplifiedTaxInvoiceWithOutDiscount" ||
+                  reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
+                  reportName == "Foreigncurrency1" ||
+                  reportName == "PrintRegularInvoiceFormat02" ||
+                  reportName == "PrintRegularInvoiceFormat02WithDiscount" ||
+                  reportName == "ForeignCurrencyProforma" ||
+                  reportName == "ForeignCurrencyProformaWithoutDiscount" ||
+                  reportName == "ForeignEnglishProforma" ||
+                  reportName == "ProformaInvoiceEnglish" ||
+                  reportName == "ProformaPreviewInvoice" ||
+                  reportName == "ProformaNewFormat" ||
+                  reportName == "BillsPurchases" ||
+                  reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
+                  reportName == "Withoutsignatories" ||
+                  reportName == "withsignatories" ||
+                  reportName == "RegularTaxInvoiceFormat06" ||
+                  reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_" ||
+                  reportName == "taxinvoicewithSignatoriesWithSymbols" ||
+                  reportName == "WithoutDiscountInvoice" ||
+                  reportName == "Wtdiscountpreviewinvoice")
 
 
 
-//            {
-//                if (string.IsNullOrEmpty(invoiceNo))
-//                {
-//                    return BadRequest("Invoice No is required for invoice reports.");
-//                }
+            {
+                if (string.IsNullOrEmpty(invoiceNo))
+                {
+                    return BadRequest("Invoice No is required for invoice reports.");
+                }
 
-//                Report = reportName switch
-//                {
-//                    "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+                Report = reportName switch
+                {
+                    "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
-//                    "PrintRegularTaxInvoiceWithOutDiscounts" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithOutDiscounts(
+                    "PrintRegularTaxInvoiceWithOutDiscounts" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithOutDiscounts(
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
-//                    "PrintsimplifiedTaxInvoices" => new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
-//                              invoiceNo, tenantName, companyName, companyAddress, logoImage,
-//                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                              isApproved, _tenantDbContextHelper),
-//                    "PrintVATInvoiceForeignCurrency" =>
-//            new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintVATInvoiceForeignCurrency(
+                    "PrintsimplifiedTaxInvoices" => new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
+                              invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                              isApproved, _tenantDbContextHelper),
+                    "PrintVATInvoiceForeignCurrency" =>
+            new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintVATInvoiceForeignCurrency(
 
 
 
-//                invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
-//                companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                isApproved, _tenantDbContextHelper),
+                companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                isApproved, _tenantDbContextHelper),
 
-//                    "PrintVATInvoiceEnglishOnly" =>
-//                          new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintVATInvoiceEnglishOnly(
+                    "PrintVATInvoiceEnglishOnly" =>
+                          new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintVATInvoiceEnglishOnly(
 
 
 
-//                              invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+                              invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
-//                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                              isApproved, _tenantDbContextHelper),
+                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                              isApproved, _tenantDbContextHelper),
 
 
-//                    "PrintSimplifiedTaxInvoiceWithOutDiscount" => new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintSimplifiedTaxInvoiceWithOutDiscount(
-//                              invoiceNo, tenantName, companyName, companyAddress, logoImage,
-//                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                              isApproved, _tenantDbContextHelper),
+                    "PrintSimplifiedTaxInvoiceWithOutDiscount" => new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintSimplifiedTaxInvoiceWithOutDiscount(
+                              invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                              isApproved, _tenantDbContextHelper),
 
 
-//                    "PrintRegularInvoiceFormat02" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
+                    "PrintRegularInvoiceFormat02" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "PrintRegularInvoiceFormat02WithDiscount" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularInvoiceFormat02WithDiscount(
+                    "PrintRegularInvoiceFormat02WithDiscount" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularInvoiceFormat02WithDiscount(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "Foreigncurrency1" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B.Foreigncurrency1(
+                    "Foreigncurrency1" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B.Foreigncurrency1(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "RegulartaxinvoicewithoutSignatoriesFormat05" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                    "RegulartaxinvoicewithoutSignatoriesFormat05" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "ForeignCurrencyProforma" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProforma(
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
-//                    "ForeignCurrencyProformaWithoutDiscount" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProformaWithoutDiscount(
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                    "ForeignCurrencyProforma" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProforma(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+                    "ForeignCurrencyProformaWithoutDiscount" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProformaWithoutDiscount(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "ForeignEnglishProforma" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(
+                    "ForeignEnglishProforma" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "ProformaInvoiceEnglish" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceEnglish(
+                    "ProformaInvoiceEnglish" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ProformaInvoiceEnglish(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
 
 
-//                    "ProformaPreviewInvoice" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(
+                    "ProformaPreviewInvoice" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ProformaPreviewInvoice(
 
 
 
-//                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
-//                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
-//                            isApproved, _tenantDbContextHelper),
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
-//                    "ProformaNewFormat" =>
-//                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
-//                       invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr,
-//                       companyAddressAr, isApproved, _tenantDbContextHelper),
-//                    "WithoutDiscountInvoice" =>
-//                     new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.WithoutDiscountInvoice(
-//                         invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr,
-//                         companyAddressAr, isApproved, _tenantDbContextHelper),
+                    "ProformaNewFormat" =>
+                        new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
+                       invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr,
+                       companyAddressAr, isApproved, _tenantDbContextHelper),
+                    "WithoutDiscountInvoice" =>
+                     new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.WithoutDiscountInvoice(
+                         invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr,
+                         companyAddressAr, isApproved, _tenantDbContextHelper),
 
 
 
-//                    "Wtdiscountpreviewinvoice" =>
-//               new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.Wtdiscountpreviewinvoice(
-//                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr,
-//                   companyAddressAr, isApproved, _tenantDbContextHelper),
+                    "Wtdiscountpreviewinvoice" =>
+               new QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices.Wtdiscountpreviewinvoice(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage, companyNameAr,
+                   companyAddressAr, isApproved, _tenantDbContextHelper),
 
 
 
 
 
-//                    "PrintRegularTaxInvoiceWtDocumentLevelDiscount" =>
-//                             new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWtDocumentLevelDiscount(
-//                                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                                 companyNameAr, companyAddressAr,
-//                                 isApproved, _tenantDbContextHelper),
-//                    "Withoutsignatories" =>
-//                    new QD.ERP.Web.Areas.VAT.Reports.B2B.Withoutsignatories(
-//                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                   companyNameAr, companyAddressAr,
-//                   isApproved, _tenantDbContextHelper),
-//                    "withsignatories" =>
-//                 new QD.ERP.Web.Areas.VAT.Reports.B2B.withsignatories2(
-//                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                companyNameAr, companyAddressAr,
-//                isApproved, _tenantDbContextHelper),
-//                    "RegularTaxInvoiceFormat06" =>
-//                    new QD.ERP.Web.Areas.VAT.Reports.B2B.RegularTaxInvoiceFormat06(
-//                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                   companyNameAr, companyAddressAr,
-//                   isApproved, _tenantDbContextHelper),
-//                    "PrintRegularTaxInvoiceWithSignatories_Format05_" =>
-//                 new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithSignatories_Format05_(
-//                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                companyNameAr, companyAddressAr,
-//                isApproved, _tenantDbContextHelper),
-//                    "taxinvoicewithSignatoriesWithSymbols" =>
-//                    new QD.ERP.Web.Areas.VAT.Reports.B2B.taxinvoicewithSignatoriesWithSymbols(
-//                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
-//                   companyNameAr, companyAddressAr,
-//                   isApproved, _tenantDbContextHelper),
+                    "PrintRegularTaxInvoiceWtDocumentLevelDiscount" =>
+                             new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWtDocumentLevelDiscount(
+                                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                                 companyNameAr, companyAddressAr,
+                                 isApproved, _tenantDbContextHelper),
+                    "Withoutsignatories" =>
+                    new QD.ERP.VAT.Areas.VAT.Reports.B2B.Withoutsignatories(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                   companyNameAr, companyAddressAr,
+                   isApproved, _tenantDbContextHelper),
+                    "withsignatories" =>
+                 new QD.ERP.VAT.Areas.VAT.Reports.B2B.withsignatories2(
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                companyNameAr, companyAddressAr,
+                isApproved, _tenantDbContextHelper),
+                    "RegularTaxInvoiceFormat06" =>
+                    new QD.ERP.VAT.Areas.VAT.Reports.B2B.RegularTaxInvoiceFormat06(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                   companyNameAr, companyAddressAr,
+                   isApproved, _tenantDbContextHelper),
+                    "PrintRegularTaxInvoiceWithSignatories_Format05_" =>
+                 new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithSignatories_Format05_(
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                companyNameAr, companyAddressAr,
+                isApproved, _tenantDbContextHelper),
+                    "taxinvoicewithSignatoriesWithSymbols" =>
+                    new QD.ERP.VAT.Areas.VAT.Reports.B2B.taxinvoicewithSignatoriesWithSymbols(
+                   invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                   companyNameAr, companyAddressAr,
+                   isApproved, _tenantDbContextHelper),
 
-//                    "BillsPurchases" =>
-//                     new QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister.BillsPurchases(
-//                invoiceNo, tenantName, companyName, companyAddress, logoImage,
-//                companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper)
+                    "BillsPurchases" =>
+                     new QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister.BillsPurchases(
+                invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper)
 
 
 
 
 
-//                };
+                };
 
-//                return Page();
-//            }
+                return Page();
+            }
 
 
 
@@ -419,349 +419,349 @@ namespace QD.ERP.Web.Pages
 
 
 
-//            if (reportName == "CreditForeignCurrency" || reportName == "creditnote"|| reportName == "PreviewCreditNoteForeignCurrency" || reportName == "PreviewCreditNoteEnglishOnly")
-//            {
-//                if (string.IsNullOrEmpty(CreditNoteNo))
-//                {
-//                    return BadRequest("Invoice No is required for invoice reports.");
-//                }
+            if (reportName == "CreditForeignCurrency" || reportName == "creditnote" || reportName == "PreviewCreditNoteForeignCurrency" || reportName == "PreviewCreditNoteEnglishOnly")
+            {
+                if (string.IsNullOrEmpty(CreditNoteNo))
+                {
+                    return BadRequest("Invoice No is required for invoice reports.");
+                }
 
-//                CreditNoteNo = CreditNoteNo;
+                CreditNoteNo = CreditNoteNo;
 
-//                if (reportName == "CreditForeignCurrency")
+                if (reportName == "CreditForeignCurrency")
 
-//                {
-//                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.CreditForeignCurrency(
-//                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, userName,_tenantDbContextHelper);
+                {
+                    Report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.CreditForeignCurrency(
+                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
 
-                  
-          
-//                }
-//                 else if (reportName == "creditnote")
 
-//                {
-//                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
-//                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
-//                }
-//                 else if (reportName == "PreviewCreditNoteEnglishOnly")
 
-//                {
-//                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteEnglishOnly(
-//                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
-//                }
-//               else  if (reportName == "PreviewCreditNoteForeignCurrency")
+                }
+                else if (reportName == "creditnote")
 
-//                {
-//                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteForeignCurrency(
-//                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
-//                }
-//                //else if (reportName == "creditnote")
-//                //{
-//                //    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
-//                //        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper,);
-//                //}
+                {
+                    Report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.creditnote(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+                else if (reportName == "PreviewCreditNoteEnglishOnly")
 
+                {
+                    Report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteEnglishOnly(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+                else if (reportName == "PreviewCreditNoteForeignCurrency")
 
+                {
+                    Report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteForeignCurrency(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+                //else if (reportName == "creditnote")
+                //{
+                //    Report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.creditnote(
+                //        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper,);
+                //}
 
 
 
-//                return Page();
-//            }
 
-//            if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
-//            {
-//                if (string.IsNullOrEmpty(RequestNo))
-//                {
-//                    return BadRequest("requestNo is required for IMS reports.");
-//                }
 
-//                RequestNo = RequestNo;
+                               return Page();
+                          }
 
-//                if (reportName == "MaterialRequestInventory")
+                //            if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
+                //            {
+                //                if (string.IsNullOrEmpty(RequestNo))
+                //                {
+                //                    return BadRequest("requestNo is required for IMS reports.");
+                //                }
 
-//                {
-//                    Report = new MaterialRequestInventory(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-//                }
+                //                RequestNo = RequestNo;
 
-//                else if (reportName == "MaterialPurcchaseRequestion")
+                //                if (reportName == "MaterialRequestInventory")
 
-//                {
-//                    Report = new MaterialPurcchaseRequestion(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-//                }
+                //                {
+                //                    Report = new MaterialRequestInventory(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                //                }
 
+                //                else if (reportName == "MaterialPurcchaseRequestion")
 
-//                return Page();
-//            }
+                //                {
+                //                    Report = new MaterialPurcchaseRequestion(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                //                }
 
 
-//            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || 
-//                reportName == "withoutvatDiscount" || reportName == "GroupCode" || reportName == "wtDiscount" || reportName == "PreviewQuotationWithImage" ||  reportName == "PreviewQuotationWithSubGroup")
-//            {
-//                if (string.IsNullOrEmpty(quotationNo))
-//                {
-//                    return BadRequest("is required for IMS reports.");
-//                }
+                //                return Page();
+                //            }
 
-//                quotationNo = quotationNo;
-//                switch (reportName)
-//                {
-//                    case "PreviewQuotations":
-                     
-//                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-//                        break;
-//                    case "PreviewQuotationwithadditionalDetails":
 
-//                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-//                        break;
-//                    case "PreviewQuotationwithoutPrice":
+                //            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || 
+                //                reportName == "withoutvatDiscount" || reportName == "GroupCode" || reportName == "wtDiscount" || reportName == "PreviewQuotationWithImage" ||  reportName == "PreviewQuotationWithSubGroup")
+                //            {
+                //                if (string.IsNullOrEmpty(quotationNo))
+                //                {
+                //                    return BadRequest("is required for IMS reports.");
+                //                }
 
-//                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                        break;
-//                    case "QuotationWOvat":
-                     
-//                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                        break;
-//                    case "vatTotalPricewithout":
+                //                quotationNo = quotationNo;
+                //                switch (reportName)
+                //                {
+                //                    case "PreviewQuotations":
 
-//                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                        break;
-//                    case "withoutvatDiscount":
+                //                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                //                        break;
+                //                    case "PreviewQuotationwithadditionalDetails":
 
-//                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                        break;
+                //                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                //                        break;
+                //                    case "PreviewQuotationwithoutPrice":
 
-//                    case "GroupCode":
+                //                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                        break;
+                //                    case "QuotationWOvat":
 
-//                        Report = new GroupCode(showSeal, showSignature, printLetterhead,pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                        break;
-//                    case "wtDiscount":
+                //                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                        break;
+                //                    case "vatTotalPricewithout":
 
-//                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
-//                        break;
-//                    case "PreviewQuotationWithImage":
+                //                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                        break;
+                //                    case "withoutvatDiscount":
 
-//                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
-//                        break;
-//                    case "PreviewQuotationWithSubGroup":
+                //                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                        break;
 
-//                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-//                        break;
+                //                    case "GroupCode":
 
-//                    default:
-//                        return NotFound("Report not found.");
-//                }
-//                return Page();
-//            }
+                //                        Report = new GroupCode(showSeal, showSignature, printLetterhead,pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                        break;
+                //                    case "wtDiscount":
 
+                //                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
+                //                        break;
+                //                    case "PreviewQuotationWithImage":
 
-//            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
-//            {
-//                if (string.IsNullOrEmpty(salesOrderNo))
-//                {
-//                    return BadRequest("requestNo is required for IMS reports.");
-//                }
+                //                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                //                        break;
+                //                    case "PreviewQuotationWithSubGroup":
 
-//                salesOrderNo = salesOrderNo;
+                //                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                //                        break;
 
-//                if (reportName == "SalesOrderReport")
+                //                    default:
+                //                        return NotFound("Report not found.");
+                //                }
+                //                return Page();
+                //            }
 
-//                {
-//                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                }
-//                else if (reportName == "SalesOrderReportWithoutPrice")
 
-//                {
-//                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                }
+                //            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
+                //            {
+                //                if (string.IsNullOrEmpty(salesOrderNo))
+                //                {
+                //                    return BadRequest("requestNo is required for IMS reports.");
+                //                }
 
+                //                salesOrderNo = salesOrderNo;
 
+                //                if (reportName == "SalesOrderReport")
 
+                //                {
+                //                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                }
+                //                else if (reportName == "SalesOrderReportWithoutPrice")
 
-//                return Page();
-//            }
+                //                {
+                //                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                }
 
 
 
-           
 
-//            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
-//            {
-//                if (string.IsNullOrEmpty(deliveryNoteNo))
-//                {
-//                    return BadRequest("requestNo is required for IMS reports.");
-//                }
+                //                return Page();
+                //            }
 
-//                deliveryNoteNo = deliveryNoteNo;
 
-//                if (reportName == "PreviewDeliveryNote")
 
-//                {
-//                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                }
-//                if (reportName == "ReportforMaterialIssueNote")
 
-//                {
-//                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                }
-//                if (reportName == "PreviewDeliveryNotewithPrice")
 
-//                {
-//                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-//                }
-//                if (reportName == "DotMatrics")
+                //            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
+                //            {
+                //                if (string.IsNullOrEmpty(deliveryNoteNo))
+                //                {
+                //                    return BadRequest("requestNo is required for IMS reports.");
+                //                }
 
-//                {
-//                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName,  companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-//                }
-//                if (reportName == "DeliveryNoteWithCostPrice")
+                //                deliveryNoteNo = deliveryNoteNo;
 
-//                {
-//                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-//                }
+                //                if (reportName == "PreviewDeliveryNote")
 
+                //                {
+                //                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                }
+                //                if (reportName == "ReportforMaterialIssueNote")
 
+                //                {
+                //                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                }
+                //                if (reportName == "PreviewDeliveryNotewithPrice")
 
+                //                {
+                //                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                //                }
+                //                if (reportName == "DotMatrics")
 
-//                return Page();
-//            }
+                //                {
+                //                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName,  companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                //                }
+                //                if (reportName == "DeliveryNoteWithCostPrice")
 
-//            if (reportName == "RFQEdit")
-//            {
-//                if (string.IsNullOrEmpty(rfqNo))
-//                {
-//                    return BadRequest("rfqNo is required for IMS reports.");
-//                }
+                //                {
+                //                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                //                }
 
-//                if (reportName == "RFQEdit") {
-//                    Report = new RFQEdit(
-//                        showSeal, showSignature, printLetterhead,
-//                        rfqNo,
-//                        tenantName,
-//                        companyName,
-//                        logoImage,
-//                        companySealImage,
-//                        companyAddress,
-//                        companyNameAr,
-//                        companyAddressAr,
-//                        userName,
-//                        _tenantDbContextHelper
-//                    );
-//                }
 
-//                return Page();
-//            }
 
 
-//            if (reportName == "CompanyDetail1")
-//            {
-//                if (string.IsNullOrEmpty(CompanyId))
-//                {
-//                    return BadRequest("rfqNo is required for IMS reports.");
-//                }
+                //                return Page();
+                //            }
 
-//                if (reportName == "CompanyDetail1")
-//                {
-//                    Report = new CompanyDetail1(
+                //            if (reportName == "RFQEdit")
+                //            {
+                //                if (string.IsNullOrEmpty(rfqNo))
+                //                {
+                //                    return BadRequest("rfqNo is required for IMS reports.");
+                //                }
 
-//                        CompanyId,
-//                        _tenantDbContextHelper
-//                    );
-//                }
+                //                if (reportName == "RFQEdit") {
+                //                    Report = new RFQEdit(
+                //                        showSeal, showSignature, printLetterhead,
+                //                        rfqNo,
+                //                        tenantName,
+                //                        companyName,
+                //                        logoImage,
+                //                        companySealImage,
+                //                        companyAddress,
+                //                        companyNameAr,
+                //                        companyAddressAr,
+                //                        userName,
+                //                        _tenantDbContextHelper
+                //                    );
+                //                }
 
-//                return Page();
-//            }
-//            if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT" 
-//                || reportName == "WithoutVATTotalPrice")
+                //                return Page();
+                //            }
 
 
-//            {
-//                if (string.IsNullOrEmpty(purchaseOrderNo))
-//                {
-//                    return BadRequest("purchaseOrderNo is required for IMS reports.");
-//                }
-//                if (reportName == "PreviewPurchaseOrder")
-//                {
-//                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
-//    ShowitemPartNumberinsteadStockCode,
-//    ShowHSCodeinsteadStockCode,
-//    showSeal,
-//    showSignature,
-//    printLetterhead,
-//    pageBreakAfter,
-//    pageBreakBefore,
-//    purchaseOrderNo,
-//    tenantName,
-//    companyName,
-//    companySealImage,    
-//    companyAddress,
-//    companyNameAr,
-//    companyAddressAr,
-//    _tenantDbContextHelper
-//);
-//                }
-//                if (reportName == "PreviewPurchaseOrderForeignCurrency")
-//                {
-//                    Report = new PreviewPurchaseOrderForeignCurrency(
-//                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
-//                        _tenantDbContextHelper
-//                    );
-//                }
-//                if (reportName == "PreviewPurchaseOrderWithoutVAT")
-//                {
-//                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-//                         pageBreakAfter, pageBreakBefore,
-//                        purchaseOrderNo,
-//                        tenantName,
-//                        companyName,
-                       
-//                        companySealImage,
-//                        companyAddress,
-//                        companyNameAr,
-//                        companyAddressAr,
-//                        _tenantDbContextHelper
-//                    );
-//                }
-//                if (reportName == "WithoutVATTotalPrice")
-//                {
-//                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-//                            pageBreakAfter, pageBreakBefore,
-//                        purchaseOrderNo,
-//                        tenantName,
-//                        companyName,
-                       
-//                        companySealImage,
-//                        companyAddress,
-//                        companyNameAr,
-//                        companyAddressAr,
-//                        _tenantDbContextHelper
-//                    );
-//                }
+                //            if (reportName == "CompanyDetail1")
+                //            {
+                //                if (string.IsNullOrEmpty(CompanyId))
+                //                {
+                //                    return BadRequest("rfqNo is required for IMS reports.");
+                //                }
 
+                //                if (reportName == "CompanyDetail1")
+                //                {
+                //                    Report = new CompanyDetail1(
 
-//                return Page();
-//            }
-//            if (reportName == "printExpensesClaimBydateSimplified" )
-//            {
-//                if (string.IsNullOrEmpty(salesOrderNo))
-//                {
-//                    return BadRequest("requestNo is required for IMS reports.");
-//                }
+                //                        CompanyId,
+                //                        _tenantDbContextHelper
+                //                    );
+                //                }
 
-//                claimer = claimer;
+                //                return Page();
+                //            }
+                //            if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT" 
+                //                || reportName == "WithoutVATTotalPrice")
 
-//                if (reportName == "printExpensesClaimBydateSimplified")
 
-//                {
-//                    Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-//                }
+                //            {
+                //                if (string.IsNullOrEmpty(purchaseOrderNo))
+                //                {
+                //                    return BadRequest("purchaseOrderNo is required for IMS reports.");
+                //                }
+                //                if (reportName == "PreviewPurchaseOrder")
+                //                {
+                //                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
+                //    ShowitemPartNumberinsteadStockCode,
+                //    ShowHSCodeinsteadStockCode,
+                //    showSeal,
+                //    showSignature,
+                //    printLetterhead,
+                //    pageBreakAfter,
+                //    pageBreakBefore,
+                //    purchaseOrderNo,
+                //    tenantName,
+                //    companyName,
+                //    companySealImage,    
+                //    companyAddress,
+                //    companyNameAr,
+                //    companyAddressAr,
+                //    _tenantDbContextHelper
+                //);
+                //                }
+                //                if (reportName == "PreviewPurchaseOrderForeignCurrency")
+                //                {
+                //                    Report = new PreviewPurchaseOrderForeignCurrency(
+                //                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
+                //                        _tenantDbContextHelper
+                //                    );
+                //                }
+                //                if (reportName == "PreviewPurchaseOrderWithoutVAT")
+                //                {
+                //                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                //                         pageBreakAfter, pageBreakBefore,
+                //                        purchaseOrderNo,
+                //                        tenantName,
+                //                        companyName,
 
+                //                        companySealImage,
+                //                        companyAddress,
+                //                        companyNameAr,
+                //                        companyAddressAr,
+                //                        _tenantDbContextHelper
+                //                    );
+                //                }
+                //                if (reportName == "WithoutVATTotalPrice")
+                //                {
+                //                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                //                            pageBreakAfter, pageBreakBefore,
+                //                        purchaseOrderNo,
+                //                        tenantName,
+                //                        companyName,
 
-//                return Page();
-//            }
+                //                        companySealImage,
+                //                        companyAddress,
+                //                        companyNameAr,
+                //                        companyAddressAr,
+                //                        _tenantDbContextHelper
+                //                    );
+                //                }
 
 
-            // 👉 Existing CASE 1: Old voucher reports
-            if (string.IsNullOrEmpty(voucherNo))
+                //                return Page();
+                //            }
+                //            if (reportName == "printExpensesClaimBydateSimplified" )
+                //            {
+                //                if (string.IsNullOrEmpty(salesOrderNo))
+                //                {
+                //                    return BadRequest("requestNo is required for IMS reports.");
+                //                }
+
+                //                claimer = claimer;
+
+                //                if (reportName == "printExpensesClaimBydateSimplified")
+
+                //                {
+                //                    Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                //                }
+
+
+                //                return Page();
+                //            }
+
+
+                // 👉 Existing CASE 1: Old voucher reports
+                if (string.IsNullOrEmpty(voucherNo))
             {
                 return BadRequest("Voucher number is required.");
             }

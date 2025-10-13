@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.VATReturns
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.VATReturns
 {
     partial class VATReturnsform
     {

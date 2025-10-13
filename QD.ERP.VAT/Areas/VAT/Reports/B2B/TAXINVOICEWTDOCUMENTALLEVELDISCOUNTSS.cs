@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE
 {
     public partial class TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS : XtraReport
     {
