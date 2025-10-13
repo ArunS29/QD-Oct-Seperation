@@ -202,9 +202,9 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Custom request Designs')")).Icon("print").Option("color", "#FF7043");
-                    items.Add().Text(new JS("formatMessage('Preview Request')")).Icon("file").Option("color", "#00ACC1");
-                    items.Add().Text(new JS("formatMessage('Preview Request(With Expected Unit Price)')")).Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text(new JS("formatMessage('Custom request Designs')")).Icon("print").Option("color", "#FF7043").Option("reportName", "CustomRequest");
+                    items.Add().Text(new JS("formatMessage('Preview Request')")).Icon("file").Option("color", "#00ACC1").Option("reportName", "MaterialRequestInventory");
+                    items.Add().Text(new JS("formatMessage('Preview Request(With Expected Unit Price)')")).Icon("folder").Option("color", "#AB47BC").Option("reportName", "MaterialPurcchaseRequestion");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -324,27 +324,28 @@
         }
       async function handleCreditReportPrinting(e) {
         const itemText = e.itemData?.text;
+        const reportName = e.itemData?.reportName;
         let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+        
         if (!requestNo) {
             alert("RequestNo is required.");
             return;
         }
+        
         try {
+            // Handle Custom request Designs
+            if (reportName === "CustomRequest") {
+                alert("Custom request Designs functionality to be implemented.");
+                return;
+            }
+
+            if (!reportName) {
+                alert("Invalid report format selected.");
+                return;
+            }
+
             const isApproved = await checkInvoiceApprovalStatus1(requestNo);
             const watermarkText = isApproved ? "" : "Draft Copy";
-            let reportName = "";
-
-            switch (itemText) {
-                case "Preview Request":
-                    reportName = "MaterialRequestInventory";
-                    break;
-                case "Preview Request(With Expected Unit Price)":
-                    reportName = "MaterialPurcchaseRequestion";
-                    break;
-                default:
-                    alert("Invalid report format selected.");
-                    return;
-            }
 
             // ✅ collect checkbox hidden field values
             const params = {

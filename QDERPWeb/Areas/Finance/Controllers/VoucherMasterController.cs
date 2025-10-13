@@ -2954,14 +2954,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
+                    var UserName = HttpContext.Session.GetString("UserName");
+                    DateTime SubmittedOn = DateTime.Now;
 
                     if (existingInvoice != null)
                     {
+                        InvoiceMaster.ModifiedBy = UserName;
+                        InvoiceMaster.ModifiedOn = SubmittedOn;
                         // Update existing master record
                         dbContext.Entry(existingInvoice).CurrentValues.SetValues(InvoiceMaster);
                     }
                     else
                     {
+                        InvoiceMaster.AddedBy = UserName;
+                        InvoiceMaster.AddedOn = SubmittedOn;
+
                         // Insert new invoice master record
                         await dbContext.Tbl20161VatinvoiceMasters.AddAsync(InvoiceMaster);
                     }

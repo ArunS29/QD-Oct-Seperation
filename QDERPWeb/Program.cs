@@ -298,11 +298,19 @@ if (!app.Environment.IsDevelopment())
 //}
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
+var nodeModulesPath = Path.Combine(app.Environment.ContentRootPath, "node_modules");
+if (Directory.Exists(nodeModulesPath))
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "node_modules")),
-    RequestPath = "/node_modules"
-});
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(nodeModulesPath),
+        RequestPath = "/node_modules"
+    });
+}
+else
+{
+    Console.WriteLine("Warning: node_modules folder not found, skipping UseStaticFiles for it.");
+}
 app.UseMiddleware<TenantSessionMiddleware>();
 app.UseMiddleware<TokenValidationMiddleware>();
 app.UseMiddleware<TokenRenewalMiddleware>();

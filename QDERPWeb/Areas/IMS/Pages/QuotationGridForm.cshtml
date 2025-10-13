@@ -127,9 +127,8 @@
                         .ID("ProfitMargin")
                         .ShowSpinButtons(true)
                         .Value(25.00)
-                                .Format("#0.00' %'")
-
-                                .Width("100%"))
+                        .Format("#0.00' %'")
+                        .Width("100%"))
             </div>
            
            
@@ -140,7 +139,7 @@
                         .ID("UnitPriceProfit")
                         .Label("Unit Price with Profit:")
                         .LabelMode(EditorLabelMode.Floating)
-                        .Value(1.00)
+                       // .Value(1.00)
                         .Format("#,##0.00")
                         .Width("100%"))
         </div>
@@ -218,10 +217,11 @@
    
         $("#ItemCost").dxNumberBox("instance").option("value", costPrice);
         $("#TotalCostItem").dxNumberBox("instance").option("value", costPrice);
-        $("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
+        //$("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
         $("#QuotedPrice").dxNumberBox("instance").option("value", unitPrice);
          $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
         $("#Discount").dxNumberBox("instance").option("value", discount);
+        setupProfitMarginCalculation();
     });
         function AddOnclick() {
       
@@ -237,30 +237,26 @@
         console.log("🔗 Navigation URL:", url);
         openModal(url, "Quoted:Cost Items","100%","80%");
     }
-           $(function () {
+               $(function () {
         $("#AddMargin").dxButton("instance").option("onClick", function () {
             try {
-                const totalCost = $("#TotalCostItem").dxNumberBox("instance").option("value") || 0;
-                const qty = parseFloat(QuotedQuantity) || 1;
+                const totalCost = $("#ItemCost").dxNumberBox("instance").option("value") || 0;
                 const profitPercentage = $("#ProfitMargin").dxNumberBox("instance").option("value") || 0;
 
-                if (qty <= 0) {
-                    DevExpress.ui.notify("Quantity must be greater than 0", "error", 3000);
+                if (totalCost <= 0) {
+                    DevExpress.ui.notify("Item Cost must be greater than 0", "error", 3000);
                     return;
                 }
 
-                // Convert entered percentage (25) to 0.25
-                const profitFactor = profitPercentage / 100;
+                // Formula: (ItemCost / 100) * ProfitMargin
+                const profitValue = (totalCost / 100) * profitPercentage;
 
-                // Apply same VB formula
-                const unitPriceWtProfit = (totalCost / qty) * (1 + profitFactor);
-
-                // Round to 2 decimals like VB
-                const roundedValue = Math.round(unitPriceWtProfit * 100) / 100;
+                // Round to 2 decimals
+                const roundedValue = Math.round(profitValue * 100) / 100;
 
                 $("#UnitPriceProfit").dxNumberBox("instance").option("value", roundedValue);
 
-                DevExpress.ui.notify("Unit Price with Profit calculated successfully", "success", 2000);
+                DevExpress.ui.notify("Profit value calculated successfully", "success", 2000);
 
             } catch (ex) {
                 console.error("Calculation error:", ex);
@@ -268,6 +264,7 @@
             }
         });
     });
+
     // Collect modal fields
     function collectModalFields() {
         return {

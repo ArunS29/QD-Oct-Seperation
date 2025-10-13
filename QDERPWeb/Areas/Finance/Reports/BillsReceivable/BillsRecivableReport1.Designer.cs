@@ -349,6 +349,9 @@
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.table2});
+            this.Detail.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "BackColor", "[Balance] <> 0\n"),
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Visible", "[Balance] <> 0\n")});
             this.Detail.HeightF = 25F;
             this.Detail.Name = "Detail";
             this.Detail.SortFields.AddRange(new DevExpress.XtraReports.UI.GroupField[] {
@@ -409,7 +412,7 @@
             this.xrTableCell6.StyleName = "DetailData1";
             this.xrTableCell6.StylePriority.UseFont = false;
             this.xrTableCell6.Text = "xrTableCell6";
-            this.xrTableCell6.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
+            this.xrTableCell6.TextFormatString = "{0:MMMM yyyy}";
             this.xrTableCell6.Weight = 0.16959950973123933D;
             // 
             // xrTableCell7
@@ -963,7 +966,7 @@
             this.xrLabel12.SizeF = new System.Drawing.SizeF(44.99998F, 28F);
             this.xrLabel12.StylePriority.UseFont = false;
             this.xrLabel12.StylePriority.UseTextAlignment = false;
-            xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
+            xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel12.Summary = xrSummary5;
             this.xrLabel12.Text = "xrLabel8";
             this.xrLabel12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;

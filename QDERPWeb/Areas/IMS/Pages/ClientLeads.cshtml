@@ -342,20 +342,20 @@
         });
     });
 
-    function onClientsGridContextMenu(e) {
-        if (e.target === "content" && e.row) {
-            e.items = [{
-                 text: formatMessage("Client Edit"),
-                onItemClick: function () {
-                    let clientCode = e.row.data.ClientCode;
-                    let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-                    let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-                    let title = formatMessage("Client Edit");
-                    openModal(url, title ,"","75%");
-                }
-            }];
-        }
-    }
+    // function onClientsGridContextMenu(e) {
+    //     if (e.target === "content" && e.row) {
+    //         e.items = [{
+    //              text: formatMessage("Client Edit"),
+    //             onItemClick: function () {
+    //                 let clientCode = e.row.data.ClientCode;
+    //                 let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+    //                 let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
+    //                 let title = formatMessage("Client Edit");
+    //                 openModal(url, title ,"","75%");
+    //             }
+    //         }];
+    //     }
+    // }
 
      function oncellPrepared(e) {
         if (e.rowType === "group" && (e.column.dataField === "Category" || e.column.dataField === "Category")) {
@@ -388,6 +388,8 @@
                         "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
 						"btnColumnChooser": { "Visible": false, "Enabled": false },
 						"btnAddClientLeads": { "Visible": false, "Enabled": false },
+                        // Context menu permission for Supplier Edit
+                        "editClient": { "Visible": false, "Enabled": false }
 					};
 
 					// Check for full access
@@ -441,6 +443,37 @@
 		console.log('End permission handling');
 	});
     
+     // =====================
+    // Context Menu for Supplier Grid
+    // =====================
+    function onClientsGridContextMenu(e) {
+        if (e.target === "content" && e.row) {
+
+            // Default empty menu
+            e.items = [];
+
+            // Check permission for Supplier Edit in context menu
+            var canEditClient = window.controlStates &&
+                                  window.controlStates["editClient"] &&
+                                  window.controlStates["editClient"].Enabled;
+
+            if (canEditClient) {
+                e.items.push({
+                    text: formatMessage("Client Edit"),
+                    id: "editClient1",
+                     onItemClick: function () {
+                    let clientCode = e.row.data.ClientCode;
+                    let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+                    let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
+                    let title = formatMessage("Client Edit");
+                    openModal(url, title ,"","75%");
+                }
+                });
+            }
+
+            // You can add more context menu items with similar permission checks here
+        }
+    }
     function addImageTooltip(cellElement, imageUrl) {
         if (!imageUrl) return;
 

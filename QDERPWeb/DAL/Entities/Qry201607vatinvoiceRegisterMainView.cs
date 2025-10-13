@@ -118,6 +118,7 @@ public partial class Qry201607vatinvoiceRegisterMainView
     public decimal? GccexpemptedTax { get; set; }
 
     public decimal? ExportsTax { get; set; }
+    public decimal? ConvertedExportsTax { get; set; }
 
     public decimal? TotalInvoiceAmount { get; set; }
 
@@ -393,7 +394,6 @@ public partial class Qry201607vatinvoiceRegisterMainView
     public decimal? ConvertedGCCStandardRatedTax { get; set; }
     public decimal? ConvertedGCCZeroRatedTax { get; set; }
     public decimal? ConvertedGCCExpemptedTax { get; set; }
-    public decimal? ConvertedExportsTax { get; set; }
 
 
     public decimal? ConvertedTotalRevenueOf10Perc { get; set; }

@@ -213,32 +213,38 @@
                     items.Add()
                     .Text(new JS("formatMessage('Custom Report Designs')"))
                     .Icon("print")
-                    .Option("color", "#FF7043"); // Orange
+                    .Option("color", "#FF7043") // Orange
+                    .Option("reportName", "CustomDelivery");
 
                     items.Add()
                     .Text(new JS("formatMessage('Preview Delivery Note')"))
                     .Icon("file")
-                    .Option("color", "#00ACC1"); // Cyan
+                    .Option("color", "#00ACC1") // Cyan
+                    .Option("reportName", "PreviewDeliveryNote");
 
                     items.Add()
                     .Text(new JS("formatMessage('Preview Material Issue Note')"))
                     .Icon("folder")
-                    .Option("color", "#AB47BC"); // Purple
+                    .Option("color", "#AB47BC") // Purple
+                    .Option("reportName", "ReportforMaterialIssueNote");
 
                     items.Add()
                     .Text(new JS("formatMessage('Preview Delivery Note (Dot Matrix)')"))
                     .Icon("folder")
-                    .Option("color", "#FBBC05"); // Yellow
+                    .Option("color", "#FBBC05") // Yellow
+                    .Option("reportName", "DotMatrics");
 
                     items.Add()
                     .Text(new JS("formatMessage('Preview Delivery Note (with Price)')"))
                     .Icon("folder")
-                    .Option("color", "#EA4335"); // Red
+                    .Option("color", "#EA4335") // Red
+                    .Option("reportName", "PreviewDeliveryNotewithPrice");
 
                     items.Add()
                     .Text(new JS("formatMessage('Preview Delivery Note (With Cost Price)')"))
                     .Icon("folder")
-                    .Option("color", "#34A853"); // Green
+                    .Option("color", "#34A853") // Green
+                    .Option("reportName", "DeliveryNoteWithCostPrice");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -1051,27 +1057,34 @@
     };
        function handleDeliveryNote(e) {
         const itemText = e.itemData?.text?.trim();
+        const reportName = e.itemData?.reportName;
         const tenantName = window.tenantName || "";
         const deliveryNote = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+        
         if (!deliveryNote) {
             alert("DeliveryNote number is required.");
             return;
         }
          try {
-            const reportName = DeliverynoteReportMap[itemText];
+            // Handle Custom Report Designs
+            if (reportName === "CustomDelivery") {
+                alert("Custom Report Designs functionality to be implemented.");
+                return;
+            }
+
             if (!reportName) {
                 alert("Invalid report format selected.");
                 return;
             }
                         let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&DeliveryNoteNo=${encodeURIComponent(deliveryNote)}`;
-        const DeliverynoteReport = [
-            "Preview Delivery Note",
-            "Preview Material Issue Note",
-            "Preview Delivery Note (with Price)",
-            "Preview Delivery Note (Dot Matrix)",
-            "Preview Delivery Note (WIth Cost Price)"
+        const DeliverynoteReports = [
+            "PreviewDeliveryNote",
+            "ReportforMaterialIssueNote",
+            "PreviewDeliveryNotewithPrice",
+            "DotMatrics",
+            "DeliveryNoteWithCostPrice"
         ];
-             if (DeliverynoteReport.includes(itemText)) {
+             if (DeliverynoteReports.includes(reportName)) {
                 // Collect parameters only if true
                 const params = {
                     PrintFooterAtBottom: $("#hdnPrintFooterAtBottom").val(),

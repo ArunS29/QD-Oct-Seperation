@@ -176,20 +176,21 @@
                                 .OpenOnFieldClick(true)
                                 .AcceptCustomValue(false)
                                 .DataSource(d => d.WebApi()
-                                .Controller("Signatories")
-                                .LoadAction("GetAllSignData")
+                                .Controller("VATModule")
+                                .LoadAction("GetUserddl")
                                 .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("SignatoryID"))
-                                .ValueExpr("SignatoryID")
-                                .DisplayExpr("SignatoryName")
+                                .Key("UserId"))
+                                .ValueExpr("UserId")
+                                .DisplayExpr("UserId")
+                                 .DropDownOptions(d => d.Width(350))
                                 .ContentTemplate(@<text>
                                 <div id="SignatoryGridContainer"></div>
                                 <script>
                                     $(function () {
                                         $("#SignatoryGridContainer").dxDataGrid({
                                             dataSource: DevExpress.data.AspNet.createStore({
-                                                key: "SignatoryID",
-                                                loadUrl: "/api/Signatories/GetAllSignData"
+                                                key: "UserId",
+                                                loadUrl: "/api/VATModule/GetUserddl"
                                             }),
                                             height: 250,
                                             selection: { mode: "single" },
@@ -200,13 +201,15 @@
                                                 allowedPageSizes: [5, 10, 20]
                                             },
                                             columns: [
-                                                { dataField: "SignatoryID", caption: "ID", width: 60 },
-                                                { dataField: "SignatoryName", caption: "Name", width: 200 }
+                                                { dataField: "UserId", caption: "ID", width: 60 },
+                                                { dataField: "UserName", caption: "Name", width: 200 }
                                             ],
                                             onSelectionChanged: function (e) {
                                                 var selected = e.selectedRowsData[0];
                                                 if (selected) {
-                                                    $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
+                                                             const dropDownBox = $("#SignatoryUserId").dxDropDownBox("instance");
+                                                            dropDownBox.option("value", selected.UserId); // set the value correctly
+                                                            dropDownBox.close();
                                                 }
                                             }
                                         });
@@ -270,11 +273,23 @@
 
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
-                        .ID("SignatoryEmail")
-                        .Label(new JS("formatMessage('Signatory Email')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .Width("100%")
-                        )
+                                        .ID("SignatoryEmail")
+                                        .Label(new JS("formatMessage('Signatory Email')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width("100%")
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired()
+                                            .Message("Email is required.");
+
+                                            rules.AddPattern()
+                                            .Pattern(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+                                            .Message("Please enter a valid email address.");
+                                        })
+                                        .ValidationMessageMode(ValidationMessageMode.Auto) // show validation messages automatically
+                                        .OnValueChanged("validateEmailInstantly")          // JS function triggers validation on typing
+                                        )
+
                 </div>
 
                 <div class="form-group">
@@ -323,6 +338,7 @@
                     toolbar.Items(items => { }); // hide default toolbar
                 })
                 .OnRowUpdating("onSignatoryUpdating")
+                .OnContextMenuPreparing("onSignatoryContextMenuPreparing")
                 .Columns(columns =>
                 {
                     columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
@@ -332,16 +348,85 @@
                     columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
                     columns.Add().DataField("DecodedBusinessCard1")
                     .Caption(new JS("formatMessage('Signature Image')"))
-                    .CellTemplate(new JS(@"
-                function(cellElement, cellInfo) {
-                if (cellInfo.value) {
-                $('<img>')
-                .attr('src', cellInfo.value)
-                .css({ width: '100px', height: 'auto' })
-                .appendTo(cellElement);
-                }
-                }
-                ")).Width(150);
+                    .EditCellTemplate(new JS(@"
+                        function(cellElement, cellInfo) {
+                        const currentImage = cellInfo.value;
+                        const wrapper = $('<div>')
+                        .css({
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%'
+                        })
+                        .appendTo(cellElement);
+
+                        // Image display
+                        const img = $('<img>')
+                        .attr('src', currentImage || '')
+                        .css({
+                        width: '100px',
+                        height: 'auto',
+                        marginBottom: '8px',
+                        cursor: 'pointer',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        display: currentImage ? 'block' : 'none'
+                        })
+                        .appendTo(wrapper);
+
+                        // Change button
+                        const changeBtn = $('<button>')
+                        .text(currentImage ? 'Change' : 'Upload')
+                        .addClass('dx-button dx-button-mode-contained dx-button-normal')
+                        .css({ padding: '4px 10px', fontSize: '12px' })
+                        .appendTo(wrapper);
+
+                        // Hidden file input
+                        const fileInput = $('<input type=""file"" accept=""image/*"" style=""display:none;"">').appendTo(wrapper);
+
+                        // Handle button click
+                        changeBtn.on('click', function() {
+                        fileInput.click();
+                        });
+
+                        // Handle image click (same as button)
+                        img.on('click', function() {
+                        fileInput.click();
+                        });
+
+                        // File selection
+                        fileInput.on('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                        const base64Image = e.target.result;
+                        img.attr('src', base64Image).show();
+                        
+                        changeBtn.text('Change');
+
+                        // Update cell value
+                        cellInfo.setValue(base64Image);
+                        };
+                        reader.readAsDataURL(file);
+                        }
+                        });
+                        }
+                        "))
+                            .CellTemplate(new JS(@"
+                        function(cellElement, cellInfo) {
+                        if (cellInfo.value) {
+                        $('<img>')
+                        .attr('src', cellInfo.value)
+                        .css({ width: '100px', height: 'auto' })
+                        .appendTo(cellElement);
+                        }
+                        }
+                    "))
+                        .Width(180);
+
                 })
                 .Height(275)
                 .ColumnAutoWidth(true)
@@ -389,9 +474,15 @@
 
       });
 
-    $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        $(document).on("click", "#btnBack", function () {
+        const popup = $(".dx-popup:visible").dxPopup("instance");
+        if (popup) {
+            popup.hide(); // close the popup
+        } else {
+            window.history.back(); // fallback if popup not found
+        }
     });
+
 
       $(function () {
             $("#DatabaseSignatories").dxTextBox({
@@ -439,16 +530,31 @@
    
     //img
     let businessCard1Base64 = "";
-    function addSignatoryToGrid() {
-        // Validate fields using the Validator components
+       function addSignatoryToGrid() {
+        // 1️⃣ Validate required fields (TextBoxes)
         const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
         const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
 
+        // 2️⃣ Validate SignatoryUserId DropDownBox
+        const signatoryUserId = $("#SignatoryUserId").dxDropDownBox("instance").option("value");
+        if (!signatoryUserId) {
+            DevExpress.ui.notify("Please select a Signatory User ID.", "warning", 2000);
+            return;
+        }
+
+        // 3️⃣ Validate image upload
+        if (!businessCard1Base64) {
+            DevExpress.ui.notify("Please upload a signature image.", "warning", 2000);
+            return;
+        }
+
+        // 4️⃣ Stop if textbox validations fail
         if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
             DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
             return;
         }
 
+        // 5️⃣ Prepare data
         const data = {
             SignatoryName: $("#SignatoryName").dxTextBox("instance").option("value"),
             SignatoryNameArabic: $("#SignatoryNameArabic").dxTextBox("instance").option("value"),
@@ -456,11 +562,11 @@
             SignatoryPositionArabic: $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
             SignatoryContact: $("#SignatoryContact").dxTextBox("instance").option("value"),
             SignatoryEmail: $("#SignatoryEmail").dxTextBox("instance").option("value"),
-            SignatoryUserId: $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
-                 // Add base64 data for images, removing the prefix
-                    SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null,
+            SignatoryUserId: signatoryUserId,
+            SignatureImage: businessCard1Base64 ? businessCard1Base64.split(',')[1] : null
         };
 
+        // 6️⃣ AJAX call to save data
         $.ajax({
             url: '/api/Signatories/SaveOrUpdateSignatory',
             method: "POST",
@@ -468,7 +574,26 @@
             data: JSON.stringify(data),
             success: function () {
                 DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
-                $("#SignatoryGrid").dxDataGrid("instance").refresh();
+
+                // 7️⃣ Clear all inputs after successful save
+                $("#SignatoryName").dxTextBox("instance").reset();
+                $("#SignatoryNameArabic").dxTextBox("instance").reset();
+                $("#SignatoryPosition").dxTextBox("instance").reset();
+                $("#SignatoryPositionArabic").dxTextBox("instance").reset();
+                $("#SignatoryContact").dxTextBox("instance").reset();
+                $("#SignatoryEmail").dxTextBox("instance").reset();
+                $("#SignatoryUserId").dxDropDownBox("instance").reset();
+
+                // Clear uploaded image
+                const imgContainer = document.getElementById('imgBox1');
+                imgContainer.innerHTML = '<span style="color: #888; font-size: 14px; line-height: 100px; display: flex; align-items: center; justify-content: center;">Upload Signature Image</span>';
+                imgContainer.style.backgroundColor = 'white';
+                businessCard1Base64 = null;
+
+                // Refresh grid if exists
+                if ($("#SignatoryGrid").length) {
+                    $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                }
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
@@ -477,22 +602,30 @@
     }
 
 
+
     $("#btnUpdate").on("click", function () {
         const grid = $("#SignatoryGrid").dxDataGrid("instance");
         grid.saveEditData(); // 🔥 only triggers on manual click
     });
 
 
-    function onSignatoryUpdating(e) {
+        function onSignatoryUpdating(e) {
+           let signatureBase64 = e.newData.DecodedBusinessCard1 ?? e.oldData.DecodedBusinessCard1;
+
+        // Strip prefix if it exists
+        if (signatureBase64 && signatureBase64.startsWith('data:')) {
+            signatureBase64 = signatureBase64.split(',')[1];
+        }
         const data = {
             SignatoryID: e.oldData.SignatoryID,
             SignatoryName: e.newData.SignatoryName ?? e.oldData.SignatoryName,
             SignatoryPosition: e.newData.SignatoryPosition ?? e.oldData.SignatoryPosition,
             SignatoryContact: e.newData.SignatoryContact ?? e.oldData.SignatoryContact,
-            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail
+            SignatoryEmail: e.newData.SignatoryEmail ?? e.oldData.SignatoryEmail,
+            SignatureImage: signatureBase64
         };
 
-        e.cancel = true; // prevents grid from doing its own update
+        e.cancel = true; // prevent grid default update
 
         return $.ajax({
             url: '/api/Signatories/SaveOrUpdateSignatory',
@@ -508,6 +641,7 @@
             }
         });
     }
+
 
 
     //Imageupload
@@ -555,5 +689,56 @@
         $(function () {
         $("#uploadsignature").text(formatMessage("Upload Signature"));
     });
+            function validateEmailInstantly(e) {
+        const validator = $("#SignatoryEmail").dxValidator("instance");
+        if (validator) {
+            const result = validator.validate();
+            if (!result.isValid && e.value) {
+                // Clear only if user has typed something invalid
+                $("#SignatoryEmail").dxTextBox("instance").option("value", "");
+                DevExpress.ui.notify("Invalid email format. Please re-enter.", "warning", 2000);
+            }
+        }
+    }
+    function onSignatoryContextMenuPreparing(e) {
+        if (e.target === "content" && e.row && e.row.rowType === "data") {
+            e.items = [
+                {
+                    text: "Delete Entry",
+                    icon: "trash",
+                    onItemClick: function () {
+                        const rowData = e.row.data;
+
+                        DevExpress.ui.dialog.confirm(
+                            `Are you sure you want to delete Signatory '${rowData.SignatoryName}'?`,
+                            "Confirm Delete"
+                        ).done(function (dialogResult) {
+                            if (dialogResult) {
+                                $.ajax({
+                                    url: `/api/Signatories/DeleteSignatory?id=${rowData.SignatoryID}`,
+                                    type: "DELETE",
+                                    success: function (response) {
+                                        if (response.success) {
+                                            DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                                            const grid = $("#SignatoryGrid").dxDataGrid("instance");
+                                            grid.getDataSource().reload();
+                                        } else {
+                                            DevExpress.ui.notify(response.message || "Failed to delete", "error", 2000);
+                                        }
+                                    },
+                                    error: function (xhr) {
+                                        DevExpress.ui.notify(`Error deleting entry: ${xhr.statusText}`, "error", 2000);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            ];
+        }
+    }
+
+
+
 
 </script>

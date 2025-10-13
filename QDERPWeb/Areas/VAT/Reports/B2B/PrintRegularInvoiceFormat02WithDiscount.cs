@@ -94,8 +94,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
             if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
-                sealPictureBox.Image = sealImage;
+            if (FindControl("imgCompanySeal", true) is XRPictureBox imgCompanySeal)
+                imgCompanySeal.Image = sealImage;
             if (FindControl("xrLabelCompanyPhone", true) is XRLabel companyphoneLabel)
                 companyphoneLabel.Text = companyPhone;
 
@@ -122,14 +122,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
                 SetWatermark();
                 decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(BalanceDueAmount)", ""));
 
+                if (FindControl("txtAmountInWords", true) is XRTableCell cellAmountInWords)
+                    cellAmountInWords.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
 
-                if (FindControl("xrLabel26", true) is XRLabel labelEnglish)
-
-                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
-
-                if (FindControl("xrLabel61", true) is XRLabel labelArabic)
-
-                    labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
+                if (FindControl("txtAmountInWordsArabic", true) is XRTableCell cellAmountInWordsArabic)
+                    cellAmountInWordsArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
             }
         }
 

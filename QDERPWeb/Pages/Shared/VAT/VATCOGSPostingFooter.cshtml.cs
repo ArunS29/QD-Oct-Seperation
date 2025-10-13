@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Areas.IMS.Pages
+namespace QD.ERP.Web.Pages.Shared.VAT
 {
-    public class PivotStoreInventoryModel : PageModel
+    public class VATCOGSPostingFooterModel : PageModel
     {
         public void OnGet()
         {

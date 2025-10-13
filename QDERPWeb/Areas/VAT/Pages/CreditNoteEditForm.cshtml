@@ -457,7 +457,7 @@
 	</div>
 </div>
 
-<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+@* <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
 		<i class="dx-icon-plus" id="b2baddlineitem"></i> 
 	</div>
@@ -467,7 +467,7 @@
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
 		<i class="dx-icon-trash" id="b2bdeletealllineitem"></i> 
 	</div>
-</div>
+</div> *@
 
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
@@ -993,7 +993,7 @@
 						<td colspan="2">
 						<div style="position: relative; width: 100%;">
 									@(Html.DevExtreme().TextArea()
-																			.Label(new JS("formatMessage('Invoice Notes')"))
+																			.Label(new JS("formatMessage('Credit Note Remarks')"))
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("txtInvoiceNotes")
 																			.Value("")
@@ -1010,6 +1010,15 @@
 																		.Type(ButtonType.Default)
 																		.StylingMode(ButtonStylingMode.Contained)
 																		.OnClick("onSetDefaultClick")
+																		)
+									@(Html.DevExtreme().Button()
+																		.ID("btnGetDefaultVal")
+																								//.Icon("")
+																		.Text("AB")
+																					//.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onGetDefaultValClick")
 																		)
 									@(Html.DevExtreme().Button()
 																		.ID("btnClearNotes")
@@ -4159,7 +4168,7 @@
 					        ReorderQty = selectedItem.ReorderQty;
 					        UnitOfMeasure = selectedItem.UnitDescription;
 						}
-
+							dataGrid.saveEditData();
 						e.component.close();
 					    updateInvoiceChildren();
 					}
@@ -4939,9 +4948,9 @@ openModal(url, title);
 				// ✅ Wrap newRow in array for .map()
 				let updatedDataSource = [newRow].map(item => ({
 					...item,
-						CreditNoteNo: CreditNoteNo          // Make sure this variable exists
-				   // UnitRateMethod: UnitCode || "",  // Provide default if not declared
-				   // TaxAmount: amt || 0              // Provide default if not declared
+						CreditNoteNo: CreditNoteNo,        // Make sure this variable exists
+				        UnitRateMethod: UnitCode || 0,  // Provide default if not declared
+				       TaxAmount: amt || 0              // Provide default if not declared
 				}));
 
 				$.ajax({
@@ -6993,28 +7002,28 @@ openModal(url, title);
 		 }	
 
 
-	 $(document).ready(function () {
-			if (IsCurrent !== "true" && IsAmend !=="true") {
+	 // $(document).ready(function () {
+		// 	if (IsCurrent !== "true" && IsAmend !=="true") {
 				
-			$.ajax({
-			url: "/api/VATModule/GetVATCreditNoteNo",
-				type: 'GET',
-				success: function (data) {
-					console.log("Success:", data);
+		// 	$.ajax({
+		// 	url: "/api/VATModule/GetVATCreditNoteNo",
+		// 		type: 'GET',
+		// 		success: function (data) {
+		// 			console.log("Success:", data);
 					
-				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
-                InvoiceOPenToSave(data)
-				CrNoteNo=data;
+		// 		$("#CreditNoteNo").dxTextBox("instance").option("value", data);
+  //               InvoiceOPenToSave(data)
+		// 		CrNoteNo=data;
 		
 				
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.notify("Failed to load account details.", "Error",3000);
-				}
-			});
-			}
-		});
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			console.error("Error loading Payment Accounts:", error);
+		// 			DevExpress.ui.notify("Failed to load account details.", "Error",3000);
+		// 		}
+		// 	});
+		// 	}
+		// });
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance"); 
@@ -7665,19 +7674,7 @@ $(function () {
 					return $("<div>").attr("id", "popupFormContent");
 				}
 			}).dxPopup("instance");
-			var contextMenu = $("#contextMenu");
-			$(document).on("click", function () {
-				contextMenu.hide();
-			});
-			$("#B2BdataGrid").customizeGridContextMenu();
-			$("#B2BdataGrid").on("contextmenu", ".dx-data-row", function (e) {
-				e.preventDefault();
-				var rowIndex = $(this).index();
-					var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
-				 // invoiceNo = rowData.InvoiceNo;
-				console.log(rowData);
-				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-			});
+			
 		});
 
 		
@@ -7916,10 +7913,32 @@ $(function () {
 		textBox2Instance.option("value", arabicTranslation);
 
 	}
-	
-	 
-				function onSetDefaultClick() {
-				DevExpress.ui.notify("Invoice Notes has been set as default.", "error",3000);
+
+
+					function onSetDefaultClick() {
+				 //  const defaultNote = $("#txtInvoiceNotes").val();
+		// const defaultNoteAr = $("#txtNotesinArabic").val();
+
+			 const defaultNote = $('#txtInvoiceNotes').dxTextArea("instance").option("value");
+			 const defaultNoteAr = $('#txtNotesinArabic').dxTextArea("instance").option("value");
+
+		$.ajax({
+			url: "/api/VATModule/UpdateInvoiceNotesDefault", // ✅ your API endpoint
+			type: "POST",
+			data: {
+				DefaultInvoiceNotes: defaultNote,
+				DefaultInvoiceNotesAr: defaultNoteAr
+			},
+			success: function (response) {
+				DevExpress.ui.notify(response.message, "success", 2000);
+				console.log("Response:", response);
+			},
+			error: function (xhr, status, error) {
+				console.error("Error:", xhr.responseText);
+				DevExpress.ui.notify("Error updating invoice notes!", "error", 2000);
+			}
+		});
+
 			}
 
 			
@@ -7927,7 +7946,7 @@ $(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
 		button.option("text", formatMessage("Update"));
 	});
-
+		let menuPermissions = {};
 		$(document).ready(function () {
 					console.log('Start permission handling');
 					// Form ID
@@ -8001,6 +8020,14 @@ $(document).ready(function () {
 										console.warn(`Button with ID "${key}" not found in the DOM.`);
 									}
 								});
+								response.permissions.forEach(p => {
+										if (p.ItemName) {
+											menuPermissions[p.ItemName.trim().toLowerCase()] = {
+												visible: p.ItemVisible || false,
+												enabled: p.ItemEnabled || false
+											};
+										}
+									});
 							} else {
 								console.warn("Failed to fetch permissions or no permissions available.");
 							}
@@ -8365,163 +8392,284 @@ $(document).ready(function () {
 	  });
 	}
 
-			$(function () {
-				var selectedRowKey = null;
-			// Hide context menu when clicking outside
-			$(document).on("click", function () {
-				$("#contextMenu").hide();
-			});
+					$("#B2BdataGrid").dxDataGrid({
+		// ... your other grid options ...
+		onContextMenuPreparing: function (e) {
+			e.items = [];
 
-			// Handle context menu item clicks
-			$(".context-menu-itemInvoice").on("click", function (e) {
-				e.stopPropagation(); // Prevent menu from hiding immediately
-
-				const action = $(this).data("action");
+			if (e.target === "content" && e.row && e.row.rowType === "data") {
 				const grid = $("#B2BdataGrid").dxDataGrid("instance");
-				const selectedRowKeys = grid.getSelectedRowKeys();
-				selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+				const rowData = e.row.data;
 
-				if (!grid) {
-					DevExpress.ui.notify("Grid instance not found.", "error", 2000);
-					return;
-				}
+				// --- Define all menu actions ---
+				const menuConfig = [
+						// ✅ ADD LINE ITEM
+					{
+									text: formatMessage("Add Line Item"),
+									icon: "add",
+									permissionKey: "frm20168VATCreditNoteEdit_AddLine",
+									color: "#28a745",
+									onItemClick: function () {
+										// === This executes the same logic as your #btnAddNew click ===
+										const store = grid.getDataSource().store();
+										const currentData = grid.getDataSource().items();
+										const CreditNoteNo = $('#CreditNoteNo').dxTextBox("instance")?.option("value");
 
-				if (action === "add") {
-					grid.addRow();
-					grid.saveEditData();
-				}
-				else if (action === "delete") {
-					if (selectedRowKey !== null) {
-						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-						if (rowIndex >= 0) {
-							const rowData = grid.getDataSource().items()[rowIndex];
-									const { CreditNoteChildSlNo, CreditNoteNo } = rowData;
+										const nextSNo = currentData.length > 0
+											? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+											: 1;
 
-									if (!CreditNoteChildSlNo) {
-								grid.deleteRow(rowIndex); // Deletes from UI
-							} else {
-								DevExpress.ui.dialog.confirm(
-									"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
-									"Delete Invoice"
-								).done(function (confirmResult) {
-									if (confirmResult) {
-										$.ajax({
-												url: "/api/VATModule/DeleteCreditInvoiceChild",
-											type: "POST",
-											contentType: "application/json",
-												data: JSON.stringify(CreditNoteChildSlNo),
-											success: function (response) { 
-												if (response.success) {
-													grid.refresh();
-													DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+										const formatAmount = (val) => Number(val).toFixed(currencyDecimals);
 
-													// Fetch updated data and re-bind the grid
+										const newRow = {
+											SNo: nextSNo,
+											ItemCode: "",
+											DetailedDescription: "",
+											DescriptionDetails: "",
+											QuantityInvoiced: 0,
+											UnitRate: formatAmount(0),
+											CalcLineAmountBeforeDiscount: formatAmount(0),
+											Discount: formatAmount(0),
+											DiscountDetails: "",
+											CalcLineAmount: formatAmount(0),
+											ExcemptionCode: "",
+											CalcTaxAmount: formatAmount(0),
+											LineTotal: formatAmount(0)
+										};
+
+										store.insert(newRow)
+											.then(() => {
+												grid.refresh();
+												$(".action-buttons-container").show();
+
+												let updatedDataSource = [newRow].map(item => ({
+													...item,
+													CreditNoteNo: CreditNoteNo
+												}));
+
+												$.ajax({
+													type: "POST",
+													url: `/api/VoucherMaster/UpdateCreditNoteChildDetails`,
+													contentType: "application/json",
+													data: JSON.stringify(updatedDataSource),
+													success: function () {
+														$.ajax({
+															type: "GET",
+															url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+															dataType: 'json',
+															success: function (response) {
+																let rowData = response.map((item, index) => ({
+																	SNo: index + 1,
+																	...item
+																}));
+
+																grid.option("dataSource", rowData);
+																grid.refresh();
+																getDocumentCount();
+															},
+															error: function (xhr, status, error) {
+																console.error("Error fetching grid data:", error);
+															}
+														});
+													},
+													error: function (xhr) {
+														DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+													}
+												});
+											})
+											.catch(error => {
+												DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+											});
+									}
+					},
+
+					// ✅ DELETE LINE ITEM
+					{
+									text: formatMessage("Delete Line Item"),
+									icon: "trash",
+									permissionKey: "frm20168VATCreditNoteEdit_Deleteline",
+									color: "#dc3545",
+									onItemClick: function () {
+										const { SNo, CreditNoteChildSlNo, CreditNoteNo } = rowData;
+
+										if (!SNo && !CreditNoteChildSlNo) {
+											DevExpress.ui.notify("Invalid line item.", "error", 3000);
+											return;
+										}
+
+										DevExpress.ui.dialog.confirm(
+											"You are about to delete this invoice line item.\nAre you sure?",
+											"Delete Invoice Line Item"
+										).done(function (confirmResult) {
+											if (confirmResult) {
+												// ✅ Pass SNo instead of selectedRowKey
+												$.ajax({
+													url: "/api/VATModule/DeleteCreditInvoiceChild",
+													type: "POST",
+													contentType: "application/json",
+													data: JSON.stringify(CreditNoteChildSlNo),
+													success: function (response) {
+														if (response.success) {
+															DevExpress.ui.notify("VAT Invoice Line Item Deleted Successfully.", "success", 3000);
+															reloadInvoiceGrid(CreditNoteNo);
+														} else {
+															DevExpress.ui.notify(response.message || "Deletion failed.", "error", 3000);
+														}
+													},
+													error: function (xhr) {
+														DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 3000);
+													}
+												});
+											}
+										});
+									}
+					},
+
+					// ✅ DELETE ALL LINE ITEMS
+					{
+									text: formatMessage("Delete All Line Items"),
+									icon: "clear",
+									permissionKey: "frm20168VATCreditNoteEdit_DeleteAllLine",
+									color: "#ff9800",
+									onItemClick: function () {
+										const InvoiceNo = rowData.CreditNoteNo;
+										if (!InvoiceNo) {
+											let dataSource = grid.option("dataSource");
+											dataSource.length = 0;
+											grid.option("dataSource", dataSource);
+											grid.refresh();
+										} else {
+											DevExpress.ui.dialog.confirm(
+												"You are about to delete all invoice line items.\nAre you sure?",
+												"Delete All Invoice Items"
+											).done(function (confirmResult) {
+												if (confirmResult) {
 													$.ajax({
-														type: "GET",
-													    url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
-														dataType: 'json',
-														success: function (data) {
-
-															const newRowData = data.map((item, index) => ({
-																SNo: index + 1,
-																...item
-															}));
-															//initializeDataGrid(newRowData);
-															       let grid = $("#B2BdataGrid").dxDataGrid("instance");
-																   grid.option("dataSource", newRowData);
-                                                                     grid.refresh();
+														url: "/api/VATModule/DeleteCreditNoteInvoiceAllLineItem",
+														type: "POST",
+														contentType: "application/json",
+														data: JSON.stringify(InvoiceNo),
+														success: function (response) {
+															if (response) {
+																reloadInvoiceGrid(InvoiceNo);
+																DevExpress.ui.notify("All VAT Invoice Line Items Deleted Successfully.", "success", 3000);
+															} else {
+																DevExpress.ui.notify(response.message || "Deletion failed.", "error", 3000);
+															}
 														},
-														error: function () {
-															DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+														error: function (xhr) {
+															DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 3000);
 														}
 													});
-												} else {
-													DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
 												}
-											},
-											error: function (xhr) {
-												DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
-											}
-										});
+											});
+										}
 									}
-								});
-							}
-						}
-						grid.saveEditData();
-					} else {
-						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 					}
-				}
-				else if (action === "deleteAll") {
-		if (selectedRowKey !== null) {
-			const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-			//if (rowIndex >= 0) {
-				debugger;
-				const rowData = grid.getDataSource().items()[rowIndex];
-					const InvoiceNo = rowData.CreditNoteNo; // ✅ Only the string
+				];
 
-				if (!InvoiceNo) {
-					const dataSource = grid.option("dataSource");
-					dataSource.length = 0;
-					grid.option("dataSource", dataSource);
-					grid.refresh();
-				} else {
-					DevExpress.ui.dialog.confirm(
-						"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
-						"Delete Invoice"
-					).done(function (confirmResult) {
-						if (confirmResult) {
-							$.ajax({
-									url: "/api/VATModule/DeleteCreditNoteInvoiceAllLineItem",
-								type: "POST",
-								contentType: "application/json",
-								data: JSON.stringify(InvoiceNo), // ✅ Sending raw string
-								success: function (response) {
-									if (response) {
-										grid.refresh();
-
-
-										$.ajax({
-											type: "GET",
-													url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
-											dataType: 'json',
-											success: function (data) {
-												const newRowData = data.map((item, index) => ({
-													SNo: index + 1,
-													...item
-												}));
-												//initializeDataGrid(newRowData);
-											      let grid = $("#B2BdataGrid").dxDataGrid("instance");
-					                               grid.option("dataSource", rowData);
-					                               grid.refresh();
-												   DevExpress.ui.notify("VAT Invoice Line Items Deleted Successfully.","successs",3000);
-											},
-											error: function () {
-												DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
-											}
-										});
-									} else {
-										DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
-									}
-								},
-								error: function (xhr) {
-									DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
-								}
-							});
-						}
-					});
-				}
-					grid.saveEditData();
+				// --- Apply permission visibility/enabled state dynamically ---
+				menuConfig.forEach(item => {
+					const perm = menuPermissions[item.permissionKey?.toLowerCase()];
+					if (perm && perm.visible) {
+						e.items.push({
+							...item,
+							disabled: !perm.enabled
+						});
+					}
+				});
 			}
-		// } else {
-		// 	DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-		// }
+
+			// --- Header Context Menu ---
+			if (e.target === "header") {
+				e.items.push(
+					{
+						text: "Column Chooser",
+						icon: "columnchooser",
+						onItemClick: function () {
+							$("#B2BdataGrid").dxDataGrid("instance").showColumnChooser();
+						}
+					},
+					{
+						text: "Refresh Data",
+						icon: "refresh",
+						onItemClick: function () {
+							$("#B2BdataGrid").dxDataGrid("instance").refresh();
+						}
+					}
+				);
+			}
+
+			if (!e.items || e.items.length === 0) e.cancel = true;
+			if (e.target === "content" && !e.row) e.cancel = true;
+		}
+	});
+
+
+	// ✅ Helper function to reload the grid
+	function reloadInvoiceGrid(CreditNoteNo) {
+		$.ajax({
+			type: "GET",
+			url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+			dataType: 'json',
+			success: function (data) {
+				const newRowData = data.map((item, index) => ({
+					SNo: index + 1,
+					...item
+				}));
+				let grid = $("#B2BdataGrid").dxDataGrid("instance");
+				grid.option("dataSource", newRowData);
+				grid.refresh();
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to refresh grid data.", "error", 3000);
+			}
+		});
 	}
 
 
-				$("#contextMenu").hide();
-			});
+	// ✅ Helper function for refreshing the grid after update/delete
+	function reloadInvoiceGrid(CreditNoteNo) {
+		$.ajax({
+			type: "GET",
+			url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
+			dataType: 'json',
+			success: function (data) {
+				const newRowData = data.map((item, index) => ({
+					SNo: index + 1,
+					...item
+				}));
+				let grid = $("#B2BdataGrid").dxDataGrid("instance");
+				grid.option("dataSource", newRowData);
+				grid.refresh();
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to refresh grid data.", "error", 3000);
+			}
 		});
+	}
+
+
+
+	// ✅ Add some optional style customization for context menu look
+	$("<style>")
+		.prop("type", "text/css")
+		.html(`
+			.dx-context-menu {
+				border: none !important;
+				box-shadow: none !important;
+			}
+			.dx-context-menu .dx-menu-item.dx-state-focused,
+			.dx-context-menu .dx-menu-item.dx-state-hover {
+				background-color: var(--title-background-color, #0078d4) !important;
+				color: white !important;
+			}
+			.dx-context-menu .dx-menu-item .dx-icon {
+				color: inherit !important;
+			}
+		`)
+		.appendTo("head");
+
 
 			function onDropDownInitialized(e) {
 		dropDownInstance = e.component;
@@ -8578,10 +8726,9 @@ $(document).ready(function () {
 		// prepare updated datasource
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
-			CreditNoteNo: CreditNoteNo
-			//,
-			// UnitRateMethod: UnitCode,
-			// TaxAmount: amt
+			CreditNoteNo: CreditNoteNo,
+			UnitRateMethod: UnitCode,
+			TaxAmount: amt
 		}));
 
 		// show spinner if you want
@@ -8636,6 +8783,69 @@ $(document).ready(function () {
 
 
 		});
+
+
+
+			function onGetDefaultValClick() {
+
+		$.ajax({
+		url: "/api/VATModule/GetLastInvoiceThanksNote",
+		type: "GET",
+		success: function (res) {
+			if (res.ReportThanksNote)
+
+					  $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", res.ReportThanksNote);
+					  $('#txtNotesinArabic').dxTextArea("instance")?.option("value", res.ReportThanksNoteAr);
+
+			//DevExpress.ui.notify("Loaded last invoice note successfully", "success", 2000);
+		},
+		error: function () {
+			DevExpress.ui.notify("Error fetching invoice note", "error", 2000);
+		}
+	});
+
+	}
+
+
+	$(document).ready(function () {
+	  debugger;
+      const voucherNoField = $("#CreditNoteNo").dxTextBox("instance");
+      const voucherNoFromUrl = getUrlParameter('InvoiceNo');
+
+      if (voucherNoFromUrl) {
+          // ✅ Use voucher number from URL
+          voucherNoField.option("value", voucherNoFromUrl);
+          getDocumentCount();
+      } else {
+	 	if (IsCurrent !== "true" && IsAmend !=="true") {
+          $.ajax({
+              url: '@Url.Action("GetVATCreditNoteNo", "VATModule")',
+              type: 'GET',
+              success: function (data) {
+                  voucherNoField.option("value", data);
+                  //Savedetailsonload();
+                  InvoiceOPenToSave(data);
+                  const newUrl = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(data)}`;
+                  window.history.replaceState({}, "", newUrl);
+
+                  
+                  getDocumentCount();
+              },
+              error: function () {
+                  alert("Error generating voucher number.");
+              }
+          });
+		  }
+      }
+
+      // Helper to extract URL parameter
+      function getUrlParameter(name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          const results = regex.exec(window.location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+  });
 
 
 				

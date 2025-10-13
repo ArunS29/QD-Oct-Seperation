@@ -220,12 +220,12 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("print").Option("color", "#4285F4");
-                    items.Add().Text(new JS("formatMessage('Preview Purchase Order')")).Icon("file").Option("color", "#34A853");
-                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT)')")).Icon("file").Option("color", "#EA4335");
-                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT / Wo Total Price)')")).Icon("file").Option("color", "#FBBC05");
-                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Foreign Currency)')")).Icon("file").Option("color", "#AB47BC");
-                    items.Add().Text(new JS("formatMessage('Distribute Discount Amount')")).Icon("file").Option("color", "#00ACC1");
+                    items.Add().Text(new JS("formatMessage('Custom Report Designs')")).Icon("print").Option("color", "#4285F4").Option("reportName", "CustomPurchase");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order')")).Icon("file").Option("color", "#34A853").Option("reportName", "PreviewPurchaseOrder");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT)')")).Icon("file").Option("color", "#EA4335").Option("reportName", "PreviewPurchaseOrderWithoutVAT");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Wt VAT / Wo Total Price)')")).Icon("file").Option("color", "#FBBC05").Option("reportName", "WithoutVATTotalPrice");
+                    items.Add().Text(new JS("formatMessage('Preview Purchase Order(Foreign Currency)')")).Icon("file").Option("color", "#AB47BC").Option("reportName", "PreviewPurchaseOrderForeignCurrency");
+                    items.Add().Text(new JS("formatMessage('Distribute Discount Amount')")).Icon("file").Option("color", "#00ACC1").Option("reportName", "DistributeDiscount");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -1446,6 +1446,7 @@
 
     function handlePurchase(e) {
         const itemText = e.itemData?.text;
+        const reportName = e.itemData?.reportName;
         const tenantName = window.tenantName || "";
         const purchaseOrderNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
 
@@ -1455,6 +1456,12 @@
         }
 
         try {
+            // Handle Custom Report Designs
+            if (reportName === "CustomPurchase") {
+                alert("Custom Report Designs functionality to be implemented.");
+                return;
+            }
+
             // Special case for "Distribute Discount Amount"
             if (itemText === "Distribute Discount Amount") {
                 const url = `/${tenantName}/IMS/PODiscountDistribution?purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
@@ -1463,7 +1470,6 @@
             }
 
             // Normal report handling
-            const reportName = purchaseReportMap[itemText];
             if (!reportName) {
                 DevExpress.ui.notify("Invalid report format selected.", "error", 3000);
                 return;
@@ -1473,13 +1479,13 @@
 
             // Add extra params for specific reports if needed
             const purchaseReports = [
-                "Preview Purchase Order",
-                "Preview Purchase Order(Wt VAT)",
-                "Preview Purchase Order(Wt VAT / Wo Total Price)",
-                "Preview Purchase Order(Foreign Currency)"
+                "PreviewPurchaseOrder",
+                "PreviewPurchaseOrderWithoutVAT",
+                "WithoutVATTotalPrice",
+                "PreviewPurchaseOrderForeignCurrency"
             ];
 
-            if (purchaseReports.includes(itemText)) {
+            if (purchaseReports.includes(reportName)) {
                 const params = {
                     showSeal: $("#hdnshowSeal").val(),
                     showSignature: $("#hdnshowSignature").val(),

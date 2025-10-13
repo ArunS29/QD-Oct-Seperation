@@ -2676,6 +2676,11 @@ if (gridInstance) {
                 value: cellInfo.value || null,
                 placeholder: "Select Sub Group",
                 dropDownOptions: { width: 600 },
+				 onOpened: function (e) {
+                getUnitRateMethods1(mprNo).done(function (unitRates1) {
+                    e.component.option("dataSource", unitRates1);
+                });
+            },
                 contentTemplate: function (e) {
                     return $("<div>").dxDataGrid({
                         dataSource: unitRates1,
@@ -2785,7 +2790,12 @@ if (gridInstance) {
 				minSearchLength: 3,
 				deferRendering: true,
 				dropDownOptions: { width: 800 },
-				
+				 onOpened: function (e) {
+        const ds = e.component.getDataSource();
+        if (ds && ds.store()) {
+            ds.reload(); // ✅ Refresh data from /api/GoodsandServices/GetGoodsAndServices
+        }
+    },
 				contentTemplate: function (e) {
 					return $("<div>").dxDataGrid({
 						dataSource: e.component.getDataSource(),
@@ -2947,6 +2957,11 @@ if (gridInstance) {
 											value: cellInfo.value || null,
 											placeholder: "Select Unit Rate Method",
 											dropDownOptions: { width: 200 },
+											 onOpened: function (e) {
+                getUnitRateMethods().done(function (unitRates) {
+                    e.component.option("dataSource", unitRates);
+                });
+            },
 											contentTemplate: function (e) {
 												return $("<div>").dxDataGrid({
 													dataSource: unitRates,
@@ -3272,6 +3287,11 @@ if (gridInstance) {
             value: cellInfo.value || null,
             placeholder: "Select Sub Group",
             dropDownOptions: { width: 600 },
+			 onOpened: function (e) {
+                getUnitRateMethods1(mprNo).done(function (unitRates1) {
+                    e.component.option("dataSource", unitRates1);
+                });
+            },
             contentTemplate: function (e) {
                 return $("<div>").dxDataGrid({
                     dataSource: unitRates1,
@@ -3368,6 +3388,12 @@ if (gridInstance) {
 			minSearchLength: 3,
 			deferRendering: true,
 			dropDownOptions: { width: 800 },
+			 onOpened: function (e) {
+        const ds = e.component.getDataSource();
+        if (ds && ds.store()) {
+            ds.reload(); // ✅ Refresh data from /api/GoodsandServices/GetGoodsAndServices
+        }
+    },
 			contentTemplate: function (e) {
 				return $("<div>").dxDataGrid({
 					dataSource: e.component.getDataSource(),
@@ -3513,6 +3539,11 @@ if (gridInstance) {
 									value: cellInfo.value || null,
 									placeholder: "Select Unit Rate Method",
 									dropDownOptions: { width: 200 },
+									 onOpened: function (e) {
+                getUnitRateMethods().done(function (unitRates) {
+                    e.component.option("dataSource", unitRates);
+                });
+            },
 									contentTemplate: function (e) {
 										return $("<div>").dxDataGrid({
 											dataSource: unitRates,
@@ -5296,32 +5327,56 @@ function saveAndCloseQuotation(mprNoNew, $btn) {
 }
 
 
-	
-		 $("#btnDelete").on("click", function (e) {
-			e.preventDefault();
-			onDeleteButtonClick();
-		});
-		function onDeleteButtonClick(e) {
-			var Mprno= $('#txtRequestNo').dxTextBox("instance").option("value");
-			if (!Mprno) {
-				DevExpress.ui.notify("Please enter or select a Client  Request to delete.", "warning", 3000);
-				return;
-			}
-			$.ajax({
-				url: `/api/AddNewClientRequest/DeletePurchaseRequest?Mprno=${encodeURIComponent(Mprno)}`,
-				type: 'Delete',
-						   success: function (response) {
-					DevExpress.ui.notify(response.message, 'success', 3000);
-						setTimeout(function(){
-						window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
-						},1000);
-				},
-				error: function (xhr) {
-					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-					DevExpress.ui.notify(msg, 'error', 3000);
-				}
-			});
-		}
+$("#btnDelete").on("click", function (e) {
+    e.preventDefault();
+    onDeleteButtonClick();
+});
+
+function onDeleteButtonClick() {
+    var Mprno = $('#txtRequestNo').dxTextBox("instance").option("value");
+
+    if (!Mprno) {
+        DevExpress.ui.notify("Please enter or select a Client Request to delete.", "warning", 3000);
+        return;
+    }
+
+    $.ajax({
+        url: `/api/AddNewClientRequest/DeletePurchaseRequest?Mprno=${encodeURIComponent(Mprno)}`,
+        type: 'DELETE',
+        success: function (response) {
+            DevExpress.ui.notify(response.message, 'success', 3000);
+
+            // 🔹 Attachment Delete after request deletion
+            var module = "inventory";
+            $.ajax({
+                url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(Mprno)}&module=${encodeURIComponent(module)}`,
+                type: "POST",
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.notify("Attachments deleted successfully.", "success", 2000);
+                    } else {
+                        DevExpress.ui.notify("There are no attachments to delete.", "info", 2000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Error while deleting attachments: " + error, "error", 2000);
+                },
+                complete: function () {
+                    // ✅ Redirect always runs after attachment deletion finishes
+                    setTimeout(function () {
+                        window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails`;
+                    }, 3500);
+                }
+            });
+        },
+        error: function (xhr) {
+            const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
+            DevExpress.ui.notify(msg, 'error', 3000);
+        }
+    });
+}
+
+
 // 		$("#btnSaveAndClose").on("click", function (e) {
 				
 // 		// ✅ Step 1: Validate required field

@@ -1,0 +1,156 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.PivotGridStoreIMSModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+
+<title>Quotation Analysis PivotGrid</title>
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.3/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/jszip.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/23.2.3/js/dx.all.js"></script>
+<style>
+    .dx-textbox-heading {
+        font-size: 18px;
+        font-weight: bold;
+        background-color: transparent;
+        border: none;
+        padding-left: 0;
+        margin-bottom: 10px;
+    }
+
+</style>
+<div style="padding: 10px; background-color:white;">
+    <input id="formId" value="frm60016StockPivotReportByStores" type="hidden" />
+    <div id="pivotGridHeading" style="margin-bottom: 10px;"></div>
+
+    <div id="pivotGridContainerId" style="margin-top: 20px;"></div>
+</div>
+
+<script>
+    let pivotGridInstance = null;
+    let currentPivotRawData = [];
+
+    $(document).ready(function () {
+        pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
+            allowSortingBySummary: true,
+            allowSorting: true,
+            allowFiltering: true,
+            allowExpandAll: true,
+            showBorders: true,
+            height: 500, 
+        scrolling: {
+            mode: "virtual"
+        },
+            fieldChooser: { enabled: true, allowSearch: true },
+            fieldPanel: { visible: true },
+            loadPanel: { enabled: true },
+            wordWrapEnabled: true,
+                onToolbarPreparing: function(e) {
+        e.toolbarOptions.items.push({
+            location: "after",
+            widget: "dxButton",
+            options: {
+                icon: "column-chooser",
+                text: "Field Chooser",
+                onClick: function() {
+                    e.component.showFieldChooser();
+                }
+            }
+        });
+    },
+            dataSource: {
+                fields: [
+                       { dataField: "GsgroupName", area: "row", caption: "Stock Group" },
+    { dataField: "Gscode", area: "row", caption: "GS Code" },
+    { dataField: "Gsdescrpition", area: "row", caption: "GS Description" },
+    { dataField: "UnitDesc", area: "row", caption: "Unit Description" },
+    { dataField: "CostPrice", area: "row", caption: "Cost Price"},
+    { dataField: "GsdetailedDesc", area: "row", caption: "GS Detailed Desc"},
+    { dataField: "IsServicesGroup", area: "row", caption: "Is Services Group"},
+    { dataField: "IsDiscontinued", area: "row", caption: "Is Discontinued"},
+    { dataField: "Hscode", area: "row", caption: "HS Code" },
+                        { dataField: "CurrentyQty", area: "data", caption: "Qty", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+    { dataField: "StoreCode", area: "column", caption: "Store" ,summaryType: "sum", format: { type: "fixedPoint", precision: 2 }}
+
+                   
+                 
+                ],
+                store: [] // empty initially
+            },
+        //   onContentReady: function (e) {
+        //     // Auto-expand all rows after content is loaded
+        //     expandAllRows(e.component);
+        // }
+        }).dxPivotGrid("instance");
+
+        // Auto-load pivot grid data on page load
+      loadPivotGridData();
+
+    });
+
+    // Function to fetch and bind Pivot data
+          function loadPivotGridData() {
+              $.ajax({
+                  url: '/api/StockInventory/GetStockPivotData',
+                  type: 'GET',
+                  success: function (data) {
+                      console.log("✅ Data fetched successfully:", data);
+
+                      // Rebind the data source dynamically
+                      pivotGridInstance.option("dataSource", {
+                          fields: [
+                              { dataField: "GsgroupName", area: "row", caption: "Stock Group" },
+                              { dataField: "Gscode", area: "row", caption: "GS Code" },
+                              { dataField: "Gsdescrpition", area: "row", caption: "GS Description" },
+                              { dataField: "UnitDesc", area: "row", caption: "Unit Description" },
+                              { dataField: "CostPrice", area: "row", caption: "Cost Price"},
+                              { dataField: "GsdetailedDesc", area: "row", caption: "GS Detailed Desc"  },
+                              { dataField: "IsServicesGroup", area: "row", caption: "Is Services Group"  },
+                              { dataField: "IsDiscontinued", area: "row", caption: "Is Discontinued"  },
+                              { dataField: "Hscode", area: "row", caption: "HS Code"  },
+                             
+                              { dataField: "CurrentyQty", area: "data", caption: "Quantity", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                               { dataField: "StoreCode", area: "column", caption: "Store" }
+                          ],
+                          store: data
+                      });
+
+                      pivotGridInstance.refresh();
+                       setTimeout(() => expandFirstFourFields(pivotGridInstance), 500);
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("❌ Error fetching pivot data:", error);
+                      DevExpress.ui.notify("Error loading pivot grid data.", "error", 3000);
+                  }
+              });
+          }
+
+ 
+    // Auto expand first 4 row fields
+    function expandFirstFourFields(pivotGrid) {
+        const dataSource = pivotGrid.getDataSource();
+        const fieldNames = ["GsgroupName", "Gscode", "Gsdescrpition", "UnitDesc"];
+
+        function expand(path, level) {
+            if (level >= fieldNames.length) return;
+            const children = dataSource.getChildren(path) || [];
+            for (let i = 0; i < children.length; i++) {
+                const newPath = path.concat([children[i].value]);
+                pivotGrid.expandHeaderItem('row', newPath);
+                expand(newPath, level + 1);
+            }
+        }
+        expand([], 0);
+    }
+        	 $(function () {
+    $("#pivotGridHeading").dxTextBox({
+    text: formatMessage("Stock Report By Store"),
+    	readOnly: true,
+    	onContentReady: function (e) {
+    	$(e.element).addClass("dx-textbox-heading");
+    	}
+    	});
+    });
+</script>

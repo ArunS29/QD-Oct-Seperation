@@ -277,23 +277,7 @@
 
 
 <script>
-    
-           function onSuppliersGridContextMenu(e) {
-            if (e.target === "content" && e.row) {
-                e.items = [{
-                    text: formatMessage("Supplier Edit"),
-                     id: "editSupplier",
-                    onItemClick: function () {
-                        let supplierCode = e.row.data.SupplierCode;
-                        let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-                            let url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
-                            let title = formatMessage("Supplier Edit");
-                        openModal(url, title,"","75%");
-                    }
-                }];
-            }
-        }
-        $(function () {
+            $(function () {
         $("#ClientLeads").dxTextBox({
             text: formatMessage("Suppliers"),
             readOnly: true,
@@ -307,12 +291,26 @@
             e.cellElement.css("font-weight", "bold");
         }
     }
-       $(document).ready(function () {
+        $(document).ready(function () {
         console.log('🔹 Start permission handling: Supplier Master');
 
         var formId = "frm30110SupplierMaster";
 
-        // Call the API to get permissions
+        // Define default control states (buttons + context menu actions)
+        var controlStates = {
+            "ddButtonLayout": { "Visible": false, "Enabled": false },
+            "rowHeightProperties": { "Visible": false, "Enabled": false },
+            "btnPrint": { "Visible": false, "Enabled": false },
+            "btnToggleSearch": { "Visible": false, "Enabled": false },
+            "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+            "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+            "btnColumnChooser": { "Visible": false, "Enabled": false },
+            "btnAddSuppliers": { "Visible": false, "Enabled": false },
+            // Context menu permission for Supplier Edit
+            "editSupplier": { "Visible": false, "Enabled": false }
+        };
+
+        // Fetch permissions from API
         $.ajax({
             url: '/api/Permissions/GetAccessDetails?formId=' + formId,
             type: 'GET',
@@ -321,21 +319,11 @@
                 console.log("✅ API Response:", response);
 
                 if (response.success && response.permissions) {
-                    // Default visibility and enable status for buttons
-                    var controlStates = {
-                        "ddButtonLayout": { "Visible": false, "Enabled": false },
-                        "rowHeightProperties": { "Visible": false, "Enabled": false },
-                        "btnPrint": { "Visible": false, "Enabled": false },
-                        "btnToggleSearch": { "Visible": false, "Enabled": false },
-                        "btntoggleGroupPanel": { "Visible": false, "Enabled": false },
-                        "btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
-                        "btnColumnChooser": { "Visible": false, "Enabled": false },
-                        "btnAddSuppliers": { "Visible": false, "Enabled": false },
-                    };
 
-                    // ✅ Check for full access
+                    // Check for full access
                     var fullAccess = response.permissions.find(p =>
-                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                        p.ItemName &&
+                        p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
                     );
 
                     if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
@@ -347,7 +335,8 @@
                         // Apply specific control permissions
                         Object.keys(controlStates).forEach(key => {
                             var controlPermission = response.permissions.find(p =>
-                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                p.ItemName &&
+                                p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
                             );
                             if (controlPermission) {
                                 controlStates[key] = {
@@ -360,46 +349,18 @@
 
                     console.log("🎛 Control States:", controlStates);
 
-                    // ✅ Apply visibility and enable state for buttons
+                    // Apply button visibility & enabled state
                     Object.keys(controlStates).forEach(key => {
                         var button = document.getElementById(key);
                         if (button) {
                             button.style.display = controlStates[key].Visible ? "inline-block" : "none";
                             button.disabled = !controlStates[key].Enabled;
                             console.log(`🔸 Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`);
-                        } else {
-                            console.warn(`⚠️ Button with ID "${key}" not found in DOM.`);
                         }
                     });
 
-                    // ✅ Handle context menu items (like editSupplier)
-                    if (typeof menuItems !== "undefined" && Array.isArray(menuItems)) {
-                        const restrictedMenuItems = [
-                            { id: "editSupplier", permissionSuffix: "editSupplier" } // 👈 Add your menu item here
-                        ];
-
-                        restrictedMenuItems.forEach(mapping => {
-                            const menuItem = menuItems.find(m => m.id === mapping.id);
-                            if (menuItem) {
-                                const perm = response.permissions.find(p =>
-                                    p.ItemName && p.ItemName.trim().toLowerCase() ===
-                                    (formId + "_" + mapping.permissionSuffix).trim().toLowerCase()
-                                );
-
-                                if (!perm || !perm.ItemVisible) {
-                                    menuItem.hidden = true; // hide if no permission
-                                    console.log(`❌ Context menu "${mapping.id}" hidden (no visibility permission).`);
-                                } else if (!perm.ItemEnabled) {
-                                    menuItem.disabled = true; // disable if not enabled
-                                    console.log(`⚠️ Context menu "${mapping.id}" disabled (no enable permission).`);
-                                } else {
-                                    console.log(`✅ Context menu "${mapping.id}" visible and enabled.`);
-                                }
-                            }
-                        });
-                    } else {
-                        console.warn("⚠️ menuItems variable is undefined or not an array.");
-                    }
+                    // Make controlStates global for context menu access
+                    window.controlStates = controlStates;
 
                 } else {
                     console.warn("⚠️ Failed to fetch permissions or no permissions available.");
@@ -407,14 +368,49 @@
             },
             error: function (xhr, status, error) {
                 console.error("❌ Error fetching permissions:", error);
-                DevExpress.ui.notify('Error fetching permissions. Please try again.', 'error', 3000);
+                alert('An error occurred while fetching permissions. Please try again.');
             }
         });
 
         console.log('🔹 End permission handling');
     });
 
-        
+    // =====================
+    // Context Menu for Supplier Grid
+    // =====================
+    function onSuppliersGridContextMenu(e) {
+        if (e.target === "content" && e.row) {
+
+            // Default empty menu
+            e.items = [];
+
+            // Check permission for Supplier Edit in context menu
+            var canEditSupplier = window.controlStates &&
+                                  window.controlStates["editSupplier"] &&
+                                  window.controlStates["editSupplier"].Enabled;
+
+            if (canEditSupplier) {
+                e.items.push({
+                    text: formatMessage("Supplier Edit"),
+                    id: "editSupplier1",
+                    onItemClick: function () {
+                        let supplierCode = e.row.data.SupplierCode;
+                        let tenantName = window.tenantName || "defaultTenant";
+                        let url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
+                        let title = formatMessage("Supplier Edit");
+                        openModal(url, title, "", "75%");
+                    }
+                });
+            }
+
+            // You can add more context menu items with similar permission checks here
+        }
+    }
+
+
+
+  
+          
 
     function addImageTooltip(cellElement, imageUrl) {
         if (!imageUrl) return;
