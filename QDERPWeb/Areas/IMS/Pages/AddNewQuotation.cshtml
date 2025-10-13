@@ -6071,6 +6071,7 @@ function saveAndCloseQuotation(quotationNoNew, $btn) {
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
@@ -6178,145 +6179,7 @@ function loadChildDataAndBindGrid(quoteno) {
     });
 }
 
-	// function onDeleteButtonClick(e) {
-	// 	var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-
-	// 	if (!QuoteNo) {
-	// 		DevExpress.ui.notify("Please enter or select a Quotation Details to delete.", "warning", 3000);
-	// 		return;
-	// 	}
-
-	// 	DevExpress.ui.dialog.confirm(
-	// 		"You are about to delete the Quotation from the Database. Click Yes if you would like to continue.",
-	// 		"Confirm Deletion"
-	// 	).done(function (dialogResult) {
-	// 		if (dialogResult) {
-	// 			// User clicked 'Yes'
-	// 			$.ajax({
-	// 				url: `/api/AddNewQuotation/DeleteQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-	// 				type: 'DELETE',
-	// 				success: function (response) {
-	// 					DevExpress.ui.dialog.alert("Quotation has been successfully removed from the database.", "Deleted").done(function () {
-	// 						window.location.href =`/${tenantName}/IMS/Quotation`;
-	// 					});
-	// 				},
-	// 				error: function (xhr) {
-	// 					const msg = xhr.responseJSON?.message || xhr.responseText || 'Error occurred while deleting.';
-	// 					DevExpress.ui.notify(msg, 'error', 3000);
-	// 				}
-	// 			});
-	// 		}
-	// 		// else: user clicked 'No' - do nothing
-	// 	});
-	// }
-
-
-
-
-	// $("#btnSaveAndClose").on("click", function (e) {
-
-	// 	const $btn = $(this).dxButton("instance");
-
-	// 	// ✅ Step 1: Validate required field
-	// 	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-	// 	const clientnameValidation = clientnameValidator.validate();
-
-	// 	if (!clientnameValidation.isValid) {
-	// 		DevExpress.ui.dialog.alert(
-	// 			"Cannot continue saving with errors, please clear the errors and continue.",
-	// 			"Clear Errors"
-	// 		);
-	// 		return;
-	// 	}
-
-	// 	// ✅ Step 2: Disable the button after validation passes
-	// 	$btn.option("disabled", true);
-
-	// 		let master = {
-	// 			QuoteNo: $('#txtQuotationNo').dxTextBox("instance").option("value") || null,
-	// 			RevisionNo: $("#txtRevisionNo").dxTextBox("instance").option("value") || null,
-	// 			QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
-	// 			ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
-	// 			SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-	// 			Mprno: $('#MprNumber').dxTextBox("instance").option("value") || null,
-	// 			Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
-	// 			ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
-	// 			ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
-	// 			ModeOfRequest: $('#ddGetModeOfRequest').dxDropDownBox("instance").option("value") || null,
-	// 			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-	// 			ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
-	// 			Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
-	// 			SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
-	// 			QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
-	// 			QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
-	// 			QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
-	// 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-
-
-	// 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-	// 			ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-	// 			QuoteSubmittedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
-
-	// 			QuoteSubmittedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
-	// 			BidClosingDate: $("#BidClosingDate").dxDateBox("instance").option("value") || null,
-
-	// 			QuoteStatus: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
-
-	// 			TransportationScope: $("#txtTransportationScope").dxTextBox("instance").option("value") || null,
-
-	// 			AdditionsText: $('#txtAdditions').dxTextBox("instance").option("value") || null,
-	// 			QuoteTransport: $("#QuoteTransport").dxNumberBox("instance").option("value") || null,
-	// 			DiscountsText: $("#txtDeductions").dxTextBox("instance").option("value") || null,
-	// 			QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
-
-	// 			QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-	// 			VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-	// 			ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-	// 			QuoteValidity: $("#ddQuoteValidity").dxSelectBox("instance").option("value") || null,
-	// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-	// 			BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-	// 			CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-	// 		};
-
-	// 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-	// 		if (!children || children.length === 0) {
-	// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
-	// 			return;
-	// 		}
-
-	// 		const model = {
-	// 			...master,
-	// 			QuotationDetailses: children
-	// 		};
-
-	// 		$.ajax({
-	// 			type: "POST",
-	// 			url: "/api/AddNewQuotation/SaveOrUpdateQuotation",
-	// 			contentType: "application/json",
-	// 			data: JSON.stringify(model),
-	// 			success: function (response) {
-	// 				  isVoucherSaved = true; // Mark Updated step as done
-	// 				updateWorkflowVisual(getWorkflowStatusFromFields());
-	// 				DevExpress.ui.notify(response.message, "success", 3000);
-	// 				// Refresh parent DataGrid (ensure the correct selector is used)
-	// 				if (window.parent && window.parent.$("#dataGrid").length) {
-	// 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-	// 					if (dataGrid) {
-	// 						dataGrid.refresh();
-	// 					}
-	// 				}
-
-
-	// 			},
-	// 			error: function (xhr) {
-	// 			DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-	// 			$btn.option("disabled", false); // Re-enable on error
-	// 		}
-	// 		});
-	// });
-
+	
 
 
 
@@ -7522,28 +7385,23 @@ function saveField(fieldName, dxId,name) {
 					height: 419.056,
 					contentTemplate: () => $("#calculatorWrapper")
 				});
-	            let isVoucherSaved = false;
 
+
+
+  let isVoucherSaved = false;
         function getWorkflowStatusFromFields() {
     const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
     const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
     const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
-
     const submitted = preparedVal !== null && preparedVal !== "";
     const verified = verifiedVal !== null && verifiedVal !== "";
     const approved = approvedVal !== null && approvedVal !== "";
-
     if (approved) return 4;
     if (verified) return 3;
     if (submitted) return 2;
     if (isVoucherSaved) return 1;
-
     return 0;
 }
-
-
-
-
      function updateWorkflowVisual(status) {
             const steps = [
         { id: "step-update", icon: "fas fa-user" },
@@ -7551,15 +7409,12 @@ function saveField(fieldName, dxId,name) {
         { id: "step-verify", icon: "fas fa-briefcase" },
         { id: "step-approve", icon: "fas fa-file-alt" }
     ];
-
         steps.forEach((step, index) => {
             const el = document.getElementById(step.id);
             const statusMsg = el.querySelector(".step-status-msg");
             const icon = el.querySelector("i");
-
             el.classList.remove("completed", "current", "upcoming", "done");
             icon.className = step.icon;
-
             if (index < status) {
                 el.classList.add("completed");
                 statusMsg.textContent = "Done";
@@ -7572,7 +7427,6 @@ function saveField(fieldName, dxId,name) {
                 el.classList.add("upcoming");
                 statusMsg.textContent = "Pending";
             }
-
             // Final Approved state
                         if (status === 4 && index === 4) {
                 el.classList.add("completed");
@@ -7581,39 +7435,29 @@ function saveField(fieldName, dxId,name) {
             }
         });
     }
-
-
-
-
         function syncWorkflowFromFields() {
             const status = getWorkflowStatusFromFields();
             updateWorkflowVisual(status);
         }
-
     function attachWorkflowWatchers() {
         $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
         $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
         $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
     }
-
         $(function () {
             setTimeout(() => {
                 attachWorkflowWatchers();
                 syncWorkflowFromFields();
                  // bindWorkflowPopovers();
                  initWorkflowTippyPopovers();
-
             }, 300);
         });
      
-
-
     function formatDate(date) {
         if (!date) return "N/A";
         const d = new Date(date);
         return d.toLocaleDateString() + " " + d.toLocaleTimeString();
     }
-
     function initWorkflowTippyPopovers() {
         // 🧼 Clean up any old tippy instances
         tippy.hideAll();
@@ -7621,18 +7465,12 @@ function saveField(fieldName, dxId,name) {
 		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
 		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
-		const verifiedOn=Verifiedtime;
-		const approvedOn=Approvedtime;
-		const submittedOn=Submittedtime;
         console.log("🧪 Tooltip data:", {
-            submittedBy, submittedOn: Submittedtime,
-        verifiedBy, verifiedOn: Verifiedtime,
-        approvedBy, approvedOn: Approvedtime
+            verifiedBy, verifiedOn, approvedBy, approvedOn
         });
-
         // 🟩 Verified Popover
         tippy('#circle-verify', {
-            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${Submittedtime || "N/A"}`,
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
             allowHTML: true,
             followCursor: 'horizontal',
             placement: 'top',
@@ -7641,10 +7479,9 @@ function saveField(fieldName, dxId,name) {
             trigger: 'mouseenter focus',
             delay: [100, 100],
         });
-
         // 🟩 Approved Popover
         tippy('#circle-approve', {
-            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${Verifiedtime || "N/A"}`,
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
             allowHTML: true,
             followCursor: 'horizontal',
             placement: 'top',
@@ -7652,10 +7489,9 @@ function saveField(fieldName, dxId,name) {
             theme: 'light-border',
             trigger: 'mouseenter focus',
             delay: [100, 100],
-
         });
             tippy('#circle-submit', {
-        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On:${Approvedtime || "N/A"}`,
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
         allowHTML: true,
         followCursor: 'horizontal',
         placement: 'top',

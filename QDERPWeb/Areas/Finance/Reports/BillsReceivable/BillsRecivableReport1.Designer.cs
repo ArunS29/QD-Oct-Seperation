@@ -966,7 +966,7 @@
             this.xrLabel12.SizeF = new System.Drawing.SizeF(44.99998F, 28F);
             this.xrLabel12.StylePriority.UseFont = false;
             this.xrLabel12.StylePriority.UseTextAlignment = false;
-            xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
+            xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
             this.xrLabel12.Summary = xrSummary5;
             this.xrLabel12.Text = "xrLabel8";
             this.xrLabel12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;

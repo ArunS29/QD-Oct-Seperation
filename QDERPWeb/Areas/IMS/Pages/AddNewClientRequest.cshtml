@@ -1193,7 +1193,56 @@
 									)
 								</td>
 							</tr>
-						</table>
+                               <!-- ✅ Second Row (Approval Details) -->
+            <tr>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label("Submitted By")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtSubmittedBy")
+                        .Visible(true))
+                </td>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label("Verified By")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtVerifiedBy")
+                        .Visible(true))
+                </td>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label("Approved By")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtApprovedBy")
+                        .Visible(true))
+                </td>
+                <td>
+                    @(Html.DevExtreme().DateBox()
+                        .Label("Submitted On")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtSubmittedOn")
+                        .Visible(false))
+                </td>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label("Verified On")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtVerifiedOn")
+                        .Visible(true))
+                </td>
+                <td>
+                    @(Html.DevExtreme().TextBox()
+                        .Label("Approved On")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtApprovedOn")
+                        .Visible(true))
+                </td>
+            </tr>
+						
+
+</table>
+
+
     </div>
 		</div>
 		<div class="dx-field ledgerResult">
@@ -5656,13 +5705,22 @@ function onDeleteButtonClick() {
 						syncWorkflowFromFields();
 						// ✅ Show alert and bind dropdown only after clicking OK
 						 DevExpress.ui.notify("Material Purchase Request has been submitted for Approval.", "success", 3000);
-					
+					      if (response.SubmittedBy) {
+                        $("#txtSubmittedBy").dxTextBox("instance").option("value", response.SubmittedBy);
+                    }
+                    if (response.SubmittedOn) {
+                        $("#txtSubmittedOn").dxDateBox("instance").option("value", response.SubmittedOn);
+                    }
+								setTimeout(() => {
+                                    initWorkflowTippyPopovers();
+                             }, 300);
+
 							// ✅ Bind dropdown before reload
 							const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
 							if (approvedByBox && response.VoucherApprovedBy) {
 								approvedByBox.option("value", response.VoucherApprovedBy);
 							}
-						
+
 					},
 					error: function (xhr, status, error) {
 						$btn.prop('disabled', false);
@@ -6462,7 +6520,7 @@ function onUploadButtonClick() {
 	
             let isVoucherSaved = false;
         function getWorkflowStatusFromFields() {
-    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const preparedVal = $("#txtSubmittedBy").dxTextBox("instance").option("value");
     const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
     const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
     const submitted = preparedVal !== null && preparedVal !== "";
@@ -6512,7 +6570,7 @@ function onUploadButtonClick() {
             updateWorkflowVisual(status);
         }
     function attachWorkflowWatchers() {
-        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#txtSubmittedBy").dxTextBox("instance").on("valueChanged", syncWorkflowFromFields);
         $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
         $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
     }
@@ -6534,11 +6592,13 @@ function onUploadButtonClick() {
         // 🧼 Clean up any old tippy instances
         tippy.hideAll();
         document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
-		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		 const submittedBy = $("#txtSubmittedBy").dxTextBox("instance")?.option("value") || "N/A";
 		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+		 const submittedOn = $("#txtSubmittedOn").dxDateBox("instance")?.option("value") || "N/A";
         console.log("🧪 Tooltip data:", {
-            verifiedBy, verifiedOn, approvedBy, approvedOn
+            verifiedBy, verifiedOn, approvedBy, approvedOn, submittedOn,submittedBy
         });
         // 🟩 Verified Popover
         tippy('#circle-verify', {
@@ -6563,7 +6623,7 @@ function onUploadButtonClick() {
             delay: [100, 100],
         });
             tippy('#circle-submit', {
-        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${formatDate(submittedOn)}`,
         allowHTML: true,
         followCursor: 'horizontal',
         placement: 'top',
@@ -6573,6 +6633,11 @@ function onUploadButtonClick() {
         delay: [100, 100],
     });
     }
+	function formatDate(date) {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+}
 	// Attachment
 function onIMSAttachmentButtonClick(e) {
 	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
