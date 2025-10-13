@@ -1012,6 +1012,15 @@
 																		.OnClick("onSetDefaultClick")
 																		)
 									@(Html.DevExtreme().Button()
+																		.ID("btnGetDefaultVal")
+																								//.Icon("")
+																		.Text("AB")
+																					//.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onGetDefaultValClick")
+																		)
+									@(Html.DevExtreme().Button()
 																		.ID("btnClearNotes")
 																		.Icon("clear")
 																		.Hint("Clear notes")
@@ -4159,7 +4168,7 @@
 					        ReorderQty = selectedItem.ReorderQty;
 					        UnitOfMeasure = selectedItem.UnitDescription;
 						}
-
+							dataGrid.saveEditData();
 						e.component.close();
 					    updateInvoiceChildren();
 					}
@@ -4939,9 +4948,9 @@ openModal(url, title);
 				// ✅ Wrap newRow in array for .map()
 				let updatedDataSource = [newRow].map(item => ({
 					...item,
-						CreditNoteNo: CreditNoteNo          // Make sure this variable exists
-				   // UnitRateMethod: UnitCode || "",  // Provide default if not declared
-				   // TaxAmount: amt || 0              // Provide default if not declared
+						CreditNoteNo: CreditNoteNo,        // Make sure this variable exists
+				        UnitRateMethod: UnitCode || 0,  // Provide default if not declared
+				       TaxAmount: amt || 0              // Provide default if not declared
 				}));
 
 				$.ajax({
@@ -7904,10 +7913,32 @@ $(function () {
 		textBox2Instance.option("value", arabicTranslation);
 
 	}
-	
-	 
-				function onSetDefaultClick() {
-				DevExpress.ui.notify("Invoice Notes has been set as default.", "error",3000);
+
+
+					function onSetDefaultClick() {
+				 //  const defaultNote = $("#txtInvoiceNotes").val();
+		// const defaultNoteAr = $("#txtNotesinArabic").val();
+
+			 const defaultNote = $('#txtInvoiceNotes').dxTextArea("instance").option("value");
+			 const defaultNoteAr = $('#txtNotesinArabic').dxTextArea("instance").option("value");
+
+		$.ajax({
+			url: "/api/VATModule/UpdateInvoiceNotesDefault", // ✅ your API endpoint
+			type: "POST",
+			data: {
+				DefaultInvoiceNotes: defaultNote,
+				DefaultInvoiceNotesAr: defaultNoteAr
+			},
+			success: function (response) {
+				DevExpress.ui.notify(response.message, "success", 2000);
+				console.log("Response:", response);
+			},
+			error: function (xhr, status, error) {
+				console.error("Error:", xhr.responseText);
+				DevExpress.ui.notify("Error updating invoice notes!", "error", 2000);
+			}
+		});
+
 			}
 
 			
@@ -8695,10 +8726,9 @@ $(document).ready(function () {
 		// prepare updated datasource
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
-			CreditNoteNo: CreditNoteNo
-			//,
-			// UnitRateMethod: UnitCode,
-			// TaxAmount: amt
+			CreditNoteNo: CreditNoteNo,
+			UnitRateMethod: UnitCode,
+			TaxAmount: amt
 		}));
 
 		// show spinner if you want
@@ -8753,6 +8783,28 @@ $(document).ready(function () {
 
 
 		});
+
+
+
+			function onGetDefaultValClick() {
+
+		$.ajax({
+		url: "/api/VATModule/GetLastInvoiceThanksNote",
+		type: "GET",
+		success: function (res) {
+			if (res.ReportThanksNote)
+
+					  $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", res.ReportThanksNote);
+					  $('#txtNotesinArabic').dxTextArea("instance")?.option("value", res.ReportThanksNoteAr);
+
+			//DevExpress.ui.notify("Loaded last invoice note successfully", "success", 2000);
+		},
+		error: function () {
+			DevExpress.ui.notify("Error fetching invoice note", "error", 2000);
+		}
+	});
+
+	}
 
 
 				

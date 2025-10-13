@@ -1890,6 +1890,11 @@
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ShowClearButton(true)
 																						.Width("100%"))
+																						 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
+										                                                .ID("VerifiedBy")
+																                          .Value(null) // Default value
+												                                        .Disabled(true)
+							                 	                                        .Visible(false))
 							</td>
 
 								<td>
@@ -9012,6 +9017,25 @@ $(document).ready(function () {
     });
 });
 
+function onGetDefaultValClick() {
+  
+	$.ajax({
+    url: "/api/VATModule/GetLastInvoiceThanksNote",
+    type: "GET",
+    success: function (res) {
+        if (res.ReportThanksNote)
+
+			  	  $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", res.ReportThanksNote);
+				  $('#txtNotesinArabic').dxTextArea("instance")?.option("value", res.ReportThanksNoteAr);
+
+        //DevExpress.ui.notify("Loaded last invoice note successfully", "success", 2000);
+    },
+    error: function () {
+        DevExpress.ui.notify("Error fetching invoice note", "error", 2000);
+    }
+});
+
+}
 
 // $(document).ready(function () {
 //     $.ajax({
