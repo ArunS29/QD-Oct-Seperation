@@ -5351,45 +5351,45 @@ if (popover.option("visible")) {
 				}));
 			});
 		}
-				$(document).ready(function () {
+			// 	$(document).ready(function () {
 	
-				const urlParams = new URLSearchParams(window.location.search);
-				const invoiceNoFromUrl = urlParams.get("invoiceNo");
-				const isCreateMode = urlParams.get("mode") === "create";
-				debugger;
-				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-				CurrentInvNo=$("#InvoiceNo").dxTextBox("instance").option("value");
-				if (isCreateMode && invoiceNoFromUrl) {
-					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
-					if (invoiceBox) {
-						invoiceBox.option("value", invoiceNoFromUrl);
-						getDocumentCount();
-					}
-				} else {
-					// 🔄 Otherwise, get default auto-generated invoice from API
-					if (IsCurrent !== "true") {
-						$.ajax({
-							url: "/api/VATModule/GetVATInvoiceNo",
-							type: "GET",
-							success: function (data) {
-								if (invoiceBox) {
+			// 	const urlParams = new URLSearchParams(window.location.search);
+			// 	const invoiceNoFromUrl = urlParams.get("InvoiceNo");
+			// 	//const isCreateMode = urlParams.get("mode") === "create";
+			// 	debugger;
+			// 	const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+			// 	CurrentInvNo=$("#InvoiceNo").dxTextBox("instance").option("value");
+			// 	if (invoiceNoFromUrl) {
+			// 		// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
+			// 		if (invoiceBox) {
+			// 			invoiceBox.option("value", invoiceNoFromUrl);
+			// 			getDocumentCount();
+			// 		}
+			// 	} else {
+			// 		// 🔄 Otherwise, get default auto-generated invoice from API
+			// 		if (IsCurrent !== "true") {
+			// 			$.ajax({
+			// 				url: "/api/VATModule/GetVATInvoiceNo",
+			// 				type: "GET",
+			// 				success: function (data) {
+			// 					if (invoiceBox) {
 									   
-									InvoiceOPenToSave(data)
-									invoiceBox.option("value", data || "");
-										getDocumentCount();
+			// 						InvoiceOPenToSave(data)
+			// 						invoiceBox.option("value", data || "");
+			// 							getDocumentCount();
 									
-								} else {
-									console.warn("Invoice TextBox not initialized.");
-								}
-							},
-							error: function (xhr, status, error) {
-								console.error("Error fetching invoice number:", error);
-								DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
-							}
-						});
-					}
-				}
-			});
+			// 					} else {
+			// 						console.warn("Invoice TextBox not initialized.");
+			// 					}
+			// 				},
+			// 				error: function (xhr, status, error) {
+			// 					console.error("Error fetching invoice number:", error);
+			// 					DevExpress.ui.dialog.alert("Failed to load invoice number.", "Error");
+			// 				}
+			// 			});
+			// 		}
+			// 	}
+			// });
 
 
 			function InvoiceOPenToSave(data) {
@@ -9763,7 +9763,45 @@ $(document).ready(function () {
 // }
 	
 
+  $(document).ready(function () {
+	  debugger;
+      const voucherNoField = $("#InvoiceNo").dxTextBox("instance");
+      const voucherNoFromUrl = getUrlParameter('InvoiceNo');
 
+      if (voucherNoFromUrl) {
+          // ✅ Use voucher number from URL
+          voucherNoField.option("value", voucherNoFromUrl);
+          getDocumentCount();
+      } else {
+    	if (IsCurrent !== "true") {
+          $.ajax({
+              url: '@Url.Action("GetVATInvoiceNo", "VATModule")',
+              type: 'GET',
+              success: function (data) {
+                  voucherNoField.option("value", data);
+                  //Savedetailsonload();
+                 InvoiceOPenToSave(data);
+                  const newUrl = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(data)}`;
+                  window.history.replaceState({}, "", newUrl);
+
+                  
+                  getDocumentCount();
+              },
+              error: function () {
+                  alert("Error generating voucher number.");
+              }
+          });
+		  }
+      }
+
+      // Helper to extract URL parameter
+      function getUrlParameter(name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          const results = regex.exec(window.location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+  });
 
 </script>
 

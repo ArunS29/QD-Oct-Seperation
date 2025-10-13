@@ -6336,7 +6336,7 @@ if(clientnameValidation.isValid)
 				}
 
 
-	$(document).ready(function () {
+	@* $(document).ready(function () {
 					if (IsCurrent !== "true" && IsAmend !=="true") {
 					$.ajax({
 						url: "/api/VATModule/GetNewDebitNoteNoApi",
@@ -6358,7 +6358,47 @@ if(clientnameValidation.isValid)
 						}
 					});
 				}
-			});
+			}); *@
+
+			$(document).ready(function () {
+ debugger;
+    const voucherNoField = $("#DebitNoteNo").dxTextBox("instance");
+    const voucherNoFromUrl = getUrlParameter('InvoiceNo');
+
+    if (voucherNoFromUrl) {
+        // ✅ Use voucher number from URL
+        voucherNoField.option("value", voucherNoFromUrl);
+        getDocumentCount();
+    } else {
+		if (IsCurrent !== "true" && IsAmend !=="true") {
+        $.ajax({
+            url: '@Url.Action("GetNewDebitNoteNoApi", "VATModule")',
+            type: 'GET',
+            success: function (data) {
+                voucherNoField.option("value", data);
+                //Savedetailsonload();
+               
+                const newUrl = `/${tenantName}/VAT/DebitNoteEditForm?InvoiceNo=${encodeURIComponent(data)}`;
+                window.history.replaceState({}, "", newUrl);
+
+                
+                getDocumentCount();
+            },
+            error: function () {
+                alert("Error generating voucher number.");
+            }
+        });
+		}
+    }
+
+    // Helper to extract URL parameter
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(window.location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+});
 
 						  let isVoucherSaved = false;
 
