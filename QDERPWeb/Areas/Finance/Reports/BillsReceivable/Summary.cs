@@ -99,8 +99,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
            
             var customQuery = new CustomSqlQuery
             {
-                Name = "qry20156BillsPayableSummaryMaster",
-                Sql = "SELECT * FROM qry20156BillsPayableSummaryMaster"
+                Name = "qry20145BillsReceivableSummaryMaster",
+                Sql = "SELECT * FROM qry20145BillsReceivableSummaryMaster"
             };
 
             sqlDataSource1.Queries.Add(customQuery);

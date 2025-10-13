@@ -284,12 +284,31 @@
 </div>
 
 <script>
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return decodeURIComponent(match[2]);
+        return null;
+    }
+
+    // Show forced logout message if present
+    (function() {
+        var forcedMsg = getCookie('ForcedLogoutMessage');
+        if (forcedMsg) {
+            showErrorMessage(forcedMsg);
+            // clear cookie
+            document.cookie = 'ForcedLogoutMessage=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+        }
+    })();
+
     document.getElementById('LoginForm').onsubmit = function(event) {
         event.preventDefault(); // Prevent default form submission
 
         var userId = document.getElementById('UserId').value;
         var password = document.getElementById('password').value;
         var tenantName = "@Model.TenantName";
+
+        // Best-effort device name (userAgent); browsers cannot access MAC address
+        var deviceName = navigator.userAgent || 'Unknown';
 
         // Validate input
         if (!userId || !password || !tenantName) {
@@ -304,10 +323,15 @@
             url: `/api/Login/SignIn`, // API endpoint
             type: 'POST',
             contentType: 'application/json',
+            headers: {
+                'X-Device-Name': deviceName
+            },
             data: JSON.stringify({
                 Username: userId,
                 Password: password,
-                TenantName: tenantName
+                TenantName: tenantName,
+                DeviceName: deviceName,
+                MacAddress: ''
             }),
             success: function (data) {
                 // Hide loading spinner

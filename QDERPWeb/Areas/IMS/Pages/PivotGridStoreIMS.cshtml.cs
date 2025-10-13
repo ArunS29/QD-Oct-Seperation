@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Pages.Shared.ERM
+namespace QD.ERP.Web.Areas.IMS.Pages
 {
-    public class StockInventoryFooterModel : PageModel
+    public class PivotGridStoreIMSModel : PageModel
     {
         public void OnGet()
         {

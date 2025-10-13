@@ -67,6 +67,38 @@ namespace QD.ERP.Web.Areas.Security.Controllers
             return await _licenseService.IsLicenseValidAsync(tenant.TenantName);
         }
 
+        private string GetSessionCacheKey(string tenantName, string username)
+        {
+            return $"active_session:{tenantName?.ToLower()}:{username?.ToLower()}";
+        }
+
+        private void SetActiveSession(string tenantName, string username, string sessionId, TimeSpan ttl, SessionInfo sessionInfo)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username);
+            _cache.Set(cacheKey, sessionInfo, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = ttl
+            });
+        }
+
+        private SessionInfo GetActiveSessionInfo(string tenantName, string username)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username);
+            return _cache.TryGetValue(cacheKey, out SessionInfo existing) ? existing : null;
+        }
+
+        private string GetActiveSession(string tenantName, string username)
+        {
+            var info = GetActiveSessionInfo(tenantName, username);
+            return info?.SessionId;
+        }
+
+        private void ClearActiveSession(string tenantName, string username)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username);
+            _cache.Remove(cacheKey);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignInAsync([FromBody] SignInRequest request)
         {
@@ -74,8 +106,6 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
             if (request.ResetPassword)
             {
-
-
                 if (TryGetTenantAndDbContext(request.TenantName, out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     if (!await IsLicenseValidAsync(tenant))
@@ -90,9 +120,6 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                     if (!string.IsNullOrEmpty(request.otp))
                     {
-
-
-
                         var passwordReset = dbContext.Passwordresets
                             .Where(pr => pr.Username == request.Username && pr.Otp == request.otp && pr.Status == true)
                             .ToList();
@@ -112,36 +139,31 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                         {
                             return BadRequest(new { message = "Invalid OTP.", success = false });
                         }
-
-
                     }
                     else
                     {
                         string emailAddress = request.Username;
 
-                        // Check if the email address already exists in the TblUserMasters table
                         bool emailExists = dbContext.TblUserMasters.Any(user => user.UserName == emailAddress);
 
                         if (emailExists)
                         {
-                            // Generate a 6-digit random OTP
                             var random = new Random();
-                            var otp = random.Next(100000, 999999).ToString(); // Generate a random 6-digit OTP
+                            var otp = random.Next(100000, 999999).ToString();
 
                             String username = request.Username;
 
                             var passwordReset = new Passwordreset
                             {
-                                Username = username, // Bind the userId variable here
+                                Username = username,
                                 Otp = otp,
-                                ExpiryDateTime = DateTime.UtcNow.AddMinutes(5), // Set expiry time as 10 minutes from now
-                                Status = true // Assuming true means not used
+                                ExpiryDateTime = DateTime.UtcNow.AddMinutes(5),
+                                Status = true
                             };
 
                             dbContext.Set<Passwordreset>().Add(passwordReset);
                             dbContext.SaveChanges();
 
-                            // Start a background task to update the status after 10 minutes
                             Task.Run(async () =>
                             {
                                 await Task.Delay(TimeSpan.FromMinutes(5));
@@ -159,19 +181,13 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
 
                             EmailHelper.SendEmailAsync(emailAddress, "OTP Verification", $"<h1>Your OTP is: {otp}</h1>").Wait();
-
-
                         }
                         else
                         {
                             return BadRequest(new { message = "Email does not exist.", success = false });
-
                         }
                     }
                 }
-
-
-
             }
             else
             {
@@ -204,6 +220,23 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             return Unauthorized(new { message = "Invalid credentials.", success = false });
                         }
 
+                        // Allow device 2 to login and force device 1 out by overriding active session
+                        var previousInfo = GetActiveSessionInfo(request.TenantName, request.Username);
+
+                        var sessionId = Guid.NewGuid().ToString();
+                        var tokenTtl = TimeSpan.FromMinutes(20);
+                        var sessionInfo = new SessionInfo
+                        {
+                            SessionId = sessionId,
+                            DeviceName = string.IsNullOrWhiteSpace(request.DeviceName) ? Request.Headers["X-Device-Name"].ToString() : request.DeviceName,
+                            MacAddress = string.IsNullOrWhiteSpace(request.MacAddress) ? Request.Headers["X-Mac-Address"].ToString() : request.MacAddress,
+                            UserAgent = Request.Headers["User-Agent"].ToString(),
+                            IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+                        };
+
+                        // Override any existing session; device1 token will be invalid on next request
+                        SetActiveSession(request.TenantName, request.Username, sessionId, tokenTtl, sessionInfo);
+
                         var permissions = dbContext.TblUserAccessWebs
                             .Where(p => p.UserId == user.UserId)
                             .Select(p => new Permission
@@ -216,11 +249,9 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                                 ItemVisible = p.ItemVisible
                             }).ToList();
 
-                        var token = GenerateJwtToken(user, request.TenantName);
+                        var token = GenerateJwtToken(user, request.TenantName, sessionId);
 
                         SetHttpOnlyCookie("AuthToken", token, 20);
-                        // SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
-                        // var sessionCookie = Request.Cookies[".AspNetCore.Session"];
 
                         HttpContext.Session.SetString("TenantName", request.TenantName);
                         HttpContext.Session.SetString("UserName", request.Username);
@@ -232,7 +263,9 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                         return Ok(new
                         {
-                            message = "Login successful",
+                            message = previousInfo == null
+                                ? "Login successful"
+                                : $"Login successful. Previous device forced to logout (Device: {previousInfo?.DeviceName ?? "Unknown"}, MAC: {previousInfo?.MacAddress ?? "Unknown"}).",
                             success = true,
                             token,
                             permissions
@@ -270,11 +303,20 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 var username = principal.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
                 var userId = principal.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
                 var tenantName = principal.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+                var jti = jwtToken.Id;
 
-                if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(tenantName))
+                if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(tenantName) || string.IsNullOrWhiteSpace(username))
                 {
                     return Unauthorized(new { message = "Invalid token data.", success = false });
                 }
+
+                // Enforce single session: ensure this token's jti matches active session
+                var activeSession = GetActiveSession(tenantName, username);
+                if (string.IsNullOrEmpty(activeSession) || !string.Equals(activeSession, jti, StringComparison.Ordinal))
+                {
+                    return Unauthorized(new { message = "Session expired or logged in from another device.", success = false });
+                }
+
                 if (_cache.TryGetValue("tenant_", out Dictionary<string, Tenant> tenantCache) &&
                tenantCache.TryGetValue(tenantName.ToLower(), out Tenant tenant))
                 {
@@ -296,7 +338,19 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
                     
                     var user = new TblUserMaster { UserId = byte.Parse(userId), UserName = username };
-                var newToken = GenerateJwtToken(user, tenantName);
+                
+                // Rotate session id and token
+                var newSessionId = Guid.NewGuid().ToString();
+                var newSessionInfo = new SessionInfo
+                {
+                    SessionId = newSessionId,
+                    DeviceName = Request.Headers["X-Device-Name"].ToString(),
+                    MacAddress = Request.Headers["X-Mac-Address"].ToString(),
+                    UserAgent = Request.Headers["User-Agent"].ToString(),
+                    IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
+                };
+                SetActiveSession(tenantName, username, newSessionId, TimeSpan.FromMinutes(20), newSessionInfo);
+                var newToken = GenerateJwtToken(user, tenantName, newSessionId);
                 SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
                 SetHttpOnlyCookie("AuthToken", newToken, 20);
 
@@ -325,6 +379,25 @@ namespace QD.ERP.Web.Areas.Security.Controllers
         [HttpGet]
         public IActionResult SignOut()
         {
+            try
+            {
+                var existingToken = HttpContext.Request.Cookies["AuthToken"];
+                if (!string.IsNullOrEmpty(existingToken))
+                {
+                    var principal = ValidateToken(existingToken, out var jwtToken);
+                    if (principal != null && jwtToken != null)
+                    {
+                        var username = principal.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
+                        var tenantName = principal.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+                        if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(tenantName))
+                        {
+                            ClearActiveSession(tenantName, username);
+                        }
+                    }
+                }
+            }
+            catch { /* ignore */ }
+
             HttpContext.Response.Cookies.Delete("AuthToken");
             HttpContext.Session.Clear();
             return Ok(new { message = "Sign-out successful.", success = true });
@@ -350,7 +423,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
-        private string GenerateJwtToken(TblUserMaster user, string tenantName)
+        private string GenerateJwtToken(TblUserMaster user, string tenantName, string sessionId)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -361,7 +434,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 new Claim("UserName", user.UserName),
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("TenantName", tenantName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, sessionId)
             };
 
             var token = new JwtSecurityToken(

@@ -119,8 +119,8 @@
   </resheader>
   <data name="xrLabel53.ExpressionBindings" xml:space="preserve">
     <value>Iif(IsNull([CurrencyRate]) Or [CurrencyRate] = 0,
-    Iif(IsNull([LineTotalBeforeDiscount]), 0, [LineTotalBeforeDiscount]),
-    Iif(IsNull([LineTotalBeforeDiscount]), 0, [LineTotalBeforeDiscount] / [CurrencyRate])
+    Iif(IsNull([calLineTotalBeforeDiscount]), 0, [calLineTotalBeforeDiscount]),
+    Iif(IsNull([calLineTotalBeforeDiscount]), 0, [calLineTotalBeforeDiscount] / [CurrencyRate])
 )
 </value>
   </data>

@@ -373,8 +373,8 @@
 				</div>
 
 				<!-- Hidden values for internal reference -->
-				<span id="fiveYearCount" style="display: none;">0</span>
-				<span id="todayCount" style="display: none;">0</span>
+				<span id="fiveYearCount" style="display: none;"></span>
+				<span id="todayCount" style="display: none;"></span>
 			</div>
 
 			<!-- Value -->
@@ -1068,7 +1068,6 @@
 						subColumns.AddFor(m => m.ExportsTax)
 					.Caption(new JS("formatMessage('Exports Tax')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
 					.EncodeHtml(false) // Required to allow styled HTML rendering
 					.CustomizeText(@"
 				function(e) {
@@ -1087,7 +1086,7 @@
 							   			</div>
 							   		</text>).Visible(false);
 
-					subColumns.AddFor(m => m.ExportsTax)
+					subColumns.AddFor(m => m.ConvertedExportsTax)
 					.Caption(new JS("formatMessage('Exports Tax')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -1166,73 +1165,73 @@
 
 
 				totalItems.Add()
-			.Column("CalcLineAmount")
+					.Column("ConvertedCalcLineAmount")
 			.SummaryType(SummaryType.Sum)
 		    .CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("CalcTaxAmount")
+					.Column("ConvertedCalcTaxAmount")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 
 				totalItems.Add()
-			.Column("TotalInvoiceAmount")
+					.Column("ConvertedTotalInvoiceAmount")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("DomesticStandartRatedRevenue")
+					.Column("ConvertedDomesticStandartRatedRevenue")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("TotalRevenueOf10Perc")
+					.Column("ConvertedTotalRevenueOf10Perc")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("TotalRevenueOf15Perc")
+					.Column("ConvertedTotalRevenueOf15Perc")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("DomesticZeroRatedRevenue")
+					.Column("ConvertedDomesticZeroRatedRevenue")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("DomesticExemptedRevenue")
+					.Column("ConvertedDomesticExemptedRevenue")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("GccstandardRatedRevenue")
+					.Column("ConvertedGCCStandardRatedRevenue")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("ExportsRevenue")
+					.Column("ConvertedExportsRevenue")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 
 				totalItems.Add()
-			.Column("DomesticStandartRatedTax")
+					.Column("ConvertedDomesticStandartRatedTax")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("TotalTaxOf10Perc")
+					.Column("TotalTaxOf10Perc")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("TotalTaxOf15Perc")
+					.Column("ConvertedTotalTaxOf15Perc")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("DomesticZeroRatedTax")
+					.Column("ConvertedDomesticZeroRatedTax")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("DomesticExemptedTax")
+					.Column("ConvertedDomesticExemptedTax")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("GccstandardRatedTax")
+					.Column("ConvertedGCCStandardRatedTax")
 			.SummaryType(SummaryType.Sum)
 					.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
 				totalItems.Add()
-			.Column("ExportsTax")
+					.Column("ConvertedExportsTax")
 			.SummaryType(SummaryType.Sum)
             .CustomizeText("function(e) { return formatSummaryValue(e.value); }");			
           });
@@ -1939,6 +1938,11 @@
 			.dx-context-menu .dx-menu-item.highlighted {
 				   background-color: var(--title-background-color) !important;
 				   color: white !important;
+			}
+			/* ✅ Remove border and shadow for context menu */
+			.dx-context-menu {
+				border: none !important;
+				box-shadow: none !important;
 			}
 		`)
 		.appendTo("head");

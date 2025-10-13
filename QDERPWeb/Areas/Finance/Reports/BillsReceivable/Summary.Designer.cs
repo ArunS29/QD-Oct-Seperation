@@ -29,15 +29,11 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition crossTabColumnDefinition1 = new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(115.8333F);
-            DevExpress.XtraReports.UI.CrossTab.CrossTabColumnField crossTabColumnField1 = new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnField();
-            DevExpress.XtraReports.UI.CrossTab.CrossTabColumnField crossTabColumnField2 = new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnField();
-            DevExpress.XtraReports.UI.CrossTab.CrossTabDataField crossTabDataField1 = new DevExpress.XtraReports.UI.CrossTab.CrossTabDataField();
-            DevExpress.XtraReports.UI.CrossTab.CrossTabRowField crossTabRowField1 = new DevExpress.XtraReports.UI.CrossTab.CrossTabRowField();
             DevExpress.DataAccess.Sql.SelectQuery selectQuery1 = new DevExpress.DataAccess.Sql.SelectQuery();
+            DevExpress.DataAccess.Sql.AllColumns allColumns1 = new DevExpress.DataAccess.Sql.AllColumns();
+            DevExpress.DataAccess.Sql.Table table1 = new DevExpress.DataAccess.Sql.Table();
             DevExpress.DataAccess.Sql.Column column1 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression1 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Table table1 = new DevExpress.DataAccess.Sql.Table();
             DevExpress.DataAccess.Sql.Column column2 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression2 = new DevExpress.DataAccess.Sql.ColumnExpression();
             DevExpress.DataAccess.Sql.Column column3 = new DevExpress.DataAccess.Sql.Column();
@@ -59,273 +55,349 @@
             DevExpress.DataAccess.Sql.Column column11 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression11 = new DevExpress.DataAccess.Sql.ColumnExpression();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Summary));
-            this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
-            this.xrPictureBox2 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
+            DevExpress.DataAccess.Sql.SelectQuery selectQuery2 = new DevExpress.DataAccess.Sql.SelectQuery();
+            DevExpress.DataAccess.Sql.AllColumns allColumns2 = new DevExpress.DataAccess.Sql.AllColumns();
+            DevExpress.DataAccess.Sql.Table table2 = new DevExpress.DataAccess.Sql.Table();
+            DevExpress.DataAccess.Sql.Column column12 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression12 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column13 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression13 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column14 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression14 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column15 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression15 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column16 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression16 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column17 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression17 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column18 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression18 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column19 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression19 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column20 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression20 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column21 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression21 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column22 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression22 = new DevExpress.DataAccess.Sql.ColumnExpression();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
-            this.crossTab1 = new DevExpress.XtraReports.UI.XRCrossTab();
-            this.xrCrossTabCell1 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell2 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell3 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell4 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell5 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell6 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell7 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell8 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell9 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell10 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell11 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell12 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.xrCrossTabCell13 = new DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell();
-            this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
-            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel22 = new DevExpress.XtraReports.UI.XRLabel();
-            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
-            this.TitleStyle = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.crossTabGeneralStyle = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.crossTabHeaderStyle = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.crossTabDataStyle = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.crossTabTotalStyle = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
-            this.PageHeader = new DevExpress.XtraReports.UI.PageHeaderBand();
-            ((System.ComponentModel.ISupportInitialize)(this.crossTab1)).BeginInit();
+            this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
+            this.PageFooter = new DevExpress.XtraReports.UI.PageFooterBand();
+            this.txtCompanyFullAddress = new DevExpress.XtraReports.UI.XRLabel();
+            this.txtCompanyLogo = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.txtCompanyName = new DevExpress.XtraReports.UI.XRLabel();
+            this.XrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
+            this.XrPivotGrid1 = new DevExpress.XtraReports.UI.XRPivotGrid();
+            this.fieldAccountHead = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldVoucherMonth = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldBalance = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldReceived = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldReceivableAmount = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldMonthCode = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldBillMonthName = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.fieldAccountHeadNo = new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField();
+            this.txtSystemTitle = new DevExpress.XtraReports.UI.XRLabel();
+            this.txtUserPrinting = new DevExpress.XtraReports.UI.XRLabel();
+            this.XrPageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
+            this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
+            this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            // 
+            // Detail
+            // 
+            this.Detail.HeightF = 0F;
+            this.Detail.Name = "Detail";
+            this.Detail.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.Detail.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
+            // 
+            // TopMargin
+            // 
+            this.TopMargin.HeightF = 0F;
+            this.TopMargin.Name = "TopMargin";
+            this.TopMargin.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.TopMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
+            // 
+            // BottomMargin
+            // 
+            this.BottomMargin.HeightF = 55F;
+            this.BottomMargin.Name = "BottomMargin";
+            this.BottomMargin.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
             // ReportHeader
             // 
             this.ReportHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox2,
-            this.xrLabel3,
-            this.xrLabel2,
-            this.xrLabel1});
-            this.ReportHeader.HeightF = 92.66673F;
+            this.txtCompanyFullAddress,
+            this.txtCompanyLogo,
+            this.txtCompanyName,
+            this.XrLabel3,
+            this.XrPivotGrid1});
+            this.ReportHeader.HeightF = 153.4583F;
             this.ReportHeader.Name = "ReportHeader";
             // 
-            // xrPictureBox2
+            // PageFooter
             // 
-            this.xrPictureBox2.BorderColor = System.Drawing.Color.Transparent;
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(1.000125F, 0F);
-            this.xrPictureBox2.Name = "xrPictureBox2";
-            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(176.4584F, 92.66672F);
-            this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
-            this.xrPictureBox2.StylePriority.UseBorderColor = false;
+            this.PageFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.txtSystemTitle,
+            this.txtUserPrinting,
+            this.XrPageInfo2});
+            this.PageFooter.HeightF = 19F;
+            this.PageFooter.Name = "PageFooter";
             // 
-            // xrLabel3
+            // txtCompanyFullAddress
             // 
-            this.xrLabel3.Font = new DevExpress.Drawing.DXFont("Cambria", 14F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(1.000125F, 63.83336F);
-            this.xrLabel3.Multiline = true;
-            this.xrLabel3.Name = "xrLabel3";
-            this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel3.SizeF = new System.Drawing.SizeF(1603F, 28.83336F);
-            this.xrLabel3.StylePriority.UseFont = false;
-            this.xrLabel3.StylePriority.UseTextAlignment = false;
-            this.xrLabel3.Text = "Bills Payable Summary Report";
-            this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.txtCompanyFullAddress.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.txtCompanyFullAddress.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.txtCompanyFullAddress.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtCompanyFullAddress.LocationFloat = new DevExpress.Utils.PointFloat(110.4167F, 25.79165F);
+            this.txtCompanyFullAddress.Name = "txtCompanyFullAddress";
+            this.txtCompanyFullAddress.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.txtCompanyFullAddress.SizeF = new System.Drawing.SizeF(1108.75F, 25F);
+            this.txtCompanyFullAddress.StylePriority.UseBorderColor = false;
+            this.txtCompanyFullAddress.StylePriority.UseFont = false;
+            this.txtCompanyFullAddress.StylePriority.UseForeColor = false;
+            this.txtCompanyFullAddress.StylePriority.UseTextAlignment = false;
+            this.txtCompanyFullAddress.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
-            // xrLabel2
+            // txtCompanyLogo
             // 
-            this.xrLabel2.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
-            this.xrLabel2.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
-            this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(1.000125F, 28.00004F);
-            this.xrLabel2.Name = "xrLabel2";
-            this.xrLabel2.SizeF = new System.Drawing.SizeF(1594F, 35.83332F);
-            this.xrLabel2.StylePriority.UseBorders = false;
-            this.xrLabel2.StylePriority.UseFont = false;
-            this.xrLabel2.StylePriority.UseTextAlignment = false;
-            this.xrLabel2.Text = "Building No. 1234 - 4321, Al Andalus District, Al Jubail City, Saudi Arabia";
-            this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.txtCompanyLogo.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
+            this.txtCompanyLogo.Name = "txtCompanyLogo";
+            this.txtCompanyLogo.SizeF = new System.Drawing.SizeF(110.4167F, 76.79163F);
+            this.txtCompanyLogo.Sizing = DevExpress.XtraPrinting.ImageSizeMode.StretchImage;
             // 
-            // xrLabel1
+            // txtCompanyName
             // 
-            this.xrLabel1.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrLabel1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(1.000118F, 0F);
-            this.xrLabel1.Name = "xrLabel1";
-            this.xrLabel1.SizeF = new System.Drawing.SizeF(1594F, 28.00004F);
-            this.xrLabel1.StylePriority.UseBorders = false;
-            this.xrLabel1.StylePriority.UseFont = false;
-            this.xrLabel1.StylePriority.UseTextAlignment = false;
-            this.xrLabel1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.txtCompanyName.Font = new DevExpress.Drawing.DXFont("Cambria", 12F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.txtCompanyName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtCompanyName.LocationFloat = new DevExpress.Utils.PointFloat(110.4167F, 0F);
+            this.txtCompanyName.Name = "txtCompanyName";
+            this.txtCompanyName.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.txtCompanyName.SizeF = new System.Drawing.SizeF(1108.75F, 25F);
+            this.txtCompanyName.StylePriority.UseFont = false;
+            this.txtCompanyName.StylePriority.UseForeColor = false;
+            this.txtCompanyName.StylePriority.UseTextAlignment = false;
+            this.txtCompanyName.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
-            // Detail
+            // XrLabel3
             // 
-            this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.crossTab1});
-            this.Detail.Name = "Detail";
+            this.XrLabel3.Font = new DevExpress.Drawing.DXFont("Cambria", 13F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.XrLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.XrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(110.4167F, 51.79164F);
+            this.XrLabel3.Name = "XrLabel3";
+            this.XrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.XrLabel3.SizeF = new System.Drawing.SizeF(1108.75F, 25F);
+            this.XrLabel3.StylePriority.UseFont = false;
+            this.XrLabel3.StylePriority.UseForeColor = false;
+            this.XrLabel3.StylePriority.UseTextAlignment = false;
+            this.XrLabel3.Text = "Bills Receivable Summary Report";
+            this.XrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             // 
-            // crossTab1
+            // XrPivotGrid1
             // 
-            this.crossTab1.Cells.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrCrossTabCell1,
-            this.xrCrossTabCell2,
-            this.xrCrossTabCell3,
-            this.xrCrossTabCell4,
-            this.xrCrossTabCell5,
-            this.xrCrossTabCell6,
-            this.xrCrossTabCell7,
-            this.xrCrossTabCell8,
-            this.xrCrossTabCell9,
-            this.xrCrossTabCell10,
-            this.xrCrossTabCell11,
-            this.xrCrossTabCell12,
-            this.xrCrossTabCell13});
-            crossTabColumnDefinition1.AutoWidthMode = DevExpress.XtraReports.UI.AutoSizeMode.ShrinkAndGrow;
-            this.crossTab1.ColumnDefinitions.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition[] {
-            crossTabColumnDefinition1,
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(102.8333F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000005F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(124.1666F)});
-            crossTabColumnField1.FieldName = "MonthCode";
-            crossTabColumnField2.FieldName = "MonthAndYear";
-            this.crossTab1.ColumnFields.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnField[] {
-            crossTabColumnField1,
-            crossTabColumnField2});
-            this.crossTab1.DataAreaStyleName = "crossTabDataStyle";
-            crossTabDataField1.FieldName = "PayableAmount";
-            this.crossTab1.DataFields.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabDataField[] {
-            crossTabDataField1});
-            this.crossTab1.DataMember = "qry20156BillsPayableSummaryMaster";
-            this.crossTab1.DataSource = this.sqlDataSource1;
-            this.crossTab1.GeneralStyleName = "crossTabGeneralStyle";
-            this.crossTab1.HeaderAreaStyleName = "crossTabHeaderStyle";
-            this.crossTab1.LocationFloat = new DevExpress.Utils.PointFloat(1.000118F, 0F);
-            this.crossTab1.Name = "crossTab1";
-            this.crossTab1.RowDefinitions.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabRowDefinition[] {
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabRowDefinition(25F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabRowDefinition(25F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabRowDefinition(25F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabRowDefinition(25F)});
-            crossTabRowField1.FieldName = "AccountHead";
-            this.crossTab1.RowFields.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabRowField[] {
-            crossTabRowField1});
-            this.crossTab1.SizeF = new System.Drawing.SizeF(344.8333F, 100F);
-            this.crossTab1.TotalAreaStyleName = "crossTabTotalStyle";
+            this.XrPivotGrid1.Appearance.Cell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.CustomTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.FieldHeader.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.FieldValue.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.FieldValueGrandTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.FieldValueTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.GrandTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.XrPivotGrid1.Appearance.Lines.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPivotGrid1.Appearance.TotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.XrPivotGrid1.Fields.AddRange(new DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField[] {
+            this.fieldAccountHead,
+            this.fieldVoucherMonth,
+            this.fieldBalance,
+            this.fieldReceived,
+            this.fieldReceivableAmount,
+            this.fieldMonthCode,
+            this.fieldBillMonthName,
+            this.fieldAccountHeadNo});
+            this.XrPivotGrid1.LocationFloat = new DevExpress.Utils.PointFloat(9.536743E-05F, 93.33331F);
+            this.XrPivotGrid1.Name = "XrPivotGrid1";
+            this.XrPivotGrid1.OptionsPrint.FilterSeparatorBarPadding = 3;
+            this.XrPivotGrid1.SizeF = new System.Drawing.SizeF(1295F, 60.12502F);
             // 
-            // xrCrossTabCell1
+            // fieldAccountHead
             // 
-            this.xrCrossTabCell1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.xrCrossTabCell1.ColumnIndex = 0;
-            this.xrCrossTabCell1.Name = "xrCrossTabCell1";
-            this.xrCrossTabCell1.RowIndex = 0;
-            this.xrCrossTabCell1.RowSpan = 2;
-            this.xrCrossTabCell1.Text = "Account Head";
+            this.fieldAccountHead.Appearance.Cell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.CustomTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.FieldHeader.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.FieldValue.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.FieldValueGrandTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.FieldValueTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.GrandTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Appearance.TotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldAccountHead.Area = DevExpress.XtraPivotGrid.PivotArea.RowArea;
+            this.fieldAccountHead.AreaIndex = 0;
+            this.fieldAccountHead.FieldName = "AccountHead";
+            this.fieldAccountHead.Name = "fieldAccountHead";
+            this.fieldAccountHead.Width = 225;
             // 
-            // xrCrossTabCell2
+            // fieldVoucherMonth
             // 
-            this.xrCrossTabCell2.ColumnIndex = 1;
-            this.xrCrossTabCell2.Name = "xrCrossTabCell2";
-            this.xrCrossTabCell2.RowIndex = 2;
-            this.xrCrossTabCell2.TextFormatString = "{0:N2}";
+            this.fieldVoucherMonth.AreaIndex = 0;
+            this.fieldVoucherMonth.Caption = "Month";
+            this.fieldVoucherMonth.FieldName = "VoucherMonth";
+            this.fieldVoucherMonth.MinWidth = 18;
+            this.fieldVoucherMonth.Name = "fieldVoucherMonth";
+            this.fieldVoucherMonth.Visible = false;
+            this.fieldVoucherMonth.Width = 125;
             // 
-            // xrCrossTabCell3
+            // fieldBalance
             // 
-            this.xrCrossTabCell3.ColumnIndex = 1;
-            this.xrCrossTabCell3.Name = "xrCrossTabCell3";
-            this.xrCrossTabCell3.RowIndex = 0;
+            this.fieldBalance.Appearance.Cell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.CustomTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.FieldHeader.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.FieldValue.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.FieldValueGrandTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.FieldValueTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.GrandTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Appearance.TotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBalance.Area = DevExpress.XtraPivotGrid.PivotArea.DataArea;
+            this.fieldBalance.AreaIndex = 0;
+            this.fieldBalance.Caption = "Inv.Balance";
+            this.fieldBalance.CellFormat.FormatString = "{0:#,##0.00;(#,##0.00)}";
+            this.fieldBalance.CellFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldBalance.FieldName = "Balance";
+            this.fieldBalance.GrandTotalCellFormat.FormatString = "{0:#,##0.00;(#,##0.00)}";
+            this.fieldBalance.GrandTotalCellFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldBalance.Name = "fieldBalance";
+            this.fieldBalance.TotalCellFormat.FormatString = "{0:#,##0.00;(#,##0.00)}";
+            this.fieldBalance.TotalCellFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldBalance.TotalValueFormat.FormatString = "{0:#,##0.00;(#,##0.00)}";
+            this.fieldBalance.TotalValueFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldBalance.ValueFormat.FormatString = "Numeric \"{0:#,##0.00;(#,##0.00)}\"";
+            this.fieldBalance.ValueFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldBalance.Width = 30;
             // 
-            // xrCrossTabCell4
+            // fieldReceived
             // 
-            this.xrCrossTabCell4.ColumnIndex = 1;
-            this.xrCrossTabCell4.Name = "xrCrossTabCell4";
-            this.xrCrossTabCell4.RowIndex = 1;
+            this.fieldReceived.AreaIndex = 2;
+            this.fieldReceived.CellFormat.FormatString = "Numeric \"{0:#,##0.00;(#,##0.00)}\"";
+            this.fieldReceived.CellFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldReceived.FieldName = "Received";
+            this.fieldReceived.GrandTotalCellFormat.FormatString = "Numeric \"{0:#,##0.00;(#,##0.00)}\"";
+            this.fieldReceived.GrandTotalCellFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.fieldReceived.Name = "fieldReceived";
+            this.fieldReceived.Visible = false;
             // 
-            // xrCrossTabCell5
+            // fieldReceivableAmount
             // 
-            this.xrCrossTabCell5.BackColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell5.BorderColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell5.ColumnIndex = 2;
-            this.xrCrossTabCell5.ForeColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell5.Name = "xrCrossTabCell5";
-            this.xrCrossTabCell5.RowIndex = 0;
-            this.xrCrossTabCell5.RowSpan = 2;
-            this.xrCrossTabCell5.TextFormatString = "Total {0}";
+            this.fieldReceivableAmount.AreaIndex = 1;
+            this.fieldReceivableAmount.FieldName = "ReceivableAmount";
+            this.fieldReceivableAmount.Name = "fieldReceivableAmount";
+            this.fieldReceivableAmount.Visible = false;
             // 
-            // xrCrossTabCell6
+            // fieldMonthCode
             // 
-            this.xrCrossTabCell6.ColumnIndex = 3;
-            this.xrCrossTabCell6.Name = "xrCrossTabCell6";
-            this.xrCrossTabCell6.RowIndex = 0;
-            this.xrCrossTabCell6.RowSpan = 2;
-            this.xrCrossTabCell6.Text = "Grand Total";
+            this.fieldMonthCode.Appearance.Cell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.Cell.TextHorizontalAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.fieldMonthCode.Appearance.Cell.TextVerticalAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.fieldMonthCode.Appearance.CustomTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.FieldHeader.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.FieldValue.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.FieldValueGrandTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.FieldValueTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.GrandTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Appearance.TotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldMonthCode.Area = DevExpress.XtraPivotGrid.PivotArea.ColumnArea;
+            this.fieldMonthCode.AreaIndex = 0;
+            this.fieldMonthCode.Caption = "Code";
+            this.fieldMonthCode.FieldName = "MonthCode";
+            this.fieldMonthCode.Name = "fieldMonthCode";
             // 
-            // xrCrossTabCell7
+            // fieldBillMonthName
             // 
-            this.xrCrossTabCell7.BackColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell7.BorderColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell7.ColumnIndex = 2;
-            this.xrCrossTabCell7.Name = "xrCrossTabCell7";
-            this.xrCrossTabCell7.RowIndex = 2;
-            this.xrCrossTabCell7.TextFormatString = "{0:0.00}";
+            this.fieldBillMonthName.Appearance.Cell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.Cell.TextHorizontalAlignment = DevExpress.Utils.HorzAlignment.Center;
+            this.fieldBillMonthName.Appearance.Cell.TextVerticalAlignment = DevExpress.Utils.VertAlignment.Center;
+            this.fieldBillMonthName.Appearance.CustomTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.FieldHeader.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.FieldValue.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.FieldValueGrandTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.FieldValueTotal.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.GrandTotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Appearance.TotalCell.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.fieldBillMonthName.Area = DevExpress.XtraPivotGrid.PivotArea.ColumnArea;
+            this.fieldBillMonthName.AreaIndex = 1;
+            this.fieldBillMonthName.Caption = "Month";
+            this.fieldBillMonthName.FieldName = "BillMonthName";
+            this.fieldBillMonthName.Name = "fieldBillMonthName";
+            this.fieldBillMonthName.SortOrder = DevExpress.XtraPivotGrid.PivotSortOrder.Descending;
+            this.fieldBillMonthName.Width = 75;
             // 
-            // xrCrossTabCell8
+            // fieldAccountHeadNo
             // 
-            this.xrCrossTabCell8.ColumnIndex = 3;
-            this.xrCrossTabCell8.Name = "xrCrossTabCell8";
-            this.xrCrossTabCell8.RowIndex = 2;
-            this.xrCrossTabCell8.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
+            this.fieldAccountHeadNo.Area = DevExpress.XtraPivotGrid.PivotArea.ColumnArea;
+            this.fieldAccountHeadNo.AreaIndex = 2;
+            this.fieldAccountHeadNo.FieldName = "AccountHeadNo";
+            this.fieldAccountHeadNo.Name = "fieldAccountHeadNo";
+            this.fieldAccountHeadNo.Visible = false;
             // 
-            // xrCrossTabCell9
+            // txtSystemTitle
             // 
-            this.xrCrossTabCell9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.xrCrossTabCell9.ColumnIndex = 0;
-            this.xrCrossTabCell9.Name = "xrCrossTabCell9";
-            this.xrCrossTabCell9.RowIndex = 2;
+            this.txtSystemTitle.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.txtSystemTitle.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.txtSystemTitle.ForeColor = System.Drawing.Color.DimGray;
+            this.txtSystemTitle.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
+            this.txtSystemTitle.Name = "txtSystemTitle";
+            this.txtSystemTitle.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.txtSystemTitle.SizeF = new System.Drawing.SizeF(311.4167F, 19F);
+            this.txtSystemTitle.StylePriority.UseBorderColor = false;
+            this.txtSystemTitle.StylePriority.UseFont = false;
+            this.txtSystemTitle.StylePriority.UseForeColor = false;
+            this.txtSystemTitle.StylePriority.UseTextAlignment = false;
+            this.txtSystemTitle.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
-            // xrCrossTabCell10
+            // txtUserPrinting
             // 
-            this.xrCrossTabCell10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.xrCrossTabCell10.ColumnIndex = 0;
-            this.xrCrossTabCell10.Name = "xrCrossTabCell10";
-            this.xrCrossTabCell10.RowIndex = 3;
-            this.xrCrossTabCell10.Text = "Grand Total";
+            this.txtUserPrinting.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.txtUserPrinting.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.txtUserPrinting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtUserPrinting.LocationFloat = new DevExpress.Utils.PointFloat(953.0001F, 0F);
+            this.txtUserPrinting.Name = "txtUserPrinting";
+            this.txtUserPrinting.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.txtUserPrinting.SizeF = new System.Drawing.SizeF(342F, 19F);
+            this.txtUserPrinting.StylePriority.UseBorderColor = false;
+            this.txtUserPrinting.StylePriority.UseFont = false;
+            this.txtUserPrinting.StylePriority.UseForeColor = false;
+            this.txtUserPrinting.StylePriority.UseTextAlignment = false;
+            this.txtUserPrinting.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             // 
-            // xrCrossTabCell11
+            // XrPageInfo2
             // 
-            this.xrCrossTabCell11.ColumnIndex = 1;
-            this.xrCrossTabCell11.Name = "xrCrossTabCell11";
-            this.xrCrossTabCell11.RowIndex = 3;
-            this.xrCrossTabCell11.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
-            // 
-            // xrCrossTabCell12
-            // 
-            this.xrCrossTabCell12.BackColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell12.BorderColor = System.Drawing.Color.Transparent;
-            this.xrCrossTabCell12.ColumnIndex = 2;
-            this.xrCrossTabCell12.Name = "xrCrossTabCell12";
-            this.xrCrossTabCell12.RowIndex = 3;
-            this.xrCrossTabCell12.TextFormatString = "{0:0.00}";
-            // 
-            // xrCrossTabCell13
-            // 
-            this.xrCrossTabCell13.ColumnIndex = 3;
-            this.xrCrossTabCell13.Name = "xrCrossTabCell13";
-            this.xrCrossTabCell13.RowIndex = 3;
-            this.xrCrossTabCell13.TextFormatString = "{0:#,##0.00;(#,##0.00)} ";
+            this.XrPageInfo2.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.XrPageInfo2.ForeColor = System.Drawing.Color.DimGray;
+            this.XrPageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(602.0416F, 0F);
+            this.XrPageInfo2.Name = "XrPageInfo2";
+            this.XrPageInfo2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.XrPageInfo2.SizeF = new System.Drawing.SizeF(108F, 19F);
+            this.XrPageInfo2.StylePriority.UseFont = false;
+            this.XrPageInfo2.StylePriority.UseForeColor = false;
+            this.XrPageInfo2.StylePriority.UseTextAlignment = false;
+            this.XrPageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.XrPageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // sqlDataSource1
             // 
             this.sqlDataSource1.ConnectionName = "DBConnection";
             this.sqlDataSource1.Name = "sqlDataSource1";
+            table1.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"284\" />";
+            table1.Name = "qry20145BillsReceivableSummaryMaster";
+            allColumns1.Table = table1;
             columnExpression1.ColumnName = "AccountHeadNo";
-            table1.Name = "qry20156BillsPayableSummaryMaster";
             columnExpression1.Table = table1;
             column1.Expression = columnExpression1;
             columnExpression2.ColumnName = "AccountHead";
             columnExpression2.Table = table1;
             column2.Expression = columnExpression2;
-            columnExpression3.ColumnName = "PayableAmount";
+            columnExpression3.ColumnName = "ReceivableAmount";
             columnExpression3.Table = table1;
             column3.Expression = columnExpression3;
-            columnExpression4.ColumnName = "Paid";
+            columnExpression4.ColumnName = "Received";
             columnExpression4.Table = table1;
             column4.Expression = columnExpression4;
             columnExpression5.ColumnName = "Balance";
@@ -349,6 +421,7 @@
             columnExpression11.ColumnName = "BillMonthName";
             columnExpression11.Table = table1;
             column11.Expression = columnExpression11;
+            selectQuery1.Columns.Add(allColumns1);
             selectQuery1.Columns.Add(column1);
             selectQuery1.Columns.Add(column2);
             selectQuery1.Columns.Add(column3);
@@ -360,183 +433,118 @@
             selectQuery1.Columns.Add(column9);
             selectQuery1.Columns.Add(column10);
             selectQuery1.Columns.Add(column11);
-            selectQuery1.Name = "qry20156BillsPayableSummaryMaster";
+            selectQuery1.Name = "qry20145BillsReceivableSummaryMaster";
             selectQuery1.Tables.Add(table1);
             this.sqlDataSource1.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
             selectQuery1});
             this.sqlDataSource1.ResultSchemaSerializable = resources.GetString("sqlDataSource1.ResultSchemaSerializable");
             // 
-            // TopMargin
+            // sqlDataSource2
             // 
-            this.TopMargin.HeightF = 13.33333F;
-            this.TopMargin.Name = "TopMargin";
-            // 
-            // BottomMargin
-            // 
-            this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrLabel14,
-            this.xrLabel22,
-            this.pageInfo2});
-            this.BottomMargin.HeightF = 108.1666F;
-            this.BottomMargin.Name = "BottomMargin";
-            // 
-            // xrLabel14
-            // 
-            this.xrLabel14.BackColor = System.Drawing.Color.Transparent;
-            this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Times New Roman", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel14.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(1.000118F, 0F);
-            this.xrLabel14.Multiline = true;
-            this.xrLabel14.Name = "xrLabel14";
-            this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(289.4098F, 23F);
-            this.xrLabel14.StylePriority.UseBackColor = false;
-            this.xrLabel14.StylePriority.UseFont = false;
-            this.xrLabel14.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel22
-            // 
-            this.xrLabel22.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel22.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd MMMM yyyy " +
-                    "hh:mm tt}\', Now())\n")});
-            this.xrLabel22.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel22.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(1228.924F, 3.999986F);
-            this.xrLabel22.Name = "xrLabel22";
-            this.xrLabel22.SizeF = new System.Drawing.SizeF(365.0757F, 20.66685F);
-            this.xrLabel22.StylePriority.UseBorderColor = false;
-            this.xrLabel22.StylePriority.UseFont = false;
-            this.xrLabel22.StylePriority.UseForeColor = false;
-            this.xrLabel22.StylePriority.UseTextAlignment = false;
-            this.xrLabel22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            // 
-            // pageInfo2
-            // 
-            this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9F);
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(778.4713F, 2.99998F);
-            this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(87.5F, 23F);
-            this.pageInfo2.StylePriority.UseFont = false;
-            this.pageInfo2.StylePriority.UseTextAlignment = false;
-            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
-            // 
-            // TitleStyle
-            // 
-            this.TitleStyle.Font = new DevExpress.Drawing.DXFont("Arial", 18F);
-            this.TitleStyle.Name = "TitleStyle";
-            this.TitleStyle.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            // 
-            // crossTabGeneralStyle
-            // 
-            this.crossTabGeneralStyle.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(232)))), ((int)(((byte)(234)))));
-            this.crossTabGeneralStyle.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.crossTabGeneralStyle.BorderWidth = 1F;
-            this.crossTabGeneralStyle.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.crossTabGeneralStyle.Name = "crossTabGeneralStyle";
-            this.crossTabGeneralStyle.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            // 
-            // crossTabHeaderStyle
-            // 
-            this.crossTabHeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(251)))), ((int)(((byte)(252)))));
-            this.crossTabHeaderStyle.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.crossTabHeaderStyle.Name = "crossTabHeaderStyle";
-            this.crossTabHeaderStyle.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
-            // 
-            // crossTabDataStyle
-            // 
-            this.crossTabDataStyle.Name = "crossTabDataStyle";
-            this.crossTabDataStyle.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            // 
-            // crossTabTotalStyle
-            // 
-            this.crossTabTotalStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(251)))), ((int)(((byte)(252)))));
-            this.crossTabTotalStyle.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.crossTabTotalStyle.Name = "crossTabTotalStyle";
-            this.crossTabTotalStyle.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            // 
-            // ReportFooter
-            // 
-            this.ReportFooter.HeightF = 52.5F;
-            this.ReportFooter.Name = "ReportFooter";
-            // 
-            // PageHeader
-            // 
-            this.PageHeader.HeightF = 0F;
-            this.PageHeader.Name = "PageHeader";
+            this.sqlDataSource2.ConnectionName = "DBConnection";
+            this.sqlDataSource2.Name = "sqlDataSource2";
+            table2.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"284\" />";
+            table2.Name = "qry20145BillsReceivableSummaryMaster";
+            allColumns2.Table = table2;
+            columnExpression12.ColumnName = "AccountHeadNo";
+            columnExpression12.Table = table2;
+            column12.Expression = columnExpression12;
+            columnExpression13.ColumnName = "AccountHead";
+            columnExpression13.Table = table2;
+            column13.Expression = columnExpression13;
+            columnExpression14.ColumnName = "ReceivableAmount";
+            columnExpression14.Table = table2;
+            column14.Expression = columnExpression14;
+            columnExpression15.ColumnName = "Received";
+            columnExpression15.Table = table2;
+            column15.Expression = columnExpression15;
+            columnExpression16.ColumnName = "Balance";
+            columnExpression16.Table = table2;
+            column16.Expression = columnExpression16;
+            columnExpression17.ColumnName = "VoucherDate";
+            columnExpression17.Table = table2;
+            column17.Expression = columnExpression17;
+            columnExpression18.ColumnName = "VoucherMonth";
+            columnExpression18.Table = table2;
+            column18.Expression = columnExpression18;
+            columnExpression19.ColumnName = "MonthID";
+            columnExpression19.Table = table2;
+            column19.Expression = columnExpression19;
+            columnExpression20.ColumnName = "MonthAndYear";
+            columnExpression20.Table = table2;
+            column20.Expression = columnExpression20;
+            columnExpression21.ColumnName = "MonthCode";
+            columnExpression21.Table = table2;
+            column21.Expression = columnExpression21;
+            columnExpression22.ColumnName = "BillMonthName";
+            columnExpression22.Table = table2;
+            column22.Expression = columnExpression22;
+            selectQuery2.Columns.Add(allColumns2);
+            selectQuery2.Columns.Add(column12);
+            selectQuery2.Columns.Add(column13);
+            selectQuery2.Columns.Add(column14);
+            selectQuery2.Columns.Add(column15);
+            selectQuery2.Columns.Add(column16);
+            selectQuery2.Columns.Add(column17);
+            selectQuery2.Columns.Add(column18);
+            selectQuery2.Columns.Add(column19);
+            selectQuery2.Columns.Add(column20);
+            selectQuery2.Columns.Add(column21);
+            selectQuery2.Columns.Add(column22);
+            selectQuery2.Name = "qry20145BillsReceivableSummaryMaster";
+            selectQuery2.Tables.Add(table2);
+            this.sqlDataSource2.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
+            selectQuery2});
+            this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
             // 
             // Summary
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
-            this.ReportHeader,
             this.Detail,
             this.TopMargin,
             this.BottomMargin,
-            this.ReportFooter,
-            this.PageHeader});
+            this.ReportHeader,
+            this.PageFooter});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
-            this.sqlDataSource1});
-            this.DataMember = "qry20156BillsPayableSummaryMaster";
+            this.sqlDataSource1,
+            this.sqlDataSource2});
+            this.DataMember = "qry20145BillsReceivableSummaryMaster";
             this.DataSource = this.sqlDataSource1;
-            this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.HorizontalContentSplitting = DevExpress.XtraPrinting.HorizontalContentSplitting.Smart;
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 13.33333F, 108.1666F);
-            this.PageHeight = 1169;
-            this.PageWidth = 1654;
-            this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.A3;
-            this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
-            this.TitleStyle,
-            this.crossTabGeneralStyle,
-            this.crossTabHeaderStyle,
-            this.crossTabDataStyle,
-            this.crossTabTotalStyle});
+            this.Margins = new DevExpress.Drawing.DXMargins(49F, 56F, 0F, 55F);
+            this.PageHeight = 850;
+            this.PageWidth = 1400;
+            this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Legal;
+            this.ScriptLanguage = DevExpress.XtraReports.ScriptLanguage.VisualBasic;
             this.Version = "24.1";
-            this.VerticalContentSplitting = DevExpress.XtraPrinting.VerticalContentSplitting.Smart;
-            ((System.ComponentModel.ISupportInitialize)(this.crossTab1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
         }
 
         #endregion
 
-        private DevExpress.XtraReports.UI.ReportHeaderBand ReportHeader;
         private DevExpress.XtraReports.UI.DetailBand Detail;
-        private DevExpress.XtraReports.UI.XRCrossTab crossTab1;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell1;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell2;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell3;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell4;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell5;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell6;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell7;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell8;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell9;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell10;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell11;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell12;
-        private DevExpress.XtraReports.UI.CrossTab.XRCrossTabCell xrCrossTabCell13;
-        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
         private DevExpress.XtraReports.UI.TopMarginBand TopMargin;
         private DevExpress.XtraReports.UI.BottomMarginBand BottomMargin;
-        private DevExpress.XtraReports.UI.XRControlStyle TitleStyle;
-        private DevExpress.XtraReports.UI.XRControlStyle crossTabGeneralStyle;
-        private DevExpress.XtraReports.UI.XRControlStyle crossTabHeaderStyle;
-        private DevExpress.XtraReports.UI.XRControlStyle crossTabDataStyle;
-        private DevExpress.XtraReports.UI.XRControlStyle crossTabTotalStyle;
-        private DevExpress.XtraReports.UI.ReportFooterBand ReportFooter;
-        private DevExpress.XtraReports.UI.XRPageInfo pageInfo2;
-        private DevExpress.XtraReports.UI.PageHeaderBand PageHeader;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel1;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel2;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel3;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox2;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel22;
-        private DevExpress.XtraReports.UI.XRLabel xrLabel14;
+        private DevExpress.XtraReports.UI.ReportHeaderBand ReportHeader;
+        private DevExpress.XtraReports.UI.XRLabel txtCompanyFullAddress;
+        private DevExpress.XtraReports.UI.XRPictureBox txtCompanyLogo;
+        private DevExpress.XtraReports.UI.XRLabel txtCompanyName;
+        private DevExpress.XtraReports.UI.XRLabel XrLabel3;
+        private DevExpress.XtraReports.UI.XRPivotGrid XrPivotGrid1;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldAccountHead;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldVoucherMonth;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldBalance;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldReceived;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldReceivableAmount;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldMonthCode;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldBillMonthName;
+        private DevExpress.XtraReports.UI.PivotGrid.XRPivotGridField fieldAccountHeadNo;
+        private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
+        private DevExpress.XtraReports.UI.XRLabel txtSystemTitle;
+        private DevExpress.XtraReports.UI.XRLabel txtUserPrinting;
+        private DevExpress.XtraReports.UI.XRPageInfo XrPageInfo2;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
     }
 }

@@ -487,7 +487,7 @@
 
     function redirectToVATMasterModule() {
         const url = `/${tenantName}/VAT/VATMasterModule`;
-        const title = "";
+        const title = "Database Master Module : Unit of Measure";
         openModal(url, title);
     }
 
@@ -545,6 +545,7 @@
             }
 
                function dataGridAccountHeadSelectionChanged(e) {
+                   debugger;
                 const selectedKey = e.selectedRowKeys[0];
                 const ddbInstance = $("#ddlGoodsGroup1").dxDropDownBox("instance");
                 acchead = selectedKey;
@@ -556,7 +557,8 @@
                     var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
                  
                     if (selectedRowData.length > 0) {
-                        $("#txtGoodsCode7").dxTextBox("instance").option("value",selectedRowData.GsgroupId);
+                        console.log("GSData",selectedRowData)
+                        $("#txtGoodsCode7").dxTextBox("instance").option("value",selectedRowData[0].GsgroupId);
 
                     } else {
                         DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -681,6 +683,7 @@
     }
 
         function onSaveClicked() {
+            debugger;
         const gsCodeInput = $("#txtGoodsCode7").dxTextBox("instance").option("value");
         const description = $("#txtDescription8").dxTextArea("instance").option("value");
 

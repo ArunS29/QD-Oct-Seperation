@@ -4117,7 +4117,7 @@ var dictionary = {
         "Line Total After Disc": "Line Total After Disc",
         "Is Won For Po": "Is Won For Po",
         "GS Descrpition": "GS Description",
-        "Claim /Request Form Entry Checking": "التحقق من إدخال نموذج المطالبة/الطلب",
+        "Claim /Request Form Entry Checking": "التحقق من إدخال نموذج المطالبة/ الطلب",
         "Add Sales Person": "Add Sales Person",
         "Edit Currency": "Edit Currency",
         "Request/Enquiry.No": "Request/Enquiry.No",
@@ -5580,7 +5580,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "Account Confirmation Letter (Debtors)",
         "Cash Imprest Account Confirmation Letter": "Cash Imprest Account Confirmation Letter",
         "VAT Credit Notes (Obsolete)": "VAT Credit Notes (Obsolete)",
-        "View VAT Credit Note": "View VAT Credit Note"
+        "View VAT Credit Note": "View VAT Credit Note",
+        "Database Master Module : Unit of Measure": "Database Master Module : Unit of Measure",
+        "Payment Means*": "Payment Means*",
+        "Supply Date*":"Supply Date*"
+
         
 
     },
@@ -10479,7 +10483,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "خطاب تأكيد الحساب (المدينون)",
         "Cash Imprest Account Confirmation Letter": "خطاب تأكيد حساب السلفة النقدية",
         "VAT Credit Notes (Obsolete)": "ملاحظات ضريبة القيمة المضافة (ملغاة)",
-        "View VAT Credit Note": "عرض إشعار ضريبة القيمة المضافة"
+        "View VAT Credit Note": "عرض إشعار ضريبة القيمة المضافة",
+        "Database Master Module: Unit of Measure": "وحدة قاعدة بيانات الوحدة الرئيسية: وحدة القياس",
+        "Payment Means*": "وسيلة الدفع*",
+        "Supply Date*": "تاريخ التوريد*"
 
     },
 
@@ -11563,7 +11570,7 @@ var dictionary = {
         "Preview Claim/Request Form (wt VAT)": "预览索赔/请求表（含增值税）",
         "Preview Claim/Request Form (Detailed)": "预览索赔/请求表（详细）",
         "Payment Advice(Supplier Payments)": "付款通知（供应商付款）",
-        "Claim /Request Form Entry Checking": "索赔/请求表条目检查",
+        "Claim /Request Form Entry Checking": "索赔 /请求表条目检查",
         "Submitted By (AR)": "提交人(AR)",
         "Account Group Report(with subGroups)": "账户组报告（带子组）",
         "Trial Balance (Export Format)": "试算表（导出格式）",
@@ -15034,9 +15041,6 @@ var dictionary = {
         "Client PO End Date": "客户采购订单结束日期",
         "Client PO Type": "客户采购订单类型",
         "Client PO Value": "客户采购订单金额",
-
-
-
         "Validations": "验证",
         "Item Details": "项目明细",
         "Payment Details": "付款明细",
@@ -15053,9 +15057,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "账户确认函（债务人）",
         "Cash Imprest Account Confirmation Letter": "现金备用金账户确认函",
         "VAT Credit Notes (Obsolete)": "增值税贷方票据（已废止）",
-        "View VAT Credit Note": "查看增值税贷方票据"
-
-
+        "View VAT Credit Note": "查看增值税贷方票据",
+        "Database Master Module : Unit of Measure": "数据库主模块：计量单位",
+        "Payment Means*": "付款方式",
+        "Supply Date*": "供货日期*"
 
     },
 
@@ -19722,7 +19727,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "खाता पुष्टि पत्र (ऋणी)",
         "Cash Imprest Account Confirmation Letter": "नकद इम्प्रेस्ट खाता पुष्टि पत्र",
         "VAT Credit Notes (Obsolete)": "वैट क्रेडिट नोट्स (अप्रचलित)",
-        "View VAT Credit Note": "वैट क्रेडिट नोट देखें"
+        "View VAT Credit Note": "वैट क्रेडिट नोट देखें",
+        "Database Master Module : Unit of Measure": "डाटाबेस मास्टर मॉड्यूल : माप की इकाई",
+        "Payment Means*": "भुगतान का माध्यम*",
+        "Supply Date*": "आपूर्ति की तिथि*"
+
 
     },
 
@@ -24452,7 +24461,11 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "اکاؤنٹ تصدیقی خط (قرض داران)",
         "Cash Imprest Account Confirmation Letter": "نقدی امپریسٹ اکاؤنٹ تصدیقی خط",
         "VAT Credit Notes (Obsolete)": "وی اے ٹی کریڈٹ نوٹس (غیر فعال)",
-        "View VAT Credit Note": "وی اے ٹی کریڈٹ نوٹ دیکھیں"
+        "View VAT Credit Note": "وی اے ٹی کریڈٹ نوٹ دیکھیں",
+        "Database Master Module : Unit of Measure": "ڈیٹا بیس ماسٹر ماڈیول : اکائی پیمائش",
+        "Payment Means*": "ادائیگی کا ذریعہ*",
+        "Supply Date*": "فراہمی کی تاریخ*"
+
 
     },
 
@@ -27759,7 +27772,7 @@ var dictionary = {
         "Preview Claim/Request Form (wt VAT)": "청구/요청 양식 미리보기 (VAT 포함)",
         "Preview Claim/Request Form (Detailed)": "청구/요청 양식 미리보기 (상세)",
         "Payment Advice(Supplier Payments)": "지급 안내(공급업체 지급)",
-        "Claim /Request Form Entry Checking": "청구/요청 양식 입력 확인",
+        "Claim /Request Form Entry Checking": "청구 /요청 양식 입력 확인",
         "Account Group": "계정 그룹",
         "Account Group Report(with subGroups)": "계정 그룹 보고서(하위 그룹 포함)",
         "Trial Balance": "시산표",
@@ -28977,7 +28990,10 @@ var dictionary = {
         "Account Confirmation Letter (Debtors)": "계정 확인서 (채무자)",
         "Cash Imprest Account Confirmation Letter": "현금 임프레스트 계정 확인서",
         "VAT Credit Notes (Obsolete)": "부가가치세 대변 메모 (사용 중지됨)",
-        "View VAT Credit Note": "부가가치세 대변 메모 보기"
+        "View VAT Credit Note": "부가가치세 대변 메모 보기",
+        "Database Master Module : Unit of Measure": "데이터베이스 마스터 모듈 : 측정 단위",
+        "Payment Means*": "지불 수단*",
+        "Supply Date*": "공급일자*"
 
 
     }
