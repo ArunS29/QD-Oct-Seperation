@@ -2,8 +2,11 @@
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Http;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -11,7 +14,8 @@ public class AzureBlobHelper
 {
     private readonly string _connectionString;
     private readonly string _containerName;
-    
+    private readonly CloudBlobContainer _container;
+
     public AzureBlobHelper(string connectionString, string containerName)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
@@ -117,6 +121,86 @@ public class AzureBlobHelper
         }
 
         return result;
+    }
+
+    public void UploadFile(string filePath, string blobPath)
+    {
+        var blob = _container.GetBlockBlobReference(blobPath);
+        using (FileStream fileStream = File.OpenRead(filePath))
+        {
+            blob.UploadFromStreamAsync(fileStream);
+        }
+    }
+
+    public void UploadFolder(string localFolder, string azurePath)
+    {
+        foreach (var filePath in Directory.GetFiles(localFolder, "*", SearchOption.AllDirectories))
+        {
+            string fileName = Path.GetFileName(filePath);
+            string blobName = azurePath + fileName;
+            UploadFile(filePath, blobName);
+        }
+    }
+
+    public void UploadString(string content, string blobPath)
+    {
+        try
+        {
+            var blob = _container.GetBlockBlobReference(blobPath);
+            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(content)))
+            {
+                blob.UploadFromStreamAsync(ms);
+            }
+        }
+        catch (Exception ex)
+        {
+            //Debug.WriteLine("UploadString failed: " + ex.Message);
+            throw; // rethrow to bubble up
+        }
+    }
+
+    // 🔹 Download to a temporary file
+    public string DownloadToTempFile(string blobPath)
+    {
+        try
+        {
+            var blob = _container.GetBlockBlobReference(blobPath);
+            string tempFile = Path.GetTempFileName();
+
+            using (FileStream fs = new FileStream(tempFile, FileMode.Create))
+            {
+                blob.DownloadToStreamAsync(fs);
+            }
+
+            return tempFile;
+        }
+        catch (Exception ex)
+        {
+            //Debug.WriteLine("Azure Download failed: " + ex.Message);
+            return null;
+        }
+    }
+
+    // 🔹 Download as string
+    public async Task<string> DownloadStringAsync(string blobPath)
+    {
+        var blob = _container.GetBlockBlobReference(blobPath);
+
+        if (!await blob.ExistsAsync())   // ✅ Await here
+        {
+            throw new FileNotFoundException("Blob not found: " + blobPath);
+        }
+
+        using (var ms = new MemoryStream())
+        {
+            await blob.DownloadToStreamAsync(ms);   // ✅ Await async download
+            ms.Position = 0;
+
+            using (var reader = new StreamReader(ms))
+            {
+                return await reader.ReadToEndAsync();
+            }
+        }
     }
 
 
