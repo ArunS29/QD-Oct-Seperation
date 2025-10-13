@@ -76,14 +76,16 @@ namespace QD.ERP.Web.Middleware
                     var jwtToken = (JwtSecurityToken)validatedToken;
                     var claims = jwtToken.Claims.ToList();
 
-                    // Enforce single active session: verify token JTI matches active session in cache
+                    // Enforce single active session per client type: verify token JTI matches active session in cache
                     var username = claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
                     var tenantName = claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+                    var clientTypeFromToken = claims.FirstOrDefault(c => c.Type == "ClientType")?.Value;
+                    var clientType = ResolveClientType(context, clientTypeFromToken);
                     var jti = jwtToken.Id;
 
                     if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(tenantName) && !string.IsNullOrWhiteSpace(jti))
                     {
-                        var cacheKey = $"active_session:{tenantName.ToLower()}:{username.ToLower()}";
+                        var cacheKey = $"active_session:{tenantName.ToLower()}:{username.ToLower()}:{clientType}";
                         if (!_cache.TryGetValue(cacheKey, out SessionInfo activeSession) || !string.Equals(activeSession?.SessionId, jti, StringComparison.Ordinal))
                         {
                             HandleUnauthorized(context, isApiRequest, activeSession);
@@ -121,6 +123,30 @@ namespace QD.ERP.Web.Middleware
             }
 
             await _next(context);
+        }
+
+        private static string ResolveClientType(HttpContext context, string? clientTypeClaim)
+        {
+            if (!string.IsNullOrWhiteSpace(clientTypeClaim))
+            {
+                var norm = clientTypeClaim.Trim().ToLowerInvariant();
+                return norm is "mobile" or "web" ? norm : "web";
+            }
+
+            var fromHeader = context.Request.Headers["X-Client-Type"].ToString();
+            if (!string.IsNullOrWhiteSpace(fromHeader))
+            {
+                var norm = fromHeader.Trim().ToLowerInvariant();
+                return norm is "mobile" or "web" ? norm : "web";
+            }
+
+            var ua = context.Request.Headers["User-Agent"].ToString().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(ua) && (ua.Contains("android") || ua.Contains("iphone") || ua.Contains("ipad") || ua.Contains("mobile")))
+            {
+                return "mobile";
+            }
+
+            return "web";
         }
 
         private void HandleUnauthorized(HttpContext context, bool isApiRequest, SessionInfo activeSession)

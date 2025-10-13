@@ -67,14 +67,50 @@ namespace QD.ERP.Web.Areas.Security.Controllers
             return await _licenseService.IsLicenseValidAsync(tenant.TenantName);
         }
 
+        // Determine client type (web/mobile) without requiring model changes
+        private string ResolveClientType()
+        {
+            var fromHeader = Request.Headers["X-Client-Type"].ToString();
+            if (!string.IsNullOrWhiteSpace(fromHeader))
+            {
+                var norm = fromHeader.Trim().ToLowerInvariant();
+                return norm is "mobile" or "web" ? norm : "web";
+            }
+
+            var ua = Request.Headers["User-Agent"].ToString().ToLowerInvariant();
+            if (!string.IsNullOrEmpty(ua) && (ua.Contains("android") || ua.Contains("iphone") || ua.Contains("ipad") || ua.Contains("mobile")))
+            {
+                return "mobile";
+            }
+
+            return "web";
+        }
+
         private string GetSessionCacheKey(string tenantName, string username)
         {
             return $"active_session:{tenantName?.ToLower()}:{username?.ToLower()}";
         }
 
+        // Client-type aware cache key
+        private string GetSessionCacheKey(string tenantName, string username, string clientType)
+        {
+            var type = string.IsNullOrWhiteSpace(clientType) ? "web" : clientType.ToLowerInvariant();
+            return $"active_session:{tenantName?.ToLower()}:{username?.ToLower()}:{type}";
+        }
+
         private void SetActiveSession(string tenantName, string username, string sessionId, TimeSpan ttl, SessionInfo sessionInfo)
         {
             var cacheKey = GetSessionCacheKey(tenantName, username);
+            _cache.Set(cacheKey, sessionInfo, new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = ttl
+            });
+        }
+
+        // Client-type aware setter
+        private void SetActiveSession(string tenantName, string username, string clientType, string sessionId, TimeSpan ttl, SessionInfo sessionInfo)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username, clientType);
             _cache.Set(cacheKey, sessionInfo, new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = ttl
@@ -87,15 +123,36 @@ namespace QD.ERP.Web.Areas.Security.Controllers
             return _cache.TryGetValue(cacheKey, out SessionInfo existing) ? existing : null;
         }
 
+        // Client-type aware getter
+        private SessionInfo GetActiveSessionInfo(string tenantName, string username, string clientType)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username, clientType);
+            return _cache.TryGetValue(cacheKey, out SessionInfo existing) ? existing : null;
+        }
+
         private string GetActiveSession(string tenantName, string username)
         {
             var info = GetActiveSessionInfo(tenantName, username);
             return info?.SessionId;
         }
 
+        // Client-type aware session id getter
+        private string GetActiveSession(string tenantName, string username, string clientType)
+        {
+            var info = GetActiveSessionInfo(tenantName, username, clientType);
+            return info?.SessionId;
+        }
+
         private void ClearActiveSession(string tenantName, string username)
         {
             var cacheKey = GetSessionCacheKey(tenantName, username);
+            _cache.Remove(cacheKey);
+        }
+
+        // Client-type aware clearer
+        private void ClearActiveSession(string tenantName, string username, string clientType)
+        {
+            var cacheKey = GetSessionCacheKey(tenantName, username, clientType);
             _cache.Remove(cacheKey);
         }
 
@@ -220,8 +277,10 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             return Unauthorized(new { message = "Invalid credentials.", success = false });
                         }
 
-                        // Allow device 2 to login and force device 1 out by overriding active session
-                        var previousInfo = GetActiveSessionInfo(request.TenantName, request.Username);
+                        var clientType = ResolveClientType();
+
+                        // Allow device 2 to login and force device 1 out by overriding active session (per client type)
+                        var previousInfo = GetActiveSessionInfo(request.TenantName, request.Username, clientType);
 
                         var sessionId = Guid.NewGuid().ToString();
                         var tokenTtl = TimeSpan.FromMinutes(20);
@@ -234,8 +293,8 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                             IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
                         };
 
-                        // Override any existing session; device1 token will be invalid on next request
-                        SetActiveSession(request.TenantName, request.Username, sessionId, tokenTtl, sessionInfo);
+                        // Override any existing session for this client type only
+                        SetActiveSession(request.TenantName, request.Username, clientType, sessionId, tokenTtl, sessionInfo);
 
                         var permissions = dbContext.TblUserAccessWebs
                             .Where(p => p.UserId == user.UserId)
@@ -249,7 +308,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                                 ItemVisible = p.ItemVisible
                             }).ToList();
 
-                        var token = GenerateJwtToken(user, request.TenantName, sessionId);
+                        var token = GenerateJwtToken(user, request.TenantName, sessionId, clientType);
 
                         SetHttpOnlyCookie("AuthToken", token, 20);
 
@@ -303,6 +362,8 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 var username = principal.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
                 var userId = principal.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
                 var tenantName = principal.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+                var clientTypeFromToken = principal.Claims.FirstOrDefault(c => c.Type == "ClientType")?.Value;
+                var clientType = string.IsNullOrWhiteSpace(clientTypeFromToken) ? ResolveClientType() : clientTypeFromToken.ToLowerInvariant();
                 var jti = jwtToken.Id;
 
                 if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(tenantName) || string.IsNullOrWhiteSpace(username))
@@ -310,8 +371,8 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                     return Unauthorized(new { message = "Invalid token data.", success = false });
                 }
 
-                // Enforce single session: ensure this token's jti matches active session
-                var activeSession = GetActiveSession(tenantName, username);
+                // Enforce single session per client type: ensure this token's jti matches active session
+                var activeSession = GetActiveSession(tenantName, username, clientType);
                 if (string.IsNullOrEmpty(activeSession) || !string.Equals(activeSession, jti, StringComparison.Ordinal))
                 {
                     return Unauthorized(new { message = "Session expired or logged in from another device.", success = false });
@@ -349,8 +410,8 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                     UserAgent = Request.Headers["User-Agent"].ToString(),
                     IpAddress = HttpContext.Connection.RemoteIpAddress?.ToString()
                 };
-                SetActiveSession(tenantName, username, newSessionId, TimeSpan.FromMinutes(20), newSessionInfo);
-                var newToken = GenerateJwtToken(user, tenantName, newSessionId);
+                SetActiveSession(tenantName, username, clientType, newSessionId, TimeSpan.FromMinutes(20), newSessionInfo);
+                var newToken = GenerateJwtToken(user, tenantName, newSessionId, clientType);
                 SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
                 SetHttpOnlyCookie("AuthToken", newToken, 20);
 
@@ -389,9 +450,12 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                     {
                         var username = principal.Claims.FirstOrDefault(c => c.Type == "UserName")?.Value;
                         var tenantName = principal.Claims.FirstOrDefault(c => c.Type == "TenantName")?.Value;
+                        var clientTypeFromToken = principal.Claims.FirstOrDefault(c => c.Type == "ClientType")?.Value;
+                        var clientType = string.IsNullOrWhiteSpace(clientTypeFromToken) ? ResolveClientType() : clientTypeFromToken.ToLowerInvariant();
                         if (!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(tenantName))
                         {
-                            ClearActiveSession(tenantName, username);
+                            // Clear only this client type session
+                            ClearActiveSession(tenantName, username, clientType);
                         }
                     }
                 }
@@ -435,6 +499,33 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                 new Claim("UserId", user.UserId.ToString()),
                 new Claim("TenantName", tenantName),
                 new Claim(JwtRegisteredClaimNames.Jti, sessionId)
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(20),
+                signingCredentials: credentials
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        // Client-type aware token generator
+        private string GenerateJwtToken(TblUserMaster user, string tenantName, string sessionId, string clientType)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim("UserName", user.UserName),
+                new Claim("UserId", user.UserId.ToString()),
+                new Claim("TenantName", tenantName),
+                new Claim(JwtRegisteredClaimNames.Jti, sessionId),
+                new Claim("ClientType", string.IsNullOrWhiteSpace(clientType) ? "web" : clientType.ToLowerInvariant())
             };
 
             var token = new JwtSecurityToken(
