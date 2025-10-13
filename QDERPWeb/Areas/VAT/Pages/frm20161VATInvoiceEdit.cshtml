@@ -1953,6 +1953,12 @@
 															.LabelMode(EditorLabelMode.Floating)
 															.ShowClearButton(true)
 															.Width("90%"))
+
+                               @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
+										                      .ID("VerifiedBy")
+																.Value(null) // Default value
+												.Disabled(true)
+								.Visible(false))
 							</td>
 
 								<td>
@@ -3883,15 +3889,14 @@
 <script>
 
 	let companyBranchList = [], currencyDecimals = 2,AccGroup=""; // fallback if API fails;
-					  // Detect if the page load was caused by a refresh
-    // const isPageReload = window.performance
-    //     .getEntriesByType("navigation")[0]
-    //     .type === "reload";
+	let ItemNo=null,amt=0, accheadid =null,paymentmeanstypecode=null,revaccheadid=null,InvoiceCurrencyExchangeId="1",TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
+	  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
+	  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null,IsClienCodeEdit="false",TaxSlabCode=null;
+	 let reasons = []; // start with empty array
+	let dropDownInstance;
+	let vatListInstance;
 
-    // if (isPageReload) {
-    //     console.log("🔁 Page refreshed — skipping invoice initialization.");
-    //     return; // ❌ Stop executing further code
-    // }
+	
 
 	$(async function () {
 		// Fetch company list from API
@@ -3945,14 +3950,6 @@
 				e.rowElement.css("background-color", "#ffcccc"); // light red
 			}
 		}
-
-				  let ItemNo=null,amt=0, accheadid =null,paymentmeanstypecode=null,revaccheadid=null,InvoiceCurrencyExchangeId="1",TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null,IsClienCodeEdit="false",TaxSlabCode=null;
-			   let reasons = []; // start with empty array
-			  let dropDownInstance;
-			  let vatListInstance;
-
 
 	//View e-Invoice
 
@@ -5361,7 +5358,7 @@ if (popover.option("visible")) {
 				const isCreateMode = urlParams.get("mode") === "create";
 				debugger;
 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-
+				CurrentInvNo=$("#InvoiceNo").dxTextBox("instance").option("value");
 				if (isCreateMode && invoiceNoFromUrl) {
 					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
 					if (invoiceBox) {
@@ -5376,7 +5373,7 @@ if (popover.option("visible")) {
 							type: "GET",
 							success: function (data) {
 								if (invoiceBox) {
-									
+									   
 									InvoiceOPenToSave(data)
 									invoiceBox.option("value", data || "");
 										getDocumentCount();
@@ -6324,10 +6321,6 @@ if (popover.option("visible")) {
 
 				// Account Ledger Dropdown Events
 				let dataGrid;
-
-</script>
-
-<script>
 			  
 					//Discount
 						function onEditorPreparing(e) {
@@ -7787,7 +7780,7 @@ if (popover.option("visible")) {
 			console.log("Opening Edit Supplier popup for ID:", accheadid);
 
 			const tenantName = window.location.pathname.split('/')[1];
-			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsClientAdd=true`;
+			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsClientAdd=false`;
 
 			const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
 			popup.show();
@@ -8500,6 +8493,31 @@ $("<style>")
 				dataGrid.option("editing.allowUpdating", false);
 				dataGrid.option("editing.allowDeleting", false);
 			}
+
+			 $(function () {
+		   $("#b2bdeletealllineitem").text(formatMessage("Delete All Line Items"));
+	   });
+	 $(function () {
+		   $("#b2bdeletelineitem").text(formatMessage("Delete Line Item"));
+	   });
+	 $(function () {
+		   $("#b2baddlineitem").text(formatMessage("Add Line Item"));
+	   });
+
+	   $(function () {
+    $("#b2bdeletealllineitem")
+        .text(formatMessage("Delete All Line Items"))
+        .prop("disabled", true); // disable button
+
+    $("#b2bdeletelineitem")
+        .text(formatMessage("Delete Line Item"))
+        .prop("disabled", true); // disable button
+
+    $("#b2baddlineitem")
+        .text(formatMessage("Add Line Item"))
+        .prop("disabled", true); // disable button
+});
+
 		}
 
 
@@ -9353,6 +9371,397 @@ $(document).ready(function () {
     });
 });
 
+// $(function () {
+//     initPage();
+// });
+
+// function initPage() {
+//     debugger;
+//     const navigationEntries = window.performance.getEntriesByType("navigation");
+//     const isPageReload =
+//         navigationEntries.length > 0 &&
+//         navigationEntries[0].type === "reload";
+
+//     if (isPageReload) {
+//         console.log("🔁 Page refreshed — restoring data from sessionStorage");
+//         restoreInvoiceData();
+//         return;
+//     }
+
+//     // ✅ First-time page load
+//     console.log("🚀 First load — fetching invoice data");
+//  initializeInvoicePage();
+// }
+
+// function initializeInvoicePage() {
+  
+// 				debugger;
+// 				const invoiceData = {
+//                 InvoiceNo: $('#InvoiceNo').dxTextBox("instance").option("value") || null,
+// 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value")|| null,
+// 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
+// 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
+// 				PaymentMeansTypeCode:$("#ddpaymentmeans").dxDropDownBox("instance").option("value") || null,
+// 				InvoiceTypeCode:388,
+// 			    InvoiceTypeCodeSubType:"01",
+// 				InvoiceTransactionCode: transcode,
+// 				ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
+// 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
+// 				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
+// 				 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
+// 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
+// 				 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
+// 				 BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
+// 				 BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+// 			    BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
+// 			    BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
+// 			    BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
+// 				BuyerBuildingNumber:$("#BuildingNumber").dxTextBox("instance").option("value")|| null,
+// 				BuyerCity:$("#ClientCity").dxTextBox("instance").option("value")|| null,
+// 				BuyerCityAr:$("#ClientCityArabic").dxTextBox("instance").option("value")|| null,
+// 				BuyerAdditionalNumber:$("#AdditionalNumber").dxTextBox("instance").option("value")|| null,
+// 			    BuyerProvince:$("#Province").dxTextBox("instance").option("value")|| null,
+// 		        BuyerProvinceAr:$("#ProvinceArabic").dxTextBox("instance").option("value")|| null,
+// 				BuyerPostalCode:$("#PostalCode").dxTextBox("instance").option("value")|| null,
+// 			    BuyerNeighborhood:$("#District").dxTextBox("instance").option("value")||null,
+// 			    BuyerNeighborhoodAr:$("#DistrictArabic").dxTextBox("instance").option("value")||null,
+// 				 BuyerCountryCode:$("#CountryCodeNumeric").dxDropDownBox("instance").option("value")||null,
+// 			    InvoiceCounterValue: $("#InvoiceCounterValue").dxTextBox("instance").option("value")||null,
+// 				InvoiceUuid: $("#UUID").dxTextBox("instance").option("value")|| null,
+
+// 			//OtherDetails
+// 			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+// 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+// 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+// 			RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
+// 			CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+// 			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+// 			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+
+// 			//Documents
+// 			SalesOrderNo: $("#OurSalesOrderNo").dxDropDownBox("instance").option("value")|| null,
+// 			Pono: $("#ClientPONo").dxTextBox("instance").option("value")|| null,
+// 			Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
+// 			ReferenceNo: $("#ProjectRef").dxTextBox("instance").option("value")|| null,
+// 			SesreferenceNo: $("#SESReference").dxTextBox("instance").option("value")|| null,
+// 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
+// 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
+// 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+// 		    InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
+// 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
+// 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+// 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+						
+// 			Currency:$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || 1,
+// 			//Deduction&CurrencyDetails
+// 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
+// 			TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
+// 			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+// 			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+// 			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+// 			AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
+// 			OtherDeductionText:$("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
+// 			OtherDeductionAmount:$("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
+// 			OtherDeductionTextAr:$("#LessAdvanceAr1").dxTextBox("instance").option("value")|| null,
+// 			RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+// 			RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+// 			RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
+
+// 			//Branch/DivisionDetails
+// 			  BranchCode: branchcode|| null,
+// 			  InvoiceSalesPerson: salespersoncode|| null,
+// 			  CompanyId:companyid|| null,
+// 			  SellerName:$("#OurCompanyRegisteredName").dxTextBox("instance").option("value")|| null,
+// 			  SellerGroupVatnumber:$("#OurGroupVATNo").dxTextBox("instance").option("value")|| null,
+// 			  SellerVATNumber:$("#OurVATNo").dxTextBox("instance").option("value")|| null,
+// 			  SellerNameAr:$("#OurCompanyNameinArabic").dxTextBox("instance").option("value")|| null,
+// 			  SellerAddressStreet:$("#OurStreetName").dxTextBox("instance").option("value")||null,
+// 			  SellerAddressStreetAr:$("#OurStreetNameArabic").dxTextBox("instance").option("value")||null,
+// 			  SellerAdditionalStreet:$("#OurAdditionalAddress").dxTextBox("instance").option("value")||null,
+// 			  SellerAdditionalStreetAr:$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value")||null,
+// 			  SellerBuildingNumber:$("#OurBuildingNumber").dxTextBox("instance").option("value")||null,
+// 			  SellerCity:$("#OurClientCity").dxTextBox("instance").option("value")||null,
+// 			   SellerCityAr:$("#OurClientCityArabic").dxTextBox("instance").option("value")||null,
+// 			   SellerAdditionalNumber:$("#OurAdditionalNumber").dxTextBox("instance").option("value")||null,
+// 			   SellerProvince:$("#OurProvince").dxTextBox("instance").option("value")||null,
+// 			   SellerProvinceAr:$("#OurProvinceArabic").dxTextBox("instance").option("value")||null,
+// 			   SellerPostalCode:$("#OurPostalCode").dxTextBox("instance").option("value")||null,
+// 			   SellerNeighborhood:$("#OurDistrict").dxTextBox("instance").option("value")||null,
+// 			   SellerNeighborhoodAr:$("#OurDistrictArabic").dxTextBox("instance").option("value")||null,
+// 			   InvoiceSubmittedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
+// 			   InvoiceSubmittedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
+// 			   SellerCountryCode: $("#OurCountryCode").dxSelectBox("instance").option("value") || null,
+// 			   SellerOtherIdtype: $("#ddlGoodsGroup8").dxDropDownBox("instance").option("value") || null,
+// 			   SellerOtherSellerId:$("#OtherID1").dxTextBox("instance").option("value")|| null,
+
+			   
+// 			//Signatories
+// 			InvoicePreparedBy: $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value") || null,
+// 		    InvoiceCheckedBy: $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value") || null,
+// 		    InvoiceApprovedBy: $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value") || null
+
+// };
+//  console.log("✅ Invoice details fetched:",invoiceData);
+
+//                 // Fill all DevExtreme controls
+//              //   renderInvoice(account);
+
+//                 // ✅ Save to sessionStorage for page refresh restore
+//                 sessionStorage.setItem("invoiceData", JSON.stringify(invoiceData));
+
+//         }
+   
+// function getDxValue(selector, type) {
+//     const instance = $(selector)[type]("instance");
+//     return instance ? instance.option("value") : null;
+// }
+
+// function restoreInvoiceData() {
+// 	debugger;
+//     const savedData = sessionStorage.getItem("invoiceData");
+//     if (savedData) {
+//         const account = JSON.parse(savedData);
+//         console.log("✅ Restoring invoice data:", account);
+
+//         // Restore all DevExtreme controls
+//         renderInvoice(account);
+
+//         // Restore grid
+//         if (account.gridData) {
+//              $.ajax({
+//                     type: "GET",
+//                     url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+//                     dataType: "json",
+//                     success: function (response) {
+//                         console.log("✅ Grid details fetched:", response);
+
+//                         let rowData = response.map((item, index) => ({
+//                             SNo: index + 1,
+//                             ...item
+//                         }));
+
+//                         let grid = $("#B2BdataGrid").dxDataGrid("instance");
+//                         grid.option("dataSource", rowData);
+//                         grid.refresh();
+
+//                         // Save grid too
+//                         let saved = JSON.parse(sessionStorage.getItem("invoiceData") || "{}");
+//                         saved.gridData = rowData;
+//                         sessionStorage.setItem("invoiceData", JSON.stringify(saved));
+//                     },
+//                     error: function (xhr, status, error) {
+//                         console.error("❌ Error fetching grid data:", error);
+//                     }
+//                 });
+//         }
+//     } else {
+//         console.log("⚠️ No saved data found — initializing fresh page");
+//         initializeInvoicePage();
+//     }
+// }
+
+// // ✅ Renders all controls with account data
+// function renderInvoice(account) {
+    
+// 	$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+//     ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
+//     ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
+//     $('#InvoiceDate').dxDateBox("instance")?.option("value", account.InvoiceDate);
+//     $('#InvoiceIssuedDateTime').dxDateBox("instance")?.option("value", account.InvoiceDateWtTime);
+//     $("#SupplyDate").dxDateBox("instance")?.option("value", account.InvoiceDeliveryDate);
+//     $("#InvoiceDueDate").dxDateBox("instance")?.option("value", account.InvoiceDueDate);
+//     $("#EffectiveDate").dxDateBox("instance")?.option("value", account.InvoiceEffectiveDate);
+//     $("#InvoiceTransactionsCode").dxDropDownBox("instance")?.option("value", account.InvoiceTransactionCode);
+
+//     $('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
+//     $('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
+//     $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
+//     dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
+//     $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
+//     $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
+//     $('#UUID').dxTextBox("instance")?.option("value", account.InvoiceUuid);
+
+//     $('#InvoiceStartDate').dxDateBox("instance")?.option("value", account.InvoiceStartDate);
+// 							         $('#InvoiceEndDate').dxDateBox("instance")?.option("value", account.InvoiceEndDate);
+// 							         dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
+// 							         dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+
+// 									 $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
+// 									 $('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
+// 									 ClientSalesOrderNodataGridSelectionChanged({ selectedRowKeys: [account.SalesOrderNo]});
+// 									 $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+
+// 									 $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
+// 									 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
+// 									 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
+// 									 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
+// 									 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
+// 									 $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
+// 									 $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
+// 									 // dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyCode]});
+// 									 $('#currencyexchangerate').dxNumberBox("instance")?.option("value", account.ExchangeRate);
+// 									 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
+// 									 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
+// 									 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
+// 									 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
+// 									 $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);										 											 $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);
+// 									 $('#ddlinvoicesubmittedon').dxDateBox("instance")?.option("value", account.InvoiceSubmittedOn);
+
+// 									 $('#OtherID1').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
+// 									 //dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
+// 									 //dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
+// 									 dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
+// 									 dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
+// 									 dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
+// 									 dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
+// 									 $('#LessAdvance').dxTextBox("instance")?.option("value", account.AdvanceText);
+// 									 $('#currencyexchangerate3').dxNumberBox("instance")?.option("value", account.AdvanceAmount);
+// 									 $('#LessAdvanceAr').dxTextBox("instance")?.option("value", account.AdvanceTextAr);
+// 									 $('#LessOtherDeductions').dxTextBox("instance")?.option("value", account.OtherDeductionText);
+// 									 $('#currencyexchangerate4').dxNumberBox("instance")?.option("value", account.OtherDeductionAmount);
+// 									 $('#LessAdvanceAr1').dxTextBox("instance")?.option("value", account.OtherDeductionTextAr);
+// 									 $('#LessRetention').dxTextBox("instance")?.option("value", account.RetentionText);
+// 									 $('#currencyexchangerate5').dxNumberBox("instance")?.option("value", account.RetentionAmount);
+// 									 $('#LessAdvanceAr2').dxTextBox("instance")?.option("value", account.RetentionTextAr);
+
+// 									 $("#StreetName").dxTextBox("instance")?.option("value",account.BuyerAddressStreet);
+// 									 $("#StreetNameArabic").dxTextBox("instance")?.option("value", account.BuyerAddressStreetAr);
+// 									 $("#AdditionalAddress").dxTextBox("instance")?.option("value", account.BuyerAdditionalStreet);
+// 									 $("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr);
+// 	                                 $("#BuildingNumber").dxTextBox("instance").option("value", account.BuyerBuildingNumber);
+// 	                                 $("#ClientCity").dxTextBox("instance").option("value", account.BuyerCity);
+// 								     $("#ClientCityArabic").dxTextBox("instance").option("value", account.BuyerCityAr);
+// 									 $("#AdditionalNumber").dxTextBox("instance").option("value",  account.BuyerAdditionalNumber);
+// 									 $("#Province").dxTextBox("instance").option("value", account.BuyerProvince);
+// 									 $("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr);
+// 									 $("#PostalCode").dxTextBox("instance").option("value", account.BuyerPostalCode);
+// 									 $("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood);
+// 									 $("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr);
+// 									 $("#CountryCodeNumeric").dxDropDownBox("instance").option("value",account.BuyerCountryCode);
+
+// 				                     $("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet);
+// 				                     $("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr);
+// 				                     $("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet);
+// 				                     $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr);
+// 				                     $("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber);
+// 				                     $("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity);
+// 					                 $("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr);
+// 					                 $("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber);
+// 					                 $("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince);
+// 					                 $("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr);
+// 					                 $("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode);
+// 					                 $("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
+// 						             $("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
+
+// 									 	$("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+// 							           $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+// 					                   $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+// 									$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+//                                        $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+// 									$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+// 					                   $("#ddpaymentmeans").dxDropDownBox("instance").option("value",account.PaymentMeansTypeCode);
+
+// 									// $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value",account.InvoiceCheckedBy); 
+// 									// $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value",account.InvoicePreparedBy); 
+// 									// $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value",account.InvoiceApprovedBy); 
+//                                        var ddl1 = $("#ddlGoodsGroup9").dxDropDownBox("instance");
+                                       
+//                                        console.log("ddl1 instance:", ddl1);
+                                       
+//                                        ddl1.getDataSource().load().done(function (data) {
+//                                            console.log("Loaded data from datasource:", data);
+//                                            console.log("account.InvoiceCheckedBy value:", account.InvoiceCheckedBy);
+                                       
+//                                            // Debug the types
+//                                            console.log("typeof account.InvoiceCheckedBy:", typeof account.InvoiceCheckedBy);
+//                                            if (data.length > 0) {
+//                                                console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
+//                                            }
+                                       
+//                                            // Try finding the match
+//                                            var match = data.find(x => x.SignatoryID == account.InvoiceCheckedBy); // use == for debug
+//                                            console.log("Match found:", match);
+                                       
+//                                            if (match) {
+//                                                ddl1.option("value", match.SignatoryID);
+//                                                console.log("Value set in dropdown:", match.SignatoryID);
+//                                            } else {
+//                                                console.warn("⚠️ No matching SignatoryID found for account.InvoiceCheckedBy");
+//                                            }
+//                                        });
+
+// 									 var ddl2 = $("#ddlGoodsGroup10").dxDropDownBox("instance");
+                                       
+//                                        console.log("ddl2 instance:", ddl2);
+                                       
+//                                        ddl2.getDataSource().load().done(function (data) {
+//                                            console.log("Loaded data from datasource:", data);
+//                                            console.log("account.InvoicePreparedBy value:", account.InvoicePreparedBy);
+                                       
+//                                            // Debug the types
+//                                            console.log("typeof account.InvoicePreparedBy:", typeof account.InvoicePreparedBy);
+//                                            if (data.length > 0) {
+//                                                console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
+//                                            }
+                                       
+//                                            // Try finding the match
+//                                            var match = data.find(x => x.SignatoryID == account.InvoicePreparedBy); // use == for debug
+//                                            console.log("Match found:", match);
+                                       
+//                                            if (match) {
+//                                                ddl2.option("value", match.SignatoryID);
+//                                                console.log("Value set in dropdown:", match.SignatoryID);
+//                                            } else {
+//                                                console.warn("⚠️ No matching SignatoryID found for account.InvoiceCheckedBy");
+//                                            }
+//                                        });
+
+// 									 var ddl4 = $("#ddlGoodsGroup11").dxDropDownBox("instance");
+                                       
+//                                        console.log("ddl4 instance:", ddl4);
+                                       
+//                                        ddl4.getDataSource().load().done(function (data) {
+//                                            console.log("Loaded data from datasource:", data);
+//                                            console.log("account.InvoiceApprovedBy value:", account.InvoiceApprovedBy);
+                                       
+//                                            // Debug the types
+//                                            console.log("typeof account.InvoiceApprovedBy:", typeof account.InvoiceApprovedBy);
+//                                            if (data.length > 0) {
+//                                                console.log("Sample SignatoryID type:", typeof data[0].SignatoryID);
+//                                            }
+                                       
+//                                            // Try finding the match
+//                                            var match = data.find(x => x.SignatoryID == account.InvoiceApprovedBy); // use == for debug
+//                                            console.log("Match found:", match);
+                                       
+//                                            if (match) {
+//                                                ddl4.option("value", match.SignatoryID);
+//                                                console.log("Value set in dropdown:", match.SignatoryID);
+//                                            } else {
+//                                                console.warn("⚠️ No matching SignatoryID found for account.InvoiceApprovedBy");
+//                                            }
+//                                        });
+
+// 									 var ddl3 = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+//                                         ddl3.getDataSource().load().done(function(data) {
+//                                             // Check if SignatoryID exists in the loaded list
+//                                             var match = data.find(x => x.CurrencyExchangeId === account.Currency);
+//                                             if (match) {
+//                                                 ddl3.option("value", match.CurrencyExchangeId);
+//                                             }
+//                                         });
+
+//     // Example grid-related checkboxes and buttons
+//     if (account.IsVerified === true) btnVerifydisableEditing();
+//     if (account.IsApproved === true) disableEditing();
+//     if (account.IsPosted === true) btnPostToLedgerdisableEditing();
+
+//     let button = $("#btnSave").dxButton("instance");
+//     button.option("text", formatMessage("Update"));
+//     getDocumentCount();
+// }
+	
 
 
 

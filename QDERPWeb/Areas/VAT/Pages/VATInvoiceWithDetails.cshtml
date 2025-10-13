@@ -764,12 +764,17 @@
 		openQuarterMenu(e.element);
 	}
 
-			function openQuarterMenu(targetElement) {
-		if ($("#quarterMenu").data("dxContextMenu")) {
-			$("#quarterMenu").dxContextMenu("instance").dispose();
+				function openQuarterMenu(targetElement) {
+		const $menu = $("#quarterMenu");
+
+		// Dispose old instance if it exists
+		const existingMenu = $menu.data("dxContextMenu");
+		if (existingMenu) {
+			existingMenu.dispose();
 		}
 
-		$("#quarterMenu").dxContextMenu({
+		// Create new ContextMenu instance
+		const contextMenuInstance = $menu.dxContextMenu({
 			target: targetElement,
 			showEvent: "",
 			width: 230,
@@ -785,14 +790,14 @@
 				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
 				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
 			],
-			onItemClick: function(e) {
+			onItemClick: function (e) {
 				const quarter = e.itemData.value;
 				if (quarter) {
 					ddBtnShowRecords_click(quarter, 1);
 					closeMainDropdown();
 				}
 			},
-			itemTemplate: function(itemData) {
+			itemTemplate: function (itemData) {
 				return $("<div>").addClass("custom-dropdown-item")
 					.append(
 						$("<div>").addClass("side-bar").css({
@@ -809,8 +814,16 @@
 						)
 					);
 			}
-		}).dxContextMenu("instance").show();
+		}).dxContextMenu("instance"); // ✅ Capture the instance here
+
+		// ✅ Ensure the instance exists before calling show()
+		if (contextMenuInstance) {
+			contextMenuInstance.show();
+		} else {
+			console.error("ContextMenu instance not created properly for #quarterMenu");
+		}
 	}
+
 
 		// Fetch from API on page load
 	$.get("/api/VATModule/GetCurrencyDecimals")
