@@ -264,7 +264,7 @@
                 .Text(new JS("formatMessage('Terms')"))
                 .Icon("file")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
+                .OnClick("TermsQuatation")
                 )
     </div>
     <div class="btn-container">
@@ -525,6 +525,10 @@
         }
     }
 
-
+    function TermsQuatation(){
+        const url = `/${tenantName}/RichTexteditor2`;
+        const title = "Edit Terms & Conditions";
+        openModal(url, title,"","75%");
+    }
 
 </script>
