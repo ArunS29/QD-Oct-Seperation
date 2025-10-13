@@ -438,7 +438,7 @@
             console.log(`DEBUG downloadSelectedReport: Changed report name to: ${reportName}`);
         }
         
-        const downloadUrl = `/api/Report/Download?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        const downloadUrl = `/api/Report/DownloadReceivable?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
         window.location.href = downloadUrl;
     }
 
