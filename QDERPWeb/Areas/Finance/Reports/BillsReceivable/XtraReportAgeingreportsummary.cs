@@ -113,8 +113,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
 
             var customQuery = new CustomSqlQuery
             {
-                Name = "qry205_027AgeingBillsReceivableWtColumns",
-                Sql = "SELECT * FROM qry205_027AgeingBillsReceivableWtColumns"
+                Name = "qry20105BillsReceivableAgeingView",
+                Sql = "SELECT * FROM qry20105BillsReceivableAgeingView"
             };
 
             sqlDataSource1.Queries.Add(customQuery);
