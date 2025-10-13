@@ -85,7 +85,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = company_address;
 
-            if (logoImage != null && FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (logoImage != null && FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
             else
             {

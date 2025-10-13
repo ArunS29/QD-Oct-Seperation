@@ -537,7 +537,7 @@
             // 
             // xrPictureBox2
             // 
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(623.0526F, 26.33324F);
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(620.2748F, 25.33321F);
             this.xrPictureBox2.Name = "xrPictureBox2";
             this.xrPictureBox2.Padding = new DevExpress.XtraPrinting.PaddingInfo(1, 1, 1, 1, 100F);
             this.xrPictureBox2.SizeF = new System.Drawing.SizeF(15F, 15F);
