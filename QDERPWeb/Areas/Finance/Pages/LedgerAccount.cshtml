@@ -1045,7 +1045,7 @@
                              .Mask("000000000000000")
                              .MaskChar(" ")
                              .OnValueChanged("syncVATNumbers")
-                             .OnValueChanged("validateClientVATNo")
+                            
                             // .OnValueChanged("validateClientVATNo")
                               )
 
@@ -1065,8 +1065,7 @@
                              .MaxLength(15)
                              .Mask("000000000000000")
                              .MaskChar(" ")
-                             .OnValueChanged("syncVATNumbers")
-                             .OnValueChanged("validateClientVATNo")
+                             
                             // .OnValueChanged("validateClientVATNo")
                               )
                                   
@@ -1492,7 +1491,7 @@
                                     .ValidationRules(rules => rules
                                     .AddRequired()  // This adds the required validation rule
                                     )
-                                    .OnValueChanged("syncSupVATNumbers")
+                                    .OnValueChanged("syncSupplierNumbers")
                                     .Label(new JS("formatMessage('Supplier VAT Number: *')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
@@ -1619,7 +1618,7 @@
                                     .ID("txtSupAdditionalAddress")
                                     .Width("100%")
                                     .InputAttr("aria-label", "txtSupAdditionalAddress")
-                                    .Label(new JS("formatMessage('Address - Additional Address: *')"))
+                                    .Label(new JS("formatMessage('Supplier Address - Additional Address:')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     )
                                     
@@ -2019,7 +2018,7 @@
                                     .InputAttr("maxlength", "15")
                                     .Min(0) // No negative numbers
                                     .Max(999999999999999) // Max limit of 15 digits
-                                   // .ShowSpinButtons(false) // Hide increment/decrement buttons
+                                   .OnValueChanged("syncVATNumbers")
                                     .Format("###########") // Ensures only integers (15 digits max)
                                     )
 
@@ -2037,6 +2036,7 @@
                                     .Max(999999999999999) // Max limit of 15 digits
                                     .InputAttr("maxlength", "15") // Set the max length attribute
                                     .Format("###########") // Ensures only integers (15 digits max)
+                                    
                                    // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
                                     )
 
@@ -2209,7 +2209,7 @@
     .InputAttr("aria-label", "txtObsSupRegNo")
     .InputAttr("maxlength", "15") // Set max length to 15
     .Format("###############") // Format for numeric input (max 15 digits)
-   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+   .OnValueChanged("syncSupplierNumbers")
 )
 
                             </td>
@@ -2235,7 +2235,7 @@
     .InputAttr("aria-label", "txtObsSupRegNoAr")
     .InputAttr("maxlength", "15") // Set max length to 15
     .Format("###############") // Format for numeric input (max 15 digits)
-   // .ShowSpinButtons(false) // Optionally hide the increment/decrement buttons
+    .OnValueChanged("syncSupplierNumbers")
 )
 
                                 </div>
@@ -2617,12 +2617,39 @@
 <script>
 
     function syncVATNumbers(e) {
-    // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-    $("#txtBillingVATRegNo").dxTextBox("instance").option("value", e.value);
+    const clientVAT = $("#txtClientVATNo").dxTextBox("instance");
+    const billingVAT = $("#txtBillingVATRegNo").dxNumberBox("instance");
+    const billingVATAr = $("#txtBillingVATRegNoArabic").dxNumberBox("instance");
+    // Determine which control triggered the event
+    if (e.element.attr("id") === "txtClientVATNo") {
+        // Sync value to NumberBox (convert to numeric if needed)
+        let val = e.value ? e.value.replace(/\D/g, "") : ""; // keep only digits
+        billingVAT.option("value", val ? parseInt(val) : null);
+        billingVATAr.option("value", val ? parseInt(val) : null);
+    }
+    else if (e.element.attr("id") === "txtBillingVATRegNo") {
+        // Sync value to TextBox (pad left if needed)
+        let val = e.value ? e.value.toString() : "";
+        clientVAT.option("value", val);
+         billingVATAr.option("value", val ? parseInt(val) : null);
+    }
 }
-function syncSupVATNumbers(e) {
-    // Set the value of txtBillingVATRegNo to the value of txtClientVATNo
-    $("#txtObsSupRegNo").dxTextBox("instance").option("value", e.value);
+
+function syncSupplierNumbers(e) {
+    const newValue = e.value;
+
+    const boxes = [
+        "#txtObsSupRegNoAr",
+        "#txtObsSupRegNo",
+        "#txtSupVATNo"
+    ];
+
+    boxes.forEach(id => {
+        const instance = $(id).dxNumberBox("instance");
+        if (instance && instance.option("value") !== newValue) {
+            instance.option("value", newValue);
+        }
+    });
 }
    
     $(function () {
@@ -3867,7 +3894,7 @@ function syncSupVATNumbers(e) {
                         txtBillingContactPerson.option("value", account.BillingContactPerson);
 
                     }
-                    billingdataGridSelectionChanged({ selectedRowKeys: [account.BillingContactPersonTitle] });
+                    billingdataGridSelectionChanged({ selectedRowKeys: [account.BillingBankAccount] });
 
                     var txtBillingVendorNo = $('#txtBillingVendorNo').dxTextBox("instance");
                     if (txtBillingVendorNo) {
@@ -5275,7 +5302,9 @@ if (dropDownInstance.option("opened")) {
         {
               cntBillingName = $('#txtClientBillingName').dxTextBox('option', 'value');
 
+
         }
+         var cntBillingName = $('#txtClientBilling').dxTextBox('option', 'value');
         var cntBillingNamear = $('#txtClientBillingAr').dxTextBox('option', 'value');
         var cntVATNo = $('#txtClientVATNo').dxTextBox('option', 'value');
         var cntGroupVATNo = $('#txtGrouptVATNo').dxTextBox('option', 'value');
@@ -5407,7 +5436,7 @@ if (dropDownInstance.option("opened")) {
                 BillingName: cntBillingName,
                 BillingNameAr: cntBillingNamear,
 
-                VATRegistrationNo: String(cntVATNo),
+                VatregistrationNo:cntVATNo,
                 ClientGroupVATNumber:String(cntGroupVATNo),
                 ClientOtherIDType: cntOtherType,
                 ClientOtherID: cntOtherID,
@@ -5449,7 +5478,7 @@ if (dropDownInstance.option("opened")) {
               //  BillingName: bClientBillingName,
                 BillingAddress: bBillingAddress,
                 BillingAddressAr: bBillingAddressAr,
-                VATRegistrationNo: String(bVATNO),
+                // VATRegistrationNo: String(bVATNO),
                 ClientTIN:String(bTIN),
                 BillingContactPerson: bContactPerson,
                 BillingPhoneNo: bContactNo,
@@ -5458,7 +5487,7 @@ if (dropDownInstance.option("opened")) {
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo:String(obVATNo)
+                // SupplierVATNo:String(obVATNo)
             };
 
             console.log(data);
@@ -6507,7 +6536,7 @@ if (dropDownInstance.option("opened")) {
 
       function validateClientVATNo(e) {
     if (e.value.length !== 15) {
-        DevExpress.ui.notify("Client VAT No must be exactly 15 digits", "error", 3000);
+        // DevExpress.ui.notify("Client VAT No must be exactly 15 digits", "error", 3000);
     }
 }
 
@@ -6516,6 +6545,47 @@ function validateGroupVATNo(e) {
         DevExpress.ui.notify("Group VAT No must be exactly 15 digits", "error", 3000);
     }
 }
+
+    $(function () {
+        const txtClientBilling = $("#txtClientBilling").dxTextBox("instance");
+        const txtClientBillingName = $("#txtClientBillingName").dxTextBox("instance");
+
+        // When txtClientBilling changes, update txtClientBillingName
+        txtClientBilling.on("valueChanged", function (e) {
+            const newValue = e.value;
+            if (txtClientBillingName.option("value") !== newValue) {
+                txtClientBillingName.option("value", newValue);
+            }
+        });
+
+        // When txtClientBillingName changes, update txtClientBilling
+        txtClientBillingName.on("valueChanged", function (e) {
+            const newValue = e.value;
+            if (txtClientBilling.option("value") !== newValue) {
+                txtClientBilling.option("value", newValue);
+            }
+        });
+    });
+    $(function () {
+        const txtClientBillingAr = $("#txtClientBillingAr").dxTextBox("instance");
+        const txtClientBillingNameAr = $("#txtClientBillingNameAr").dxTextBox("instance");
+
+        // When txtClientBillingAr changes, update txtClientBillingNameAr
+        txtClientBillingAr.on("valueChanged", function (e) {
+            const newValue = e.value;
+            if (txtClientBillingNameAr.option("value") !== newValue) {
+                txtClientBillingNameAr.option("value", newValue);
+            }
+        });
+
+        // When txtClientBillingNameAr changes, update txtClientBillingAr
+        txtClientBillingNameAr.on("valueChanged", function (e) {
+            const newValue = e.value;
+            if (txtClientBillingAr.option("value") !== newValue) {
+                txtClientBillingAr.option("value", newValue);
+            }
+        });
+    });
 
 </script>
 
