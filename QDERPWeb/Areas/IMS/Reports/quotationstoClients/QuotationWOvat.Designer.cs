@@ -780,8 +780,8 @@
             this.sqlDataSource3 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.calcPropertyDescription = new DevExpress.XtraReports.UI.CalculatedField();
             this.PageFooter = new DevExpress.XtraReports.UI.PageFooterBand();
-            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel52 = new DevExpress.XtraReports.UI.XRLabel();
+            this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
@@ -2160,7 +2160,7 @@
             // 
             // lblPreparedBy
             // 
-            this.lblPreparedBy.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.lblPreparedBy.Borders = DevExpress.XtraPrinting.BorderSide.Bottom;
             this.lblPreparedBy.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Visible", "Iif(IsNullOrEmpty([SignatoryName]), False, True)\n\n")});
             this.lblPreparedBy.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
@@ -3450,16 +3450,6 @@
             this.PageFooter.HeightF = 22.99998F;
             this.PageFooter.Name = "PageFooter";
             // 
-            // pageInfo2
-            // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(361.771F, 0F);
-            this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(81.91489F, 22.99998F);
-            this.pageInfo2.StyleName = "PageInfo";
-            this.pageInfo2.StylePriority.UseTextAlignment = false;
-            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
-            // 
             // xrLabel52
             // 
             this.xrLabel52.BorderColor = System.Drawing.Color.Transparent;
@@ -3476,6 +3466,16 @@
             this.xrLabel52.StylePriority.UseForeColor = false;
             this.xrLabel52.StylePriority.UseTextAlignment = false;
             this.xrLabel52.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            // 
+            // pageInfo2
+            // 
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(361.771F, 0F);
+            this.pageInfo2.Name = "pageInfo2";
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(81.91489F, 22.99998F);
+            this.pageInfo2.StyleName = "PageInfo";
+            this.pageInfo2.StylePriority.UseTextAlignment = false;
+            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.pageInfo2.TextFormatString = "Page {0} of {1}";
             // 
             // QuotationWOvat
             // 

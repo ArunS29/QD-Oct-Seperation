@@ -3162,38 +3162,79 @@
 
 
 
-	$(document).ready(function () {
-		const urlParams = new URLSearchParams(window.location.search);
-		const receiptNo = urlParams.get("receiptNo");
-		const poNo = urlParams.get("poNo");
-		const purchaseVoucherNo = urlParams.get("invoiceNo");
-		const mode = urlParams.get("mode");
+	// $(document).ready(function () {
+	// 	const urlParams = new URLSearchParams(window.location.search);
+	// 	const receiptNo = urlParams.get("receiptNo");
+	// 	const poNo = urlParams.get("poNo");
+	// 	const purchaseVoucherNo = urlParams.get("invoiceNo");
+	// 	const mode = urlParams.get("mode");
 
-		// Only set InvoiceNo from integration if all params are present
-		if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
-			$("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
-			// ... (your integration logic for loading data)
-		} else {
-			if (IsCurrent !== "true") {
-			// Default: get new voucher number from API
-			$.ajax({
-				url: "/api/VATModule/GetNewPurchaseVoucherNo",
-				type: "GET",
-				success: function (data) {
-					const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						InvoiceOPenToSave(data);
-					if (invoiceBox) {
-						invoiceBox.option("value", data || "");
-						getDocumentCount();
-					}
-				},
-				error: function (xhr, status, error) {
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-				}
-			});
-			}
+	// 	// Only set InvoiceNo from integration if all params are present
+	// 	if (receiptNo && poNo && purchaseVoucherNo && mode === "create") {
+	// 		$("#InvoiceNo").dxTextBox("instance").option("value", purchaseVoucherNo);
+	// 		// ... (your integration logic for loading data)
+	// 	} else {
+	// 		if (IsCurrent !== "true") {
+	// 		// Default: get new voucher number from API
+	// 		$.ajax({
+	// 			url: "/api/VATModule/GetNewPurchaseVoucherNo",
+	// 			type: "GET",
+	// 			success: function (data) {
+	// 				const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+	// 					InvoiceOPenToSave(data);
+	// 				if (invoiceBox) {
+	// 					invoiceBox.option("value", data || "");
+	// 					getDocumentCount();
+	// 				}
+	// 			},
+	// 			error: function (xhr, status, error) {
+	// 				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 			}
+	// 		});
+	// 		}
+	// 	}
+	// });
+
+	$(document).ready(function () {
+ debugger;
+    const voucherNoField = $("#InvoiceNo").dxTextBox("instance");
+    const voucherNoFromUrl = getUrlParameter('InvoiceNo');
+
+    if (voucherNoFromUrl) {
+        // ✅ Use voucher number from URL
+        voucherNoField.option("value", voucherNoFromUrl);
+        getDocumentCount();
+    } else {
+       	if (IsCurrent !== "true") {
+        $.ajax({
+            url: '@Url.Action("GetNewPurchaseVoucherNo", "VATModule")',
+            type: 'GET',
+            success: function (data) {
+                voucherNoField.option("value", data);
+                //Savedetailsonload();
+               InvoiceOPenToSave(data);
+                const newUrl = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(data)}`;
+                window.history.replaceState({}, "", newUrl);
+
+                
+                getDocumentCount();
+            },
+            error: function () {
+                alert("Error generating voucher number.");
+            }
+        });
 		}
-	});
+    }
+
+    // Helper to extract URL parameter
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(window.location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+});
+
 
 		function InvoiceOPenToSave(data) {
 			var InvoiceMaster = {
