@@ -246,6 +246,7 @@ public partial class Tbl901CompanyDetail
     public string CurrencyImage { get; set; }
     public bool AllowDataModeSelection { get; set; }
     public string CurrencySymbol { get; set; }
+    public bool AzureStatus { get; set; }
 
 
 }
