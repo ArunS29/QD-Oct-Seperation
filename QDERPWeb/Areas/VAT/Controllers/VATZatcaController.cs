@@ -1,4 +1,5 @@
-﻿using Chilkat;
+﻿using Azure.Storage.Blobs;
+using Chilkat;
 using DevExpress.Entity.Model;
 using DevExpress.Pdf.Native.BouncyCastle.Utilities;
 using DevExpress.XtraEditors;
@@ -13,10 +14,13 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Globalization;
+//using Task = Chilkat.Task;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection.Emit;
@@ -29,7 +33,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-//using Task = Chilkat.Task;
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
 {
@@ -667,7 +670,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             for (int i = 0; i < aInvoiceData.VatBreakdowns.Count; i++)
             {
                 var vatBreakdown = aInvoiceData.VatBreakdowns[i];
-
+                //Testing Static Data
                 // Example testing values (replace with your real values)
                 vatBreakdown.TotalExclusiveAmount = 1.00m; // taxable base
                 vatBreakdown.TaxRateIn100 = 15.00m;        // 15% VAT
@@ -1129,7 +1132,23 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             // Now write the file safely
             string filePath = Path.Combine(folderPath, "signedXmlResult1.xml");
-            success = sbXml.WriteFile(filePath, "utf-8", false);
+            //  success = sbXml.WriteFile(filePath, "utf-8", false);
+            string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+            byte defaultCompanyByte = 0; // or any default value you want
+
+            if (!string.IsNullOrEmpty(defaultCompanyString))
+            {
+                // Safest way (avoids exceptions):
+                byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+            }
+
+            // Now use defaultCompanyByte as needed
+
+
+            byte companyId = defaultCompanyByte;
+
+            SaveSignedXmlBasedOnAzureStatus(sbXml, filePath, companyId);
             _signedXmlGlobal = sbXml.GetAsString();
             // ----------------------------------------
             // Verify the signatures we just produced...
@@ -1182,6 +1201,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 Debug.WriteLine("Failed to open XML file: " + ex.Message);
             }
+            NavigateSignedXml(appPath, companyId);
 
             //this.WebBrowser1.Navigate(appPath + @"\SignedXML\signedXmlResult1.xml");
         }
@@ -1852,172 +1872,275 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         private string XMLFileNameAsPerZatca;
         [HttpPost]
-        public IActionResult SignXML(InvoiceData aInvoiceData)
+        public async Task<IActionResult> SignXML(InvoiceData aInvoiceData,string invoiceNo)
         {
             try
             {
-                bool success;
-
-                string sellerName = aInvoiceData.Master.SellerName;
-                string sellerNameInArabic = aInvoiceData.Master.SellerNameAr;
-                string sellerNameInBoth = sellerName;
-
-                string vatNumber = aInvoiceData.Master.SellerVatnumber;
-                string timeStamp = aInvoiceData.Master.InvoiceDateWtTime.ToString();
-
-                string invoiceTotal = "0.00";
-                string vatTotal = "0.00";
-
-                if (aInvoiceData.Totals != null && aInvoiceData.Totals.Count > 0)
-                {
-                    for (int i = 0; i < aInvoiceData.Totals.Count; i++)
-                    {
-                        invoiceTotal = aInvoiceData.Totals[i].TaxInclusiveAmount?.ToString("0.00") ?? "0.00";
-                        vatTotal = aInvoiceData.Totals[i].TaxAmountByTaxRate?.ToString("0.00") ?? "0.00";
-                    }
-                }
-
-                // TLV encoding setup
                 Chilkat.BinData bdTlv = new Chilkat.BinData();
-                string charset = "utf-8";
-                int tag = 1;
 
-                bdTlv.AppendByte(tag++);
-                bdTlv.AppendCountedString(1, false, sellerNameInBoth, charset);
-                bdTlv.AppendByte(tag++);
-                bdTlv.AppendCountedString(1, false, vatNumber, charset);
-                bdTlv.AppendByte(tag++);
-                bdTlv.AppendCountedString(1, false, timeStamp, charset);
-                bdTlv.AppendByte(tag++);
-                bdTlv.AppendCountedString(1, false, invoiceTotal, charset);
-                bdTlv.AppendByte(tag++);
-                bdTlv.AppendCountedString(1, false, vatTotal, charset);
-
-                // Load signed XML
-                string signedXmlFilePath = appPath + "\\SignedXML\\signedXmlResult1.xml";
-                Chilkat.Xml xmlSigned = new Chilkat.Xml();
-                success = xmlSigned.LoadXmlFile(signedXmlFilePath);
-                if (!success)
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new
+                    bool success;
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        success = false,
-                        message = "Failed to open the previously signed XML."
-                    });
-                }
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
 
-                // Extract DigestValue
-                Chilkat.StringBuilder sbDigestValue = new Chilkat.StringBuilder();
-                success = xmlSigned.GetChildContentSb("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:SignedInfo|ds:Reference[0]|ds:DigestValue", sbDigestValue);
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Failed to get DigestValue from signed XML." });
-                }
+                    // Now use defaultCompanyByte as needed
 
-                tag = 6;
-                bdTlv.AppendByte(tag);
-                bdTlv.AppendByte(sbDigestValue.Length);
-                bdTlv.AppendSb(sbDigestValue, "utf-8");
 
-                // Extract SignatureValue
-                Chilkat.StringBuilder sbSignatureValue = new Chilkat.StringBuilder();
-                success = xmlSigned.GetChildContentSb("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:SignatureValue", sbSignatureValue);
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Failed to get SignatureValue from signed XML." });
-                }
+                    byte companyId = defaultCompanyByte;
+                    string sellerName = aInvoiceData.Master.SellerName;
+                    string sellerNameInArabic = aInvoiceData.Master.SellerNameAr;
+                    string sellerNameInBoth = sellerName;
 
-                tag = 7;
-                bdTlv.AppendByte(tag);
-                bdTlv.AppendByte(sbSignatureValue.Length);
-                bdTlv.AppendSb(sbSignatureValue, "utf-8");
+                    string vatNumber = aInvoiceData.Master.SellerVatnumber;
+                    string timeStamp = aInvoiceData.Master.InvoiceDateWtTime.ToString();
 
-                // Extract certificate
-                string x509Certificate = xmlSigned.GetChildContent("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:KeyInfo|ds:X509Data|ds:X509Certificate");
-                if (!xmlSigned.LastMethodSuccess)
-                {
-                    return BadRequest(new { success = false, message = "Failed to get X509Certificate from signed XML." });
-                }
+                    string invoiceTotal = "0.00";
+                    string vatTotal = "0.00";
 
-                Chilkat.Cert cert = new Chilkat.Cert();
-                success = cert.SetFromEncoded(x509Certificate);
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Failed to load signing certificate from base64." });
-                }
-
-                Chilkat.BinData bdPubKey = new Chilkat.BinData();
-                success = cert.GetPubKeyDer(true, bdPubKey);
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Failed to get certificate public key." });
-                }
-
-                tag = 8;
-                bdTlv.AppendByte(tag);
-                bdTlv.AppendByte(bdPubKey.NumBytes);
-                bdTlv.AppendBd(bdPubKey);
-
-                Chilkat.BinData bdCertSig = new Chilkat.BinData();
-                success = cert.GetSignature(bdCertSig);
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Failed to get certificate signature." });
-                }
-
-                tag = 9;
-                bdTlv.AppendByte(tag);
-                bdTlv.AppendByte(bdCertSig.NumBytes);
-                bdTlv.AppendBd(bdCertSig);
-
-                // Insert QR into XML
-                Chilkat.Xml xmlQR = new Chilkat.Xml();
-                xmlQR.Tag = "cac:AdditionalDocumentReference";
-                xmlQR.UpdateChildContent("cbc:ID", "QR");
-                xmlQR.UpdateAttrAt("cac:Attachment|cbc:EmbeddedDocumentBinaryObject", true, "mimeCode", "text/plain");
-                xmlQR.UpdateChildContent("cac:Attachment|cbc:EmbeddedDocumentBinaryObject", bdTlv.GetEncoded("base64"));
-
-                Chilkat.StringBuilder sbSignedXml = new Chilkat.StringBuilder();
-                success = sbSignedXml.LoadFile(signedXmlFilePath, "utf-8");
-                if (!success)
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = "Failed to load signed XML file." });
-                }
-
-                Chilkat.StringBuilder sbReplaceStr = new Chilkat.StringBuilder();
-                xmlQR.EmitXmlDecl = false;
-                xmlQR.EmitCompact = true;
-                sbReplaceStr.Append(xmlQR.GetXml());
-                sbReplaceStr.Append("<cac:Signature>");
-                success = sbSignedXml.ReplaceFirst("<cac:Signature>", sbReplaceStr.GetAsString());
-                if (!success)
-                {
-                    return BadRequest(new { success = false, message = "Did not find <cac:Signature> in signed XML." });
-                }
-
-                success = sbSignedXml.WriteFile(appPath + "\\SignedXML\\signedXmlResult1V.xml", "utf-8", false);
-
-                // Verify signature
-                Chilkat.XmlDSig verifier = new Chilkat.XmlDSig();
-                success = verifier.LoadSignatureSb(sbSignedXml);
-                if (!success || verifier.NumSignatures == 0)
-                {
-                    return BadRequest(new { success = false, message = "Failed to load/verify signatures." });
-                }
-
-                verifier.UncommonOptions = "ZATCA";
-
-                for (int verifyIdx = 0; verifyIdx < verifier.NumSignatures; verifyIdx++)
-                {
-                    verifier.Selector = verifyIdx;
-                    bool verified = verifier.VerifySignature(true);
-                    if (!verified)
+                    if (aInvoiceData.Totals != null && aInvoiceData.Totals.Count > 0)
                     {
-                        return BadRequest(new { success = false, message = "XML signature verification failed." });
+                        for (int i = 0; i < aInvoiceData.Totals.Count; i++)
+                        {
+                            invoiceTotal = aInvoiceData.Totals[i].TaxInclusiveAmount?.ToString("0.00") ?? "0.00";
+                            vatTotal = aInvoiceData.Totals[i].TaxAmountByTaxRate?.ToString("0.00") ?? "0.00";
+                        }
+                    }
+
+                    // TLV encoding setup
+                   
+                    string charset = "utf-8";
+                    int tag = 1;
+
+                    bdTlv.AppendByte(tag++);
+                    bdTlv.AppendCountedString(1, false, sellerNameInBoth, charset);
+                    bdTlv.AppendByte(tag++);
+                    bdTlv.AppendCountedString(1, false, vatNumber, charset);
+                    bdTlv.AppendByte(tag++);
+                    bdTlv.AppendCountedString(1, false, timeStamp, charset);
+                    bdTlv.AppendByte(tag++);
+                    bdTlv.AppendCountedString(1, false, invoiceTotal, charset);
+                    bdTlv.AppendByte(tag++);
+                    bdTlv.AppendCountedString(1, false, vatTotal, charset);
+
+                    // Load signed XML
+                    string signedXmlFilePath = appPath + "\\SignedXML\\signedXmlResult1.xml";
+                    Chilkat.Xml xmlSigned = new Chilkat.Xml();
+                    success = xmlSigned.LoadXmlFile(signedXmlFilePath);
+                    if (!success)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new
+                        {
+                            success = false,
+                            message = "Failed to open the previously signed XML."
+                        });
+                    }
+
+                    // Extract DigestValue
+                    Chilkat.StringBuilder sbDigestValue = new Chilkat.StringBuilder();
+                    success = xmlSigned.GetChildContentSb("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:SignedInfo|ds:Reference[0]|ds:DigestValue", sbDigestValue);
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to get DigestValue from signed XML." });
+                    }
+
+                    tag = 6;
+                    bdTlv.AppendByte(tag);
+                    bdTlv.AppendByte(sbDigestValue.Length);
+                    bdTlv.AppendSb(sbDigestValue, "utf-8");
+
+                    int CompanyId = 1;
+                    bool azureEnabled = GetAzureStatus(CompanyId);
+
+                    string signedXmlPath = Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml");
+                    string signedXmlContent;
+
+                    if (azureEnabled)
+                    {
+                        signedXmlContent = await DownloadFromAzureAsync("signedXmlResult1.xml", CompanyId);
+                    }
+                    else
+                    {
+                        signedXmlContent = await System.IO.File.ReadAllTextAsync(signedXmlPath);
+                    }
+
+
+                    success = xmlSigned.LoadXml(signedXmlContent);
+
+                    if (!success)
+                    {
+                        //MessageBox.Show("XML Previous Signed Failed to Open..", "Error XML UBL 2.1", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        //return;
+                    }
+
+
+                    // Extract SignatureValue
+                    Chilkat.StringBuilder sbSignatureValue = new Chilkat.StringBuilder();
+                    success = xmlSigned.GetChildContentSb("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:SignatureValue", sbSignatureValue);
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to get SignatureValue from signed XML." });
+                    }
+
+                    tag = 7;
+                    bdTlv.AppendByte(tag);
+                    bdTlv.AppendByte(sbSignatureValue.Length);
+                    bdTlv.AppendSb(sbSignatureValue, "utf-8");
+
+                    // Extract certificate
+                    string x509Certificate = xmlSigned.GetChildContent("ext:UBLExtensions|ext:UBLExtension|ext:ExtensionContent|sig:UBLDocumentSignatures|sac:SignatureInformation|ds:Signature|ds:KeyInfo|ds:X509Data|ds:X509Certificate");
+                    if (!xmlSigned.LastMethodSuccess)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to get X509Certificate from signed XML." });
+                    }
+
+                    Chilkat.Cert cert = new Chilkat.Cert();
+                    success = cert.SetFromEncoded(x509Certificate);
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to load signing certificate from base64." });
+                    }
+
+                    Chilkat.BinData bdPubKey = new Chilkat.BinData();
+                    success = cert.GetPubKeyDer(true, bdPubKey);
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to get certificate public key." });
+                    }
+
+                    tag = 8;
+                    bdTlv.AppendByte(tag);
+                    bdTlv.AppendByte(bdPubKey.NumBytes);
+                    bdTlv.AppendBd(bdPubKey);
+
+                    Chilkat.BinData bdCertSig = new Chilkat.BinData();
+                    success = cert.GetSignature(bdCertSig);
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to get certificate signature." });
+                    }
+
+                    tag = 9;
+                    bdTlv.AppendByte(tag);
+                    bdTlv.AppendByte(bdCertSig.NumBytes);
+                    bdTlv.AppendBd(bdCertSig);
+
+                    // Insert QR into XML
+                    Chilkat.Xml xmlQR = new Chilkat.Xml();
+                    xmlQR.Tag = "cac:AdditionalDocumentReference";
+                    xmlQR.UpdateChildContent("cbc:ID", "QR");
+                    xmlQR.UpdateAttrAt("cac:Attachment|cbc:EmbeddedDocumentBinaryObject", true, "mimeCode", "text/plain");
+                    xmlQR.UpdateChildContent("cac:Attachment|cbc:EmbeddedDocumentBinaryObject", bdTlv.GetEncoded("base64"));
+
+                    Chilkat.StringBuilder sbSignedXml = new Chilkat.StringBuilder();
+                    success = sbSignedXml.LoadFile(signedXmlFilePath, "utf-8");
+                    if (!success)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new { success = false, message = "Failed to load signed XML file." });
+                    }
+
+                    Chilkat.StringBuilder sbReplaceStr = new Chilkat.StringBuilder();
+                    xmlQR.EmitXmlDecl = false;
+                    xmlQR.EmitCompact = true;
+                    sbReplaceStr.Append(xmlQR.GetXml());
+                    sbReplaceStr.Append("<cac:Signature>");
+                    success = sbSignedXml.ReplaceFirst("<cac:Signature>", sbReplaceStr.GetAsString());
+                    if (!success)
+                    {
+                        return BadRequest(new { success = false, message = "Did not find <cac:Signature> in signed XML." });
+                    }
+
+                    success = sbSignedXml.WriteFile(appPath + "\\SignedXML\\signedXmlResult1V.xml", "utf-8", false);
+                    // 🔹 Save signedXmlResult1V
+                    string finalXml = sbSignedXml.GetAsString();
+
+                    if (azureEnabled)
+                    {
+                        UploadToAzure(finalXml, "signedXmlResult1V.xml", CompanyId);
+                    }
+                    else
+                    {
+                        sbSignedXml.WriteFile(Path.Combine(appPath, "SignedXML", "signedXmlResult1V.xml"), "utf-8", false);
+                    }
+                    var result = await dbContext.Tbl20161VatinvoiceMasters
+                    .Where(x => x.InvoiceNo == invoiceNo)
+                    .Select(x => new
+                    {
+                        x.SellerVatnumber,
+                        x.InvoiceDateWtTime,
+                        x.InvoiceUuid,
+                        x.InvoiceTypeCode
+                    })
+                    .FirstOrDefaultAsync();
+
+                    if (result != null)
+                    {
+                        string safeDate = result.InvoiceDateWtTime.HasValue
+                            ? result.InvoiceDateWtTime.Value.ToString("yyyyMMddHHmmss")
+                            : "00000000000000";
+
+                        XMLFileNameAsPerZatca = Path.Combine("SignedXML", $"{result.SellerVatnumber}_{safeDate}_{invoiceNo}.xml");
+
+
+                    }
+
+                    else
+                    {
+                        _logger.LogWarning("Invoice not found for InvoiceNo {InvoiceNo}", invoiceNo);
+                    }
+                    if (GetAzureStatus(companyId))
+                    {
+                        // Upload XML to Azure
+                        await UploadXmlToAzureIfEnabledAsync(appPath + XMLFileNameAsPerZatca, companyId);
+
+                        // Delete local file after successful upload
+                        string filePath = Path.Combine(appPath, XMLFileNameAsPerZatca);
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+
+
+                    if (azureEnabled)
+                    {
+                        UploadToAzure(finalXml, Path.GetFileName(XMLFileNameAsPerZatca), CompanyId);
+                    }
+                    else
+                    {
+                        sbSignedXml.WriteFile(Path.Combine(appPath, XMLFileNameAsPerZatca), "utf-8", false);
+                    }
+
+                    // Verify signature
+                    Chilkat.XmlDSig verifier = new Chilkat.XmlDSig();
+                    success = verifier.LoadSignatureSb(sbSignedXml);
+                    if (!success || verifier.NumSignatures == 0)
+                    {
+                        return BadRequest(new { success = false, message = "Failed to load/verify signatures." });
+                    }
+
+
+                    verifier.UncommonOptions = "ZATCA";
+
+                    for (int verifyIdx = 0; verifyIdx < verifier.NumSignatures; verifyIdx++)
+                    {
+                        verifier.Selector = verifyIdx;
+                        bool verified = verifier.VerifySignature(true);
+                        if (!verified)
+                        {
+                            return BadRequest(new { success = false, message = "XML signature verification failed." });
+                        }
                     }
                 }
-
-                return Ok(new { success = true, message = "XML signed and verified successfully.", QRCode = bdTlv.GetEncoded("base64") });
+                    return Ok(new { success = true, message = "XML signed and verified successfully.", QRCode = bdTlv.GetEncoded("base64") });
+                
             }
             catch (Exception ex)
             {
@@ -3588,9 +3711,32 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     return;
                 }
 
+
                 // Load XML
                 var xml = new Chilkat.Xml();
                 bool retSuccess = xml.LoadXmlFile(Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml"));
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0; // or any default value you want
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    // Safest way (avoids exceptions):
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                }
+
+                // Now use defaultCompanyByte as needed
+
+
+                byte companyId = defaultCompanyByte;
+
+                var company = dbContext.Tbl901CompanyDetails
+               .FirstOrDefault(c => c.CompanyId == companyId);
+
+                string signedXmlPath = GetSignedXmlFilePath(companyId, Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml"));
+               
+                bool Retsuccess = xml.LoadXmlFile(signedXmlPath);
+
                 if (!retSuccess)
                 {
                     _logger.LogError("Failed to load XML: {Error}", xml.LastErrorText);
@@ -3706,6 +3852,19 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     {
                         _logger.LogWarning("Invoice not found for InvoiceNo {InvoiceNo}", invoiceNo);
                     }
+                    if (GetAzureStatus(companyId))
+                    {
+                        // Upload XML to Azure
+                       await UploadXmlToAzureIfEnabledAsync(appPath + XMLFileNameAsPerZatca, companyId);
+
+                        // Delete local file after successful upload
+                        string filePath = Path.Combine(appPath, XMLFileNameAsPerZatca);
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+
                 }
 
                 try
@@ -4119,7 +4278,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                         GenerateUBLFile(aInvoiceData);
                         signedFile = Path.Combine(appPath, "SignedXML", "signedXmlResult1.xml");
-                        SignXML(aInvoiceData);
+                        await SignXML(aInvoiceData, invoiceNo);
                         currentHash = ENInvoiceHASH(signedFile);
 
                         ReportSimplifiedTaxInvoice(invoiceNo, connectionStatus);
@@ -4183,9 +4342,27 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     _logger.LogWarning("Portal not connected for invoice {InvoiceNo}", invoiceNo);
                     return;
                 }
+                Xml xml = new Xml();
+                bool Retsuccess;
+
+                // 🔹 Get path (Azure or Local)
+                int companyId = 1;
+                string localPath = Path.Combine(appPath, @"SignedXML\signedXmlResult1V.xml");
+
+                // Assuming GetSignedXmlFilePath1 is updated to C# and returns string
+                string signedXmlPath = await GetSignedXmlFilePath1Async(companyId, localPath);
+
+                // ✅ Load XML using resolved path
+                Retsuccess = xml.LoadXmlFile(signedXmlPath);
+
+                if (!Retsuccess)
+                {
+                   // MessageBox.Show("Failed to Load XML: " + xml.LastErrorText, "XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
 
                 // Load XML
-                var xml = new Chilkat.Xml();
+                 xml = new Chilkat.Xml();
                 if (!xml.LoadXmlFile(Path.Combine(appPath, "SignedXML", "signedXmlResult1V.xml")))
                 {
                     _logger.LogError("Failed to load XML: {Error}", xml.LastErrorText);
@@ -4351,7 +4528,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
             // Generate UBL, sign, authorize
             GenerateUBLFile(aInvoiceData);
-            SignXML(aInvoiceData);
+             SignXML(aInvoiceData, invoiceNo);
             GetAuthorizeKey();
 
             var userName = HttpContext.Session.GetString("UserName");
@@ -5047,6 +5224,280 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 _logger.LogError(ex, "Error fetching invoice master details for InvoiceNo {InvoiceNo}", invoiceNo);
                 return StatusCode(500, new { Success = false, Message = "Internal server error.", Error = ex.Message });
             }
+        }
+
+
+        //private (string connectionString, string containerName, string azurePath, bool azureEnabled) GetAzureConnection(int companyId)
+        //{
+        //    bool azureEnabled = GetAzureStatus(companyId);
+        //    string connectionString = "DefaultEndpointsProtocol=https;AccountName=qdprodclientfiles;AccountKey=/21EGSpU+t+LzqRSGIfAuLbzi06xAlrJ3+lhYEmfsXBnrQJRAoNE/+ED8DxbS9e+c1xeuvHxEvQT+ASteaLteA==;EndpointSuffix=core.windows.net";
+        //    string containerName = "client-files";
+        //    string companyName = GetCompanyName(companyId);
+        //    string azurePath = $"{companyName}/Secured/VAT_ZATCA/year{DateTime.Now:yyyy}/VAT_ZATCA/";
+
+        //    return (connectionString, containerName, azurePath, azureEnabled);
+        //}
+
+        private void SaveSignedXmlBasedOnAzureStatus(Chilkat.StringBuilder sbXml, string appPath, int companyId)
+        {
+            bool azureEnabled = GetAzureStatus(companyId);
+            string signedXmlPath = Path.Combine(appPath, @"SignedXML\signedXmlResult1.xml");
+
+            if (azureEnabled)
+            {
+                // Upload directly from memory (no local save)
+                string xmlContent = sbXml.GetAsString();
+                UploadXmlToAzureIfEnabled(xmlContent, "signedXmlResult1.xml", companyId);
+            }
+            else
+            {
+                // Save locally only
+                sbXml.WriteFile(signedXmlPath, "utf-8", false);
+            }
+        }
+
+        private void UploadXmlToAzureIfEnabled(string xmlContent, string fileName, int companyId)
+        {
+            try
+            {
+                var cfg = GetAzureConnection(companyId);
+                if (cfg.azureEnabled)
+                {
+                    var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+                    azureService.UploadString(xmlContent, cfg.azurePath + fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+              //  MessageBox.Show("Azure XML upload failed: " + ex.Message, "Azure Upload Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public async Task<bool> UploadXmlToAzureIfEnabledAsync(string xmlFilePath, int companyId)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    bool azureStatus = dbContext.Tbl901CompanyDetails
+                                                .Where(c => c.CompanyId == companyId)
+                                                .Select(c => c.AzureStatus)
+                                                .FirstOrDefault();
+
+                    if (azureStatus)
+                    {
+                        string connectionString = "DefaultEndpointsProtocol=https;AccountName=...;EndpointSuffix=core.windows.net";
+                        string containerName = "client-files";
+                        string companyName = dbContext.Tbl901CompanyDetails
+                                                      .Where(c => c.CompanyId == companyId)
+                                                      .Select(c => c.CompanyName)
+                                                      .FirstOrDefault();
+
+                        string azurePath = $"{companyName}/Secured/VAT_ZATCA/year{DateTime.Now:yyyy}/VAT_ZATCA/";
+
+                        var azureService = new AzureBlobHelper(connectionString, containerName);
+
+                        string xmlContent = await System.IO.File.ReadAllTextAsync(xmlFilePath);
+
+                        // If AzureBlobHelper has an async method
+                         azureService.UploadString(xmlContent, azurePath + Path.GetFileName(xmlFilePath));
+
+                        return true; // Success
+                    }
+                }
+
+                return false; // Tenant/dbContext not resolved or Azure not enabled
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Azure XML upload failed: " + ex.Message);
+                return false;
+            }
+        }
+
+
+
+        private void NavigateSignedXml(string appPath, int companyId)
+        {
+            string signedXmlPath = Path.Combine(appPath, @"SignedXML\signedXmlResult1.xml");
+            var cfg = GetAzureConnection(companyId);
+
+            if (cfg.azureEnabled)
+            {
+                var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+                string xmlContent = azureService.DownloadStringAsync(cfg.azurePath + "signedXmlResult1.xml").GetAwaiter().GetResult();
+
+                if (!Directory.Exists(Path.GetDirectoryName(signedXmlPath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(signedXmlPath));
+
+               //File.WriteAllText(signedXmlPath, xmlContent);
+            }
+
+           // this.WebBrowser1.Navigate(signedXmlPath);
+          
+        }
+
+        private string GetSignedXmlFilePath(int companyId, string localPath)
+        {
+            try
+            {
+                bool azureStatus = false;
+
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Query the company details directly with EF context
+                    var result = dbContext.Tbl901CompanyDetails
+                                          .Where(c => c.CompanyId == companyId)
+                                          .Select(c => c.AzureStatus)
+                                          .FirstOrDefault();
+
+                    azureStatus = Convert.ToBoolean(result);
+                }
+
+                if (azureStatus)
+                {
+                    string connectionString = "DefaultEndpointsProtocol=https;AccountName=qdprodclientfiles;AccountKey=/21EGSpU+t+LzqRSGIfAuLbzi06xAlrJ3+lhYEmfsXBnrQJRAoNE/+ED8DxbS9e+c1xeuvHxEvQT+ASteaLteA==;EndpointSuffix=core.windows.net";
+                    string containerName = "client-files";
+                    string companyName = GetCompanyName(companyId);
+                    var azureService = new AzureBlobHelper(connectionString, containerName);
+                    string azurePath = $"{companyName}/Secured/VAT_ZATCA/year{DateTime.Now:yyyy}/VAT_ZATCA/signedXmlResult1.xml";
+
+                    string tempPath = azureService.DownloadToTempFile(azurePath);
+                    if (tempPath != null) return tempPath;
+                }
+
+                return localPath;
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Error checking Azure status: " + ex.Message, "Azure Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return localPath;
+            }
+        }
+
+
+        private void UploadPdfToAzureIfEnabled(string pdfFilePath, int companyId)
+        {
+            try
+            {
+                var cfg = GetAzureConnection(companyId);
+                if (cfg.azureEnabled)
+                {
+                    var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+                    azureService.UploadFile(pdfFilePath, cfg.azurePath + Path.GetFileName(pdfFilePath));
+                }
+            }
+            catch (Exception ex)
+            {
+               // MessageBox.Show("Azure PDF upload failed: " + ex.Message, "Azure Upload Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private async Task<string> DownloadFromAzureAsync(string fileName, int companyId)
+        {
+            var cfg = GetAzureConnection(companyId);
+            var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+
+            string content = await azureService.DownloadStringAsync(cfg.azurePath + fileName);
+            return content;
+        }
+
+
+        private void UploadToAzure(string content, string fileName, int companyId)
+        {
+            var cfg = GetAzureConnection(companyId);
+            var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+            azureService.UploadString(content, cfg.azurePath + fileName);
+        }
+
+        private async Task<string> GetSignedXmlFilePath1Async(int companyId, string localPath)
+        {
+            try
+            {
+                var cfg = GetAzureConnection(companyId);
+
+                if (cfg.azureEnabled)
+                {
+                    var azureService = new AzureBlobHelper(cfg.connectionString, cfg.containerName);
+                    string fileName = "signedXmlResult1V.xml";
+                    string blobPath = cfg.azurePath + fileName;
+
+                    // Async download
+                    string xmlContent = await azureService.DownloadStringAsync(blobPath);
+
+                    if (!string.IsNullOrEmpty(xmlContent))
+                    {
+                        string dir = Path.GetDirectoryName(localPath);
+                        if (!Directory.Exists(dir))
+                            Directory.CreateDirectory(dir);
+
+                        // Async file write
+                        await System.IO.File.WriteAllTextAsync(localPath, xmlContent);
+
+                        return localPath;
+                    }
+                }
+
+                return localPath;
+            }
+            catch (Exception ex)
+            {
+                // Log the error as needed
+                Console.WriteLine("Error retrieving signed XML: " + ex.Message);
+                return localPath;
+            }
+        }
+
+
+        private bool GetAzureStatus(int companyId)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    // Fetch AzureStatus using LINQ
+                    bool status = dbContext.Tbl901CompanyDetails
+                                           .Where(c => c.CompanyId == companyId)
+                                           .Select(c => c.AzureStatus)
+                                           .FirstOrDefault();
+
+                    return status;
+                }
+
+                // Tenant/dbContext not resolved
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error checking Azure status: " + ex.Message);
+                return false;
+            }
+        }
+
+
+        private (string connectionString, string containerName, string azurePath, bool azureEnabled) GetAzureConnection(int companyId)
+        {
+            bool azureEnabled = GetAzureStatus(companyId);
+            string connectionString = "DefaultEndpointsProtocol=https;AccountName=qdprodclientfiles;AccountKey=/21EGSpU+t+LzqRSGIfAuLbzi06xAlrJ3+lhYEmfsXBnrQJRAoNE/+ED8DxbS9e+c1xeuvHxEvQT+ASteaLteA==;EndpointSuffix=core.windows.net";
+            string containerName = "client-files";
+            string companyName = GetCompanyName(companyId);
+            string azurePath = $"{companyName}/Secured/VAT_ZATCA/year{DateTime.Now:yyyy}/VAT_ZATCA/";
+
+            return (connectionString, containerName, azurePath, azureEnabled);
+        }
+
+
+        private string GetCompanyName(int companyId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return dbContext.Tbl901CompanyDetails
+                                .Where(c => c.CompanyId == companyId)
+                                .Select(c => c.CompanyName)
+                                .FirstOrDefault();
+            }
+
+            return null;
         }
 
 
