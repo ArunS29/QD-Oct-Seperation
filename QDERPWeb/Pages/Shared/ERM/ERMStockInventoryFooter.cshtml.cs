@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace QD.ERP.Web.Pages.Shared.ERM
 {
-    public class StockInventoryFooterModel : PageModel
+    public class ERMStockInventoryFooterModel : PageModel
     {
         public void OnGet()
         {
