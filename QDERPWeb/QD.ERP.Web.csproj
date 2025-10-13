@@ -12,8 +12,6 @@
 	  <None Remove="Areas\ERM\**" />
 	</ItemGroup>
 
-
-
 	<ItemGroup>
 		<Compile Remove="Areas\Finance\Controllers\VATModuleController.cs" />
 		<Compile Remove="Areas\Finance\Pages\ClientAddressDetailsDropdown.cshtml.cs" />
@@ -23,6 +21,10 @@
 		<Compile Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
+		<Compile Remove="Areas\Finance\Reports\cashPayments\rpt201BillsReceivable.cs" />
+		<Compile Remove="Areas\Finance\Reports\cashPayments\rpt201BillsReceivable.Designer.cs" />
+		<Compile Remove="Areas\Finance\Reports\Payable Statements\rpt201BillsPayable.cs" />
+		<Compile Remove="Areas\Finance\Reports\Payable Statements\rpt201BillsPayable.Designer.cs" />
 		<Compile Remove="Areas\VAT\Pages\VATSalesCOGSPosting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Dashboard.cshtml.cs" />
@@ -50,6 +52,11 @@
 		<Content Remove="Areas\VAT\Pages\VATSalesCOGSPosting.cshtml" />
 		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Remove="Areas\Finance\Reports\cashPayments\rpt201BillsReceivable.resx" />
+	  <EmbeddedResource Remove="Areas\Finance\Reports\Payable Statements\rpt201BillsPayable.resx" />
 	</ItemGroup>
 
 
@@ -97,6 +104,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="8.1.1" />
     <PackageReference Include="System.Net.Primitives" Version="4.3.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
 	
 		
 	</ItemGroup>
