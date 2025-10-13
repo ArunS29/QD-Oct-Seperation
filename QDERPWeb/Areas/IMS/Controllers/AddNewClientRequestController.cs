@@ -1066,7 +1066,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             );
 
             return Ok(new { success = true, message = "MPR submitted successfully.",
-                VoucherApprovedBy = signatoryId
+                VoucherApprovedBy = signatoryId,
+                SubmittedBy = master.SubmittedBy,
+                SubmittedOn = master.SubmittedOn,
             });
         }
         [HttpPost]
@@ -1135,7 +1137,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return Ok(new
                 {
                     message = "Material Purchase Request has been Verified and processed for Approval.",
-                    VoucherApprovedBy = signatoryId
+                    VoucherApprovedBy = signatoryId,
+                    VerifiedBy= voucher.VerifiedBy,
+                     VerifiedOn=voucher.VerifiedOn
                 });
             }
             catch (Exception ex)
@@ -1207,7 +1211,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     return Ok(new
                     {
                         Message = "Material Purchase Request has been Approved.",
-                        VoucherApprovedBy = signatoryId
+                        VoucherApprovedBy = signatoryId,
+                        ApprovedBy=voucher.ApprovedBy,
+                        ApprovedOn=voucher.ApprovedOn
                     });
                 }
                 catch (Exception ex)

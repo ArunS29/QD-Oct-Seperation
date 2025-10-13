@@ -1,0 +1,79 @@
+﻿@page
+@using DevExpress.AspNetCore
+@model QD.ERP.Web.Pages.RichTextEditor2Model
+@{
+}
+
+<link href="~/node_modules/devextreme-dist/css/dx.light.css" rel="stylesheet" />
+<link href="~/node_modules/devexpress-richedit/dist/dx.richedit.css" rel="stylesheet" />
+
+<script src="~/node_modules/jszip/dist/jszip.min.js"></script>
+<script src="~/node_modules/devextreme-dist/js/dx.all.js"></script>
+<script src="~/node_modules/devexpress-richedit/dist/dx.richedit.js"></script>
+
+@* @(Html.DevExpress().RichEdit("richEdit")
+    .Width("100%")
+    .Height(800)
+    .ExportUrl(Url.Action("Export"))
+    .AutoCorrect(a => a
+        .CorrectTwoInitialCapitals(true)
+        .ReplaceTextAsYouType(true)
+        .ReplaceInfoCollectionSettings(s => {
+            s.CaseSensitive(true);
+            s.ReplaceInfoCollection(c => {
+                c.Add().What("(c)").With("©");
+                c.Add().What("wnwd").With("well-nourished, well-developed");
+            });
+        })
+    )
+    .Bookmarks(b => b
+        .Visibility(DevExpress.AspNetCore.RichEdit.Visibility.Visible)
+        .Color(System.Drawing.Color.Blue)
+    )
+    .Ribbon(ribbon => ribbon
+        .ActiveTabIndex(0)
+    
+
+    .Open("Documents/Example.docx")
+) *@
+@(Html.DevExpress().RichEdit("DemoRichEdit")
+    .Height(740)
+    .ConfirmOnLosingChanges(c => c.Enabled(false))
+    .Open("Documents/Example.docx")
+)
+<style>
+    .dxreSelCursor dxreSelCursorZL4 {
+        height: 20px !important;
+    }
+
+    .dxreRow {
+        white-space: nowrap;
+        overflow: visible !important;
+        position: absolute;
+        font-size: 0;
+        user-select: none;
+    }
+
+    .container, .frame, .footerContainer, .playIcon {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+    }
+
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px;
+        margin-left: 0px;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        /* padding: 20px; */
+    }
+</style>
