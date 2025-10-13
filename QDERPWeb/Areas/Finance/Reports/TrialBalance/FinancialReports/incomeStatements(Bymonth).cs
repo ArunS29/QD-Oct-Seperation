@@ -241,7 +241,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5","xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
                 "xrPictureBox11", "xrPictureBox13", "xrPictureBox12", "xrPictureBox14",};
 
                 foreach (string name in pictureBoxNames)
@@ -264,7 +264,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = {"xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5","xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
+            string[] pictureBoxNames = {"xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
                 "xrPictureBox11", "xrPictureBox13","xrPictureBox12", "xrPictureBox14", };
 
             foreach (string name in pictureBoxNames)
@@ -285,7 +285,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.TrialBalance
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5","xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
+            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",
                 "xrPictureBox11", "xrPictureBox13",  "xrPictureBox12", "xrPictureBox14", };
             foreach (var name in fixedPictureBoxes)
             {
