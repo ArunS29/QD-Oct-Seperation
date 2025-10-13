@@ -248,11 +248,11 @@ namespace QD.ERP.Web.Controllers
                         break;
 
                     case "TrialBalanceExportFormat":
-                        report = new TrialBalance_ExportFormat_(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper, username);
+                        report = new TrialBalance_ExportFormat_(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper,username);
                         break;
 
                     case "TrialBalanceDrCr":
-                        report = new TrialBalanceDrCr(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper, username);
+                        report = new TrialBalanceDrCr(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, tenantHelper,username);
                         break;
 
                     // Account Group Reports
@@ -384,6 +384,132 @@ namespace QD.ERP.Web.Controllers
             return NotFound(new { message = "No layout found for the given report name" });
         }
 
+        [HttpGet("DownloadReceivable")]
+        public IActionResult DownloadReceivableReport(string reportName, string selectionType, [FromQuery] List<string> selectedValues)
+        {
+            if (string.IsNullOrEmpty(reportName) || string.IsNullOrEmpty(selectionType) || selectedValues == null || !selectedValues.Any())
+            {
+                return BadRequest("Invalid report parameters.");
+            }
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                return StatusCode(500, "Tenant not found or DbContext could not be created.");
+            }
+
+            // Get tenant name from session
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var username = HttpContext.Session.GetString("UserName") ?? "Default User";
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+            {
+                defaultCompanyId = 0;
+            }
+
+            // Default company info
+            string companyName = string.Empty;
+            string companyAddress = string.Empty;
+            string companyAddressAr = string.Empty;
+            string companyNameAr = string.Empty;
+            Image logoImage = null;
+
+            // Fetch company details
+            var companyDetails = dbContext.Tbl901CompanyDetails
+                .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
+
+            if (companyDetails != null)
+            {
+                companyName = companyDetails.CompanyName ?? string.Empty;
+                companyAddress = companyDetails.CompanyFullAddress ?? string.Empty;
+                companyAddressAr = companyDetails.CompanyFullAddressAr ?? string.Empty;
+                companyNameAr = companyDetails.CompanyNameAr ?? string.Empty;
+
+                if (companyDetails.CompanyLogo != null && companyDetails.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(companyDetails.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+            }
+
+            // Generate receivable report with selection parameters
+            XtraReport report = GenerateReceivableReport(reportName, selectionType, selectedValues, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
+
+            if (report == null)
+            {
+                return BadRequest("Report could not be generated.");
+            }
+
+            // Convert to PDF
+            using (MemoryStream stream = new MemoryStream())
+            {
+                report.ExportToPdf(stream);
+                stream.Position = 0;
+                return File(stream.ToArray(), "application/pdf", $"{reportName}_{selectionType}.pdf");
+            }
+        }
+
+        private XtraReport GenerateReceivableReport(string reportName, string selectionType, List<string> selectedValues, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string username, TenantDbContextHelper tenantDbContextHelper)
+        {
+            try
+            {
+                XtraReport report = null;
+                object[] selectedValuesArray = selectedValues.Cast<object>().ToArray();
+
+                // Create the appropriate report based on reportName
+                switch (reportName)
+                {
+                    case "XtraRecivableReport":
+                        report = new QD.ERP.Web.Areas.Finance.Reports.XtraRecivableReport(
+                            username,
+                            selectedValuesArray,
+                            selectionType,
+                            tenantName,
+                            companyName,
+                            companyAddress,
+                            logoImage,
+                            companyNameAr,
+                            companyAddressAr,
+                            tenantDbContextHelper
+                        );
+                        break;
+
+                    case "XtraRecivableReportImport":
+                        report = new QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable.XtraRecivableReportImport(
+                            username,
+                            selectedValuesArray,
+                            selectionType,
+                            tenantName,
+                            companyName,
+                            companyAddress,
+                            logoImage,
+                            companyNameAr,
+                            companyAddressAr,
+                            tenantDbContextHelper
+                        );
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unknown report name: {reportName}");
+                }
+
+                return report;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating receivable report: {ex.Message}");
+                return null;
+            }
+        }
 
     }
 }
