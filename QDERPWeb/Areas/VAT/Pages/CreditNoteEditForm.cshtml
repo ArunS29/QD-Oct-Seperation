@@ -7002,28 +7002,28 @@ openModal(url, title);
 		 }	
 
 
-	 $(document).ready(function () {
-			if (IsCurrent !== "true" && IsAmend !=="true") {
+	 // $(document).ready(function () {
+		// 	if (IsCurrent !== "true" && IsAmend !=="true") {
 				
-			$.ajax({
-			url: "/api/VATModule/GetVATCreditNoteNo",
-				type: 'GET',
-				success: function (data) {
-					console.log("Success:", data);
+		// 	$.ajax({
+		// 	url: "/api/VATModule/GetVATCreditNoteNo",
+		// 		type: 'GET',
+		// 		success: function (data) {
+		// 			console.log("Success:", data);
 					
-				$("#CreditNoteNo").dxTextBox("instance").option("value", data);
-                InvoiceOPenToSave(data)
-				CrNoteNo=data;
+		// 		$("#CreditNoteNo").dxTextBox("instance").option("value", data);
+  //               InvoiceOPenToSave(data)
+		// 		CrNoteNo=data;
 		
 				
-				},
-				error: function (xhr, status, error) {
-					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.notify("Failed to load account details.", "Error",3000);
-				}
-			});
-			}
-		});
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			console.error("Error loading Payment Accounts:", error);
+		// 			DevExpress.ui.notify("Failed to load account details.", "Error",3000);
+		// 		}
+		// 	});
+		// 	}
+		// });
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance"); 
@@ -8805,6 +8805,47 @@ $(document).ready(function () {
 	});
 
 	}
+
+
+	$(document).ready(function () {
+	  debugger;
+      const voucherNoField = $("#CreditNoteNo").dxTextBox("instance");
+      const voucherNoFromUrl = getUrlParameter('InvoiceNo');
+
+      if (voucherNoFromUrl) {
+          // ✅ Use voucher number from URL
+          voucherNoField.option("value", voucherNoFromUrl);
+          getDocumentCount();
+      } else {
+	 	if (IsCurrent !== "true" && IsAmend !=="true") {
+          $.ajax({
+              url: '@Url.Action("GetVATCreditNoteNo", "VATModule")',
+              type: 'GET',
+              success: function (data) {
+                  voucherNoField.option("value", data);
+                  //Savedetailsonload();
+                  InvoiceOPenToSave(data);
+                  const newUrl = `/${tenantName}/VAT/CreditNoteEditForm?InvoiceNo=${encodeURIComponent(data)}`;
+                  window.history.replaceState({}, "", newUrl);
+
+                  
+                  getDocumentCount();
+              },
+              error: function () {
+                  alert("Error generating voucher number.");
+              }
+          });
+		  }
+      }
+
+      // Helper to extract URL parameter
+      function getUrlParameter(name) {
+          name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+          const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+          const results = regex.exec(window.location.search);
+          return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      }
+  });
 
 
 				
