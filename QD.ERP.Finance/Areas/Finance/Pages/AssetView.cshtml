@@ -1,0 +1,1112 @@
+﻿@page
+@model QDWEB.Pages.Shared.GridforAssetViewModel
+<link rel="stylesheet" href="~/css/animationCardFinance.css" />
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .dx-popup-content{
+        padding: 5px;
+    }
+    .mainContainer {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    #DepreciationModal .modal-dialog.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1050; /* Ensures it stays on top */
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        max-width: none;
+        overflow: hidden;
+    }
+
+    #DepreciationModal .modal-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #DepreciationModal .modal-body {
+        flex: 1; /* Takes up remaining space */
+        overflow-y: auto; /* Enables vertical scrolling */
+        overflow-x: hidden; /* Disables horizontal scrolling */
+        padding: 15px; /* Optional: Adjust padding to make it visually better */
+    }
+
+    #DepreciationModal .card {
+        background-color: #ffffff !important;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .wrap-text {
+        white-space: normal !important;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    #dataGrid .debit-pill, #dataGrid .credit-pill, #dataGrid .closing-pill, #dataGrid .depreciation-pill, #dataGrid .book-pill {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 14px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+    }
+
+    #dataGrid .debit-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+    #dataGrid .closing-pill {
+        background: rgba(255, 77, 79, .15);
+        color: #ff4d4f;
+    }
+
+
+    #dataGrid .credit-pill {
+        background: rgba(82, 196, 26, .15);
+        color: #52c41a;
+    }
+
+    #dataGrid .depreciation-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
+
+    #dataGrid .book-pill {
+        background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+        color: #ffc107; /* Bootstrap yellow */
+    }
+
+</style>
+<input id="formId" value="AssetView" type="hidden" />
+<div class="content-container-top">
+<div class="title" id="kpiCarousel">
+    <div class="titleCard-cards">
+
+        <!-- STATIC -->
+        <div id="Static" class="titleCard-card vibrant-pink">
+            <div class="value-block">
+                    <h2 id="Assetview"></h2>
+                    <h6 id="QuickDiceERPSolutions6"></h6>
+
+            </div>
+        </div>
+
+            <div id="cardVoucher" class="titleCard-card cool-blue">
+                <div class="header" id="Totalassets"></div>
+                <div class="value-block">
+                    <div class="value-slider">
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                    </div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                <div class="overlay">
+                    <div class="detail"><i class="fa-solid fa-truck"></i> Today: 0</div>
+                    <div class="detail"><i class="fa-solid fa-truck"></i> This Week: 0</div>
+                    <div class="detail"><i class="fa-solid fa-truck"></i> This Month: 0</div>
+                </div>
+            </div>
+
+
+        <!-- DEBIT -->
+        <div id="cardDebit" class="titleCard-card deep-purple">
+                <div class="header" id="Totaldepreciated"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- CREDIT -->
+        <div id="cardCredit" class="titleCard-card mint-green">
+                <div class="header" id="Topassets"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@* <div class="title">
+            <div class="header-container">
+                <div id="AssetView" class="no-border-input"></div>
+            </div>
+        </div> *@
+<div style="margin-top:10px">
+    @await Html.PartialAsync("GridforAssetView")
+</div>
+
+
+<div class="dx-field ledgerResult">
+    @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.sp20157AssetRegisterViewResult>()
+        .ID("dataGrid")
+        .KeyExpr("AccountID")
+        .RemoteOperations(true)
+        .DataSource(ds => ds.Mvc()
+        .Controller("AssetView")
+
+        .LoadAction("GetAssetView"))
+        .Columns(columns =>
+        {
+                    columns.AddFor(m => m.AccumDepLedgerNo).Caption(new JS("formatMessage('Accum Dep Ledger No')")).Visible(false);
+                    columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Visible(false);
+                    columns.AddFor(m => m.AddedOn).Caption(new JS("formatMessage('Added On')")).Visible(false);
+                    columns.AddFor(m => m.AssetDescription).Caption(new JS("formatMessage('Asset Description')")).Visible(false);
+            //columns.AddFor(m => m.AccumDepLedgerNo).Caption(new JS("formatMessage('Accum Dep Ledger No')")).Visible(false);
+                    columns.AddFor(m => m.AssetType).Caption(new JS("formatMessage('Asset Type')")).Visible(false);
+                    columns.AddFor(m => m.BMV).Caption(new JS("formatMessage('BMV Numbers')")).Visible(false);
+                    columns.AddFor(m => m.CalculatedDepreciationAmount).Caption(new JS("formatMessage('Calculated Depreciation Amount')")).Visible(false);
+                    columns.AddFor(m => m.CurrentCondition).Caption(new JS("formatMessage('Current Condition')")).Visible(false);
+                    columns.AddFor(m => m.CurrentReading).Caption(new JS("formatMessage('Current Reading')")).Visible(false);
+                    columns.AddFor(m => m.DepAsOnDate).Caption(new JS("formatMessage('Dep As On Date')")).Visible(false);
+                    columns.AddFor(m => m.DepreciationLedgerNo).Caption(new JS("formatMessage('Depreciation Ledger No')")).Visible(false);
+            @* columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('AccountGroup')")).GroupIndex(0); *@
+            @*  columns.Add().DataField("AccountID").Visible(true); *@
+            columns.Add().Caption(new JS("formatMessage('Asset Details')")).Columns(group =>
+    {
+        //  group.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('AssetLedgerNo')"));
+                group.Add().DataField("AccountId").Caption(new JS("formatMessage('Asset Ledger No')"));
+                group.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                group.Add().DataField("AssetDescription").Caption(new JS("formatMessage('Asset Description')"));
+                group.Add().DataField("Specifications").Caption(new JS("formatMessage('Specifications')")).CssClass("wrap-text");
+                group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).GroupIndex(0); ;
+                group.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
+
+            });
+
+            columns.Add().Caption(new JS("formatMessage('Depreciation Details')")).Columns(group =>
+            {
+                group.Add().DataField("DepreciationMethod").Caption(new JS("formatMessage('Depreciation Method')"));
+                @*                         group.Add().DataField("ScrapValueOfProperty").Caption(new JS("formatMessage('ScrapValue')")).Alignment(HorizontalAlignment.Right);
+ *@
+                group.Add().DataField("ScrapValueOfProperty")
+.Caption(new JS("formatMessage('Scrap Value')"))
+.Alignment(HorizontalAlignment.Right)
+.CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("LifeSpanOfProperty").Caption(new JS("formatMessage('Life Span Of Property')")).Alignment(HorizontalAlignment.Right);
+                group.Add().DataField("DepreciationPercentage").Caption(new JS("formatMessage('Depreciation')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("OpeningTotal").Caption(new JS("formatMessage('Opening Total')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                @* group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Trans Total Debit')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>                                                                                                                                                                                                    
+                    <div class="debit-pill">                                                                                                                                                                                         
+                        <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.TotalDebit != null ? data.TotalDebit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                            </div>
+                         </text>                                                                                                                                                                                                                                
+                    ).Visible(false); *@
+
+                        group.Add().DataField("TotalDebit").Caption(new JS("formatMessage('Total Debit')")).Alignment(HorizontalAlignment.Right)
+                 .HeaderCellTemplate(@<text>
+                                     <div class='debit-header' style='font-weight: bold;'>
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>
+        )
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.TotalDebit;
+                                       let displayValue;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       displayValue = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       } else {
+                                       displayValue = "0.00";
+                                       }
+                                       %>
+                                       <div class="debit-pill">(<%- displayValue %>)</div>
+                                   </text>);
+                        
+
+     @*  group.Add()
+    .DataField("TotalCredit")
+    .Caption(new JS("formatMessage('Tras Total Credit')"))
+    .Alignment(HorizontalAlignment.Right)
+                    .CellTemplate(@<text>
+                                       <div class="credit-pill">
+                                           <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.TotalDebit != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+                    )
+    .Visible(false); // Make it visible to test output *@
+
+
+
+               group.Add()
+    .DataField("TotalCredit")
+    .Caption(new JS("formatMessage('Total Credit')"))
+    .Alignment(HorizontalAlignment.Right)
+    .HeaderCellTemplate(@<text>
+                                             <div class='credit-header' style='font-weight: bold;'>
+            <%= column.caption %>
+        </div>
+    </text>)
+                    .CellTemplate(@<text>
+                                       <%
+                                       var val = data.TotalCredit;
+                                       let displayValue;
+                                       if (val !== null && val !== undefined) {
+                                       let positive = Math.abs(val);
+                                       displayValue = positive.toLocaleString(undefined, {
+                                       minimumFractionDigits: 2,
+                                       maximumFractionDigits: 2
+                                       });
+                                       } else {
+                                       displayValue = "0.00";
+                                       }
+                                       %>
+                                       <div class="credit-pill">(<%- displayValue %>)</div>
+                                   </text>);
+                        
+
+
+
+                @* group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Trans Closing Balance')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>                                                                                                                                                                                                    
+                    <div class="closing-pill">                                                                                                                                                                                         
+                        <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.ClosingBalance != null ? data.ClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                            </div>
+                         </text>                                                                                                                                                                                                                                
+
+                    ).Visible(false); *@
+
+                      group.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).Alignment(HorizontalAlignment.Right)
+                      .HeaderCellTemplate(@<text>
+                                     <div class='closing-header' style='font-weight: bold;'>
+                                         <%= column.caption %>
+                                     </div>
+                                 </text>
+        )
+                    .CellTemplate(@<text>
+                                       <div class="closing-pill">
+                                           <%- data.ClosingBalance != null ? data.ClosingBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>)
+                                   .Visible(true);
+
+                       @*  group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Trans Total Depreciated')")).Alignment(HorizontalAlignment.Right)
+                        .CellTemplate(@<text>
+                                       <div class="depreciation-pill">
+                                          <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.TotalDepreciatedAmount != null ? data.TotalDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+                    ).Visible(false); *@
+
+
+                        group.Add().DataField("TotalDepreciatedAmount").Caption(new JS("formatMessage('Total Depreciated')")).Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class='depreciation-header' style='font-weight: bold;'>
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>
+                    )
+                    .CellTemplate(@<text>
+                                       <div class="depreciation-pill">
+                                           <%- data.TotalDepreciatedAmount != null ? data.TotalDepreciatedAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>);
+
+               @*  group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Trans Net Book Value')")).Alignment(HorizontalAlignment.Right)
+                .CellTemplate(@<text>
+                                 <div class="book-pill">
+                                      <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
+
+                            <%- data.NetBookValue != null ? data.NetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                        </div>
+                    </text>
+
+                    ).Visible(false); *@
+
+                group.Add().DataField("NetBookValue").Caption(new JS("formatMessage('Net Book Value')")).Alignment(HorizontalAlignment.Right)
+                    .HeaderCellTemplate(@<text>
+                                             <div class='book-header' style='font-weight: bold;'>
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>
+                    )
+                    .CellTemplate(@<text>
+                                       <div class="book-pill">
+                                           <%- data.NetBookValue != null ? data.NetBookValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
+                                       </div>
+                                   </text>);
+            });
+
+            columns.Add().Caption(new JS("formatMessage('Specifications')")).Columns(group =>
+            {
+                group.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')"));
+                group.Add().DataField("AssetLocation").Caption(new JS("formatMessage('Asset Location')"));
+                group.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
+                group.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')"));
+                group.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
+                group.Add().DataField("Year").Caption(new JS("formatMessage('Year')"));
+                group.Add().DataField("Ownership").Caption(new JS("formatMessage('Ownership')"));
+                group.Add().DataField("PurchaseDate").Caption(new JS("formatMessage('Purchase Date')")).DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+                group.Add().DataField("ValueOfProperty").Caption(new JS("formatMessage('Purchased Value')")).Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+                group.Add().DataField("PurchasedAs").Caption(new JS("formatMessage('Purchased As')"));
+            });
+
+
+            columns.Add().Caption(new JS("formatMessage('InstallmentDetails')")).Columns(group =>
+            {
+                group.Add().DataField("IsFinanced")
+            .Caption(new JS("formatMessage('Is Financed')"))
+            .DataType(GridColumnDataType.Boolean);
+
+                group.Add().DataField("FinancedFrom")
+            .Caption(new JS("formatMessage('Financed From')"));
+
+                group.Add().DataField("NoOfInstallments")
+            .Caption(new JS("formatMessage('No Of Installments')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+
+                group.Add().DataField("InitialDownPayment")
+            .Caption(new JS("formatMessage('Initial Down Payment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+
+                group.Add().DataField("InitialDocCharges")
+            .Caption(new JS("formatMessage('Initial Doc Charges')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+
+                group.Add().DataField("MonthlyInstallment")
+            .Caption(new JS("formatMessage('Monthly Installment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+
+                group.Add().DataField("FinalInstallment")
+            .Caption(new JS("formatMessage('Final Installment')"))
+            .DataType(GridColumnDataType.Number)
+            .Alignment(HorizontalAlignment.Right).CustomizeText("function(e) { return (e.value || 0).toFixed(2); }");
+
+                group.Add().DataField("InstallmentStartDate")
+            .Caption(new JS("formatMessage('Installment Start Date')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+
+                group.Add().DataField("InstallmentEndDate")
+            .Caption(new JS("formatMessage('Installment End Date')"))
+            .DataType(GridColumnDataType.Date)
+            .Format("dd-MMM-yyyy");
+            });
+
+        })
+
+
+        .Summary(summary =>
+        {
+
+            summary.GroupItems(items =>
+            {
+                items.Add()
+            .Column("AccountHead")
+            .SummaryType(SummaryType.Count)
+            .ShowInGroupFooter(true);
+
+                items.Add()
+            .Column("OpeningTotal")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("TotalDebit")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                items.Add()
+            .Column("TotalCredit")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"
+    function(e) {
+    let total = Math.abs(e.value || 0);
+    return total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    }) + 'Cr';
+    }");
+
+                items.Add()
+            .Column("ClosingBalance")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("TotalDepreciatedAmount")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("NetBookValue")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("ValueOfProperty")
+            .SummaryType(SummaryType.Sum)
+            .ShowInGroupFooter(true)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            });
+
+            summary.TotalItems(items =>
+            {
+                items.Add()
+            .Column("AccountHead")
+            .SummaryType(SummaryType.Count);
+
+                items.Add()
+            .Column("OpeningTotal")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("TotalDebit")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("TotalCredit")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"
+    function(e) {
+    let total = Math.abs(e.value || 0);
+    return total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    }) + 'Cr'; // Append 'Cr' for credits
+    }");
+
+
+                items.Add()
+            .Column("ClosingBalance")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("TotalDepreciatedAmount")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("NetBookValue")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                items.Add()
+            .Column("ValueOfProperty")
+            .SummaryType(SummaryType.Sum)
+            .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+            });
+        })
+        .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(false))
+        .ColumnResizingMode(ColumnResizingMode.Widget)
+        .Height("65vh")
+        .ColumnAutoWidth(true)
+        .Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+        .Pager(pager => pager
+        .Visible(true)                            // show pager UI (page numbers etc)
+        .ShowPageSizeSelector(true)              // allow user to change page size
+        .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+        .ShowInfo(true)                          // show info like "Page 1 of 10"
+        )
+
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .OnInitialized("onGridInitialized")
+        .OnOptionChanged("onGridOptionChanged")
+        .OnOptionChanged("handleGridOptionChanged")
+        .OnContentReady("function(e) { handleGridContentReady(e); }")
+        .Width("100%")
+        )
+</div>
+<!-- Modal for Depreciation -->
+<div id="DepreciationModal" class="modal fade show" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog fullscreen" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- Close Button -->
+                <div class="close">&times;</div>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be loaded dynamically -->
+                <div id="DepreciationContent"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @await Html.PartialAsync("GridforAssetView")
+</div>
+<div id="voucherPopup"></div>
+</div>
+<script>
+    $(function () {
+        $("#AssetView").dxTextBox({
+            text: formatMessage("Asset View"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+
+        });
+
+        let selectedVoucherId = null;
+
+        $("#voucherPopup").dxPopup({
+            width: 250,
+            height: "auto",
+            maxHeight: 300,
+            visible: false,
+            dragEnabled: true,
+            closeOnOutsideClick: true,
+            showTitle: false,
+            contentTemplate: function () {
+                return $("<div>")
+                    .css({ overflow: "hidden" })
+                    .append(
+                        $("<ul>")
+                            .addClass("voucher-actions")
+                            .css({ "list-style": "none", margin: "0", padding: "0" })
+                            .append(
+                                createMenuItem(formatMessage("Edit Asset Details"), "edit", editVoucher, "black"),
+                                createMenuItem(formatMessage("Delete Asset Details"), "trash", deleteVoucher, "red")
+                            )
+                    );
+            },
+        });
+
+        function createMenuItem(text, icon, clickHandler, iconColor) {
+            return $("<li>")
+                .addClass("menu-item")
+                .append(
+                    $("<i>")
+                        .addClass("dx-icon dx-icon-" + icon)
+                        .css({ color: iconColor, "font-size": "18px", "margin-right": "8px" }),
+                    $("<span>")
+                        .text(text)
+                        .css({ "font-size": "14px", "font-weight": "bold" })
+                )
+                .on("click", clickHandler)
+                .css({
+                    padding: "10px 15px",
+                    cursor: "pointer",
+                    color: "#000",
+                    "background-color": "#fff",
+                    border: "1px solid #ddd",
+                    "border-radius": "4px",
+                    "margin-bottom": "5px",
+                    "font-family": "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+                    display: "flex",
+                    "align-items": "center",
+                    transition: "background-color 0.3s ease",
+                })
+                .hover(
+                    function () { $(this).css("background-color", "#f0f0f0"); },
+                    function () { $(this).css("background-color", "#fff"); }
+                );
+        }
+
+        function editVoucher() {
+            if (!selectedVoucherId) {
+                alert("Please select a voucher to edit.");
+                return;
+            }
+            window.location.href = `/${tenantName}/Finance/Asset?assetLedgerNo=${selectedVoucherId}`;
+        }
+            function deleteVoucher() {
+                if (!selectedVoucherId) {
+                    DevExpress.ui.dialog.alert("Please select a Asset to delete.", "Warning");
+                    return;
+                }
+
+                DevExpress.ui.dialog.confirm("Are you sure you want to delete this Asset?", "Confirm Deletion")
+                    .done(function (dialogResult) {
+                        if (dialogResult) {
+                            $.ajax({
+                                url: `/api/AssetView/Delete?assetLedgerNo=${encodeURIComponent(selectedVoucherId)}`,
+                                type: "POST",
+                                contentType: "application/json",
+                                dataType: "json",
+                                data: JSON.stringify({ assetLedgerNo: selectedVoucherId }),
+                                success: function (response) {
+                                        // Attachment Delete
+                                var module = "finance";
+                                $.ajax({
+                                         url: `/api/LedgerDocumentsF/DeleteAllVoucherEntry?VoucherNo=${encodeURIComponent(assetLedgerNo)}&module=${encodeURIComponent(module)}`,
+                                    type: "POST",
+                                    success: function (response) {
+                                        if (response.success) {
+                                                DevExpress.ui.notify("Attachments Deleted successfully", "success", 2000);
+                                        } else {
+                                                DevExpress.ui.notify("There is no Attachments", "success", 2000);
+                                        }
+                                    },
+                                    error: function (xhr, status, error) {
+                                        DevExpress.ui.notify("There is no Attachments" + error, "success", 2000);
+                                    }
+                                });
+                                    DevExpress.ui.dialog.alert(response.message || "Voucher deleted successfully.", "Success");
+                                    $("#dataGrid").dxDataGrid("instance").refresh();
+                                    injectHeaderSVG();
+                                    injectCurrencyToCards();
+                                },
+                                error: function (xhr) {
+                                    console.error("Error deleting voucher:", xhr.responseText);
+                                    DevExpress.ui.dialog.alert(xhr.responseJSON?.message || "An error occurred while deleting the voucher.", "Error");
+                                },
+                            });
+                        }
+                    });
+            }
+
+
+
+
+        $("#dataGrid").dxDataGrid({
+            selection: {
+                mode: "single",
+                showCheckBoxesMode: "none",
+            },
+            onSelectionChanged: function (e) {
+                const selectedRows = e.selectedRowsData;
+                if (selectedRows.length > 0) {
+                    //selectedVoucherId = selectedRows[0].AssetLedgerNo;
+                    selectedVoucherId = selectedRows[0].AccountId;
+                } else {
+                    selectedVoucherId = null;
+                }
+            },
+        });
+    $(document).on("contextmenu", ".dx-data-row", function (e) {
+        e.preventDefault(); // Prevent default right-click menu
+
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const rowIndex = $(this).index(); // Get the row index from DOM
+        const rowData = dataGrid.getVisibleRows()[rowIndex]?.data;
+
+        if (rowData) {
+            //selectedVoucherId = rowData.AssetLedgerNo; // Set selected ID manually
+            selectedVoucherId = rowData.AccountId;
+            dataGrid.selectRowsByIndexes([rowIndex]); // Visually select the row
+        }
+
+        const popup = $("#voucherPopup").dxPopup("instance");
+        popup.option("position", { my: "left top", at: "left bottom", of: e });
+        popup.show();
+    });
+
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest("#voucherPopup").length && !$(e.target).closest(".dx-data-row").length) {
+                $("#voucherPopup").dxPopup("instance").hide();
+            }
+        });
+    });
+
+    function showDepreciationSchedule() {
+       window.location.href = `/${tenantName}/Finance/DepreciationMaster`;
+    }
+    function applyShowWhenGroupedToAllGroupedColumns(grid) {
+        const columns = grid.getVisibleColumns();
+
+        // Recursive function to handle nested columns
+        function processColumns(cols) {
+            cols.forEach((col) => {
+                if (col.columns) {
+                    processColumns(col.columns);
+                } else if (col.groupIndex >= 0 && col.showWhenGrouped !== true) {
+                    grid.columnOption(col.dataField, "showWhenGrouped", true);
+                }
+            });
+        }
+
+        processColumns(columns);
+    }
+
+    function onGridInitialized(e) {
+        applyShowWhenGroupedToAllGroupedColumns(e.component);
+          
+    }
+
+    function onGridOptionChanged(e) {
+        if (e.fullName?.startsWith("columns") && e.fullName.endsWith("groupIndex")) {
+            const grid = e.component;
+            applyShowWhenGroupedToAllGroupedColumns(grid);
+        }
+    }
+     function NewDepreciation() {
+        window.location.href = `/${tenantName}/Finance/CreateDepreciation`;
+    }
+
+
+        function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+            injectHeaderSVG(); // slight delay to wait for DOM re-render
+            injectCurrencyToCards();
+        }
+    }
+      function injectHeaderSVG() {
+            $.ajax({
+                url: '/api/AccountingLedgers/GetCurrencyIcon',
+                type: 'GET',
+                success: function (response) {
+                   
+                    let svgIcon = response.Icon;
+                    if (!svgIcon) return;
+
+                    // Set default width/height for SVG if needed
+                    if (svgIcon.startsWith("<svg")) {
+                        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                    } else {
+                        // If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+                        svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+                    }
+
+                    let $grid = $('#dataGrid');
+                    let gridInstance = $grid.dxDataGrid("instance");
+                    if (!gridInstance) return;
+
+                    $grid.find(".dx-header-row td").each(function () {
+                        const $cell = $(this);
+
+                            const $debitHeader = $(".debit-header");
+                            const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                            $debitHeader.data("original-text", debitText); // Save original once
+
+                            $debitHeader.html(`
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    ${svgIcon}
+                                    <span style="font-weight: bold;">${debitText}</span>
+                                </div>
+                            `);
+
+                            // 👉 Credit
+                            const $creditHeader = $(".credit-header");
+                            const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                            $creditHeader.data("original-text", creditText);
+
+                            $creditHeader.html(`
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    ${svgIcon}
+                                    <span style="font-weight: bold;">${creditText}</span>
+                                </div>
+                            `);
+
+
+                            const $closingHeader = $(".closing-header");
+                            const closingText = $closingHeader.data("original-text") || $closingHeader.text().trim();
+                            $closingHeader.data("original-text", closingText);
+
+                            $closingHeader.html(`
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    ${svgIcon}
+                                    <span style="font-weight: bold;">${closingText}</span>
+                                </div>
+                            `);
+
+
+
+
+                            const $depreciationHeader = $(".depreciation-header");
+                            const depreciationText = $depreciationHeader.data("original-text") || $depreciationHeader.text().trim();
+                            $depreciationHeader.data("original-text", depreciationText);
+
+                            $depreciationHeader.html(`
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    ${svgIcon}
+                                    <span style="font-weight: bold;">${depreciationText}</span>
+                                </div>
+                            `);
+
+
+
+
+                            const $bookHeader = $(".book-header");
+                            const bookText = $bookHeader.data("original-text") || $bookHeader.text().trim();
+                            $bookHeader.data("original-text", bookText);
+
+                            $bookHeader.html(`
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                    ${svgIcon}
+                                    <span style="font-weight: bold;">${bookText}</span>
+                                </div>
+                            `);
+
+
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Failed to load currency icon:", xhr.responseText);
+                }
+            });
+      }
+
+        function injectCurrencyToCards() {
+            $.ajax({
+                url: "/api/AccountingLedgers/GetCurrencyIcon",
+                method: "GET",
+                success: function (response) {
+                    
+                    if (!response || !response.Icon) return;
+
+                    const icon = response.Icon.trim();
+
+
+
+                    // Inject into Debit
+                    $('#cardDebit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+
+                    // Inject into Credit
+                    $('#cardCredit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+                },
+                error: function (err) {
+                    console.error("Failed to load currency icon:", err);
+                }
+            });
+        }
+
+    function handleGridContentReady(e){
+
+          injectHeaderSVG();
+           injectCurrencyToCards();
+            e.component.getDataSource().store().load().then(function (fullData) {
+                updateCards(fullData);
+            });
+             
+    }
+   function updateCards(data) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const thisWeekStart = new Date(today);
+        thisWeekStart.setDate(today.getDate() - today.getDay());
+        const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        let totalConvertedDepreciated = 0;
+        let totalConvertedCredit = 0;
+        let totalConvertedDebit = 0;
+
+        const groupCount = {};
+
+        data.forEach(item => {
+            totalConvertedDepreciated += parseFloat(item.ConvertedDepreciatedAmount || 0);
+            totalConvertedCredit += parseFloat(item.ConvertedTotalCredit || 0);
+            totalConvertedDebit += parseFloat(item.ConvertedTotalDebit || 0);
+
+            const group = item.AccountGroup || "Unknown";
+            groupCount[group] = (groupCount[group] || 0) + 1;
+        });
+
+         const format = num => num.toLocaleString(undefined, {
+             minimumFractionDigits: 2,
+             maximumFractionDigits: 2
+         });
+
+        // === Card Debit: Show Depreciated, Credit, Debit ===
+          $("#cardDebit .value-slider span").eq(0).html(format(totalConvertedDepreciated));
+          $("#cardDebit .value-slider span").eq(1).html(format(totalConvertedCredit));
+          $("#cardDebit .value-slider span").eq(2).html(format(totalConvertedDebit));
+            $("#cardDebit .overlay .detail").eq(0).html(`Depreciated: ${format(totalConvertedDepreciated)}`);
+           $("#cardDebit .overlay .detail").eq(1).html(`Credit: ${format(totalConvertedCredit)}`);
+           $("#cardDebit .overlay .detail").eq(2).html(`Debit: ${format(totalConvertedDebit)}`);
+        // const debitOverlay = $("#cardDebit .overlay");
+        // debitOverlay.children().eq(0).html(`Depreciated: ${format(totalConvertedDepreciated)}`);
+        // debitOverlay.children().eq(1).html(`Credit: ${format(totalConvertedCredit)}`);
+        // debitOverlay.children().eq(2).html(`Debit: ${format(totalConvertedDebit)}`);
+
+        // === Card Credit: Top 3 Majority Used AccountGroup Names ===
+        const topGroups = Object.entries(groupCount)
+            .sort((a, b) => b[1] - a[1])  // sort by count desc
+            .slice(0, 3);  // top 3
+
+        const creditSlider = $("#cardCredit .value-slider");
+        const creditOverlay = $("#cardCredit .overlay");
+
+           creditSlider.each(function (i) {
+                if (topGroups[i]) {
+                    const [groupName, count] = topGroups[i];
+                    $(this).html(`<strong>${groupName} (${count})</strong>`);
+                } else {
+                    $(this).html(""); // Clear extra slots
+                }
+            });
+
+
+        creditOverlay.children().each(function (i) {
+            if (topGroups[i]) {
+                const [groupName, count] = topGroups[i];
+                $(this).html(` ${groupName} (${count})`);
+            } else {
+                $(this).html("");
+            }
+
+        });
+             // === Card Voucher: Total/Month/Year Asset Count by PurchaseDate ===
+        // === Card Voucher: Total / This Month / This Year / This Week Asset Count ===
+    let totalAssets = 0;
+    let thisMonthCount = 0;
+    let thisYearCount = 0;
+    let thisWeekCount = 0;
+
+    data.forEach(item => {
+        const accountId = item.AccountId;
+        if (!accountId || !item.PurchaseDate) return; // skip invalid rows
+
+        const purchaseDate = new Date(item.PurchaseDate);
+
+        if (!isNaN(purchaseDate)) {
+            totalAssets++;
+
+            if (purchaseDate.getFullYear() === now.getFullYear()) {
+                thisYearCount++;
+
+                if (purchaseDate.getMonth() === now.getMonth()) {
+                    thisMonthCount++;
+                }
+
+                // check if purchaseDate is inside this week
+                if (purchaseDate >= thisWeekStart && purchaseDate <= today) {
+                    thisWeekCount++;
+                }
+            }
+        }
+    });
+
+    // Update cardVoucher value-slider spans
+     voucherSlider.eq(0).html(`<i class="fa-solid fa-truck"></i> ${totalAssets}`);
+    voucherSlider.eq(1).html(`<i class="fa-solid fa-truck"></i> ${thisMonthCount}`);
+    voucherSlider.eq(2).html(`<i class="fa-solid fa-truck"></i> ${thisYearCount}`);
+
+    voucherOverlay.eq(0).html(`<i class="fa-solid fa-truck"></i> ${t("total")}: ${totalAssets}`);
+    voucherOverlay.eq(1).html(`<i class="fa-solid fa-truck"></i> ${t("thisMonth")}: ${thisMonthCount}`);
+    voucherOverlay.eq(2).html(`<i class="fa-solid fa-truck"></i> ${t("thisYear")}: ${thisYearCount}`);
+       injectCurrencyToCards();
+
+   }
+
+    // Utility format function
+    function format(value) {
+        return value.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+
+
+
+
+
+        // Utility: check if two dates are the same (ignoring time)
+        function isSameDate(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
+        }
+            $(function () {
+                 $("#Assetview").text(formatMessage("Asset View"));
+    });
+    $(function () {
+        $("#QuickDiceERPSolutions6").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+    $(function () {
+              $("#Totalassets").text(formatMessage("Total Assets"));
+    });
+    $(function () {
+          $("#Totaldepreciated").text(formatMessage("Total Depreciated"));
+    });
+    $(function () {
+         $("#Topassets").text(formatMessage("Top Assets"));
+    });
+
+</script>
+
+
+
+
+

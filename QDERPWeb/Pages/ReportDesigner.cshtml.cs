@@ -1,12 +1,12 @@
 using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
-using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Finance.Areas.Finance.Reports;
+using QD.ERP.Finance.Areas.Finance.Reports.BillsReceivable;
+using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.Finance.Areas.Finance.Reports.Receivable_Statements;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance;
+using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Web.Reports;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Reports.Register;
+using QD.ERP.Finance.Areas.Finance.Reports.Register;
 
 namespace QD.ERP.Web.Pages
 {
@@ -165,10 +165,10 @@ namespace QD.ERP.Web.Pages
                     Report = new Report4(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
-                case "rpt201BillsPayable":
-                    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value,
-                        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
-                    break;
+                //case "rpt201BillsPayable":
+                //    Report = new rpt201BillsPayable(accountId, frmDate.Value, toDate.Value,
+                //        tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                //    break;
                 case "rpt201BillsPayableWithVchNo":
                     Report = new rpt201BillsPayableWithVchNo(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);

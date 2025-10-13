@@ -1,0 +1,225 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.ReplicateUserAccountModel
+@{
+}
+
+<style>
+    .form-table {
+        width: 50%;
+        height: 50%;
+        margin: 30px;
+        border-spacing: 10px;
+        font-family: Segoe UI, sans-serif;
+    }
+
+        .form-table th {
+            text-align: left;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+
+        .form-table tr {
+            margin-bottom: 5px;
+        }
+
+        .form-table td {
+            vertical-align: top;
+            width: 100%;
+        }
+
+    .highlight {
+        color: blue;
+        font-weight: bold;
+    }
+
+    .muted-text {
+        color: gray;
+        font-size: 12px;
+        padding-top: 10px;
+    }
+
+    .flex-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+    .maindiv {
+        display: flex;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+
+<div class="maindiv">
+    <table class="form-table">
+        <tr>
+            <td>
+                <h6 class="highlight"><u id="copyusers"></u></h6>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ReplicateUserPermissions")
+                    .Label(new JS("formatMessage('Replicate User Access Permissions From the User')"))
+                    .DataSource(ds => ds.WebApi()
+                    .Controller("Utility")
+                    .LoadAction("Getuserdetails")
+                    .LoadMode(DataSourceLoadMode.Raw))
+                    .DisplayExpr("UserName")
+                    .ValueExpr("UserId")
+                    .SearchEnabled(true)
+                    .ShowClearButton(true)
+                    .Placeholder("Select User")
+                    @* .Label("User") *@
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Width(400)
+                    )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                    .ID("ToThisUserAccount")
+                     .Label(new JS("formatMessage('To This User Account')"))
+                    .DataSource(ds => ds.WebApi()
+                    .Controller("Utility")
+                    .LoadAction("Getuserdetails")
+                    .LoadMode(DataSourceLoadMode.Raw))
+                    .DisplayExpr("UserName")
+                    .ValueExpr("UserId")
+                    .SearchEnabled(true)
+                    .ShowClearButton(true)
+                    .Placeholder("Select User")
+                    @* .Label("User") *@
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Width(400)
+                    )
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @(Html.DevExtreme().Button()
+                .Text(new JS("formatMessage('Replicate User Account')"))
+                    .Icon("key")
+                    .Width("250px")
+                    .OnClick("function(e) { ReplicateUserAccountOnClick(); }") // ✅ Fixed binding
+                    )
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    function ReplicateUserAccountOnClick() {
+        // Step 1: Get selected user IDs from SelectBoxes
+        var fromUserId = $("#ReplicateUserPermissions").dxSelectBox("instance").option("value");
+        var toUserId = $("#ToThisUserAccount").dxSelectBox("instance").option("value");
+
+        // Validate both users are selected
+        if (!fromUserId || !toUserId) {
+            DevExpress.ui.dialog.alert("Please select both users before replicating.", "Validation");
+            return;
+        }
+
+        // Step 2: Show confirm dialog
+        var confirmDialog = DevExpress.ui.dialog.custom({
+            title: "Replicate User Access Permission",
+            messageHtml: `
+                <div style="display:flex; align-items:flex-start;">
+                    <div style="color: #d9534f; font-size:32px; margin-right:12px;">
+                        <i class="dx-icon dx-icon-close"></i>
+                    </div>
+                    <div>
+                        <p>You are about to Replicate User Access Permissions for the User,</p>
+                        <p>Click Yes if you would like to continue.</p>
+                    </div>
+                </div>
+            `,
+            buttons: [
+                { text: "Yes", onClick: function () { return { button: "Yes" }; } },
+                { text: "No", onClick: function () { return { button: "No" }; } }
+            ]
+        });
+
+        confirmDialog.show().done(function (dialogResult) {
+            if (dialogResult.button === "Yes") {
+                // Step 3: Call API to replicate
+                $.ajax({
+                    url: '/api/Utility/ReplicateUserAccessPermissions',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ FromUserId: fromUserId, ToUserId: toUserId }),
+                    success: function (response) {
+                        if (response.success) {
+                            // Step 4: Show success dialog
+                            var successDialog = DevExpress.ui.dialog.custom({
+                                title: "Successfully replicated.",
+                                messageHtml: `
+                                    <div style="display:flex; align-items:flex-start;">
+                                        <div style="color: #007bff; font-size:32px; margin-right:12px;">
+                                            <i class="dx-icon dx-icon-info"></i>
+                                        </div>
+                                        <div>
+                                            <p>User Access Permissions has been replicated successfully.</p>
+                                        </div>
+                                    </div>
+                                `,
+                                buttons: [
+                                    { text: "OK", onClick: function () { return { button: "OK" }; } }
+                                ]
+                            });
+
+                            successDialog.show().done(function (result) {
+                                console.log("OK clicked"); // Optional
+                            });
+                        } else {
+                            DevExpress.ui.dialog.alert(response.message || "An error occurred.", "Error");
+                        }
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.dialog.alert("An error occurred: " + xhr.responseText, "Error");
+                    }
+                });
+            } else {
+                console.log("User clicked No");
+            }
+        });
+    }
+       $(function () {
+                            $("#copyusers").text(formatMessage("Copy User Access Permissions From One User Account to Other User Account"));
+                     });
+
+</script>

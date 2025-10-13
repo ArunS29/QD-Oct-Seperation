@@ -1,0 +1,1330 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Views._PropertyAllocationModel
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Shared.DAL.Entities
+@{
+
+	string voucherNo = ViewBag.VoucherNo;
+	string drCr = ViewBag.DrCr;
+	string accountHead = ViewBag.AccountHead;
+	string voucherAmount = ViewBag.VoucherAmount;
+	long voucherEntryNo = ViewBag.VoucherEntryNo;
+	string accountId = ViewBag.AccountID;
+	decimal currencyRate = ViewBag.CurrencyRate;
+	decimal? originalAmount = null;
+
+	decimal? voucherAmountParsed = null;
+
+	// Try parsing the voucherAmount to a nullable double
+	if (!string.IsNullOrEmpty(voucherAmount))
+	{
+		decimal parsedAmount;
+		if (decimal.TryParse(voucherAmount, out parsedAmount))
+		{
+			voucherAmountParsed = parsedAmount;
+		}
+	}
+
+	// If voucherAmountParsed is not null, ensure it's formatted to 2 decimal places
+	if (voucherAmountParsed.HasValue)
+	{
+		// Format the amount to 2 decimal places and then parse it back to double
+		voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+		originalAmount = (decimal)(voucherAmountParsed.Value / (decimal)currencyRate);
+	}
+
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script>
+	var currencyRate =' @currencyRate';
+</script>
+
+<style type="text/css">
+	.dx-button {
+		margin-left: 8px;
+	}
+
+	/* .dx-popup-title.dx-toolbar {
+		background-color: lightskyblue !important;
+		color: white !important;
+	} */
+
+
+	.horizontal-container {
+		display: flex;
+		gap: 10px; /* Adds spacing between buttons */
+		justify-content: start; /* Aligns buttons to the left */
+		align-items: center; /* Vertically centers the buttons */
+		margin: 15px;
+	}
+
+	.dx-selectbox .dx-texteditor-input {
+		text-align: center; /* Centers the text inside the input */
+	}
+
+	
+
+	.button-alignment-down {
+		margin-top: 23px;
+	}
+
+	.button-group {
+		margin-left: -10px !important;
+	}
+
+
+	.dx-button {
+		background-color: whitesmoke;
+	}
+
+
+	.content-container-top, .content-container-Middle, .content-container-bottom {
+		background-color: white;
+		border-top-left-radius: 10px; /* Radius for top-left corner */
+		border-top-right-radius: 10px; /* Radius for top-right corner */
+		padding: 5px;
+	}
+
+
+
+
+	.card-header {
+		color: black; /* White text */
+		padding: 20px; /* Padding around the header */
+		font-weight: bold;
+		display: flex; /* Flex container for alignment */
+		align-items: center; /* Vertically align icon and text */
+	}
+
+	.header-icon {
+		font-size: 40px; /* Icon size */
+		margin-right: 15px; /* Space between icon and text */
+		color: goldenrod; /* Golden color for the icon */
+		text-shadow: 2px 2px 4px black; /* Black shadow around the icon for contrast */
+	}
+
+
+	.header-text {
+		font-size: 25px; /* Font size for text */
+	}
+
+	#PropertyAllocationModal .modal-dialog.fullscreen {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 1050; /* Ensures it stays on top */
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		max-width: none;
+		overflow: hidden;
+	}
+
+	#PropertyAllocationModal .modal-content {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	#PropertyAllocationModal .modal-body {
+		flex: 1; /* Takes up remaining space */
+		overflow-y: auto; /* Enables vertical scrolling */
+		overflow-x: hidden; /* Disables horizontal scrolling */
+		padding: 15px; /* Optional: Adjust padding to make it visually better */
+	}
+
+	#PropertyAllocationModal .card {
+		background-color: #ffffff !important;
+		color: #fff;
+		border: none;
+		border-radius: 5px;
+	}
+
+	.fixed-footer-toolbar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 1060;
+		background-color: #ffffff;
+		border-top: 1px solid #dee2e6;
+		padding: 10px 20px;
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+	}
+
+	/* Base styling for all footer buttons */
+	.footer-button.dx-button {
+		font-weight: 600;
+		border-radius: 6px;
+		transition: background-color 0.2s ease;
+		color: #fff;
+	}
+
+	/* Save Button - Blue */
+	.save-btn .dx-button-content {
+		background-color: #007bff;
+		border-color: #007bff;
+	}
+
+	.save-btn:hover .dx-button-content {
+		background-color: #0056b3;
+	}
+
+	/* Print Button - Indigo */
+	.print-btn .dx-button-content {
+		background-color: #6610f2;
+		border-color: #6610f2;
+	}
+
+	.print-btn:hover .dx-button-content {
+		background-color: #520dc2;
+	}
+
+	/* Back Button - Gray */
+	.back-btn .dx-button-content {
+		background-color: #6c757d;
+		border-color: #6c757d;
+	}
+
+	.back-btn:hover .dx-button-content {
+		background-color: #495057;
+	}
+
+	
+</style>
+
+<div class="content-container-top background" >
+
+
+	
+	<div class="container1">
+		<div class="row g-3 align-items-end">
+
+			<!-- Dr/Cr Dropdown -->
+			<div class="col-md-1 col-6">
+				@(Html.DevExtreme().SelectBox()
+								.ID("PaDrCr")
+								.DataSource(new[] { drCr })
+								.Value(drCr)
+								.ReadOnly(true)
+								.Label(new JS("formatMessage('Dr/Cr')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+			<!-- Expenses Ledger Account -->
+			<div class="col-md-3 col-6">
+				@(Html.DevExtreme().SelectBox()
+								.ID("PropertyExpenses")
+								.DataSource(new[] { accountHead })
+								.Value(accountHead)
+								.ReadOnly(true)
+								.Label(new JS("formatMessage('Ledger')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+			<!-- Amount -->
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().NumberBox()
+								.ID("propertyAmount")
+								.Value((double?)originalAmount)
+								.ShowSpinButtons(true)
+								.ReadOnly(true)
+								.Format("#,##0.00")
+								.Label(new JS("formatMessage('Amount')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+			<!-- Approved By + On -->
+			<div class="col-md-2 col-6">
+				<div class="d-flex flex-column">
+					@(Html.DevExtreme().CheckBox()
+										.ID("IsApproved")
+										.Text(new JS("formatMessage('Approved')"))
+										)
+					<div class="text-muted mt-1 small">
+						<label class="form-label mb-0" id="propertyapprovedon"></label>
+						<span id="VoucherApprovedOn" class="fw-semibold text-dark"></span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Voucher No -->
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().TextBox()
+								.ID("propertyVoucherNo")
+								.Value(voucherNo)
+								.Disabled(true)
+								.Label(new JS("formatMessage('Voucher No')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+			<!-- Account ID -->
+			<div class="col-md-2 col-6">
+				@(Html.DevExtreme().TextBox()
+								.ID("propertyId")
+								.Value(accountId)
+								.Disabled(true)
+								.Label(new JS("formatMessage('Account ID')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width("100%")
+								)
+			</div>
+
+		</div>
+
+
+
+	</div>
+	<br />
+	<div class="clear"></div>
+
+	<!-- Ledger Result -->
+	<div class="dx-field ledgerResult">
+		@(
+					Html.DevExtreme().DataGrid<Tbl20122PropertyAllocationMaster>()
+					.ID("propertydataGrid")
+					.RemoteOperations(false)
+					.RowAlternationEnabled(true)
+					.DataSource(new object[] { })
+
+					.Columns(columns =>
+					{
+						columns.AddFor(m => m.PropertyAllocationId).Caption(new JS("formatMessage('Cost Allocation Id')")).DataField("PropertyAllocationId").Width(100).Visible(false).AllowEditing(false);
+						columns.AddFor(m => m.PropertyNo)
+					.DataField("PropertyDescription")
+					.Caption(new JS("formatMessage('Property Name')"))
+					.Width(500)
+					.AllowEditing(true)
+					// Normal Grid Mode
+					.CellTemplate(@<text>
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+						   				<span>
+						   					<%- data.PropertyDescription ? data.PropertyDescription : "" %>
+						   				</span>
+				<div style="display: flex; gap: 0px;">
+					@(Html.DevExtreme().Button()
+					.ID("btnAddproperty_" + new JS("data.rowIndex"))
+					.Icon("plus")
+					@* .OnClick("onAddCost") *@
+					.Hint("Add property Allocation")
+					.Width(50)
+					)
+					@(Html.DevExtreme().Button()
+					.ID("btnEditproperty_" + new JS("data.rowIndex"))
+					.Icon("edit")
+					@* .OnClick("onEditCost") *@
+					.Hint("Edit property Allocation")
+					.Width(50)
+					)
+				</div>
+			</div>
+		</text>)
+				// Edit Mode
+				.EditCellTemplate(@<text>
+			<div style="display: flex; justify-content: space-between; align-items: center;">
+				@(Html.DevExtreme().DropDownBox()
+				.DataSource(d => d.WebApi().Controller("PropertyAllocation")
+				.LoadAction("GetPropertyAllocationUnits")
+				.LoadMode(DataSourceLoadMode.Raw)
+				.Key("PropertyNo"))
+				.LabelMode(EditorLabelMode.Floating)
+				.ID("Propertygriddropdown_{rowIndex}")
+				.ShowClearButton(false)
+				.AcceptCustomValue(true)
+				.OpenOnFieldClick(false)
+				.HoverStateEnabled(true)
+				.OnValueChanged("gridBoxPropertyvalueChanged")
+				.ValueExpr("PropertyNo")
+				.DisplayExpr("PropertyDescription")
+				.Placeholder("Select Property Allocation")
+				.Width(400)
+				.DropDownOptions(o => o.Width(800))
+				.Value(new JS("data.PropertyNo"))
+				.ContentTemplate(new TemplateName("JournalPropertyAllocationDropdownContentTemplate"))
+				)
+
+				<div style="display: flex; ">
+					@(Html.DevExtreme().Button()
+					.ID("btnAddproperty_" + new JS("data.rowIndex"))
+					.Icon("plus")
+					@* .OnClick("onAddCost") *@
+					.Hint("Add property Allocation")
+					.Width(50)
+					)
+					@(Html.DevExtreme().Button()
+					.ID("btnEditproperty_" + new JS("data.rowIndex"))
+					.Icon("edit")
+					@* .OnClick("onEditCost") *@
+					.Hint("Edit property Allocation")
+					.Width(50)
+					)
+				</div>
+			</div>
+
+		</text>);
+						columns.AddFor(m => m.EffectiveDate)
+					.Caption(new JS("formatMessage('Effective Date')"))
+					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
+					.AllowEditing(true)
+					// Normal Grid Mode
+					.CellTemplate(@<text>
+			<span>
+				<%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
+			</span>
+		</text>)
+				// Edit Mode
+				.EditCellTemplate(@<text>
+			@(Html.DevExtreme().DateBox()
+			.Type(DateBoxType.Date)
+			.Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
+			.OnValueChanged("setEffectiveDate") // Pass full data object
+			.DisplayFormat("dd-MMM-yyyy")
+			)
+		</text>);
+
+						@* columns.Add().Caption(new JS("formatMessage('Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
+					columns.AddFor(m => m.AmountAllocated).Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
+					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
+					"        var val = data.VoucherAmount / currencyRate; " +
+					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+					"    } " +
+					"    return null; " +
+					"}")
+					.CustomizeText("function(e) { " +
+					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+					"}");
+					columns.AddFor(m => m.PropertyAllocDrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
+					columns.AddFor(m => m.PropertyAllocRemarks).Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
+
+					})
+				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+				.AllowColumnReordering(true) // Enable column reordering
+				.AllowColumnResizing(true)   // Enable column resizing
+				.ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+				.HeaderFilter(filter => filter.Visible(true))
+				.ColumnAutoWidth(true)
+				.Height(250)
+				.ColumnAutoWidth(true)
+				.FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+				.ShowBorders(true)
+				.Width("100%")
+				
+				.Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true).AllowDeleting(true).UseIcons(true))
+				// Add Summary
+				.Summary(s => s
+				.TotalItems(items =>
+				{
+					items.Add()
+					.Column("VoucherAmount") // The column for which summary is shown
+					.SummaryType(SummaryType.Sum) // Calculates the sum
+					.ValueFormat("#,##0.00") // Format the value
+					.DisplayFormat(" {0}"); // Display format
+
+				})
+				)
+				
+				)
+	</div>
+
+	
+
+
+	<div class="clear"></div>
+
+
+	<div class="container">
+		<!-- Fixed Floating Footer -->
+		<div class="fixed-footer-toolbar">
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertySave")
+						.Text(new JS("formatMessage('Save & Close')"))
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("save")
+						.ElementAttr(new { @class = "footer-button me-2 save-btn" })
+						)
+
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertyPrint")
+						.Text(new JS("formatMessage('Print')"))
+						.Type(ButtonType.Normal)
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("print")
+						.ElementAttr(new { @class = "footer-button me-2 print-btn" })
+						)
+
+			@(Html.DevExtreme().Button()
+						.ID("btnPropertyBack")
+						.Text(new JS("formatMessage('Back')"))
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("arrowleft")
+						.OnClick("ClosePropertyModel")
+						.ElementAttr(new { @class = "footer-button me-2 back-btn" })
+						)
+
+	@* 		@(Html.DevExtreme().Button()
+						.ID("btnpropertyDelete")
+						.Text(new JS("formatMessage('Delete')"))
+						.StylingMode(ButtonStylingMode.Contained)
+						.Icon("close")
+						.ElementAttr(new { @class = "footer-button me-2 delete-btn" })
+						) *@
+			@(Html.DevExtreme().Button()
+						.ID("btnpropertyDelete")
+						.Text(new JS("formatMessage('Delete')"))
+						.Icon("close")
+						.ElementAttr(new { @class = "bold-button me-2" })
+						)
+		</div>
+
+
+	</div>
+
+	@using (Html.DevExtreme().NamedTemplate("JournalPropertyAllocationDropdownContentTemplate"))
+	{
+		@(
+			Html.DevExtreme().DataGrid()
+			.ID("propertyAllocationDropdownGrid")
+			.DataSource(d => d.WebApi()
+			.Controller("PropertyAllocation")
+			.LoadAction("GetPropertyAllocationUnits")
+			.LoadMode(DataSourceLoadMode.Raw)
+			.Key("PropertyDescription")
+			)
+			.WordWrapEnabled(true)
+			.ShowBorders(true)
+			.SearchPanel(sp => sp.HighlightSearchText(true))
+			.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+			.SelectedRowKeys(new JS(@"component.option(""value"")"))
+			.OnSelectionChanged(@<text>
+		function(selectedItems) {
+		var keys = selectedItems.selectedRowKeys;
+		component.option("value", keys);
+		console.log(keys);
+		}
+	</text>)
+
+
+			.HeaderFilter(p => p.Visible(true))
+			.ShowBorders(true)
+			.HoverStateEnabled(true)
+			.Paging(p => p.PageSize(15))
+			.FilterRow(f => f.Visible(true))
+			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+			.Height(345)
+			.Selection(s => s.Mode(SelectionMode.Single))
+			.Columns(columns =>
+			{
+			columns.Add().Caption(new JS("formatMessage('Property No')")).DataField("PropertyNo");
+			columns.Add().Caption(new JS("formatMessage('Property Description')")).DataField("PropertyDescription");
+			columns.Add().Caption(new JS("formatMessage('Property Type')")).DataField("PropertyType");
+				columns.Add().Caption(new JS("formatMessage('Plate No')")).DataField("PlateNo");
+			})
+			)
+	}
+
+</div>
+<script>
+	
+	let propertyno = null;
+	let Amount = 0;
+	let editingRowIndex = null;
+	let editingColumn = null;
+
+</script>
+<script>
+	
+	$(document).ready(function () {
+		   const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+			const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+			const drCr = '@drCr';
+			const accountHead = '@accountHead';
+            const accountId = '@accountId';
+			const voucherno = '@voucherNo'; // You declared this in your message
+			const costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
+
+			$.ajax({
+				url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+				type: 'GET',
+				success: function (data) {
+					if (data && data.length > 0) {
+						costdataGrid.option('dataSource', data);
+					} else {
+						// Check if account is cost-allocated
+						$.ajax({
+							type: "GET",
+							url: "/api/PropertyAllocation/CheckPropertyAllocation",
+							data: { AccountHead: accountHead , AccountID: accountId},
+							success: function (response) {
+								if (response.isAllocated) {
+									// Create default row for backend insertion
+									const newRow = {
+										PropertyAllocationId: 0,
+										PropertyAllocDrCr: drCr,
+										PropertyNo:  null,
+										EffectiveDate: new Date(),
+										AmountAllocated: initialVoucherAmount.toFixed(2),
+										PropertyAllocRemarks: null,
+										VoucherEntryId: VoucherEntryId,
+										VoucherNo: voucherno,
+                                        LedgerAccountNo: accountId,
+										CurrencyRate: Number(currencyRate)
+
+									};
+
+									// Save to backend
+									$.ajax({
+										type: "POST",
+										url: "/api/PropertyAllocation/InsertDefaultPropertyAllocation",
+										data: JSON.stringify(newRow),
+										contentType: "application/json",
+										success: function (insertedResponse) {
+											// After successful insert, fetch updated data
+											$.ajax({
+												url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+												type: 'GET',
+												success: function (refreshedData) {
+													costdataGrid.option('dataSource', refreshedData);
+												},
+												error: function () {
+													DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+												}
+											});
+										},
+										error: function () {
+											DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 4000);
+										}
+									});
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to check cost allocation eligibility.", "error", 4000);
+							}
+						});
+					}
+				},
+				error: function () {
+					DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+				}
+			});
+
+		// Function to handle changes to the NumberBox value
+		$('#propertyAmount').dxNumberBox({
+			valueChanged: function (e) {
+				const newVoucherAmount = e.value.toFixed(2);
+
+				// Update the data in the DataGrid
+				if (costdataGrid) {
+					$.ajax({
+						url: '/api/VoucherEntryReceipts/CheckPropertyAllocation',
+						method: 'GET',
+						data: { AccountHead: '@accountHead', AccountID: '@accountId' }, // Pass accountHead as a parameter
+						success: function (response) {
+							const updatedData = [{
+								DrCr: '@drCr',
+								CostAllocated: '',
+								EffectiveDate: new Date().toLocaleDateString('en-GB', {
+									day: 'numeric',
+									month: 'short',
+									year: 'numeric',
+								}),
+								VoucherAmount: newVoucherAmount,
+								Remarks: 'N/A'
+							}];
+
+							costdataGrid.option('dataSource', updatedData);
+						},
+						error: function (xhr, status, error) {
+							console.error('Error checking employee allocation:', error);
+						}
+					});
+				}
+			}
+		});
+	});
+
+	
+
+	function formatEffectiveDate(dateString) {
+		if (!dateString) return 'N/A';
+
+		const dateObj = new Date(dateString);
+		const options = { day: 'numeric', month: 'short', year: 'numeric' };
+		return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+	}
+
+	// $(document).ready(function () {
+	// 	// Parse voucherAmount safely
+	// 	let initialVoucherAmount = parseFloat('@(voucherAmountParsed ?? 0)') || 0;
+	// 	Amount = initialVoucherAmount.toFixed(2);
+
+	// 	// Initialize costData
+	// 	let costData = [{
+	// 		DrCr: '@drCr',
+	// 		EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 			day: 'numeric',
+	// 			month: 'short',
+	// 			year: 'numeric',
+	// 		}),
+	// 		VoucherAmount: Amount,
+	// 		Remarks: ''
+	// 	}];
+
+	// 	// Initialize DataGrid
+	// 	let costdataGrid = $('#propertydataGrid').dxDataGrid('instance');
+	// 	if (costdataGrid) {
+	// 		costdataGrid.option('dataSource', costData);
+	// 	}
+
+	// 	// Handle NumberBox value changes
+	// 	$('#propertyAmount').dxNumberBox({
+	// 		value: Amount,
+	// 		valueChanged: function (e) {
+	// 			let newVoucherAmount = e.value ? e.value.toFixed(2) : "0.00";
+	// 			if (costdataGrid) {
+	// 				costdataGrid.option('dataSource', [{
+	// 					DrCr: '@drCr',
+	// 					EffectiveDate: new Date().toLocaleDateString('en-GB', {
+	// 						day: 'numeric',
+	// 						month: 'short',
+	// 						year: 'numeric',
+	// 					}),
+	// 					VoucherAmount: newVoucherAmount,
+	// 					Remarks: 'N/A'
+	// 				}]);
+	// 			}
+	// 		}
+	// 	});
+	// });
+
+	// // Format Effective Date
+	// function formatEffectiveDate(dateString) {
+	// 	
+	// 	if (!dateString) return 'N/A';
+	// 	let dateObj = new Date(dateString);
+	// 	let options = { day: 'numeric', month: 'short', year: 'numeric' };
+	// 	return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
+	// }
+
+	// // Handle DataGrid Selection
+	// function dataGridSelectionChanged(e) {
+	// 	const selectedKey = e.selectedRowKeys[0];
+	// 	const ddbInstance = $("#Propertygriddropdown").dxDropDownBox("instance");
+
+	// 	if (selectedKey) {
+	// 		ddbInstance.option("value", selectedKey);
+	// 		ddbInstance.close();
+
+	// 		let selectedRowData = $("#propertyAllocationDropdownGrid").dxDataGrid("instance").getSelectedRowsData();
+	// 		if (selectedRowData.length > 0) {
+	// 			propertyno = selectedRowData[0].PropertyNo;
+	// 		}
+	// 	}
+	// }
+
+	// // Initialize DataGrid
+	// function dataGridInitialized(e) {
+	// 	window.dataGrid = e.component;
+	// }
+
+	// Save Button Click
+	$("#btnpropertySave").on("click", function (e) {
+		e.preventDefault();
+		
+		let grid = $("#propertydataGrid").dxDataGrid("instance");
+		let allRowsData = grid.getDataSource().items();
+		let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
+		let voucherno = '@voucherNo';
+		let accountid = '@accountId';
+
+
+		let costAllocations = allRowsData.map(row => ({
+			PropertyAllocationId: row.PropertyAllocationId || 0, // 0 if it's a new record
+			PropertyNo: row.PropertyNo || null,
+			EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
+			AmountAllocated: row.VoucherAmount,
+			PropertyAllocRemarks: row.Remarks,
+			VoucherNo: voucherno,
+			VoucherEntryId: voucherchildno,
+			PropertyAllocDrCr: row.DrCr,
+			LedgerAccountNo: accountid
+		}));
+
+
+		// Optional: validate before sending
+
+		$.ajax({
+			type: "POST",
+			url: "/api/PropertyAllocation/SavePropertyAllocations", // adjust area/controller path if needed
+			contentType: "application/json",
+			data: JSON.stringify(costAllocations),
+			success: function (response) {
+
+				DevExpress.ui.dialog.alert(
+					"Property Allocation Details updated Successfully.",
+					"Update Successful"
+				).then(function () {
+					let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+					popupInstance.hide();
+				});
+
+				//     window.location.reload();
+				// CostAllocationPopup.hide();
+				// Hide the popup
+
+			},
+			error: function (xhr) {
+				DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
+			}
+		});
+	});
+
+	function gridBoxPropertyvalueChanged(e) {
+		var $dataGrid = $("#propertydataGrid");
+
+		if ($dataGrid.length) {
+			var dataGrid = $dataGrid.dxDataGrid("instance");
+			dataGrid.selectRows(e.value, false);
+		}
+		if (e.value) {
+			let grid = $("#propertydataGrid").dxDataGrid("instance");
+			let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+			let rowData = grid.getVisibleRows()[rowIndex].data;
+
+			let costAllocationDropdownGrid = $("#propertyAllocationDropdownGrid").dxDataGrid("instance");
+			let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0]; // Get first selected row
+
+			if (selectedRowData) {
+				rowData.PropertyNo = selectedRowData.PropertyNo;
+				rowData.PropertyDescription = selectedRowData.PropertyDescription; // Update AccountHead
+				grid.cellValue(rowIndex, "PropertyNo", selectedRowData.PropertyNo);
+				grid.cellValue(rowIndex, "PropertyDescription", selectedRowData.PropertyDescription);// Store the correct ID
+
+			}
+
+			 // Ensure it reflects in the grid
+
+		}
+
+
+
+		// Close the dropdown after selection
+		e.component.option("opened", false);
+	}
+	
+
+
+
+	$(document).ready(function () {
+		let dataGrid = $("#propertydataGrid").dxDataGrid("instance");
+
+		// Handle right-click (context menu event)
+		dataGrid.option("onContextMenuPreparing", function (e) {
+			if (e.row && e.target === "content") { // Ensure right-click is on a row, not the header
+				e.event.preventDefault(); // Prevent the default browser context menu
+				confirmDelete(e.row.data); // Show delete confirmation
+			}
+		});
+	});
+
+	function setEffectiveDate(e) {
+		var $dataGrid = $("#propertydataGrid");
+
+		if ($dataGrid.length) {
+			var dataGrid = $dataGrid.dxDataGrid("instance");
+			dataGrid.selectRows(e.value, false);
+		}
+		if (e.value) {
+			
+			let grid = $("#propertydataGrid").dxDataGrid("instance");
+			let rowIndex = e.element.closest("tr").index(); // Get the edited row index
+			let rowData = grid.getVisibleRows()[rowIndex].data;
+
+
+
+
+			rowData.EffectiveDate = e.value; // Update the row data
+			grid.cellValue(rowIndex, "EffectiveDate", e.value); // Ensure it reflects in the grid
+
+		}
+	}
+
+	function ClosePropertyModel() {
+		let popupInstance = $("#PropertyAllocationPopup").dxPopup("instance");
+		popupInstance.hide();
+	}
+
+	
+
+
+	$(document).ready(function () {
+		const dataGrid = $("#propertydataGrid").dxDataGrid("instance");
+		   dataGrid.option("onRowUpdating", function (e) {
+				
+						const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+						const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+						const drCr = '@drCr';
+						const accountHead = '@accountHead';
+						const voucherno = '@voucherNo'; // You declared this in your message
+						const accountId = '@accountId';
+
+					const oldData = e.oldData;
+					const newData = e.newData;
+
+					const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount) / currencyRate;
+                    const originalAmount = parseFloat(oldData.VoucherAmount) / currencyRate;
+
+
+					// Check if VoucherAmount changed
+					const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
+					if (updatedAmount <=  0 ) {
+						DevExpress.ui.notify("Negative or invalid voucher amounts are not allowed.", "warning", 3000);
+						e.cancel = true;
+						return;
+					}
+
+
+					// Prevent increasing the amount
+					if (isVoucherAmountChanged && updatedAmount > originalAmount) {
+						DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
+						e.cancel = true;
+						return;
+					}
+
+					// Cancel default update — we'll do it manually
+					e.cancel = true;
+
+					// Case 1: Amount changed and is lower than original — split
+					if (isVoucherAmountChanged && updatedAmount < originalAmount) {
+						   const remainingAmount = originalAmount - updatedAmount;
+							const updateAmount = updatedAmount * currencyRate;
+							const remainAmount = remainingAmount * currencyRate;
+
+						const adjustOldRow = {
+							PropertyAllocationId: oldData.PropertyAllocationId,
+							VoucherAmount: updateAmount,
+							PropertyAllocRemarks: newData.PropertyAllocRemarks ?? oldData.PropertyAllocRemarks,
+							PropertyNo: newData.PropertyNo ?? oldData.PropertyNo,
+							EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+						};
+
+									const newRow = {
+										PropertyAllocationId: 0,
+										PropertyAllocDrCr: drCr,
+										PropertyNo:  null,
+										EffectiveDate: new Date(),
+										AmountAllocated: remainAmount.toFixed(2),
+										PropertyAllocRemarks: null,
+										VoucherEntryId: VoucherEntryId,
+										VoucherNo: voucherno,
+										LedgerAccountNo: accountId,
+                                        CurrencyRate: Number(currencyRate)
+									};
+
+						// Update old amount first
+						$.ajax({
+							type: "POST",
+							url: "/api/PropertyAllocation/UpdatePropertyAllocationWithFields",
+							contentType: "application/json",
+							data: JSON.stringify(adjustOldRow),
+							success: function () {
+								// Insert new row
+								$.ajax({
+									type: "POST",
+									url: "/api/PropertyAllocation/InsertDefaultPropertyAllocation",
+									contentType: "application/json",
+									data: JSON.stringify(newRow),
+									success: function (refreshedData) {
+										$.ajax({
+												url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+												type: 'GET',
+												success: function (refreshedData) {
+													dataGrid.option('dataSource', refreshedData);
+												},
+												error: function () {
+													DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+												}
+										});
+									},
+									error: function () {
+										DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
+									}
+								});
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
+							}
+						});
+					}
+					// Case 2: Other fields updated — update existing row directly
+					else {
+						const updateAmount = updatedAmount * currencyRate;
+						const updateRow = {
+							PropertyAllocationId: oldData.PropertyAllocationId,
+							VoucherAmount: updateAmount,
+							PropertyAllocRemarks: newData.PropertyAllocRemarks ?? oldData.PropertyAllocRemarks,
+							PropertyNo: newData.PropertyNo ?? oldData.PropertyNo,
+							EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+						};
+
+						$.ajax({
+							type: "POST",
+							url: "/api/PropertyAllocation/UpdatePropertyAllocationWithFields",
+							contentType: "application/json",
+							data: JSON.stringify(updateRow),
+							success:  function () {
+
+							   $.ajax({
+												url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+												type: 'GET',
+												success: function (Data) {
+													 dataGrid.option('dataSource', Data);
+													dataGrid.refresh(); // ✅ Fix: Properly call refresh
+													dataGrid.cancelEditData(); // ✅ Fix: Exit edit mode
+												},
+												error: function () {
+													DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+												}
+							   });
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
+							}
+						});
+					}
+		   });
+		   dataGrid.option("onRowRemoving", function (e) {
+			   
+				const rowData = e.data;
+				const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+				const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+				const drCr = '@drCr';
+				const voucherno = '@voucherNo';
+				const accountId = '@accountId';
+
+				e.cancel = true; // Cancel default deletion — we handle it manually
+
+				const allRows = dataGrid.option("dataSource");
+
+				if (allRows.length === 1) {
+					// Only one row - call confirmDelete
+					confirmDelete();
+					return;
+				}
+
+				const deletedRowIndex = allRows.findIndex(row => row.PropertyAllocationId === rowData.PropertyAllocationId);
+				if (deletedRowIndex == 0) {
+					const previousRow = allRows[deletedRowIndex + 1];
+					const currentRow = allRows[deletedRowIndex];
+					const PropertyAllocationId = currentRow.PropertyAllocationId;;
+
+
+					const updatedPreviousRow = {
+						PropertyAllocationId: previousRow.PropertyAllocationId,
+						VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+						PropertyAllocRemarks: previousRow.PropertyAllocRemarks,
+						PropertyNo: previousRow.PropertyNo,
+						EffectiveDate: previousRow.EffectiveDate
+					};
+
+					// Step 1: Update previous row
+					$.ajax({
+						   type: "POST",
+							url: `/api/PropertyAllocation/DeletePropertyAllocation?propertyAllocationId=${PropertyAllocationId}`,
+							contentType: "application/json",
+
+						success: function () {
+							// Step 2: Delete selected row
+							$.ajax({
+									type: "POST",
+									url: "/api/PropertyAllocation/UpdatePropertyAllocationWithFields",
+									contentType: "application/json",
+									data: JSON.stringify(updatedPreviousRow),
+								success: function () {
+									// Step 3: Refresh grid
+									$.ajax({
+										url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+										type: 'GET',
+										success: function (refreshedData) {
+											dataGrid.option('dataSource', refreshedData);
+											dataGrid.refresh();
+										},
+										error: function () {
+											DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+										}
+									});
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+						}
+					});
+				} else {
+					// DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
+				}
+
+				if (deletedRowIndex > 0) {
+					const previousRow = allRows[deletedRowIndex - 1];
+					const currentRow = allRows[deletedRowIndex];
+					const PropertyAllocationId = currentRow.PropertyAllocationId;;
+
+
+					const updatedPreviousRow = {
+						PropertyAllocationId: previousRow.PropertyAllocationId,
+						VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+						PropertyAllocRemarks: previousRow.PropertyAllocRemarks,
+						PropertyNo: previousRow.PropertyNo,
+						EffectiveDate: previousRow.EffectiveDate
+					};
+
+					// Step 1: Update previous row
+					$.ajax({
+						   type: "POST",
+							url: `/api/PropertyAllocation/DeletePropertyAllocation?propertyAllocationId=${PropertyAllocationId}`,
+							contentType: "application/json",
+
+						success: function () {
+							// Step 2: Delete selected row
+							$.ajax({
+									type: "POST",
+									url: "/api/PropertyAllocation/UpdatePropertyAllocationWithFields",
+									contentType: "application/json",
+									data: JSON.stringify(updatedPreviousRow),
+								success: function () {
+									// Step 3: Refresh grid
+									$.ajax({
+										url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+										type: 'GET',
+										success: function (refreshedData) {
+											dataGrid.option('dataSource', refreshedData);
+											dataGrid.refresh();
+										},
+										error: function () {
+											DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+										}
+									});
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+						}
+					});
+				} else {
+					// DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
+				}
+		   });
+			setTimeout(function () {
+				let btnInstance = $("#btnpropertyDelete").dxButton("instance");
+				if (btnInstance) {
+					btnInstance.on("click", function () {
+						DevExpress.ui.dialog.confirm("You are about to reset Property allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+							.done(function (result) {
+								if (result) {
+								   confirmDelete();
+								}
+							});
+					});
+				} else {
+					console.error("btnCostDelete instance not found.");
+				}
+			}, 500);
+
+		function confirmDelete() {
+				const dataGrid = $("#propertydataGrid").dxDataGrid("instance");
+
+				const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+				const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+				const drCr = '@drCr';
+				const voucherno = '@voucherNo';
+				const accountId = '@accountId';
+
+
+			const visibleRowCount = dataGrid.getVisibleRows().length;
+
+			const insertAndRefresh = () => {
+				const newRow = {
+									PropertyAllocationId: 0,
+									PropertyAllocDrCr: drCr,
+									PropertyNo:  null,
+									EffectiveDate: new Date(),
+									AmountAllocated: initialVoucherAmount.toFixed(2),
+									PropertyAllocRemarks: null,
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+									LedgerAccountNo: accountId,
+									CurrencyRate: Number(currencyRate)
+
+					};
+
+					$.ajax({
+						type: "POST",
+						url: "/api/PropertyAllocation/InsertDefaultPropertyAllocation",
+						contentType: "application/json",
+						data: JSON.stringify(newRow),
+						success: function () {
+							// Step 3: Refresh grid
+							$.ajax({
+								url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+								type: 'GET',
+								success: function (refreshedData) {
+									dataGrid.option('dataSource', refreshedData);
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+						}
+					});
+
+			};
+
+			if (visibleRowCount > 0) {
+				const deleterequest = {
+									
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+									
+
+				};
+				$.ajax({
+					type: "POST",
+					url: "/api/PropertyAllocation/DeleteByVoucherNo",
+					contentType: "application/json",
+					data: JSON.stringify(deleterequest),
+					success: function () {
+						insertAndRefresh();
+					},
+					error: function () {
+						DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+					}
+				});
+			} else {
+				insertAndRefresh();
+			}
+		}
+
+		 // Attach onEditorPreparing
+	  @* dataGrid.option("onEditorPreparing", function (e) {
+		if (e.parentType === "dataRow" && e.dataField === "Remarks") {
+			e.cancel = true; // Prevent default cell editor
+
+			// Store the context for update
+			editingRowIndex = e.row.rowIndex;
+			editingColumn = e.dataField;
+
+			// Show existing value in popup textarea
+			const currentValue = e.row.data[editingColumn] || "";
+			$("#remarksTextBox").val(currentValue);
+
+			// Show the popup
+			$("#remarksPopup").dxPopup("instance").show();
+		}
+	  }); *@
+	    $("#remarksPopup").dxPopup({
+			width: 350,
+			height: 220,
+			showTitle: true,
+			title: "Edit Remarks",
+			visible: false,
+			closeOnOutsideClick: false,
+			shading: true,
+			animation: {
+				show: { type: "fade", duration: 300 },
+				hide: { type: "fade", duration: 300 }
+			},
+			position: {
+				at: "center",
+				my: "center",
+				of: window
+			}
+		});
+		
+
+	});
+		
+
+	function applyRemarks() {
+			const popup = $("#remarksPopup").dxPopup("instance");
+			const newValue = $("#remarksTextBox").val();
+
+			if (editingRowIndex !== null) {
+				const grid = $("#propertydataGrid").dxDataGrid("instance");
+				grid.cellValue(editingRowIndex, editingColumn, newValue);
+			}
+
+			popup.hide();
+			editingRowIndex = null;
+			editingColumn = null;
+	}
+
+		function cancelRemarks() {
+			$("#remarksPopup").dxPopup("instance").hide();
+			editingRowIndex = null;
+			editingColumn = null;
+		}
+		 $(function () {
+		$("#propertyapprovedon").text(formatMessage("Approved On:"));
+	});
+	 $(document).ready(function () {
+		 var voucherNo = '@voucherNo';
+
+		 // Call your API or controller action to check IsApproved
+		 $.ajax({
+			 url: '/api/CostAllocation/CheckVoucherApproval',
+			 type: 'GET',
+			 data: { voucherNo: voucherNo },
+			 success: function (response) {
+				 if (response && response.isApproved) {
+					 disableEditingAndButtons();
+				 }
+			 },
+			 error: function () {
+				 console.error("Failed to check voucher approval status.");
+			 }
+		 });
+
+		 function disableEditingAndButtons() {
+			 // Disable editing and deleting in DataGrid
+			 var gridInstance = $("#propertydataGrid").dxDataGrid("instance");
+			 if (gridInstance) {
+				 gridInstance.option("editing.allowUpdating", false);
+				 gridInstance.option("editing.allowDeleting", false);
+			 }
+
+			 // Disable all buttons except btncostBack
+			 $(".dx-button").each(function () {
+				  const allowedButtons = ['btnBack','btnPrints', 'btnPrintp', 'btnAttach', 'btnPrint', 'btnAddAHead', 'btnPropertyBack'];
+				 if (!allowedButtons.includes($(this).attr('id'))) {
+					 $(this).dxButton("instance").option("disabled", true);
+				 }
+			 });
+			  disableEditing();
+		 }
+	 });
+</script>

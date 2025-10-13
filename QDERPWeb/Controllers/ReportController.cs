@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
-using QD.ERP.Web.Areas.Finance.Reports.test;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
-using QD.ERP.Web.Areas.Finance.Reports.Register;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Models.DAL;
+using QD.ERP.Finance.Areas.Finance.Reports.ExpensesClaims;
+using QD.ERP.Finance.Areas.Finance.Reports.test;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance.AgeingReport;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance.AgeingReports;
+using QD.ERP.Finance.Areas.Finance.Reports.Register;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Models.DAL;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -469,7 +469,7 @@ namespace QD.ERP.Web.Controllers
                 switch (reportName)
                 {
                     case "XtraRecivableReport":
-                        report = new QD.ERP.Web.Areas.Finance.Reports.XtraRecivableReport(
+                        report = new QD.ERP.Finance.Areas.Finance.Reports.XtraRecivableReport(
                             username,
                             selectedValuesArray,
                             selectionType,
@@ -484,7 +484,7 @@ namespace QD.ERP.Web.Controllers
                         break;
 
                     case "XtraRecivableReportImport":
-                        report = new QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable.XtraRecivableReportImport(
+                        report = new QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivable.XtraRecivableReportImport(
                             username,
                             selectedValuesArray,
                             selectionType,

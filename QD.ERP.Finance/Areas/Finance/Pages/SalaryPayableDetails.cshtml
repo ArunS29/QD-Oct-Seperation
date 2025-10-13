@@ -1,0 +1,286 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Shared.DAL.Entities;
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center; /* Centers the text inside the input */
+    }
+
+
+
+    .backgroundcolor1 {
+        background-color: #363b38;
+    }
+
+    .content-container-top {
+        background-color: #363b38;
+        border-top-left-radius: 10px; /* Radius for top-left corner */
+        border-top-right-radius: 10px; /* Radius for top-right corner */
+        padding: 5px;
+    }
+
+    .content-container-bottom {
+        background-color: #363b38;
+        border-bottom-left-radius: 10px; /* Radius for top-left corner */
+        border-bottom-right-radius: 10px; /* Radius for top-right corner */
+        padding: 5px;
+    }
+
+    .card {
+        background-color: #363b38;
+    }
+
+    .dx-datagrid-pager .dx-page.dx-selection,
+    .pagination .active a {
+        color: black !important; /* Set the active page number to yellow */
+        font-weight: bold; /* Optional: Make the active page bold */
+    }
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    .dx-field {
+        background-color: whitesmoke;
+    }
+
+    /* Style for the DevExtreme button */
+    .button-container {
+        display: flex; /* Use flexbox to align the buttons horizontally */
+        gap: 10px; /* Space between buttons */
+    }
+
+    /* Style for the DevExtreme button */
+    .dx-button {
+        background-color: dimgray !important; /* Set the background to black */
+        color: white !important; /* Set the text color to white */
+        border-color: black !important; /* Set the border to black */
+        border-radius: 5px; /* Rounded corners */
+        padding: 10px 20px; /* Padding for better button sizing */
+        transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition for hover effect */
+    }
+
+    .card-header {
+        background-color: #363b38; /* Match the label color */
+        color: white; /* White text for contrast */
+        padding: 15px 20px; /* Add padding for better spacing */
+        border-top-left-radius: 8px; /* Rounded top-left corner */
+        border-top-right-radius: 8px; /* Rounded top-right corner */
+        font-size: 1.25rem; /* Slightly larger font for the header */
+        font-weight: bold; /* Bold text for emphasis */
+        text-align: center; /* Center the header text */
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+
+<div id="costAllocationPopup" style="display:none;">
+    <div style="margin-bottom:10px">
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveCostAllocation")
+            .Icon("save")
+            .Text(new JS("formatMesage('Save')"))
+            .OnClick("function() { saveCostAllocation(); }")
+            )
+    </div>
+</div>
+<div class="card">
+    <div class="content-container-top">
+
+        <div id="SalaryPayableDetails" class="card-header">
+            
+        </div>
+        <div class="container">
+            <div class="row">
+                <!-- Employee No Field -->
+                <div class="form-group col-md-3" style="padding-top: 10px; padding-bottom: 10px; text-align: left;">
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMesage('Employee No')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("employeeNo")
+                        .Value("")
+                        .Placeholder(new JS("formatMesage('Enter Employee No')"))
+                        .RtlEnabled(false)
+                        )
+                </div>
+
+                <!-- Employee Name Field -->
+                <div class="form-group col-md-4" style="padding-top: 10px; padding-bottom: 10px; text-align: left;">
+                    @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMesage('Employee Name')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("employeeName")
+                        .Value("")
+                        .Placeholder(new JS("formatMesage('Enter Employee Name')"))
+                        .RtlEnabled(false)
+                        )
+                </div>
+
+                <!-- Button to Apply Filter -->
+                <div class="form-group col-md-4" style="padding-top: 35px; padding-bottom: 10px; text-align: right;">
+                    @(Html.DevExtreme().Button()
+                        .ID("filterButton")
+                        .Text(new JS("formatMesage('Show Full Employee's Record')"))
+                        .Width(300)
+                        .Height(38)
+                        .OnClick("function() { applyGridFilter(); }")
+                        )
+                </div>
+            </div>
+
+            <div class="dx-field ledgerResult">
+                @(
+                    Html.DevExtreme().DataGrid<Qry20164SalaryPayableLedgerMaster>()
+                    .ID("dataGrid")
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("SalaryPayableDetails") // Specify the controller name
+                    .LoadAction("Get") // Specify the action that returns data
+                    )
+                    .RemoteOperations(true) // Enable remote data operations
+                    .Columns(columns =>
+                    {
+                        columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMesage('Reference No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.EmployeeNo).Caption(new JS("formatMesage('Employee No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.EmployeeName).Caption(new JS("formatMesage('Employee Name')")).Alignment(HorizontalAlignment.Left);
+                        columns.AddFor(m => m.Amount).Caption(new JS("formatMesage('Amount')")).Alignment(HorizontalAlignment.Right).CustomizeText(@"
+                function(e) {
+                if(e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                return e.value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ");
+                        columns.AddFor(m => m.DrCr).Caption(new JS("formatMesage('DrCr')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VoucherNo).Caption(new JS("formatMesage('Voucher No')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.VoucherDate).Caption(new JS("formatMesage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
+                        .Type(Format.ShortDate)
+                        .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")
+                        );
+                        columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMesage('Entry Narration')")).Alignment(HorizontalAlignment.Left);
+                        columns.AddFor(m => m.ReferenceType).Caption(new JS("formatMesage('ReferenceType')")).Alignment(HorizontalAlignment.Left);
+                    })
+                    .Paging(p => p.PageSize(10))
+                    .AllowColumnReordering(true) // Enable column reordering
+                    .AllowColumnResizing(true)   // Enable column resizing
+                    .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .Height(500)
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                    .GroupPanel(groupPanel => groupPanel.Visible(true)) // Hide group panel
+                    .ShowBorders(true)
+                    .Width("100%")
+                    .Summary(s => s
+                    .TotalItems(totalItems =>
+                    {
+                        totalItems.AddFor(m => m.Amount)
+                        .SummaryType(SummaryType.Sum)
+                        .CustomizeText(@"
+                function(e) {
+                if(e.value === null || e.value === undefined) {
+                return ''; // Return empty string for null values
+                }
+                return e.value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                });
+                }
+                ");
+                    }
+                    ))
+                    )
+            </div>
+        </div>
+
+        <div class="button-container"
+        <div class="dx-button">
+                @await Html.PartialAsync("_GridFooter1")
+        </div>
+        </div>
+
+
+
+    </div>
+</div>
+<script>
+    $(function () {
+        $("#costAllocationPopup").dxPopup({
+            title: "Cost Allocation",
+            width: 300,
+            height: 200,
+            visible: false,
+            showCloseButton: true,
+            closeOnOutsideClick: true,
+
+        });
+
+
+    });
+    let dataGrid; // Global reference to the DataGrid instance
+
+    // Initialize the DataGrid and store its instance
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function applyGridFilter() {
+        var employeeNo = $("#employeeNo").dxTextBox("instance").option("value");
+        var employeeName = $("#employeeName").dxTextBox("instance").option("value");
+
+        // Validation: Check if both fields are empty
+        if (!employeeNo && !employeeName) {
+            DevExpress.ui.notify({
+                message: "Please enter either Employee No or Employee Name to filter.",
+                type: "error",
+                displayTime: 3000,
+                width: "auto",
+
+            });
+            return; // Stop execution
+        }
+
+        // Get DataGrid instance
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Build the filter
+        var filter = [];
+        if (employeeNo) {
+            filter.push(["EmployeeNo", "contains", employeeNo]);
+        }
+        if (employeeName) {
+            if (filter.length > 0) {
+                filter.push("and");
+            }
+            filter.push(["EmployeeName", "contains", employeeName]);
+        }
+
+        // Apply the filter
+        dataGrid.filter(filter);
+    }
+</script>
+

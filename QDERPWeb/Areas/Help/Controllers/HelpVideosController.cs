@@ -1,5 +1,5 @@
-﻿using QD.ERP.Web.Models.DAL;
-using QD.ERP.Web.Models.DALCommon;
+﻿using QD.ERP.Shared.Models.DAL;
+using QD.ERP.Shared.Models.DALCommon;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

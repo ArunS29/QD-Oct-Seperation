@@ -1,0 +1,2255 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.assetModel
+@using DevExtreme.AspNet.Mvc
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Asset View";
+    ViewContext.RouteData.Values["area"] = "Finance";
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
+}
+
+
+
+<style>
+    .dx-button{
+        background-color:none!important;
+    }
+    /* Ensure tab text is styled properly */
+    .dx-tabpanel .dx-tab {
+        color: black !important; /* Set the tab text color to black */
+        font-size: 14px; /* Adjust font size for better visibility */
+        padding: 10px 15px; /* Increase padding for better appearance */
+    }
+
+        /* Optional: Adjust the selected tab styling */
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue; /* Highlight selected tab with a background */
+            color: white !important; /* Set selected tab text color */
+        }
+
+   
+    .dx-tabpanel {
+        /*  border: 2px solid gray;  Set the border color to gray */
+        /* border-radius: 5px;  Optionally, add rounded corners to the border */
+    }
+                   
+    .dx-textarea{
+             padding-top: 0px !important;
+    }
+
+
+    .form-container1 {
+        width:100%;
+
+        padding: 5px; /* Optional: Add some padding inside the border */
+        border-radius: 1px; /* Optional: Rounded corners */
+    }
+
+    .form-container {
+        width: 100%;
+        border-radius: 1px; /* Optional: Rounded corners */
+    }
+    .form-row {
+        display: flex;
+        gap: 10px;
+        padding: 0px 10px;
+        width:100%;
+    }
+
+    
+    .form-label {
+        color: var(--title-background-color);
+        padding: 5px;
+        width: 200px;
+        text-align: Left;
+        display: flex;
+        align-items: center;
+    }   
+    label{
+        font-weight:700;
+    }
+    .dx-textbox .dx-texteditor-input,
+    .dx-numberbox .dx-texteditor-input,
+    .dx-selectbox .dx-texteditor-input {
+        /*  background-color: white; */
+    }
+
+    .dx-selectbox {
+        width: 100%;
+    }
+
+    .dx-texteditor-input{
+        border:1px solid #ddd;
+    }
+    .footer-buttons .row {
+        margin-top: 20px; /* Add some space between the form and footer */
+    }
+
+    .footer-buttons .col-md-1 {
+        /*  padding-left: 10px;
+                                padding-right: 10px; */
+    }
+
+    /* Adds border to form control elements */
+    .form-control-with-border {
+        /* border: 1px solid gray; */
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
+    }
+
+    .form-inline-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .form-inline-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 200px;
+    }
+
+        .form-inline-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+    .form-inline-location {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    .button-group{
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+    }
+    /* Optional: Adds a border to the form-row as a whole */
+    .form-row.border-outline {
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+    }
+    
+    .mainContainer{
+        width:100%;
+        overflow-x: hidden;
+    }
+    .titleCard-toggle1 {
+        display: none;
+    }
+
+    .outline-container{
+        color: var(--title-background-color);
+        padding: 10px;
+    }
+    .dx-texteditor-input {
+    border: 0px !important; 
+}
+.footer-fixed {
+bottom: -13px !important;
+}
+  /* Modal Content */
+        .modal-content {
+            margin: 5% auto;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%!important;
+            max-width: 1400px;
+            height: 90%;
+            max-height: 800px;
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            overflow: hidden; /* Prevents content overflow */
+        }
+         .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%!important;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        }
+</style>
+
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text" id="assetregisterview"></h3>
+</div>
+<div class="form-container1">
+
+    <div class="outline-container">
+
+        <!-- 🔹 First Row -->
+        <div class="form-inline-row">
+
+            <!-- Asset Ledger No -->
+            <div class="form-inline-group">
+                @(Html.DevExtreme().TextBox()
+                    .ID("txtacctledno")
+                    .Value("")
+                    .Label(new JS("formatMessage('Asset Ledger No')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ReadOnly(true)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired().Message("Asset Ledger No is required");
+                    })
+                    )
+            </div>
+
+            <!-- Asset Category + Button -->
+            <div class="form-inline-group" style="min-width: 200px;">
+                <div class="form-inline-location">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("ddassetCategory")
+                        .ValueExpr("AssetCategoryCode")
+                        .DisplayExpr("AssetCategory")
+                         .Label(new JS("formatMessage('Asset Category')"))
+                         .LabelMode(EditorLabelMode.Floating)
+                        .Placeholder("🔍 Select Asset Category")
+                        .InputAttr("aria-label", "Owner")
+                        .DataSource(d => d.WebApi()
+                        .Controller("assetview")
+                        .LoadAction("GetAssetCategoriesByCode")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("AssetCategory"))
+                        .SearchEnabled(true)
+                        .ShowClearButton(true)
+                        .TabIndex(1)
+                        .Width(200)
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Asset Category is required");
+                        })
+                         .Buttons(buttons =>
+                        {
+                        buttons.Add()
+                        .Name("btnAddAccount")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
+                        .Icon("plus")
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("redirectToAssetCategoryView"));
+                        buttons.Add()
+                        .Name("dropDown");
+                            }))
+                </div>
+            </div>
+
+            <!-- Purchased Asset Value -->
+            <div class="form-inline-group" style="min-width: 300px;">
+                @(Html.DevExtreme().NumberBox()
+                    .ID("PurchasedAssetValue")
+                         .Label(new JS("formatMessage('Purchased Asset Value')"))
+                         .LabelMode(EditorLabelMode.Floating)
+                    .Value(0)
+                    .Min(0)
+                    .Max(1000000)
+                    .ShowSpinButtons(true)
+                    .Format("#,##0")
+                    .Step(1)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired().Message("Purchased Value is required");
+                    })
+                    )
+            </div>
+
+            <!-- Plate No -->
+            <div class="form-inline-group" style="min-width: 300px;">
+                @(Html.DevExtreme().TextBox()
+                     .Label(new JS("formatMessage('Plate No')"))
+                         .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtplatno")
+                    .Value("")
+                    )
+            </div>
+
+            <!-- Property No (Modules) -->
+            <div class="form-inline-group" style="min-width: 300px;">
+                @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.WebApi()
+                    .Controller("assetview")
+                    .LoadAction("GetPropertDetails")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyNo"))
+                    .Label(new JS("formatMessage('Property No (Modules)')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("ddlpropertyno")
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("PropertyNo")
+                    .DisplayExpr("AccountHead")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .Width(300)
+                    .TabIndex(1)
+                    .DropDownOptions(o => o.Width(1000))
+                    .ContentTemplate(new TemplateName("LedgerContentTemplate"))
+                    )
+            </div>
+        </div>
+
+        <!-- 🔹 Second Row -->
+        <div class="form-inline-row" style="align-items:end;">
+
+            <!-- Asset Description -->
+            <div class="form-inline-group">
+                @(Html.DevExtreme().TextBox()
+                     .Label(new JS("formatMessage('Asset Description')"))
+                         .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtAssetDescription")
+                    .Width(200)
+                    )
+            </div>
+
+            <!-- Asset Location -->
+            <div class="form-inline-group">
+                <label for="Assetlocation"></label>
+                <div class="form-inline-location">
+                    @(Html.DevExtreme().SelectBox()
+                        .ID("ddlassetlocation")
+                        .Label(new JS("formatMessage('Asset Location')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Placeholder("🔍 Select Asset Location")
+                        .ValueExpr("AssetLocationCode")
+                        .InputAttr("aria-label", "Owner")
+                        .DisplayExpr("AssetLocation")
+                        .DataSource(d => d.WebApi()
+                        .Controller("Assetview")
+                        .LoadAction("GetddlAssetlocation")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("AssetLocation"))
+                        .SearchEnabled(true)
+                        .ShowClearButton(true)
+                        .Width(200)
+                        .TabIndex(1)
+                        .Buttons(buttons =>
+                        {
+                        buttons.Add()
+                        .Name("btnAddAccount1")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
+                        .Icon("plus")
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("redirectToAssetLocationMaster"));
+                        buttons.Add()
+                        .Name("dropDown");
+                            }))
+                        
+                </div>
+            </div>
+
+            <!-- Asset Specification -->
+            <div class="form-inline-group">
+                @(Html.DevExtreme().TextArea()
+                    .ID("txtspecifications")
+                    .Label(new JS("formatMessage('Asset Specification')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Width(300)
+                    )
+
+            </div>
+
+            
+                 @*  <div class="form-group col-md-2 col-sm-6"> *@
+                         <div class="form-inline-group">
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Base Currency')"))
+                            .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
+                            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ddlBaseCurrency")
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(false)
+                            .OpenOnFieldClick(true)
+                            .Value(baseCurrencyIdnew)
+                            .ValueExpr("CurrencyExchangeId")
+                            .DisplayExpr("CurrencyName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(0)
+                            .DropDownOptions(o => o.Width(700))
+                            .ReadOnly(true)
+                            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                            .ContentTemplate(new TemplateName("BaseCurrencyContentTemplate"))
+                            
+                            )
+                        @using (Html.DevExtreme().NamedTemplate("BaseCurrencyContentTemplate"))
+                        {
+                            @(Html.DevExtreme().DataGrid()
+                                .ID("basecurrency-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("Utility")
+                                .LoadAction("GetCurrencyList")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CurrencyExchangeId")
+                                )
+
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
+                                .OnSelectionChanged("onBaseCurrencySelectionChanged") // Define this JS function
+                                .Height(300)
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
+                                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
+                                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
+                                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                    columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
+                                    columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
+
+                                })
+                                )
+                        }
+
+
+                    </div>
+
+                
+
+                  @* <div class="form-group col-md-1 col-sm-6"> *@
+                    
+
+
+        </div>
+    </div>
+
+
+    <div class="form-container" style="padding:10px;">
+
+        <!-- Tab Menu -->
+        @(
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("AssetTabs").Width("100%")
+                .Items(item =>
+                {
+                    item.Add()
+                .Text("Asset Details")
+                 .Title(new JS("formatMessage('Asset Details')"))
+                .Template(@<text>
+
+
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>     
+@*                         @(Html.DevExtreme().DateBox().ID("txtPurchasedDate").DisplayFormat("dd-MMM-yyyy").Value(""))
+ *@
+                        @(Html.DevExtreme().DateBox()
+                                                .ID("txtPurchasedDate")
+                                                .DisplayFormat("dd-MMM-yyyy")
+                                                     .Label(new JS("formatMessage('Purchased Date')"))
+     .LabelMode(EditorLabelMode.Floating)
+                                                .ShowClearButton(true)
+                                                .Value((DateTime?)null) // Use nullable DateTime
+                                                )
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().TextBox()     .Label(new JS("formatMessage('Purchased From')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtPurchasedFrom").Value(""))
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ddlPurchasedAs")
+                             .Label(new JS("formatMessage('Purchased As')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .DataSource(new List<object>
+                        {
+                        new { Value = 1, Text = "As New" },
+                        new { Value = 2, Text = "Second Hand" },
+                        new { Value = 3, Text = "Under repair" }
+                        })
+                        .DisplayExpr("Text") // Field for display text
+                        .ValueExpr("Value") // Field for value
+                        .Value(1) // Default value, e.g., "As New"
+                        .ShowClearButton(true)
+                        .Placeholder("Select an option") // Optional: Placeholder text
+                        //.Width() // Optional: Set width
+                        )
+                    </div>
+
+
+
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().SelectBox().ID("txtCurrentCondition")     .Label(new JS("formatMessage('Current Condition')"))
+     .LabelMode(EditorLabelMode.Floating).Items(new List<string> { "Excellent Condition", "Good Condition","Under Repair", "Ready to Scrap","Not Used anymore","To be repaired" }).Value("1"))
+                    </div>
+                </div>
+
+                <!-- Second Row -->
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                         @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Brand')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtBrand").Value(""))
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                         @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Model')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtModel").Value(""))
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Year')"))
+                         .LabelMode(EditorLabelMode.Floating).ID("txtYear").Value(""))
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().TextBox()     .Label(new JS("formatMessage('Type')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtAssetType").Value(""))
+                    </div>
+                </div>
+
+                <!-- Third Row -->
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().NumberBox()     .Label(new JS("formatMessage('FMV (Fair Market Value)')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtFMV").Value(0))
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-label">
+                        </div>
+                        @(Html.DevExtreme().NumberBox().Label(new JS("formatMessage('BMV Numbers')"))
+     .LabelMode(EditorLabelMode.Floating).ID("txtBMV").Value(0))
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" >
+                <div class="form-label">
+                    @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Is Property Financed?')"))
+     .ID("Ispropertychk"))
+                </div>
+            </div>
+
+            <div class="form-container">
+                  <div class="form-row">
+                        @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Finance By')"))
+                            .LabelMode(EditorLabelMode.Floating)  .Width("25%").ID("txtFinanceBy").Value(""))
+
+                        @(Html.DevExtreme().DateBox().ID("txtStartDate") .Label(new JS("formatMessage('Start Date')"))
+                            .LabelMode(EditorLabelMode.Floating) .Width("25%").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
+
+                        @(Html.DevExtreme().DateBox().ID("txtEndDate") .Label(new JS("formatMessage('End Date')"))
+                            .LabelMode(EditorLabelMode.Floating).Value("") .Width("25%").DisplayFormat("dd-MMM-yyyy").ShowClearButton(true).Value((DateTime?)null))
+                    </div>
+
+                <div class="form-row" style="align-items:end;">
+                    <div class="col-md-3">
+                       
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("txtNoOfInstallments")
+                        .Label(new JS("formatMessage('No of Installments')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(0)
+                        // .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-3">
+                        
+                        @(
+                        Html.DevExtreme().NumberBox()
+                             .Label(new JS("formatMessage('Down Payment')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtDownpayment")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-2">
+                        @(
+                        Html.DevExtreme().NumberBox()
+                        .ID("txtMonthlyInstallment")
+                             .Label(new JS("formatMessage('Monthly Installment')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+
+                    <div class="col-md-2">
+                        @(
+                        Html.DevExtreme().NumberBox()
+                             .Label(new JS("formatMessage('Final Payment')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtFinalPayment")
+                        .Value(0)
+                        .Max(1000000)
+                        .ShowSpinButtons(true)
+                        .Format("#,##0")
+                        .Step(1)
+                        .Width("100%")
+
+                        )
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            @(Html.DevExtreme().Button()
+                            .ID("btnpaymentshedule")
+                            .Text(new JS("formatMessage('Payment Schedule')"))
+                            .Height(100)
+                            .Width(238)
+                            .Icon("plus")
+                            .OnClick("function() {  }")
+                            )
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+           <div class="form-container" style="display:flex; gap:10px; padding:10px;">
+                @(Html.DevExtreme().TextBox().ID("txtenteredby").Width("25%")
+                    .Label(new JS("formatMessage('Entered By')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtmodifiedby")
+                    .Label(new JS("formatMessage('Modified By')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtenteredon")
+                    .Label(new JS("formatMessage('Entered on')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("23%").ReadOnly(true))
+                @(Html.DevExtreme().TextBox().ID("txtmodifiedon")
+                    .Label(new JS("formatMessage('Modified on')"))
+                    .LabelMode(EditorLabelMode.Floating).Value(null).Width("25%").ReadOnly(true))
+            </div>
+        </text>);
+                    item.Add().Text("Depreciation").Title(new JS("formatMessage('Depreciation')")).Template(@<text>
+
+
+            <div class="form-container">
+                @*    <h2>@ViewData["Title"]</h2> *@
+
+                <!-- Card 1: General Account Group Information -->
+                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
+                    <div class="form-group">
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("txtDepreciationMethod")
+                             .Label(new JS("formatMessage('Depreciation Method:')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .DataSource(new[] { "Straight Line Method" })
+                        .Value("Straight Line Method")
+                        .Width(520)
+                        .Disabled(false)
+
+                        )
+                    </div>
+
+                    <!-- Scarp Value -->
+                    <div class="form-group">
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("txtScarpValue")
+                             .Label(new JS("formatMessage('Scarp Value')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        @*  // .Min(0).Max(1000) *@
+                        .Step(1))
+                    </div>
+
+                    <!-- Life in years -->
+                    <div class="form-group">
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("txtLifeinyears")
+                             .Label(new JS("formatMessage('Life in years')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)
+                        .Max(1000)
+                        .Step(1))
+                    </div>
+
+                    <!-- Dep.Percentage -->
+                    <div class="form-group">
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("txtDepPercentage")
+                             .Label(new JS("formatMessage('Dep.Percentage(%)')"))
+     .LabelMode(EditorLabelMode.Floating)
+                        .Width(250)
+                        .Value(0.0)
+                        .ShowSpinButtons(true)
+                        .Min(0.0)
+                        // .Max(100)
+                        .Step(0.1)
+
+                        )
+                    </div>
+
+
+                    <!-- Schedule Button -->
+                    <div class="form-group" style="margin-left: auto;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnAttach")
+                        .Text(new JS("formatMessage('Schedule')"))
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                        )
+                    </div>
+                </div>
+
+
+
+                    <div class="dx-field ledgerResult" style="padding:10px;">
+
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry201206depreciationChild>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                       
+                        .Columns(columns =>
+                        {
+                    columns.AddFor(m => m.DepreciationDocNo) .Caption(new JS("formatMessage('Depreciation Doc No')")) .Visible(true);
+                    columns.AddFor(m => m.DeprStartDate).Caption(new JS("formatMessage('Depr Start Date')")).Visible(true);
+                        columns.AddFor(m => m.DeprEndDate).Caption(new JS("formatMessage('Depr End Date')")).Visible(true);
+                    columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Visible(true);
+                        columns.AddFor(m => m.DebitTransaction).Caption(new JS("formatMessage('Debit Transaction')")).Visible(true);
+                        columns.AddFor(m => m.CreditTransaction).Caption(new JS("formatMessage('Credit Transaction')")).Visible(true);
+                        columns.AddFor(m => m.ClosingBalance).Caption(new JS("formatMessage('Closing Balance')")).Visible(true);
+                        columns.AddFor(m => m.DepreciatedPercentage).Caption(new JS("formatMessage('Depreciated Percentage')")).Visible(true);
+                    columns.AddFor(m => m.DepreciationAmount).Caption(new JS("formatMessage('Depreciation Amount')")).Visible(true);
+                        columns.AddFor(m => m.AccumulatedAdjusted).Caption(new JS("formatMessage('Accumulated Adjusted')")).Visible(true);
+                    columns.AddFor(m => m.BookValueAsOnDate).Caption(new JS("formatMessage('Book Value As On Date')")).Visible(true);
+                        })
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height("45vh")
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        .Summary(summary => summary
+                        .TotalItems(items =>
+                        {
+                        items.Add()  // Summary for Opening Balance
+                        .Column("OpeningBalance")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Debit Transaction
+                        .Column("DebitTransaction")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Credit Transaction
+                        .Column("CreditTransaction")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Closing Balance
+                        .Column("ClosingBalance")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+
+                        items.Add()  // Summary for Depreciation Amount
+                        .Column("DepreciationAmount")
+                        .SummaryType(SummaryType.Sum)
+                        .DisplayFormat("Total: {0}");
+                        })
+                        )
+                        )
+                    </div>
+                </div>
+
+
+
+
+
+        </text>);
+
+
+                    item.Add().Title(new JS("formatMessage('Documents')"))      .Text(new JS("formatMessage('Documents')")).Template(@<text>
+            <div class="form-container">
+                @* <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                    @(Html.DevExtreme().Button()
+                    .ID("docbtnAttach")
+                    .Text("Add & Attach Files")
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .OnClick("function() { alert('This feature is currently in progress. Please check back later.'); }")
+                    )
+
+                </div> *@
+
+
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%; margin-top:10px; padding:10px;">
+                    @(Html.DevExtreme().Button()
+                    .ID("docbtnAttach")
+                    .Text(new JS("formatMessage('Add & Attach Files')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .OnClick("redirectToAssetDocuments")
+                    )
+                </div>
+                <div class="dx-field ledgerResult">
+                        @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Tbl20108AssetDocument>()
+
+                        .ID("Documents-dataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                        @*   columns.AddFor(m => m.).Caption(""); *@
+                        columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('Doc No')"));
+
+
+                    columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref.No')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDate).Caption(new JS("formatMessage('Expiry On')")).Visible(true);;
+                    columns.AddFor(m => m.DocumentExpDateAr).Caption(new JS("formatMessage('Expiry Arabic')")).Visible(true);;
+                    columns.AddFor(m => m).Caption(new JS("formatMessage('Notify On')")).Visible(true);;
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height("45vh")
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                        )
+                 </div>
+            </div>
+        </text>);
+                    item.Add().Title(new JS("formatMessage('Maintenance')")).Text(new JS("formatMessage('Maintenance')")).Template(@<text>
+            <div class="form-container">
+                <div class="form-row" style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
+                    <!-- Depreciation Method    style="display: flex; align-items: flex-end; gap: 10px; width: 100%;"-->
+                    <div class="form-group">
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("txtMaintenanceReading")
+                        .Label(new JS("formatMessage('Latest Meter Reading:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(350)
+                        .Value(0)
+                        .ShowSpinButtons(true)
+                        .Min(0)                   
+                        .Step(1))
+                    </div>
+                   @*  <div class="form-group">
+                        <label for="maintenanceTypes" class="button-alignment-down"></label>
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ddlMaintenanceTypes")
+                        .Label(new JS("formatMessage('Select Maintenance Type:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ValueExpr("AssetMaintenanceTypeId")
+                        .DisplayExpr("AssetMaintenanceType")
+                        .DataSource(d => d.WebApi()
+                        .Controller("assetview")
+                        .LoadAction("GetddlAssetMaintanence")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        )
+                        .SearchEnabled(true)
+                        .ShowClearButton(true)
+                        .Placeholder("Select Maintenance Type")
+                        .Width(400)
+                        )
+                    </div> *@
+                    <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnMaintenance")
+                        .Text(new JS("formatMessage('Add Maintenance Types')"))
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save")
+                        .OnClick("redirectassetmaintanence")
+                        )
+                    </div>
+                    <!-- Add Scheduled Types Button -->
+                    <div class="form-group">
+                        @(Html.DevExtreme().Button()
+                        .ID("btnAddScheduledTypes")
+                        .Text(new JS("formatMessage('Add Scheduled Maintainance')"))
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("plus")
+                        .OnClick("addScheduledTypeRow")
+                        )
+                    </div>
+                </div>
+                 <div class="dx-field ledgerResult" style="padding:10px;">
+                        @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Tbl20111AssetMaintenanceMaster>()
+                        .ID("maintenanceGrid")
+                    .KeyExpr("MaintenanceRefNo")
+                    .RemoteOperations(false)
+                    .DataSource(new JS("maintenanceDataSource") )
+                        .Columns(columns =>
+                        {
+                       
+                         columns.AddFor(m => m.MaintenanceRefNo).Visible(false);
+                    columns.AddFor(m => m.MaintenanceTypeId)
+                    .DataField("MaintenanceTypeId")
+                    .Caption(new JS("formatMessage('Maintenance Type')"))
+                    .Lookup(lookup => lookup
+                    .DataSource(ds => ds.Mvc().Controller("AssetView").LoadAction("GetEditMaintenance"))
+                    .ValueExpr("AssetMaintenanceTypeId")
+                    .DisplayExpr("AssetMaintenanceType")
+                    );
+
+                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy").CellTemplate(new JS("reminderDateCellTemplate")).Alignment(HorizontalAlignment.Center); 
+                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.MaintenanceRemarks).Caption(new JS("formatMessage('Remarks')"));
+                      
+                        })
+                        //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+                        .AllowColumnReordering(true) // Enable column reordering
+                        .AllowColumnResizing(true)   // Enable column resizing
+                        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                        .HeaderFilter(filter => filter.Visible(true))
+                        .Height("45vh")
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                        .ShowBorders(true)
+                        .Width("100%")
+                    .Editing(editing => editing
+                    .Mode(GridEditMode.Cell)
+                    .AllowUpdating(true) // <-- MUST be here
+                    .AllowDeleting(false)
+                    .UseIcons(true)
+                    )
+                     .Summary(summary => {
+            summary.TotalItems(items => {
+            items.Add().SummaryType(SummaryType.Count)
+                .DisplayFormat("Total Rows: {0}")
+                .ShowInColumn("MaintenanceReading"); // You can use any visible column name
+        });
+    })
+
+                    .OnContextMenuPreparing("onContextMenuPreparing")
+                   
+                    .OnRowUpdated("onRowUpdated")
+
+                        )
+                    </div>
+                @section Scripts {
+                <script>
+                   const maintenanceDataSource = new DevExpress.data.CustomStore({
+                        key: "MaintenanceRefNo",
+                        load: () => {
+                            const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+                            return $.getJSON("/api/AssetView/GetMaintenance", { assetLedgerNo: assetLedgerNo });
+                        },
+                        update: (key, values) => {
+                            const grid = $("#maintenanceGrid").dxDataGrid("instance");
+                            const originalData = grid.getDataSource().items().find(x => x.MaintenanceRefNo === key);
+                            const merged = Object.assign({}, originalData, values);
+                            merged.MaintenanceRefNo = key;
+
+                            return $.ajax({
+                                url: "/api/AssetView/UpdateMaintenanceType",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(merged)
+                            });
+                        }
+                   });
+
+                </script>
+                }
+
+
+
+            </div>
+
+
+        </text>);
+                })
+                 .OnSelectionChanged("onTabSelectionChanged")
+)
+           
+
+    </div>
+
+@*                <div class="footer-fixed" style="display:flex;">
+                    <div class="col-md-1">
+                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("updateAsset"))
+                    </div>
+                    <div class="col-md-1">
+                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("save").OnClick("onSaveAndClose"))
+                    </div>
+                    <div class="col-md-1">
+                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").ElementAttr(new { @class = "dx-button-custom btn-back" }) .Icon("arrowleft").OnClick("goBackToAssetView"))
+                    </div>
+                </div>*@
+           
+<div class="form-container">
+    <div class="footer-fixed">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnUpdate")
+                        .Text(new JS("formatMessage('Update')"))
+                        .Icon("refresh")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Default) // Use .Success, .Danger, .Normal etc.
+                        .OnClick("updateAsset"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btDelete")
+                        .Text(new JS("formatMessage('Save & Close')"))
+                        .Icon("save")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Success)
+                        .OnClick("onSaveAndClose"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("arrowleft")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Normal) // or .Back if you have custom behavior
+                        .OnClick("goBackToAssetView"))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+@using (Html.DevExtreme().NamedTemplate("LedgerContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("ddlpropertyno-datagrid")
+                .DataSource(d => d.WebApi()
+                    .Controller("assetview")
+                    .LoadAction("GetPropertDetails")
+                .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyNo")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChanged")
+                .OnInitialized("dataGridInitialized")
+                .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property No')"));
+                    columns.Add().DataField("PropertyDescription").Caption(new JS("formatMessage('Property Description')"));
+                    columns.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')"));
+                    columns.Add().DataField("Brand").Caption(new JS("formatMessage('Brand')"));
+                    columns.Add().DataField("Capacity").Caption(new JS("formatMessage('Capacity')"));
+                    columns.Add().DataField("Model").Caption(new JS("formatMessage('Model')"));
+
+                    @*          columns.Add().DataField("DoorNo");
+            columns.Add().DataField("ChassisNo");
+            columns.Add().DataField("Color");
+            columns.Add().DataField("Specifications");
+            columns.Add().DataField("Year");
+            columns.Add().DataField("Ownership");
+            columns.Add().DataField("PropertyGroupId");
+            columns.Add().DataField("PropertyType"); *@
+                })
+                        )
+}
+
+
+@* Cell Template *@
+<script type="text/html" id="maintenanceTypeCellTemplate">
+    <%- data.MaintenanceType ? data.MaintenanceType : " " %>
+</script>
+
+<script type="text/html" id="maintenanceTypeEditCellTemplate">
+        <div id="maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>"></div>
+        <script type="text/javascript">
+    (function () {
+        var elementId = "maintenanceTypeDropDownBox_<%- data.MaintenanceRefNo %>";
+        var value = <%- data.MaintenanceTypeId != null ? JSON.stringify(data.MaintenanceTypeId) : 'null' %>;
+
+        $("#" + elementId).dxDropDownBox({
+            dataSource: DevExpress.data.AspNet.createStore({
+            key: "AssetMaintenanceTypeId",
+            loadUrl: "/api/AssetView/GetEditMaintenance"
+            }),
+            value: value,
+            valueExpr: "AssetMaintenanceTypeId",
+            displayExpr: "AssetMaintenanceType",
+            showClearButton: false,
+            placeholder: "Select AccountHead",
+            dropDownOptions: { width: 800 },
+            contentTemplate: function (e) {
+                return $("<div>").dxDataGrid({
+                    dataSource: e.component.option("dataSource"),
+                    columns: [{ dataField: "AssetMaintenanceType" }],
+                    selection: { mode: "single" },
+                    selectedRowKeys: [e.component.option("value")],
+                    onSelectionChanged: function (selectedItems) {
+                        
+                        e.component.option("value", selectedItems.selectedRowKeys[0] || null);
+                    },
+                    filterRow: { visible: true },
+                    height: 345,
+                    paging: { pageSize: 15 },
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    scrolling: { mode: "virtual" }
+                });
+            }
+        });
+    })();
+</script>
+</script>
+
+
+
+<script type="text/html" id="deleteTemplate">
+    <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
+</script>
+<script>
+    let getUN = null;
+    $(document).ready(function () {
+        // Extract assetLedgerNo from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const assetLedgerNo = urlParams.get("assetLedgerNo");  // Get assetLedgerNo from the URL query string
+
+        if (assetLedgerNo) {
+            fetchAssetData(assetLedgerNo);  // Call the function to fetch data
+        }
+
+
+              $.ajax({
+                 url: "/api/AccountLedgerMaster/getUserName",
+                type: 'GET',//
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                      getUN=response.UserName;
+                    //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                      console.log("userN:",getUN);
+                }
+             });
+    });
+
+    function deleteRow(element) {
+        var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+        var rowIndex = $(element).closest("tr").index();
+        var dataSource = grid.option("dataSource");
+        dataSource.splice(rowIndex, 1);
+        grid.option("dataSource", dataSource);
+        grid.refresh();
+    }
+
+
+        var dataGridInstance;
+    var rowData = []; // Store the grid data
+
+    $(function () {
+        dataGridInstance = $("#mdataGrid").dxDataGrid({
+            dataSource: rowData,
+            keyExpr: "SNo",
+            columns: [
+                {
+                    dataField: "MaintenanceRefNo",
+                    caption: formatMessage('Maintenance Id'),
+                    width: 200
+                },
+                {
+                    dataField: "MaintenanceTypeId",
+                    caption: formatMessage('Maintenance Type'),
+                    width: 550,
+                    sortOrder: "asc",
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        getDropdownData().done(function (dropdownData) {
+                            let $container = $("<div>").css({
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                width: "100%"
+                            }).appendTo(cellElement);
+
+                            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+                                dataSource: dropdownData,
+                                valueExpr: "GSCode",
+                                displayExpr: "GSDescrpition",
+                                value: cellInfo.value,
+                                dropDownOptions: { width: 800 },
+                                onValueChanged: function (e) {
+                                    let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+
+                                    if (selectedItem) {
+                                        cellInfo.setValue(selectedItem.GSCode); // Set value as GSCode
+
+                                        let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                        let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                                        if (rowIndex !== -1) {
+                                            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+                                            dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                                            dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+
+                                            ItemNo = selectedItem.GSCode;
+                                            Gsdescrpition = selectedItem.GSDescrpition;
+                                            GsdescriptionAr = selectedItem.GsdescriptionAr;
+                                            ItemPartNo = selectedItem.ItemPartNo;
+                                            CostPrice = selectedItem.CostPrice;
+                                            GssellingRate = selectedItem.GSSellingRate;
+                                            ReorderQty = selectedItem.ReorderQty;
+                                        }
+
+                                        let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+                                    }
+                                },
+                                contentTemplate: function (e) {
+                                    return $("<div>").dxDataGrid({
+                                        dataSource: dropdownData,
+                                        selection: { mode: "single" },
+                                        keyExpr: "GSCode",
+                                        height: 300,
+                                        scrolling: { mode: "virtual" },
+                                        columns: [
+                                            { dataField: "GSCode", caption: "Code", width: 80 },
+                                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                                            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+                                            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                                            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                                            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                                        ],
+                                        onSelectionChanged: function (selectedItems) {
+                                            let selectedItem = selectedItems.selectedRowsData[0];
+
+                                            if (selectedItem) {
+                                                e.component.option("value", selectedItem.GSCode);
+                                                cellInfo.setValue(selectedItem.GSCode); // Set value as GSCode
+
+                                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                                let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                                                if (rowIndex !== -1) {
+                                                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+                                                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                                                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                                                    dataGrid.cellValue(rowIndex, "Qty", 1);
+                                                    dataGrid.cellValue(rowIndex, "VAT%", "15%");
+                                                }
+
+                                                e.component.close();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    }
+                },
+                { dataField: "MaintenanceReading", caption: formatMessage('Maintenance Reading'), width: 150 },
+                { dataField: "MaintenanceDate", caption: formatMessage('Maintenance Scheduled On'), width: 150 },
+                { dataField: "ReminderDate", caption: formatMessage('Reminder Date'), width: 150 },
+                { dataField: "MaintenanceRemarks", caption: formatMessage('Remarks'), width: 185 },
+                { dataField: "IsMaintenanceDone", caption: formatMessage('Maintenance Done?'), width: 150 }, // ✅ Fixed comma
+                { dataField: "ActualMaintenanceDoneOn", caption: formatMessage('ActualMaintenanceDoneOn'), width: 150 }
+            ],
+            editing: {
+                mode: "cell"
+            },
+            onInitNewRow: function (e) {
+                e.data.SNo = rowData.length + 1;
+            },
+            columnAutoWidth: true,
+            showBorders: true
+        }).dxDataGrid("instance");
+        const maintenanceDataSource = new DevExpress.data.CustomStore({
+            key: "MaintenanceRefNo", // ✅ MUST match your entity PK
+            load: function () {
+                return $.getJSON("/api/AssetView/GetMaintenance");
+            },
+            update: function (key, values) {
+                values.MaintenanceRefNo = key; // ✅ include primary key
+                return $.ajax({
+                    url: "/api/AssetView/UpdateMaintenanceType",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(values)
+                });
+            }
+        });
+    });
+
+    function addScheduledTypeRow() {
+        const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+        var maintenanceReading = $("#txtMaintenanceReading").dxNumberBox("instance").option("value");
+
+        if (!ledgerNo) {
+            DevExpress.ui.notify("Asset Ledger No is required", "error", 3000);
+            return;
+        }
+
+        const newRow = {
+            AssetLedgerNo: ledgerNo,
+            MaintenanceTypeId: 1,
+            MaintenanceReading: maintenanceReading != null ? maintenanceReading.toString() : null,  // Ensure it's a string
+            MaintenanceDate: new Date().toISOString(),
+            ReminderDate: new Date().toISOString(),
+            IsMaintenanceDone: false,
+            ActualMaintenanceDoneOn: null
+        };
+
+        $.ajax({
+            url: "/api/AssetView/AddMaintenanceType",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(newRow),
+            success: function () {
+                DevExpress.ui.notify("Scheduled Maintenance Added", "success", 2000);
+                $("#maintenanceGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to add Scheduled Maintenance", "error", 3000);
+            }
+        });
+    }
+
+
+         @* function addScheduledTypeRow() {
+            // Get the dxNumberBox and dxSelectBox instances
+            var readingBox = $("#txtMaintenanceReading").dxNumberBox("instance");
+            var typeBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+
+            // Validate instances
+            if (!readingBox || !typeBox) {
+                console.error("dxNumberBox or dxSelectBox not initialized properly.");
+                return;
+            }
+
+            // Get values
+            var maintenanceReading = readingBox.option("value");
+            var maintenanceType = typeBox.option("text");
+
+            // Validate inputs
+            if (!maintenanceType || maintenanceReading === null) {
+                alert("Please select a maintenance type and enter a valid reading.");
+                return;
+            }
+            // Prepare data
+            var today = new Date();
+            var formattedDate = today.toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+            });
+
+            // Add row to grid
+            var grid = $("#MaintenanceGrid").dxDataGrid("instance");
+            var store = grid.getDataSource().store();
+            store.insert({
+                MaintenanceType: maintenanceType,
+                MaintenanceReading: maintenanceReading,
+                ScheduledOn: formattedDate,
+                ReminderDate: formattedDate,
+                MaintenanceDone: false,
+                Remarks: "",
+            }).then(() => {
+                grid.getDataSource().reload();
+            });
+        } *@
+
+
+    function fetchAssetData(assetLedgerNo) {
+
+        $.ajax({
+            url: "/api/assetview/GetAssetViewedit",
+            type: "GET",
+            data: { assetLedgerNo: assetLedgerNo },
+            success: function (data) {
+                console.log("Data received from API:", data);
+                if (data && data.length > 0) {
+                        populateFields(data[0], assetLedgerNo);
+                } else {
+                    console.warn("No data found for the given AssetLedgerNo.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching asset data:", error);
+            }
+        });
+    }
+    function goBackToAssetView(){
+           window.location.href = `/${tenantName}/Finance/AssetView`;
+
+    }
+      function onSaveAndClose() {
+        updateAsset();
+        window.location.href = `/${tenantName}/Finance/AssetView`;
+    }
+    @* function DeleteAsset(e) { *@
+    @*     const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value"); *@
+    @*   //  alert(assetLedgerNo); *@
+    @*     if (!assetLedgerNo) { *@
+    @*         DevExpress.ui.notify("Please provide an Asset Ledger No.", "error", 2000); *@
+    @*         return; *@
+    @*     } *@
+
+    @*     DevExpress.ui.dialog.confirm("Are you sure you want to delete this asset?", "Confirm Deletion").done(function (dialogResult) { *@
+    @*         if (dialogResult) { *@
+    @*             $.ajax({ *@
+    @*                 url: "/api/assetview/DeleteAsset", // Replace with your controller's route *@
+    @*                 type: "POST", *@
+    @*                 data: { assetLedgerNo: assetLedgerNo }, *@
+    @*                 success: function (response) { *@
+    @*                     DevExpress.ui.notify(response, "success", 2000); *@
+    @*                 }, *@
+    @*                 error: function (xhr) { *@
+    @*                     DevExpress.ui.notify(xhr.responseText || "An error occurred.", "error", 2000); *@
+    @*                 } *@
+    @*             }); *@
+    @*         } *@
+    @*     }); *@
+    @* } *@
+
+
+
+    function dataGridSelectionChanged(e) {
+        const selectedRow = e.selectedRowsData[0]; // Get the selected row
+        if (selectedRow) {
+            var dropDownBoxInstance = $("#ddlpropertyno").dxDropDownBox("instance");
+            if (dropDownBoxInstance) {
+                dropDownBoxInstance.option("value", selectedRow.PropertyNo); // Set selected value
+            }
+
+           @*  var brandTextBox = $("#txtBrand").dxTextBox("instance");
+            if (brandTextBox) {
+                brandTextBox.option("value", selectedRow.Brand || ""); // Set the value or empty if null
+            }
+            var ModelBox = $("#txtModel").dxTextBox("instance");
+            if (ModelBox) {
+                ModelBox.option("value", selectedRow.Model || "");
+            } *@
+    @*   var Platnotxtbox = $("#txtplatno").dxTextBox("instance");
+                if(Platnotxtbox) {
+                Platnotxtbox.option("value",selectedRow.PlateNo || "");
+                }
+                // console.log(selectedRow.PropertyDescription);
+                var assetdesctextbox = $("#txtAssetDescription").dxTextBox("instance");
+
+                if (assetdesctextbox) {
+                assetdesctextbox.option("value", selectedRow.PropertyDescription || "");
+                } else {
+                console.error("AssetDescription TextBox instance not found!");
+                } *@
+
+
+          }         
+    }
+
+    $("#txtScarpValue").on("dxready", function () {
+        const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
+        if (ScrapValueOfPropertyinstance) {
+            ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
+        } else {
+            console.error("NumberBox instance not found for #txtScarpValue.");
+        }
+    });
+
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        //const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function refreshAssetCategorySelectBox() {
+        const assetCategorySelectBox = $("#ddassetCategory").dxSelectBox("instance");
+
+        if (assetCategorySelectBox) {
+            const dataSource = assetCategorySelectBox.getDataSource();
+
+            // Reload the data source and log success or failure
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => console.log("SelectBox data refreshed successfully."))
+                    .catch(error => console.error("Error refreshing SelectBox data:", error));
+            } else {
+                console.warn("DataSource is not defined for the SelectBox.");
+            }
+        } else {
+            console.error("SelectBox instance not found.");
+        }
+    }
+
+
+
+    
+
+    // Function to refresh the Asset Location SelectBox
+    function refreshAssetLocationSelectBox() {
+        const assetLocationSelectBox = $("#ddlassetlocation").dxSelectBox("instance"); // Ensure ID matches Razor
+
+        if (assetLocationSelectBox) {
+            const dataSource = assetLocationSelectBox.getDataSource();
+
+            // Reload the data source and log success or failure
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => {
+                        console.log("Asset Location SelectBox updated successfully.");
+                    })
+                    .catch(error => {
+                        console.error("Error updating Asset Location SelectBox:", error);
+                    });
+            } else {
+                console.warn("DataSource is not defined for the Asset Location SelectBox.");
+            }
+        } else {
+            console.error("Asset Location SelectBox instance not found. Ensure the ID matches.");
+        }
+    }
+
+    // Function to redirect to the Asset Location master form
+    function redirectassetmaintanence() {
+        // Open the master form in a popup window
+        const masterFormWindow = window.open(
+            `/${tenantName}/Finance/AssetMaintanenceMaster`, // URL of the master form
+            'popupWindow',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+        );
+
+        // Monitor the popup window for closure
+        const interval = setInterval(() => {
+            if (masterFormWindow.closed) {
+                clearInterval(interval); // Stop monitoring when the window is closed
+                refreshAssetMaintanenceSelectBox(); // Refresh the Asset Location SelectBox
+            }
+        }, 500);
+    }
+
+    // Function to refresh the Asset Location SelectBox
+    function refreshAssetMaintanenceSelectBox() {
+        const assetLocationSelectBox = $("#ddlMaintenanceTypes").dxSelectBox("instance");
+
+        // Reload the SelectBox's data source
+        if (assetLocationSelectBox) {
+            const dataSource = assetLocationSelectBox.getDataSource();
+            if (dataSource) {
+                dataSource.reload()
+                    .then(() => {
+                        console.log("Asset Location SelectBox updated successfully.");
+                    })
+                    .catch(error => {
+                        console.error("Failed to update the Asset Location SelectBox:", error);
+                    });
+            } else {
+                console.warn("DataSource is not defined for the Asset Location SelectBox.");
+            }
+        } else {
+            console.error("Asset Location SelectBox instance not found.");
+        }
+    }
+
+
+
+
+    @*  function dropDownBoxValueChanged(e) {
+
+        var dataGrid = $("#ddlpropertyno").dxDataGrid("instance");
+
+
+        if (!e.value) {
+
+        if (dataGrid) {
+        dataGrid.clearSelection();
+        console.log("Selection cleared due to empty dropdown value.");
+        } else {
+        console.error("DataGrid instance not found.");
+        }
+        return;
+        }
+
+
+        console.log("Dropdown value changed:", e.value);
+        }
+        *@
+
+        function populateFields(assetData, assetLedgerNo) {
+
+            $.ajax({
+                url: "/api/AccountLedgerMaster/getUserName",
+                type: 'GET',//
+                dataType: 'json',  // Expecting JSON response
+                success: function (response) {
+                    getUN = response.UserName;
+                    //   $("#CreatedBy").dxTextBox("instance").option("value", getUN);
+                    console.log("userN:", getUN);
+                }
+            });
+                          
+            $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo || assetLedgerNo);
+            $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
+
+            if (assetData.PlateNo && assetData.PlateNo !== "null") {
+                $("#txtplatno").dxTextBox("instance").option("value", assetData.PlateNo);
+            } else {
+                $("#txtplatno").dxTextBox("instance").option("value", "");
+            }
+
+            $("#txtAssetDescription").dxTextBox("instance").option("value", assetData.AssetDescription);
+            $("#ddlassetlocation").dxSelectBox("instance").option("value", assetData.AssetLocation);
+            $("#txtspecifications").dxTextArea("instance").option("value", assetData.Specifications);
+            $("#PurchasedAssetValue").dxNumberBox("instance").option("value", assetData.ValueOfProperty);
+            $("#txtPurchasedDate").dxDateBox("instance").option("value", assetData.PurchaseDate);
+            $("#txtPurchasedFrom").dxTextBox("instance").option("value", assetData.PurchasedFrom);
+            $("#ddlPurchasedAs").dxSelectBox("instance").option("value", assetData.PurchasedAs);
+            $("#txtCurrentCondition").dxSelectBox("instance").option("value", assetData.CurrentCondition);
+            $("#txtAssetType").dxTextBox("instance").option("value", assetData.AssetType);
+            $("#txtBrand").dxTextBox("instance").option("value", assetData.Brand);
+            $("#txtYear").dxTextBox("instance").option("value", assetData.Year);
+            $("#txtModel").dxTextBox("instance").option("value", assetData.Model);
+            $("#txtFMV").dxNumberBox("instance").option("value", assetData.Fmv);
+            $("#txtBMV").dxNumberBox("instance").option("value", assetData.Bmv);
+            $("#txtMaintenanceReading").dxNumberBox("instance").option("value",assetData.CurrentReading);
+          
+    @*                 if (assetData.FMV !== undefined) {
+                var fmvValue = assetData.FMV || 0; // Default to 0 if null/undefined
+                var fmvInstance = $("#txtFMV").dxNumberBox("instance");
+                alert(fmvValue);
+                alert(fmvInstance);
+                if (fmvInstance) {
+                fmvInstance.option("value", fmvValue);
+                }
+                else {
+                console.error("NumberBox instance not found for #txtFMV.");
+                }
+                }
+                else {
+                console.warn("FMV data not found in assetData.");
+                }
+                alert(assetData.BMV)
+                if (assetData && assetData.BMV !== undefined) {
+                const bmvValue = assetData.BMV || 0; // Default to 0 if null/undefined
+                const bmvInstance = $("#txtBMV").dxNumberBox("instance");
+                if (bmvInstance) {
+                bmvInstance.option("value", bmvValue);
+                } else {
+                console.error("NumberBox instance not found for #txtBMV.");
+                }
+                } else {
+                console.warn("BMV data not found in assetData.");
+                } *@
+
+                     if (assetData && assetData.NoOfInstallments !== undefined) {
+                const NoOfInstallmentsvalue = assetData.NoOfInstallments || 0; // Default to 0 if null/undefined
+                const NoOfInstallmentsinstance = $("#txtNoOfInstallments").dxNumberBox("instance");
+                if (NoOfInstallmentsinstance) {
+                    NoOfInstallmentsinstance.option("value", NoOfInstallmentsvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtNoOfInstallments.");
+                }
+            } else {
+                console.warn("NoOfInstallments data not found in assetData.");
+            }
+            if (assetData && assetData.InitialDownPayment !== undefined) {
+                const InitialDownPaymentvalue = assetData.InitialDownPayment || 0; // Default to 0 if null/undefined
+                const InitialDownPaymentinstance = $("#txtDownpayment").dxNumberBox("instance");
+                if (InitialDownPaymentinstance) {
+                    InitialDownPaymentinstance.option("value", InitialDownPaymentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtDownpayment.");
+                }
+            } else {
+                console.warn("InitialDownPayment data not found in assetData.");
+
+            }
+            if (assetData && assetData.MonthlyInstallment !== undefined) {
+                const monthlyInstallmentvalue = assetData.MonthlyInstallment || 0; // Default to 0 if null/undefined
+                const monthlyInstallmentinstance = $("#txtMonthlyInstallment").dxNumberBox("instance");
+                if (monthlyInstallmentinstance) {
+                    monthlyInstallmentinstance.option("value", monthlyInstallmentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtMonthlyInstallment.");
+                }
+            } else {
+                console.warn("monthlyInstallment data not found in assetData.");
+            }
+            if (assetData && assetData.FinalInstallment !== undefined) {
+                const FinalInstallmentvalue = assetData.FinalInstallment || 0; // Default to 0 if null/undefined
+                const FinalInstallmentinstance = $("#txtFinalPayment").dxNumberBox("instance");
+                if (FinalInstallmentinstance) {
+                    FinalInstallmentinstance.option("value", FinalInstallmentvalue);
+                } else {
+                    console.error("NumberBox instance not found for #txtFinalPayment.");
+                }
+            } else {
+                console.warn("FinalInstallment data not found in assetData.");
+            }
+
+
+            $("#txtStartDate").dxDateBox("instance").option("value", assetData.InstallmentStartDate);
+
+            $("#txtEndDate").dxDateBox("instance").option("value", assetData.InstallmentEndDate);
+            // alert(assetData.FinancedBy);
+            $("#txtFinanceBy").dxTextBox("instance").option("value", assetData.FinancedBy);
+
+            if (assetData.PropertyNo && assetData.PropertyNo !== "null") {
+                $("#ddlpropertyno").dxDropDownBox("instance").option("value", assetData.PropertyNo);
+            } else {
+                $("#ddlpropertyno").dxDropDownBox("instance").option("value", "");
+            }
+
+            if (assetData && typeof assetData.IsFinanced !== 'undefined') {
+                const isPropertyCheckbox = $("#Ispropertychk").dxCheckBox("instance");
+                if (isPropertyCheckbox) {
+                    // Set the checkbox value: true = checked, false = unchecked
+                    isPropertyCheckbox.option("value", !!assetData.IsFinanced);
+                } else {
+                    console.error("Checkbox instance not found for #Ispropertychk.");
+                }
+            } else {
+                console.warn("IsFinanced property is not defined in assetData.");
+            }
+
+            //  alert(assetData.DepreciationMethod);
+            // New fields to be added
+            //  $("#txtDepreciationMethod").dxSelectBox("instance").option("value", assetData.DepreciationMethod);
+
+
+            if (assetData && assetData.ScrapValueOfProperty !== undefined) {
+                const ScrapValueOfPropertyValue = assetData.ScrapValueOfProperty || 0; // Default to 0 if null/undefined
+                const ScrapValueOfPropertyinstance = $("#txtScarpValue").dxNumberBox("instance");
+                if (ScrapValueOfPropertyinstance) {
+                    ScrapValueOfPropertyinstance.option("value", ScrapValueOfPropertyValue);
+                } else {
+                    console.error("NumberBox instance not found for #txtScarpValue.");
+                }
+            } else {
+                console.warn("ScrapValueOfProperty data not found in assetData.");
+            }
+
+            // $("#txtScarpValue").dxNumberBox("instance").option("value", assetData.ScrapValueOfProperty || 0);
+            $("#txtLifeinyears").dxNumberBox("instance").option("value", assetData.LifeSpanOfProperty);
+            $("#txtDepPercentage").dxNumberBox("instance").option("value", assetData.DepPercentage);
+            $("#txtMaintenanceReading").dxNumberBox("instance").option("value", assetData.CurrentReading);
+
+            $("#txtenteredby").dxTextBox("instance").option("value", assetData.AddedBy);
+       
+            $("#txtenteredon").dxTextBox("instance").option("value", formatDate(assetData.AddedOn));
+            $("#txtmodifiedby").dxTextBox("instance").option("value", assetData.ModifiedBy);
+            $("#txtmodifiedon").dxTextBox("instance").option("value", formatDate(assetData.ModifiedOn));
+
+                
+            console.log("uan:", getUN);
+           
+            function formatDate(date) {
+                if (date) {
+                    const dateObj = new Date(date);
+                    const day = String(dateObj.getDate()).padStart(2, '0');
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const month = monthNames[dateObj.getMonth()];
+                    const year = dateObj.getFullYear();
+                    return `${day}-${month}-${year}`;
+                }
+                return '';
+            }
+
+            $("#txtDepreciationMethod").val(assetData.DepreciationMethod);
+            $("#scrapValueOfProperty").val(assetData.ScrapValueOfProperty);
+            $("#lifeSpanOfProperty").val(assetData.LifeSpanOfProperty);
+            //  $("#depreciationPercentage").val(assetData.DepreciationPercentage);
+            $("#openingTotal").val(assetData.OpeningTotal);
+            $("#totalDebit").val(assetData.TotalDebit);
+            $("#totalCredit").val(assetData.TotalCredit);
+            $("#closingBalance").val(assetData.ClosingBalance);
+            $("#totalDepreciatedAmount").val(assetData.TotalDepreciatedAmount);
+            $("#netBookValue").val(assetData.NetBookValue);
+
+            $("#year").val(assetData.Year);
+            $("#ownership").val(assetData.Ownership);
+            //$("#purchaseDate").val(assetData.PurchaseDate);
+            $("#valueOfProperty").val(assetData.ValueOfProperty);
+            $("#purchasedAs").val(assetData.PurchasedAs);
+            $("#isFinanced").prop("checked", assetData.IsFinanced);
+            $("#financedFrom").val(assetData.FinancedFrom);
+            $("#initialDocCharges").val(assetData.InitialDocCharges);
+            $("#finalInstallment").val(assetData.FinalInstallment)
+
+        }
+           function formatDate(input) {
+    if (!input) return null;
+    const date = input instanceof Date ? input : new Date(input);
+    if (!isNaN(date)) {
+        return date.toISOString().split('T')[0]; // returns yyyy-MM-dd
+    }
+    return null;
+}
+    function updateAsset() {
+        
+    const purchaseDateRaw = $("#txtPurchasedDate").dxDateBox("instance").option("value");
+    const formattedpurchaseDate = formatDate(purchaseDateRaw);
+    console.log("Formatted Purchase Date:", formattedpurchaseDate);
+
+    const startDateRaw = $("#txtStartDate").dxDateBox("instance").option("value");
+    const formattedStartDate = formatDate(startDateRaw);
+    console.log("Formatted Start Date:", formattedStartDate);
+
+    const endDateRaw = $("#txtEndDate").dxDateBox("instance").option("value");
+    const formattedEndDate = formatDate(endDateRaw);
+    console.log("Formatted End Date:", formattedEndDate);
+    
+     const AccountNo = $("#txtacctledno").dxValidator("instance").validate();
+        const AssetCategory = $("#ddassetCategory").dxValidator("instance").validate();
+        const PurchaseAssetValue = $("#PurchasedAssetValue").dxValidator("instance").validate();
+            if (!AccountNo.isValid || !PurchaseAssetValue.isValid  || !AssetCategory.isValid) {
+            DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+            return;
+        }
+
+        var updatedAsset = {
+            "AssetLedgerNo": $("#txtacctledno").dxTextBox("instance").option("value"),
+            "AssetCategory": $("#ddassetCategory").dxSelectBox("instance").option("value"),
+            "PlateNo": $("#txtplatno").dxTextBox("instance").option("value"),
+            "AssetDescription": $("#txtAssetDescription").dxTextBox("instance").option("value"),
+            "AssetLocation": $("#ddlassetlocation").dxSelectBox("instance").option("value"),
+            "Specifications": $("#txtspecifications").dxTextArea("instance").option("value") || "",
+            "ValueOfProperty": $("#PurchasedAssetValue").dxNumberBox("instance").option("value"),
+            "PurchaseDate": formattedpurchaseDate,
+            "InstallmentStartDate": formattedStartDate,
+            "InstallmentEndDate": formattedEndDate,
+            "PurchasedFrom": $("#txtPurchasedFrom").dxTextBox("instance").option("value"),
+            "PurchasedAs": $("#ddlPurchasedAs").dxSelectBox("instance").option("value"),
+            "CurrentCondition": $("#txtCurrentCondition").dxSelectBox("instance").option("value"),
+            "AssetType": $("#txtAssetType").dxTextBox("instance").option("value"),
+            "Brand": $("#txtBrand").dxTextBox("instance").option("value"),
+            "Year": $("#txtYear").dxTextBox("instance").option("value"),
+            "Model": $("#txtModel").dxTextBox("instance").option("value"),
+            "FMV": $("#txtFMV").dxNumberBox("instance").option("value"),
+            "BMV": $("#txtBMV").dxNumberBox("instance").option("value"),
+            "NoOfInstallments": $("#txtNoOfInstallments").dxNumberBox("instance")?.option("value") || 0,
+            "InitialDownPayment": $("#txtDownpayment").dxNumberBox("instance")?.option("value") || 0,
+            "MonthlyInstallment": $("#txtMonthlyInstallment").dxNumberBox("instance")?.option("value") || 0,
+            "FinalInstallment": $("#txtFinalPayment").dxNumberBox("instance")?.option("value") || 0,
+            "FinancedBy": $("#txtFinanceBy").dxTextBox("instance").option("value"),
+            "PropertyNo": $("#ddlpropertyno").dxDropDownBox("instance")?.option("value"),
+            "IsFinanced": $("#Ispropertychk").dxCheckBox("instance")?.option("value") || false,
+            "ScrapValueOfProperty": $("#txtScarpValue").dxNumberBox("instance")?.option("value") || 0,
+            "DepreciationMethod": $("#txtDepreciationMethod").dxSelectBox("instance").option("value"),
+            "DepPercentage": $("#txtDepPercentage").dxNumberBox("instance").option("value"),
+        "CurrentReading": String($("#txtMaintenanceReading").dxNumberBox("instance").option("value") || ""),
+        "LifeSpanOfProperty":$("#txtLifeinyears").dxNumberBox("instance").option("value"),
+        "ConversionCurrencyID":$("#ddCurrency").dxDropDownBox("instance").option("value"),
+        "BaseCurrencyID":$("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
+        "CurrencyRate":$("#txtCurrencyRate").dxNumberBox("instance").option("value")
+
+          
+        };
+
+        console.log("Updated Asset Data:", updatedAsset);
+
+        // Perform AJAX request to update asset
+        $.ajax({
+            url: "/api/assetview/updateAsset",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatedAsset),
+            success: function (response) {
+
+              DevExpress.ui.notify(response.message, "success", 2000);
+                     if (window.parent && window.parent.$("#dataGrid").length) {
+                                    let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                                    if (dataGrid) {
+                                        dataGrid.refresh();
+                                    }
+                                }
+            },
+            error: function (xhr) {
+                console.error("Error Response:", xhr);
+                alert(xhr.responseJSON?.message || "An error occurred during the update process.");
+            }
+        });
+    }
+
+
+
+    $(function () {
+        $("#assetregister").dxTextBox({
+            text:formatMessage("Asset Register"),
+            readOnly: true,
+            onContentReady: function(e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+
+  
+
+function redirectToAssetCategoryView() {
+    let url = `/${tenantName}/Finance/AssetCategoryView`;
+    let title = formatMessage("Asset Category Management");
+    let modalOptions = {
+        width: "500px",
+        height: "90%"
+    };
+
+    openModal(url, title, modalOptions);
+    refreshAssetCategorySelectBox();
+}
+
+    function redirectToAssetLocationMaster() {
+        let url = `/${tenantName}/Finance/AssetLocation`;
+        let title = formatMessage("Asset Location Management");
+        openModal(url, title);
+        refreshAssetLocationSelectBox();
+    }
+    function redirectToAssetDocuments() {
+        var sAccountID = $('#txtacctledno').dxTextBox("instance").option("value");
+        var module = "Assets";
+        var isMaster = false;
+        var menuType = "finance";
+        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
+        let title = formatMessage("Transaction Documents");
+        openModal(url, title);
+    }
+     function redirectassetmaintanence() {
+         let url = `/${tenantName}/Finance/AssetMaintanenceMaster`;
+        let title = formatMessage("Asset Maintenance Master");
+        openModal(url, title);
+        refreshAssetMaintanenceSelectBox(); 
+    }
+
+    function onContextMenuPreparing(e) {
+    if (e.row && e.row.rowType === "data") {
+        e.items = [{
+            text: "Delete",
+            icon: "trash",
+            onItemClick: function () {
+                DevExpress.ui.dialog.confirm(
+                    "You are about to delete the Maintenance Schedule from the database.\nYou cannot revert the changes.\nAre you sure you want to Delete?",
+                    "Confirm Delete"
+                ).done(function (dialogResult) {
+                    if (dialogResult) {
+                        const MaintenanceRefNo = e.row.data.MaintenanceRefNo;
+                        console.log("IDDD222:", e.row.data);
+                        console.log("IDDD:",MaintenanceRefNo);
+                        onDeleteMaintenanceSchedule(MaintenanceRefNo);
+                    }
+                });
+            }
+        }];
+    }
+}
+function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
+    
+       $.ajax({
+            url: `/api/AssetView/DeleteMaintenanceSchedule?MaintenanceRefNo=${MaintenanceRefNo}`,
+        type: "POST",
+        success: function (res) {
+            if (res.success) {
+                DevExpress.ui.notify(res.message, "success", 3000);
+                setTimeout(function () {
+                    $("#maintenanceGrid").dxDataGrid("instance").refresh();
+                }, 3000);
+            } else {
+                DevExpress.ui.notify(res.message || "Delete failed.", "error", 4000);
+            }
+        },
+        error: function () {
+            DevExpress.ui.notify("Unexpected error while deleting.", "error", 4000);
+        }
+    });
+}
+
+    function gridmaintenance_valueChanged(e) {
+        var $dataGrid = $("#maintenanceGrid");
+
+        if ($dataGrid.length) {
+            var dataGrid = $dataGrid.dxDataGrid("instance");
+            dataGrid.selectRows(e.value, false);
+        }
+
+        if (e.value) {
+            let grid = $("#maintenanceGrid").dxDataGrid("instance");
+            let rowIndex = e.element.closest("tr").index();
+            let rowData = grid.getVisibleRows()[rowIndex].data;
+
+            let costAllocationDropdownGrid = $("#accountDropDownBoxeditGrid").dxDataGrid("instance");
+            let selectedRowData = costAllocationDropdownGrid.getSelectedRowsData()[0];
+
+            if (selectedRowData) {
+                rowData.MaintenanceTypeId = selectedRowData.AssetMaintenanceTypeId;
+                rowData.MaintenanceType = selectedRowData.AssetMaintenanceType; // Update AccountHead
+                grid.cellValue(rowIndex, "MaintenanceTypeId", selectedRowData.AssetMaintenanceTypeId);
+                grid.cellValue(rowIndex, "MaintenanceType", selectedRowData.AssetMaintenanceType); // Reflect change
+            }
+        }
+
+        e.component.option("opened", false);
+    }
+
+    function onEditorPreparing(e) {
+        
+        if (e.parentType === "dataRow" && e.dataField === "MaintenanceType") {
+            e.editorType = "dxDropDownBox";
+            e.editorOptions = {
+                value: e.value,
+                valueExpr: "AssetMaintenanceTypeId",
+                displayExpr: "AssetMaintenanceType",
+                dataSource: DevExpress.data.AspNet.createStore({
+                    key: "AssetMaintenanceTypeId",
+                    loadUrl: "/api/AssetView/GetEditMaintenance"
+                }),
+                contentTemplate: function (e, container) {
+                    $("<div>")
+                        .dxList({
+                            dataSource: DevExpress.data.AspNet.createStore({
+                                key: "AssetMaintenanceTypeId",
+                                loadUrl: "/api/AssetView/GetEditMaintenance"
+                            }),
+                            selectionMode: "single",
+                            selectedItemKeys: [e.component.option("value")],
+                            onItemClick: function (args) {
+                                e.component.option("value", args.itemData.AssetMaintenanceTypeId);
+                                e.component.close();
+                            },
+                            keyExpr: "AssetMaintenanceTypeId",
+                            displayExpr: "AssetMaintenanceType"
+                        }).appendTo(container);
+                }
+            };
+        }
+    }
+
+    function onRowUpdated(e) {
+        
+        const merged = Object.assign({}, e.oldData, e.newData);
+        e.cancel = true;
+
+        $.ajax({
+            url: "/api/AssetView/UpdateMaintenanceType",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(merged)
+        }).done(() => {
+            DevExpress.ui.notify("Updated", "success", 2000);
+            $("#maintenanceGrid").dxDataGrid("instance").refresh();
+        });
+    }
+
+        function onCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddCurrency").dxDropDownBox("instance");
+
+        if (selectedKey) {
+             dropDown.option("value", selectedKey); // Set DropDownBox value
+
+        const selectedRow = e.selectedRowsData[0];
+
+        // ✅ Set ExchangeRate in NumberBox
+        if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+            $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
+        }
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            
+                console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
+    }
+
+     function onBaseCurrencyInit(e) {
+            const dropDown = e.component;
+
+            // Delay to ensure dataSource is ready
+            setTimeout(() => {
+                const ds = dropDown.getDataSource();
+                if (!ds) return;
+
+                // Skip if already has value
+                if (dropDown.option("value")) return;
+
+                ds.load().done(items => {
+                    if (items && items.length > 0) {
+                        dropDown.option("value", items[0].CurrencyExchangeId);
+                    }
+                });
+            }, 200); // 100ms is usually enough
+        }
+
+
+           function onBaseCurrencySelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const dropDown = $("#ddlBaseCurrency").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
+            if (dropDown.option("opened")) {
+                dropDown.close();
+            }
+
+            const selectedRow = e.selectedRowsData[0];
+            console.log("Selected Currency:", selectedRow.CurrencyName);
+        } else {
+            DevExpress.ui.notify("Please select a currency", "warning", 2000);
+        }
+    }
+    function onTabSelectionChanged(e) {
+    const selectedTitle = e.addedItems[0].title || e.addedItems[0].Title;
+    if (selectedTitle === "Depreciation") {
+        onDepreciationTabClick();
+    }
+}
+function onDepreciationTabClick() {
+    const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+    if (!ledgerNo) {
+        DevExpress.ui.notify("Please select an Asset Ledger No", "warning", 3000);
+        return;
+    }
+
+    const grid = $("#dataGrid").dxDataGrid("instance");
+
+    // Dynamically bind data source with assetLedgerNo as parameter
+    grid.option("dataSource", new DevExpress.data.DataSource({
+        load: function(loadOptions) {
+            return $.ajax({
+                url: '/api/AssetView/GetDepreciationByLedger', // Your actual controller and action
+                data: {
+                    assetLedgerNo: ledgerNo
+                },
+                dataType: 'json'
+            });
+        },
+        key: "DepreciationDocNo"
+    }));
+}
+function reminderDateCellTemplate(container, options) {
+        var text = DevExpress.localization.formatDate(new Date(options.value), 'dd-MMM-yyyy');
+        container.css({ 
+            "background-color":  "rgb(192, 255, 192)", 
+            "color": "red",
+            "font-weight": "bold"
+        });
+        container.text(text);
+    }
+     $(function () {
+        $("#assetregisterview").text(formatMessage("Asset Register"));
+    });
+</script>

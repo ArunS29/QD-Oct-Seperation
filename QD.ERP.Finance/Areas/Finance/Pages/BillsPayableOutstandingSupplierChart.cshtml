@@ -1,0 +1,136 @@
+@page
+@model QD.ERP.Finance.Areas.Finance.Pages.BillsPayableOutstandingSupplierChartModel
+
+@{
+    ViewData["Title"] = "Bills Payable Outstanding Supplier Chart";
+}
+
+<h2>Bills Payable Outstanding Supplier Chart</h2>
+
+<!-- Loader -->
+<div id="loader" style="display: flex; align-items: center; justify-content: center; height: 300px;">
+    <img src="/images/dicerol.gif" alt="Loading..." style="height: 100px;" />
+</div>
+
+<!-- Chart Containers -->
+<div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 30px;">
+    <div id="barChartContainer" style="width: 48%; min-width: 400px; height: 500px; display: none;"></div>
+    <div id="donutChartContainer" style="width: 48%; min-width: 400px; height: 500px; display: none;"></div>
+</div>
+
+<!-- DevExtreme Scripts -->
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.2.5/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/23.2.5/js/dx.all.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loader = document.getElementById('loader');
+        const barContainer = document.getElementById('barChartContainer');
+        const donutContainer = document.getElementById('donutChartContainer');
+
+        fetch('/api/Dashboard/GetBillsPayableOutstandingSupplierChart')
+            .then(response => response.json())
+            .then(result => {
+                loader.style.display = 'none';
+
+                if (!result.success || !result.data || result.data.length === 0) {
+                    barContainer.innerHTML = "<p style='color:red;'>No data available</p>";
+                    donutContainer.innerHTML = "<p style='color:red;'>No data available</p>";
+                    barContainer.style.display = 'block';
+                    donutContainer.style.display = 'block';
+                    return;
+                }
+
+                const sortedData = result.data.sort((a, b) => b.Balance - a.Balance);
+                const top10 = sortedData.slice(0, 10);
+                const others = sortedData.slice(10);
+                const otherTotal = others.reduce((sum, item) => sum + item.Balance, 0);
+
+                // Show Bar Chart (Top 10)
+                barContainer.style.display = 'block';
+                $("#barChartContainer").dxChart({
+                    dataSource: top10,
+                    series: [{
+                        valueField: "Balance",
+                        argumentField: "AccountHead",
+                        name: "Top 10 Suppliers",
+                        type: "bar",
+                        color: "#3c8dbc"
+                    }],
+                    argumentAxis: {
+                        label: {
+                            rotationAngle: 45,
+                            overlappingBehavior: "rotate"
+                        }
+                    },
+                    valueAxis: {
+                        title: "Amount"
+                    },
+                    legend: { visible: false },
+                    tooltip: {
+                        enabled: true,
+                        format: { type: "currency", precision: 2 }
+                    },
+                    export: { enabled: true },
+                    title: {
+                        text: "Top 10 Suppliers - Bills Payable Outstanding",
+                        font: { size: 16 }
+                    },
+                    animation: { enabled: true }
+                });
+
+                // Show Donut Chart (Others)
+                donutContainer.style.display = 'block';
+                const donutData = [...others.map(item => ({
+                    AccountHead: item.AccountHead,
+                    Balance: item.Balance
+                }))];
+
+                // Optional: Group all remaining as a single "Others" slice
+                donutData.length = 0;
+                donutData.push({
+                    AccountHead: "Others",
+                    Balance: otherTotal
+                });
+
+                $("#donutChartContainer").dxPieChart({
+                    dataSource: donutData,
+                    type: "doughnut",
+                    palette: "Soft Pastel",
+                    series: [{
+                        argumentField: "AccountHead",
+                        valueField: "Balance",
+                        label: {
+                            visible: true,
+                            format: "fixedPoint",
+                            precision: 2,
+                            connector: { visible: true }
+                        }
+                    }],
+                    tooltip: {
+                        enabled: true,
+                        format: { type: "currency", precision: 2 }
+                    },
+                    export: { enabled: true },
+                    legend: {
+                        orientation: "horizontal",
+                        itemTextPosition: "right",
+                        horizontalAlignment: "center",
+                        verticalAlignment: "bottom"
+                    },
+                    title: {
+                        text: "Others (Remaining Suppliers)",
+                        font: { size: 16 }
+                    }
+                });
+
+            })
+            .catch(() => {
+                loader.style.display = 'none';
+                barContainer.innerHTML = "<p style='color:red;'>Error loading data</p>";
+                donutContainer.innerHTML = "<p style='color:red;'>Error loading data</p>";
+                barContainer.style.display = 'block';
+                donutContainer.style.display = 'block';
+            });
+    });
+</script>

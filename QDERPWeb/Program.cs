@@ -15,13 +15,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.FileProviders;
 using QD.ERP.Web;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Middleware;
-using QD.ERP.Web.Middlewares;
-using QD.ERP.Web.Models.DALCommon;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Service.ReportService;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Middleware;
+using QD.ERP.Shared.Middlewares;
+using QD.ERP.Shared.Models.DALCommon;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Service.ReportService;
+using QD.ERP.Shared.Services.Logging;
 using SaasKit.Multitenancy;
 using Serilog;
 using Serilog.Events;
@@ -321,7 +321,7 @@ app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandler>();
 
 // Initialize EmailHelper with the correct configuration
-QD.ERP.Web.Areas.Utility.EmailHelper.Initialize(app.Configuration);
+QD.ERP.Shared.EmailHelper.Initialize(app.Configuration);
 
 #endregion
 

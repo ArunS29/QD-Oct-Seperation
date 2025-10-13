@@ -1,0 +1,211 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.DashboardModel
+@{
+    ViewData["Title"] = "Dashboard Charts with Performance Monitoring";
+}
+
+<h2>📊 Dashboard Performance Monitoring</h2>
+
+<!-- Chart Canvases -->
+<div style="margin-bottom: 40px;">
+    <h4>1️⃣ Client Outstanding by Overdue Days</h4>
+    <canvas id="clientOutstandingChart" height="150"></canvas>
+</div>
+
+<div style="margin-bottom: 40px;">
+    <h4>2️⃣ Bills Payable Aging</h4>
+    <canvas id="billsAgingChart" height="150"></canvas>
+</div>
+
+<div style="margin-bottom: 40px;">
+    <h4>3️⃣ Top 5 Outstanding Balances (Clients & Suppliers)</h4>
+    <canvas id="outstandingDoughnutChart" height="150"></canvas>
+</div>
+
+<div>
+    <h4>4️⃣ Bank & Cash Frequency</h4>
+    <canvas id="bankCashFrequencyChart" height="150"></canvas>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+
+<script>
+    const chartPerformance = [];
+
+    function logChartPerf(name, apiMs, renderMs) {
+        chartPerformance.push({
+            Chart: name,
+            "API Time (ms)": apiMs.toFixed(2),
+            "Render Time (ms)": renderMs.toFixed(2),
+            "Total Time (ms)": (apiMs + renderMs).toFixed(2)
+        });
+        console.table(chartPerformance);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        loadClientOutstandingChart();
+        loadBillsAgingChart();
+        loadOutstandingDoughnutChart();
+        loadBankCashFrequencyChart();
+    });
+
+    // 1️⃣ Client Outstanding Chart
+    async function loadClientOutstandingChart() {
+        const start = performance.now();
+        const res = await fetch('/api/Dashboard/GetClientOutstandingByOverdueDays');
+        const result = await res.json();
+        const apiTime = performance.now();
+
+        if (result.success) {
+            const labels = result.data.map(x => x.OverdueRange);
+            const data = result.data.map(x => x.Balance);
+
+            new Chart(document.getElementById('clientOutstandingChart'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Client Outstanding Balance',
+                        data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+            const renderTime = performance.now();
+            logChartPerf("Client Outstanding", apiTime - start, renderTime - apiTime);
+        }
+    }
+
+    // 2️⃣ Bills Payable Aging Chart
+    async function loadBillsAgingChart() {
+        const start = performance.now();
+        const res = await fetch('/api/Dashboard/GetBillsOutstandingAgingForChart');
+        const result = await res.json();
+        const apiTime = performance.now();
+
+        if (result.success) {
+            const labels = result.data.map(x => x.OverdueRange);
+            const data = result.data.map(x => x.Balance);
+
+            new Chart(document.getElementById('billsAgingChart'), {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Bills Payable',
+                        data,
+                        backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+            const renderTime = performance.now();
+            logChartPerf("Bills Payable Aging", apiTime - start, renderTime - apiTime);
+        }
+    }
+
+    // 3️⃣ Top 5 Outstanding (Clients & Suppliers)
+    async function loadOutstandingDoughnutChart() {
+        const start = performance.now();
+        const res = await fetch('/api/Dashboard/GetOutstandingChartData');
+        const result = await res.json();
+        const apiTime = performance.now();
+
+        if (result.success) {
+            const labels = result.data.map(x => `${x.AccountHead} (${x.Type})`);
+            const data = result.data.map(x => x.Balance);
+
+            new Chart(document.getElementById('outstandingDoughnutChart'), {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Outstanding',
+                        data,
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const renderTime = performance.now();
+            logChartPerf("Top 5 Outstanding", apiTime - start, renderTime - apiTime);
+        }
+    }
+
+    // 4️⃣ Bank & Cash Frequency Chart
+    async function loadBankCashFrequencyChart() {
+        const start = performance.now();
+        const res = await fetch('/api/Dashboard/GetBankAccountsFrequency');
+        const result = await res.json();
+        const apiTime = performance.now();
+
+        const labels = result.map(x => x.Range);
+        const bankData = result.map(x => x.BankBalance);
+        const cashData = result.map(x => x.CashBalance);
+
+        new Chart(document.getElementById('bankCashFrequencyChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Bank',
+                        data: bankData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    },
+                    {
+                        label: 'Cash',
+                        data: cashData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        const renderTime = performance.now();
+        logChartPerf("Bank & Cash Frequency", apiTime - start, renderTime - apiTime);
+    }
+</script>
+
+

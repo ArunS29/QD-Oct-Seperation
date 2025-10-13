@@ -2,25 +2,25 @@ using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Http;
-using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
-using QD.ERP.Web.Models.DAL;
-using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Finance.Areas.Finance.Reports;
+using QD.ERP.Finance.Areas.Finance.Reports.AccountRegister;
+using QD.ERP.Shared.Models.DAL;
+using QD.ERP.Shared.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
-using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
-using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
-using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
-using QD.ERP.Web.Areas.Finance.Reports.ImportReports;
-using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
+using ERPMasterWtDataContext = QD.ERP.Shared.DAL.Entities.ERPMasterWtDataContext;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
+//using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+//using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
+//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+//using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
+using QD.ERP.Finance.Areas.Finance.Reports.ImportReports;
+//using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
 
 namespace QD.ERP.Web.Pages
 {
@@ -209,31 +209,31 @@ namespace QD.ERP.Web.Pages
                         break;
 
              
-                    case "TaxSummaryReport":
-                        Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
+                    //case "TaxSummaryReport":
+                    //    Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
 
-                    case "TaxVATReport":
-                        Report = new TaxVATReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
-                    case "TaxReportRevenueInArabic":
-                        Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "CreditSummary":
-                        Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "DebitNoteSummary":
-                        Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "VATPurchasesAndExpReport":
-                        Report = new VATPurchasesAndExpReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "TaxSummaryReportPurchaseInArabic":
-                        Report = new TaxSummaryReportPurchaseInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
-                    case "VATReturnsform":
-                        Report = new VATReturnsform(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
+                    //case "TaxVATReport":
+                    //    Report = new TaxVATReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
+                    //case "TaxReportRevenueInArabic":
+                    //    Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "CreditSummary":
+                    //    Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "DebitNoteSummary":
+                    //    Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "VATPurchasesAndExpReport":
+                    //    Report = new VATPurchasesAndExpReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "TaxSummaryReportPurchaseInArabic":
+                    //    Report = new TaxSummaryReportPurchaseInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
+                    //case "VATReturnsform":
+                    //    Report = new VATReturnsform(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
 
                     //import reports
 

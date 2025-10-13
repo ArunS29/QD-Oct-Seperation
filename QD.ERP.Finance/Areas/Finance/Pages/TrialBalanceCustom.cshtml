@@ -1,0 +1,343 @@
+﻿@page
+
+<style type="text/css">
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    .dx-datagrid {
+        color: #000000;
+    }
+
+    .center-checkbox {
+        display: block;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .dx-datagrid .dx-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+</style>
+<div class="card" style="margin: 20px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+    <div id="FinancesModulesTrialBalancecustomaizableFormate" class="card-header" style="background-color: #4a4a9c; color: white; font-weight: bold;">
+    </div>
+    <div class="card-body" style="padding: 20px; background-color: #c0dceb; border-radius: 5px;">
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.sp20101TrialBalanceReportResult>()
+                    .ID("dataGrid")
+                    .KeyExpr("AccountID")
+                    .RemoteOperations(false)
+                    .DataSource(ds => ds.Mvc()
+                    .Controller("TrialBalanceCustom")
+                    .LoadAction("GetAssetView"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().Caption(new JS("formatMessage('Trial Balance')")).Columns(group =>
+                    {
+                        // Adding select checkbox column
+                        group.Add().DataField("Select").Caption(new JS("formatMessage('Select')")).CellTemplate(@<text>
+                <input type="checkbox" class="select-checkbox" data-bind="checked: Select" />
+            </text>).AllowSorting(true).AllowEditing(true);
+
+                        group.Add().DataField("AccountHead").Caption(new JS("formatMessage('Ledger No')"));
+                        group.Add().DataField("AccountName").Caption(new JS("formatMessage('Ledger Name')"));
+
+                        group.Add()
+                    .DataField("Op_Bal")
+                    .Caption(new JS("formatMessage('Opening Balance')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    .Format("fixedPoint")
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+
+                        group.Add().DataField("TransDebit").Caption(new JS("formatMessage('Debit Transaction')")).Format("fixedPoint");
+
+                        group.Add()
+                    .DataField("TransCredit")
+                    .Caption(new JS("formatMessage('Credit Transaction')"))
+                    .Alignment(HorizontalAlignment.Right)
+                    .Format("fixedPoint")
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+
+                        group.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).GroupIndex(0);
+                        group.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).GroupIndex(1);
+
+                        // Add a calculated column for Closing Balance
+                        group.Add()
+                    .CalculateCellValue("ClosingBalance")
+                    .Caption(new JS("formatMessage('Closing Balance')"))
+                    .Format("fixedPoint")
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }")
+                    .CalculateCellValue(@"function(data) {
+            return (data.Op_Bal || 0) + (data.TransDebit || 0) - (data.TransCredit || 0);
+            }");
+                    });
+                    })
+                .Summary(summary =>
+                {
+                    summary.GroupItems(groupItems =>
+                    {
+                        groupItems.Add().Column("Op_Bal").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
+
+                        groupItems.Add().Column("TransDebit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { let value = e.value || 0; return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+                        groupItems.Add().Column("TransCredit").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
+
+                        groupItems.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum).ShowInGroupFooter(true)
+                    .CustomizeText("function(e) { let value = e.value || 0; let formattedValue = Math.abs(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); return value < 0 ? '(' + formattedValue + ')' : formattedValue; }");
+                    });
+
+                    summary.TotalItems(items =>
+                    {
+                        items.Add().Column("Op_Bal").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+
+                        items.Add().Column("TransDebit").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            return value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            }");
+
+                        items.Add().Column("TransCredit").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+
+                        items.Add().Column("ClosingBalance").SummaryType(SummaryType.Sum)
+                    .CustomizeText(@"
+            function(e) {
+            let value = e.value || 0;
+            let formattedValue = Math.abs(value).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+            });
+            return value < 0 ? '(' + formattedValue + ')' : formattedValue;
+            }");
+                    });
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Grouping(grouping => grouping.AutoExpandAll(true))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%"))
+        </div>
+ 
+
+
+
+
+
+        <div>
+            @await Html.PartialAsync("GridFooterExpenses")
+        </div>
+        <div id="voucherPopup"></div>
+    </div>
+    <script>
+        $(function () {
+
+										$("#FinancesModulesTrialBalancecustomaizableFormate").dxTextBox({
+													text:formatMessage("FinancesModules-Trial Balance customaizable Formate"),
+                                                        readOnly: true,
+													onContentReady: function(e) {
+				$(e.element).addClass("dx-textbox-heading");
+		}
+
+                                    });
+									});FinancesModules-Trial Balance customaizable Formate
+        $(function () {
+            $("#voucherPopup").dxPopup({
+                width: 350, 
+                height: "auto", 
+                showTitle: false, 
+                showCloseButton: false, 
+                visible: false,
+                dragEnabled: false, 
+                closeOnOutsideClick: true, 
+                contentTemplate: function () {
+                    return $("<div>")
+                        .css({
+                            "padding": "10px",
+                            "display": "flex",
+                            "flex-direction": "column",
+                            "gap": "10px" 
+                        })
+                        .append(
+                            createMenuItem("View Ledger Transactions", "find", "#4caf50", viewLedgerTransactions),
+                            createMenuItem("Export to PDF", "exportpdf", "#f44336", exportToPDF),
+                            createMenuItem("Export to Excel", "exportxlsx", "#2196f3", exportToExcel),
+                            createMenuItem("Export Account Confirmation Letter", "email", "#ff9800", exportAccountConfirmation),
+                            createMenuItem("Preview All Selected Ledger", "preview", "#9c27b0", previewAllSelectedLedger)
+                        );
+                }
+            });
+
+            function createMenuItem(text, icon, iconColor, clickHandler) {
+                return $("<div>")
+                    .addClass("menu-item")
+                    .css({
+                        "display": "flex",
+                        "align-items": "center",
+                        "padding": "10px",
+                        "border-radius": "5px",
+                        "background-color": "#f9f9f9",
+                        "box-shadow": "0 1px 3px rgba(0, 0, 0, 0.1)",
+                        "cursor": "pointer",
+                        "transition": "background-color 0.3s ease"
+                    })
+                    .hover(
+                        function () {
+                            $(this).css("background-color", "#e8e8e8");
+                        },
+                        function () {
+                            $(this).css("background-color", "#f9f9f9");
+                        }
+                    )
+                    .append(
+                        $("<i>")
+                            .addClass("dx-icon dx-icon-" + icon)
+                            .css({
+                                "font-size": "18px",
+                                "color": iconColor,
+                                "margin-right": "10px"
+                            }),
+                        $("<span>").text(text).css({
+                            "font-size": "14px",
+                            "font-weight": "bold",
+                            "color": "#333"
+                        })
+                    )
+                    .on("click", clickHandler);
+            }
+
+         
+            function viewLedgerTransactions() {
+                console.log("View Ledger Transactions Clicked");
+            }
+
+            function exportToPDF() {
+                console.log("Export to PDF Clicked");
+            }
+
+            function exportToExcel() {
+                console.log("Export to Excel Clicked");
+            }
+
+            function exportAccountConfirmation() {
+                console.log("Export Account Confirmation Letter Clicked");
+            }
+
+            function previewAllSelectedLedger() {
+                console.log("Preview All Selected Ledger Clicked");
+            }
+
+           
+            $(document).on("click", ".dx-row input[type='checkbox']", function (e) {
+                e.stopPropagation(); 
+
+                if (this.checked) {
+                    
+                    $("#voucherPopup").dxPopup("instance").show();
+                } else {
+                  
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
+            });
+
+           
+            $(document).on("click", function (e) {
+                if (
+                    !$(e.target).closest("#voucherPopup").length &&
+                    !$(e.target).is(".dx-row input[type='checkbox']")
+                ) {
+                    $("#voucherPopup").dxPopup("instance").hide();
+                }
+            });
+        });
+    </script>
+
+
+

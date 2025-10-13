@@ -1,7 +1,0 @@
-﻿namespace QDERPWeb.Areas.Finance.Models.ViewModels
-{
-    public class DropDownButtonViewModel
-    {
-        public IEnumerable<string> AddRecipicts = ["Add Cash Receipts", "Add Bank Receipts"];
-    }
-}

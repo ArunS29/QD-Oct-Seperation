@@ -1,0 +1,417 @@
+﻿@page
+@model QD.ERP.Shared.Areas.Security.Pages.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/jquery.idle.js"></script>
+<script src="~/js/jwt-decode.min.js"></script>
+<link rel="stylesheet" href="~/css/loader.css" />
+<style>
+    /* Fullscreen background */
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #ffffff; /* White background for the entire body */
+    }
+
+    /* Outer container */
+    .background-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Login Image */
+    .logo-img {
+        margin: 5px;
+        width: 350px;
+        height: 130px;
+        z-index: 9;
+        position: relative;
+    }
+    /* Login Box */
+    .login-container {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        width: 400px;
+        text-align: center;
+        z-index: 10;
+        border: 1px solid #ddd;
+        animation: fadeIn 1s ease-in-out; /* Apply fade-in animation */
+    }
+
+
+
+    /* Labels and Input fields */
+    label {
+        display: block;
+        text-align: left;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        background-color: #f9f9f9;
+    }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center; /* Aligns the checkbox and text horizontally */
+        gap: 5px; /* Space between checkbox and text */
+    }
+
+    .forgot-password {
+        text-decoration: none;
+        color: #007bff;
+        margin-left: auto; /* Pushes the text to the right */
+    }
+
+    /* Button */
+    button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+    .background-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        min-height: 100vh;
+    }
+
+    /* Full-size Building Skyline */
+    .skyline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh; /* Full viewport height */
+        background: url('/images/background.gif') no-repeat center center;
+        background-size: cover;
+        z-index: 1; /* Lower z-index to keep it behind other elements */
+    }
+
+    /* Footer Text */
+    .footer {
+        font-size: 12px;
+        text-align: center;
+        color: #777;
+        margin-top: 20px;
+    }
+
+    /* Password toggle visibility icon */
+    .input-group {
+        position: relative;
+    }
+
+    .input-group-append {
+        position: absolute;
+        right: 10px;
+        top: 65%;
+        transform: translateY(-50%);
+    }
+
+        .input-group-append button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #000;
+        }
+
+    /* Mandatory fields indication */
+    .mandatory {
+        color: red;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    /* Modal Styling */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3); /* Light overlay for background */
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        width: 300px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+        .modal-content .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff; /* White color for the "X" */
+            background-color: #ff0000; /* Red background for contrast */
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            line-height: 25px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+            .modal-content .close:hover {
+                background-color: #cc0000; /* Slightly darker red on hover */
+            }
+
+        .modal-content p {
+            font-size: 16px;
+            color: #ff0000;
+            margin: 20px 0 0;
+        }
+
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
+</style>
+<div class="background-container">
+
+    <img src="~/images/login_logo.png" class="logo-img" />
+
+    <!-- Login Box -->
+    <div class="login-container">
+        <h2>Login</h2>
+        <p>Welcome back! Please login to your account</p>
+
+        <p>Last Publish Date & Time: @Model.LastPublishDate</p>
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <!-- Form Starts -->
+        <form id="LoginForm">
+            <div class="input-group">
+                <label for="UserId">User ID<span class="mandatory">*</span></label>
+                <input type="text" id="UserId" name="UserId" placeholder="Enter Your User ID" required />
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password <span class="mandatory">*</span></label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div class="input-group-append">
+                    <button type="button" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-options">
+                <a href="/@Model.TenantName/Security/ForgotPassword" class="forgot-password">Forgot Password?</a>
+            </div>
+
+
+
+            <!-- Login Button inside the form -->
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+
+
+    <div id="loadingSpinner" class="spinner-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Skyline Background -->
+    <div class="skyline"></div>
+</div>
+
+<script>
+    function getCookie(name) {
+        var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        if (match) return decodeURIComponent(match[2]);
+        return null;
+    }
+
+    // Show forced logout message if present
+    (function() {
+        var forcedMsg = getCookie('ForcedLogoutMessage');
+        if (forcedMsg) {
+            showErrorMessage(forcedMsg);
+            // clear cookie
+            document.cookie = 'ForcedLogoutMessage=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;';
+        }
+    })();
+
+    document.getElementById('LoginForm').onsubmit = function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        var userId = document.getElementById('UserId').value;
+        var password = document.getElementById('password').value;
+        var tenantName = "@Model.TenantName";
+
+        // Best-effort device name (userAgent); browsers cannot access MAC address
+        var deviceName = navigator.userAgent || 'Unknown';
+
+        // Validate input
+        if (!userId || !password || !tenantName) {
+            showErrorMessage('Please fill in all fields.');
+            return;
+        }
+
+        // Show loading spinner
+        document.getElementById('loadingSpinner').style.display = 'block';
+
+        $.ajax({
+            url: `/api/Login/SignIn`, // API endpoint
+            type: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'X-Device-Name': deviceName
+            },
+            data: JSON.stringify({
+                Username: userId,
+                Password: password,
+                TenantName: tenantName,
+                DeviceName: deviceName,
+                MacAddress: ''
+            }),
+            success: function (data) {
+                // Hide loading spinner
+                document.getElementById('loadingSpinner').style.display = 'none';
+
+                if (data.success) {
+                    // Set tenant cookie to current tenant on successful login
+                    document.cookie = "CurrentTenant=" + encodeURIComponent(tenantName) + "; path=/; expires=" + new Date(Date.now() + 86400000).toUTCString();
+                    sessionStorage.setItem('AuthToken', data.token);
+                    sessionStorage.setItem('Permissions', JSON.stringify(data.permissions));
+                    sessionStorage.setItem('tenantName', tenantName);
+                    var decodedToken = jwt_decode(data.token);
+                    var tokenExpiry = new Date(decodedToken.exp * 1000);
+                    sessionStorage.setItem('TokenExpiry', tokenExpiry);
+                    sessionStorage.setItem(tenantName + "jwtToken", data.token);
+                    window.location.href = `/${tenantName}/Home`;
+                } else {
+                    showErrorMessage(data.message); // Show error message
+                }
+            },
+            error: function (xhr, status, error) {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                console.error('Error:', error);
+
+                const response = xhr.responseJSON;
+
+                if (response && response.message) {
+                    if (response.message === "License not valid.") {
+                        // Redirect to License Activation page
+                        window.location.href = `/${tenantName}/security/LicenseActivation`;
+                    } else {
+                        showErrorMessage(response.message);
+                    }
+                } else {
+                    showErrorMessage('Invalid username or password. Please try again.');
+                }
+            }
+
+
+        });
+    };
+
+    function showErrorMessage(message) {
+        $('#errorMessage').html(message).show(); // Use jQuery to show the error message
+    }
+
+    $('#togglePassword').click(function () {
+        var passwordField = $('#password');
+        passwordField.attr('type', passwordField.attr('type') === 'password' ? 'text' : 'password');
+        $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+    });
+    (function() {
+        var currentTenant = "@Model.TenantName";
+        var cookieName = "CurrentTenant";
+        // Get cookie value
+        function getCookie(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return decodeURIComponent(match[2]);
+            return null;
+        }
+        // Set cookie value
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
+        }
+        // Compare cookie to current tenant
+        var lastTenant = getCookie(cookieName);
+        if (lastTenant && lastTenant !== currentTenant) {
+            // Tenant changed, force logout/clear
+            sessionStorage.clear();
+            fetch('/api/Login/SignOut').then(function() {
+                window.location.href = `/${currentTenant}/Security/Login`;
+            });
+        }
+        // Always update cookie to current tenant
+        setCookie(cookieName, currentTenant, 1);
+    })();
+</script>

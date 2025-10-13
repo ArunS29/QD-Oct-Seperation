@@ -1,0 +1,215 @@
+@page
+@using QD.ERP.Shared.DAL.Entities
+@model QD.ERP.Web.Areas.IMS.Pages.PORevisionHistoryModel
+@{
+}
+
+<style>
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .header-wrap {
+        white-space: normal !important;
+        text-align: center !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    
+
+    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
+
+    .dx-invalid-message, .dx-overlay-content {
+        text-align: left !important; /* or center, as you prefer */
+        font-size: 13px;
+        margin-top: 2px;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 80%;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+    /* Toolbar Styling */
+    .custom-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+    }
+
+        .filter-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Text Editor Styling */
+    .dx-texteditor {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        font-size: 14px !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important;
+    }
+
+        .dx-texteditor:hover,
+        .dx-texteditor.dx-state-hover,
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+            border-color: #86b7fe !important;
+        }
+
+        .dx-texteditor.dx-state-focused {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+            border-color: #508ae1 !important;
+        }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none;
+    }
+
+    .dx-button-mode-contained.dx-button-default,
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
+    }
+
+    .container,
+    .frame,
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px solid transparent;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+</style>
+
+<div style="padding: 20px;">
+    @(
+        Html.DevExtreme().DataGrid<Qry60404purchaseOrderViewMaster>()
+        .ID("PurchaseOrderRevisionGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("PurchaseOrder")   // Controller name
+        .LoadAction("Get")
+        .LoadParams(new { Mprno = new JS("cleanmprno") })// Action method for loading data
+        )
+        .RemoteOperations(true)
+        .ShowBorders(true)
+        .Height(600)
+        .Selection(s => s
+        .Mode(SelectionMode.Multiple)
+        .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
+        )
+        .ColumnAutoWidth(true)
+        .RowAlternationEnabled(true)
+        .HeaderFilter(h => h.Visible(true))
+        .Columns(columns =>
+        {
+            columns.Add().Type(GridCommandColumnType.Selection).Width(50);
+
+            columns.Add()
+            .Caption("PONo")
+            .DataField("Pono");
+
+            columns.Add()
+            .Caption("PO Date")
+            .DataField("Podate")
+            .DataType(GridColumnDataType.Date);
+
+            columns.Add()
+            .Caption("Supplier Code")
+            .DataField("SupplierCode");
+
+            columns.Add()
+            .Caption("Supplier Name")
+            .DataField("SupplierName");
+
+            columns.Add()
+            .Caption("PO Revision No")
+            .DataField("PorevisionNo");
+
+            columns.Add()
+            .Caption("Is Obselete Version")
+            .DataField("IsObseleteVersion")
+            .DataType(GridColumnDataType.Boolean);
+        })
+        )
+</div>
+<script>
+     function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const mprno = getQueryParam("PONo");
+    const cleanmprno = mprno ? mprno.split("?")[0] : null;
+
+</script>

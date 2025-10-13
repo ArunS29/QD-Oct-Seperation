@@ -1,0 +1,406 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.QuotedCostSummaryModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+@using DevExtreme.AspNet.Mvc.Builders
+<style>
+    .titleCard-toggle1 {
+        display: none;
+    }
+</style>
+<div style="display: flex; gap: 10px; background-color: #e6f0fb; padding: 10px;">
+    <div style="flex: 1; background-color: white; border: 1px solid #ccc;">
+        <div style="background-color: #c7d9f1; padding: 5px; font-weight: bold; font-size:18px;" id="selecteditemsfordistribute"></div>
+
+        @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry60102quotationChild>()
+                .ID("quotedItemsGrid")
+                .RemoteOperations(false)
+                .KeyExpr("QuoteChildId")
+                .Columns(columns =>
+                {
+                  @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
+                    columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')"));
+                    columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Visible(false);
+                    columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quotation No')")).Visible(false);
+                    columns.AddFor(m => m.QuoteChildId).Caption(new JS("formatMessage('Quote Child ID')")).Visible(false);
+                    columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('UoM')"));
+                    columns.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Qty')"));
+                    columns.AddFor(m => m.CostPrice).Caption(new JS("formatMessage('Cost Price')"));
+                    columns.AddFor(m => m.TotalCostOfItem).Caption(new JS("formatMessage('Total Cost Of Item')")).Visible(false);
+
+
+
+                })
+
+                .Height(700)
+                             // Fixed height for the grid
+                .ColumnAutoWidth(true)
+
+                .WordWrapEnabled(true)
+               // .OnCellClick("function(e) {handleCellClick(e);}")
+                .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(false))
+
+                .Paging(p => p.Enabled(false))
+                .Pager(pager => pager.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+
+                //.OnInitialized("function(e) { loadGridState(); }")
+                )
+    </div>
+
+    <!-- Right Panel: Cost Distribution -->
+    <div style="flex: 1.5; background-color: white; border: 1px solid #ccc;">
+        <div style="display: flex; align-items: center; gap: 10px; background-color: #d9e9fd; padding: 10px;">
+            <div style="font-size:25px;" id="costdiscriptions"></div>
+     
+       @(Html.DevExtreme().DropDownBox()
+    .Label(new JS("formatMessage('Cost Item:')"))
+    .AcceptCustomValue(true)
+    .DataSource(d => d.WebApi()
+        .Controller("QuotedCostSummary")
+        .LoadAction("GetCostItem")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("CostItemCode")
+    )
+    .ID("ddCostItemDropDown")
+    .OpenOnFieldClick(false)
+    .ValueChangeEvent("input")
+    .HoverStateEnabled(true)
+    .ValueExpr("CostItemCode")
+    .DisplayExpr("CostItem")
+    .OnInput("dropDownBoxOnInput")
+    .OnOpened("onOpened")
+    .TabIndex(1)
+    .Width("40%")
+    .OnKeyDown("onKeyDown")
+    .ContentTemplate(new TemplateName("GetCostItemContentTemplate"))
+
+    .Buttons(buttons => {
+        // Default clear button
+        buttons.Add()
+            .Name("clear");
+
+        // Custom Add button (inside the input)
+        buttons.Add()
+            .Name("AddDebits")
+            .Location(TextEditorButtonLocation.After) // places after the text field
+            .Widget(w => w.Button()
+                .Type(ButtonType.Default)
+                .StylingMode(ButtonStylingMode.Text) // keeps it minimal
+                .Icon("plus")
+                .OnClick("AddCostItem") // your handler
+            );
+
+        // Default dropdown button
+        buttons.Add()
+            .Name("dropDown");
+    })
+)
+
+            @(Html.DevExtreme().NumberBox()
+                        .Value(0)
+                        .Label(new JS("formatMessage('Percentage (%):')"))
+                        .Min(0)
+                        .Max(100)
+                        .Format("#0.##")
+                        .Width(80))
+
+            @(Html.DevExtreme().NumberBox()
+                        .Label(new JS("formatMessage('Cost Amount:')"))
+                        .Value(0)
+                        .Format("##,##0.00")
+                        .Width(100))
+        </div>
+
+        <div id="pivotGridContainer" style="margin-top: 20px; padding:20px;"></div>
+
+    </div>
+   </div>
+<!-- Footer Partial View (Full Width) -->
+@await Html.PartialAsync("/Pages/Shared/IMS/QuotedSummaryFooter.cshtml")
+    
+
+    @using (Html.DevExtreme().NamedTemplate("GetCostItemContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("QuotedCostSummary")
+            .LoadAction("GetCostItem")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CostItemCode")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+                               @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(true))//
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("CostItemCode").Caption(new JS("formatMessage('Cost Item Code')"));
+                columns.Add().DataField("CostItem").Caption(new JS("formatMessage('Cost Item')"));
+
+
+
+            })
+            )
+        }
+</div>
+<script>
+      let pivotGridInstance;
+
+    $(function() {
+      pivotGridInstance = $("#pivotGridContainer").dxPivotGrid({
+        dataSource: {
+            
+          fields: [
+            { dataField: "Gscode", area: "row", caption: formatMessage("Stock Code") },
+            { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Stock Description") },
+            { dataField: "Group1", area: "column", caption: formatMessage("Cost Group") },
+            { dataField: "CostItem", area: "column", caption: formatMessage("Cost Item") },
+                { dataField: "UnitCostPriceTotal", area: "data", caption: formatMessage("Cost Total"), summaryType: "sum",format: {
+            type: "fixedPoint",
+            precision: 2,
+            useGrouping: true // adds the comma separator
+          }}
+          ],
+          store: {
+            type: "array",
+            data: []  // empty on init
+          }
+        },
+        allowSorting: true,
+        allowFiltering: true,
+        allowExpandAll: true,
+        showBorders: true,
+        fieldChooser: { enabled: true, allowSearch: true },
+        fieldPanel: { visible: true, allowFieldDragging: true },
+        loadPanel: { enabled: true },
+          showRowGrandTotals: false ,
+        height: 500
+      }).dxPivotGrid("instance");
+
+      const QuoteNos = new URLSearchParams(window.location.search).get("quotationNo");
+
+
+        const QuoteNo = QuoteNos ? QuoteNos.split("?")[0] : null;
+
+      if (QuoteNo) {
+        loadClientDetails(QuoteNo);
+        loadPivotGridData(QuoteNo);
+      }
+    });
+
+    function loadClientDetails(QuoteNo) {
+      $.get(`/api/QuotedCostSummary/GetQuotedCostSummary?QuoteNo=${encodeURIComponent(QuoteNo)}`)
+        .done(statusData => {
+          const grid = $("#quotedItemsGrid").dxDataGrid("instance");
+          if (grid) {
+            grid.option("dataSource", statusData);
+            grid.refresh();
+          }
+        })
+        .fail(() => DevExpress.ui.notify("Failed to load status data", "error", 3000));
+    }
+
+    function loadPivotGridData(QuoteNo) {
+      $.get(`/api/QuotedCostSummary/GetquotationCostList?QuoteNo=${encodeURIComponent(QuoteNo)}`)
+        .done(data => {
+          pivotGridInstance.option('dataSource', {
+            fields: pivotGridInstance.option('dataSource').fields,
+            store: {
+              type: 'array',
+              data: data
+            }
+          });
+          pivotGridInstance.getDataSource().reload();
+        })
+        .fail(xhr => console.error("Error fetching pivot data:", xhr));
+    }
+
+
+     function onOpened(e) {
+            setTimeout(() => {
+                e.component.focus();
+            });
+        }
+
+        function onKeyDown(e) {
+            const ddbInstance = e.component;
+            if (e.event.keyCode !== 40) return;
+            if (!ddbInstance.option("opened")) {
+                ddbInstance.open();
+            } else {
+                let focusedIndex = dataGrid.option("focusedRowIndex");
+                let visibleRows = dataGrid.getVisibleRows().length - 1;
+                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+                dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+            }
+        }
+
+        function dropDownBoxOnInput(e) {
+            const ddbInstance = e.component;
+            if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+            const text = ddbInstance.option("text");
+            if (dataGrid) {
+                dataGrid.option("searchPanel.text", text);
+            }
+        }
+        function dataGridInitialized1(e) {
+            dataGrid = e.component;
+        }
+        function dataGridSelectionChanged1(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#ddCostItemDropDown").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+        }
+         function AddCostItem(){
+                        const url = `/${tenantName}/IMS/QuotationCostItems`;
+                     const title = formatMessage("Quotation Cost Items");
+                      openModal(url, title);
+              }
+
+
+
+//Footer button click event
+                     
+ function onDistributeCostClick(distributionMethod) {
+     
+        const grid = $("#quotedItemsGrid").dxDataGrid("instance");
+        const selectedRows = grid.getSelectedRowsData();
+     console.log("Selected count:", selectedRows.length); // Should be > 1
+    console.table(selectedRows);
+        
+   
+
+            const costItemCode = $("#ddCostItemDropDown").dxDropDownBox("instance").option("value");
+        const postingAmount = $(".dx-numberbox").eq(1).dxNumberBox("instance").option("value");
+        const postingPercentage = $(".dx-numberbox").eq(0).dxNumberBox("instance").option("value");
+
+        const quotationNo = new URLSearchParams(window.location.search).get("quotationNo");
+
+        if (!selectedRows.length) {
+            DevExpress.ui.notify("No Items are selected for Posting, Please Check again.", "warning", 3000);
+            return;
+        }
+
+        // Build model array
+        const models = selectedRows.map(row => ({
+            QuotationNo: quotationNo,
+            QuoteChildID: row.QuoteChildId,
+            GSCode: row.Gscode,
+            QuotedQuantity: row.QuotedQuantity,
+            QuotedCostPrice: row.CostPrice,
+            PostingAmount: postingAmount,
+            PostingPercentage: postingPercentage,
+            PostingCostItemCode: costItemCode,
+            TotalCostOfItemInclAll: row.TotalCostOfItem
+        }));
+
+        // Single AJAX call with all rows
+        $.ajax({
+            url: `/api/QuotedCostSummary/InsertCostDistribution`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(models)
+        }).done(() => {
+            // Run distribution after successful insert/update
+            let endpoint = "";
+
+            if (costItemCode === "PM-001") {
+                endpoint = distributionMethod === 1 ? "ProfitMarginByEqual"
+                    : distributionMethod === 2 ? "ProfitMarginByProportion"
+                    : "ProfitMarginByPercentage";
+            } else if (costItemCode === "DIS-001") {
+                endpoint = distributionMethod === 1 ? "DiscountByEqual"
+                    : distributionMethod === 2 ? "DiscountByProportion"
+                    : "DiscountByPercentage";
+            } else {
+                endpoint = distributionMethod === 1 ? "DistributeEqually"
+                    : distributionMethod === 2 ? "DistributeByProportion"
+                    : "DistributeByPercentage";
+            }
+
+            $.ajax({
+                url: `/api/QuotedCostSummary/${endpoint}`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(quotationNo)
+            }).done(() => {
+                DevExpress.ui.notify("Cost distributed successfully", "success", 3000);
+                loadPivotGridData(quotationNo);
+            }).fail(err => {
+                DevExpress.ui.notify("Distribution failed: " + err.responseText, "error", 3000);
+            });
+
+        }).fail(err => {
+            DevExpress.ui.notify("Insert failed: " + err.responseText, "error", 3000);
+        });
+    }
+         $(function () {
+            $("#selecteditemsfordistribute").text(formatMessage("Select Items for Distribution"));
+         });
+         $(function () {
+            $("#costdiscriptions").text(formatMessage("$ Cost Discription"));
+         });
+
+@* $("#btnShowRowTotals1").on("click", function (e) {
+      alert(ho000);
+        if (!pivotGridInstance) {
+            DevExpress.ui.notify("PivotGrid is not loaded yet.", "warning", 2000);
+            return;
+        }
+
+        const current = pivotGridInstance.option("showRowGrandTotals");
+        const newValue = !current;
+
+        pivotGridInstance.option("showRowGrandTotals", newValue);
+
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+        e.component.option("text", newValue
+            ? formatMessage("Hide Row Totals")
+            : formatMessage("Show Row Totals"));
+    });
+
+    $("#btnShowRowTotals").on("click", function (e) {
+   alert(hiii);
+    }); *@
+
+
+
+</script>
+
+
+
+
+
+

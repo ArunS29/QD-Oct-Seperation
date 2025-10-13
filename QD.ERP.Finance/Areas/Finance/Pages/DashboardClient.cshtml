@@ -1,0 +1,353 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.DashboardClientModel
+
+<!-- Page Loader Overlay -->
+<div id="dashboardPageLoader" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.7)">
+    <img src="/images/dicerol.gif" alt="Loading..." style="height:150px;">
+</div>
+
+<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
+<script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<div class="dashboard-card-header">Client Outstanding Details</div>
+
+<!-- Summary Cards -->
+<div class="dx-card-container">
+    <div class="Popupcard" id="clientcard">
+        <div class="dx-card-header">
+            <div id="TotalClientOutstanding" class="no-border-input"></div>
+        </div>
+        <div class="dx-card-content">
+            <span class="card-loader" id="loaderClientOutstanding" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
+            <div id="totalClientOutstandingValue" class="total-value"></div>
+        </div>
+    </div>
+    <div class="Popupcard" id="DashboardBankAccount">
+        <div class="dx-card-header">
+            <div id="TotalCashBalance" class="no-border-input"></div>
+        </div>
+        <div class="dx-card-content">
+            <span class="card-loader" id="loaderCashBalance" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
+            <div id="cashBalanceValue" class="total-value"></div>
+        </div>
+    </div>
+    <div class="Popupcard" id="SupplierCard">
+        <div class="dx-card-header">
+            <div id="TotalSupplierOutstanding" class="no-border-input"></div>
+        </div>
+        <div class="dx-card-content">
+            <span class="card-loader" id="loaderBillsOutstanding" style="display:none;">
+                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
+            </span>
+            <div id="totalBillsOutstandingValue" class="total-value"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Grids & Donut Chart -->
+<div class="grid-container">
+    <div class="grid-section">
+        <div id="ClientOutstanding" class="no-border-title" style="width:90%;"></div>
+        <div id="clientOutstandingGrid"></div>
+    </div>
+    <div class="chart-container" style="position:relative;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <div id="ClientOutstandingAgingChart" class="no-border-title"></div>
+        </div>
+        <div id="clientOutstandingDonutChart" style="width:900px; height:700px; margin:auto;"></div>
+    </div>
+</div>
+
+<script>
+let donutChartInstance;
+
+// Utility: Safe text set
+function safeSetText(selector, value) {
+    const elem = document.querySelector(selector);
+    if (elem) elem.innerText = value;
+}
+
+$(document).ready(function () {
+    $("#dashboardPageLoader").show();
+    let pendingLoads = [];
+
+    // Summary Cards Loader
+    const apiEndpoints = [
+        { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue", loader: "#loaderBillsOutstanding", key: "balance" },
+        { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", loader: "#loaderCashBalance", key: "balance" }
+    ];
+    apiEndpoints.forEach(endpoint => {
+        $(endpoint.loader).show();
+        let p = $.getJSON(endpoint.url)
+            .done(response => {
+                if (response && response.success && response[endpoint.key] != null) {
+                    safeSetText(endpoint.target, Number(response[endpoint.key]).toLocaleString('en-US'));
+                }
+            })
+            .always(() => $(endpoint.loader).hide());
+        pendingLoads.push(p);
+    });
+
+    // DataGrid Load
+    function loadClientOutstandingGrid() {
+        let deferred = $.Deferred();
+        $("#clientOutstandingGrid").dxDataGrid({
+            dataSource: {
+                load: function () {
+                    return $.ajax({
+                        url: "/api/Dashboard/GetClientOutstandingGrid",
+                        dataType: "json"
+                    }).then(function (response) {
+                        deferred.resolve();
+                        return response.data;
+                    });
+                }
+            },
+            columns: [
+                { dataField: "AccountHead", caption: "Account Head", width: 200, allowReordering: true,
+                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({"text-align":"center","font-weight":"bold"}).appendTo(header);}
+                },
+                { dataField: "Balance", caption: "Balance Amount", format: {type: "fixedPoint", precision: 2}, allowReordering: true,
+                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({"text-align":"center","font-weight":"bold"}).appendTo(header);}
+                },
+                { dataField: "OverdueDays", caption: "Overdue Days", visible: false, allowHiding: true },
+                { dataField: "AccountGroupId", caption: "Account Group", visible: false, allowHiding: true },
+                { dataField: "AccountHeadNo", caption: "Account Head No", visible: false, allowHiding: true }
+            ],
+            columnAutoWidth: true,
+            showBorders: true,
+            filterRow: { visible: false },
+            paging: { enabled: true, pageSize: 15 },
+            pager: { visible: true, showPageSizeSelector: true, allowedPageSizes: [10, 15, 20], showInfo: true },
+            height: 500,
+            width: 580,
+            scrolling: { mode: "virtual" },
+            searchPanel: { visible: false },
+            allowColumnReordering: true,
+            allowColumnResizing: true,
+            columnChooser: { enabled: true, mode: "select" },
+            loadPanel: { enabled: true },
+            summary: {
+                totalItems: [
+                    { column: "Balance", summaryType: "sum", valueFormat: {type: "fixedPoint", precision: 2}, displayFormat: "Total : {0}" },
+                    { column: "AccountHead", summaryType: "count", displayFormat: "Count : {0}" }
+                ]
+            }
+        });
+        return deferred.promise();
+    }
+    pendingLoads.push(loadClientOutstandingGrid());
+
+    // Donut Chart Loader and Mapping (NO UNDEFINED!)
+    let donutChartLoad = $.ajax({
+        url: '/api/Dashboard/GetClientOutstandingByAccountHead',
+        type: 'GET'
+    }).done(function (result) {
+        if (result && result.success) {
+            // Only valid entries (name and positive balance)
+            const validData = (result.data || []).filter(x =>
+                x && x.AccountHead && String(x.AccountHead).trim().length > 0 && Number(x.TotalBalance) > 0
+            );
+
+            let chartData = [];
+            if (validData.length > 10) {
+                const topItems = validData.slice(0, 10);
+                const otherItems = validData.slice(10);
+
+                chartData = topItems.map(item => ({
+                    accountHead: item.AccountHead,
+                    balance: Number(item.TotalBalance)
+                }));
+
+                const othersTotal = otherItems.reduce((sum, item) => sum + Number(item.TotalBalance), 0);
+                if (othersTotal > 0) {
+                    chartData.push({ accountHead: "Others", balance: othersTotal });
+                }
+            } else {
+                chartData = validData.map(item => ({
+                    accountHead: item.AccountHead,
+                    balance: Number(item.TotalBalance)
+                }));
+            }
+
+            // Final guarantee (100% safe)
+            chartData = chartData.filter(x => x.accountHead && String(x.accountHead).trim().length > 0 && x.balance > 0);
+
+            renderDonutChart(chartData);
+        }
+    });
+    pendingLoads.push(donutChartLoad);
+
+    // Loader hide logic
+    $.when.apply($, pendingLoads).always(function () {
+        setTimeout(function () {
+            $("#dashboardPageLoader").fadeOut(200);
+        }, 120);
+    });
+
+    // Card click handlers (require tenantName to be defined)
+    $("#clientcard").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardClient`;
+    });
+    $("#SupplierCard").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardSupplier`;
+    });
+    $("#DashboardBankAccount").on("click", function () {
+        window.location.href = `/${tenantName}/Finance/DashboardBankAccount`;
+    });
+
+    // Headings
+    $("#TotalClientOutstanding").dxTextBox({
+        text: "Total Client Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#TotalCashBalance").dxTextBox({
+        text: "Total Cash Balance", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#TotalSupplierOutstanding").dxTextBox({
+        text: "Total Supplier Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#ClientOutstanding").dxTextBox({
+        text: "Client Outstanding", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+    $("#ClientOutstandingAgingChart").dxTextBox({
+        text: "Client Outstanding Donut Chart", readOnly: true,
+        onContentReady: function(e) { $(e.element).addClass("dx-textbox-heading10"); }
+    });
+});
+function renderDonutChart(chartData) {
+    if (donutChartInstance) {
+        $("#clientOutstandingDonutChart").dxPieChart("dispose");
+    }
+    const total = chartData.reduce((sum, item) => sum + (item.balance || 0), 0);
+
+    $("#clientOutstandingDonutChart").dxPieChart({
+        dataSource: chartData,
+        type: "doughnut",
+        innerRadius: 0.6,
+        palette: ["#5b9bd5", "#ed7d31", "#a5a5a5", "#ffc000", "#4472c4", "#70ad47", "#255e91", "#9e480e", "#636363", "#997300", "#264478", "#43682b"],
+        paletteExtensionMode: "blend",
+        animation: { enabled: true, duration: 1200, easing: "bounce" },
+        size: { height: 700, width: 900 },
+        title: {
+            text: "Top 10 Client Outstanding (Donut)",
+            font: { size: 22, weight: 700, color: "#004080" },
+            subtitle: { text: "Including 'Others' as summary", font: { size: 14, color: "#666" } }
+        },
+        legend: {
+            visible: true,
+            position: "right",
+            horizontalAlignment: "right",
+            verticalAlignment: "center",
+            itemTextPosition: "right",
+            customizeText: function (arg) {
+                // Show full name and value in legend
+                return `${arg.argument}: SAR ${(arg.value || 0).toLocaleString("en-US")}`;
+            },
+            wordWrap: "none"
+        },
+        export: { enabled: true },
+        tooltip: {
+            enabled: true,
+            customizeTooltip: function (pointInfo) {
+                let percent = ((pointInfo.value / total) * 100).toFixed(2);
+                return {
+                    html: `<div style='padding:6px 14px;max-width:320px;word-break:break-word'>
+                            <b>${pointInfo.argument}</b><br>
+                            SAR ${pointInfo.value.toLocaleString("en-US")}<br>
+                            <span style="color:#007acc;font-weight:600">${percent}% of Total</span>
+                          </div>`
+                };
+            }
+        },
+        series: [{
+            argumentField: "accountHead",
+            valueField: "balance",
+            label: {
+                visible: true,
+                connector: { visible: true, width: 2 },
+                // Only show percent on slice for clarity (no wrapping)
+                customizeText: function (pointInfo) {
+                    let percent = ((pointInfo.value / total) * 100).toFixed(1);
+                    return `${percent}%`;
+                },
+                font: { size: 15, weight: 600, color: "#003366" },
+                backgroundColor: "rgba(255,255,255,0.85)"
+            },
+            border: { visible: true, width: 2, color: "#eee" },
+            minSegmentSize: 2,
+            resolveLabelOverlapping: "shift"
+        }],
+        centerTemplate: function(pieChart, container) {
+            const $center = $("<div>")
+                .css({
+                    textAlign: "center",
+                    fontSize: 22,
+                    color: "#007acc",
+                    fontWeight: 700,
+                    marginTop: "35%",
+                    textShadow: "0 2px 8px #bbb"
+                })
+                .html(`Total<br>SAR ${total.toLocaleString("en-US")}`);
+            container.appendChild($center[0]);
+        },
+        onDrawn: function () {
+            $("#clientOutstandingDonutChart .dxc-content").css({
+                filter: "drop-shadow(0 8px 28px rgba(44,62,80,0.24))"
+            });
+        }
+    });
+    donutChartInstance = $("#clientOutstandingDonutChart").dxPieChart("instance");
+}
+
+</script>
+
+<style>
+
+    .dxc-legend .dxc-item text, .dxc-tooltip text {
+    word-break: normal !important;
+}
+.dashboard-card-header {
+    text-align: center; font-size: 1.6rem; font-weight: bold; color: #004080;
+    letter-spacing: 0.5px; padding: 14px 0 8px 0; margin-top: 10px; margin-bottom: 0;
+    background: #f7fbff; border-radius: 10px 10px 0 0;
+}
+.dx-card-container {
+    display: flex; justify-content: center; gap: 20px; padding: 1em;
+}
+.Popupcard {
+    display: inline-block; padding: 20px; background: var(--background-color);
+    border-radius: 10px; box-shadow: 5px 5px 5px 5px var(--title-background-color);
+    text-align: center; transition: transform 0.2s ease, box-shadow 0.3s ease; cursor: pointer;
+}
+.Popupcard:hover {
+    box-shadow: 0px 0px 10px 2px var(--title-background-color);
+    transform: translateY(-5px); background-color: #f9fbff;
+}
+.dx-card-header { font-size: 24px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+.dx-card-content .total-value { font-size: 24px; font-weight: bold; color: #007acc; }
+.grid-container { display: flex; padding: 15px; justify-content: center; }
+.grid-section { width: 38%; text-align: center; }
+.chart-container { text-align: center; position:relative; }
+#dashboardPageLoader { display: none; }
+button#toggleFullscreen { background:#007acc; color:#fff; border:none; border-radius:4px; padding:7px 18px; font-weight:bold; cursor:pointer; }
+button#toggleFullscreen:hover { background:#005c99; }
+#clientOutstandingDonutChart .dxc-content {
+    filter: drop-shadow(0 4px 12px rgba(44,62,80,0.18));
+}
+/* Allow legend items to wrap if too long */
+.dxc-legend .dxc-item text, .dxc-tooltip text {
+    word-break: break-word;
+    max-width: 180px;
+}
+</style>

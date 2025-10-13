@@ -1,0 +1,540 @@
+﻿@page
+@model QD.ERP.Shared.Pages.NotificationPanelModel
+@{
+    ViewData["Title"] = "Notification Panel";
+}
+
+<title>@ViewData["Title"]</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .container {
+        display: none !important;
+    }
+
+
+    .bodyContainer {
+        display: flex;
+    }
+
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+    .mainContainer {
+        background-color: white;
+        margin-top: 38px;
+        margin-left: 0px;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        /* padding: 20px; */
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #fafafa;
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        gap: 30px;
+        align-items: flex-start;
+    }
+
+    .main-content {
+        flex: 1;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .notification-panel {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .notification-header {
+        padding: 16px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .header-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+    }
+
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .notification-icon {
+        color: #374151;
+    }
+
+    .title {
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .notification-badge {
+        background: #3b82f6;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .mark-read-btn {
+        background: none;
+        border: none;
+        color: #3b82f6;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+    }
+
+        .mark-read-btn:hover {
+            background: #f3f4f6;
+        }
+
+    .category-tabs {
+        display: flex;
+        gap: 4px;
+    }
+
+    .category-tab {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+        .category-tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .category-tab.inactive {
+            background: transparent;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+    .notification-content {
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+    .status-card {
+        padding: 16px;
+        background: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+
+    .status-card-title {
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+        margin-bottom: 12px;
+    }
+
+    .status-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+
+    .status-item {
+        text-align: center;
+    }
+
+    .status-icon {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 8px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .status-icon i {
+            color: #3b82f6;
+            font-size: 14px;
+        }
+
+    .status-number {
+        font-size: 18px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 4px;
+    }
+
+    .status-label {
+        font-size: 10px;
+        color: #6b7280;
+        line-height: 1.2;
+    }
+
+    .notification-divider {
+        border-top: 1px solid #e5e7eb;
+        margin: 16px 0;
+        padding-top: 16px;
+    }
+
+    .notification-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        transition: background-color 0.2s;
+    }
+
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+
+    .notification-avatar {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #3b82f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .status-dot {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        bottom: -2px;
+        right: -2px;
+        border: 2px solid white;
+    }
+
+        .status-dot.completed {
+            background: #10b981;
+        }
+
+        .status-dot.pending {
+            background: #f59e0b;
+        }
+
+        .status-dot.cancelled {
+            background: #ef4444;
+        }
+
+    .notification-content-text {
+        flex: 1;
+    }
+
+    .notification-title {
+        font-size: 12px;
+        font-weight: 500;
+        color: #374151;
+        line-height: 1.4;
+        margin-bottom: 4px;
+    }
+
+    .notification-time {
+        font-size: 10px;
+        color: #6b7280;
+    }
+
+    .main-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #374151;
+        margin-bottom: 8px;
+    }
+
+    .main-subtitle {
+        color: #6b7280;
+        margin-bottom: 32px;
+    }
+
+    .overview-card {
+        margin-top: 20px;
+    }
+
+    .overview-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #374151;
+    }
+
+    .overview-text {
+        color: #6b7280;
+        line-height: 1.6;
+    }
+
+</style>
+
+
+
+<div class="notification-panel">
+    <!-- Header -->
+    <div class="notification-header">
+        <div class="header-top">
+            <div class="header-title">
+                <i class="fas fa-bell notification-icon"></i>
+                <span class="title">Notifications</span>
+                <span class="notification-badge">126</span>
+            </div>
+            <button class="mark-read-btn">Mark all as read</button>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <span class="category-tab active">Finance 26</span>
+            <span class="category-tab inactive">VAT 18</span>
+            <span class="category-tab inactive">Inventory 12</span>
+            <span class="category-tab inactive">Others 27</span>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="notification-content">
+        <!-- Payments (Bank/Cash) -->
+        <!-- Payments (Bank/Cash) -->
+        <div class="status-card">
+            <div class="status-card-title">Payments (Bank/Cash)</div>
+            <div class="status-grid">
+                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeVerified')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="payments-verified">0</div>
+                    <div class="status-label">To Be Verified</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeApproved')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="payments-approved">0</div>
+                    <div class="status-label">To Be Approved</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeAudited')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="payments-audited">0</div>
+                    <div class="status-label">To Be Audited</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Receipt (Bank/Cash) -->
+        <div class="status-card">
+            <div class="status-card-title">Receipt (Bank/Cash)</div>
+            <div class="status-grid">
+                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeVerified')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="receipt-verified">0</div>
+                    <div class="status-label">To Be Verified</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeApproved')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="receipt-approved">0</div>
+                    <div class="status-label">To Be Approved</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeAudited')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="receipt-audited">0</div>
+                    <div class="status-label">To Be Audited</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales/Purchase -->
+        <div class="status-card">
+            <div class="status-card-title">Sales/Purchase</div>
+            <div class="status-grid">
+                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeVerified')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="salespurchase-verified">0</div>
+                    <div class="status-label">To Be Verified</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeApproved')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="salespurchase-approved">0</div>
+                    <div class="status-label">To Be Approved</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeAudited')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="salespurchase-audited">0</div>
+                    <div class="status-label">To Be Audited</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journals -->
+        <div class="status-card">
+            <div class="status-card-title">Journals</div>
+            <div class="status-grid">
+                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeVerified')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="journals-verified">0</div>
+                    <div class="status-label">To Be Verified</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeApproved')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="journals-approved">0</div>
+                    <div class="status-label">To Be Approved</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeAudited')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="journals-audited">0</div>
+                    <div class="status-label">To Be Audited</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expense Claims -->
+        <div class="status-card">
+            <div class="status-card-title">Expense Claims</div>
+            <div class="status-grid">
+                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeVerified')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="expenseclaims-verified">0</div>
+                    <div class="status-label">To Be Verified</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeApproved')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="expenseclaims-approved">0</div>
+                    <div class="status-label">To Be Approved</div>
+                </div>
+                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeAudited')">
+                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                    <div class="status-number" id="expenseclaims-audited">0</div>
+                    <div class="status-label">To Be Audited</div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Individual Notifications -->
+        <div class="notification-divider">
+            <div class="notification-item">
+                <div class="notification-avatar">
+                    S
+                </div>
+                <div class="notification-content-text">
+                    <div class="notification-title">
+                        Bank Payment Voucher BB-876575 has been Created by Saju and waiting for verification.
+                    </div>
+                    <div class="notification-time">Today at 8:42 AM</div>
+                </div>
+            </div>
+
+            <div class="notification-item">
+                <div class="notification-avatar">
+                    V
+                </div>
+                <div class="notification-content-text">
+                    <div class="notification-title">
+                        New expense claim from Vasanth EX-786678, ₹1000 is awaiting your approval.
+                    </div>
+                    <div class="notification-time">Today at 8:42 AM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+       $(document).ready(function () {
+        $.getJSON('/api/Notification/GetFinanceNotificationSummary', function (data) {
+            $("#payments-verified").text(data.Payments.ToBeVerified);
+            $("#payments-approved").text(data.Payments.ToBeApproved);
+            $("#payments-audited").text(data.Payments.ToBeAudited);
+
+            $("#receipt-verified").text(data.Receipts.ToBeVerified);
+            $("#receipt-approved").text(data.Receipts.ToBeApproved);
+            $("#receipt-audited").text(data.Receipts.ToBeAudited);
+
+            $("#salespurchase-verified").text(data.SalesPurchase.ToBeVerified);
+            $("#salespurchase-approved").text(data.SalesPurchase.ToBeApproved);
+            $("#salespurchase-audited").text(data.SalesPurchase.ToBeAudited);
+
+            $("#journals-verified").text(data.Journals.ToBeVerified);
+            $("#journals-approved").text(data.Journals.ToBeApproved);
+            $("#journals-audited").text(data.Journals.ToBeAudited);
+
+            $("#expenseclaims-verified").text(data.ExpenseClaims.ToBeVerified);
+            $("#expenseclaims-approved").text(data.ExpenseClaims.ToBeApproved);
+            $("#expenseclaims-audited").text(data.ExpenseClaims.ToBeAudited);
+        });
+    });
+         $(document).ready(function () {
+        const cardMap = [
+            { id: "#payments-verified", module: "Payments", status: "ToBeVerified" },
+            { id: "#payments-approved", module: "Payments", status: "ToBeApproved" },
+            { id: "#payments-audited", module: "Payments", status: "ToBeAudited" },
+
+            { id: "#receipt-verified", module: "Receipts", status: "ToBeVerified" },
+            { id: "#receipt-approved", module: "Receipts", status: "ToBeApproved" },
+            { id: "#receipt-audited", module: "Receipts", status: "ToBeAudited" },
+
+            { id: "#salespurchase-verified", module: "SalesPurchase", status: "ToBeVerified" },
+            { id: "#salespurchase-approved", module: "SalesPurchase", status: "ToBeApproved" },
+            { id: "#salespurchase-audited", module: "SalesPurchase", status: "ToBeAudited" },
+
+            { id: "#journals-verified", module: "Journals", status: "ToBeVerified" },
+            { id: "#journals-approved", module: "Journals", status: "ToBeApproved" },
+            { id: "#journals-audited", module: "Journals", status: "ToBeAudited" },
+
+            { id: "#expenseclaims-verified", module: "ExpenseClaims", status: "ToBeVerified" },
+            { id: "#expenseclaims-approved", module: "ExpenseClaims", status: "ToBeApproved" },
+            { id: "#expenseclaims-audited", module: "ExpenseClaims", status: "ToBeAudited" },
+        ];
+
+        cardMap.forEach(item => {
+            $(item.id).closest(".status-item").css("cursor", "pointer").click(function () {
+                goToVoucherApproval(item.module, item.status);
+            });
+        });
+    });
+
+    // Function for redirection
+    function goToVoucherApproval(module, status) {
+        window.location.href = `Finance/VoucherApproval?module=${module}&status=${status}`;
+    }
+
+
+</script>
+
+

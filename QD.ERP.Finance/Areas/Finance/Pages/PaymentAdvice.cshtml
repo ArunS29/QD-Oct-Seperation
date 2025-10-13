@@ -1,0 +1,238 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.PaymentAdviceModel
+@{
+}
+<div style="background-color: #e6eff9; border: 1px solid #c4d8e2; padding: 10px;">
+    <div style="display: flex; gap: 30px;">
+        <!-- Left Form Panel -->
+        <div style="width: 400px;">
+            <div class="dx-field">
+                <div class="dx-field-label">Payment Mode</div>
+                <div class="dx-field-value">
+                    <div id="paymentMode"></div>
+                </div>
+            </div>
+
+
+            <div class="dx-field">
+                <div class="dx-field-label" id="instrumentsdetailsadvice"></div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("instrumentDetails")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label" id="instrumentdates"></div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().DateBox()
+                                    .ID("instrumentDate")
+                                   
+                                    .DisplayFormat("dd-MMM-yyyy")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label" id="transferedtobankname"></div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("bankName")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label" id="transferredtobankaccount"></div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("bankAccount")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Buttons Panel -->
+        <div style="margin-top: 30px;">
+            @(Html.DevExtreme().Button()
+                    .ID("btnPrintAdvice")
+                    .Text(new JS("formatMessage('Print Payment Advice')"))
+                    .Type(ButtonType.Default)
+                    .Icon("print")
+                    .Width(250)
+                   
+                    )
+            <br /><br />
+            @(Html.DevExtreme().Button()
+                    .ID("btnClose")
+                    .Text(new JS("formatMessage('Close')"))
+                    .Type(ButtonType.Normal)
+                    .Icon("close")
+                    .Width(250)
+                    .StylingMode(ButtonStylingMode.Contained)
+                    @* .OnClick("closeAdvicePopup") *@
+                    )
+        </div>
+    </div>
+</div>
+<script>
+        $(function () {
+        // Get voucherNo from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const voucherNo = urlParams.get("voucherNo");
+
+        // Initialize SelectBox
+        const paymentModeBox = $("#paymentMode").dxSelectBox({
+            width: "100%",
+            label: "Payment Mode",
+            labelMode: "floating",
+            dataSource: new DevExpress.data.CustomStore({
+                load: function () {
+                    return $.ajax({
+                        url: "/api/ExpenseClaim/GetPaymentModes",
+                        dataType: "json",
+                        type: "GET"
+                    });
+                },
+                byKey: function (key) {
+                    return $.ajax({
+                        url: "/api/ExpenseClaim/GetPaymentModes",
+                        data: { key: key },
+                        type: "GET"
+                    });
+                }
+            }),
+            displayExpr: "PaymentMode",
+            valueExpr: "PaymentMode",
+            placeholder: "Select or enter payment mode",
+            searchEnabled: true,
+            acceptCustomValue: true,
+            inputAttr: { style: "text-align: left;" },
+            onCustomItemCreating: function (args) {
+                const newValue = args.text;
+                return { PaymentMode: newValue };
+            }
+        }).dxSelectBox("instance");
+
+        const instrumentDetailsBox = $("#instrumentDetails").dxTextBox("instance");
+        const instrumentDateBox = $("#instrumentDate").dxDateBox("instance");
+        const bankNameBox = $("#bankName").dxTextBox("instance");
+        const bankAccountBox = $("#bankAccount").dxTextBox("instance");
+
+        // 🔹 Load existing data when page loads
+        if (voucherNo) {
+            $.ajax({
+                url: `/api/ExpenseClaim/GetPaymentAdvice?voucherNo=${encodeURIComponent(voucherNo)}`,
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    if (response && response.success && response.data) {
+                        const data = response.data;
+
+                        // Bind to components
+                        paymentModeBox.option("value", data.PaymentMode || null);
+                        instrumentDetailsBox.option("value", data.InstrumentNo || "");
+                        instrumentDateBox.option("value", data.InstrumentDate ? new Date(data.InstrumentDate) : null);
+                        bankNameBox.option("value", data.TransferedToBankName || "");
+                        bankAccountBox.option("value", data.TransferedToBankAccNo || "");
+                    } else {
+                        DevExpress.ui.notify(response.message || "No data found for this voucher.", "info", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error loading payment advice details.", "error", 2000);
+                }
+            });
+        }
+
+        // 🔹 Handle Print Advice Button Click (Save)
+        $("#btnPrintAdvice").dxButton("instance").option("onClick", function () {
+            const paymentMode = paymentModeBox.option("value");
+            const instrumentDetails = instrumentDetailsBox.option("value");
+            const instrumentDate = instrumentDateBox.option("value");
+            const bankName = bankNameBox.option("value");
+            const bankAccount = bankAccountBox.option("value");
+
+            if (!voucherNo) {
+                DevExpress.ui.notify("Voucher No not found in URL.", "error", 2000);
+                return;
+            }
+
+            // Allow save only if voucherNo starts with SRQ
+            if (!voucherNo.toUpperCase().startsWith("SRQ")) {
+                DevExpress.ui.notify("Payment Advice can only be saved for Supplier Payment request.", "warning", 2500);
+                return;
+            }
+
+            if (!paymentMode || !instrumentDetails || !instrumentDate || !bankName || !bankAccount) {
+                DevExpress.ui.notify("All fields are required before saving.", "error", 2000);
+                return;
+            }
+
+            const data = {
+                VoucherNo: voucherNo,
+                PaymentMode: paymentMode,
+                InstrumentNo: instrumentDetails,
+                InstrumentDate: instrumentDate,
+                TransferedtoBankName: bankName,
+                TransferedToAccNo: bankAccount
+            };
+
+            $.ajax({
+                url: "/api/ExpenseClaim/UpdatePaymentAdvice",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.success) {
+                        DevExpress.ui.notify("Payment advice saved successfully.", "success", 2000);
+                        handlePaymentAdvicePreview(voucherNo);
+                    } else {
+                        DevExpress.ui.notify(response.message || "Failed to save payment advice.", "error", 2000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving payment advice.", "error", 2000);
+                }
+            });
+        });
+    });
+    function handlePaymentAdvicePreview(voucherNo) {
+        if (!voucherNo) {
+            DevExpress.ui.notify("Voucher No is required.", "error", 2000);
+            return;
+        }
+
+        // Get full screen dimensions
+        const screenWidth = window.screen.width;
+        const screenHeight = window.screen.height;
+
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=PaymentsAdviceSupplierPayments&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+            '_blank',
+            `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+        );
+    }
+
+
+     $(function () {
+        $("#transferredtobankaccount").text(formatMessage("Transferred to : (Bank Account No:)"));
+    });
+     $(function () {
+        $("#paymentmodeadvice").text(formatMessage("Payment Mode:"));
+    });
+     $(function () {
+        $("#instrumentsdetailsadvice").text(formatMessage("Instrument Details:"));
+    });
+     $(function () {
+        $("#instrumentdates").text(formatMessage("Instrument Date:"));
+    });
+     $(function () {
+        $("#transferedtobankname").text(formatMessage("Transferred to : (Bank Name)"));
+    });
+</script>

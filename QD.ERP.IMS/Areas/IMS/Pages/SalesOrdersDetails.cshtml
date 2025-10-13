@@ -1,0 +1,1176 @@
+﻿
+@page
+@model QD.ERP.Web.Areas.IMS.Pages.SalesOrdersDetailsModel
+@{
+}
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+
+	.titleCard-toggle1 {
+		display: none;
+	}
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+
+
+	.context-menu {
+		display: none;
+		position: relative;
+		background-color: white;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+		list-style: none;
+		padding: 8px 0;
+		z-index: 1000;
+	}
+
+		.context-menu li {
+			padding: 8px 16px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+		}
+
+			.context-menu li:hover {
+				background-color: #f0f0f0;
+			}
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+
+	/* If it's a context menu item or toolbar item */
+	.custom-delete-item {
+		color: #d32f2f !important; /* red text */
+		font-weight: 600;
+	}
+
+	/* If it's a menu item specifically inside a DevExtreme context menu */
+	.dx-menu-item.custom-delete-item {
+		color: #d32f2f !important;
+	}
+
+	/* Optional: icon inside the item */
+	.custom-delete-item .dx-icon {
+		color: #d32f2f !important;
+	}
+
+	/* Optional: hover background */
+	.custom-delete-item:hover {
+		background-color: #ffecec !important;
+	}
+</style>
+<input id="formId" value="frm60136SalesOrderItemDetails" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="Purchase Order Iteam Details" class="no-border-input"></div>
+	</div>
+</div>
+
+@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
+
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-up")
+		.TabIndex(4)
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+		)
+
+</div>
+<div class="dx-field ledgerResult">
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry60212salesOrderItemsWithDetail>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+		columns.Add().Caption(new JS("formatMessage('Sales Orders Details')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.SalesOrderNo)
+			.Caption(new JS("formatMessage('Sales Order No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+			.GroupIndex(0);
+
+				subColumns.AddFor(m => m.SalesOrderDate)
+			.Caption(new JS("formatMessage('Sales Order Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+			.Format("dd-MMM-yyyy");
+
+				subColumns.AddFor(m => m.ClientName)
+			.Caption(new JS("formatMessage('Client Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.ClientPono)
+			.Caption(new JS("formatMessage('Client PO No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.SalesPersonName)
+			.Caption(new JS("formatMessage('Sales Person Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.Gscode)
+			.Caption(new JS("formatMessage('Stock Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.Gsdescrpition)
+			.Caption(new JS("formatMessage('Stock Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.UnitType)
+			.Caption(new JS("formatMessage('Unit Type')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.UnitDesc)
+			.Caption(new JS("formatMessage('Unit Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuotedQuantity)
+			.Caption(new JS("formatMessage('Quoted Quantity')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+		.CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#fff9cc', // Light yellow
+				color: '#b58900',            // Amber text
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				subColumns.AddFor(m => m.DeliveryTerms)
+			.Caption(new JS("formatMessage('Delivery Terms')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuoteRemarks)
+			.Caption(new JS("formatMessage('Quote Remarks')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.QuotedUnitPrice)
+			.Caption(new JS("formatMessage('Quoted Unit Price')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true)
+		.CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc',
+		color: '#b58900',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption(new JS("formatMessage('Line Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc',
+		color: '#b58900',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+					subColumns.AddFor(m => m.QuotedDiscount).Caption(new JS("formatMessage('Quoted Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+						subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption(new JS("formatMessage('Line Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+							subColumns.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+								subColumns.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+									subColumns.AddFor(m => m.BalanceToDeliver).Caption(new JS("formatMessage('Balance To Deliver')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				subColumns.AddFor(m => m.TotalOrderedQty).Caption(new JS("formatMessage('Total Ordered Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+											subColumns.AddFor(m => m.TotalIssdQty).Caption(new JS("formatMessage('Total Issd Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6', // Light yellow
+		color: '#1a8f1a',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+			subColumns.AddFor(m => m.DeliveryPeriod).Caption(new JS("formatMessage('Delivery Period')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			subColumns.AddFor(m => m.CostPrice).Caption(new JS("formatMessage('Cost Price')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.ClientPodate)
+			.Caption(new JS("formatMessage('Client PO Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.QuoteNo)
+			.Caption(new JS("formatMessage('Quotation No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.QuoteDate)
+			.Caption(new JS("formatMessage('Quotation Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ClientRefNo)
+			.Caption(new JS("formatMessage('Client Reference No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.CompanyBranch)
+			.Caption(new JS("formatMessage('Company Branch')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ProjectMasterCode)
+			.Caption(new JS("formatMessage('Project Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.CompanyName)
+			.Caption(new JS("formatMessage('Company Name')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.TaxSlab)
+			.Caption(new JS("formatMessage('Tax Slab')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.AddlDescription)
+			.Caption(new JS("formatMessage('Additional Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.PlanNo)
+			.Caption(new JS("formatMessage('Plan No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemSize)
+			.Caption(new JS("formatMessage('Item Size')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemPartNo)
+			.Caption(new JS("formatMessage('Item Part No')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemBrand)
+			.Caption(new JS("formatMessage('Item Brand')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ItemMake)
+			.Caption(new JS("formatMessage('Item Make')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ClientCode)
+			.Caption(new JS("formatMessage('Client Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.OrderStatus)
+			.Caption(new JS("formatMessage('Order Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InvoiceStatus)
+			.Caption(new JS("formatMessage('Invoice Status')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.BalanceToDeliverValue)
+			.Caption(new JS("formatMessage('Balance To Deliver Value')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.IssdQtyValue)
+			.Caption(new JS("formatMessage('Issued Qty Value')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InventoryMasterGroupId)
+			.Caption(new JS("formatMessage('Inventory Group Id')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InventoryMasterGroup)
+			.Caption(new JS("formatMessage('Inventory Group')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr1)
+			.Caption(new JS("formatMessage('Extra Field 1')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.TypeOfRequest)
+			.Caption(new JS("formatMessage('Type Of Request')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.SalesOrderRemarks)
+			.Caption(new JS("formatMessage('Sales Order Remarks')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.ExpectedDeliveryDate)
+			.Caption(new JS("formatMessage('Expected Delivery Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr2)
+			.Caption(new JS("formatMessage('Extra Field 2')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.Expr3)
+			.Caption(new JS("formatMessage('Extra Field 3')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.SalesPersonUserId)
+			.Caption(new JS("formatMessage('Sales Person User ID')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.InvoicedQty)
+			.Caption(new JS("formatMessage('Invoiced Quantity')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+				subColumns.AddFor(m => m.BalanceQtyToInvoice)
+			.Caption(new JS("formatMessage('Balance Qty to Invoice')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(false);
+
+			});
+		})
+		.Height("70vh")
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.PageSize(10))  
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+
+
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("Gscode")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+				items.Add().Column("LineTotalBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("QuotedDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
+			summary.TotalItems(items =>
+			{
+
+
+				items.Add().Column("LineTotalBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+
+				items.Add().Column("QuotedDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+
+				items.Add().Column("BalanceToDeliver")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+
+				items.Add().Column("TotalOrderedQty")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+
+				items.Add().Column("TotalIssdQty")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
+		})
+		)
+
+
+</div>
+<div id="invoiceErrorPopup"></div>
+
+<script>
+
+
+			 $(function () {
+		$("#SalesOrders").dxTextBox({
+		text: formatMessage("Sales Orders"),
+			readOnly: true,
+			onContentReady: function (e) {
+			$(e.element).addClass("dx-textbox-heading");
+			}
+			});
+		});
+
+		document.addEventListener("DOMContentLoaded", function () {
+		const gridElement = document.getElementById("dataGrid");
+		const contextMenu = document.getElementById("contextMenu");
+
+		// Add context menu listener to the grid
+		gridElement.addEventListener("contextmenu", function (e) {
+			e.preventDefault();
+
+			// Find the data row that was right-clicked
+			const rowElement = e.target.closest(".dx-data-row");
+
+			if (rowElement) {
+				// Select the clicked row in the DataGrid instance
+				const dxGrid = $("#dataGrid").dxDataGrid("instance");
+				const rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+
+				dxGrid.selectRowsByIndexes([rowIndex]);
+				contextMenu.dataset.rowIndex = rowIndex;
+
+				// Temporarily show context menu (hidden) to measure dimensions
+				contextMenu.style.visibility = "hidden";
+				contextMenu.style.display = "block";
+
+				const menuWidth = contextMenu.offsetWidth;
+				const menuHeight = contextMenu.offsetHeight;
+				const windowWidth = window.innerWidth;
+				const windowHeight = window.innerHeight;
+
+				let mouseX = e.clientX;
+				let mouseY = e.clientY;
+
+				// Boundary check
+				if (mouseX + menuWidth > windowWidth) {
+					mouseX = windowWidth - menuWidth - 10;
+				}
+				if (mouseY + menuHeight > windowHeight) {
+					mouseY = windowHeight - menuHeight - 10;
+				}
+
+				// Final position and make visible
+				contextMenu.style.left = `${mouseX}px`;
+				contextMenu.style.top = `${mouseY}px`;
+				contextMenu.style.visibility = "visible";
+			}
+		});
+
+		// Hide context menu when clicking elsewhere
+		document.addEventListener("click", function (e) {
+			if (!e.target.closest("#contextMenu")) {
+				contextMenu.style.display = "none";
+			}
+		});
+	});
+
+
+		$(function () {
+					var now = new Date();
+					var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+					var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+					$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+					$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+					ddBtnShowRecords_click('range');
+			});
+		function ddBtnShowRecords_click(duration) {
+			 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+				var toDateBox = $("#todateBox").dxDateBox("instance");
+				var frmDate = new Date(frmDateBox.option("value"));
+				var toDate = new Date(toDateBox.option("value"));
+				var currentDate = new Date();
+				switch (duration) {
+					case 'today':
+						frmDate = toDate = currentDate;
+						break;
+					case 'yesterday':
+						var dateObj = new Date();
+						// Subtract one day from current time
+						dateObj.setDate(dateObj.getDate() - 1);
+						frmDate = toDate = dateObj;
+						break;
+					case 'week':
+						var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+						// Calculate the start of the week (Saturday)
+						var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+						// Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+					frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
+						toDate = new Date(currentDate.setDate(startOfWeek + 6));
+						break;
+					case 'tillmonth':
+						// Get the first and last day of the current month
+						frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+						toDate = currentDate; //Today
+						break;
+					case 'fullmonth':
+						// Get the first and last day of the current month
+						frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+						toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+						break;
+					case 'tillyear':
+						// Get the first and last day of the current year
+						frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+						toDate = currentDate;// Today
+						break;
+						// Get the first and last day of the current year
+						frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+						toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
+						break;
+					case 'lastyear':
+						// Get the first and last day of the last year
+						frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+						toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+						break;
+					case 'lastmonth':
+						// Get the first and last day of the current month
+						frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+						toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+						break;
+					case 'q1': // Jan - Mar
+						frmDate = new Date(new Date().getFullYear(), 0, 1);
+						toDate = new Date(new Date().getFullYear(), 2, 31);
+						break;
+
+					case 'q2': // Apr - Jun
+						frmDate = new Date(new Date().getFullYear(), 3, 1);
+						toDate = new Date(new Date().getFullYear(), 5, 30);
+						break;
+
+					case 'q3': // Jul - Sep
+						frmDate = new Date(new Date().getFullYear(), 6, 1);
+						toDate = new Date(new Date().getFullYear(), 8, 30);
+						break;
+
+					case 'q4': // Oct - Dec
+						frmDate = new Date(new Date().getFullYear(), 9, 1);
+						toDate = new Date(new Date().getFullYear(), 11, 31);
+						break;
+				}
+				hidequarterSubmenus();
+
+						 // ✅ Update DateBoxes to reflect selection
+					frmDateBox.option("value", frmDate);
+					toDateBox.option("value", toDate);
+
+					frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+					toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
+					frmDate = frmDate.toISOString().split('T')[0];
+					toDate = toDate.toISOString().split('T')[0];
+
+					$.ajax({
+			url: '/api/SalesOrders/GetSalesOrdersDetails',
+			type: 'GET',
+			data: {
+				fromDate: frmDate,
+				toDate: toDate
+			},
+			success: function (data) {
+				console.log("Returned Data: ", data); // debug
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+			},
+			error: function (xhr) {
+				console.log("AJAX Error", xhr.responseText); // debug
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+
+
+
+		}
+
+	// 			function onContextMenuPreparing(e) {
+	// 		if (e.target === "content" && e.row) {
+	// 			e.items = [
+	// 				{
+	// 					text: "Edit Sales Order",
+	// 					icon: "edit",
+	// 						onItemClick: function () {
+	// 	let salesOrderNo = e.row.data.SalesOrderNo; 
+	// 	let tenantName = window.tenantName || "defaultTenant";
+	// 	let url = `/${tenantName}/IMS/AddNewSalesOrder?SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+	// 	window.location.href = url; 
+	// }
+
+
+	// 				},
+
+	// 					{
+	// 	text: "Delete Sales Order",
+	// 	icon: "trash",
+	// 				onItemClick: function () {
+	// 	const salesOrderNo = e.row.data.SalesOrderNo;
+	// 	DevExpress.ui.dialog.confirm(
+	// 		"You are about to delete the Sales Order.\nYou cannot revert the changes.\nAre you sure?",
+	// 		"Confirm Delete"
+	// 	).done(function (dialogResult) {
+	// 		if (dialogResult) {
+	// 			$.ajax({
+	// 				url: `/api/SalesOrders/DeleteSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}`,
+	// 				type: "DELETE",
+	// 				success: function (response) {
+	// 					DevExpress.ui.notify(response.message, "success", 2000);
+	// 					ddBtnShowRecords_click('range');
+	// 				},
+	// 				error: function (xhr) {
+	// 					DevExpress.ui.notify("Failed to delete sales order.", "error", 2000);
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// }
+	// },
+
+	// 				{
+	// 					text: "Unlock the Order",
+	// 					icon: "unlock",
+	// 					onItemClick: function () {
+	// 						onUnlockRequest(e.row.data);
+	// 					}
+	// 				},
+	// 				{
+	// 					text: "Create Proforma Invoice",
+	// 					icon: "plus",
+	// 					onItemClick: function () {
+	// 						onCreateRFQ(e.row.data);
+	// 					}
+	// 				},
+	// 				{
+	// 					text: "Create Paartial Delivery for this sales Order",
+	// 					icon: "plus",
+	// 					onItemClick: function () {
+	// 						onCreateQuotation(e.row.data);
+	// 					}
+	// 				},
+	// 				{
+	// 					text: "Create full Delivery for this sales order",
+	// 					icon: "cart",
+	// 					onItemClick: function () {
+	// 						onCreatePO(e.row.data);
+	// 					}
+	// 				},
+	// 				{
+	// 					text: "create invoice for this salce order",
+	// 					icon: "box",
+	// 					onItemClick: function () {
+	// 						onCreateMaterialReceipt(e.row.data);
+	// 					}
+	// 				},
+
+	// 			];
+	// 		}
+	// 	}
+
+
+
+</script>

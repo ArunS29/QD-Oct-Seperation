@@ -1,0 +1,593 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Shared.DAL.Entities;
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Include jsPDF library -->
+<!-- Include AutoTable plugin for table exports -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+<style>
+    .container {
+        display: none !important;
+        background-color:transparent;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+    .mainContainer {
+        background-color: white;
+         margin-top: 0px; 
+        margin-left: 0px; 
+        width: 96%;
+        height: 100vh;
+        overflow: hidden;
+         padding: 0px; 
+    }
+    .dx-tabpanel {
+        background-color: #f9fafb;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .dx-tab {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .dx-tab-selected {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
+
+    .form-group {
+        padding: 15px;
+    }
+
+    .dx-dropdownbox {
+        width: 100% !important;
+    }
+
+
+            .card{
+                height:600px;
+                background-color:white;
+                width:580px;
+            }
+
+    .dx-tabpanel-tabs .dx-tabs:not(.dx-tabs-vertical) .dx-tabpanel-tab {
+        max-width: 190px!important;
+    }
+
+    /* Fix tab styling in popup iframe */
+    .dx-tabpanel .dx-tabs .dx-tab {
+        background-color: transparent !important;
+        border: none !important;
+        min-height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .dx-tabpanel .dx-tabs .dx-tab .dx-tab-text {
+        color: #333 !important;
+        font-weight: bold !important;
+        font-size: 14px !important;
+    }
+
+    /* Selected tab styling with higher specificity */
+    .dx-tabpanel .dx-tabs .dx-tab.dx-tab-selected,
+    .dx-tabpanel .dx-tabs .dx-item.dx-tab-selected {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
+
+    .dx-tabpanel .dx-tabs .dx-tab.dx-tab-selected .dx-tab-text,
+    .dx-tabpanel .dx-tabs .dx-item.dx-tab-selected .dx-tab-text {
+        color: white !important;
+        font-weight: bold !important;
+    }
+
+    .dx-tabpanel-tabs {
+        background-color: #f5f5f5 !important;
+    }
+
+    /* Additional specific selectors for DevExtreme tab selection */
+    .dx-tabs-item.dx-item-selected,
+    .dx-tabs .dx-item.dx-item-selected {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
+
+    .dx-tabs-item.dx-item-selected .dx-tab-text,
+    .dx-tabs .dx-item.dx-item-selected .dx-tab-text {
+        color: white !important;
+    }
+
+    /* Ultimate fallback with highest specificity */
+    body .dx-tabpanel .dx-tabs .dx-tab[aria-selected="true"],
+    body .dx-tabpanel .dx-tabs .dx-item[aria-selected="true"] {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
+
+    body .dx-tabpanel .dx-tabs .dx-tab[aria-selected="true"] .dx-tab-text,
+    body .dx-tabpanel .dx-tabs .dx-item[aria-selected="true"] .dx-tab-text {
+        color: white !important;
+    }
+</style>
+
+<div class="card">
+   
+
+
+   
+    @(
+        Html.DevExtreme().TabPanel()
+        .ID("AssetTabs")
+        .DeferRendering(false)
+        .Items(item =>
+        {
+            item.Add().Title("BillsReceivableByClient").Text("Bills Receivable By Client").Template(@<text>
+        <div class="form-group">
+
+          
+            
+            <label for="Branch">AccountHead:</label>
+            <br />
+            @(Html.DevExtreme().DropDownBox()
+            .ID("GetAccountHeadDropDown")
+            .DataSource(d => d.WebApi()
+            .Controller("ReportsByClients")
+            .LoadAction("GetAccountHead")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId")
+            )
+            .LabelMode(EditorLabelMode.Floating)
+            .ShowClearButton(true)
+            .AcceptCustomValue(true)
+            .OpenOnFieldClick(true) 
+            .ValueExpr("AccountId") 
+            .DisplayExpr("AccountHead")
+            .ContentTemplate(new TemplateName("GetAccountHeadContentTemplate"))
+            .OnValueChanged("onDropDownValueChanged")
+            )
+
+
+
+
+        </div>
+
+    </text>);
+            item.Add().Title("BillsReceivableBySalesPerson").Text("Bills Receivable By Sales Person").Template(@<text>
+        <div class="form-group">
+
+            <label for="Branch">Sales Person:</label>
+            <br />
+            @(Html.DevExtreme().DropDownBox()
+            .ID("GetSalesPersonDropDown")
+            .DataSource(d => d.WebApi()
+            .Controller("ReportsByClients")
+            .LoadAction("GetSalesPerson")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SalesPersonCode")
+            )
+            .LabelMode(EditorLabelMode.Floating)
+            .ShowClearButton(true)
+            .AcceptCustomValue(true)
+            .OpenOnFieldClick(true) 
+            .ValueExpr("SalesPersonCode") 
+            .DisplayExpr("SalesPersonName")
+            .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+            )
+
+
+        </div>
+
+    </text>);
+            item.Add().Title("BillsReceivableByBranch").Text("Bills Receivable By Branch/Division").Template(@<text>
+
+        <div class="form-group">
+
+            <label for="Branch">Division/Branch:</label>
+            <br />
+            @(Html.DevExtreme().DropDownBox()
+            .ID("GetCompanyBranchDropDown")
+            .DataSource(d => d.WebApi()
+            .Controller("ReportsByClients")
+            .LoadAction("GetCompanyBranch")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("BranchCode")
+            )
+            .LabelMode(EditorLabelMode.Floating)
+            .ShowClearButton(true)
+            .AcceptCustomValue(true)
+            .OpenOnFieldClick(true) 
+            .ValueExpr("BranchCode") 
+            .DisplayExpr("BranchName")
+            .ContentTemplate(new TemplateName("GetCompanyBranchContentTemplate"))
+            )
+
+
+        </div>
+
+
+    </text>
+        );
+        })
+        )
+</div>
+
+
+@using (Html.DevExtreme().NamedTemplate("GetAccountHeadContentTemplate"))
+{
+
+    @(Html.DevExtreme().DataGrid()
+                .ID("GetAccountHead-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("ReportsByClients")
+                .LoadAction("GetAccountHead")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId")
+                )
+                .ShowBorders(true)
+                .SearchPanel(sp => sp
+                .Visible(true)  
+                .HighlightSearchText(true)
+                )
+                .Selection(sl => sl
+                .Mode(SelectionMode.Multiple)  
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
+                )
+                .OnSelectionChanged("dataGridSelectionChanged1")    
+                .Paging(p => p.PageSize(15))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
+                .Height(400)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("AccountHead").Caption("Account Name");
+                })
+                )
+    
+}
+<div class="toolbar-container">
+    <div id="gridToolbar">
+        @(Html.DevExtreme().Button()
+            .Text("Save as PDF")
+            .Icon("exportpdf")
+            .OnClick("saveGridAsPDF")
+            )
+        @(Html.DevExtreme().Button()
+            .Text("Print")
+            .Icon("print")
+            .OnClick("downloadSelectedReport")
+            )
+    </div>
+</div>
+@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
+{
+
+    @(Html.DevExtreme().DataGrid()
+                .ID("GetSalesPerson-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("ReportsByClients")
+                .LoadAction("GetSalesPerson")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("SalesPersonCode")
+                )
+                .ShowBorders(true)
+                .SearchPanel(sp => sp
+                .Visible(true)  
+                .HighlightSearchText(true)
+                )
+                .Selection(sl => sl
+                .Mode(SelectionMode.Multiple)  
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
+                )
+                .OnSelectionChanged("dataGridSelectionChanged2") 
+                .Paging(p => p.PageSize(15))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(400)
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("SalesPersonName").Caption("SalesPerson Name");
+                })
+                )
+
+}
+@using (Html.DevExtreme().NamedTemplate("GetCompanyBranchContentTemplate"))
+{
+
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetCompanyBranch-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("ReportsByClients")
+                        .LoadAction("GetCompanyBranch")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("BranchCode")
+                    )
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp
+                    .Visible(true)  
+                    .HighlightSearchText(true)
+                    )
+                    .Selection(sl => sl
+                    .Mode(SelectionMode.Multiple)  
+                    .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) 
+                    )
+                    .OnSelectionChanged("dataGridSelectionChanged3") 
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
+                    .Height(400)
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("BranchName").Caption("Branch Name");
+                    })
+                    )
+
+}
+
+<script>
+   
+    const tenantName = window.location.pathname.split('/')[1];
+    
+    // Get selectedMode from URL parameter (passed from parent page)
+    const urlParams = new URLSearchParams(window.location.search);
+    let selectedMode = urlParams.get('mode') || 'online';
+    console.log(`ReportsByClients received mode: ${selectedMode}`);
+    
+    let dataGrid;
+
+    // --- DropDownBox helpers ---
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened() { console.log("DropDownBox opened"); }
+    function onKeyDown(event) { console.log("Key pressed:", event.key); }
+
+    // --- Selection arrays ---
+    let selectedAccountValues = [];
+    let selectedSalesValues = [];
+    let selectedSalesNames = [];
+    let selectedBranchValues = [];
+    let selectedBranchNames = [];
+
+    // --- AccountHead ---
+    function dataGridSelectionChanged1(e) {
+        selectedAccountValues = e.selectedRowKeys;
+        console.log("Selected Account IDs:", selectedAccountValues);
+        const ddbInstance = $("#GetAccountHeadDropDown").dxDropDownBox("instance");
+        if (ddbInstance) ddbInstance.option("value", selectedAccountValues);
+    }
+    function onDropDownValueChanged(e) {
+        selectedAccountValues = e.value || [];
+    }
+    function dataGridInitialized1(e) { dataGrid = e.component; }
+
+    // --- SalesPerson ---
+    function dataGridSelectionChanged2(e) {
+        selectedSalesValues = e.selectedRowKeys;
+        selectedSalesNames = e.selectedRowsData.map(d => d.SalesPersonName); // get display names
+        console.log("Selected Sales Codes:", selectedSalesValues);
+        console.log("Selected Sales Names:", selectedSalesNames);
+        const ddbInstance = $("#GetSalesPersonDropDown").dxDropDownBox("instance");
+        if (ddbInstance) ddbInstance.option("value", selectedSalesValues);
+    }
+    function onDropDownValueChanged1(e) { selectedSalesValues = e.value || []; }
+    function dataGridInitialized2(e) { dataGrid = e.component; }
+
+    // --- Branch ---
+    function dataGridSelectionChanged3(e) {
+        selectedBranchValues = e.selectedRowKeys;
+        selectedBranchNames = e.selectedRowsData.map(d => d.BranchName); // get display names
+        console.log("Selected Branch Codes:", selectedBranchValues);
+        console.log("Selected Branch Names:", selectedBranchNames);
+        const ddbInstance = $("#GetCompanyBranchDropDown").dxDropDownBox("instance");
+        if (ddbInstance) ddbInstance.option("value", selectedBranchValues);
+    }
+    function dataGridInitialized3(e) { dataGrid = e.component; }
+
+    // --- Download / PDF functions ---
+    function downloadSelectedReport() {
+        let selectedParams = "";
+        let selectionType = "";
+
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
+        } else {
+            alert("Please select at least one record.");
+            return;
+        }
+
+        let reportName = "XtraRecivableReport";
+        
+        // Check if selectedMode is offline and modify report name accordingly
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReportImport";
+            console.log(`DEBUG downloadSelectedReport: Changed report name to: ${reportName}`);
+        }
+        
+        const downloadUrl = `/api/Report/DownloadReceivable?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.location.href = downloadUrl;
+    }
+
+    function saveGridAsPDF() {
+        let selectedParams = "";
+        let selectionType = "";
+
+        if (selectedAccountValues.length > 0) {
+            selectedParams = selectedAccountValues.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "AccountHead";
+        } else if (selectedSalesValues.length > 0) {
+            selectedParams = selectedSalesNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "SalesPerson";
+        } else if (selectedBranchValues.length > 0) {
+            selectedParams = selectedBranchNames.map(v => `selectedValues=${encodeURIComponent(v)}`).join("&");
+            selectionType = "Branch";
+        } else {
+            alert("Please select at least one record.");
+            return;
+        }
+
+        let reportName = "XtraRecivableReport";
+        
+        // Check if selectedMode is offline and modify report name accordingly (same as _GridFooter3.cshtml)
+        if (typeof selectedMode !== "undefined" && selectedMode.toLowerCase() === "offline") {
+            reportName = "XtraRecivableReportImport";
+            console.log(`DEBUG: Changed report name to: ${reportName}`);
+        }
+        
+        console.log(`Opening report: ${reportName} in ${selectedMode || 'online'} mode`);
+        const reportUrl = `/${tenantName}/RegisterViewer?reportName=${encodeURIComponent(reportName)}&selectionType=${selectionType}&${selectedParams}`;
+        window.open(reportUrl, "_blank", "width=1200,height=800,scrollbars=yes,resizable=yes");
+    }
+
+    // --- Print functions ---
+    function printGrid() {
+        if (selectedAccountValues.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+
+        fetch("/api/ReportsByClients/GenerateReportAccountHead", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedAccountValues)
+        })
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
+    }
+
+    function printGridSales() {
+        if (selectedSalesNames.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+
+        fetch("/api/ReportsByClients/GenerateReportSalesPerson", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedSalesNames)
+        })
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
+    }
+
+    function printGridBranch() {
+        if (selectedBranchNames.length === 0) {
+            alert("Please select at least one record to print.");
+            return;
+        }
+
+        fetch("/api/ReportsByClients/GenerateReportBranch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(selectedBranchNames)
+        })
+        .then(response => { if (response.redirected) window.location.href = response.url; else return response.text(); })
+        .then(data => { if (data) console.error("Error:", data); })
+        .catch(error => console.error("Error:", error));
+    }
+
+
+
+    // Function to force tab styling
+    function forceTabStyling() {
+        setTimeout(() => {
+            // Remove any existing styling that might interfere
+            $('.dx-tab').removeClass('dx-tab-selected dx-item-selected');
+            
+            // Get the current selected tab index
+            const tabPanel = $("#AssetTabs").dxTabPanel("instance");
+            const selectedIndex = tabPanel.option("selectedIndex");
+            
+            // Apply styling to the selected tab
+            $(`.dx-tab:eq(${selectedIndex})`).addClass('dx-tab-selected dx-item-selected');
+            
+            // Force color styling with inline styles as backup
+            $('.dx-tab').each(function(index) {
+                if (index === selectedIndex) {
+                    $(this).css({
+                        'background-color': '#1976d2',
+                        'color': 'white'
+                    });
+                    $(this).find('.dx-tab-text').css('color', 'white');
+                } else {
+                    $(this).css({
+                        'background-color': 'transparent',
+                        'color': '#333'
+                    });
+                    $(this).find('.dx-tab-text').css('color', '#333');
+                }
+            });
+        }, 100);
+    }
+
+    // --- Preload data and activate tab ---
+    $(function () {
+        $("#AssetTabs").dxTabPanel({
+            onSelectionChanged: function(e) {
+                // Force styling when tab changes
+                forceTabStyling();
+            }
+        });
+
+        const tabPanel = $("#AssetTabs").dxTabPanel("instance");
+
+        $.getJSON(`/${tenantName}/ReportsByClients/GetAccountHead`, function(data) {
+            $("#GetAccountHeadDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+        $.getJSON(`/${tenantName}/ReportsByClients/GetSalesPerson`, function(data) {
+            $("#GetSalesPersonDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+        $.getJSON(`/${tenantName}/ReportsByClients/GetCompanyBranch`, function(data) {
+            $("#GetCompanyBranchDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabIndex = parseInt(urlParams.get("tab"), 10);
+        if (!isNaN(tabIndex)) {
+            tabPanel.option("selectedIndex", tabIndex);
+        }
+        
+        // Force styling after initial load
+        forceTabStyling();
+        
+        // Also force styling after a short delay to ensure everything is rendered
+        setTimeout(forceTabStyling, 500);
+    });
+</script>
+

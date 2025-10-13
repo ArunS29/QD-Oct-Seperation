@@ -1,0 +1,544 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.PropertytSummaryReportModel
+<h2 id="employeesummaryreport"></h2>
+<input id="formId" value="PropertyReportsSummary" type="hidden" />
+<div>
+    @await Html.PartialAsync("_DetailedReportsFooter")
+</div>
+<div class="toolbar custom-toolbar" style="display: flex; gap: 10px; flex-wrap: nowrap; align-items: center;">
+    <div class="toolbar-item" style="flex: 1 1 180px;">
+        @(Html.DevExtreme().DateBox()
+                .ID("frmdateBox")
+                .Label(new JS("formatMessage('Start Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Start Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                .TabIndex(1)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
+                )
+    </div>
+
+    <div class="toolbar-item" style="flex: 1 1 180px;">
+        @(Html.DevExtreme().DateBox()
+                .ID("todateBox")
+                .Label(new JS("formatMessage('End Date')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "End Date")
+                .Type(DateBoxType.Date)
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+                .DisplayFormat("dd-MMM-yyyy")
+                .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
+                .TabIndex(2)
+                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+                .ShowClearButton(true) // shows clear (X) button
+                )
+    </div>
+
+    <div class="toolbar-item" style="flex: 1 1 150px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("accountIdLabel")
+                .Label(new JS("formatMessage('Ledger No')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger No")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(3)
+                )
+    </div>
+
+    <!-- ✅ New Ledger Name textbox -->
+    <div class="toolbar-item" style="flex: 1 1 250px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("ledgerNameLabel")
+                .Label(new JS("formatMessage('Ledger Name')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .InputAttr("aria-label", "Ledger Name")
+                .ReadOnly(true)
+                .StylingMode(EditorStylingMode.Outlined)
+                .TabIndex(4)
+                )
+    </div>
+
+    <div class="toolbar-item" style="flex: 0 0 auto;">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddBtnShowRecords")
+                .Text(new JS("formatMessage('Show Records')"))
+                .Icon("smalliconslayout")
+                .Width(180)
+                .ElementAttr("class", "button-alignment-down")
+                .TabIndex(5)
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                )
+    </div>
+</div>
+<div id="dataGrid" style="margin-top: 15px;"></div>
+<div class="limited-footer">
+    @await Html.PartialAsync("_GridFooter")
+</div>
+<div id="dataGrid" style="margin-top: 15px;width:1600px;padding-left:10px;"></div>
+
+<script>
+       $(function () {
+         $("#employeesummaryreport").text(formatMessage("Employee Summary Report"));
+    });
+     $(document).ready(function () {
+         const accountId = getQueryParam('accountId');
+
+         if (accountId) {
+             // Bind accountId to Ledger No textbox
+             $("#accountIdLabel").dxTextBox("instance").option("value", accountId);
+
+             // Fetch Ledger Name from server
+             $.ajax({
+                 url: '/api/UCCostAnalysis/GetLedgerName', // adjust area/controller if needed
+                 type: 'GET',
+                 data: { accountId: accountId },
+                 success: function (response) {
+                     if (response && response.ledgerName) {
+                         $("#ledgerNameLabel").dxTextBox("instance").option("value", response.ledgerName);
+                     }
+                 },
+                 error: function (xhr) {
+                     console.error("Failed to load Ledger Name:", xhr.responseText);
+                     $("#ledgerNameLabel").dxTextBox("instance").option("value", "");
+                 }
+             });
+         }
+     });
+
+    let dataGrid;
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    function loadCostPivotGrid() {
+
+        const accountId = getQueryParam('accountId');
+        const accountHead = getQueryParam('accountHead');
+        const fromDate = getQueryParam('fromDate');
+        const toDate = getQueryParam('toDate');
+        if (fromDate) {
+            $("#frmdateBox").dxDateBox("instance").option("value", new Date(fromDate));
+        }
+        if (toDate) {
+            $("#todateBox").dxDateBox("instance").option("value", new Date(toDate));
+        }
+        dataGrid.option("dataSource", {
+            load: function () {
+                const params = new URLSearchParams();
+                if (accountId) params.append("accountId", accountId);
+                if (accountHead) params.append("accountHead", accountHead);
+                if (fromDate) params.append("fromDate", fromDate);
+                if (toDate) params.append("toDate", toDate);
+
+                return fetch(`/api/EmployeeReport/GetPropertyAllocations?${params}`)
+                    .then(res => res.json());
+            }
+        });
+
+        dataGrid.refresh();
+    }
+
+    $(function () {
+        dataGrid = $("#dataGrid").dxPivotGrid({
+            showBorders: true,
+            allowSorting: true,
+            allowFiltering: true,
+            showFieldChooser: true,
+            fieldChooser: {
+                enabled: true,
+                height: 400,
+                allowSearch: true
+            },
+            dataSource: {
+                fields: [
+                   { dataField: "PropertyNo",area: "row", caption: formatMessage("Property No") },
+                    { dataField: "PropertyDescription",area: "row", caption: formatMessage("Property Description") },
+                    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
+                    { dataField: "VoucherEntryNo", caption: formatMessage("Voucher Entry No") },
+                    {
+                        dataField: "AmountAllocated",
+                      
+                        summaryType: "sum",
+                        caption: formatMessage("Amount Allocated"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+                    { dataField: "VoucherRefNo",area: "filter", caption: formatMessage("Voucher Ref No") },
+                    { dataField: "AccountHead",area: "filter", caption: formatMessage("Account Head") },
+                    { dataField: "AccountHeadName", area: "filter",caption: formatMessage("Account Head Name"), showTotals: false, showGrandTotals: false },
+                    { dataField: "VoucherDate",area: "filter", caption: formatMessage("Voucher Date") }, // already formatted as string in C#
+                    { dataField: "EntryNarration",area: "filter", caption: formatMessage("Entry Narration") },
+                    { dataField: "AccountGroup",area: "filter", caption: formatMessage("Account Group") },
+                    { dataField: "MasterGroup", area: "filter",caption: formatMessage("Master Group") },
+                    { dataField: "PlateNo", area: "filter",caption: formatMessage("Plate No") },
+                    { dataField: "DoorNo", area: "filter",caption: formatMessage("Door No") },
+                    { dataField: "ChassisNo",area: "filter", caption: formatMessage("Chassis No") },
+                    { dataField: "PropertyCategoryName",area: "filter", caption: formatMessage("Property Category Name") },
+                    { dataField: "PropertyGroup",area: "filter", caption: formatMessage("Property Group") },
+                    { dataField: "PropertyType",area: "filter", caption: formatMessage("Property Type") },
+                       {
+                        dataField: "RevenueAmount",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Revenue Amount"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+                        {
+                        dataField: "ExpenseAmount",
+                        area: "data",
+                        summaryType: "sum",
+                        caption: formatMessage("Expense Amount"),
+                        customizeText: function (cellInfo) {
+                            if (cellInfo.value != null) {
+                                return Number(cellInfo.value).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                            }
+                            return "";
+                        }
+                    },
+                    { dataField: "CostAndRevenueClubbed",area: "filter", caption: formatMessage("Cost & Revenue Clubbed"), summaryType: "sum" },
+                    { dataField: "CostCenterCode", area: "filter",caption: formatMessage("Cost Center Code") },
+                    { dataField: "CostCenterUnit",area: "filter", caption: formatMessage("Cost Center Unit") },
+                    { dataField: "VoucherType", area: "filter",caption: formatMessage("Voucher Type") },
+                    { dataField: "VoucherNarration", area: "filter",caption: formatMessage("Voucher Narration") }
+
+                ]
+            },
+            width: "100%",
+            height: $(window).height() - 50,
+            allowSortingBySummary: true,
+            allowExpandAll: true,
+            columnAutoWidth: true,
+            allowColumnResizing: true,
+            wordWrapEnabled: true,
+
+            fieldPanel: {
+                visible: true,
+                allowFieldDragging: true,
+                showRowFields: true,
+                showColumnFields: true,
+                showDataFields: true,
+                showFilterFields: true
+            },
+
+            // Remove automatic totals & grand totals
+            showColumnTotals: false,
+            showColumnGrandTotals: true,
+            showRowTotals: false,
+            showRowGrandTotals: true
+        }).dxPivotGrid("instance");
+
+        // Load data
+        loadCostPivotGrid();
+    });
+
+    function ddBtnShowRecords_click(option) {
+        let today = new Date();
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+        // Keep original date object safe (no mutation issues)
+        const currentDate = new Date();
+
+        const setDates = {
+            'today': [new Date(), new Date()],
+            'yesterday': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1),
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - 1)
+            ],
+            'week': [
+                new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay()),
+                new Date()
+            ],
+            'tillmonth': [startOfMonth, new Date()],
+            'fullmonth': [startOfMonth, endOfMonth],
+            'tillyear': [new Date(today.getFullYear(), 0, 1), new Date()],
+            'fullyear': [new Date(today.getFullYear(), 0, 1), new Date(today.getFullYear(), 11, 31)],
+            'lastmonth': [
+                new Date(today.getFullYear(), today.getMonth() - 1, 1),
+                new Date(today.getFullYear(), today.getMonth(), 0)
+            ],
+            'lastyear': [
+                new Date(today.getFullYear() - 1, 0, 1),
+                new Date(today.getFullYear() - 1, 11, 31)
+            ],
+            'range': [
+                $("#frmdateBox").dxDateBox("instance").option("value"),
+                $("#todateBox").dxDateBox("instance").option("value")
+            ]
+        };
+
+        const [from, to] = setDates[option] || [new Date(), new Date()];
+        $("#frmdateBox").dxDateBox("instance").option("value", from);
+        $("#todateBox").dxDateBox("instance").option("value", to);
+
+        // Pass selected dates directly to loadCostGrid
+        loaddateCostGrid(from, to);
+    }
+
+       function formatDateOnly(date) {
+        if (!(date instanceof Date)) return "";
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function loaddateCostGrid(fromDate, toDate) {
+        const accountId = getQueryParam('accountId');
+
+        dataGrid.option("dataSource", {
+            load: function () {
+                const params = new URLSearchParams();
+                if (accountId) params.append("accountId", accountId);
+
+                // ✅ Pass only date (yyyy-MM-dd) without time
+                if (fromDate) params.append("fromDate", formatDateOnly(fromDate));
+                if (toDate) params.append("toDate", formatDateOnly(toDate));
+
+                return fetch(`/api/EmployeeReport/GetPropertyAllocations?${params}`)
+                    .then(res => res.json());
+            }
+        });
+
+        dataGrid.refresh();
+    }
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-container").each(function () {
+
+            if (!$(this).find("#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+        $("#btnShowFields").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const fields = ds.fields();
+
+        // Check if filter fields are currently visible
+        const hasFilterFields = fields.some(f => f.area === "filter");
+
+        // List of all fields that belong to the filter area (from your config)
+        const filterFieldNames = [
+            "VoucherRefNo", "AccountHead", "AccountHeadName", "VoucherDate",
+            "EntryNarration", "AccountGroup", "MasterGroup", "PlateNo", "DoorNo",
+            "ChassisNo", "PropertyCategoryName", "PropertyGroup", "PropertyType",
+            "CostAndRevenueClubbed", "CostCenterCode", "CostCenterUnit",
+            "VoucherType", "VoucherNarration"
+        ];
+
+        // Toggle filter fields: remove if shown, restore if hidden
+        fields.forEach((f, i) => {
+            if (filterFieldNames.includes(f.dataField)) {
+                ds.field(i, { area: hasFilterFields ? null : "filter" });
+            }
+        });
+
+        // Apply the updated layout
+        ds.load().then(() => {
+            // DevExpress.ui.notify(
+            //     hasFilterFields ? "Filter fields hidden" : "Filter fields shown",
+            //     hasFilterFields ? "warning" : "success",
+            //     1200
+            // );
+        });
+    });
+    $("#btnShowRowTotals").on("click", function (e) {
+        e.preventDefault();
+
+        const pivot = $("#dataGrid").dxPivotGrid("instance");
+        if (!pivot) return;
+
+        const ds = pivot.getDataSource();
+        const currentlyShowing = !!pivot.option("showRowTotals");
+
+        if (currentlyShowing) {
+            // 🔹 Turn OFF row totals and collapse all rows
+            pivot.option("showRowTotals", false);
+            pivot.option("showRowGrandTotals", false);
+
+            // Collapse all expanded rows for a clean reset
+            ds.expandAll("row", false);
+            return;
+        }
+
+        // 🔹 Enable row totals only for CostAllocationMasterGroup
+        const fields = ds.fields();
+        fields.forEach((f, idx) => {
+            if (f.area === "row") {
+                const show = (f.dataField === "PropertyNo");
+                ds.field(idx, { showTotals: show });
+            }
+        });
+
+        // 🔹 Load the latest data first
+        ds.load().then(() => {
+            // Step 1️⃣ Expand all rows under CostAllocationMasterGroup
+            ds.expandAll("row");
+
+            // Step 2️⃣ After expansion, enable totals
+            setTimeout(() => {
+                pivot.option("showRowTotals", true);
+                pivot.option("showRowGrandTotals", true);
+            }, 300); // slight delay ensures expansion rendering completes
+        });
+    });
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9fbfd;
+        color: #2c3e50;
+    }
+
+    h2 {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+        color: #2f3e46;
+        border-bottom: 2px solid #d1e3f8;
+        padding-bottom: 10px;
+    }
+
+    .custom-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: flex-end;
+        margin-bottom: 25px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .toolbar-item {
+        min-width: 260px;
+        flex: 1;
+    }
+
+    .dx-field-label,
+    .dx-texteditor-label {
+        font-weight: 600 !important;
+        font-size: 14px;
+        color: #34495e;
+        margin-bottom: 5px;
+    }
+
+    .dx-texteditor,
+    .dx-dropdownbutton {
+        border-radius: 8px !important;
+    }
+
+    .dx-dropdownbutton {
+        background-color: #e6f0ff !important;
+    }
+
+    .dx-button {
+        font-weight: 500;
+        border-radius: 8px !important;
+        transition: background-color 0.3s ease;
+    }
+
+        .dx-button:hover {
+            background-color: #d0e2ff !important;
+        }
+
+    .button-alignment-down {
+        margin-top: 8px;
+    }
+
+    #dataGrid {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    }
+
+    .limited-footer {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+        border-radius: 0 0 12px 12px;
+    }
+
+        .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel)) {
+            display: none !important;
+        }
+
+    /* Responsive Tweaks */
+    @@media screen and (max-width: 768px) {
+        .toolbar-item {
+            min-width: 100%;
+        }
+
+        h2 {
+            font-size: 22px;
+        }
+
+        #dataGrid {
+            padding: 10px;
+        }
+    }
+</style>

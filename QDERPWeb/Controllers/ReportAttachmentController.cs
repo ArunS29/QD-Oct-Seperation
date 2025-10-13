@@ -4,10 +4,10 @@ using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
-using QD.ERP.Web.Areas.Finance.Reports.test;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Models.DAL;
-using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
+using QD.ERP.Finance.Areas.Finance.Reports.test;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Models.DAL;
+using QD.ERP.Finance.Areas.Finance.Reports.cashPayments;
 
 namespace QD.ERP.Web.Controllers
 {

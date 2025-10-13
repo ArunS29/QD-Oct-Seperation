@@ -1,0 +1,464 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.AssetCategoryViewModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style type="text/css">
+    /* Card container styling (matching DivMaster) */
+    .card-container {
+        background-color: white; /* Light blue background similar to DivMaster */
+        padding: 0px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    }
+
+        .card-container label {
+            color: blue; /* Blue label text */
+        }
+
+    .card-container1 {
+        display: flex;
+        align-items: end;
+        justify-content: flex-start;
+        gap: 0px;
+        padding-bottom: 20px;
+    }
+    /* Textbox and DataGrid Row Styles */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+    }
+
+    /* Grid Header Customization (match DivMaster styles) */
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799; /* Header text color (similar to DivMaster) */
+    }
+
+    .dx-datagrid-headers .dx-header-row {
+        background-color: whitesmoke; /* Light blue header background */
+    }
+
+    /* Button styles matching DivMaster */
+    .dx-button-add {
+        background-color: #f5f8fb !important; /* Light background */
+        color: red !important; /* Red text color for button */
+        border: 1px solid #b0c4de; /* Border around button */
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important; /* Green icon color */
+        }
+
+        .dx-button-add:hover {
+            background-color: #e7f2fe !important; /* Change background on hover */
+        }
+
+    /* Form and Button Alignment */
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    /* Button container for Save and Cancel buttons */
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .action-buttons-container .dx-button {
+            margin-right: 10px; /* Space between buttons */
+        }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .footer-fixed {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px 20px;
+        border-top: 1px solid #ccc;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+@* <div class="title">
+    <div class="header-container">
+        <div id="AssetCategoryManagement" class="no-border-input"></div>
+    </div>
+</div> *@
+@* <div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Asset Category Management</h3>
+</div> *@
+<div class="content-container-top">
+    <div class="container4">
+        <!-- Card Container for Asset Category Form -->
+        <div class="card-container">
+
+            <div class="card-container1">
+                    <div class="form-group">
+                        @(
+                            Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Type a New Asset Category & Add to the Existing List')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                            .ID("txtAssetCategory")
+                            .Width(550)
+                            .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired()
+                                    .Message(new JS("formatMessage('Sales Person Name is required')"));
+                                })
+                                
+                            )
+                    </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @(Html.DevExtreme().Button()
+                                .Text(new JS("formatMessage('ADD')"))
+                            .ID("btnAddAssetCategory")
+                            .Height(70)
+                            .Width(178)
+                            .Icon("plus")
+                            .OnClick("function() { addAssetCategory(); }")
+                            .ElementAttr(new { @class = "dx-button-add" })
+                            )
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group">
+            <div id="gridContainer"></div> <!-- DataGrid Container -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer-fixed">
+    <button id="btnUpdate" class="btn btn-primary">
+        <i class="dx-icon-save" id="assetcategoryupdate"></i> 
+    </button>
+    <button id="btnBack" class="btn btn-secondary">
+        <i class="dx-icon-arrowleft" id="assetcategoryback"></i> 
+    </button>
+</div>
+<script type="text/javascript">
+    $(function () {
+        var updatedRows = []; // To store updated rows
+
+        // Initialize DevExtreme DataGrid with CustomStore
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "AssetCategoryCode",
+                load: function () {
+                    return $.getJSON('/api/Master/GetAssetCategory'); // Fetch data from the API
+                },
+                update: function (key, values) {
+                    var updatedAssetCategory = {
+                        AssetCategoryCode: key,
+                        AssetCategory: values.AssetCategory
+                    };
+
+                    // Fetch the current data from the grid for duplicate check
+                    var existingCategories = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+                    // Normalize the updated category name for comparison
+                    var normalizedAssetCategory = updatedAssetCategory.AssetCategory.trim().toLowerCase();
+
+                    // Check for duplicates excluding the current item being updated
+                    var duplicate = existingCategories.some(function (item) {
+                        return item.AssetCategory.trim().toLowerCase() === normalizedAssetCategory && item.AssetCategoryCode !== updatedAssetCategory.AssetCategoryCode;
+                    });
+
+                    // If a duplicate is found, show an error and prevent the update
+                    if (duplicate) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Asset Category',
+                            text: 'This Asset Category already exists!',
+                            confirmButtonText: 'OK'
+                        });
+                        return $.Deferred().reject(); // Prevent AJAX from being called
+                    }
+
+                    return $.ajax({
+                        type: "POST",
+                        url: "/api/Master/UpdateAssetCategory",
+                        data: JSON.stringify(updatedAssetCategory),
+                        contentType: "application/json",
+                        success: function () {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Asset Category Updated',
+                                text: 'The asset category has been successfully updated.',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Trigger the cancel action on the DataGrid after alert is closed
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                dataGrid.cancelEditData();  // Cancel the current edit
+                            });
+                        },
+                        error: function (xhr) {
+                            var errorMessage = xhr.status === 500
+                                ? "Server error: Please try again later."
+                                : "Validation error: " + xhr.responseText;
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Batch edit mode
+                allowUpdating: true,  // Allow updates
+                allowAdding: false,   // No adding new rows
+                allowDeleting: false, // Disable deleting rows
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAll: "Update",
+                    cancelAll: "Cancel All Changes"
+                }
+            },
+            columns: [
+                { dataField: "AssetCategoryCode", caption: formatMessage("Asset Category Code"), width: 100, editorOptions: { readOnly: true } },
+                    { dataField: "AssetCategory", caption: formatMessage("Asset Category")},
+                    {
+                        type: "buttons",
+                        width: 100,
+                        buttons: [
+                            {
+                                icon: "trash",
+                                hint: "Delete",
+                                onClick: function (e) {
+                                    var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                    var selectedData = e.row.data;
+                                           var AssetCategoryCode = selectedData.AssetCategoryCode;
+
+                                    // Send delete request to the API
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/api/Master/DeleteAssetCategories",
+                                                data: JSON.stringify({ AssetCategoryCode: AssetCategoryCode }),
+                                        contentType: "application/json",
+                                        success: function (response) {
+                                            if (response.success) {
+                                                dataGrid.refresh(); // Refresh the grid
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Success',
+                                                    text: formatMessage(' deleted successfully.'),
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error',
+                                                    text: response.message,
+                                                    confirmButtonText: 'OK'
+                                                });
+                                            }
+                                        },
+                                        error: function (xhr) {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: xhr.responseText,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        ]
+                    }
+            ],
+            showBorders: true,
+            paging: { pageSize: 10 },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            
+            filterRow: {
+                visible: false,
+                applyFilter: "auto"
+            },
+           
+            onRowUpdated: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Updated',
+                    text: 'The row data was successfully updated.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowInserted: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Row Inserted',
+                    text: 'A new row was added successfully.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            onRowRemoved: function () {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Row Removed',
+                    text: 'The row has been removed.',
+                    confirmButtonText: 'OK'
+                });
+            },
+            scrolling: {
+                mode: "virtual",
+                rowRenderingMode: "virtual",
+                useNative: true
+            },
+            height: 400,
+            width: "100%" // Full width
+        });
+
+    });
+
+// Function to add a new asset category
+function addAssetCategory() {
+    var assetCategory = $("#txtAssetCategory").dxTextBox("instance").option("value");
+
+    // Get the asset category validator instance
+    var assetcategoryvalidator = $("#txtAssetCategory").dxValidator("instance");
+
+    // Validate the asset category input
+    var assetcategoryvalidation = assetcategoryvalidator.validate();
+
+    // If the asset category is valid, proceed with the AJAX request
+    if (assetcategoryvalidation.isValid) {
+
+        // Get the data array from the grid's data source
+        var exists = $("#gridContainer").dxDataGrid("instance").getDataSource().items();
+
+        // Normalize the entered asset category for comparison
+        var normalizedAssetCategory = assetCategory.trim().toLowerCase();
+
+        // Check if the asset category already exists in the grid data
+        var duplicate = exists.some(function (item) {
+            return item.AssetCategory.trim().toLowerCase() === normalizedAssetCategory;
+        });
+
+        if (duplicate) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Duplicate Asset Category',
+                text: 'This Asset Category already exists!',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        var assetCategoryData = {
+            AssetCategory: assetCategory
+        };
+
+        // Send AJAX request to the backend
+        $.ajax({
+            type: "POST",
+            url: "/api/Master/AddAssetCategory",  // The API endpoint to add the asset category
+            data: JSON.stringify(assetCategoryData),  // Send the asset category data as JSON
+            contentType: "application/json",  // Specify that the request body is JSON
+            success: function (response) {
+                // Show success message and reload the page
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Saved',
+                    text: response.message,
+                    confirmButtonText: 'OK'
+                }).then(() => location.reload());
+            },
+            error: function (xhr) {
+                // Handle errors (either validation or server error)
+                var errorMessage = xhr.status === 500
+                    ? "Server error: Please try again later."
+                    : "Validation error: " + xhr.responseText;
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: errorMessage,
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+        } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify("Please fill required details!", "error", 2000);
+        }
+}
+    $(function () {
+                $("#AssetCategoryManagement").dxTextBox({
+                    text: formatMessage("Asset Category Management"),
+                readOnly: true,
+                   width:"350px",
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+
+                    $("#btnUpdate").on("click", function () {
+            $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all edits
+        });
+
+        $("#btnBack").on("click", function () {
+            window.parent.closeModal();  // Close modal
+        });
+               $(function () {
+                    $("#assetcategoryback").text(formatMessage("Back"));
+        });
+        $(function () {
+                    $("#assetcategoryupdate").text(formatMessage("Update"));
+        });
+</script>

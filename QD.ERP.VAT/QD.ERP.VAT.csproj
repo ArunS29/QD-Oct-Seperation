@@ -1,0 +1,137 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\VAT\Reports\B2B\Foreigncurrency1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintRegularInvoiceFormat02.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintRegularInvoiceFormat02WithDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintRegularTaxInvoiceWithOutDiscounts.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintRegularTaxInvoiceWithSignatories%28Format05%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintRegularTaxInvoiceWtDocumentLevelDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintsimplifiedTaxInvoices.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintSimplifiedTaxInvoiceWithOutDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintVATInvoiceEnglishOnly.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\PrintVATInvoiceForeignCurrency.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\RegularTaxInvoiceFormat06.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\RegulartaxinvoicewithoutSignatoriesFormat05.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\taxinvoicewithSignatoriesWithSymbols.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\Withoutsignatories.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\B2B\withsignatories2.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ForeignCurrencyProforma.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ForeignCurrencyProformaWithoutDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ForeignEnglishProforma.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ProformaInvoiceEnglish.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ProformaNewFormat.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\ProformaPreviewInvoice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\WithoutDiscountInvoice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\ProformaInvoices\Wtdiscountpreviewinvoice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\PurchaseRegister\BillsPurchases.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\PurchaseRegister\TaxSummaryReportPurchaseInArabic.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\PurchaseRegister\VATPurchasesAndExpReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VAT Sales Invoice Register\TaxReportRevenueInArabic.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VAT Sales Invoice Register\TaxSummaryReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VAT Sales Invoice Register\TaxVATReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATCreditNote\CreditForeignCurrency.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATCreditNote\creditnote.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATCreditNote\CreditSummary.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATCreditNote\PreviewCreditNoteEnglishOnly.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATCreditNote\PreviewCreditNoteForeignCurrency.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATDebitNote\DebitNoteSummary.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATDebitNote\DebitNoteView.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\VAT\Reports\VATReturns\VATReturnsform.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\VAT\Models\" />
+  </ItemGroup>
+
+
+
+</Project>

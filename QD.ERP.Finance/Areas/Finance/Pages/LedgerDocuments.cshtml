@@ -1,0 +1,1208 @@
+﻿@page
+@using QD.ERP.Shared.DAL.Entities
+@{
+    ViewData["Title"] = "Accounting Ledger Groups//";
+
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<style>
+    .drop-zone {
+        border: 2px dashed #007bff;
+        padding: 30px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        background-color: #f9f9f9;
+        transition: background-color 0.3s ease;
+        margin-bottom: 15px;
+        max-height: 300px;
+    }
+
+    .drag-over {
+        background-color: #f8f9fa;
+        border-color: #007bff;
+        transition: 0.3s ease;
+    }
+
+        .drop-zone.hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+
+        .drop-zone span {
+            display: block;
+            margin-top: 10px;
+        }
+
+    .drop-preview {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #333;
+    }
+
+        .drop-preview div {
+            padding: 6px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            font-size: 14px;
+        }
+
+
+    .dx-fieldset {
+        margin: 0px 10px;
+        padding: 0;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Transparent background */
+        z-index: 1000;
+    }
+
+    .dx-button-mode-contained.dx-button-success .dx-icon {
+        color: black;
+    }
+    /* Ensure word wrap and center alignment for grid headers */
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    /* Ensure text in grid headers is always centered */
+    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
+        white-space: normal !important;
+        text-align: center !important;
+    }
+
+    /* Ensure column headers text aligns to center */
+    .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
+
+    .overlay-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    #overlay-frame {
+        width: 100%;
+        height: 100%;
+    }
+
+    .Maincontainer.Maincontainer {
+        background-color: white;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        cursor: pointer;
+    }
+
+
+
+
+    /* Toolbar Styling */
+    .custom-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+    }
+
+        .filter-btn:hover {
+            background-color: #0056b3;
+        }
+
+    /* Text Editor Styling */
+    .dx-texteditor {
+        background-color: #909ead00 !important; /* Light background */
+        border: 1px solid #d6e4f0 !important; /* Soft border */
+        border-radius: 4px !important; /* Smaller rounded corners */
+
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
+        font-size: 14px !important; /* Slightly smaller font */
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover and Focus States */
+        .dx-texteditor:hover,
+        .dx-texteditor.dx-state-hover,
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+        .dx-texteditor.dx-state-focused {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
+            border-color: #508ae1 !important;
+        }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+
+    .dx-datagrid-header-panel {
+        background-color: #909ead00;
+        /* display:none; */
+    }
+
+    .no-border-input {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        pointer-events: none; /* Prevents hover and click effects */
+    }
+
+    .dx-button-mode-contained.dx-button-default {
+        color: black;
+    }
+
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        width: 100%;
+        overflow-x:hidden;
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+
+    .left-column {
+        flex: 2;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .right-column {
+        flex: 1;
+        min-width: 250px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        text-align: center;
+    }
+
+
+
+    .form-row > div {
+        flex: 1;
+        min-width: 140px;
+    }
+
+
+
+    .bottom-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .right-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .grid-section {
+        margin-top: 30px;
+    }
+
+    
+
+    .form-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+    }
+
+    .doc-type-row {
+        display: flex;
+        gap: 5px;
+        align-items: flex-end;
+    }
+
+    .notification-text {
+        font-size: 12px;
+        color: #555;
+        padding-left: 10px;
+        /* align-self: center; */
+        white-space: nowrap;
+    }
+
+    .bottom-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        justify-content: center;
+        /* margin-top: 10px; */
+    }
+
+    .dx-datagrid-headers .dx-header-row > td {
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .custom-drop-zone {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        margin-top: 20px;
+        background-color: #f8f8f8;
+    }
+
+    .file-name-display img {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+    
+    .icon-button-ledger {
+        margin-top: 27px;
+        background-color: #65bcfc !important;
+        min-width: 100px;
+        min-height: 70px;
+        color: white !important;
+        font-size: 1rem;
+
+    }
+
+    .icon-button-ledger .dx-icon {
+        color: black !important;
+        font-size: 1rem; /* Optional: make the icon larger */
+    }
+
+    .icon-button-ledgerother {
+        margin-top: 0px;
+        background-color: #65bcfc !important;
+        min-width: 100px;
+        min-height: 50px;
+        color: white !important;
+        font-size: 1rem;
+    }
+
+    .icon-button-ledgerother .dx-icon {
+        color: black !important;
+        font-size: 1rem; /* Optional: make the icon larger */
+    }
+    
+    .custom-preview-btn i,
+    .custom-download-btn i {
+        font-size: 16px;
+        margin-right: 6px;
+        color: #007bff;
+        cursor: pointer;
+    }
+
+</style>
+
+
+
+<div style="display: flex; flex-direction: column; height: 100vh; padding-right: 10px; padding-left: 10px;">
+
+    @* <!-- Header -->
+    <div class="dx-card-container">
+        <div class="dx-card-header minimal-header">
+            <div class="card-title-icon">
+                <i class="fas fa-folder"></i>
+            </div>
+            <h3 class="card-title-text" id="documentTitle"></h3>
+        </div>
+    </div> *@
+
+    <!-- Main Scrollable Content -->
+    <div style="flex: 1; overflow-y: auto; padding-right: 5px;">
+        <div class="form-row" style="margin: 10px;">
+
+            <!-- Two Column Section -->
+            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; height:350px;">
+
+                <!-- Left Column -->
+                <div style="flex: 1; min-width: 300px;">
+                    <div style="margin-bottom: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("LedgerNo")
+                            .Label(new JS("formatMessage('Folder ID')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Width("100%")
+                            .ReadOnly(true))
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ReferenceNo")
+                            .Label(new JS("formatMessage('Reference No')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .MaxLength(25)
+                            .Width("100%")
+                            .ElementAttr("autocomplete", "off"))
+                    </div>
+
+                    <!-- DropZone -->
+                    <div class="drop-zone" id="dropZone"
+                         style="height: 250px; border: 2px dashed #aaa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <i class="dx-icon dx-icon-upload" style="font-size: 36px; color: #6c757d;"></i>
+                        <p style="margin: 10px 0; font-weight: 500;" id="draganddropfinance"></p>
+                        <input type="file" id="fileUploader" multiple style="display:none;" />
+                    </div>
+                </div>
+
+                <!-- Right Column: Preview -->
+                <div id="preview"
+                     style="flex: 1; min-width: 300px; min-height: 350px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto; margin-top:5px;">
+                    <!-- File previews will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Grid -->
+        <div class="dx-field ledgerResult" style="margin-top: 10px;">
+            <div id="documentsGrid"></div>
+        </div>
+        <div style="margin-top: 5px; padding-bottom: 10px; text-align: right;">
+            @(Html.DevExtreme().Button()
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("fas fa-arrow-left")
+                .Type(ButtonType.Normal)
+                .Width(100)
+                .OnClick("Goback")
+                .ElementAttr(new { @class = "icon-button-ledgerother" }))
+        </div>
+    </div>
+
+    
+</div>
+
+
+<script>
+
+    // var urlParams = new URLSearchParams(window.location.search);
+    // var referenceNo = urlParams.get("ReferenceNo");
+    // var moduleType = urlParams.get("ModuleType");
+    // var isMaster = urlParams.get("isMaster");
+    // var folderNo2 = urlParams.get("FolderNo2") || "";
+    // var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
+    // document.getElementById("documentTitle").textContent = title + " - " + moduleType;
+    // let currentEditRowIndex = -1;
+        // Wait until the DOM is fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get URL parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var referenceNo = urlParams.get("ReferenceNo");
+        var moduleType = urlParams.get("ModuleType");
+        var isMaster = urlParams.get("isMaster");
+        var folderNo2 = urlParams.get("FolderNo2") || "";
+
+        // Compute the localized title using formatMessage inside template literal
+        var title = isMaster === "true"
+            ? formatMessage("Master Documents")
+            : formatMessage("Transaction Documents");
+
+        // Safely set the textContent if the element exists
+        var el = document.getElementById("documentTitle");
+        if(el) {
+            el.textContent = `${title} - ${moduleType}`;
+        }
+
+        // Initialize other variables
+        let currentEditRowIndex = -1;
+    });
+
+
+    $(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const moduleType = urlParams.get("ModuleType");
+        const menuType = urlParams.get("menuType");
+        const folderNo2 = urlParams.get("FolderNo2") || "";
+        $("#documentsGrid").dxDataGrid({
+            dataSource: DevExpress.data.AspNet.createStore({
+                key: "DocumentNo",
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`,
+                updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry",
+                deleteUrl: "/api/LedgerDocumentsF/DeleteDocumentEntry",  // ✅ Use this, not `removeUrl`
+                updateMethod: "PUT",
+                deleteMethod: "DELETE",
+
+                onBeforeSend: function (method, ajaxOptions) {
+                    if (method === "update") {
+                        const payload = JSON.parse(ajaxOptions.data.values);
+                        payload.DocumentNo = ajaxOptions.data.key;
+
+                        ajaxOptions.data = JSON.stringify(payload);
+                        ajaxOptions.contentType = "application/json";
+                    } else if (method === "delete") {
+                        ajaxOptions.contentType = "application/json";
+                        ajaxOptions.data = JSON.stringify({ key: ajaxOptions.data.key });
+                    }
+                },
+                onLoaded: function (result) {
+                    const count = result ? result.length : 0;
+
+                    // Check if parent form has setAttachCount
+                    if (window.parent && typeof window.parent.setAttachCount === "function") {
+                        window.parent.setAttachCount(count);
+                    } else {
+                        console.log("Attach count:", count); // fallback, useful if popup opened standalone
+                    }
+                },
+            }),
+            height: 250,
+            width: "100%",
+            showBorders: true,
+            columnAutoWidth: true,
+            paging: { enabled: true },
+            scrolling: { mode: "virtual" },
+
+            editing: {
+              mode: "row",
+              allowUpdating: true,
+              allowDeleting: true,
+              useIcons: true,
+            },
+
+            onCellValueChanged: function (e) {
+              if (e.column.dataField === "DocumentExpDate" && e.value) {
+                // Convert the Gregorian date to Hijri and update the corresponding field
+                const hijriDate = convertToHijri(new Date(e.value));
+                e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate);
+              }
+            },
+
+            onRowUpdating: function (e) {
+              // Merge changes
+              e.newData = { ...e.oldData, ...e.newData };
+
+              if (e.newData.DocumentExpDate) {
+                // Convert and set Hijri date on newData so it gets saved on the server
+                const hijriDate = convertToHijri(new Date(e.newData.DocumentExpDate));
+                e.newData.DocumentExpDateAr = hijriDate;
+              } else if (e.oldData.DocumentExpDate && !e.newData.DocumentExpDate) {
+                // If expiry date removed, clear Hijri field
+                e.newData.DocumentExpDateAr = "";
+              }
+            },
+        
+
+
+            columns: [
+
+                {
+                    dataField: "SerialNo",
+                    caption: formatMessage("S.No"),
+                    width: 60,
+                    allowEditing: false
+                },
+                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false, visible: false },
+
+                {
+                    dataField: "FileUrl",
+                    caption: formatMessage("Document"),
+                    allowEditing: false,
+                    cellTemplate: function (container, options) {
+                        const fileUrl = options.value;
+                        if (typeof fileUrl === "string" && fileUrl.startsWith("http")) {
+                            const fileName = decodeURIComponent(fileUrl.split('/').pop().split('?')[0]);
+                            $("<span>")
+                                .text(fileName)
+                                .css({ color: "#007bff", fontWeight: "500" }) // Optional styling
+                                .appendTo(container);
+                        } else {
+                            container.append("<div>-</div>");
+                        }
+                    }
+                },
+
+                {
+                    dataField: "DocumentType",
+                    caption: formatMessage("Document Type"),
+                    lookup: {
+                        dataSource: documentTypeStore,
+                        valueExpr: "DocumentTypeId",
+                        displayExpr: "DocumentType"
+                    },
+                    editorType: "dxSelectBox",
+                    editCellTemplate: function (cellElement, cellInfo) {
+                        const $selectBoxContainer = $("<div>").appendTo(cellElement); 
+                        $selectBoxContainer.dxSelectBox({
+                            dataSource: documentTypeStore,
+                            value: cellInfo.value,
+                            valueExpr: "DocumentTypeId",
+                            displayExpr: "DocumentType",
+                            showClearButton: true,
+                            showDropDownButton: true,
+                            buttons: [
+                                "dropDown",
+                                {
+                                    name: "add",
+                                    location: "after",
+                                    options: {
+                                        icon: "plus",
+                                        stylingMode: "text",
+                                        onClick: function () {
+                                            const instance = $selectBoxContainer.dxSelectBox("instance");
+                                            onAddDocType(instance); // Pass it to the function
+                                            
+                                        }
+                                    }
+                                }
+                            ],
+                            onValueChanged: function (e) {
+                                cellInfo.setValue(e.value);
+                            }
+                        });
+                    }
+                },
+
+
+
+
+                {
+                    dataField: "DocumentRefNo",
+                    caption: formatMessage("Reference No"),
+                    editorOptions: {
+                        maxLength: 25,
+                        onInput: function (e) {
+                            const allowed = /^[a-zA-Z0-9\-\/]*$/;
+                            if (!allowed.test(e.event.target.value)) {
+                                e.event.target.value = e.event.target.value.replace(/[^a-zA-Z0-9\-\/]/g, '');
+                            }
+                        }
+                    }
+                },
+
+                { dataField: "DocumentRemarks", caption: formatMessage("Remarks"), allowEditing: true },
+
+                {
+                    dataField: "DocumentExpDate",
+                    caption: formatMessage("Expiry On"),
+                    allowEditing: true,
+                    dataType: "date",
+                    editorType: "dxDateBox",
+                    editorOptions: {
+                        displayFormat: "dd/MM/yyyy",
+                        useMaskBehavior: true,
+                        openOnFieldClick: true,
+                        
+                    },
+
+                    format: "dd/MM/yyyy",
+                    cellTemplate: function (container, options) {
+                        const rawValue = options.data.DocumentExpDate;
+                        if (!rawValue) {
+                            return container.append("<div class='text-muted'>No Date</div>");
+                        }
+
+                        const expDate = new Date(rawValue);
+                        const today = new Date();
+                        const expired = expDate < today;
+
+                        $("<div>").text(expDate.toLocaleDateString('en-GB')).css({
+                            backgroundColor: expired ? "#f8d7da" : "#d4edda",
+                            color: expired ? "#721c24" : "#155724",
+                            padding: "4px 8px",
+                            borderRadius: "6px"
+                        }).appendTo(container);
+                    }
+                },
+                {
+                    dataField: "DocumentExpDateAr",
+                    caption: formatMessage("Expiry (Hijri)"),
+                    allowEditing: false,
+                    editorType: "dxTextBox",
+                    editorOptions: {
+                        readOnly: true,
+                        stylingMode: "outlined"
+                    }
+                },
+                {
+                    dataField: "DocumentNotificationDate",
+                    caption: formatMessage("Notify On"),
+                    dataType: "date",
+                    allowEditing: true,
+                    editorType: "dxDateBox",
+                    editorOptions: {
+                        displayFormat: "dd/MM/yyyy",
+                        useMaskBehavior: true,
+                        openOnFieldClick: true,
+                        onKeyDown: function (e) {
+                            e.event.preventDefault();
+                        }
+                    }
+                },
+
+                {
+                type: "buttons",
+                caption: formatMessage("Actions"),
+                width: 180,
+                buttons: [
+                    {
+                        name: "edit", // built-in
+                        hint: "Edit",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // 👈 preview first
+
+                            const grid = $("#documentsGrid").dxDataGrid("instance");
+                            grid.editRow(e.row.rowIndex);
+                        }
+                    },
+                    {
+                        name: "delete", // built-in
+                        hint: "Delete",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // 👈 preview first
+
+                            const grid = $("#documentsGrid").dxDataGrid("instance");
+                            grid.deleteRow(e.row.rowIndex);
+                        }
+                    },
+                    {
+                        hint: "Preview",
+                        icon: "fas fa-eye",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // safe here
+                        },
+                        visible: function (e) {
+                            return !e.row.isEditing;
+                        },
+                        cssClass: "custom-preview-btn"
+                    },
+                    {
+                        hint: "Download",
+                        icon: "fas fa-download",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // safe here
+
+                            const fileUrl = e.row.data.FileUrl;
+                            if (fileUrl) {
+                                const a = document.createElement("a");
+                                a.href = fileUrl;
+                                a.download = "";
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            }
+                        },
+                        visible: function (e) {
+                            return !e.row.isEditing;
+                        },
+                        cssClass: "custom-download-btn"
+                    }
+                ]
+            }
+
+
+            ],
+            
+
+
+
+        });
+    });
+
+
+
+        // ✅ Hijri conversion using Intl
+    function convertToHijri(gregDate) {
+        try {
+            const formatter = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            const parts = formatter.formatToParts(gregDate);
+            const year = parts.find(p => p.type === 'year')?.value;
+            const month = parts.find(p => p.type === 'month')?.value;
+            const day = parts.find(p => p.type === 'day')?.value;
+            return `${year}/${month}/${day}`;
+        } catch (e) {
+            console.warn("Hijri conversion failed:", e);
+            return "";
+        }
+    }
+
+    const documentTypeStore = DevExpress.data.AspNet.createStore({
+        key: "DocumentTypeId",
+        loadUrl: "/api/LedgerDocumentsF/GetDocumentTypes"
+    });
+
+
+    function onAddDocType(selectBoxInstance) {
+        const url = `/${tenantName}/IMS/DocumentTypes`;
+        const title = "Add Document Type";
+
+        // Close the dropdown here
+        selectBoxInstance?.close();
+
+        openModal(url, title).then(() => {
+            // Reload the store after modal is closed
+            documentTypeStore.load();
+        });
+    }
+
+
+
+    function formatDateForServer(dateValue) {
+        if (!dateValue) return "";
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return "";
+        return date.toISOString().split("T")[0];
+    }
+
+    
+    
+
+    function Goback() {
+        window.parent.closeModal();
+    }
+
+     $(function () {
+        $("#InventoryDocuments").dxTextBox({
+            text: formatMessage("Inventory Documents"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textbox-heading");
+                }
+            });
+        });
+    
+    $(function () {
+        const refNo = '@(ViewData["RefNo"] ?? "")';
+        $("#ReferenceNo").dxTextBox("instance").option("value", refNo);
+    });
+    // Global prevention to avoid browser navigating away
+    window.addEventListener("dragover", (e) => e.preventDefault(), false);
+    window.addEventListener("drop", (e) => {
+        // Safely prevent file drop outside dropZone
+        const dropTarget = e.composedPath().find(el => el.id === 'dropZone');
+        if (!dropTarget) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, false);
+
+
+    let selectedFiles = [];
+    let fileDialogOpen = false;
+
+    
+    function setupDragDrop() {
+        const dropZone = document.getElementById("dropZone");
+        const uploader = document.getElementById("fileUploader");
+        const preview = document.getElementById("preview");
+
+        if (!dropZone || !uploader || !preview) {
+            console.error("DropZone, FileUploader, or Preview not found");
+            return;
+        }
+
+        dropZone.addEventListener("click", () => {
+            if (fileDialogOpen) return;  // block if already open
+
+            fileDialogOpen = true;
+            uploader.click();
+        });
+
+        dropZone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropZone.classList.add("drag-over");
+        });
+
+        dropZone.addEventListener("dragleave", () => {
+            dropZone.classList.remove("drag-over");
+        });
+
+        dropZone.addEventListener("drop", async (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // ✅ Prevent bubbling
+            dropZone.classList.remove("drag-over");
+
+            let files = Array.from(e.dataTransfer.files || []);
+
+            if (files.length === 0 && e.dataTransfer.items) {
+                const items = Array.from(e.dataTransfer.items);
+                files = await Promise.all(
+                    items.filter(item => item.kind === "file").map(item => item.getAsFile())
+                );
+                files = files.filter(f => f instanceof File);
+            }
+
+            if (files.length > 0) {
+                handleFiles(files);
+            } else {
+                DevExpress.ui.notify(
+                    "Files dragged from other apps (Teams/Outlook) may not be supported directly. Save locally before dragging.",
+                    "warning",
+                    4000
+                );
+            }
+        });
+
+        uploader.addEventListener("change", async (e) => {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                await handleFiles(files);
+            }
+            setTimeout(() => { fileDialogOpen = false; }, 100);
+        });
+        
+    }
+    let isHandlingFiles = false;
+
+       async function handleFiles(files) {
+        if (isHandlingFiles) return;
+        isHandlingFiles = true;
+
+        try {
+            const preview = document.getElementById("preview");
+            const validFiles = files.filter(file => {
+            const maxSizeMB = 2;        // Default for non-audio
+            const maxAudioSizeMB = 5;   // Limit for audio
+
+            const isAudio = file.type.startsWith("audio/");
+            const allowedSize = isAudio ? maxAudioSizeMB : maxSizeMB;
+
+            const disallowedTypes = [
+                "video/",
+                "application/zip",
+                "application/x-zip-compressed"
+            ];
+
+            const isTooBig = file.size > allowedSize * 1024 * 1024;
+            const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
+
+            if (isTooBig || isDisallowed) {
+                DevExpress.ui.notify(
+                    `Skipped: ${file.name} (too big or unsupported)`,
+                    "warning",
+                    2500
+                );
+                return false;
+            }
+            return true;
+        });
+
+            if (validFiles.length === 0) return;
+
+            const docNos = await getNewDocumentNos(validFiles.length);
+            if (!docNos || docNos.length !== validFiles.length) {
+                DevExpress.ui.notify("Document number mismatch", "error", 3000);
+                return;
+            }
+
+            validFiles.forEach(file => {
+                showFilePreview(file);
+                selectedFiles.push(file);
+            });
+
+            // Upload with small delay
+            setTimeout(() => {
+                uploadMultipleDocuments(validFiles, docNos);
+            }, 150);
+
+        } catch (err) {
+            console.error("DocumentNo generation failed:", err);
+            DevExpress.ui.notify("Failed to generate document numbers.", "error", 3000);
+        } finally {
+            isHandlingFiles = false;
+        }
+    }
+
+
+    function showFilePreview(file) {
+        const preview = document.getElementById("preview");
+
+        // Avoid duplicate preview entries
+        if ([...preview.children].some(div => div.textContent === file.name)) {
+            return;
+        }
+
+        const fileDiv = document.createElement("div");
+        fileDiv.textContent = file.name;
+        fileDiv.classList.add("file-preview-item");
+        preview.appendChild(fileDiv);
+    }
+
+
+    function getNewDocumentNos(count) {
+        return new Promise((resolve, reject) => {
+            const url = `/api/LedgerDocumentsF/GetNewDocumentNos?count=${count}`;
+            console.log("Requesting DocumentNos from:", url);
+
+            $.get(url)
+                .done(function (data) {
+                    console.log("✅ DocumentNos received:", data);
+                    resolve(data);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    console.error("❌ Failed to get DocumentNos:", textStatus, errorThrown);
+                    reject(jqXHR);
+                });
+        });
+    }
+
+
+
+    async function uploadMultipleDocuments(files, docNos) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const moduleType = urlParams.get("ModuleType");
+        const isMaster = urlParams.get("isMaster");
+        const menuType = urlParams.get("menuType");
+        console.log(isMaster)
+        const formData = new FormData();
+
+        // Append files
+        files.forEach((file, index) => {
+            formData.append("Files", file);
+        });
+
+        // Append document numbers as a comma-separated string
+        formData.append("DocumentNo", docNos.join(","));
+
+        const getValue = (selector, fallback = "") => {
+            const instance = $(selector).dxTextBox("instance") || $(selector).dxDateBox("instance") || $(selector).dxTextArea("instance");
+            return instance ? instance.option("value") : fallback;
+        };
+
+        formData.append("DocumentType", getValue("#DocumentType", ""));
+        formData.append("LedgerNo", getValue("#LedgerNo", referenceNo));
+        formData.append("DocumentRefNo", getValue("#ReferenceNo", referenceNo));
+        formData.append("DocumentRemarks", getValue("#DocumentRemarks", ""));
+        formData.append("DocumentExpDate", getValue("#DocumentExpDate", ""));
+        formData.append("NotificationDate", getValue("#NotificationDate", ""));
+
+        $.ajax({
+            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log("Upload success:", response);
+                DevExpress.ui.notify(response.message, "success", 3000);
+                $("#documentsGrid").dxDataGrid("instance").refresh();
+                document.getElementById("preview").innerHTML = "";
+                selectedFiles = [];
+                document.getElementById("fileUploader").value = "";
+                
+                
+            },
+            error: function (xhr) {
+                console.error("Upload failed:", xhr.responseText);
+                console.error("Upload failed:", xhr);
+                DevExpress.ui.notify("Group upload failed.", "error", 3000);
+               
+            }
+        });
+    }
+
+
+
+    $(function () {
+        setupDragDrop();
+    });
+
+    function showLoading(show) {
+        const overlay = document.getElementById("loadingOverlay");
+        if (overlay) overlay.style.display = show ? "flex" : "none";
+    }
+
+
+    async function openPreviewDialog(doc) {
+        const preview = document.getElementById("preview");
+        preview.innerHTML = "";
+
+        const url = doc.FileUrl;
+        if (!url) {
+            preview.innerHTML = "<div>No file available</div>";
+            return;
+        }
+
+        const fileName = decodeURIComponent(url.split('/').pop().split('?')[0]);
+        const ext = fileName.split('.').pop().toLowerCase();
+        const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
+        const isPdf = ["pdf"].includes(ext);
+        const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
+        const isAudio = ["mp3", "wav", "ogg", "aac", "flac", "wma", "m4a", "aiff", "alac"].includes(ext);
+        let previewContent = "";
+        let previewAvailable = true;
+
+        if (isImage) {
+            if (ext === "svg") {
+                try {
+                    const response = await fetch(url);
+                    const svgText = await response.text();
+                    previewContent = `
+                        <div style="max-width: 100%; max-height: 300px; overflow: auto;">
+                            ${svgText}
+                        </div>
+                    `;
+                } catch (err) {
+                    previewContent = `<div>Unable to preview SVG file.</div>`;
+                }
+            } else {
+                previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 300px;" />`;
+            }
+        } else if (isPdf) {
+            const encodedUrl = encodeURIComponent(url); // Important!
+            previewContent = `
+                <iframe
+                    src="https://docs.google.com/gview?url=${encodedUrl}&embedded=true"
+                    width="100%"
+                    height="300px"
+                    style="border: none;"
+                    onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview PDF.</div>';"
+                ></iframe>`;
+        } else if (isOffice) {
+            const encodedUrl = encodeURIComponent(url);
+            previewContent = `
+                <iframe
+                    src="https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}"
+                    width="100%"
+                    height="300px"
+                    frameborder="0"
+                    onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview document.</div>'; previewAvailable=false;">
+                </iframe>`;
+        } else if (isAudio) { 
+        previewContent = `
+            <audio controls style="width:100%;">
+                <source src="${url}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        `;
+        } else {
+            previewAvailable = false;
+            previewContent = `<div>No preview available for .${ext} files</div>`;
+        }
+
+        const expDate = doc.DocumentExpDate
+            ? new Date(doc.DocumentExpDate).toLocaleDateString('en-GB')
+            : "-";
+
+        preview.innerHTML = `
+            <div style="padding: 10px; background: #fdfdfd;">
+                <div style="margin-bottom: 10px;">
+                    ${previewContent}
+                </div>
+                <div class="d-flex align-items-center gap-3 text-secondary" style="font-size: 14px;">
+                    <span><i class="fas fa-file-alt text-primary me-1"></i> ${fileName}</span>
+                    <span><i class="fas fa-calendar-alt text-danger me-1"></i> ${expDate}</span>
+                </div>
+            </div>
+        `;
+    }
+
+
+
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const referenceNo = urlParams.get("ReferenceNo");
+        const moduleType = urlParams.get("ModuleType");
+       // const menuType = urlParams.get("menuType");
+
+        // 1. Bind ReferenceNo in the TextBox
+        if (referenceNo) {
+            const textboxInstance = $("#ReferenceNo").dxTextBox("instance");
+            
+            if (textboxInstance) {
+                textboxInstance.option("value", referenceNo);
+            }
+            const ledgerBox = $("#LedgerNo").dxTextBox("instance");
+            if (ledgerBox) {
+                ledgerBox.option("value", referenceNo);
+            }
+        }
+        // 2. Store moduleType in hidden field
+        if (moduleType) {
+
+            const trimmedmoduleType = moduleType.trim();
+            $("#hiddenModuleType").val(trimmedmoduleType);
+
+        } else {
+            console.warn("moduleType is missing. API call not made.");
+        }
+        
+
+    });
+
+     document.addEventListener("DOMContentLoaded", setupDragDrop);
+
+        $(function () {
+            $("#draganddropfinance").text(formatMessage("Drag & drop files here or click to browse"));
+        });
+</script>

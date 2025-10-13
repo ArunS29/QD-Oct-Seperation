@@ -1,0 +1,603 @@
+﻿@page
+@using QD.ERP.Shared.DAL.Entities
+@{
+    ViewData["Title"] = "Accounting Ledger Groups//";
+
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+<style type="text/css">
+    .cards-container-title {
+        text-align: left;
+        font-size: 2rem;
+        margin-bottom: 0px;
+        color: black;
+        background-color: #f5f5f5;
+        padding: 5px;
+    }
+
+
+
+    /* Override Bootstrap padding/margin if necessary */
+    .container {
+        max-width: 65%;
+        padding: 20px;
+        margin: 0 auto;
+        background-color: #B4E1F5;
+    }
+    /* Apply bold text to all DevExtreme buttons */
+    .dx-button .dx-button-text {
+        font-weight: bold;
+    }
+
+    /* Optionally, apply bold text only to specific buttons using their IDs */
+    #btnUpdate .dx-button-text,
+    #btnAllAttachments .dx-button-text,
+    #btnBack .dx-button-text {
+        font-weight: bold;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 0em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+</style>
+@* <div class="title">
+    <div class="header-container">
+        <div id="IMSLedgerDocument" class="no-border-title"></div>
+    </div>
+</div> *@
+<div class="my-3" style="max-width:2000px;">
+    <div class="row g-3">
+        <!-- Card -->
+        <div class="col-12">
+            <div class=" p-3 ">
+                <!-- First Row -->
+                <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
+                <div style="display:flex; align-items:end;">
+                    <div>
+                        @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Document No')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("DocumentNo")
+                            .Value(null)
+                            .Width("100%")
+                            .Disabled(true)
+
+                            )
+                         </div>  
+                    <div>
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Type of the Document Attached:')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("IMSLedgerDocument")
+                            .LoadAction("GetDocumentTypes")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("DocumentTypeId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("accountMasterDropDownBox")
+                            .Width(770)
+                            .OpenOnFieldClick(false)
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("DocumentTypeId")
+                            .DisplayExpr("DocumentType")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .OnKeyDown("onKeyDown")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message(new JS("formatMessage('Document is required')"));
+                            })
+
+                            .ContentTemplate(new TemplateName("DocumentAttachedContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttoDocumentTypes"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                        </div>
+                    </div>
+
+                <!-- Second Row -->
+                <div class="row mb-3">
+                    <div class="col-12 col-md-4">
+                        @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Reference No')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ReferenceNo")
+                            .Value(null)
+                            .Width("100%")
+                            // .Disabled(true)
+                            )
+                    </div>
+                    <div class="col-12 col-md-6">
+                        @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Remarks/Notes')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("Remarks")
+                            .Value(null)
+                            .Width("100%"))
+                    </div>
+                    <div class="col-12 col-md-2 mt-4">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAttachment")
+                            .Icon("fa fa-paperclip")
+                            .Width("100%")
+                            // .OnClick("onAttachButtonClick")
+                            )
+                    </div>
+                    <input type="file" id="fileInput" style="display: none;" />
+                </div>
+                <!-- Third Row -->
+                <div class="row mb-3">
+                    @*  @{
+                    var expiryId = "accountMasterDropDownBoxExpiry";
+                    var notificationId = "accountMasterDropDownBoxNotification";
+                    }  *@
+
+                    <div class="col-12 col-md-4">
+                        @(Html.DevExtreme().DateBox()
+                            .Label(new JS("formatMessage('Document Expiry Date')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Type(DateBoxType.Date)
+                            .DisplayFormat("dd-MMM-yyyy")
+                            .ID("expiryId")
+                            .ShowClearButton(true)
+                            .Width("100%")
+                            .OnValueChanged("onExpiryDateChanged")
+                    
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message(new JS("formatMessage('Expiry Date is required')"));
+                            }))
+                    </div>
+
+
+                    <div class="col-10 col-md-3">
+                        @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ExpiryDate")
+                            .Value(null)
+                            .Width("100%"))
+                    </div>
+                    <div class="col-10 col-md-3">
+                        @(Html.DevExtreme().DateBox()
+                            .Label(new JS("formatMessage('Notification Date')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Type(DateBoxType.Date)
+                            .DisplayFormat("dd-MMM-yyyy")
+                            .ID("notificationId")
+                            .ShowClearButton(true)
+                             .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message(new JS("formatMessage('Notification Date is required')"));
+                            })
+                            )
+                    </div>
+                    <div class="col-6 col-md-2">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnVoucherEntry")
+                            .Text(new JS("formatMessage('ADD')"))
+                            .Height(50)
+                            .Width("100%")
+                            .Icon("plus")
+                            .ElementAttr(new { @class = "custom-ui-button" })
+                            .OnClick("function() { addVoucherEntry(); }"))
+                    </div>
+                </div>
+
+              
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="dx-field ledgerResult">
+                @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Tbl20116LedgerDocument>()
+                        .ID("dataGrid")
+                        .RemoteOperations(false)
+                        .Editing(editing =>
+                        {
+                            editing.Mode(GridEditMode.Row); // or .Cell
+                            editing.AllowUpdating(true);
+                            editing.UseIcons(true);
+                        })
+                        .KeyExpr("DocumentNo")
+                        .Columns(columns =>
+                        {
+                            columns.AddFor(m => m.DocumentNo).Caption(new JS("formatMessage('Document No')")).AllowEditing(false)
+                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                            columns.AddFor(m => m.DocumentType)
+                           .Caption(new JS("formatMessage('Document Type')"))
+                            .Lookup(lookup => lookup
+                            .DataSource(d => d.WebApi()
+                            .Controller("IMSLedgerDocument")
+                            .LoadAction("GetDocumentTypes")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("DocumentTypeId")
+                            )
+                            .ValueExpr("DocumentTypeId")    // This must match your model's field if it's storing the ID
+                            .DisplayExpr("DocumentType")
+                            );
+
+                            // columns.AddFor(m => m.DocumentType).Caption(new JS("formatMessage('DocumentType')")).HeaderCellTemplate(@<div style="font-weight: bold;">DocumentType</div>);
+                            columns.AddFor(m => m.DocumentRefNo).Caption(new JS("formatMessage('Document Ref No')"));
+                            columns.AddFor(m => m.DocumentRemarks).Caption(new JS("formatMessage('Document Remarks')"));
+
+                            columns.AddFor(m => m.DocumentExpDate)
+                        .Caption(new JS("formatMessage('Expiry On')"))
+                        .Format("dd-MMM-yyyy") ; // Format date as DD-MM-YYYY
+
+                            columns.AddFor(m => m.DocumentExpDateAr)
+                        .Caption(new JS("formatMessage('Expiry Arabic')")).AllowEditing(false)
+                        .Format("dd-MMM-yyyy");  // Format date as DD-MM-YYYY
+
+                            columns.AddFor(m => m.DocumentNotificationDate)
+                        .Caption(new JS("formatMessage('Notify On')"))
+                        .Format("dd-MMM-yyyy") ;  // Format date as DD-MM-YYYY
+                        })
+                    .AllowColumnReordering(true)
+                    .AllowColumnResizing(true)
+                    .ColumnFixing(fixing => fixing.Enabled(true))
+                    .HeaderFilter(filter => filter.Visible(true))
+                    .Height("50vh")
+                    .ColumnAutoWidth(true)
+                    .FilterRow(filterRow => filterRow.Visible(false))
+                    .GroupPanel(groupPanel => groupPanel.Visible(false))
+                    .ShowBorders(true)
+                    .Width("100%")
+
+                    @*            .OnCellClick("onDocumentNoClick") // Add the click event *@
+                    )
+            </div>
+        </div>
+
+        <div class="dx-fieldset horizontal-container mt-2">
+            @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text(new JS("formatMessage('Update')"))
+                .Icon("save")
+                //  .OnClick("function() { UpdateVoucherEntry(); }")
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnAllAttachments")
+                .Text(new JS("formatMessage('Show All Documents')"))
+                .Icon("save")
+                )
+            @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .OnClick("Goback")
+                )
+        </div>
+        @using (Html.DevExtreme().NamedTemplate("DocumentAttachedContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+
+                .ID("accountpaymentamount-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("IMSLedgerDocument")
+                .LoadAction("GetDocumentTypes")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("DocumentTypeId")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChanged")
+                .OnInitialized("dataGridInitialized")
+                .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("DocumentTypeId").Caption(new JS("formatMessage('DocumentTypeId')"));
+                    columns.Add().DataField("DocumentType").Caption(new JS("formatMessage('DocumentType')"));
+
+                })
+                )
+        }
+
+
+    </div>
+</div>
+
+
+<!-- Add more cards here following the same structure -->
+<!-- DataGrid -->
+<script>
+    $(function () {
+       
+        $.ajax({
+            url: "/api/IMSLedgerDocument/GetNewDocumentNo", // Your API endpoint
+            type: 'GET',
+            success: function (data) {
+                $("#DocumentNo").dxTextBox("instance").option("value", data);
+
+                  console.log("Document No has been set:", data);
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Document No:", error);
+              
+            }
+        });
+    });
+               function onExpiryDateChanged(e) {
+        const selectedDate = e.value;
+
+        // ✅ Set Notification Date (Gregorian)
+        const notificationDateBox = DevExpress.ui.dxDateBox.getInstance(document.getElementById("notificationId"));
+        if (notificationDateBox) {
+            notificationDateBox.option("value", selectedDate);
+        }
+
+        // ✅ Convert to Hijri (Um Al-Qura calendar)
+        const hijriFormatter = new Intl.DateTimeFormat('en-SA-u-ca-islamic', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        const formattedHijri = hijriFormatter.format(selectedDate); // e.g., "09/17/1447"
+
+        // ✅ Reformat from MM/DD/YYYY to DD-MM-YYYY
+        const parts = formattedHijri.split('/');
+        const hijriDisplay = `${parts[1]}-${parts[0]}-${parts[2]}`; // => "17-09-1447"
+
+        // ✅ Set Hijri date to the TextBox
+        const hijriTextBox = DevExpress.ui.dxTextBox.getInstance(document.getElementById("ExpiryDate"));
+        if (hijriTextBox) {
+            hijriTextBox.option("value", hijriDisplay);
+        }
+    }
+
+
+
+    function addVoucherEntry() {
+        
+        var accountMasterDropDownBoxValidator = $("#accountMasterDropDownBox").dxValidator("instance");
+        var expiryIdValidator = $("#expiryId").dxValidator("instance");  // Correct instance reference
+        var notificationIdValidator = $("#notificationId").dxValidator("instance");  // Correct instance reference
+
+        // Validate input fields
+        var accountMasterDropDownBoxValidation = accountMasterDropDownBoxValidator.validate();
+        var expiryIdValidation = expiryIdValidator.validate();
+        var notificationIdValidation = notificationIdValidator.validate();
+
+        if (accountMasterDropDownBoxValidation.isValid && expiryIdValidation.isValid && notificationIdValidation.isValid) {
+     
+        var VM = {
+            "DocumentNo": $("#DocumentNo").dxTextBox("instance").option("value"),
+            "DocumentType": $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value"),
+            "DocumentRefNo": $("#ReferenceNo").dxTextBox("instance").option("value"),
+            "DocumentRemarks": $("#Remarks").dxTextBox("instance").option("value"),
+            "DocumentExpDateAr": $("#ExpiryDate").dxTextBox("instance").option("value"),
+            "DocumentExpDate": $("#expiryId").dxDateBox("instance").option("value"),
+            "DocumentNotificationDate": $("#notificationId").dxDateBox("instance").option("value")
+        };
+
+        // Get selected row data from the data grid
+        var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+
+        if (!selectedRowData || selectedRowData.length === 0) {
+            DevExpress.ui.notify("Please select a row in the grid!", "error", 2000);
+            return;
+        }
+
+        // Extract DocumentType from the selected row
+        var documentType = selectedRowData[0].DocumentType;
+
+        // Make the AJAX POST request
+        $.ajax({
+            type: "POST",
+            url: `/api/IMSLedgerDocument/AddDocumentsEntry?DocumentType=${encodeURIComponent(documentType)}`,
+            contentType: "application/json",
+            data: JSON.stringify(VM),
+            dataType: "json",
+            success: function (response) {
+                console.log("thismonthdatas:", response);
+                DevExpress.ui.notify("Document details added successfully!", "success", 2000);
+                // ✅ 1. Bind data to the current DataGrid
+                const currentGrid = $("#dataGrid").dxDataGrid("instance");
+                if (currentGrid) {
+                    currentGrid.option("dataSource", response.data);
+                    currentGrid.refresh(); // Optional: refresh if needed
+                }
+
+                // ✅ 2. Bind data to the parent DataGrid
+                if (window.parent && window.parent.$("#dataGrid").length) {
+                    const parentGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                    if (parentGrid) {
+                        parentGrid.option("dataSource", response.data);
+                        parentGrid.refresh(); // Optional: refresh if needed
+                    }
+                }
+
+                // ✅ Set Arabic Date (if returned from API)
+                if (response.data && response.data.length > 0) {
+                    const latestEntry = response.data[response.data.length - 1];
+                    $("#ExpiryDate").dxTextBox("instance").option("value", latestEntry.DocumentExpDateAr);
+                }
+
+
+                fetchNewDocumentNo();
+                resetFormFields();
+                // Refresh the parent DataGrid (in the main page)
+                if (window.parent && window.parent.$("#dataGrid").length) {
+                    const parentGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+                    if (parentGrid) {
+                        parentGrid.getDataSource().reload(); // reloads from the original data source
+                    }
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred while updating data:", error);
+                DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 2000);
+            }
+        });
+        } else {
+            DevExpress.ui.notify("Please fill in the required details!", "error", 2000);
+        }
+    }
+    // Function to reset form fields
+    function resetFormFields() {
+        
+        $("#accountMasterDropDownBox").dxDropDownBox("instance").option("value", "-");
+        $("#Remarks").dxTextBox("instance").option("value", "");
+        $("#ReferenceNo").dxTextBox("instance").option("value", "");
+        $("#ExpiryDate").dxDateBox("instance").option("value", null);
+        $("#notificationId").dxDateBox("instance").option("value", null);
+    }
+    // Function to fetch the new DocumentNo
+    function fetchNewDocumentNo() {
+       
+        $.ajax({
+            url: "/api/IMSLedgerDocument/GetNewDocumentNo", // Your API endpoint
+            type: 'GET',
+            success: function (data) {
+                // Set the value in the DocumentNo TextBox once the new number is retrieved
+                $("#DocumentNo").dxTextBox("instance").option("value", data);
+
+                console.log("Document No has been set:", data);
+
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading Document No:", error);
+                // Optionally, handle error (e.g., show an alert)
+            }
+        });
+    }
+
+    $("#btnUpdate").dxButton({
+
+
+        onClick: function () {
+            updateGridData();
+        }
+    });
+    function updateGridData() {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+        // Optional: End editing if someone is still editing
+        dataGrid.saveEditData();
+
+        // Get all modified rows (you can filter more if needed)
+        const allRows = dataGrid.option("dataSource");
+
+        // Or get selected rows if you want limited update:
+        // const selectedRows = dataGrid.getSelectedRowsData();
+
+        // Send updated data to API
+        $.ajax({
+            url: "/api/IMSLedgerDocument/UpdateDocumentEntries", // your Web API endpoint
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(allRows), // or selectedRows
+            success: function (response) {
+                DevExpress.ui.notify("Documents updated successfully", "success", 2000);
+                dataGrid.refresh();
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Update failed: " + error, "error", 3000);
+            }
+        });
+    }
+
+
+    function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#accountMasterDropDownBox").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+    function dataGridInitialized(e) {
+        dataGrid = e.component;
+    }
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
+
+    function onOpened() {
+        console.log("DropDownBox opened");
+    }
+
+    function onKeyDown(event) {
+        console.log("Key pressed:", event.key);
+    }
+             $(function () {
+                $("#IMSLedgerDocument").dxTextBox({
+                    text:formatMessage("Ledger Documents"),
+                    readOnly: true,
+                    onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                    }
+                });
+            });
+                function Goback() {
+        window.parent.closeModal(); // This closes the current window/tab
+    }
+    function redirecttoDocumentTypes(){
+                        const url = `/${tenantName}/IMS/DocumentTypes`;
+                 const title = "Document Types";
+                      openModal(url, title);
+              }
+</script>

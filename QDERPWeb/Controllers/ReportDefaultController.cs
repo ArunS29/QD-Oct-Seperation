@@ -1,8 +1,8 @@
 ﻿using DevExpress.XtraReports.UI;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance;
 using QD.ERP.Web.Reports;
-using QD.ERP.Web.Service.ReportService;
+using QD.ERP.Shared.Service.ReportService;
 using System;
 using System.IO;
 using System.Threading.Tasks;

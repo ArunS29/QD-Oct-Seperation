@@ -1,0 +1,556 @@
+﻿@page
+@model QDWEB.Pages.Shared.GridforAssetViewModel
+@{
+}
+<link rel="stylesheet" href="~/css/animationCardFinance.css" />
+<style type="text/css">
+        .dx-datagrid .dx-row {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .dx-selectbox .dx-texteditor-input {
+            text-align: center;
+        }
+
+
+    .mainContainer{
+        width:100%;
+            overflow-x: hidden;
+    }
+
+        .button-alignment-down {
+            margin-bottom: 10px
+        }
+
+        #Narration {
+            overflow-y: auto;
+            resize: none;
+        }
+
+        .dx-datagrid {
+            color: #000000;
+        }
+
+        .center-checkbox {
+            display: block;
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .dx-datagrid .dx-cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        #dataGrid .dx-header-row .dx-datagrid-text-content {
+            font-weight: bold;
+            color: black;
+        }
+
+        #DepreciationModal .modal-dialog.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1050; /* Ensures it stays on top */
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            max-width: none;
+            overflow: hidden;
+        }
+
+        #DepreciationModal .modal-content {
+            display: flex;
+            flex-direction: column;
+            width:100%;
+        }
+
+        #DepreciationModal .modal-body {
+            flex: 1; /* Takes up remaining space */
+            overflow-y: auto; /* Enables vertical scrolling */
+            overflow-x: hidden; /* Disables horizontal scrolling */
+            padding: 15px; /* Optional: Adjust padding to make it visually better */
+        }
+
+        #DepreciationModal .card {
+            background-color: #ffffff !important;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+</style>
+@* <div class="title">
+    <div class="header-container">
+        <div id="Depreciation Register-Document" class="no-border-input"></div>
+    </div>
+</div> *@
+<div class="title" id="kpiCarousel">
+    <div class="titleCard-cards">
+
+        <!-- STATIC -->
+        <div id="Static" class="titleCard-card vibrant-pink">
+            <div class="value-block">
+
+                <h2 id="depreciationmastercreate"></h2>
+                <h6 id="quickdiceerpsolutionsmastercreate"></h6>
+
+            </div>
+        </div>
+
+        <!-- BALANCE -->
+        <div id="cardBalance" class="titleCard-card cool-blue">
+            <div class="header" id="createmasterbalance"></div>
+            <div class="value-block">
+                <div class="value-slider">
+                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                    <span>0.00</span>
+                    <span>0.00</span>
+                </div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- DEBIT -->
+        <div id="cardDebit" class="titleCard-card deep-purple">
+            <div class="header" id="createmastertotaldebit"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+        <!-- CREDIT -->
+        <div id="cardCredit" class="titleCard-card mint-green">
+            <div class="header" id="createmastertotalcredit"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Today: 0.00</div>
+                <div class="detail">This Week: 0.00</div>
+                <div class="detail">This Month: 0.00</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div style="padding:10px;">
+    @await Html.PartialAsync("_DepreciationChildFooter")
+</div>
+
+<div class="dx-fieldset horizontal-container" style="margin-bottom: 0px;display: flex;align-items: baseline;">
+
+    @(Html.DevExtreme().TextBox().ID("Docno").Value("").ReadOnly(true).ValidationRules(rules =>
+        {
+            rules.AddRequired().Message("Doc No is required");
+    }))
+
+            @(Html.DevExtreme().DateBox()
+                
+                .ID("StartDate")
+               
+                .Type(DateBoxType.Date)
+                .DisplayFormat("dd-MMM-yyyy")
+                
+                .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                )
+
+
+            @(Html.DevExtreme().DateBox()
+                
+                .ID("EndDate")
+                
+                .Type(DateBoxType.Date)
+                .DisplayFormat("dd-MMM-yyyy")
+                
+                .Value(DateTime.Now))
+
+
+    @(Html.DevExtreme().Button()
+        .ID("btndepreciationreportshow")
+        .Text(new JS("formatMessage('Show Data')"))
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+    
+        .Width(180)
+        
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnGenaeratedepreciation")
+        .Text(new JS("formatMessage('Generate Depreciation')"))
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Outlined)
+        
+        .Width(200)
+        .OnClick("generateDepreciationAndReload")
+        )
+</div>
+<div class="dx-field ledgerResult">
+
+    @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry201206depreciationChild>()
+            .ID("dataGrid")
+            .KeyExpr("AssetLedgerNo")
+            .RemoteOperations(false)
+            .DataSource(ds => ds.Mvc()
+            .Controller("DepreciationMaster")
+            .LoadAction("GetDepreciationChild"))
+            .Columns(columns =>
+            {
+
+            columns.Add().DataField("DepreciationDocItemSlNo").Caption(new JS("formatMessage('Depreciation Doc Item Sl No')")).Visible(false).Width(200);
+                columns.Add().Caption(new JS("formatMessage('Asset Details')")).Columns(band =>
+            {
+
+
+
+                band.Add().DataField("DepreciationDocNo").Caption(new JS("formatMessage('Depreciation Doc No')")).Width(200).Visible(false);
+                band.Add().DataField("AssetCategory").Caption(new JS("formatMessage('Asset Category')")).Width(200).GroupIndex(0).SortOrder(SortOrder.Asc);
+        band.Add().DataField("AssetLedgerNo").Caption(new JS("formatMessage('Ledger No')")).Width(200);
+        band.Add().DataField("PlateNo").Caption(new JS("formatMessage('Plate No')")).Width(200);
+        band.Add().DataField("AssetDescription").Caption(new JS("formatMessage('Asset Description')")).Width(200);
+        band.Add().DataField("AssetLocation").Caption(new JS("formatMessage('Asset Location')")).Width(200);
+                band.Add().DataField("DeprStartDate").Caption(new JS("formatMessage('Start Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("DeprEndDate").Caption(new JS("formatMessage('End Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Width(200);
+                band.Add().DataField("OpeningBalance").Caption(new JS("formatMessage('Opening Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("DebitTransaction").Caption(new JS("formatMessage('Asset Additions')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("CreditTransaction").Caption(new JS("formatMessage('Asset Removal')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("ClosingBalance").Caption(new JS("formatMessage('Closing Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+            });
+
+        columns.Add().Caption(new JS("formatMessage('Accumulated Depreciation Details')")).Columns(band =>
+    {
+        band.Add().DataField("DepreciatedPercentage").Caption(new JS("formatMessage('Depreciation %')")).Width(100);
+        band.Add().DataField("AccDeprOpeningBalance").Caption(new JS("formatMessage('Accumulated Dep.Op.Balance')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("AccumulatedAdjusted").Caption(new JS("formatMessage('Accumulated Adjusted')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("DepreciationAmount").Caption(new JS("formatMessage('Depreciation Amount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+        band.Add().DataField("AccDeprTotalAmount").Caption(new JS("formatMessage('Total Accumulated')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+                band.Add().DataField("BookValueAsOnDate").Caption(new JS("formatMessage('Book Value')")).DataType(GridColumnDataType.Number).Format("#,##0.00").Width(200);
+               
+            });
+            })
+
+        .Paging(paging => paging.Enabled(false))
+        .AllowColumnReordering(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(true))
+        .Height(501)
+        .Width("100%")
+        .ColumnAutoWidth(false) // Important: allows columns to overflow and scroll
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Standard) // or "virtual" if you want virtual scrolling
+        .UseNative(true)
+        .ShowScrollbar(ShowScrollbarMode.Always) // Always show scrollbar
+        )
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .Grouping(grouping => grouping.AutoExpandAll(true))
+        .ShowBorders(true)
+        .OnCellPrepared("handleCellPrepared")
+
+        )
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+           const voucherNoField = $("#Docno").dxTextBox("instance");
+           const voucherNoFromUrl = getUrlParameter('DepreciationDocNo');
+
+           if (voucherNoFromUrl) {
+               // ✅ Bind voucher number from URL
+               voucherNoField.option("value", voucherNoFromUrl);
+           } else {
+               // ❌ If not available, generate new one
+               $.ajax({
+                   url: '@Url.Action("GetNewDocNo", "DepreciationMaster")',
+                   type: 'GET',
+                   success: function (data) {
+                       voucherNoField.option("value", data);
+                   },
+                   error: function () {
+                       alert("Error generating voucher number.");
+                   }
+               });
+           }
+
+           // Helper to extract URL parameter
+           function getUrlParameter(name) {
+               name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+               const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+               const results = regex.exec(window.location.search);
+               return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+           }
+        if (voucherNoFromUrl) {
+            $.ajax({
+                url: '/api/DepreciationMaster/GetDepreciationMaster',
+                type: 'GET',
+                data: { depreciationdocno: voucherNoFromUrl },
+                success: function (data) {
+                     // optional check
+                     
+                    if (data) {
+                        $("#Docno").dxTextBox("instance").option("value", data[0].DepreciationDocNo);
+                        $("#StartDate").dxDateBox("instance").option("value", data[0].DeprStartDate);
+                        $("#EndDate").dxDateBox("instance").option("value", data[0].DeprEndDate);
+                        const startDateBox = $("#StartDate").dxDateBox("instance");
+                        const endDateBox = $("#EndDate").dxDateBox("instance");
+                       
+                        const generateButton = $("#btnGenaeratedepreciation").dxButton("instance");
+
+                         startDateBox.option("disabled", true);
+                         endDateBox.option("disabled", true);
+                         generateButton.option("disabled", true);
+                        
+                    } else {
+                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                }
+            });
+        } else {
+            // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
+        }
+    });
+      
+
+       function handleCellPrepared(e) {
+        if (e.rowType === "data") {
+            // Green for Opening & Closing Balances
+            const greenFields = ["OpeningBalance", "DebitTransaction", "CreditTransaction", "ClosingBalance"];
+            const lightGreenFields = ["AccDeprOpeningBalance", "AccumulatedAdjusted", "DepreciationAmount", "AccDeprTotalAmount", "BookValueAsOnDate"];
+
+            if (greenFields.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#eeeeee"); // Change to "green" if darker preferred
+            }
+
+            if (lightGreenFields.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#ccffcc"); // Lighter shade
+            }
+        }
+    }
+    function getSelectedDates() {
+        const startDate = $("#StartDate").dxDateBox("instance").option("value");
+        const endDate = $("#EndDate").dxDateBox("instance").option("value");
+
+        return { startDate, endDate };
+    }
+
+    $("#btndepreciationreportshow").on("click", function (e) {
+        e.preventDefault();
+        const { startDate, endDate } = getSelectedDates();
+
+        $("#dataGrid").dxDataGrid("instance").option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "AssetLedgerNo",
+            loadUrl: "/api/DepreciationMaster/GetDepreciationChildshow",
+            loadParams: {
+                startDate: startDate.toISOString(),
+                endDate: endDate.toISOString()
+            }
+        }));
+    });
+     function generateDepreciationAndReload() {
+         
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const docNoBox = $("#Docno").dxTextBox("instance");
+        const generateButton = $("#btnGenaeratedepreciation").dxButton("instance");
+
+        const startDate = startDateBox.option("value");
+        const endDate = endDateBox.option("value");
+        const documentNo = docNoBox.option("value");
+
+        if (!startDate || !endDate || !documentNo) {
+            DevExpress.ui.notify("Start Date, End Date and Doc No are required.", "error", 3000);
+            return;
+        }
+        // ✅ Format the dates as strings (yyyy-MM-dd)
+        const formatDate = (date) => {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+        $.ajax({
+            url: '/api/DepreciationMaster/GenerateDepreciation',
+            method: 'POST',
+            contentType: 'application/json', // <--- this is the key
+            data: JSON.stringify({
+                startDate: formatDate(startDate),
+                endDate: formatDate(endDate),
+                documentNo: documentNo
+            }),
+            success: function (response) {
+                if (response.success) {
+                          // ✅ Disable the components
+                    startDateBox.option("disabled", true);
+                    endDateBox.option("disabled", true);
+                    generateButton.option("disabled", true);
+                     getdepreciationOnLoad();
+                    DevExpress.ui.notify(response.message, "success", 3000);
+                    
+                } else {
+                    DevExpress.ui.notify(response.message, "error", 3000);
+                }
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error: " + xhr.responseJSON?.message || "Unknown error", "error", 3000);
+            }
+        });
+    }
+    function getdepreciationOnLoad() {
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const docNoBox = $("#Docno").dxTextBox("instance");
+
+        const startDate = startDateBox.option("value");
+        const endDate = endDateBox.option("value");
+        const documentNo = docNoBox.option("value");
+
+        if (!startDate || !endDate || !documentNo) {
+            DevExpress.ui.notify("Start Date, End Date and Doc No are required.", "error", 3000);
+            return;
+        }
+
+        // Format date as yyyy-MM-dd to avoid timezone issues
+        const formatDate = (date) => {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        };
+
+        $.ajax({
+            url: `/api/DepreciationMaster/GetDepreciationbydocno?docNo=${encodeURIComponent(documentNo)}&startDate=${formatDate(startDate)}&endDate=${formatDate(endDate)}`,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+    $("#btnDepchildSaveandclose").on("click", function (e) {
+        e.preventDefault();
+        history.back();
+        
+        
+    });
+    function onPostDepreciationClick() {
+        const docNo = $("#Docno").dxTextBox("instance").option("value");
+        const startDate = $("#StartDate").dxDateBox("instance").option("value");
+        const endDate = $("#EndDate").dxDateBox("instance").option("value");
+
+        if (!docNo) {
+            DevExpress.ui.notify("Doc No is required.", "error", 3000);
+            return;
+        }
+
+        let generatedVoucherNo = "";
+        let totalDepreciationAmount = 0;
+
+        // Step 1: Get generated voucher number
+        $.get('/api/JournalEntryEdit/GetGeneratedVoucherNo')
+            .done(function (voucherNo) {
+                generatedVoucherNo = voucherNo;
+
+                $.ajax({
+                    url: '/api/DepreciationMaster/GetDepreciationTotal',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ docNo: docNo }),
+                    success: function (data) {
+                        const totalDepreciationAmount =data.totalAmount ;
+                           // Step 3: Call SP to insert voucher
+                        const payload = {
+                            DepreciationDocNo: docNo,
+                            PaymentVoucherNo: generatedVoucherNo,
+                            DebitAccount: "L00011",
+                            CreditAccount: "L00021",
+                            AddedBy: sessionStorage.getItem("UserName") || "", // or get from backend/session
+                            AddedOn: new Date(),
+                            VoucherNarration: `Depreciation for the period from ${formatDate(startDate)} to ${formatDate(endDate)}`,
+                            TotalAmount: totalDepreciationAmount,
+                            JustAddedVoucherEntryNo: 0
+                        };
+
+                        $.ajax({
+                            url: '/api/DepreciationMaster/InsertDepreciationToVoucher',
+                            method: 'POST',
+                            contentType: "application/json",
+                            data: JSON.stringify(payload),
+                            success: function (response) {
+                                if (response.success) {
+                                    DevExpress.ui.notify(`Depreciation Created for the Voucher ${generatedVoucherNo}`, "success", 3000);
+                                } else {
+                                    DevExpress.ui.notify(response.message || "Failed to insert voucher.", "error", 3000);
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Error occurred while inserting depreciation voucher.", "error", 3000);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                    }
+                });
+
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to generate voucher number.", "error", 3000);
+            });
+    }
+
+    function formatDate(date) {
+        if (!date) return '';
+        const d = new Date(date);
+        return d.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).replace(/ /g, '-');
+    }
+      $(function () {
+        $("#createmastertotalcredit").text(formatMessage("Total Credit"));
+    });
+     $(function () {
+        $("#createmastertotaldebit").text(formatMessage("Total Debit"));
+    });
+     $(function () {
+        $("#createmasterbalance").text(formatMessage("Balance"));
+    });
+    $(function () {
+        $("#depreciationmastercreate").text(formatMessage("Depreciation Master"));
+    });
+    $(function () {
+        $("#quickdiceerpsolutionsmastercreate").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+</script>

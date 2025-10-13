@@ -1,0 +1,846 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+<style>
+	
+	.titleCard-toggle1 {
+		display: none;
+	}
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.mainContainer {
+		width: 97%;
+		overflow: hidden;
+	}
+</style>
+<input id="formId" value="frm201LedgerView" type="hidden" />
+@* <div class="title">
+	<div class="header-container">
+		<div id="VATInvoiceWithDetails" class="no-border-input"></div>
+	</div>
+</div> *@
+<div class="dx-card-header minimal-header">
+	<div class="card-title-icon">
+		<i class="fas fa-file-invoice-dollar"></i>
+	</div>
+	<div id="VATInvoiceWithDetails" class="titleText no-border-title"></div>
+</div>
+<div class="Head">
+	
+		@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceWithDetailsFooter.cshtml")
+	
+</div>
+
+<div class="context-menuInvoice" id="contextMenu">
+	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
+		<i class="dx-icon-search" id="invoiceviewdetails"></i>
+	</div>
+	<div class="context-menu-itemInvoice" onclick="viewStock()">
+		<i class="dx-icon-close" id="viwwstockdetailscredit"></i>
+	</div>
+</div>
+
+<div class="horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		
+		.TabIndex(4)
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+		        	items.Add().Text(new JS("formatMessage('By Quarter')")).Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+		)
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text(new JS("formatMessage('Use Effective Date')"))
+		.Value(false)
+		 // Adjust margin as needed
+		)
+
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry201617vatinvoiceInDetail>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
+			{
+			@* 	subColumns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Alignment(HorizontalAlignment.Center).GroupIndex(0); *@
+				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.ItemCode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Item Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Quantity Invoiced')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('Unit Rate')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.AmountBeforeDiscount).Caption(new JS("formatMessage('Amount Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Right).CellTemplate(@<text>
+					   		<%- (data.Discount == null || data.Discount === 0)
+					   		? '0.00'
+		         	   		: data.Discount.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
+					   	</text>)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.AmountAfterDiscount).Caption(new JS("formatMessage('Amount After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.VatAmount).Caption(new JS("formatMessage('VAT Amount')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				subColumns.AddFor(m => m.Total).Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+			});
+
+			columns.Add().Caption(new JS("formatMessage('Cost Of Goods Sold')")).Columns(cogsColumns =>
+			{
+				cogsColumns.AddFor(m => m.NoOfUnitsSold).Caption(new JS("formatMessage('No of Units Sold')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				cogsColumns.AddFor(m => m.SalesAmount).Caption(new JS("formatMessage('Sales Amount')")).Alignment(HorizontalAlignment.Right).Visible(true);
+				cogsColumns.AddFor(m => m.CostOfGoodsSold)
+			.Caption(new JS("formatMessage('Cost of Goods Sold')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CellTemplate(@<text>
+					   		<%- (data.CostOfGoodsSold == null || data.CostOfGoodsSold === 0)
+					   		? '0.00'
+					   		: data.CostOfGoodsSold.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
+					   	</text>)
+			.Visible(true);
+
+				cogsColumns.AddFor(m => m.ProfitOnSales)
+			.Caption(new JS("formatMessage('Profit On Sales')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CellTemplate(@<text>
+					   		<%- (data.ProfitOnSales == null || data.ProfitOnSales === 0)
+					   		? '0.00'
+					   		: data.ProfitOnSales.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
+					   	</text>)
+			.Visible(true);
+
+				cogsColumns.AddFor(m => m.IsCogsPosted).Caption(new JS("formatMessage('Is Cogs Posted')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(@<text>
+		<div class="dx-icon">
+			<%= data.IsCogsPosted ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
+		</div>
+	</text>);
+				cogsColumns.AddFor(m => m.StatusForPosting).Caption(new JS("formatMessage('Status For Posting')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			});
+		})
+	@* 	.Editing(editing => editing
+		.Mode(GridEditMode.Row)
+		.AllowUpdating(true)
+		) *@
+		.OnCellPrepared("onCellPrepared")
+	@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
+		@* .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop)) *@
+		.Height("70vh") // <<< fixed height
+		.ColumnResizingMode(ColumnResizingMode.Widget)
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		@* .WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}") *@
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+
+		
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true);
+			@* .CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
+
+				@* items.Add()
+			.Column("QuantityInvoiced")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+ *@
+				items.Add()
+			.Column("Discount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				items.Add()
+			.Column("VatAmount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				items.Add()
+			.Column("Total")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+			   items.Add()
+			.Column("CostOfGoodsSold")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) {
+				if (e.value === null || e.value === undefined) return '';
+				return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
+				});
+				}");
+
+			items.Add()
+			.Column("ProfitOnSales")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) {
+				if (e.value === null || e.value === undefined) return '';
+				return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
+				});
+				}");
+			});
+
+			summary.TotalItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count);
+			@* .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
+
+				@* items.Add()
+			.Column("QuantityInvoiced")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+ *@
+				items.Add()
+			.Column("Discount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				items.Add()
+			.Column("VatAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				items.Add()
+			.Column("Total")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }); }");
+
+				items.Add()
+			.Column("NoOfUnitsSold")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+				items.Add()
+			.Column("SalesAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+				items.Add()
+			.Column("AmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+				items.Add()
+			.Column("AmountAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+
+				items.Add()
+			.Column("CostOfGoodsSold")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+				items.Add()
+			.Column("ProfitOnSales")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		return e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		}");
+
+			});
+		})
+
+
+		@* .StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		}) *@
+		.OnInitialized("function(e) { loadGridState(); }")
+		)
+</div>
+
+
+
+<div id="overlay" class="overlay">
+	<div class="overlay-content">
+		<span class="close-btn" onclick="closeOverlay()">×</span>
+		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
+	</div>
+</div>
+
+
+<script>
+	let currencyDecimals = 2;
+		function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
+	}
+
+	function viewInvoice() {
+			
+		var url = `/${tenantName}/VAT/frm20161VATInvoiceEdit`;
+		window.location.href = url; // Navigate to the form
+		}
+	function viewStock() {
+
+		var url = `/${tenantName}/IMS/InventoryStockDetails`;
+		window.location.href = url; // Navigate to the form
+	}
+
+
+	$(document).ready(function () {
+			console.log('Start permission handling AccountingLedgers');
+			var formId = "frm201LedgerView";
+			$.ajax({
+				url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+				type: 'GET',
+				contentType: 'application/json',
+				success: function (response) {
+					console.log("API Response:", response);
+
+					if (response.success && response.permissions) {
+						var controlStates = {
+							"ddBtnShowRecords": { "Visible": false, "Enabled": false },
+
+						};
+						var fullAccess = response.permissions.find(p =>
+							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+						);
+
+						if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+							Object.keys(controlStates).forEach(key => {
+								controlStates[key] = { "Visible": true, "Enabled": true };
+							});
+						} else {
+							Object.keys(controlStates).forEach(key => {
+								var controlPermission = response.permissions.find(p =>
+									p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+								);
+								if (controlPermission) {
+									controlStates[key] = {
+										"Visible": controlPermission.ItemVisible || false,
+										"Enabled": controlPermission.ItemEnabled || false
+									};
+								}
+							});
+						}
+						console.log("Control States:", controlStates);
+						Object.keys(controlStates).forEach(key => {
+							var button = document.getElementById(key);
+							if (button) {
+
+								button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+
+								button.disabled = !controlStates[key].Enabled;
+								console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+							} else {
+								console.warn(`Button with ID "${key}" not found in the DOM.`);
+							}
+						});
+					} else {
+						console.warn("Failed to fetch permissions or no permissions available.");
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("Error fetching permissions:", error);
+					alert('An error occurred while fetching permissions. Please try again.');
+				}
+			});
+			 console.log('End permission handling');
+		});
+		let selectedVoucherNo = null;
+		// $(function () {
+		// 	$("#VATInvoiceWithDetails").dxTextBox({
+		// 		text: formatMessage(""),
+		// 		readOnly: true,
+		// 		onContentReady: function (e) {
+		// 			$(e.element).addClass("dx-textbox-heading");
+		// 		}
+		// 	});
+		// });
+				   $(function () {
+	 $("#VATInvoiceWithDetails").text(formatMessage("Invoice With Details"));
+	});
+	$(function () {
+		var contextMenu = $("#contextMenu");
+		let selectedRowData = null;
+
+		// Initialize Popup (optional if using later)
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+
+		// Hide context menu when clicking anywhere else
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+
+		// Bind to DataGrid right-click
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			const dataGridInstance = $("#dataGrid").dxDataGrid("instance");
+			const rowIndex = $(this).index();
+
+			// Get row data
+			selectedRowData = dataGridInstance.getDataSource().items()[rowIndex];
+
+			// Show the context menu at cursor position
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+		$(document).ready(function () {
+		ddBtnShowRecords_click("fullmonth");
+	});
+
+		function ddBtnShowRecords_click(duration) {
+			var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+			var toDateBox = $("#todateBox").dxDateBox("instance");
+			var frmDate = new Date(frmDateBox.option("value"));
+			var toDate = new Date(toDateBox.option("value"));
+			var currentDate = new Date();
+
+			switch (duration) {
+				case 'today':
+					frmDate = toDate = currentDate;
+					break;
+				case 'yesterday':
+					var dateObj = new Date();
+					dateObj.setDate(dateObj.getDate() - 1);
+					frmDate = toDate = dateObj;
+					break;
+				case 'week':
+					var dayOfWeek = currentDate.getDay();
+					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
+					frmDate = new Date(currentDate.setDate(startOfWeek));
+					toDate = new Date(currentDate.setDate(startOfWeek + 6));
+					break;
+				case 'tillmonth':
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+					toDate = currentDate;
+					break;
+				case 'fullmonth':
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+					break;
+				case 'tillyear':
+					frmDate = new Date(currentDate.getFullYear(), 0, 1);
+					toDate = currentDate;
+					break;
+				case 'fullyear':
+					frmDate = new Date(currentDate.getFullYear(), 0, 1);
+					toDate = new Date(currentDate.getFullYear(), 11, 31);
+					break;
+				case 'lastyear':
+					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
+					toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
+					break;
+				case 'lastmonth':
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+					break;
+			}
+
+			frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+			FromDate = frmDate;
+			ToDate = toDate;
+
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
+
+			$.ajax({
+				url: '/api/VATModule/GetVatDetails',
+				type: 'GET',
+				data: {
+					frmDate: frmDate,
+					toDate: toDate
+				},
+				success: function (data) {
+					$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+					var dataGrid = $("#dataGrid").dxDataGrid("instance");
+					var dataSource = dataGrid.option("dataSource");
+					if (dataSource && dataSource.length > 0) {
+						var lastRow = dataSource[dataSource.length - 1];
+						VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+						var firstRow = dataSource[0];
+						firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+					}
+				},
+				error: function () {
+					DevExpress.ui.notify("Error while loading data", "error", 2000);
+				}
+			});
+		}
+		function formatDate(date) {
+			var d = new Date(date),
+				month = '' + (d.getMonth() + 1),
+				day = '' + d.getDate(),
+				year = d.getFullYear();
+
+			var strmonth = d.toLocaleString('default', { month: 'short' });
+			if (day.length < 2)
+				day = '0' + day;
+
+			return [day, strmonth, year].join('-');
+		}
+		function formatDate(date) {
+			var d = new Date(date),
+				month = '' + (d.getMonth() + 1),
+				day = '' + d.getDate(),
+				year = d.getFullYear();
+
+			var strmonth = d.toLocaleString('default', { month: 'short' });
+			if (day.length < 2)
+				day = '0' + day;
+
+			return [day, strmonth, year].join('-');
+		}
+	function onCellPrepared(e) {
+		if (e.rowType === "data" && e.column.dataField === "ProfitOnSales") {
+			if (e.value < 0) {
+				e.cellElement.style.color = "red";
+				e.cellElement.style.backgroundColor = "rgb(255, 192, 192)"; // Light red
+			}
+		}
+	}
+			   $(function () {
+	 $("#invoiceviewdetails").text(formatMessage("View Invoice"));
+	});
+			   $(function () {
+	 $("#viwwstockdetailscredit").text(formatMessage("View Stock Details"));
+	});
+
+
+							function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+				function openQuarterMenu(targetElement) {
+		const $menu = $("#quarterMenu");
+
+		// Dispose old instance if it exists
+		const existingMenu = $menu.data("dxContextMenu");
+		if (existingMenu) {
+			existingMenu.dispose();
+		}
+
+		// Create new ContextMenu instance
+		const contextMenuInstance = $menu.dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: formatMessage("1st Quarter (Jan - Mar)"), value: "q1", color: "#4285F4", icon: "event" },
+				{ text: formatMessage("2nd Quarter (Apr - Jun)"), value: "q2", color: "#34A853", icon: "event" },
+				{ text: formatMessage("3rd Quarter (Jul - Sep)"), value: "q3", color: "#EA4335", icon: "event" },
+				{ text: formatMessage("4th Quarter (Oct - Dec)"), value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function (e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function (itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance"); // ✅ Capture the instance here
+
+		// ✅ Ensure the instance exists before calling show()
+		if (contextMenuInstance) {
+			contextMenuInstance.show();
+		} else {
+			console.error("ContextMenu instance not created properly for #quarterMenu");
+		}
+	}
+
+
+		// Fetch from API on page load
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			if (decimals != null) {
+				currencyDecimals = decimals;
+			}
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load decimals, using 2", "warning", 3000);
+		});
+
+			function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
+</script>

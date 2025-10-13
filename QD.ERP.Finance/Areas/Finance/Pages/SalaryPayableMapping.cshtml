@@ -1,0 +1,407 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc;
+@using DevExtreme.AspNet.Data;
+<style type="text/css">
+
+       
+
+    /* Global styles for the card */
+    .card {
+        margin: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Card header styles */
+    .card-header {
+        background-color: #F0F8FF;
+        color: black;
+        font-weight: bold;
+    }
+
+    /* Card body styles */
+    .card-body {
+        padding: 15px;
+        background-color: #ffffff;
+        border-radius: 5px;
+    }
+
+    /* Styles for dx-fieldset with horizontal-container class */
+    .dx-fieldset.horizontal-container {
+        margin-bottom: 0px;
+    }
+
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
+    }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+
+
+
+    .button-alignment-down {
+        margin-bottom: 10px
+    }
+
+    #Narration {
+        overflow-y: auto;
+        resize: none;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    #AccountHeadName {
+        width: 250px; /* Adjust the width as needed */
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .modal-header {
+        background-color: var(--title-background-color) !important;
+    }
+
+    .modalTitle {
+        display: flex!important;
+        color: white;
+    }
+</style>
+@* <div class="title">
+    <div class="header-container">
+        <div id="AccountLedgertoSalaryPayableMapping" class="no-border-input"></div>
+    </div>
+</div> *@
+<div>
+    @await Html.PartialAsync("SalaryPayableMappingFooter")
+</div>
+        <div class="dx-fieldset horizontal-container" style="margin-bottom: 0px">
+
+            <div>
+                @(Html.DevExtreme().TextBox()
+                    .ID("AccountLedgerNo")
+                    .Placeholder(new JS("formatMessage('Enter Account Ledger No')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Label(new JS("formatMessage('Account Ledger No')"))
+            
+                    )
+            </div>
+
+            <div>
+                @(Html.DevExtreme().TextBox()
+                    .ID("AccountHeadName")
+                    .Placeholder(new JS("formatMessage('Enter Account Head Name')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Label(new JS("formatMessage('Account Head Name')"))
+           
+                    )
+            </div>
+
+            <div>
+                @(Html.DevExtreme().DateBox()
+                    .ID("StartDate")
+                    .InputAttr("aria-label", "Date")
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Label(new JS("formatMessage('Start Date')"))
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+                    )
+            </div>
+
+            <div>
+                @(Html.DevExtreme().DateBox()
+                    .ID("EndDate")
+                    .InputAttr("aria-label", "Effective Date")
+                    .LabelMode(EditorLabelMode.Floating) 
+                    .Label(new JS("formatMessage('End Date')"))
+                    .Type(DateBoxType.Date)
+                    .DisplayFormat("dd-MMM-yyyy")
+                    .Value(DateTime.Now))
+            </div>
+
+            <div style="padding-top:15px">
+                @(Html.DevExtreme().DropDownButton()
+                    .ID("ddBtnShowRecords")
+                    .Text(new JS("formatMessage('Show Records')"))
+                    .Icon("smalliconslayout")
+                    .Width(180)
+                    .TabIndex(4)
+                    .DropDownOptions(options => options.Width(230))
+                    .Items(items =>
+                    {
+                        items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                        items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                        items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                        items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                        items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                        items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                        items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                        items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                        items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    })
+                    )
+            </div>
+        </div>
+      @*   <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry20191SalaryPayableMasterMapped02>()
+                .ID("dataGrid")
+                .KeyExpr("AccountHeadNo")
+                .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("SalaryPayableMapping")
+                .LoadAction("GetSalaryMapping"))
+                .Columns(columns =>
+                {
+
+                    columns.Add().DataField("VoucherNo").Caption("Voucher No");
+                        
+                    columns.Add().DataField("VoucherDate").Caption("Voucher Date");
+
+                    columns.Add().DataField("EmployeeNo").Caption("Employee No");
+                    columns.Add().DataField("EmployeeName").Caption("Employee Name");
+                    columns.Add().DataField("NationalID").Caption("National ID");
+                    columns.Add().DataField("VoucherAmount").Caption("Voucher Amount");
+
+                    columns.Add().DataField("TotalMappedAmount").Caption("Total Mapped Amount");
+
+                    columns.Add().DataField("Mapping").Caption("Mapping Status");
+
+
+                })
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(fixing => fixing.Enabled(true))
+                .HeaderFilter(filter => filter.Visible(true))
+                .Height(300)
+                .ColumnAutoWidth(true)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .Width("100%"))
+        </div>
+ *@
+
+ <div class="dx-field ledgerResult">
+     @(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry20191SalaryPayableMasterMapped02>()
+         .ID("dataGrid")
+         .KeyExpr("AccountHeadNo")
+         .RemoteOperations(false)
+         .DataSource(ds => ds.Mvc()
+             .Controller("SalaryPayableMapping")
+             .LoadAction("GetSalaryMapping")
+             .LoadParams(new { acchedid = "0" }) // Placeholder value, will be updated dynamically
+         )
+         .Columns(columns =>
+         {
+             columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')"));
+             columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')"));
+             columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee No')"));
+             columns.Add().DataField("EmployeeName").Caption(new JS("formatMessage('Employee Name')"));
+             columns.Add().DataField("NationalID").Caption(new JS("formatMessage('National ID')"));
+             columns.Add().DataField("VoucherAmount").Caption(new JS("formatMessage('Voucher Amount')"));
+             columns.Add().DataField("TotalMappedAmount").Caption(new JS("formatMessage('Total Mapped Amount')"));
+             columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
+         })
+         .AllowColumnReordering(true)
+         .AllowColumnResizing(true)
+         .ColumnFixing(fixing => fixing.Enabled(true))
+         .HeaderFilter(filter => filter.Visible(true))
+         .ColumnAutoWidth(true)
+         .FilterRow(filterRow => filterRow.Visible(false))
+         .GroupPanel(groupPanel => groupPanel.Visible(false))
+         .ShowBorders(true)
+         .Height(550)
+         .ElementAttr("style", "min-height: 500px;")
+         .Width("100%")
+         .Paging(paging => paging.Enabled(false)) // Disable paging
+     )
+ </div>
+
+
+       
+
+  
+
+    <script>
+        $(function () {
+			$("#AccountLedgertoSalaryPayableMapping").dxTextBox({
+	    			text:formatMessage("Account Ledger to Salary Payable Mapping"),
+                    readOnly: true,
+                    width:"510px",
+					onContentReady: function(e) {
+			            $(e.element).addClass("dx-textbox-heading");
+		            }
+                });
+			});
+       
+
+    function ddBtnShowRecords_click(filterType) {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const startDateBox = $("#StartDate").dxDateBox("instance");
+        const endDateBox = $("#EndDate").dxDateBox("instance");
+        const accountId = $("#AccountLedgerNo").dxTextBox("instance").option("value");
+        const today = new Date();
+        let startDate = null, endDate = null;
+
+        switch (filterType) {
+            case 'today':
+                startDate = new Date(today.setHours(0, 0, 0, 0));
+                endDate = new Date(today.setHours(23, 59, 59, 999));
+                break;
+            case 'yesterday':
+                startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999);
+                break;
+            case 'week':
+                startDate = new Date(today.setDate(today.getDate() - today.getDay()));
+                endDate = new Date(today.setDate(startDate.getDate() + 6));
+                break;
+            case 'tillmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date();
+                break;
+            case 'fullmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+                break;
+            case 'tillyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date();
+                break;
+            case 'fullyear':
+                startDate = new Date(today.getFullYear(), 0, 1);
+                endDate = new Date(today.getFullYear(), 11, 31, 23, 59, 59, 999);
+                break;
+            case 'lastmonth':
+                startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                endDate = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59, 999);
+                break;
+            case 'lastyear':
+                startDate = new Date(today.getFullYear() - 1, 0, 1);
+                endDate = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+                break;
+            default:
+                dataGrid.clearFilter();
+                return;
+        }
+
+        // ✅ Update the DateBox values
+        startDateBox.option("value", startDate);
+        endDateBox.option("value", endDate);
+        
+
+        // ✅ Apply filter to DataGrid
+        dataGrid.option("dataSource", {
+            store: DevExpress.data.AspNet.createStore({
+                loadUrl: "/api/SalaryPayableMapping/GetSalaryMappings",  // ✅ Match with API method name
+                loadParams: {
+                    accountId:accountId,
+                    startDate: startDate.toISOString(),
+                    endDate: endDate.toISOString()
+                }
+            })
+        });
+
+        dataGrid.refresh();
+    }
+
+
+        // $(document).ready(function () {
+        //     // Function to get URL parameters
+        //     function getQueryParam(name) {
+        //         const urlParams = new URLSearchParams(window.location.search);
+        //         return urlParams.get(name);
+        //     }
+
+        //     // Get the passed parameters
+        //     const acchedid = getQueryParam("acchedid");
+        //     const accheadname = getQueryParam("accheadname");
+
+        //     // Set values in DevExtreme TextBoxes if parameters exist
+        //     if (acchedid) {
+        //         $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
+        //     }
+
+        //     if (accheadname) {
+        //         $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
+        //     }
+        // });
+
+    $(document).ready(function () {
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        const acchedid = getQueryParam("acchedid") || "";
+        const accheadname = getQueryParam("accheadname") || "";
+        const startDate = $("#StartDate").dxDateBox("instance");
+        const endDate = $("#EndDate").dxDateBox("instance");
+
+        if (acchedid) {
+            $("#AccountLedgerNo").dxTextBox("instance").option("value", acchedid);
+        }
+        if (accheadname) {
+            $("#AccountHeadName").dxTextBox("instance").option("value", accheadname);
+        }
+
+        // ✅ Ensure Date Parameters Are Passed Correctly
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        dataGrid.option("dataSource", {
+            store: DevExpress.data.AspNet.createStore({
+                loadUrl: "/api/SalaryPayableMapping/GetSalaryMappings",
+                loadParams: {
+                    acchedid: acchedid,
+                    startDate: startDate ? new Date(startDate).toISOString() : null,
+                    endDate: endDate ? new Date(endDate).toISOString() : null
+                }
+            })
+        });
+
+        dataGrid.refresh();
+    });
+
+
+
+
+    </script>

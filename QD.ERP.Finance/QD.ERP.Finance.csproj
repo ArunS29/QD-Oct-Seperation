@@ -1,0 +1,388 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Finance\Data\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
+    <PackageReference Include="SkiaSharp" Version="2.88.7" />
+    <PackageReference Include="Svg" Version="3.4.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QD.ERP.Shared\QD.ERP.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\OrderByVchNoRegister.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\OrderbyVchNoWIthVchNarration.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\PreviewRegister.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\Register4line.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\RegisterLineEntryNarration.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountRegister\RegisterWithVchNarration.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountDebtors.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountDebtorsReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountDetails.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountExportFromatReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountExportLandscapeReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountOrderbyVchNoWONarrationReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountOrderByVoucherNo.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountStatementFormat2Report.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\AccountWithNarration.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\rpt20124SubLedgerForAccountStatement.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\rpt20140EmpAllocForAccountStatement.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\rpt201CostAllocationByAccountStatement.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\AccountStatement\StatementOfAccountReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\BIllsPayable.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\BillsReceivableAgeingReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\BillsRecivableReport1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\ReceivableReport%28EffectiveDate%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\Summary.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\XtraRecivableReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\XtraRecivableReport2.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\XtraReportAgeingreportsummary.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\BillsReceivable\XtraReportBillsReceivableAgeingReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\CashPaymentformat2.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\cashPayments.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\rpt201empReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\rpt201Property.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\SalesReport2.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\SalesVoucherReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\subCostReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\cashPayments\Subledger1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\CostcenterBydate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\CostcenterGroupByDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\CostCenterGroupReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\CostcenterRepoer.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\CostCenterSummaryReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\CostCenterMasterGroup.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\DetailedBydate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\DetailedGroup.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\detailedMasterByDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\detailGroupBydate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\Detailed Report\DetailReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Cost Analysis\SummaryReport%28ByDate%29 .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\ClaimDetailed.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\ClaimEntryCheck.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\PaymentsAdviceSupplierPayments.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\PreviewClaimRequestForm .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\PreviewClaimRequestForm%28wtVAT%29 .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\printClaimReportBydate-Detailed.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ExpensesClaims\printExpensesClaimBydateSimplified.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostcenterBydateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostcenterGroupByDateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostCenterGroupReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostCenterMasterGroupImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostcenterRepoerImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\CostCenterSummaryReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\DetailedBydateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\DetailedGroupImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\detailedMasterByDateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\detailGroupBydateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\DetailReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\BIllsPayableImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\BillsReceivableAgeingReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\BillsRecivableReport1Import.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\ReceivableReportEffectiveDateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\SummaryImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\XtraRecivableReport2Import.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\XtraRecivableReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\XtraReportAgeingreportsummaryImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\PayableandReceivable\XtraReportBillsReceivableAgeingReportImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\ImportReports\SummaryReportByDateImport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Journal Register\employeecostJournalRegister.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Journal Register\journalEntryForm1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\AgeingToday.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\Balance.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\BillsPayablePaid.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\EndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\Payablelandscape.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\payableRetention.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Payable Statements\rpt201BillsPayableWithVchNo.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\payablesummary1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableAgeingToday.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableAll.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableByAccount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableFormat.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivablelandscapeformat.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableLedgerBalance.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\BillsReceivableRentation.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\Receivable Statements\Report4.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsPayablesAgeingasperLedgerBalanceByEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsPayablesAgeingByEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsPayablesSummaryAgeingasperLedgerBalanceByEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsReceivableEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsReceivableledgerBalance.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsReceivablesReportByEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\AgeingReports\BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\BalanceSheetHorizondalFormat.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\balnceSheet.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\Group.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\incomeStatements%28Bymonth%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\IncomeStatements.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\subGroup.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\TrialBalance%28ExportFormat%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\TrialBalanceDrCr.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\TrialBalancePreReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\FinancialReports\TrialBalanceReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\IncomestatementsHorizondal.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20138BalanceSheetAssets.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20138BalanceSheetLiabilities.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20140IncomeStatement_DirectExp.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20140IncomeStatement_DirectRev.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20141IncomeStatement_IndirectExp .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\Finance\Reports\TrialBalance\rpt20141IncomeStatement_IndirectRevenue.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+  </ItemGroup>
+
+
+
+</Project>

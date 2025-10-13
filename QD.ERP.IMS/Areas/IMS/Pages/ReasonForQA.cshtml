@@ -1,0 +1,200 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.ReasonForQAModel
+@{
+}
+
+@using DevExtreme.AspNet.Mvc
+@using QD.ERP.Shared.DAL.Entities;
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Include jsPDF library -->
+<!-- Include AutoTable plugin for table exports -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+<style>
+    .container {
+        display: none !important;
+        background-color:transparent;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+
+        .dx-datagrid .dx-row {
+            border-bottom: 1px solid #ccc; 
+
+        }
+
+    .dx-multiview-wrapper {
+        flex-grow: 1;
+        overflow: auto; 
+    }
+
+    .dx-tabpanel {
+        height: 500px !important; 
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dx-tabpanel .dx-tab {
+        flex-shrink: 0;
+        }
+
+        .dx-tabpanel .dx-tab-panel {
+            height: 600px;
+            overflow-y: auto; 
+        }
+        
+
+            .dx-tabpanel .dx-tab.dx-selection {
+              background-color: lightblue; 
+                color: white !important; 
+            }
+
+            .card{
+                height:500px;
+                background-color:white;
+                width:580px;
+                margin:25px;
+            }
+</style>
+
+<div class="card">
+   
+  
+   
+    @(
+        Html.DevExtreme().TabPanel()
+        .ID("AssetTabs")
+        .Items(item =>
+        {
+            item.Add().Title("Details").Text("Details").Template(@<text>
+        <div class="form-group">
+
+          
+                <label><b>Reason of selection:</b></label>
+                @(Html.DevExtreme().TagBox()
+                            .ID("ReasonTagBox")
+                            .DataSource(new[] {
+                        new { Id = 1, Name = "Lowest Price" },
+                        new { Id = 2, Name = "Best Quality" },
+                        new { Id = 3, Name = "Preferred Vendor" },
+                        new { Id = 4, Name = "Earliest Delivery" },
+                        new { Id = 5, Name = "Technical Compliance" }
+                            })
+                            .ValueExpr("Name")
+                            .DisplayExpr("Name")
+                            .Placeholder("Select or enter reason(s)...")
+                            .Multiline(true)
+                            .ShowSelectionControls(true)
+                            .AcceptCustomValue(true)
+                            .ApplyValueMode(EditorApplyValueMode.UseButtons)
+                            .Width("100%")
+                            )
+                <div class="footer-fixed">
+                    @(Html.DevExtreme().Button()
+                                    .Text("Update")
+                                  //  .Type(ButtonType.Success)
+                                    .OnClick("updateRFQChildIsWon")
+                                    )
+                    @(Html.DevExtreme().Button()
+                                    .Text("Cancel")
+                                   .OnClick("onClosePopup")
+                                    )
+            </div>
+
+        </div>
+
+    </text>);
+           
+        })
+        )
+</div>
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        const params = new URLSearchParams(window.location.search);
+        const mprno = params.get("mprno");
+        const rfqchildSlNo = params.get("rfqchildSlNo");
+        const gscode = params.get("gsCode"); // make sure matches the exact param name in the URL
+         console.log("MPR No:", mprno);
+        console.log("RFQChildSlNo:", rfqchildSlNo);
+        console.log("GSCode:", gscode);
+
+    });
+
+
+ 
+      function updateRFQChildIsWon() {
+          const params = new URLSearchParams(window.location.search);
+          const mprno = params.get("mprno");
+          const rfqchildSlNo = params.get("rfqchildSlNo");
+          const gsCode = params.get("gsCode");
+
+         const reason = $("#ReasonTagBox").dxTagBox("instance").option("value")?.join(", ");
+
+
+          if (!mprno || !rfqchildSlNo || !gsCode) {
+              DevExpress.ui.notify("Missing required parameters.", "error", 2000);
+              return;
+          }
+
+          // First call: Set all IsWon = 0 for this MPRNo + GSCode
+          $.ajax({
+              url: `/api/QuotationAnalysis/SetZeroToWon`,
+              type: 'POST',
+              contentType: "application/json",
+              data: JSON.stringify({ mprno, gsCode }),
+              success: function () {
+                  // Second call: Mark selected row as IsWon = 1
+                     $.ajax({
+        url: '/api/QuotationAnalysis/UpdateIsWon',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          rfqChildSlNo: parseInt(rfqchildSlNo),
+        reasonForSelection: reason || ""
+        }),
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 2000); // ✅ Show success message
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Failed to update RFQ child.", "error", 2000);
+        }
+    });
+                  },
+              error: function (xhr) {
+                  DevExpress.ui.notify("Failed to reset IsWon flags.", "error", 2000);
+                  console.error(xhr);
+              }
+          });
+      }
+      function onClosePopup(){
+          window.parent.closeModal;
+      }
+</script>
+
+  
+
+

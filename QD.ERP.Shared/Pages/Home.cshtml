@@ -1,0 +1,509 @@
+﻿@page
+@model QD.ERP.Shared.Pages.Shared.HomeModel
+@using Microsoft.AspNetCore.Http
+
+@{
+    var tenantName = HttpContext.Session.GetString("TenantName") ?? "";
+    var defaultCompanyID = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="Professional ERP solution for comprehensive business management including Finance, VAT, HR, Inventory, and more." />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --primary-light: #334155;
+            --accent-color: #f59e0b;
+            --accent-light: #fbbf24;
+            --success-color: #059669;
+            --bg-light: #f8fafc;
+            --text-muted: #64748b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        .gradient-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        }
+
+        .gradient-accent {
+            background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
+        }
+
+        .gradient-hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--accent-color) 100%);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .shadow-soft {
+            box-shadow: 0 2px 8px rgba(30, 41, 59, 0.05);
+        }
+
+        .shadow-medium {
+            box-shadow: 0 4px 16px rgba(30, 41, 59, 0.1);
+        }
+
+        .shadow-strong {
+            box-shadow: 0 8px 32px rgba(30, 41, 59, 0.15);
+        }
+
+        .shadow-glow {
+            box-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease-in-out;
+        }
+
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 32px rgba(30, 41, 59, 0.15);
+            }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            border: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+            .btn-gradient:hover {
+                background: linear-gradient(135deg, #fbbf24, #f97316);
+                box-shadow: 0 0 40px rgba(245, 158, 11, 0.3);
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .icon-container {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .module-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .hero-section {
+            padding: 3px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                opacity: 0.05;
+            }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--accent-color) 100%);
+            color: white;
+            padding: 80px 0;
+        }
+
+        .navbar-brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .text-warning {
+            cursor: pointer;
+        }
+
+        .card-body > .d-flex {
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+
+        /* .container{
+                    width:100%!important;
+                    padding:0px!important;
+                    max-width: 100%!important;
+                } */
+        .container {
+            width: fit-content;
+            padding: 0px !important;
+        }
+
+        .titleCard-toggle1 {
+            display: none !important;
+        }
+
+        .card-hover {
+            background-color: #d8d8d84f !important; /* subtle frosted background */
+            border: 1px solid transparent;
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 0;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+        }
+
+            /* Blue gradient glow + lift on hover */
+            .card-hover:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2), 0 8px 20px rgba(0, 123, 255, 0.3), 0 0 20px rgba(0, 123, 255, 0.15);
+                border-color: rgba(0, 123, 255, 0.4);
+            }
+
+            /* Optional glowing animated background on hover */
+            .card-hover::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(0, 123, 255, 0.05), transparent 60%);
+                transform: scale(0);
+                transition: transform 0.5s ease;
+                z-index: -1;
+            }
+
+            .card-hover:hover::before {
+                transform: scale(1);
+            }
+
+            /* Icon pulse on hover (optional) */
+            .card-hover:hover i {
+                animation: pulse 0.4s ease-in-out;
+            }
+
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+
+        html, body {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .mainContainer {
+            height: 125vh !important;
+        }
+
+        .card-hover:hover i {
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        @@keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .text-muted {
+            font-size: 1.0em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ✅ HERO SECTION -->
+    <section class="hero-section text-center">
+        <div class="container position-relative">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="display-2 fw-bold mb-4 text-gradient" id="welcometoquickdeice"></h1>
+                    <p class="lead mb-5 text-muted" style="font-size: 1.5rem;" id="unifiedsystem">
+                      
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <button class="btn btn-gradient btn-lg" id="startyourjourney"><i class="fas fa-arrow-right ms-2"></i></button>
+                        <a href="https://quickdiceerp.com/" target="_blank" class="btn btn-outline-primary btn-lg" id="watchdemo">
+                         
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ✅ FEATURES SECTION -->
+    <section class="p-4">
+        <div class="row text-center mb-5">
+            <div class="col-lg-12">
+                <h2 class="fw-bold mb-3" id="completeerpmodules"></h2>
+                <p class="text-muted" id="integratedmodulesdesignes"></p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- Enterprise Security -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-shield-alt text-dark fs-4"></i>
+                    </div>
+                    <h6 class="fw-bold" id="enterprisesecurity"></h6>
+                    <p class=".text-muted " id="moduleuserlevelsecurity">
+                    </p>
+                </div>
+            </div>
+
+            <!-- Real-time Updates -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-clock text-dark fs-4"></i>
+                    </div>
+                    <h6 class="fw-bold" id="realtimeupdates"></h6>
+                    <p class=".text-muted " id="crossplatformdata">
+                       
+                    </p>
+                </div>
+            </div>
+
+            <!-- Multi-currency & Languages -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-globe text-dark fs-4"></i>
+                    </div>
+                    <h6 class="fw-bold" id="globalreach"></h6>
+                    <p class=".text-muted " id="supportformultiple">
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ ERP MODULE CARDS -->
+        <div class="row g-4">
+            <!-- Finance -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-calculator text-dark fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="financeandaccounting"></h6>
+                    </div>
+                    <p class=".text-muted " id="comprehensivesystem">
+                    
+                    </p>
+                </div>
+            </div>
+
+            <!-- VAT -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-receipt text-warning fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="vatmanagement"></h6>
+                    </div>
+                    <p class=".text-muted " id="vatmanagementsystem">
+                    </p>
+                </div>
+            </div>
+
+            <!-- HR -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-user-friends text-success fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="humanresources"></h6>
+                    </div>
+                    <p class=".text-muted " id="integratedhrsolution">
+                    </p>
+                </div>
+            </div>
+
+            <!-- Inventory -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-boxes text-warning fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="inventoryims"></h6>
+                    </div>
+                    <p class=".text-muted " id="efficientsystemtotrack">
+                    </p>
+                </div>
+            </div>
+
+            <!-- Camp Module -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-hotel text-primary fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="campmanagement"></h6>
+                    </div>
+                    <p class=".text-muted " id="comprehensivecampmanagement">
+                    </p>
+                </div>
+            </div>
+
+            <!-- Project Control -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-project-diagram text-danger fs-5"></i>
+                        </div>
+                        <h6 class="mb-0" id="projectcontrol"></h6>
+                    </div>
+                    <p class=".text-muted " id="centralizedsolution">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+              $(function () {
+                   $("#centralizedsolution").text(formatMessage("Centralized solution to plan, monitor, and control projects for on-time and within-budget delivery."));
+        });
+              $(function () {
+           $("#projectcontrol").text(formatMessage("Project Control"));
+        });
+              $(function () {
+           $("#welcometoquickdeice").text(formatMessage("Welcome to Quick Dice ERP Solutions"));
+        });
+        $(function () {
+           $("#unifiedsystem").text(formatMessage("A unified system built to simplify, scale, and strengthen your business operations."));
+        });
+        $(function () {
+           $("#startyourjourney").text(formatMessage("Start Your Journey"));
+        });
+        $(function () {
+           $("#watchdemo").text(formatMessage("Watch Demo"));
+        });
+        $(function () {
+           $("#globalreach").text(formatMessage("Global Reach"));
+        });
+        $(function () {
+           $("#realtimeupdates").text(formatMessage("Real-time Updates"));
+        });
+        $(function () {
+           $("#crossplatformdata").text(formatMessage("Cross-platform data access enabling seamless operations across Desktop ERP, Web, and Mobile."));
+        });
+        $(function () {
+           $("#completeerpmodules").text(formatMessage("ERP solution designed to simplify accounting and streamline overall business workflows"));
+        });
+        $(function () {
+                   $("#supportformultiple").text(formatMessage("Support for multiple currencies and languages – expanded global reach, enhanced customer experience & operational efficiency"));
+        });
+      
+        $(function () {
+                   $("#moduleuserlevelsecurity").text(formatMessage("Module/user level security for enhanced data protection, regulatory compliance & better accountability"));
+        });
+        
+        $(function () {
+           $("#enterprisesecurity").text(formatMessage("Enterprise Security"));
+        });
+        
+        $(function () {
+           $("#vatmanagement").text(formatMessage("VAT Management"));
+        });
+        
+        $(function () {
+                   $("#vatmanagementsystem").text(formatMessage("VAT management system integrated with ZATCA for seamless compliance, e-invoicing, and tax reporting."));
+        });
+        $(function () {
+           $("#financeandaccounting").text(formatMessage("Finance & Accounting"));
+        });
+        $(function () {
+           $("#humanresources").text(formatMessage("Human Resources"));
+        });
+        $(function () {
+           $("#campmanagement").text(formatMessage("Camp Management"));
+        });
+        $(function () {
+                   $("#comprehensivecampmanagement").text(formatMessage("Comprehensive camp management solution for organizing accommodation, resources, and personnel with ease."));
+        });
+        $(function () {
+           $("#inventoryims").text(formatMessage("Inventory Management System"));
+        });
+        $(function () {
+                   $("#efficientsystemtotrack").text(formatMessage("Efficient system to track, control, and optimize inventory across the supply chain in real time."));
+        });
+        $(function () {
+                   $("#integratedhrsolution").text(formatMessage("Integrated HR solution for employee management, payroll processing, and seamless finance connectivity."));
+        });
+        $(function () {
+           $("#comprehensivesystem").text(formatMessage("Comprehensive system to manage, track, and optimize all financial and accounting operations."));
+        });
+        $(function () {
+           $("#integratedmodulesdesignes").text(formatMessage("Complete ERP ModulesIntegrated modules designed to work seamlessly together for maximum efficiency"));
+        });
+</script>
+</body>
+
+</html>
+

@@ -1,0 +1,211 @@
+﻿@page
+@model QD.ERP.Finance.Areas.Finance.Pages.DatabaseMasterModuleModel
+@{
+}
+
+<style>
+    .dx-fieldset {
+        margin-bottom: 20px;
+       
+        
+    }
+
+    .dx-field-container{
+        width:  500px ! important;
+    }
+
+    .dx-field label {
+        width: 200px;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    .dx-field {
+        display: flex;
+        align-items: center;
+       margin: 5px;
+       /*  width: 400px ! important ; */
+      /*   height: 100px ! important ; */
+
+    }
+
+
+
+    .dx-fieldset .dx-field-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        /* margin-top: 12px; */
+      
+    }
+
+/*     .dx-editor-outlined    {
+        margin-top: 24px;
+        width: 520px !important; */
+    }
+    .dx-field-container div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
+
+    .dx-datagrid {
+        margin-top: 15px;
+    }
+
+    .dx-button {
+        margin-top: 10px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+    }
+    .plus{
+        width:40px;
+    }
+</style>
+<div class="title">
+    <div class="header-container">
+        <div id="DatabaseMasterModule" class="no-border-title"></div>
+    </div>
+</div>
+        <div id="TypeCurrency" class="no-border-input"></div>
+<div class="dx-fieldset">
+
+    <div class="dx-field">
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Currency Name:')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .ID("txtCurrencyName")
+            .Width("60%")
+            )
+    </div>
+
+    <div class="dx-field">
+        @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .ID("txtCurrencyNameAr")
+            .Width("60%")
+           
+            )
+    </div>
+    <div class="dx-field">
+        @(Html.DevExtreme().NumberBox()
+            .ID("currencyexchangerate")
+            .Label(new JS("formatMessage('Currency Exchange Rate:')"))
+            .LabelMode(EditorLabelMode.Floating)       
+            .Min(1)
+            .Step(1)
+            .ShowSpinButtons(true)
+            .Width("60%")
+            )
+    </div>
+    </div>
+
+    <div class="dx-fieldset">
+        <div class="dx-field-container" style="margin-left:0px;">
+            <div> 
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Currency Code:')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtCurrencyCode")
+                    .Width(400))
+            </div>
+            <div>
+                @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtCurrencyCodeAr")
+                    .Width(400))
+            </div>
+            <div class="plus">
+                @(Html.DevExtreme().Button()
+                    .ID("btnAddCurrency")
+                    .Text("Add")
+                    .Icon("plus")
+                    .Type(ButtonType.Success)
+                    
+                    .OnClick("addCurrency"))
+            </div>
+        </div>
+    </div>
+
+<div class="ledgerResult">
+
+@(Html.DevExtreme().DataGrid()
+    .ID("gridCurrencyMaster")
+   .DataSource(new JS("[]")) // Assuming a Model with Currency List.
+    .ShowBorders(true)
+        .Height(350) // Increase height
+        .Width("100%")
+    .Columns(columns =>
+    {
+        columns.Add().DataField("ID").Caption(new JS("formatMessage('ID')")).Width(70);
+        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('Currency Name Ar')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format("#,##0.##").Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Currency Code')")).Alignment(HorizontalAlignment.Center);
+        columns.Add().DataField("CurrencyCodeAr").Caption(new JS("formatMessage('Currency Code Ar')")).Alignment(HorizontalAlignment.Center);
+    })
+)
+</div>
+<div class="Head">
+    <div class="limited-footer">
+        @await Html.PartialAsync("VATModuleFooter")
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+
+            if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+    function addCurrency() {
+        // Add currency logic here
+        DevExpress.ui.notify("Currency Added Successfully", "success", 2000);
+    }
+
+    function updateCurrency() {
+        // Update logic here
+        DevExpress.ui.notify("Updated Successfully", "success", 2000);
+    }
+
+    function goBack() {
+        // Navigation logic here
+        window.history.back();
+    }
+     $(function () {
+            $("#DatabaseMasterModule").dxTextBox({
+                text: formatMessage("Database Master Module:Foriegn Currency Master"),
+                readOnly: true,
+                width: "600px",
+                onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+            });
+        });
+    $(function () {
+        $("#TypeCurrency").dxTextBox({
+            width: "600px",
+            text: formatMessage("Type a New Currency Details & Add to the Existing List:"),
+            readOnly: true,
+            
+        });
+    });
+</script>
+

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Models;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Service;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 

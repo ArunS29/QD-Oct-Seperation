@@ -1,0 +1,871 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Views._SalaryPayableModel
+@{
+    string voucherNo = ViewBag.VoucherNo;
+    string drCr = ViewBag.DrCr;
+    string accountHead = ViewBag.AccountHead;
+    string voucherAmount = ViewBag.VoucherAmount;
+    long voucherEntryNo = ViewBag.VoucherEntryNo;
+    string accountId = ViewBag.AccountID;
+    double? voucherAmountParsed = null;
+
+    // Try parsing the voucherAmount to a nullable double
+    if (!string.IsNullOrEmpty(voucherAmount))
+    {
+        double parsedAmount;
+        if (double.TryParse(voucherAmount, out parsedAmount))
+        {
+            voucherAmountParsed = parsedAmount;
+        }
+    }
+
+    // If voucherAmountParsed is not null, ensure it's formatted to 2 decimal places
+    if (voucherAmountParsed.HasValue)
+    {
+        // Format the amount to 2 decimal places and then parse it back to double
+        voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+    }
+}
+
+<!-- Popup Content (Your existing content here) -->
+<div class="container2 my-3 background">
+    <div class="row g-3">
+        <div class="col-12">
+                <!-- Row for Voucher Entry ID, Payment Account, Amount, Dr/Cr, Salary Paid -->
+                <div class="row mb-3">
+                    <!-- Voucher Entry ID -->
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                            .Label(new JS("formatMessage('Voucher Entry ID')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("VoucherEntryID")
+                            .Value(voucherNo)
+                            .Disabled(true)
+                            .Width("100%"))
+                    </div>
+
+                    <!-- Payment Account -->
+                    <div class="col-md-3">
+                        
+
+                        @(
+                            Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Payment Account')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("SPaccountDropDownBox")
+                            .DataSource(new[] { accountHead }) // Only the selected AccountHead
+                            .Value(accountHead) // Pre-selected value
+                            .ReadOnly(true)
+                            )
+                    </div>
+
+                    <!-- Add Button 1 -->
+                    <div class="col-md-1 d-flex align-items-end">
+                        @(Html.DevExtreme().Button()
+                            .ID("PayAddAHead")
+                            .Icon("plus")
+                            .Width("100%")
+                            .Disabled(true))
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="col-md-2">
+                        @(
+                            Html.DevExtreme().NumberBox()
+                            .Label(new JS("formatMessage('Amount')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("SPtxtVoucherAmount")
+                            .Value(voucherAmountParsed)
+                            .ShowSpinButtons(true)
+                            .ReadOnly(true)
+                            .Format("#,##0.00")
+                            )
+                    </div>
+
+                    <!-- Dr/Cr -->
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().SelectBox()
+                            .Label(new JS("formatMessage('Dr/Cr')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("spDrCr")
+                            .DataSource(new[] { drCr })
+                            .Value(drCr)
+                            .ReadOnly(true)
+                            .Width("100%")
+                            
+                            )
+                    </div>
+
+
+
+                    <!-- Salary Paid -->
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().SelectBox()
+                            .Label(new JS("formatMessage('Reference')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("SalaryPaid")
+                            .DataSource(new[] { "Salary Paid", "Salary Payable" })
+                            .Value("Salary Paid")
+                            .Placeholder(new JS("formatMessage('Select Reference Type')"))
+                            .Width("100%"))
+                    </div>
+                </div>
+            </div>
+
+        <!-- Card -->
+        <div class="col-12">
+                <!-- Row for Employee, Buttons, Payable, Amount, Add Button -->
+                <div class="row mb-3 align-items-end">
+                    <!-- Employee Dropdown -->
+                    <div class="col-md-3">
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Select the Employee')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("LedgerAccountMaster")
+                            .LoadAction("GetEmployeeDetails")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("EmployeeNo"))
+                            @*   .ValidationRules(rules =>
+                        {
+                        rules.AddRequired()
+                        .Message("Employee details is required");
+                        }) *@
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("accountEmployeeDropDownBox")
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(true)
+                            .Width("100%")
+                            .OpenOnFieldClick(false)
+                            //.ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("EmployeeNo")
+                            .DisplayExpr("EmployeeName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .OnKeyDown("onKeyDown")
+                            .TabIndex(1)
+                            .DropDownOptions(o => o
+                            .Width(1000)
+                            )
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("EmployeeContentTemplate")))
+                    </div>
+
+                    <!-- Add Button 1 -->
+                    <div class="col-md-1 d-flex align-items-end">
+                        @(Html.DevExtreme().Button()
+                            .ID("SPbtnAddAHead")
+                            .Icon("plus")
+                            .Width("100%")
+                            .Disabled(true)
+                            )
+                    </div>
+
+                    <!-- Against Payable For -->
+                    @*    <div class="col-md-3">
+                    <label for="payableDropdown" class="form-label">Against Payable For:</label>
+                    @(Html.DevExtreme().DropDownBox()
+                    .DataSource(d => d.WebApi()
+                    .Controller("LedgerAccountMaster")
+                    .LoadAction("GetAgainstPayable")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("EmployeeNo"))
+                    .ValidationRules(rules =>
+                    {
+                    rules.AddRequired()
+                    .Message("Against Payable is required");
+                    })
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("againstDropDownBoxPayable")
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .OpenOnFieldClick(false)
+                    //.ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("EmployeeNo")
+                    .DisplayExpr("ReferenceNo")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .TabIndex(1)
+                    .DropDownOptions(o => o
+                    .Width(1000)
+                    )
+                    .ContentTemplate(new TemplateName("AgainstPayableContentTemplate")))
+                    </div> *@
+                    <div class="col-md-3">
+                        @(Html.DevExtreme().DropDownBox()
+                            .Label(new JS("formatMessage('Against Payable For')"))
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Against Payable is required");
+                            })
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("againstDropDownBoxPayable")
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(true)
+                            .OpenOnFieldClick(false)
+                            .HoverStateEnabled(true)
+                            .ValueExpr("EmployeeNo")
+                            .DisplayExpr("ReferenceNo")
+                            .OnOpened("onOpened") // Call the reload function when the dropdown is opened
+                            .Width("100%")
+                            .TabIndex(1)
+                            .DropDownOptions(o => o.Width(1000))
+
+                            .ContentTemplate(new TemplateName("AgainstPayableContentTemplate"))
+                            )
+                    </div>
+
+
+                    <!-- Add Button 2 -->
+                    <div class="col-md-1 d-flex align-items-end">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAddAHead1")
+                            .Icon("plus")
+                            .Width("100%")
+                            .Disabled(true)
+                            )
+                    </div>
+
+                    <!-- Amount Field -->
+                    <div class="col-md-2">
+                        @(
+                            Html.DevExtreme().NumberBox()
+                            .Label(new JS("formatMessage('Amount')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("txtVoucherAmount1")
+                            .Value(null)
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired()
+                                .Message("Voucher Amount is required");
+                                rules.AddRange().Min(0).Message("Voucher Amount cannot be negative");
+                            })
+                            .Placeholder("0.000")
+                            .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
+                            .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
+                            .Width("100%")// HTML attribute to allow decimal input
+                            )
+
+                    </div>
+
+
+
+                    <!-- Add Voucher Entry Button -->
+                    <div class="col-md-2 d-flex align-items-end">
+                        @(Html.DevExtreme().Button()
+                            .ID("btnVoucherSalaryEntry")
+                            .Text(new JS("formatMessage('ADD')"))
+                            .Icon("plus")
+                            .Width("100%")
+                            .OnClick("function() { addSalaryPaidEntry(); }"))
+                    </div>
+                <!-- DataGrid -->
+                <div>
+                    @(
+                        Html.DevExtreme().DataGrid<QD.ERP.Shared.Models.CombinedEntityViewModel>()
+                        .ID("salarydataGrid")
+                        .RemoteOperations(false)
+                        .Columns(columns =>
+                        {
+                            columns.AddFor(m => m.SalaryPayableLedgerNo)
+                            .Caption(new JS("formatMessage('Salary Payable Ledger')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+                            ;
+
+                            columns.AddFor(m => m.ReferenceType)
+                            .Caption(new JS("formatMessage('Reference Type')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            ;
+
+                            columns.AddFor(m => m.ReferenceNo)
+                            .Caption(new JS("formatMessage('Reference No')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            ;
+
+                            columns.AddFor(m => m.EmployeeNo)
+                            .Caption(new JS("formatMessage('Employee ID')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            ;
+
+                            columns.AddFor(m => m.EmployeeName)
+                            .Caption(new JS("formatMessage('Employee Name')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            .DataType(GridColumnDataType.String) // Column data type
+                            ;
+                            @* .Lookup(lookup => lookup
+                    .DataSource(ds => ds.WebApi() // Web API data source
+                    .Controller("LedgerAccountMaster") // Controller handling the data
+                    .LoadAction("GetEmployeeDetails") // Action to fetch data from the API
+                    )
+                    .ValueExpr("EmployeeNo") // Field in the API response for the value of the dropdown
+                    .DisplayExpr("EmployeeName") // Field in the API response to be displayed in the dropdown
+                    ); *@
+
+                            columns.AddFor(m => m.Amount)
+                                    .Caption(new JS("formatMessage('Amount')"))
+                                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }")
+                                    ;
+
+
+                            columns.AddFor(m => m.DrCr)
+                            .Caption(new JS("formatMessage('Dr/Cr')"))
+                            .Alignment(HorizontalAlignment.Center)
+                            ;
+
+
+                        })
+                        .AllowColumnReordering(true)
+                        .AllowColumnResizing(true)
+                        .ColumnFixing(fixing => fixing.Enabled(true))
+                        // // .HeaderFilter(filter => filter.Visible(true))
+                        .Height(250)
+                        .ColumnAutoWidth(true)
+                        .FilterRow(filterRow => filterRow.Visible(false))
+                        .GroupPanel(groupPanel => groupPanel.Visible(false))
+                        .ShowBorders(true)
+                        .Editing(editing => editing
+                        .Mode(GridEditMode.Cell)
+                        .AllowUpdating(true)
+                        )
+                        .Width("100%")
+                        .Summary(summary =>
+                        {
+                            summary.TotalItems(totalItems =>
+                            {
+                                totalItems.Add()
+                            .Column("SalaryPayableLedgerNo") // Count of VoucherNo
+                            .SummaryType(SummaryType.Count)
+                            .DisplayFormat(new JS("formatMessage('Count: {0}')")); // Customize the display format
+
+                                
+
+                                totalItems.Add()
+                            .Column("Amount") // Sum of CrAmount
+                            .SummaryType(SummaryType.Sum)
+                            .CustomizeText(
+                            "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+
+                            );      // Customize the display format to currency
+                            });
+                        })
+                        )
+                </div>
+
+                @* <!-- Footer with TextBoxes Aligned Directly Under Debit and Credit -->
+                <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #f5f5f5; color: white; padding:10px; margin-top: -11px; font-size: 14px; max-width:1245px;position:relative;left:0px;">
+                    <!-- Total Payable Ledger TextBox -->
+                    <div style="flex: none; text-align: right;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("totalpayableledgertbox")
+                            .Value("0.00")
+                            .ReadOnly(true)
+                            .Width("60%")
+                            )
+                    </div>
+
+                    <!-- Total Amount TextBox -->
+                    <div style="flex: none; text-align: right;position:relative;right:23px;">
+                        @(Html.DevExtreme().TextBox()
+                            .ID("totalSPAmountTextbox")
+                            .Value("0.00")
+                            .ReadOnly(true)
+                            .Width("60%")
+                            )
+                    </div>
+                </div> *@
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-3 d-flex justify-content-between">
+                @(Html.DevExtreme().Button()
+                    .ID("btnPreview")
+                    .Text(new JS("formatMessage('Preview')"))
+                    .Icon("fullscreen")
+                    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                    )
+
+
+
+                @(Html.DevExtreme().Button()
+                    .ID("btncancel")
+                    .Text(new JS("formatMessage('Back')"))
+                    .Icon("arrowleft")
+                    @* .OnClick("function() { hidePopup(); }") *@
+                    .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                    )
+            </div>
+        </div>
+        @using (Html.DevExtreme().NamedTemplate("PaymentaccountContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+
+                .ID("accountpaymentaccount-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("LedgerAccountMaster")
+                .LoadAction("GetPaymentAccounts")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("AccountId")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChangedPaymentAccount")
+                .OnInitialized("dataGridInitialized")
+                // .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    @*       columns.Add().DataField("MasterGroupId");
+        columns.Add().DataField("MasterGroup");
+        columns.Add().DataField("AccountGroupId"); *@
+                    columns.Add().DataField("AccountId");
+                    columns.Add().DataField("AccountHead");
+                    columns.Add().DataField("AccountHeadArabic");
+                    columns.Add().DataField("ReferenceNo");
+                    columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+            <div class="dx-icon">
+                <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+            </div>
+        </text>);
+
+                })
+                )
+        }
+        @using (Html.DevExtreme().NamedTemplate("EmployeeContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+
+                .ID("accountpaymentamount-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("LedgerAccountMaster")
+                .LoadAction("GetEmployeeDetails")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("EmployeeNo")
+
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridEmployeeSelectionChanged")
+                .OnInitialized("dataGridInitialized")
+                // .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("EmployeeNo");
+                    columns.Add().DataField("EmployeeName");
+                    columns.Add().DataField("NationalID");
+
+
+                })
+                )
+        }
+
+        @using (Html.DevExtreme().NamedTemplate("AgainstPayableContentTemplate"))
+        {
+            @(Html.DevExtreme().DataGrid()
+
+                .ID("accountpayable-datagrid")
+                @*  .DataSource(d => d.WebApi()
+        .Controller("LedgerAccountMaster")
+        .LoadAction("GetAgainstPayable")
+        .LoadParams(new { inputParameter = new JS("employeeval") })
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("ReferenceNo")
+
+        ) *@
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                .SearchPanel(sp => sp.HighlightSearchText(true))
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridAgainstPayableSelectionChanged")
+                .OnInitialized("dataGridInitialized")
+                // .HeaderFilter(p => p.Visible(true))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                .FilterRow(f => f.Visible(true))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("EmployeeNo");
+                    columns.Add().DataField("EmployeeName");
+                    columns.Add().DataField("ReferenceNo");
+                    columns.Add().DataField("PayableAmount");
+                    columns.Add().DataField("Paid");
+                    columns.Add().DataField("Balance");
+
+
+                })
+                )
+        }
+
+    </div>
+</div>
+<script>
+
+    // Function to hide the popup
+    function hidePopup() {
+        document.getElementById('SalaryPaidEntryPopup').style.display = 'none';
+        document.getElementById('popupOverlay').style.display = 'none';
+    }
+
+
+    function hidePopup() {
+        const popup = document.getElementById("SalaryPaidEntryPopup");
+        if (popup) {
+            popup.style.display = "none"; // Attempt to hide
+
+        } else {
+            console.error("Popup element not found!");
+        }
+    }
+
+
+    $("#btncancel").on("click", function (e) {
+        e.preventDefault();
+
+        // Get the instance of the SalaryPaidEntryPopup
+        const salaryPaidEntryPopup = $("#SalaryPaidEntryPopup").dxPopup("instance");
+
+
+        if (salaryPaidEntryPopup) {
+
+            const content = salaryPaidEntryPopup.content();
+
+            const ddbInstance = $("#accountEmployeeDropDownBox").dxDropDownBox("instance");
+            ddbInstance.option("value", "");
+
+
+            const ddbInstance1 = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+            ddbInstance1.option("value", "-");
+
+
+
+
+            // Reset the number box value to "0.00"
+            const voucherAmountBox = $("#txtVoucherAmount1").dxNumberBox("instance");
+            if (voucherAmountBox) {
+                voucherAmountBox.option("value", "0.00");
+            }
+
+            // Clear the salarydataGrid by setting its dataSource to an empty array
+            const dataGrid = $("#salarydataGrid").dxDataGrid("instance");
+            if (dataGrid) {
+                dataGrid.option("dataSource", []);
+            }
+
+            // Hide the popup
+            salaryPaidEntryPopup.hide();
+
+
+            const grid = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+            const dataSource = grid.getDataSource();
+            dataSource.reload();
+
+
+        }
+    });
+
+    function reloademployeedetails() {
+
+        $.ajax({
+            type: "GET",
+            url: "/api/LedgerAccountMaster/GetEmployeeDetails",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                if (response) {
+                    // Notify user of successful reload
+                    console.log(response);
+                    dataGridEmployeeSelectionChanged({ selectedRowKeys: response.data });
+                    DevExpress.ui.notify("Employee details reloaded successfully!", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Update failed: Unable to reload employee details!", "error", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                // Notify user of the error
+                DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+            }
+        });
+    }
+
+
+
+
+    function reloademployeeagainstpayable() {
+        if (!employeeval) {
+            DevExpress.ui.notify("Employee value is not defined!", "warning", 2000);
+            return;
+        }
+
+        // Fetch data via AJAX
+        $.ajax({
+            type: "GET",
+            url: `/api/LedgerAccountMaster/GetAgainstPayable?inputParameter=${encodeURIComponent(employeeval)}`,
+            success: function (response) {
+                // Debugging: Log the response
+                console.log(response);
+
+                if (response) {
+                    const dropdownBox = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+                    if (dropdownBox) {
+                        // Update the DataSource dynamically
+                        const dataGrid = $("<div>")
+                            .dxDataGrid({
+                                dataSource: response, // Use the fetched data
+                                keyExpr: "EmployeeNo",
+                                columns: [
+                                    { dataField: "EmployeeNo", caption: "Employee No" },
+                                    { dataField: "EmployeeName", caption: "Employee Name" },
+                                    { dataField: "ReferenceNo", caption: "Reference No" },
+                                    { dataField: "PayableAmount", caption: "Payable Amount" },
+                                    { dataField: "Paid", caption: "Paid" },
+                                    { dataField: "Balance", caption: "Balance" }
+                                ],
+                                showBorders: true,
+                                selection: {
+                                    mode: "single"
+                                },
+                                hoverStateEnabled: true,
+                                paging: {
+                                    pageSize: 15
+                                },
+                                filterRow: {
+                                    visible: true
+                                },
+                                scrolling: {
+                                    mode: "virtual"
+                                },
+                                height: 345,
+                                deferredRendering: true, // Ensure grid is rendered after data is ready
+                                onSelectionChanged: function (e) {
+                                    // Set selected key in DropDownBox
+                                    const selectedData = e.selectedRowsData[0];
+                                    if (selectedData) {
+                                        dropdownBox.option("value", selectedData.ReferenceNo);
+
+                                    }
+                                }
+                            });
+
+                        // Assign the new template to the DropDownBox
+                        dropdownBox.option("contentTemplate", function () {
+                            return dataGrid;
+                        });
+
+                    }
+                } else {
+                    DevExpress.ui.notify("No data available to reload!", "warning", 2000);
+                }
+            },
+            error: function (xhr, status, error) {
+                DevExpress.ui.notify("Error reloading employee details: " + error, "error", 2000);
+            }
+        });
+    }
+
+
+
+
+
+    function dataGridSelectionChangedPaymentAccount(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#SPaccountDropDownBox").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+
+    }
+
+
+
+    function dataGridEmployeeSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#accountEmployeeDropDownBox").dxDropDownBox("instance");
+        employeeval = selectedKey;
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+        reloademployeeagainstpayable();
+
+
+    }
+    function dataGridAgainstPayableSelectionChanged(e) {
+
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+        const payableAmount = e.selectedRowsData[0].PayableAmount;
+
+        if (selectedKey) {
+
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+
+        }
+
+    }
+
+
+
+
+    function addSalaryPaidEntry() {
+        // var AccountEmployeeValidator = $("#accountEmployeeDropDownBox").dxValidator("instance");
+        var AccountDropDownPayableValidator = $("#againstDropDownBoxPayable").dxValidator("instance");
+        var voucherAmtValidator = $("#txtVoucherAmount1").dxValidator("instance");
+        var selectedRowData = null;
+        // var accountemployeeValidation = AccountEmployeeValidator.validate();
+        var accountpayableValidation = AccountDropDownPayableValidator.validate();
+        var voucheramountValidation = voucherAmtValidator.validate();
+
+        if (accountpayableValidation.isValid && voucheramountValidation.isValid) {
+
+            var VE = {
+                SalaryPayableLedgerNo: accheadid,
+                ReferenceType: $("#SalaryPaid").dxSelectBox("instance").option("value"),
+                // EmployeeName: null,
+                ReferenceNo: null,
+                DrCr: $("#sbDrCr").dxSelectBox("instance").option("value"),
+                EmployeeNo: null, // Update dynamically if needed
+                Amount: $("#txtVoucherAmount1").dxNumberBox("instance").option("value"),
+            };
+
+
+
+            // Get DropDownBox instance
+            var dropdownBox = $("#againstDropDownBoxPayable").dxDropDownBox("instance");
+
+            if (dropdownBox) {
+                // Wait for the content to load completely
+                dropdownBox.on("opened", function () {
+                    // Locate the DataGrid inside the DropDownBox
+                    var dataGridElement = $("#againstDropDownBoxPayable").find(".dx-datagrid");
+
+                    if (dataGridElement.length > 0) {
+                        var dataGrid = dataGridElement.dxDataGrid("instance");
+
+                        if (dataGrid) {
+                            // Get selected row data
+                            selectedRowData = dataGrid.getSelectedRowsData();
+                            if (selectedRowData.length > 0) {
+                                // Assign selected row values to VE
+                                VE.ReferenceNo = selectedRowData[0].ReferenceNo;
+                                VE.EmployeeNo = selectedRowData[0].EmployeeNo;
+                                // Uncomment if needed
+                                VE.EmployeeName = selectedRowData[0].EmployeeName;
+                                empName = VE.EmployeeName;
+                                console.log("Selected ReferenceNo:", VE.ReferenceNo);
+                                console.log("Selected EmployeeNo:", VE.EmployeeNo);
+                            } else {
+                                console.log("No row selected.");
+                            }
+                        } else {
+                            console.error("DataGrid instance not found.");
+                        }
+                    } else {
+                        console.error("DataGrid element not found inside DropDownBox.");
+                    }
+                });
+            } else {
+                console.error("DropDownBox instance not found.");
+            }
+
+
+
+
+
+            $.ajax({
+                type: "POST",
+                url: `/api/LedgerAccountMaster/AddEmployeeEntry?EmployeeName=${encodeURIComponent(employeeval)}`, // Pass value as a query parameter
+                // url: "/api/LedgerAccountMaster/AddEmployeeEntry?MasterGroup=${encodeURIComponent(selectedValue)}`",
+                contentType: "application/json",
+                data: JSON.stringify(VE),
+                dataType: "json",
+                success: function (response) {
+                    $("#salarydataGrid").dxDataGrid("instance").option("dataSource", response.data);
+                    // DevExpress.ui.notify("Data saved successfully!", "success", 2000);
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify(xhr.responseJSON?.message || "An error occurred.", "error", 2000);
+                },
+            });
+        } else {
+            DevExpress.ui.notify("Please fill required details!", "error", 2000);
+        }
+    }
+
+
+
+    // $(function () {
+
+    //     const dataGrid = $("#salarydataGrid").dxDataGrid("instance");
+
+    //     const totalpayableledgertbox = $("#totalpayableledgertbox").dxTextBox("instance");
+
+    //     const totalSPAmountTextbox = $("#totalSPAmountTextbox").dxTextBox("instance");
+
+    //     function calculateTotals() {
+
+    //         const data = dataGrid.getVisibleRows().map(row => row.data);
+    //         // console.log(data);
+    //         const gridCount = data.length; // Get the total count of visible rows
+
+    //         const totalpayable = gridCount;
+    //         //data.reduce((sum, row) => sum + (row.SalaryPayableLedgerNo || 0), 0);
+
+    //         const totalamount = data.reduce((sum, row) => sum + (row.Amount || 0), 0);
+
+    //         // Update TextBox values dynamically
+
+    //         totalpayableledgertbox.option("value", totalpayable.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+    //         totalSPAmountTextbox.option("value", totalamount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+    //     }
+
+    //     // Recalculate totals on content changes
+
+    //     dataGrid.on("contentReady", calculateTotals);
+
+    //     dataGrid.on("dataSourceChanged", calculateTotals);
+
+
+    // });
+
+
+</script>

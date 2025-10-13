@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using System;
 
 namespace QD.ERP.Web.Areas.Utility.Controllers

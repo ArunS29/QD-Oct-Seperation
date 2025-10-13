@@ -1,0 +1,806 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+<style>
+	
+	.titleCard-toggle1 {
+		display: none;
+	}
+
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.custom-submenu {
+		display: none;
+		position: absolute;
+		background-color: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		list-style: none;
+		padding: 10px 0;
+		min-width: 160px;
+		z-index: 999;
+	}
+
+		.custom-submenu li {
+			padding: 8px 16px;
+			transition: background-color 0.3s ease;
+		}
+
+			.custom-submenu li a {
+				text-decoration: none;
+				color: #333;
+				font-size: 14px;
+				display: block;
+			}
+
+			.custom-submenu li:hover {
+				background-color: #f0f0f0;
+				cursor: pointer;
+			}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	/* .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport1)) {
+			display: none !important;
+		}
+	 */
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+
+	.ledgerResult {
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menu {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.dx-datagrid-column-chooser.dx-datagrid-column-chooser-mode-drag .dx-popup-content .dx-treeview-node {
+		padding-left: 0px;
+	}
+	.context-menu-item {
+		/* display: flex; */
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-item i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-item:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-item:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	/* .limited-footer .btn-containerIvoiceEdit:not(:has(#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser)) {
+		display: none !important
+	} */
+
+	.mainContainer {
+		width: 97%;
+	}
+
+	.dx-fieldset.horizontal-container {
+		margin-top: 10px;
+	}
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+@* <div class="title">
+	<div class="header-container">
+		<div id="VATPurchaseInvoiceWithDetails" class="no-border-input"></div>
+	</div>
+</div> *@
+
+<div class="Head">
+	@await Html.PartialAsync("/Pages/Shared/VAT/VATPurchaseInDetailsFooter.cshtml")
+</div>
+
+<div class="horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		
+		.TabIndex(4)
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+		)
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text(new JS("formatMessage('Use Effective Date')"))
+		.Value(false)
+		 // Adjust margin as needed
+		)
+
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry201717vatpurchaseInDetail>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Purchase Bill Details')")).Columns(bill =>
+			{
+				/* bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No").Alignment(HorizontalAlignment.Center).GroupIndex(0); */
+				bill.AddFor(m => m.PurchaseVoucherNo).Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseVoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillNo).Caption(new JS("formatMessage('Bill No')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.PurchaseBillDate).Caption(new JS("formatMessage('Bill Date')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier')")).Alignment(HorizontalAlignment.Left);
+				bill.AddFor(m => m.SupplierVatnumber).Caption(new JS("formatMessage('VAT Number')")).Alignment(HorizontalAlignment.Center);
+				bill.AddFor(m => m.CostCenterCode).Caption(new JS("formatMessage('Cost Center Code')")).Alignment(HorizontalAlignment.Right);
+			});
+
+			columns.Add().Caption(new JS("formatMessage('Item Details')")).Columns(item =>
+			{
+				item.AddFor(m => m.ItemCode).Caption(new JS("formatMessage('Item Code')")).Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Left);
+				item.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center);
+				item.AddFor(m => m.QuantityInvoiced).Caption(new JS("formatMessage('Qty')")).Alignment(HorizontalAlignment.Right);
+
+				item.AddFor(m => m.UnitRate)
+			.Caption(new JS("formatMessage('Unit Rate')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.LineDiscount)
+			.Caption(new JS("formatMessage('Discount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.LineAmountBeforeDiscount)
+			.Caption(new JS("formatMessage('Amount Before Discount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.TaxAmount)
+			.Caption(new JS("formatMessage('VAT Amount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				item.AddFor(m => m.CalcLineWithTax)
+			.Caption(new JS("formatMessage('Amount After Tax')"))
+			.Alignment(HorizontalAlignment.Right)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+
+			columns.Add().Caption(new JS("formatMessage('Goods In Transit(Additional Cost On Purchase Of Material)')")).Columns(transit =>
+			{
+				transit.AddFor(m => m.IsGoodsInTransitAccount)
+			.Caption(new JS("formatMessage('Is Goods In Transit Account')"))
+			.Alignment(HorizontalAlignment.Center);
+
+				transit.AddFor(m => m.GoodsInTransitAccountNo)
+			.Caption(new JS("formatMessage('GIT Account No')"))
+			.Alignment(HorizontalAlignment.Left);
+
+				transit.AddFor(m => m.GoodsInTransitAccountLedger)
+			.Caption(new JS("formatMessage('GIT Account Ledger')"))
+			.Alignment(HorizontalAlignment.Left);
+
+				transit.AddFor(m => m.GoodsInTransitPurchaseVoucherNo)
+			.Caption(new JS("formatMessage('GIT Purchase Voucher Linked')"))
+			.Alignment(HorizontalAlignment.Center);
+			});
+		})
+
+
+		@* .Editing(editing => editing
+		.Mode(GridEditMode.Row)
+		.AllowUpdating(true)
+		)
+ *@
+		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
+		.Height("60vh") // <<< fixed height
+		.ColumnResizingMode(ColumnResizingMode.Widget)
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		//.OnOptionChanged("handleGridOptionChanged")
+		.ShowRowLines(true)
+		//.WordWrapEnabled(true)
+		.ShowRowLines(true)
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true);
+
+				items.Add().Column("UnitRate")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("LineDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("LineAmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("TaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("CalcLineWithTax")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+
+			summary.TotalItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count);
+
+				items.Add().Column("UnitRate")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("LineDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("LineAmountBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("TaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add().Column("CalcLineWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+		})
+
+
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		.Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
+		.Pager(p => p
+		.ShowPageSizeSelector(true)
+		.AllowedPageSizes(new[] { 10, 20, 50, 100 })
+		.ShowInfo(true)
+		.Visible(true)
+		)
+		)
+</div>
+
+
+
+<div id="overlay" class="overlay">
+	<div class="overlay-content">
+		<span class="close-btn" onclick="closeOverlay()">×</span>
+		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
+	</div>
+</div>
+
+
+<script>
+	 function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
+
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
+	}
+	$(document).ready(function () {
+				ddBtnShowRecords_click("range")
+		$(".limited-footer .btn-container").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#btnColumnChooser").length) {
+				$(this).remove();
+			}
+		});
+	});
+
+	$(function () {
+		const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#frmdateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#frmdateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+	 $(function () {
+		const dateBox = $("#todateBox").dxDateBox("instance");
+
+		// When focus/typing starts, change to dd-MM-yyyy
+		$("#todateBox").on("focusin", function () {
+			dateBox.option("displayFormat", "dd-MM-yyyy");
+		});
+
+		// When focus/typing ends, change back to dd-MMM-yyyy
+		$("#todateBox").on("focusout", function () {
+			dateBox.option("displayFormat", "dd-MMM-yyyy");
+		});
+	});
+
+	// $(document).ready(function () {
+	// 	console.log('Start permission handling AccountingLedgers');
+	// 	var formId = "frm201LedgerView";
+	// 	$.ajax({
+	// 		url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+	// 		type: 'GET',
+	// 		contentType: 'application/json',
+	// 		success: function (response) {
+	// 			console.log("API Response:", response);
+
+	// 			if (response.success && response.permissions) {
+	// 				var controlStates = {
+	// 					"ddBtnShowRecords": { "Visible": false, "Enabled": false },
+
+	// 				};
+	// 				var fullAccess = response.permissions.find(p =>
+	// 					p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+	// 				);
+
+	// 				if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+	// 					Object.keys(controlStates).forEach(key => {
+	// 						controlStates[key] = { "Visible": true, "Enabled": true };
+	// 					});
+	// 				} else {
+	// 					Object.keys(controlStates).forEach(key => {
+	// 						var controlPermission = response.permissions.find(p =>
+	// 							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+	// 						);
+	// 						if (controlPermission) {
+	// 							controlStates[key] = {
+	// 								"Visible": controlPermission.ItemVisible || false,
+	// 								"Enabled": controlPermission.ItemEnabled || false
+	// 							};
+	// 						}
+	// 					});
+	// 				}
+	// 				console.log("Control States:", controlStates);
+	// 				Object.keys(controlStates).forEach(key => {
+	// 					var button = document.getElementById(key);
+	// 					if (button) {
+
+	// 						button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+
+	// 						button.disabled = !controlStates[key].Enabled;
+	// 						console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); Log button state
+	// 					} else {
+	// 						console.warn(`Button with ID "${key}" not found in the DOM.`);
+	// 					}
+	// 				});
+	// 			} else {
+	// 				console.warn("Failed to fetch permissions or no permissions available.");
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error("Error fetching permissions:", error);
+	// 			alert('An error occurred while fetching permissions. Please try again.');
+	// 		}
+	// 	});
+	// 	console.log('End permission handling');
+	// });
+	let selectedVoucherNo = null;
+	$(function () {
+		$("#VATInvoiceWithDetails").dxTextBox({
+			text: formatMessage("VAT InvoiceWithDetails"),
+			readOnly: true,
+			onContentReady: function (e) {
+				$(e.element).addClass("dx-textbox-heading");
+			}
+		});
+	});
+	$(function () {
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+		var contextMenu = $("#contextMenu");
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+		$("#dataGrid").customizeGridContextMenu();
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			console.log(rowData);
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+
+	$(document).ready(function () {
+		ddBtnShowRecords_click("fullmonth");
+	});
+
+	function ddBtnShowRecords_click(duration) {
+		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		var toDateBox = $("#todateBox").dxDateBox("instance");
+		var frmDate = new Date(frmDateBox.option("value"));
+		var toDate = new Date(toDateBox.option("value"));
+		var currentDate = new Date();
+
+		switch (duration) {
+			case 'today':
+				frmDate = toDate = currentDate;
+				break;
+			case 'yesterday':
+				var dateObj = new Date();
+				dateObj.setDate(dateObj.getDate() - 1);
+				frmDate = toDate = dateObj;
+				break;
+			case 'week':
+				var dayOfWeek = currentDate.getDay();
+				var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
+				frmDate = new Date(currentDate.setDate(startOfWeek));
+				toDate = new Date(currentDate.setDate(startOfWeek + 6));
+				break;
+			case 'tillmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = currentDate;
+				break;
+			case 'fullmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+				break;
+			case 'tillyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = currentDate;
+				break;
+			case 'fullyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = new Date(currentDate.getFullYear(), 11, 31);
+				break;
+			case 'lastyear':
+				frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
+				toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
+				break;
+			case 'lastmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+				break;
+		}
+
+		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
+
+		$.ajax({
+			url: '/api/VATModule/GetVatPurchaseDetail',
+			type: 'GET',
+			data: {
+				frmDate: frmDate,
+				toDate: toDate
+			},
+			success: function (data) {
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				var dataGrid = $("#dataGrid").dxDataGrid("instance");
+				var dataSource = dataGrid.option("dataSource");
+				if (dataSource && dataSource.length > 0) {
+					var lastRow = dataSource[dataSource.length - 1];
+					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+					var firstRow = dataSource[0];
+					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+
+	$(function () {
+					$("#VATPurchaseInvoiceWithDetails").dxTextBox({
+						text: formatMessage("Purchase Details"),
+						width:480,
+						readOnly: true,
+									onContentReady: function(e) {
+									$(e.element).addClass("dx-textbox-heading");
+							}
+
+					});
+				});
+				$(document).ready(function () {
+						console.log('Start permission handling');
+						// Form ID
+							var formId = "frm20173VATPurchaseWithDetails";
+
+						// Call the API to get permissions
+						$.ajax({
+							url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+							type: 'GET',
+							contentType: 'application/json',
+							success: function (response) {
+								console.log("API Response:", response); // Log the API response
+
+								if (response.success && response.permissions) {
+									// Default visibility and enable status for buttons
+									var controlStates = {
+											"ddButtonLayout": { "Visible": true, "Enabled": false },
+											"btnToggleSearch": { "Visible": true, "Enabled": false },
+											"btnPrint": { "Visible": true, "Enabled": false },
+											"btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+											"btnColumnChooser": { "Visible": true, "Enabled": false }
+									};
+
+
+									// Check for full access
+									var fullAccess = response.permissions.find(p =>
+										p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+									);
+
+									if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+										// Grant full access: make all controls visible and enabled
+										Object.keys(controlStates).forEach(key => {
+											controlStates[key] = { "Visible": true, "Enabled": true };
+										});
+									} else {
+										// Update states based on specific permissions for each control
+										Object.keys(controlStates).forEach(key => {
+											var controlPermission = response.permissions.find(p =>
+												p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+											);
+											if (controlPermission) {
+												controlStates[key] = {
+													"Visible": controlPermission.ItemVisible || false,
+													"Enabled": controlPermission.ItemEnabled || false
+												};
+											}
+										});
+									}
+
+									console.log("Control States:", controlStates); // Log the control states
+
+									// Dynamically update button visibility and enabled state
+									Object.keys(controlStates).forEach(key => {
+										var button = document.getElementById(key);
+										if (button) {
+											// Handle visibility
+											button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+											// Handle enable/disable state
+											button.disabled = !controlStates[key].Enabled;
+											console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+										} else {
+											console.warn(`Button with ID "${key}" not found in the DOM.`);
+										}
+									});
+								} else {
+									console.warn("Failed to fetch permissions or no permissions available.");
+								}
+							},
+							error: function (xhr, status, error) {
+								console.error("Error fetching permissions:", error);
+								alert('An error occurred while fetching permissions. Please try again.');
+							}
+						});
+						showColumnChooser();
+						console.log('End permission handling');
+					});
+</script>

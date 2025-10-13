@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\ERM\Reports\DevileryNote\PreviewDeliveryNotePreprintForm.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\DevileryNote\PreviewDeliveryNotes.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Enquiry\PreviewRequests.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\EquipmentAsset\PrintReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\PurchaseOrder\PreviewPurchaseOrders.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\PurchaseOrder\PreviewPurchaseOrderWoVAT.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\DesignQuotation.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\PreviewQuotation.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\Proposal.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\Quotation%28Mob&amp;DemobDetails%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\Quotation%28Mob&amp;DemobwithTotal%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\Quotation%28With2Rates%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\Quotation%28with3Rates%29.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\Quotation\QuotationWithoutVAT.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\SalesOrder\PreviewSalesOrder.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\SalesOrder\PreviewSalesOrderYardCopy.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\servieceandmaintenance\ServicesandMaintenanceEdit1.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\ERM\Reports\servieceandmaintenance\ServicesandMaintenanceEditt2.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+  </ItemGroup>
+
+
+
+</Project>

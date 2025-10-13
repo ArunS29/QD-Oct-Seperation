@@ -1,14 +1,14 @@
 ﻿
-using QD.ERP.Web.Models.ViewModel;
+using QD.ERP.Shared.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Models.DAL;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Models.DAL;
 
 namespace QD.ERP.Web.Areas.Utility.Controllers
 {

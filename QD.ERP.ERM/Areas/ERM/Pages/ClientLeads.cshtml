@@ -1,0 +1,196 @@
+﻿@page
+@using QD.ERP.Shared.DAL.Entities
+@model QD.ERP.Web.Areas.ERM.Pages.ClientLeadsModel
+@{
+
+}
+
+@{
+    ViewData["Title"] = "Clients";
+
+}
+
+<style>
+   
+    .toolbar-buttons {
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */
+        /* background-color: white; /* Optional: background */  padding: 10px; /* Optional: inner spacing */
+        border-radius: 6px;
+        margin-top: 10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
+
+    .mainContainer {
+        width:96%;
+        overflow-x:hidden;
+    }
+
+</style>
+<div class="title" >
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div>
+@await Html.PartialAsync("/Pages/Shared/ERM/ClientLeadFooter.cshtml")
+<div>
+    @(
+        Html.DevExtreme().DataGrid()
+        .ID("dataGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("ClientLeads1")
+        .LoadAction("Get"))
+        .KeyExpr("ClientCode")
+        .ElementAttr("class", "datagrid")
+        .ShowBorders(true)
+        .Width("100%")
+        .ColumnAutoWidth(true)
+        .OnCellPrepared("oncellPrepared")
+        .ShowColumnLines(true)
+        .ShowRowLines(true)
+        .OnContextMenuPreparing("onClientsGridContextMenu")
+        .AllowColumnResizing(true) // Enable column resizing
+        .ColumnResizingMode(ColumnResizingMode.Widget) // Optional: can be "Widget" or "Widget"
+        .AllowColumnReordering(true) // Optional: allow dragging columns
+        .ColumnChooser(chooser => chooser
+        .Enabled(false)
+        .Mode(GridColumnChooserMode.DragAndDrop) // You can also use "DragAndDrop"
+        )
+
+        .Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
+
+        .Columns(columns =>
+        {
+            columns.Add().DataField("Category").Caption(new JS("formatMessage('Category')")).Visible(true).GroupIndex(0);
+            columns.Add().DataField("ClientCode").Caption(new JS("formatMessage('Client Code')")).Visible(true);
+            columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')")).Visible(true);
+            columns.Add().DataField("ContactPerson").Caption(new JS("formatMessage('Contact Person')")).Visible(true);
+            columns.Add().DataField("ContactMobile1").Caption(new JS("formatMessage('Contact Mobile')")).Visible(true);
+            columns.Add().DataField("ContactPhone1").Caption(new JS("formatMessage('Contact Phone')")).Visible(true);
+            columns.Add().DataField("ClientLedgerNo").Caption(new JS("formatMessage('Client Ledger No')")).Visible(true);
+            columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Client Category')")).Visible(false);
+            columns.Add().DataField("ContactPhone2").Caption(new JS("formatMessage('Contact Phone 2')")).Visible(false);
+            columns.Add().DataField("ClientNameAr").Caption(new JS("formatMessage('Client Name Ar')")).Visible(false);
+            columns.Add().DataField("ClientAddress").Caption(new JS("formatMessage('Client Address')")).Visible(false);
+            columns.Add().DataField("ContactEmail").Caption(new JS("formatMessage('Contact Email')")).Visible(false);
+            columns.Add().DataField("ContactFaxNo").Caption(new JS("formatMessage('Contact Fax No')")).Visible(false);
+            columns.Add().DataField("ContactRemarks").Caption(new JS("formatMessage('Contact Remarks')")).Visible(false);
+            columns.Add().DataField("IsDiscontinued").Caption(new JS("formatMessage('Is Discontinued')")).Visible(false);
+            columns.Add().DataField("ReasonDiscontinued").Caption(new JS("formatMessage('Reason Discontinued')")).Visible(false);
+            columns.Add().DataField("CreatedBy").Caption(new JS("formatMessage('Created By')")).Visible(false);
+            columns.Add().DataField("CreatedOn").Caption(new JS("formatMessage('Created On')")).Visible(false);
+            columns.Add().DataField("ModifiedBy").Caption(new JS("formatMessage('Modified By')")).Visible(false);
+            columns.Add().DataField("ModifiedOn").Caption(new JS("formatMessage('Modified On')")).Visible(false);
+            columns.Add().DataField("DiscontinuedBy").Caption(new JS("formatMessage('Discontinued By')")).Visible(false);
+            columns.Add().DataField("DiscontinuedOn").Caption(new JS("formatMessage('Discontinued On')")).Visible(false);
+            columns.Add().DataField("DateVisitedFirst").Caption(new JS("formatMessage('Date Visited First')")).Visible(false);
+            columns.Add().DataField("ReportedBy").Caption(new JS("formatMessage('Reported By')")).Visible(false);
+            columns.Add().DataField("ReportedOn").Caption(new JS("formatMessage('Reported On')")).Visible(false);
+            columns.Add().DataField("StatusRemarks").Caption(new JS("formatMessage('Status Remarks')")).Visible(false);
+            columns.Add().DataField("FollowupOn").Caption(new JS("formatMessage('Follow upOn')")).Visible(false);
+            columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")).Visible(false);
+            columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
+            columns.Add().DataField("UserCode").Caption(new JS("formatMessage('User Code')")).Visible(false);
+            columns.Add().DataField("VendorNo").Caption(new JS("formatMessage('Vendor No')")).Visible(false);
+            columns.Add().DataField("ClientLedgerName").Caption(new JS("formatMessage('Client Ledger Name')")).Visible(false);
+            // Image columns with cell template
+            columns.Add().DataField("DecodedBusinessCard1")
+            .Caption(new JS("formatMessage('Business Card 1')"))
+            .CellTemplate(new JS(@"
+                function(cellElement, cellInfo) {
+                    if (cellInfo.value) {
+                        $('<img>')
+                        .attr('src', cellInfo.value)
+                        .css({ width: '100px', height: 'auto' })
+                        .appendTo(cellElement);
+                    }
+                }
+            "));
+
+            columns.Add().DataField("DecodedBusinessCard2")
+            .Caption(new JS("formatMessage('Business Card 2')"))
+            .CellTemplate(new JS(@"
+            function(cellElement, cellInfo) {
+                if (cellInfo.value) {
+                    $('<img>')
+                    .attr('src', cellInfo.value)
+                    .css({ width: '100px', height: 'auto' })
+                    .appendTo(cellElement);
+                }
+            }
+            "));
+        })
+
+        .Summary(s => s.TotalItems(items =>
+        {
+            // Count for ClientName column
+            items.Add().Column("ClientCode")
+            .SummaryType(SummaryType.Count)
+            .DisplayFormat(new JS("formatMessage('Total Clients: {0}')"));
+        }))
+
+        )
+
+</div>
+<!-- Bottom Toolbar -->
+
+
+<script>
+
+    $(document).ready(function () {
+
+        // Handle Back button click
+        $(document).on('click', '#btnBack', function () {
+            window.history.back();
+        });
+
+    });
+    function onGridReady(e) {
+        const items = e.component.getDataSource().items();
+        console.log("Image src: ", "data:image/png;base64," + data.BusinessCard1);
+
+    }
+    $(function () {
+        $("#ClientLeads").dxTextBox({
+            text: formatMessage("Client Leads"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
+
+    function onClientsGridContextMenu(e) {
+        if (e.target === "content" && e.row) {
+            e.items = [{
+                 text: formatMessage("Client Edit"),
+                onItemClick: function () {
+                    let clientCode = e.row.data.ClientCode;
+                    let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
+                    let url = `/${tenantName}/ERM/ClientLeadMaster?clientCode=${clientCode}`;
+                    let title = `Edit Client - ${clientCode}`;
+                    openModal(url, title);
+                }
+            }];
+        }
+    }
+
+     function oncellPrepared(e) {
+        if (e.rowType === "group" && (e.column.dataField === "Category" || e.column.dataField === "Category")) {
+            e.cellElement.css("font-weight", "bold");
+        }
+    }
+
+
+</script>

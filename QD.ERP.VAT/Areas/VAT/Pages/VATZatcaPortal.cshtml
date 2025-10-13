@@ -1,0 +1,1358 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.VATZatcaPortalModel
+@{
+}
+<style>
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.Head {
+		margin-bottom: 10px;
+	}
+
+	#B2BdataGrid {
+		height: 750px !important;
+	}
+	.form-wrapper {
+		border-radius: 6px;
+		width: 97%;
+		height: 85%;
+	}
+
+	.form-group {
+		position: relative;
+		padding: 10px;
+	}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 15px;
+		}
+
+	.form-row {
+		display: flex;
+		gap: 20px;
+		flex-wrap: wrap;
+	}
+
+	.arabic-button {
+		background: transparent;
+		border: none;
+		cursor: pointer;
+	}
+
+	.top-buttons {
+		position: absolute;
+		top: 0;
+		right: 0;
+		display: flex;
+		gap: 8px;
+	}
+
+		.top-buttons .dx-button {
+			height: 30px;
+			color: black;
+		}
+
+	.arabic-textbox-wrapper {
+		position: relative;
+		width: 100%;
+	}
+	.dx-datagrid-headers .center-header {
+		text-align: center !important;
+	}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+		margin-right: 10px;
+		transition: transform 0.2s;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 40px;
+		height: 20px;
+	}
+
+		.toggle-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #e53935; /* Red by default */
+
+		transition: 0.4s;
+		border-radius: 20px;
+	}
+
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 16px;
+			width: 16px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: 0.4s;
+			border-radius: 50%;
+		}
+
+	.toggle-switch input:checked + .slider {
+		background-color: #4CAF50; /* Green when checked */
+	}
+
+		.toggle-switch input:checked + .slider:before {
+			transform: translateX(20px);
+		}
+
+	.vat-item {
+		display: flex;
+		align-items: center;
+		padding: 6px 10px;
+		color: #666666; /* grey text */
+
+		background-color: transparent !important; /* remove any background */
+	}
+
+	.vat-label {
+		font-weight: bold;
+		color: #666666; /* grey label */
+	}
+
+	/* Remove list background */
+
+	#vatTransactionList {
+		background-color: transparent !important;
+	}
+
+	.address-form-container {
+		padding: 1px;
+		box-sizing: border-box;
+		width: 100%;
+		height: 100%;
+		font-size: 12px;
+	}
+
+	/* .dx-overlay-content dx-popup-normal dx-resizable{
+
+			max-height: 369.13px ! important;
+
+			width: 600px;
+
+			height: 550px;
+
+			z-index: 1501;
+
+			left: 0px;
+
+			top: 0px;
+
+			transform: translate(-366px, -329px);
+
+			transition: all;
+
+			opacity: 1;
+
+			visibility: visible;
+
+		} */
+
+	.dx-overlay-content dx-popup-normal dx-resizable dx-dropdowneditor-overlay-flipped {
+		max-height: 378.13px !important;
+		width: 600px;
+		height: 550px;
+		z-index: 1501;
+		left: 0px;
+		top: 0px;
+		transform: translate(-366px, -379px);
+		transition: all;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.address-form-table {
+		border-collapse: collapse;
+		table-layout: fixed;
+	}
+
+		.address-form-table td {
+			padding: 1px;
+			vertical-align: top;
+			width: 30%;
+		}
+
+		.address-form-table label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 2px;
+			white-space: nowrap;
+			color: black;
+		}
+
+		.address-form-table input[type="text"],
+		.address-form-table select {
+			width: 100%;
+			border: 1px solid #aaa;
+			border-radius: 3px;
+			box-sizing: border-box;
+		}
+
+	.body {
+		padding-top: 0px;
+	}
+
+	.content {
+		margin: 0px;
+	}
+
+	.icon-btn {
+		background-color: #ffffff;
+		border: 1px solid #d1d5db; /* soft gray border */
+
+		border-radius: 6px;
+		margin-top: 24px; /* aligns with DevExtreme label */
+
+		padding: 0;
+		height: 38px;
+		width: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
+		.icon-btn:hover {
+			background-color: #f3f4f6; /* light hover */
+
+			border-color: #9ca3af;
+		}
+
+		.icon-btn i {
+			font-size: 14px;
+			color: #374151; /* neutral icon */
+		}
+
+
+
+
+	/* Custom CSS to adjust the height of tab headers */
+
+	.dx-tabpanel .dx-tab {
+		padding: 10px 15px; /* Adjust padding to change height */
+
+		font-size: 16px; /* Adjust font size to change header height */
+	}
+
+	/* Ensuring the content area also adjusts in height */
+
+	.dx-tabpanel .dx-tab-content {
+		padding: 20px;
+		min-height: 200px; /* Minimum height for the tab content */
+	}
+
+	.dx-fieldset {
+		margin: 3px 3px !important;
+		padding: 0px;
+	}
+
+	.dx-datagrid-headers th {
+		text-align: center; /* Centers the text */
+	}
+
+	.columnheader {
+		text-align: center;
+	}
+
+	.tab-content {
+		display: none;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+		.tab-content h3 {
+			color: #333;
+		}
+
+		.tab-content p {
+			line-height: 1.6;
+			color: #555;
+		}
+
+	.dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
+		display: none;
+	}
+
+	.button-group {
+		margin-left: 1px !important;
+	}
+
+	.button-alignment-up {
+		margin-top: 25px !important;
+	}
+
+	.button-alignment-down {
+		margin-top: 0px !important;
+	}
+
+	/*     .dx-editor-outlined .dx-label span {
+
+			font-weight:bold !important;
+
+			} */
+
+	.custom-textbox input {
+		font-weight: bold !important;
+		color: black !important; /* Use !important to override DevExtreme styles */
+		/*   border: 3px solid #282222;
+
+			border-radius: 8px !important; */
+	}
+
+	.custom-textbox1 input {
+		border: 3px solid #282222;
+		/* border-radius: 8px !important; */
+	}
+
+	.custom-textbox1 .dx-dropdowneditor-icon {
+		border: 3px solid #282222 !important;
+		/*  border-radius: 8px !important; */
+	}
+
+
+	.close {
+		color: #aaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+		cursor: pointer;
+	}
+
+		.close:hover,
+		.close:focus {
+			color: black;
+		}
+
+	.containerLedgerAccount {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+	}
+
+	.titleLedgerAccount {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5em;
+	}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none; /* Prevents hover and click effects */
+	}
+
+	/* .container {
+
+			display: none !important;
+
+		}
+
+		.frame {
+
+			display: none !important;
+
+		}
+
+		.footerContainer {
+
+			display: none !important;
+
+		}
+
+		.bodyContainer {
+
+			display: flex;
+
+			justify-content: center;
+
+		} */
+
+	/* .mainContainer {
+
+			margin-top: 1em;
+
+			width: 100%;
+
+		} */
+
+	/* .card-container {
+
+			display: flex;
+
+			justify-content: space-between;
+
+			gap: 20px;
+
+			} */
+
+	.card {
+		flex: 1;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+		background: #fff;
+		padding-left: 10px;
+	}
+
+	.card1 {
+		padding: 15px;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+		background: #fff;
+	}
+
+
+
+
+
+	.card-container {
+		display: flex;
+		justify-content: space-between;
+		/* gap: 5px; */
+		padding: 0px 10px;
+	}
+/* 
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+		display: none !important;
+	} */
+
+	.playIcon {
+		display: none;
+	}
+
+	.plusbtn {
+		justify-content: center;
+	}
+
+	.center-icon-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.mainContainer {
+		width: 95.5%;
+	}
+
+	.content-container-top {
+		width: 100%;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	#btnClearNotes .dx-button-content,
+	#btnSetDefault .dx-button-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.dx-popup-content {
+		-webkit-user-drag: none;
+		padding: 1px;
+	}
+
+	/* .full-height-container {
+		height: 100%;
+	} */
+	  .context-menuInvoice {
+		background: white;
+		border: 1px solid #ccc;
+		width: 200px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		font-family: Arial, sans-serif;
+	}
+
+	.context-menu-itemInvoice {
+		padding: 8px 12px;
+		cursor: pointer;
+	}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+	.form-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+		gap: 10px;
+	}
+
+	.form-grid-4 {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 15px;
+		align-items: center;
+	}
+
+	.card {
+		background: #fff;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+	}
+	
+</style>
+
+<input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="VATInvoiceEdit" class="no-border-input"></div>
+	</div>
+</div>
+
+
+<link rel="stylesheet" href="~/css/Site.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<input id="formId" value="frm201LedgerAccount1" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
+	</div>
+</div>
+
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="delete">
+		<i class="dx-icon-close"></i> Delete Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="deleteAll">
+		<i class="dx-icon-trash"></i> Delete All Line Items
+	</div>
+</div>
+
+<div class="containerLedgerAccount">
+	<div class="content-container-top">
+		<div class="horizontal-container">
+			@(Html.DevExtreme().Tabs()
+						.Items(items =>
+						{
+							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Main')"));
+							items.Add().Icon("accountbox").Text(new JS("formatMessage('Invoice Master')"));
+							items.Add().Icon("description").Text(new JS("formatMessage('Seller & Buyer Details')"));
+							items.Add().Icon("card").Text(new JS("formatMessage('Payment Details')"));
+							items.Add().Icon("group").Text(new JS("formatMessage('Item Details')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('Validations')"));
+							items.Add().Icon("attach").Text(new JS("formatMessage('XML')"));
+
+						})
+						.SelectedIndex(0)
+						.OnSelectionChanged("onTabSelectionChanged")
+						)
+		</div>
+
+		<!-- Tab Content -->
+		<div class="dx-fieldset">
+			<div id="tab-content-1" class="tab-content">
+				<div class="card-container" style="display: flex; gap: 20px;">
+
+					<!-- Left Side: QR Code Table -->
+					<div style="flex: 1; max-width: 40%;">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5" border="1">
+							<tr>
+								<td>
+									<h3>QR Code(Phase 2):</h3>
+									<div id="qrCodeBox" style="min-height: 322px; border: 1px solid #ccc; padding: 10px; text-align: center;">
+										@* <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhAQMAAADdX3nOAAAABlBMVEUAAAD///+l2Z/dAAAAAXRSTlMAQObYZgAAAJZJREFUGJVjYAACAAAFAAABBAABAAAAAABAAgAGBAAIAAAFAAAGAAABAAABAAAGAAAGAAABAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAABAAAGAAAGAAA="
+											 alt="Dummy QR" style="max-width: 150px; max-height: 150px;" /> *@
+										<div id="qrcode"></div>
+										<div style="margin-top: 10px;">Sample QR Data</div>
+									</div>
+								</td>
+							
+							</tr>
+						</table>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).ID("XMLResponse").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<div style="margin-top: 10px;">Connection Status:</div>
+					</div>
+
+					<!-- Right Side: DataGrid -->
+					<div style="flex: 2;">
+						<h3>eInvoice Submission Log to Zatca Fatoora Portal</h3>
+						<div class="dx-field ledgerResult">
+							@(
+														Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Tbl90121eInvoiceLogTable>()
+														.ID("B2BdataGrid")
+														.DataSource(new JS("[]"))
+														.RemoteOperations(false)
+														.Columns(columns =>
+														{
+															columns.AddFor(m => m.EInvoiceNo)
+															.Caption(new JS("formatMessage('Invoice No')"))
+															.Visible(true);
+
+															columns.AddFor(m => m.EInvoiceDateTime)
+															.Caption(new JS("formatMessage('Invoice Date')"))
+															.Visible(true);
+
+															columns.AddFor(m => m.InvoiceStatus)
+															.Caption(new JS("formatMessage('Invoice Status')"))
+															.Visible(true);
+
+															columns.AddFor(m => m.SubmissionStatusText)
+															.Caption(new JS("formatMessage('Submission Status')"))
+															.Visible(true)
+															.EditCellTemplate(@<text>
+												   								function(cellElement, cellInfo) {
+												   								$("<textarea></textarea>")
+												   								.css({ width: "100%", height: "100px" })
+												   								.val(cellInfo.value)
+												   								.on("change", function() {
+												   								cellInfo.setValue($(this).val());
+												   								})
+												   								.appendTo(cellElement);
+												   								}
+												   							</text>);
+
+
+															columns.AddFor(m => m.SubmittedBy)
+															.Caption(new JS("formatMessage('Submitted By')"))
+															.Visible(true);
+
+															columns.AddFor(m => m.SubmittedOn)
+															.Caption(new JS("formatMessage('Submitted On')"))
+															.Visible(true);
+
+															columns.AddFor(m => m.ZatcaResponse)
+															.Caption(new JS("formatMessage('Zatca Response')"))
+															.Visible(true)
+															.EditCellTemplate(@<text>
+												   								function(cellElement, cellInfo) {
+												   								$("<textarea></textarea>")
+												   								.css({ width: "100%", height: "100px" })
+												   								.val(cellInfo.value)
+												   								.on("change", function() {
+												   								cellInfo.setValue($(this).val());
+												   								})
+												   								.appendTo(cellElement);
+												   								}
+												   							</text>);
+														})
+														.Selection(selection => selection.Mode(SelectionMode.Single))
+														.AllowColumnReordering(true)
+														.AllowColumnResizing(true)
+														.ColumnFixing(fixing => fixing.Enabled(true))
+														.Height(400)
+														.ColumnAutoWidth(true)
+														.FilterRow(filterRow => filterRow.Visible(false))
+														.GroupPanel(groupPanel => groupPanel.Visible(false))
+														.ShowBorders(true)
+														.Width("100%")
+														.Editing(editing => editing
+														.Mode(GridEditMode.Cell)
+														.AllowUpdating(true)
+														.UseIcons(true)
+														)
+														)
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			</div>
+
+
+		<div id="tab-content-2" class="tab-content" style="align-items: flex-start; padding: 0 13px; min-height: 100%;">
+
+			<h2>eInvoice Master Data</h2>
+
+			<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("txtInvoiceNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Unique Invoice ID')")).ID("txtUniqueInvoiceID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date')")).ID("txtInvoiceIssueDate").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Time')")).ID("txtInvoiceIssueTime").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Type Code')")).ID("txtInvoiceTypeCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Transaction Code')")).ID("txtTransactionCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Note')")).ID("txtInvoiceNote").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Currency Code')")).ID("txtInvoiceCurrencyCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Tax Currency Code')")).ID("txtTaxCurrencyCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Purchase Order No')")).ID("txtPurchaseOrderNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Contract No')")).ID("txtContractNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("txtInvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference Invoice No')")).ID("txtReferenceInvoiceNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reason for Credit Note')")).ID("txtReasonForCreditNote").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+				</tr>
+			</table>
+
+			<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<tr>
+					<td>
+						@(Html.DevExtreme().Button()
+												.ID("btnValidate")
+												.Text("Validate")
+												.Type(ButtonType.Normal)
+												.StylingMode(ButtonStylingMode.Outlined)
+												.Icon("save"))
+					</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Previous Invoice HASH of XML Files')")).ID("txtPreInvHash").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Hash of XML File')")).ID("txtHashXmlFile").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA signature of the XML Hash(Digest Value)-Base64')")).ID("txtECDSASignatureBase64").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+				</tr>
+				<tr>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA public key extracted from the signing private key-HEX Format')")).ID("txtECDSAPublicKeyHex").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('The ECDSA signature of the cryptographic stamp-HEX Format')")).ID("txtECDSASignatureStampHex").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+				</tr>
+			</table>
+
+		</div>
+
+		<div id="tab-content-3" class="tab-content">
+			<div class="card-container" style="display: flex; flex-direction: column;">
+
+				<h3>Buyer Details</h3>
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<tr> 
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Buyer ID')")).ID("txtOtherBuyerID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street')")).ID("txtBuyerStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Street')")).ID("txtBuyerAddlStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Building Number')")).ID("txtBuyerBuildingNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Number')")).ID("txtBuyerAddlNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City')")).ID("txtBuyerCity").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Postal Code')")).ID("txtBuyerPostalCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Province/State')")).ID("txtBuyerProvinceState").LabelMode(EditorLabelMode.Floating).Width(300))</td> <!-- FIXED duplicate ID -->
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District')")).ID("txtBuyerDistrict").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Country Code')")).ID("txtBuyerCountryCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer VAT No')")).ID("txtBuyerVATNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name')")).ID("txtBuyerName").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name in Arabic')")).ID("txtBuyerNameinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street in Arabic')")).ID("txtBuyerStreetinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City in Arabic')")).ID("txtBuyerCityinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District in Arabic')")).ID("txtBuyerDistrictinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+				</table>
+
+				<h3>Seller Details</h3>
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Seller ID')")).ID("txtOtherSellerID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street')")).ID("txtSellerStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Street')")).ID("txtSellerAddlStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Building Number')")).ID("txtSellerBuildingNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Number')")).ID("txtSellerAddlNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City')")).ID("txtSellerCity").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Postal Code')")).ID("txtSellerPostalCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Province/State')")).ID("txtSellerProvinceState").LabelMode(EditorLabelMode.Floating).Width(300))</td> <!-- FIXED duplicate ID -->
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District')")).ID("txtSellerDistrict").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Country Code')")).ID("txtSellerCountryCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller VAT No')")).ID("txtSellerVATNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name')")).ID("txtSellerName").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+					<tr>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name in Arabic')")).ID("txtSellerNameinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street in Arabic')")).ID("txtSellerStreetinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City in Arabic')")).ID("txtSellerCityinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District in Arabic')")).ID("txtSellerDistrictinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+
+
+		<div id="tab-content-4" class="tab-content">
+			<div class="card-container" style="display: flex; gap: 20px; align-items: flex-start;">
+				<!-- Payment & Supply Details -->
+				<div class="card" style="flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+					<h3>Payment & Supply Details</h3>
+					<div class="form-grid">
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Floating))
+						@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Floating))
+					</div>
+				</div>
+
+				<!-- Print Settings -->
+				<div class="card" style="flex: 1; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+					<h3>Print Settings</h3>
+					<div class="form-grid">
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')")).ID("cbxShowCompanySeal"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')")).ID("cbxShowSignature"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')")).ID("cbxPrintInvoice"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (YYYY-MM-DD)')")).ID("cbxUseDateFormat1"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format (DD-MM-YYYY)')")).ID("cbxUseDateFormat2"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signature At Bottom')")).ID("cbxSignature"))
+						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Item')")).ID("cbxUseTotalBeforeTax"))
+					</div>
+				</div>
+			</div>
+
+			<!-- Advance & Retention Section -->
+			<div class="card" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+				<h3>Advance & Retention</h3>
+				<div class="form-grid-4">
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate3").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic1").Icon("fas fa-language").OnClick("function() { AdvanceconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))
+					</div>
+
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate4").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic2").Icon("fas fa-language").OnClick("function() { OtherDeductionsconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))
+					</div>
+
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention").Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().NumberBox().ID("currencyexchangerate5").Min(1).Step(1).ShowSpinButtons(true).Width("100%"))
+					</div>
+					<div>
+						@(Html.DevExtreme().Button().ID("convertToArabic3").Icon("fas fa-language").OnClick("function() { RetentionconvertToArabic(); }"))
+					</div>
+					<div>
+						@(Html.DevExtreme().TextBox().ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<div id="tab-content-5" class="tab-content" style="align-items: flex-start;min-height: 100%;">
+				<div class="card-container">
+					<table  style="width:100%; font-size:14px;" cellpadding="5">
+					
+						
+					</table>
+				</div>
+			</div>
+
+
+			<div id="tab-content-6" class="tab-content">
+				<div class="card-container">
+					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+@* 
+		<div class="Head" style="margin-left: 15px;">
+			@await Html.PartialAsync("/Pages/Shared/VAT/ZatcaFooter.cshtml")
+		</div> *@
+
+
+
+
+<script>
+
+	let InvNo=null,XMLResponse=null;
+
+	$(document).ready(function () {
+
+				var selectedTabIndex = 0;
+				$("#tab-content-" + (selectedTabIndex + 1)).show();
+			});
+				function onTabSelectionChanged(e) {
+					// Hide all tab content
+					$(".tab-content").hide();
+
+					// Show the content of the selected tab
+					var selectedTabIndex = e.component.option("selectedIndex");
+					$("#tab-content-" + (selectedTabIndex + 1)).show();
+				}
+
+					 $(document).ready(function () {
+						 debugger;
+			 var urlParams = new URLSearchParams(window.location.search);
+			 var InvoiceNo = urlParams.get('InvoiceNo');
+				InvNo=InvoiceNo;
+				
+				 $.ajax({
+					 url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+					 type: 'GET',
+					 dataType: 'json',
+					 success: function (response) {
+						 console.log("InvoiceDetails", response);
+
+						 if (response && response.length > 0) {
+							 var account = response[0];
+							 debugger;
+
+							 // accheadid=account.ClientCode;
+
+								// 	   $('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+								// 	   ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
+								// 	   ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
+								// 	   $('#InvoiceDate').dxDateBox("instance")?.option("value", account.InvoiceDate);
+								// 	   $('#InvoiceIssuedDateTime').dxDateBox("instance")?.option("value", account.InvoiceDateWtTime);
+								// 	   $("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceDeliveryDate);
+								// 	   $("#InvoiceDueDate").dxDateBox("instance").option("value",account.InvoiceDueDate);
+								// 	   $("#EffectiveDate").dxDateBox("instance").option("value",account.InvoiceEffectiveDate);
+
+								// 	   $('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
+								// 	   $('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
+								// 	   $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
+								// 	   dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
+								// 	   $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
+								// 	   $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
+								// 	   $('#UUID').dxTextBox("instance")?.option("value", account.InvoiceUuid);
+								// 	   $('#InvoiceStartDate').dxDateBox("instance")?.option("value", account.InvoiceStartDate);
+								// 	   $('#InvoiceEndDate').dxDateBox("instance")?.option("value", account.InvoiceEndDate);
+								// 		 dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
+								// 		 dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+
+								// 	   $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
+								// 	   $('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
+								// 	   ClientSalesOrderNodataGridSelectionChanged({ selectedRowKeys: [account.SalesOrderNo]});
+								// 	   $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+
+								// 	   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
+								// 	   $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
+								// 	   $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
+								// 	   $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
+								// 	   $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
+								// 	   $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
+								// 	   $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
+								// 	   dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyCode]});
+								// 	   $('#currencyexchangerate').dxNumberBox("instance")?.option("value", account.ExchangeRate);
+								// 	   $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
+								// 	   $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
+								// 	   $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
+								// 	   $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
+								// 	   $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);										 											 $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);
+								// 	   $('#ddlinvoicesubmittedon').dxDateBox("instance")?.option("value", account.InvoiceSubmittedOn);
+
+								// 	   $('#OtherID1').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
+								// 	   //dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
+								// 	   //dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
+								// 	   dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
+								// 	   dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
+								// 	   dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
+								// 	   dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
+								// 	   dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
+								// 	   dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
+								// 	   dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
+								// 	   $('#LessAdvance').dxTextBox("instance")?.option("value", account.AdvanceText);
+								// 	   $('#currencyexchangerate3').dxNumberBox("instance")?.option("value", account.AdvanceAmount);
+								// 	   $('#LessAdvanceAr').dxTextBox("instance")?.option("value", account.AdvanceTextAr);
+								// 	   $('#LessOtherDeductions').dxTextBox("instance")?.option("value", account.OtherDeductionText);
+								// 	   $('#currencyexchangerate4').dxNumberBox("instance")?.option("value", account.OtherDeductionAmount);
+								// 	   $('#LessAdvanceAr1').dxTextBox("instance")?.option("value", account.OtherDeductionTextAr);
+								// 	   $('#LessRetention').dxTextBox("instance")?.option("value", account.RetentionText);
+								// 	   $('#currencyexchangerate5').dxNumberBox("instance")?.option("value", account.RetentionAmount);
+								// 	   $('#LessAdvanceAr2').dxTextBox("instance")?.option("value", account.RetentionTextAr);
+
+								// 	   $("#StreetName").dxTextBox("instance")?.option("value",account.BuyerAddressStreet);
+								// 	   $("#StreetNameArabic").dxTextBox("instance")?.option("value", account.BuyerAddressStreetAr);
+								// 	   $("#AdditionalAddress").dxTextBox("instance")?.option("value", account.BuyerAdditionalStreet);
+								// 	   $("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr);
+								// 	   $("#BuildingNumber").dxTextBox("instance").option("value", account.BuyerBuildingNumber);
+								// 	   $("#ClientCity").dxTextBox("instance").option("value", account.BuyerCity);
+								// 	   $("#ClientCityArabic").dxTextBox("instance").option("value", account.BuyerCityAr);
+								// 	   $("#AdditionalNumber").dxTextBox("instance").option("value",  account.BuyerAdditionalNumber);
+								// 	   $("#Province").dxTextBox("instance").option("value", account.BuyerProvince);
+								// 	   $("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr);
+								// 	   $("#PostalCode").dxTextBox("instance").option("value", account.BuyerPostalCode);
+								// 	   $("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood);
+								// 	   $("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr);
+								// 	   $("#CountryCodeNumeric").dxDropDownBox("instance").option("value",account.BuyerCountryCode);
+
+								// 	   $("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet);
+								// 	   $("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr);
+								// 	   $("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet);
+								// 	   $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr);
+								// 	   $("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber);
+								// 	   $("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity);
+								// 	   $("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr);
+								// 	   $("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber);
+								// 	   $("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince);
+								// 	   $("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr);
+								// 	   $("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode);
+								// 	   $("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
+								// 	   $("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
+
+								// 		 $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+								// 		 $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+								// 		 $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+								// 		 $("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+								// 		 $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+								// 		 $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+
+								// 			if(account.IsVerified==true)
+								// 			 {
+								// 				 btnVerifydisableEditing();
+								// 			 }
+
+								// 			 if(account.IsApproved==true)
+								// 			 {
+								// 				 disableEditing();
+								// 			 }
+								// 			 if(account.IsPosted==true)
+								// 			 {
+								// 				 btnPostToLedgerdisableEditing();
+								// 			 }
+								// 			  var button = $("#btnSave").dxButton("instance");
+								// 			  button.option("text", "Update");
+								// 			  getDocumentCount();
+								 // Now call the second AJAX to get grid details
+							 $.ajax({
+								 type: "GET",
+								 url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									 dataType: 'json',
+								 success: function (response) {
+										 console.log("Grid",response)
+										 let rowData = response.map((item, index) => ({
+										 SNo: index + 1,
+										...item
+									 }));
+									 // let rowData = response;
+
+									 // ✅ Now safely initialize the grid here
+									 initializeDataGrid(rowData);
+								 },
+								 error: function (xhr, status, error) {
+									 console.error("Error fetching grid data:", error);
+								 }
+							 });
+						 } else {
+							 console.warn("No account details found in the response.");
+						 }
+					 },
+					 error: function (xhr, status, error) {
+						 console.error("Error fetching invoice details:", error);
+					 }
+				 });
+		 });
+
+   var qrText = "Sample QR Data for Invoice or anything else";
+
+	// Generate QR code
+	var qrcode = new QRCode(document.getElementById("qrcode"), {
+		text: qrText,
+		width: 450,
+		height: 450
+	});
+
+
+	 $(document).ready(function () {
+		 // Example: bind to a button click
+			 DevExpress.ui.dialog.custom({
+				 title: "Fatoora Portal",
+				 message: "Connection to Fatoora Portal is available,Would you like to Submit the Invoice to Zatca Portal?",
+				 buttons: [
+					 { text: "Yes", onClick: () => true },
+					 { text: "No", onClick: () => false }
+				 ],
+				 showTitle: true
+			 }).show().done(function (dialogResult) {
+				 if (dialogResult) {
+					  generateZatcaInvoice(); // Your custom logic here
+				 }
+			 });
+	 });
+
+
+	// 	function generateZatcaInvoice() {
+			
+	// 	const invoiceData = {
+	// 		invoiceNo: "INV-001",
+	// 		buyerName: "Customer ABC",
+	// 		buyerVATNumber: "312345678900003",
+	// 		invoiceDate: new Date().toISOString(),
+	// 		invoiceTotal: 115.00,
+	// 		vatAmount: 15.00,
+	// 		sellerName: "JUICE SHOP",
+	// 		sellerVATNumber: "123456789000003"
+	// 	};
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/api/VATModule/GenerateZatcaInvoiceXml",
+	// 		contentType: "application/json",
+	// 		data: JSON.stringify(invoiceData),
+	// 		success: function (response) {
+	// 			console.log("ZATCA XML:", response.InvoiceXml);
+	// 			 console.log("TLV Base64:", response.TLVBase64);
+	// 			 console.log("QR Code Base64:", response.QRBase64);
+
+	// 			// Show QR image on the page
+	// 			  $("#qrcode").attr("src", "data:image/png;base64," + response.QRBase64);
+
+	// 			// Show raw XML (optional)
+	// 			$("#zatcaXml").text(response.invoiceXml);
+	// 		},
+	// 		error: function (xhr) {
+	// 			console.error("Error:", xhr.responseText);
+	// 			DevExpress.ui.notify("Failed to generate ZATCA Invoice XML", "error", 3000);
+	// 		}
+	// 	});
+	// }
+
+			function generateZatcaInvoice() {
+		debugger;
+		let ConnectionStatus = "Connected";
+
+		$.ajax({
+			url: "/api/VATZatca/ConnectToPortal",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify({
+				InvNo: InvNo,                 // pass invoice number
+				ConnectionStatus: ConnectionStatus // pass connection status
+			}),
+			success: function (res) {
+				if (res.Success) {
+					DevExpress.ui.notify(res.Message, "success", 2000);
+					 console.log("XMLResponse",res)
+					 debugger;
+					  XMLResponse = res.XMLResponse;
+						  getInvoiceLog(InvNo,XMLResponse);
+							getInvoiceMaster(InvNo);
+	
+				} else {
+					DevExpress.ui.notify(res.Message || "Connection failed", "error", 3000);
+				}
+			},
+			error: function (xhr) {
+				let errMsg = xhr.responseJSON?.Error || xhr.responseText || "Unexpected error";
+				DevExpress.ui.notify("Error: " + errMsg, "error", 3000);
+			}
+		});
+	}
+
+			 function getInvoiceLog(invNo, XMLResponse) {
+		$.ajax({
+			url: "/api/VATZatca/GetInvoiceLog",
+			type: "GET",
+			data: { invoiceNo: invNo },  // pass as query string parameter
+			success: function (res) {
+				if (res) {
+					DevExpress.ui.notify("Invoice log fetched successfully", "success", 2000);
+					console.log("Invoice Log:", res);
+
+					// Bind response data to B2BdataGrid
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					grid.option("dataSource", [res]); // wrap in array if single record
+
+					// Show status
+					console.log("Invoice Status:", res.InvoiceStatus);
+				} else {
+					DevExpress.ui.notify("No log found", "warning", 3000);
+				}
+			},
+			error: function (xhr) {
+				let errMsg = xhr.responseJSON?.Error || xhr.responseText || "Unexpected error";
+				DevExpress.ui.notify("Error: " + errMsg, "error", 3000);
+			}
+		});
+	}
+
+
+		function getInvoiceMaster(invoiceNo) {
+		if (!invoiceNo) {
+			DevExpress.ui.notify("Invoice number is required", "warning", 2000);
+			return;
+		}
+
+		$.ajax({
+			url: "/api/VATZatca/GetInvoiceMaster",
+			type: "GET",
+			data: { invoiceNo: invoiceNo },
+			success: function (res) {
+				if (res.Success && res.Data) {
+					let inv = res.Data;
+	        $("#txtInvoiceNo").dxTextBox("instance").option("value", inv.InvoiceNo || "");
+			$("#txtUniqueInvoiceID").dxTextBox("instance").option("value", inv.UniqueInvoiceID || "");
+			$("#txtInvoiceIssueDate").dxTextBox("instance").option("value", inv.InvoiceIssueDate || "");
+			$("#txtInvoiceIssueTime").dxTextBox("instance").option("value", inv.InvoiceIssueTime || "");
+			$("#txtInvoiceTypeCode").dxTextBox("instance").option("value", inv.InvoiceTypeCode || "");
+			$("#txtTransactionCode").dxTextBox("instance").option("value", inv.TransactionCode || "");
+			$("#txtInvoiceNote").dxTextBox("instance").option("value", inv.InvoiceNote || "");
+			$("#txtInvoiceCurrencyCode").dxTextBox("instance").option("value", inv.InvoiceCurrencyCode || "");
+			$("#txtTaxCurrencyCode").dxTextBox("instance").option("value", inv.TaxCurrencyCode || "");
+			$("#txtPurchaseOrderNo").dxTextBox("instance").option("value", inv.PurchaseOrderNo || "");
+			$("#txtContractNo").dxTextBox("instance").option("value", inv.ContractNo || "");
+			$("#txtInvoiceCounterValue").dxTextBox("instance").option("value", inv.InvoiceCounterValue || "");
+			$("#txtReferenceInvoiceNo").dxTextBox("instance").option("value", inv.ReferenceInvoiceNo || "");
+			$("#txtReasonForCreditNote").dxTextBox("instance").option("value", inv.ReasonForCreditNote || "");
+
+			$("#txtPreInvHash").dxTextBox("instance").option("value", inv.PreviousInvoiceHash || "");
+			$("#txtHashXmlFile").dxTextBox("instance").option("value", inv.HashOfXmlFile || "");
+			$("#txtECDSASignatureBase64").dxTextBox("instance").option("value", inv.ECDSASignatureOfXmlHashBase64 || "");
+			$("#txtECDSAPublicKeyHex").dxTextBox("instance").option("value", inv.ECDSAPublicKeyHex || "");
+			$("#txtECDSASignatureStampHex").dxTextBox("instance").option("value", inv.ECDSASignatureOfCryptographicStampHex || "");
+
+			$("#txtOtherBuyerID").dxTextBox("instance").option("value", inv.OtherBuyerID || "");
+			$("#txtBuyerStreet").dxTextBox("instance").option("value", inv.BuyerStreet || "");
+			$("#txtBuyerAddlStreet").dxTextBox("instance").option("value", inv.BuyerAddlStreet || "");
+			$("#txtBuyerBuildingNumber").dxTextBox("instance").option("value", inv.BuyerBuildingNumber || "");
+			$("#txtBuyerAddlNumber").dxTextBox("instance").option("value", inv.BuyerAddlNumber || "");
+			$("#txtBuyerCity").dxTextBox("instance").option("value", inv.BuyerCity || "");
+			$("#txtBuyerPostalCode").dxTextBox("instance").option("value", inv.BuyerPostalCode || "");
+			$("#txtBuyerProvinceState").dxTextBox("instance").option("value", inv.BuyerProvinceState || "");
+			$("#txtBuyerDistrict").dxTextBox("instance").option("value", inv.BuyerDistrict || "");
+			$("#txtBuyerCountryCode").dxTextBox("instance").option("value", inv.BuyerCountryCode || "");
+			$("#txtBuyerVATNo").dxTextBox("instance").option("value", inv.BuyerVATNo || "");
+			$("#txtBuyerName").dxTextBox("instance").option("value", inv.BuyerName || "");
+			$("#txtBuyerNameinArabic").dxTextBox("instance").option("value", inv.BuyerNameArabic || "");
+			$("#txtBuyerStreetinArabic").dxTextBox("instance").option("value", inv.BuyerStreetArabic || "");
+			$("#txtBuyerCityinArabic").dxTextBox("instance").option("value", inv.BuyerCityArabic || "");
+			$("#txtBuyerDistrictinArabic").dxTextBox("instance").option("value", inv.BuyerDistrictArabic || "");
+
+			$("#txtOtherSellerID").dxTextBox("instance").option("value", inv.OtherSellerID || "");
+			$("#txtSellerStreet").dxTextBox("instance").option("value", inv.SellerStreet || "");
+			$("#txtSellerAddlStreet").dxTextBox("instance").option("value", inv.SellerAddlStreet || "");
+			$("#txtSellerBuildingNumber").dxTextBox("instance").option("value", inv.SellerBuildingNumber || "");
+			$("#txtSellerAddlNumber").dxTextBox("instance").option("value", inv.SellerAddlNumber || "");
+			$("#txtSellerCity").dxTextBox("instance").option("value", inv.SellerCity || "");
+			$("#txtSellerPostalCode").dxTextBox("instance").option("value", inv.SellerPostalCode || "");
+			$("#txtSellerProvinceState").dxTextBox("instance").option("value", inv.SellerProvinceState || "");
+			$("#txtSellerDistrict").dxTextBox("instance").option("value", inv.SellerDistrict || "");
+			$("#txtSellerCountryCode").dxTextBox("instance").option("value", inv.SellerCountryCode || "");
+			$("#txtSellerVATNo").dxTextBox("instance").option("value", inv.SellerVATNo || "");
+			$("#txtSellerName").dxTextBox("instance").option("value", inv.SellerName || "");
+			$("#txtSellerNameinArabic").dxTextBox("instance").option("value", inv.SellerNameArabic || "");
+			$("#txtSellerStreetinArabic").dxTextBox("instance").option("value", inv.SellerStreetArabic || "");
+			$("#txtSellerCityinArabic").dxTextBox("instance").option("value", inv.SellerCityArabic || "");
+			$("#txtSellerDistrictinArabic").dxTextBox("instance").option("value", inv.SellerDistrictArabic || "");
+
+			$("#txtSupplyDate1").dxTextBox("instance").option("value", inv.SupplyDate || "");
+			$("#txtSupplyEndDate1").dxTextBox("instance").option("value", inv.SupplyEndDate || "");
+			$("#txtPaymentMeansTypeCode1").dxTextBox("instance").option("value", inv.PaymentMeansTypeCode || "");
+			$("#txtPaymentTerms1").dxTextBox("instance").option("value", inv.PaymentTerms || "");
+			$("#txtPaymentAccountIdentifier1").dxTextBox("instance").option("value", inv.PaymentAccountIdentifier || "");
+			$("#txtInvoiceIssueDateTime1").dxTextBox("instance").option("value", inv.InvoiceIssueDateTime || "");
+
+			$("#cbxShowCompanySeal").dxCheckBox("instance").option("value", inv.ShowCompanySeal || false);
+			$("#cbxShowSignature").dxCheckBox("instance").option("value", inv.ShowSignature || false);
+			$("#cbxPrintInvoice").dxCheckBox("instance").option("value", inv.PrintInvoiceInLetterHead || false);
+			$("#cbxUseDateFormat1").dxCheckBox("instance").option("value", inv.UseDateFormatYYYYMMDD || false);
+			$("#cbxUseDateFormat2").dxCheckBox("instance").option("value", inv.UseDateFormatDDMMYYYY || false);
+			$("#cbxSignature").dxCheckBox("instance").option("value", inv.PrintSignatureAtBottom || false);
+			$("#cbxUseTotalBeforeTax").dxCheckBox("instance").option("value", inv.UseTotalBeforeTax2Digits || false);
+
+					DevExpress.ui.notify("Invoice data loaded successfully", "success", 2000);
+				} else {
+					DevExpress.ui.notify(res.Message || "Invoice not found", "error", 3000);
+				}
+			},
+			error: function (xhr) {
+				let errMsg = xhr.responseJSON?.Message || xhr.responseText || "Unexpected error";
+				DevExpress.ui.notify("Error: " + errMsg, "error", 3000);
+			}
+		});
+	}
+
+
+
+
+</script>
+
+

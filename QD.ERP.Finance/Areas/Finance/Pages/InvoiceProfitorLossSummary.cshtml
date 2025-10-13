@@ -1,0 +1,518 @@
+﻿
+@page
+@using DevExtreme.AspNet.Mvc
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnPrint,#btnToggleSearch,#btntoggleGroupPanel,#btngetcostofgoodssold)) {
+		display: none !important;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	.dx-datagrid-headers {
+		border: 1px solid #686868 !important;
+	}
+
+		.dx-datagrid-headers .dx-row > td {
+			border: 1px solid #686868 !important;
+			text-align: center !important;
+		}
+
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		font-size: 12px !important;
+		white-space: normal !important;
+		text-align: center !important;
+		font-weight: bold;
+		color: black;
+	}
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menu {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-item {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-item i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-item:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-item:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+		.container {
+		display: none !important;
+	}
+
+	.frame {
+		display: none !important;
+	}
+
+	.footerContainer {
+		display: none !important;
+	}
+
+	.bodyContainer {
+		display: flex;
+		justify-content: center;
+	}
+
+	.mainContainer {
+		margin-top: 1em;
+	}
+</style>
+
+@* <input id="formId" value="frm201LedgerView" type="hidden" /> *@
+<div class="title">
+	<div class="header-container">
+		<div id="InvoiceProfitorLossSummary" class="no-border-input"></div>
+	</div>
+</div>
+
+
+
+
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().TextBox()
+		.ID("VoucherNo")
+		.InputAttr("aria-label", "Text")
+		.Width("17%")
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry210011invoiceProfitSummary>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
+			{
+				subColumns.AddFor(m => m.InvoiceNo)
+			.Caption(new JS("formatMessage('Invoice No')"))
+			.Alignment(HorizontalAlignment.Center);
+
+				subColumns.AddFor(m => m.InvoiceDate)
+			.Caption(new JS("formatMessage('Invoice Date')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Format("dd-MMM-yyyy")
+			.Visible(true);
+
+				subColumns.AddFor(m => m.ItemCode)
+			.Caption(new JS("formatMessage('Item Code')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.Gsdescrpition)
+			.Caption(new JS("formatMessage('Item Description')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.UnitType)
+			.Caption(new JS("formatMessage('Unit')"))
+			.Alignment(HorizontalAlignment.Center)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.SellingLineQty)
+			.Caption(new JS("formatMessage('Qty Sold')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.SellingRate)
+			.Caption(new JS("formatMessage('Selling Rate')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+
+				subColumns.AddFor(m => m.SellingLineAmountAfterDiscount)
+			.Caption(new JS("formatMessage('Amount After Discount')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+			});
+
+			columns.Add().Caption(new JS("formatMessage('Items Cost Based on Average Costing')")).Columns(cogsColumns =>
+			{
+				cogsColumns.AddFor(m => m.TotalSellingPrice)
+			.Caption(new JS("formatMessage('Total Sales')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+
+				cogsColumns.AddFor(m => m.TotalPurchaseCostPrice)
+			.Caption(new JS("formatMessage('Total Purchase Cost')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+
+				cogsColumns.AddFor(m => m.ProfitOnSale)
+			.Caption(new JS("formatMessage('Profit/Loss on Sale')"))
+			.Alignment(HorizontalAlignment.Right)
+			.Visible(true);
+			});
+		})
+
+		.Editing(editing => editing
+		.Mode(GridEditMode.Row)
+		@* .AllowUpdating(true) *@
+		)
+
+		@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Height(500)
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+		.Width("100%")
+
+
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true);
+				@* .CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
+
+				@* items.Add()
+			.Column("QuantityInvoiced")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+ *@
+				items.Add()
+		.Column("Discount")
+		.SummaryType(SummaryType.Sum)
+		.ShowInGroupFooter(true)
+		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add()
+	.Column("VatAmount")
+	.SummaryType(SummaryType.Sum)
+	.ShowInGroupFooter(true)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add()
+	.Column("Total")
+	.SummaryType(SummaryType.Sum)
+	.ShowInGroupFooter(true)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+
+			summary.TotalItems(items =>
+			{
+				items.Add()
+			.Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count);
+				@* .CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"); *@
+
+				@* items.Add()
+			.Column("QuantityInvoiced")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+ *@
+				items.Add()
+		.Column("Discount")
+		.SummaryType(SummaryType.Sum)
+		.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add()
+	.Column("VatAmount")
+	.SummaryType(SummaryType.Sum)
+	.CustomizeText(@"function(e) { return   e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				items.Add()
+	.Column("Total")
+	.SummaryType(SummaryType.Sum)
+	.CustomizeText(@"function(e) { return  e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+		})
+
+
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		)
+</div>
+<div class="Head">
+	<div class="limited-footer">
+		@await Html.PartialAsync("VATModuleFooter")
+	</div>
+</div>
+
+
+<div id="overlay" class="overlay">
+	<div class="overlay-content">
+		<span class="close-btn" onclick="closeOverlay()">×</span>
+		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
+	</div>
+</div>
+
+
+<script>
+	$(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+
+		var formId = "frm201LedgerView";
+
+		$.ajax({
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				if (response.success && response.permissions) {
+					var controlStates = {
+						"ddBtnShowRecords": { "Visible": false, "Enabled": false }
+					};
+
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
+
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
+
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							button.disabled = !controlStates[key].Enabled;
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+
+		// Handle Enter key on VoucherNo TextBox
+		$("#VoucherNo").dxTextBox("instance").on("keydown", function (e) {
+			if (e.event.key === "Enter") {
+				triggerLoadData();
+			}
+		});
+
+		// Handle Enter key on todateBox DateBox
+		$("#todateBox").dxDateBox("instance").on("keydown", function (e) {
+			if (e.event.key === "Enter") {
+				triggerLoadData();
+			}
+		});
+
+		// Optional: Load automatically when Date is changed (user selects date)
+		$("#todateBox").dxDateBox("instance").on("valueChanged", function (e) {
+			triggerLoadData();
+		});
+
+		// Initialize context menu for dataGrid rows
+		$("#dataGrid").customizeGridContextMenu();
+		var contextMenu = $("#contextMenu");
+
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+
+	function triggerLoadData() {
+		var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+		var date = $("#todateBox").dxDateBox("instance").option("value");
+
+		if (!voucherNo) {
+			DevExpress.ui.notify("Please enter Voucher No.", "warning", 2000);
+			return;
+		}
+		if (!date) {
+			DevExpress.ui.notify("Please select a Date.", "warning", 2000);
+			return;
+		}
+
+		loadProfitAndLoss(voucherNo, date);
+	}
+
+	function loadProfitAndLoss(voucherNo, date) {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+		$.ajax({
+			url: '/api/VATModule/GetProfitandloss',
+			type: 'GET',
+			data: {
+				voucherNo: voucherNo,
+				date: date
+			},
+			success: function (data) {
+				dataGrid.option("dataSource", data);
+
+				var dataSource = dataGrid.option("dataSource");
+				if (dataSource && dataSource.length > 0) {
+					var lastRow = dataSource[dataSource.length - 1];
+					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+					var firstRow = dataSource[0];
+					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+	}
+</script>
+

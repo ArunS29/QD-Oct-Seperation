@@ -2,29 +2,29 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable;
-using QD.ERP.Web.Areas.Finance.Reports.AccountRegister;
-using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
-using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
-using QD.ERP.Web.Areas.Finance.Reports.ImportReports;
-using QD.ERP.Web.Areas.Finance.Reports.ImportReports.PayableandReceivable;
-using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
-using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
-using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
-using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
-using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Models.DAL;
+using QD.ERP.Finance.Areas.Finance.Reports;
+using QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivable;
+using QD.ERP.Finance.Areas.Finance.Reports.AccountRegister;
+using QD.ERP.Finance.Areas.Finance.Reports.BillsReceivable;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
+using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.summary_Report;
+using QD.ERP.Finance.Areas.Finance.Reports.ImportReports;
+using QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivable;
+//using QD.ERP.Web.Areas.VAT.Reports.InventoryReports;
+//using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
+//using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+//using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
+//using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
+using QD.ERP.Shared.DAL.Entities;
+using QD.ERP.Shared.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using ERPMasterWtDataContext = QD.ERP.Web.DAL.Entities.ERPMasterWtDataContext;
+using ERPMasterWtDataContext = QD.ERP.Shared.DAL.Entities.ERPMasterWtDataContext;
 
 namespace QD.ERP.Web.Pages
 {
@@ -224,31 +224,31 @@ namespace QD.ERP.Web.Pages
                         break;
 
 
-                    ////VAT REports
-                    case "TaxSummaryReport":
-                        Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "TaxVATReport":
-                        Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
-                    case "TaxReportRevenueInArabic":
-                        Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "CreditSummary":
-                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                      break;
-                    case "DebitNoteSummary":
-                        Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "VATPurchasesAndExpReport":
-                        Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
-                    case "TaxSummaryReportPurchaseInArabic":
-                        Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
-                    case "VATReturnsform":
-                        Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
-                        break;
+                    //////VAT REports
+                    //case "TaxSummaryReport":
+                    //    Report = new TaxSummaryReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "TaxVATReport":
+                    //    Report = new TaxVATReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
+                    //case "TaxReportRevenueInArabic":
+                    //    Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "CreditSummary":
+                    //    Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //  break;
+                    //case "DebitNoteSummary":
+                    //    Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "VATPurchasesAndExpReport":
+                    //    Report = new VATPurchasesAndExpReport(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
+                    //case "TaxSummaryReportPurchaseInArabic":
+                    //    Report = new TaxSummaryReportPurchaseInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
+                    //case "VATReturnsform":
+                    //    Report = new VATReturnsform(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
 
 
 
@@ -391,9 +391,9 @@ namespace QD.ERP.Web.Pages
                     case "BillsRecivableReport1":
                         Report = new BillsRecivableReport1(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                         break;
-                    case "InventoryReportWithExpireDates":
-                        Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
+                    //case "InventoryReportWithExpireDates":
+                    //    Report = new InventoryReportWithExpireDates(tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
 
                     // Import Reports (Offline versions)
                     case "XtraReportAgeingreportsummaryImport":

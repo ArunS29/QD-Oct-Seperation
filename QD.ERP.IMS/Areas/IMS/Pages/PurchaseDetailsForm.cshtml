@@ -1,0 +1,533 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.PurchaseDetailsFormModel
+@{
+}
+
+@await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
+
+
+<div class="dx-fieldset horizontal-container" style="align-items:end;">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))  
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))  
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.TabIndex(4)
+		.SplitButton(true)
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")  
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		.ItemTemplate(@<text>
+				   		<div class="custom-dropdown-item">
+				   			<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+				   			<div class="item-content">
+				   				<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+				   				<div>
+				   					<div class="item-title"><%- text %></div>
+				   				</div>
+				   			</div>
+				   		</div>
+				   	</text>)
+		)
+
+</div>
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry60410purchaseItemDetail>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+			columns.Add().Caption(new JS("formatMessage('Purchase Order Item Details')")).Columns(band =>
+			{
+				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Left).Width(250);
+				band.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Left).Width(250).GroupIndex(0);
+				band.AddFor(m => m.RevisionNo).Caption(new JS("formatMessage('Revision No')")).Alignment(HorizontalAlignment.Left).Width(250);
+				band.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Left);
+				band.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.SupplierQuoteNo).Caption(new JS("formatMessage('Supplier Quote No')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.SupplierRefNo).Caption(new JS("formatMessage('Supplier Ref No')")).Alignment(HorizontalAlignment.Right);
+				band.AddFor(m => m.PodueDate).Caption(new JS("formatMessage('PO Due Date')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Quoted Quality')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#fff9cc', 
+				color: '#b58900',           
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				band.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				const formatted = Number(cellInfo.value).toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				});
+
+				$('<span>')
+				.text(formatted)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#fff9cc', 
+				color: '#b58900', 
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				band.AddFor(m => m.UnitType).Caption(new JS("formatMessage('Unit Type')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.ItemDiscount).Caption(new JS("formatMessage('Item Discount')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				const formatted = Number(cellInfo.value).toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				});
+
+				$('<span>')
+				.text(formatted)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#fff9cc', 
+				color: '#b58900',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				band.AddFor(m => m.LineTotalBeforeTax).Caption(new JS("formatMessage('Line Total Before Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#ffe6e6',
+				color: '#d93025',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				band.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#ffe6e6',
+				color: '#d93025',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				band.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#ffe6e6',
+				color: '#d93025',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+				band.AddFor(m => m.OrderedQty).Caption(new JS("formatMessage('Ordered Qty')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				band.AddFor(m => m.ReceivedQty).Caption(new JS("formatMessage('Received Qty')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				band.AddFor(m => m.BalanceToReceive).Caption(new JS("formatMessage('Balance To Receive')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null) {
+				const formattedValue = new Intl.NumberFormat('en-US', {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				}).format(cellInfo.value);
+				$('<span>')
+				.text(formattedValue)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px'
+				})
+				.appendTo(cellElement);
+				}
+				}
+				"));
+
+			});
+
+
+		})
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.OnToolbarPreparing("onToolbarPreparing")
+		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.Height("75vh")
+		.ColumnAutoWidth(true)
+		.OnCellPrepared(@"function(e) {	if (e.rowType === 'group') {e.cellElement.css('font-weight', 'bold');}}")
+		.Width("99%")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.Grouping(grouping => grouping.AutoExpandAll(true))
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+		.Summary(summary =>
+		{
+		summary.GroupItems(groupItems => {
+		groupItems.Add()
+		.Column("Gsdescrpition")
+		.SummaryType(SummaryType.Count)
+		.DisplayFormat("No. of Items: {0}");
+		});
+		summary.TotalItems(items =>
+		{
+		items.Add().Column("ItemDiscount")
+		.SummaryType(SummaryType.Sum)
+		.DisplayFormat(new JS("formatMessage('Total Item Discount: {0}')"))
+		.CustomizeText(@"
+		function(e) {
+		return e.value != null ? e.value.toFixed(2) : '0.00';
+		}
+		");
+		items.Add().Column("Gsdescrpition")
+		.SummaryType(SummaryType.Count)
+		.DisplayFormat(new JS("formatMessage('No. of Items: {0}')"));
+	
+		items.Add().Column("LineTotalBeforeTax")
+		.SummaryType(SummaryType.Sum)
+		.DisplayFormat(new JS("formatMessage('Total Before Tax: {0}')"))
+		.CustomizeText(@"function(e) {
+		return e.value != null ? e.value.toFixed(2) : '0.00';
+		}
+		");
+
+		items.Add().Column("LineTaxAmount")
+		.SummaryType(SummaryType.Sum)
+		.DisplayFormat(new JS("formatMessage('Total Tax: {0}')"))
+		.CustomizeText(@"function(e) {
+		return e.value != null ? e.value.toFixed(2) : '0.00';
+		}
+		");
+
+		items.Add().Column("LineTotalWithTax")
+		.SummaryType(SummaryType.Sum)
+		.DisplayFormat(new JS("formatMessage('Total With Tax: {0}')"))
+		.CustomizeText(@"function(e) {
+		return e.value != null ? e.value.toFixed(2) : '0.00';
+		}
+		");
+		});
+		})
+		)
+</div>
+
+
+<script>
+
+	function onToolbarPreparing(e) {
+		// Remove/hide the column chooser button on initial load
+		e.toolbarOptions.items = e.toolbarOptions.items.filter(function (item) {
+			return item.name !== "columnChooserButton";
+		});
+	}
+	$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
+	function ddBtnShowRecords_click(duration) {
+		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		var toDateBox = $("#todateBox").dxDateBox("instance");
+		var frmDate = new Date(frmDateBox.option("value"));
+		var toDate = new Date(toDateBox.option("value"));
+		var currentDate = new Date();
+
+		switch (duration) {
+			case 'today':
+				frmDate = toDate = currentDate;
+				break;
+			case 'yesterday':
+				var dateObj = new Date();
+				dateObj.setDate(dateObj.getDate() - 1);
+				frmDate = toDate = dateObj;
+				break;
+			case 'week':
+				var dayOfWeek = currentDate.getDay();
+				var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
+				frmDate = new Date(currentDate.setDate(startOfWeek));
+				toDate = new Date(currentDate.setDate(startOfWeek + 6));
+				break;
+			case 'tillmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = currentDate;
+				break;
+			case 'fullmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+				break;
+			case 'tillyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = currentDate;
+				break;
+			case 'fullyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = new Date(currentDate.getFullYear(), 11, 31);
+				break;
+			case 'lastyear':
+				frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
+				toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
+				break;
+			case 'lastmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+				break;
+			case 'q1': // Jan - Mar
+				frmDate = new Date(new Date().getFullYear(), 0, 1);
+				toDate = new Date(new Date().getFullYear(), 2, 31);
+				break;
+
+			case 'q2': // Apr - Jun
+				frmDate = new Date(new Date().getFullYear(), 3, 1);
+				toDate = new Date(new Date().getFullYear(), 5, 30);
+				break;
+
+			case 'q3': // Jul - Sep
+				frmDate = new Date(new Date().getFullYear(), 6, 1);
+				toDate = new Date(new Date().getFullYear(), 8, 30);
+				break;
+
+			case 'q4': // Oct - Dec
+				frmDate = new Date(new Date().getFullYear(), 9, 1);
+				toDate = new Date(new Date().getFullYear(), 11, 31);
+				break;
+			}
+			hidequarterSubmenus();
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
+		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+
+		$.ajax({
+			url: '/api/PurchaseOrder/GetPurchaseItemDetailsByPoDate',
+			type: 'GET',
+			data: {
+				frmDate: frmDate,
+				toDate: toDate
+			},
+			success: function (data) {
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				var dataGrid = $("#dataGrid").dxDataGrid("instance");
+				var dataSource = dataGrid.option("dataSource");
+				if (dataSource && dataSource.length > 0) {
+					var lastRow = dataSource[dataSource.length - 1];
+					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+					var firstRow = dataSource[0];
+					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	$(document).ready(function () {
+		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#ddButtonPayment,#ddReport123,btnColumnChooser").length) {
+				$(this).remove();
+			}
+		});
+	});
+		$(function () {
+				$("#MaterialRequest").dxTextBox({
+					text: formatMessage("Material Receipt with Details"),
+				readOnly: true,
+				onContentReady: function (e) {
+					$(e.element).addClass("dx-textbox-heading");
+				}
+			});
+		});
+
+</script>	

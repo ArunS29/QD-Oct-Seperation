@@ -1,0 +1,526 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.PurchaseRequestItemDetailsModel
+@{
+}
+<style>
+	.overlay {
+		display: none;
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.5);
+		z-index: 1000;
+	}
+
+	.overlay-content {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 100%;
+		height: 80%;
+		background: #fff;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+
+	#overlay-frame {
+		width: 100%;
+		height: 100%;
+	}
+
+	
+
+	.close-btn {
+		position: absolute;
+		top: 10px;
+		right: 20px;
+		font-size: 30px;
+		cursor: pointer;
+	}
+
+	.custom-toolbar {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.filter-btn {
+		background-color: #007bff;
+		color: white;
+		border: none;
+		padding: 6px 12px;
+		border-radius: 5px;
+		cursor: pointer;
+		font-family: 'Inter', sans-serif;
+	}
+
+		.filter-btn:hover {
+			background-color: #0056b3;
+		}
+
+	.dx-texteditor {
+		background-color: transparent !important;
+		border: 1px solid #d6e4f0 !important;
+		border-radius: 4px !important;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+		font-size: 14px !important;
+		transition: all 0.2s ease-in-out !important;
+		height: 39px !important;
+	}
+
+		.dx-texteditor:hover,
+		.dx-texteditor.dx-state-hover,
+		.dx-button:hover {
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
+			border-color: #86b7fe !important;
+		}
+
+		.dx-texteditor.dx-state-focused {
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+			border-color: #508ae1 !important;
+		}
+
+	.no-border-input {
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+		background: transparent !important;
+		font-weight: bold;
+		font-size: 16px;
+		color: black;
+		pointer-events: none;
+	}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	.ledgerResult{
+		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+		width: 100%;
+	}
+
+	.mainContainer {
+		width: 100%;
+		overflow: hidden;
+	}
+</style>
+
+<input id="formId" value="frm201LedgerView" type="hidden" />
+<div class="title">
+	<div class="header-container">
+		<div id="Quotation" class="no-border-input"></div>
+	</div>
+</div>
+
+
+@await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
+
+<div class="dx-fieldset horizontal-container">
+	@(Html.DevExtreme().DateBox()
+		.ID("frmdateBox")
+		.Label(new JS("formatMessage('Start Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(2)
+		)
+
+	@(Html.DevExtreme().DateBox()
+		.ID("todateBox")
+		.Label(new JS("formatMessage('End Date')"))
+		.LabelMode(EditorLabelMode.Floating)
+		.InputAttr("aria-label", "Date")
+		.Type(DateBoxType.Date)
+		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
+		.DisplayFormat("dd-MMM-yyyy")
+		.TabIndex(3)
+		)
+
+
+	@(Html.DevExtreme().DropDownButton()
+		.ID("ddBtnShowRecords")
+		.Text(new JS("formatMessage('Show Records')"))
+		.Icon("smalliconslayout")
+		.Width(180)
+		.ElementAttr("class", "button-alignment-down")
+		.TabIndex(4)
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+		)
+</div>
+<div class="dx-field ledgerResult">
+	@(
+		Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.Qry60609purchaseRequestItemDetail>()
+		.ID("dataGrid")
+		.RemoteOperations(false)
+		.DataSource(new JS("[]"))
+		.Columns(columns =>
+		{
+				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+				columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(true);
+					columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+				.Visible(true);
+					columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+			.Visible(true);
+				columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.QtyRequested).Caption(new JS("formatMessage('Qty Requested')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested Name Ref')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+				columns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TypeOfRequest).Caption(new JS("formatMessage('Type Of Request')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Pono).Caption(new JS("formatMessage('PO No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested Name Ref')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.Podate).Caption(new JS("formatMessage('PO Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptStatus).Caption(new JS("formatMessage('Receipt Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceivedQty).Caption(new JS("formatMessage('Received Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+				columns.AddFor(m => m.BalanceToReceive).Caption(new JS("formatMessage('Balance To Receive')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.BalanceToIssue).Caption(new JS("formatMessage('Balance To Issue')")).Alignment(HorizontalAlignment.Center).Visible(true);
+		})
+		.Height(680) // Fixed height for the grid
+		.ColumnAutoWidth(true)
+		.Width("98%")
+		.WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}")
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.AllowColumnReordering(true)
+		.AllowColumnResizing(true)
+		.ColumnFixing(fixing => fixing.Enabled(true))
+		.HeaderFilter(filter => filter.Visible(false))
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.ShowRowLines(true)
+
+		//.OnContextMenuPreparing("onContextMenuPreparing")
+		.FilterRow(filterRow => filterRow.Visible(false))
+		.GroupPanel(groupPanel => groupPanel.Visible(false))
+		.ShowBorders(true)
+		.StateStoring(stateStoring =>
+		{
+			stateStoring
+			.Enabled(true)
+			.Type(StateStoringType.LocalStorage)
+			.StorageKey("gridContainerState");
+		})
+		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("Gsdescrpition")
+			.SummaryType(SummaryType.Count)
+			.ShowInGroupFooter(true)
+			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
+				items.Add().Column("QtyRequested")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+			});
+			summary.TotalItems(items =>
+			{
+
+				items.Add().Column("QtyRequested")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"
+	function(e) {
+	if (e.value === null || e.value === undefined) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				
+			});
+		})
+		)
+</div>
+<div id="invoiceErrorPopup"></div>
+
+<script>
+		 $(function () {
+	$("#Quotation").dxTextBox({
+				text: formatMessage("Purchase Request with Item Details"),
+		readOnly: true,
+		onContentReady: function (e) {
+		$(e.element).addClass("dx-textbox-heading");
+		}
+		});
+	});
+	$(function () {
+		var now = new Date();
+		var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+		var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+		$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+		$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+		ddBtnShowRecords_click('range');
+	});
+	function ddBtnShowRecords_click(duration) {
+		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+			var toDateBox = $("#todateBox").dxDateBox("instance");
+			var frmDate = new Date(frmDateBox.option("value"));
+			var toDate = new Date(toDateBox.option("value"));
+			var currentDate = new Date();
+			switch (duration) {
+				case 'today':
+					frmDate = toDate = currentDate;
+					break;
+				case 'yesterday':
+					var dateObj = new Date();
+					// Subtract one day from current time
+					dateObj.setDate(dateObj.getDate() - 1);
+					frmDate = toDate = dateObj;
+					break;
+				case 'week':
+					var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+					// Calculate the start of the week (Saturday)
+					var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+					// Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+				frmDate = new Date(currentDate.setDate(startOfWeek)); // 7 days before Saturday
+					toDate = new Date(currentDate.setDate(startOfWeek + 6));
+					break;
+				case 'tillmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = currentDate; //Today
+					break;
+				case 'fullmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+					break;
+				case 'tillyear':
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = currentDate;// Today
+					break;
+					// Get the first and last day of the current year
+					frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear(), 11, 31); // Last day of month
+					break;
+				case 'lastyear':
+					// Get the first and last day of the last year
+					frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+					toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+					break;
+				case 'lastmonth':
+					// Get the first and last day of the current month
+					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+					break;
+			}
+				frmDate = frmDate.toISOString().split('T')[0];
+	toDate = toDate.toISOString().split('T')[0];
+
+				$.ajax({
+			url: '/api/MaterialRequestEnquiriesDetails1/GetPurchaseRequestDetails',
+		type: 'GET',
+		data: {
+			fromDate: frmDate,
+			toDate: toDate
+		},
+		success: function (data) {
+			console.log("Returned Data: ", data); // debug
+			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+		},
+		error: function (xhr) {
+			console.log("AJAX Error", xhr.responseText); // debug
+			DevExpress.ui.notify("Error while loading data", "error", 2000);
+		}
+	});
+
+
+
+	}
+	function onContextMenuPreparing(e) {
+		if (e.target === "content" && e.row && e.row.data) {
+			const rowData = e.row.data;
+			const QuoteNo = encodeURIComponent(rowData.QuoteNo);
+			const tenantName = window.tenantName || "defaultTenant";
+
+			e.items = [
+				{
+					text: "Edit Quotation",
+					icon: "edit",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/AddNewQuotation?QuoteNo=${QuoteNo}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Duplicate Quotation",
+					icon: "doc",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Delete Quotation",
+					icon: "trash",
+					onItemClick: function () {
+						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
+							// Replace with your actual delete logic, e.g., an AJAX call
+							fetch(`/${tenantName}/ERM/DeleteRFQ?Rfqno=${Rfqno}`, {
+								method: 'DELETE'
+							})
+								.then(response => {
+									if (response.ok) {
+										alert(`RFQ ${Rfqno} deleted successfully.`);
+										// Refresh the DataGrid or remove the row
+										e.component.refresh();
+									} else {
+										alert(`Failed to delete RFQ ${Rfqno}.`);
+									}
+								})
+								.catch(error => {
+									console.error('Error deleting RFQ:', error);
+									alert('An error occurred while deleting the RFQ.');
+								});
+						}
+					}
+				},
+				{
+					text: "Unlock the Quotation",
+					icon: "unlock",
+					onItemClick: function () {
+						// Replace with your actual unlock logic, e.g., an AJAX call
+						fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
+							method: 'POST'
+						})
+							.then(response => {
+								if (response.ok) {
+									alert(`RFQ ${Rfqno} unlocked successfully.`);
+									// Optionally refresh the DataGrid
+									e.component.refresh();
+								} else {
+									alert(`Failed to unlock RFQ ${Rfqno}.`);
+								}
+							})
+							.catch(error => {
+								console.error('Error unlocking RFQ:', error);
+								alert('An error occurred while unlocking the RFQ.');
+							});
+					}
+				},
+				{
+					text: "Revise Quotation",
+					icon: "preferences",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				},
+				{
+					text: "Create Sales Order",
+					icon: "add",
+					onItemClick: function () {
+						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
+						window.location.href = url;
+					}
+				}
+			];
+		}
+	}
+</script>
+
+

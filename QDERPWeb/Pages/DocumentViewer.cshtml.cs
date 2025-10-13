@@ -5,16 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Reports;
-using QD.ERP.Web.Areas.Finance.Reports.AccountStatement;
-using QD.ERP.Web.Areas.Finance.Reports.BillsReceivable;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements;
-using QD.ERP.Web.Areas.Finance.Reports.Register;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReport;
-using QD.ERP.Web.Areas.Finance.Reports.TrialBalance.AgeingReports;
-using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Finance.Areas.Finance.Reports;
+using QD.ERP.Finance.Areas.Finance.Reports.AccountStatement;
+using QD.ERP.Finance.Areas.Finance.Reports.BillsReceivable;
+using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.Finance.Areas.Finance.Reports.Receivable_Statements;
+using QD.ERP.Finance.Areas.Finance.Reports.Register;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance.AgeingReport;
+using QD.ERP.Finance.Areas.Finance.Reports.TrialBalance.AgeingReports;
+using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Web.Reports;
 using System.Drawing;
 using System.IO;
@@ -1261,10 +1261,10 @@ namespace QD.ERP.Web.Pages
                         Console.WriteLine("Error processing company logo: " + ex.Message);
                     }
                 }
-                Report = new rpt201BillsPayable(
-                    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
-                );
+                //Report = new rpt201BillsPayable(
+                //    AccountId, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                //    companyNameAr, companyAddressAr, userName, _tenantDbContextHelper
+                //);
 
             }
             else if (reportName == "AgeingToday")

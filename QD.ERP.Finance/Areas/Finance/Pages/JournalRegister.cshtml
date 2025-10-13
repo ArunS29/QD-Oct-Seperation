@@ -1,0 +1,1695 @@
+﻿@page
+@using DevExtreme.AspNet.Mvc
+@using Microsoft.AspNetCore.Http
+@{
+
+    var userIdString = HttpContext.Session.GetString("UserId");
+    byte requesterIdByte = 0;
+    if (byte.TryParse(userIdString, out var byteVal))
+    {
+        requesterIdByte = byteVal;
+        ViewData["journalClaimerUserName"] = byteVal;
+    }
+}
+<style>
+    .dx-context-menu .dx-menu-item.dx-state-hover {
+        background-color: var(--title-background-color) !important;
+        color: white !important;
+    }
+
+        /* Also ensure icon gets white color */
+        .dx-context-menu .dx-menu-item.dx-state-hover .dx-icon {
+            color: white !important;
+        }
+    .titleCard-toggle1 {
+        display: none;
+    }
+    /* CSS */
+    .context-menu {
+        width: 250px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    .context-menu-item .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        margin-bottom: 5px;
+    }
+
+        .context-menu-item .menu-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .context-menu-item .menu-item:hover {
+            background-color: #d5e3f5;
+        }
+
+    .context-menu-item i {
+        margin-right: 10px;
+        font-size: 16px;
+        color: #333;
+    }
+
+    .spnRightClickGride {
+        color: #333;
+        font-size: 14px;
+    }
+
+
+    .spnRightClickGride {
+        margin-left: 10px;
+    }
+
+    #dropdownContainer {
+        position: absolute;
+        z-index: 1000;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        padding: 10px;
+    }
+
+    #dataGrid .dx-header-row .dx-datagrid-text-content {
+        font-weight: bold;
+        color: black;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout,#ddReports)) {
+        display: none !important;
+    }
+
+    .mainContainer {
+        width: 100%;
+    }
+
+    .titleCard-carousel {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        padding: 16px 24px 0 calc(var(--nav-w,0) + 24px);
+        scroll-snap-type: x mandatory;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        padding-left: 10px;
+    }
+
+    .titleCard-cards {
+        display: flex;
+        gap: 20px;
+        min-width: max-content
+    }
+
+    /* --------------  KPI CARD (core) -------------- */
+    .titleCard-card {
+        flex: 0 0 240px; /* exact width */
+        position: relative;
+        padding: 18px 20px;
+        border-radius: 16px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.12);
+        color: #fff;
+        font-weight: 600;
+        overflow: hidden;
+        scroll-snap-align: start;
+        padding-top: 10px;
+        transition: transform .3s ease,box-shadow .3s ease
+    }
+
+        .titleCard-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0,0,0,.25)
+        }
+
+    /* gradients */
+    .vibrant-pink {
+        background: linear-gradient(135deg,#ff0066,#ff66cc)
+    }
+
+    .cool-blue {
+        background: linear-gradient(135deg,#0066ff,#33ccff)
+    }
+
+    .deep-purple {
+        background: linear-gradient(135deg,#6a11cb,#2575fc)
+    }
+
+    .mint-green {
+        background: linear-gradient(135deg,#00c9a7,#92fe9d)
+    }
+
+    /* headline + subhead (static card only) */
+    #Static .value-block {
+        height: auto
+    }
+    /* let it grow */
+    #Static .value-slider {
+        position: static
+    }
+    /* stop slide animation */
+    #Static h2 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 700
+    }
+
+    #Static h6 {
+        font-size: 12px;
+        margin: 2px 0 0;
+        font-weight: 500;
+        opacity: .85
+    }
+
+    /* --------------  KPI inner elements -------------- */
+    .titleCard-card .title {
+        font-size: 14px;
+        opacity: .9
+    }
+
+    .value-block {
+        height: 28px;
+        overflow: hidden;
+        position: relative;
+        margin: 6px 0
+    }
+
+    .value-slider {
+        position: absolute;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        animation: slideValues 6s linear infinite
+    }
+
+        .value-slider span {
+            font-size: 24px;
+            line-height: 28px;
+            height: 28px
+        }
+
+    /* SVG icon inside value */
+    .titleCard-card svg {
+        width: 18px;
+        height: 18px;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: #fff
+    }
+
+    /* trend + bar */
+    .titleCard-card .trend {
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 4px
+    }
+
+    .titleCard-card .bar {
+        height: 6px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.25);
+        margin-top: 10px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .titleCard-card .bar span {
+            display: block;
+            height: 100%;
+            border-radius: 4px;
+            background: #fff;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        /* Percentage label inside the bar */
+        .titleCard-card .bar::after {
+            content: attr(data-percentage);
+            position: absolute;
+            right: 6px;
+            top: -22px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            opacity: 0.85;
+        }
+
+
+    /* overlay on hover */
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 12px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity .3s
+    }
+
+    .titleCard-card:hover .overlay {
+        opacity: 1
+    }
+
+    .overlay .detail {
+        font-size: 13px;
+        margin: 4px 0
+    }
+
+    .titleCard-toggle {
+        cursor: pointer;
+        font-size: 1.2rem;
+        height: 35px !important;
+        width: 35px;
+        background: var(--hover-bg-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .titleCard-toggle:hover {
+            color: #000;
+        }
+
+    .titleCard-card .header {
+        font-size: 15px !important;
+        font-weight: 600;
+        color: #fff !important;
+        opacity: 1 !important;
+        margin-bottom: 4px;
+        position: relative;
+    }
+
+
+    /* Ensure SVGs are visible and consistent */
+    .titleCard-card svg {
+        width: 18px !important;
+        height: 18px !important;
+        margin-right: 5px;
+        vertical-align: middle;
+        fill: white !important;
+    }
+    /* simple slide animation (balance, debit, credit) */
+    @@keyframes slideValues {
+        0%, 33% {
+            transform: translateY(0)
+        }
+
+        34%, 66% {
+            transform: translateY(-28px)
+        }
+
+        67%, 100% {
+            transform: translateY(-56px)
+        }
+    }
+
+    /* ----------- KPI CARDS: quick fixes ----------- */
+    .titleCard-carousel.collapsed {
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        transition: max-height .35s ease, padding .35s ease;
+    }
+
+    .titleCard-card .header {
+        position: relative;
+    }
+
+    .value-slider span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .ellipsis-cell {
+        max-width: 100%; /* let the column decide exact width */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer; /* lets the user know it’s hoverable */
+    }
+
+    .header {
+        display: flex !important;
+        background-color: transparent !important;
+    }
+
+    .title {
+        background: transparent !important;
+    }
+
+    .narration-cell {
+        white-space: normal;
+        word-break: break-word;
+        overflow: hidden;
+        padding: 4px 6px;
+        line-height: 1.4em;
+    }
+
+    .max-lines-1 {
+        max-height: calc(1.4em * 1);
+    }
+
+    .max-lines-2 {
+        max-height: calc(1.4em * 2);
+    }
+
+    .max-lines-4 {
+        max-height: calc(1.4em * 4);
+    }
+
+    .max-lines-8 {
+        max-height: calc(1.4em * 8);
+    }
+
+</style>
+<input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
+<div class="title" id="kpiCarousel">
+    <div class="titleCard-cards">
+
+        <!-- STATIC -->
+        <div id="Static" class="titleCard-card vibrant-pink">
+            <div class="value-block">
+                <h2 id="Journalregister"></h2>
+                <h6 id="QuickDiceERPSolutions5"></h6>
+               
+
+            </div>
+        </div>
+
+        <div id="cardVoucher" class="titleCard-card cool-blue">
+            <div class="header" id="accountingvoucherstotal"></div>
+            <div class="value-block">
+                <div class="value-slider">
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+
+                </div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail"><i class="fa-solid fa-book"></i> Today: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Week: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Month: 0</div>
+            </div>
+        </div>
+
+        <!-- DEBIT -->
+        <div id="cardDebit" class="titleCard-card deep-purple">
+            <div class="header" id="TotalsDebitjournal"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Verified: 0.00</div>
+                <div class="detail">Approved: 0.00</div>
+                <div class="detail">Posted: 0.00</div>
+            </div>
+        </div>
+
+        <!-- CREDIT -->
+        <div id="cardCredit" class="titleCard-card mint-green">
+            <div class="header" id="Totalscreditjournal"></div>
+            <div class="value-block">
+                <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+            </div>
+            <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+            @* <div class="bar"><span style="width:50%"></span></div> *@
+            <div class="overlay">
+                <div class="detail">Verified: 0.00</div>
+                <div class="detail">Approved: 0.00</div>
+                <div class="detail">Posted: 0.00</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="Head" atyle="margin-top:10px">
+ 
+        @await Html.PartialAsync("_JournalRegisterFooter")
+   
+</div>
+<!-- HTML -->
+<div class="content-container-top">
+    @* <div class="context-menu" id="contextMenu">
+        <div id="contextMenuContent"></div>
+        <div class="context-menu-item">
+            <div class="menu-item">
+                <i class="fa fa-pencil"></i>
+                <span class="spnRightClickGride spneditJournal">Edit Journal Entry Form</span>
+            </div>
+            <div class="menu-item">
+                <i class="fa fa-times"></i>
+                <span class="spnRightClickGride">Delete Journal Entry Form</span>
+            </div>
+            <div class="menu-item">
+                <i class="fa fa-unlock"></i>
+                <span class="spnRightClickGride">Unlock Journal Entry Form</span>
+            </div>
+            <div class="menu-item">
+                <i class="fa fa-clone"></i>
+                <span class="spnRightClickGride">Clone Journal Entry Form</span>
+            </div>
+        </div>
+    </div> *@
+
+<div class="dx-fieldset horizontal-container ">
+
+
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Requested By')"))
+        .DataSource(d => d.WebApi()
+        .Controller("ExpenseClaim")
+        .LoadAction("GetUser")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("UserId")
+        )
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("requestedBy")
+        .ShowClearButton(true)
+
+        .AcceptCustomValue(false) // ✅ Disallow typing custom values
+        .OpenOnFieldClick(true)   // ✅ Optional: better UX
+
+        .HoverStateEnabled(true)
+        .ValueExpr("UserId")
+        .DisplayExpr("UserName")
+        .Value(ViewData["journalClaimerUserName"])
+
+        .OnOpened("onOpened")
+        .Width(300)
+        .TabIndex(1)
+        .DropDownOptions(o => o.Width(300))
+        .OnKeyDown("onKeyDown")
+        .ContentTemplate(new TemplateName("AccountHeadContentTemplate"))
+        )
+    @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+
+            .ID("accounthead-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("ExpenseClaim")
+            .LoadAction("GetUser")
+            .LoadMode(DataSourceLoadMode.Raw)
+            ///   .Key("AccountHead") //salary paid entry
+            .Key("UserId")
+
+            )
+                    .SearchPanel(sp => sp.Visible(false)
+                    .HighlightSearchText(true)
+                    .SearchVisibleColumnsOnly(false))
+                    .OnToolbarPreparing("accountHeadToolbarPreparing")
+
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
+            .OnInitialized("dataGridAccountHeadInitialized")
+            // .HeaderFilter(p => p.Visible(true))
+
+
+
+
+
+            .Height(200)
+
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')"));
+                columns.Add().DataField("UserId").Visible(false);
+
+
+            })
+            )
+    }
+
+
+    @(Html.DevExtreme().DateBox()
+        .ID("startDate")
+        .InputAttr("aria-label", "Date")
+        .Label(new JS("formatMessage('Start Date')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+        .ElementAttr("class", "dynamicFormatDateBox"))
+    @(Html.DevExtreme().DateBox()
+        .ID("endDate")
+        .InputAttr("aria-label", "Date")
+        .Label(new JS("formatMessage('End Date')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+        .ElementAttr("class", "dynamicFormatDateBox"))
+    @(Html.DevExtreme().Button()
+        .ID("btnShowallsubmission") 
+        .Text(new JS("formatMessage('Show All Submissions')"))
+        .Type(ButtonType.Normal)
+        .StylingMode(ButtonStylingMode.Contained)
+        .Width(200)
+        .ElementAttr("class", "button-alignment-left")
+        .OnClick("getAllSubmissionJournal")
+        )
+
+    @(Html.DevExtreme().DropDownButton()
+        .ID("ddBtnShowRecords")
+        .Text(new JS("formatMessage('Show Records')"))
+        .Icon("smalliconslayout")
+        .Width(180)
+        .SplitButton(true)
+        .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
+        .DropDownOptions(options => options.Width(230))
+        .Items(items =>
+        {
+                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                )
+</div>
+<div class="dx-field ledgerResult"style="height:60vh;">
+    @(
+            Html.DevExtreme().DataGrid<QD.ERP.Shared.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
+            .ID("dataGrid")
+            .RemoteOperations(false)
+            .ShowBorders(true)
+            .Columns(columns =>
+            {
+                columns.AddFor(m => m.RequesterID).Caption(new JS("formatMessage('Requester ID')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.JournalRefNo).Caption(new JS("formatMessage('Journal Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                columns.AddFor(m => m.ApprovedBy).Caption(new JS("formatMessage('Approved By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.ApprovedOn).Caption(new JS("formatMessage('Approved On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalCreatedBy).Caption(new JS("formatMessage('Journal Created By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalCreatedOn).Caption(new JS("formatMessage('Journal Created On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalEffectiveDate).Caption(new JS("formatMessage('Journal Effective Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalModifiedBy).Caption(new JS("formatMessage('Journal Modified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalModifiedOn).Caption(new JS("formatMessage('Journal Modified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.PostedBy).Caption(new JS("formatMessage('Posted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.PostedOn).Caption(new JS("formatMessage('Posted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+              //  columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.SubmittedBy).Caption(new JS("formatMessage('Submitted By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.SubmittedOn).Caption(new JS("formatMessage('Submitted On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.VerifiedBy).Caption(new JS("formatMessage('Verified By')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.VerifiedOn).Caption(new JS("formatMessage('Verified On')")).Alignment(HorizontalAlignment.Center).Visible(false);
+                columns.AddFor(m => m.JournalEntryDate)
+            .Caption(new JS("formatMessage('Journal Entry Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
+            .Type(Format.ShortDate)    // Custom type format
+            .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
+                    columns.AddFor(m => m.JournalVoucherNarration)
+                    .Caption(new JS("formatMessage('Journal Voucher Narration')"))
+                    .CellTemplate(@<text>
+                                       <div title="<%- data.JournalVoucherNarration %>" class="narration-cell max-lines-1">
+                                           <%- data.JournalVoucherNarration %>
+                                       </div>
+                                   </text>)
+                    .Visible(true);
+                columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="debit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                    </text>)
+    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="credit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
+    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+                columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsSubmittedToFinance ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Verified')")).Alignment(HorizontalAlignment.Center)
+
+            .Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>).Visible(true);
+                columns.AddFor(m => m.IsPosted).Caption(new JS("formatMessage('Is Posted')")).Alignment(HorizontalAlignment.Center)
+            .CellTemplate(@<text>
+        <div class="dx-icon">
+            <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+        </div>
+    </text>
+        ).Visible(true);
+                columns.AddFor(m => m.PostedVoucherNo).Caption(new JS("formatMessage('Posted Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+            })
+        .Width("100%")
+        .Height("100%")
+        .Scrolling(scrolling => scrolling
+        .Mode(GridScrollingMode.Virtual) // Enables virtual scrolling
+        .UseNative(false)                // Optional: false for custom scrollbars
+        )
+        .Paging(paging => paging
+        .Enabled(false) // Disables pagination
+        )
+        .Selection(selection => selection.Mode(SelectionMode.Single))
+        //.WordWrapEnabled(true)
+        .ColumnAutoWidth(true)
+        .WordWrapEnabled(true)
+                .AllowColumnReordering(true)
+                .ColumnResizingMode(ColumnResizingMode.Widget)
+        .AllowColumnResizing(true)   // Enable column resizing
+        .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+        .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+        .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+        @*  .Editing(editing => editing
+    .AllowUpdating(true)    // Allow updating of existing rows
+    .AllowAdding(false)     // Disable adding new records
+    .AllowDeleting(false)   // Disable deleting records
+    .UseIcons(true))        // Enable edit icons (like pencil) *@
+        .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+        .ShowBorders(true)
+        .OnOptionChanged("handleGridOptionChanged")
+        @*  .Summary(s => s
+    .TotalItems(totalItems =>
+    {
+    totalItems.AddFor(m => m.RequesterID).SummaryType(SummaryType.Count);
+    })) *@
+        )
+</div>
+</div>
+
+
+<script type="text/javascript">
+    let accheadname, accheadid;
+    var onload = @requesterIdByte
+
+
+
+    $(function () {
+                $("#JournalRegister").dxTextBox({
+                        text:formatMessage("Journal Register"),
+                        readOnly: true,
+                        onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                }
+                });
+                    
+        getJournalOnLoad();
+            
+       
+
+        $(document).on('keydown', function (e) {
+            if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                $("#requestedBy").dxSelectBox("instance").focus();
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                $("#startDate").dxDateBox("instance").focus();
+            }
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                $("#endDate").dxDateBox("instance").focus();
+            }
+        });
+
+                   // ✅ Global keyboard navigation state
+           let currentIndex = 0;
+
+    $("#dataGrid").dxDataGrid({
+        // ... your grid options ...
+        onContextMenuPreparing: function (e) {
+            e.items = [];
+
+            if (e.target === "content" && e.row && e.row.rowType === "data") {
+                const rowData = e.row.data;
+
+                let menuConfig = [
+                    {
+                        text: "Edit Journal Voucher",
+                        icon: "edit",
+                        color: "#28a745",
+                        permissionKey: "frm20128JournalRegisterMain_EditJournal",
+                        onItemClick: function () {
+                            window.location.href = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(rowData.JournalRefNo)}`;
+                        }
+                    },
+                    {
+                        text: "Unlock Journal Voucher",
+                        icon: "unlock",
+                        color: "#17a2b8",
+                         permissionKey: "frm20128JournalRegisterMain_UnlockJournal",
+                        onItemClick: function () {
+                            handleUnlockJournalEntry(rowData.JournalRefNo, rowData.IsPosted);
+                        }
+                    },
+                    {
+                        text: "Delete Journal Voucher",
+                        icon: "trash",
+                        color: "#dc3545",
+                         permissionKey: "frm20128JournalRegisterMain_DeleteJournal",
+                        onItemClick: function () {
+                            handleDeleteJournalEntry(rowData.JournalRefNo);
+                        }
+                    },
+                    {
+                        text: "Clone Journal Voucher",
+                        icon: "copy",
+                        color: "#6c757d",
+                         permissionKey: "frm20128JournalRegisterMain_CloneJournal",
+                        onItemClick: function () {
+                            handleCloneJournalEntry(rowData.JournalRefNo, rowData.RequesterID);
+                        }
+                    }
+                ];
+                    // Apply permissions
+                menuConfig.forEach(item => {
+                    let perm = menuPermissions[item.permissionKey?.toLowerCase()];
+                    if (perm && perm.visible) {
+                        e.items.push({
+                            ...item,
+                            disabled: !perm.enabled
+                        });
+                    }
+                });
+            }
+
+            if (e.target === "header") {
+                e.items.push(
+                    {
+                        text: "Column Chooser",
+                        icon: "columnchooser",
+                        color: "#007bff",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").showColumnChooser();
+                        }
+                    },
+                    {
+                        text: "Refresh Data",
+                        icon: "refresh",
+                        color: "#ffc107",
+                        onItemClick: function () {
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        }
+                    }
+                );
+            }
+
+            // highlight first item after menu opens
+        // setTimeout(() => {
+        //     const menuItems = $(".dx-context-menu .dx-menu-item");
+        //     if (menuItems.length) {
+        //         currentIndex = 0;
+        //         highlightItem(menuItems[currentIndex]);
+        //     }
+        // }, 50);
+        }
+    });
+
+        // ---- helpers ----
+    function isMenuOpen() {
+        const m = document.querySelector(".dx-context-menu");
+        return m && m.style.display === "block";
+    }
+
+    function highlightItem(item) {
+        document.querySelectorAll(".dx-context-menu .dx-menu-item").forEach(li => li.classList.remove("highlighted"));
+        if (item) item.classList.add("highlighted");
+    }
+
+    function hideContextMenu() {
+        const menu = $(".dx-context-menu").dxContextMenu("instance");
+        if (menu) menu.hide();
+        currentIndex = 0;
+    }
+
+    // ---- global listeners ----
+
+    // // 1) Keyboard navigation
+    // $(document).on("keydown", function (e) {
+    //     const menuItems = $(".dx-context-menu .dx-menu-item");
+    //     if (!isMenuOpen() || !menuItems.length) return;
+
+    //     e.preventDefault();
+    //     e.stopPropagation();
+
+    //     if (e.key === "ArrowDown") {
+    //         currentIndex = (currentIndex + 1) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //     } else if (e.key === "ArrowUp") {
+    //         currentIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+    //         highlightItem(menuItems[currentIndex]);
+    //     } else if (e.key === "Enter" || e.key === " ") {
+    //         $(menuItems[currentIndex]).trigger("dxclick");
+    //     } else if (e.key === "Escape") {
+    //         hideContextMenu();
+    //     }
+    // });
+
+    // 2) Mouse hover sync
+    $(document).on("mouseenter", ".dx-context-menu .dx-menu-item", function () {
+        const menuItems = $(".dx-context-menu .dx-menu-item");
+        currentIndex = menuItems.index(this);
+        highlightItem(this);
+    });
+
+    // ✅ Custom CSS
+    $("<style>")
+        .prop("type", "text/css")
+        .html(`
+            /* Remove DevExtreme default hover/focus */
+            .dx-context-menu .dx-menu-item.dx-state-focused,
+            .dx-context-menu .dx-menu-item.dx-state-hover {
+                    background-color: var(--title-background-color) !important;
+                    color: white !important;
+            }
+
+            /* Our unified highlight */
+            .dx-context-menu .dx-menu-item.highlighted {
+                   background-color: var(--title-background-color) !important;
+                   color: white !important;
+            }
+        `)
+        .appendTo("head");
+
+
+
+
+            // function handleEditJournalEntry() {
+            //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+            //     const selectedRow = dataGrid.getSelectedRowsData();
+
+            //     if (selectedRow.length > 0) {
+            //         const journalRefNo = selectedRow[0].JournalRefNo;
+            //         if (journalRefNo && journalRefNo.trim() !== "") {
+            //             const targetUrl = `/${tenantName}/Finance/JournalEntryEdit?journalRefNo=${encodeURIComponent(journalRefNo)}`;
+            //             window.location.href = targetUrl;
+            //         } else {
+            //             alert("Journal Reference Number is missing.");
+            //         }
+            //     } else {
+            //         alert("Please select a row to edit.");
+            //     }
+            // }
+
+            function handleDeleteJournalEntry(journalRefNo) {
+                
+
+                    if (journalRefNo && journalRefNo.trim() !== "") {
+                        $.ajax({
+                            type: "GET",
+                            url: "/api/JournalRegister/GetJournalStatus",
+                            contentType: "application/json",
+                            data: { journalRefNo: journalRefNo },
+                            success: function (response) {
+                                if (response) {
+                                    const { isSubmitted, isApproved, isPosted } = response;
+
+                                    if (isSubmitted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Submitted, You cannot delete the Submitted JV.", "JV is submitted already");
+                                    } else if (!isSubmitted && isApproved || isPosted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Approved, You cannot delete the Approved JV.", "JV is Approved already");
+                                    } else if (isSubmitted && isApproved && isPosted) {
+                                        DevExpress.ui.dialog.alert("Journal Entry is already Paid, You cannot delete the Posted JV.", "Warning");
+                                    } else if (!isSubmitted && !isApproved && !isPosted) {
+                                        let result = DevExpress.ui.dialog.confirm(
+                                            "You are about to delete the Journal Entry from the Register,<br/>Click Yes if you would like to continue.",
+                                            "Confirm Deletion"
+                                        );
+                                        result.done(function (dialogResult) {
+                                            if (dialogResult) {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: `/api/JournalRegister/DeleteJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                                                    contentType: "application/json",
+                                                    success: function (deleteResponse) {
+                                                        if (deleteResponse.success) {
+                                                            getAllSubmissionJournal();
+                                                            DevExpress.ui.notify("Journal Entry deleted successfully.", "success", 2000);
+                                                        } else {
+                                                            DevExpress.ui.notify("Failed to delete Journal Entry.", "error", 2000);
+                                                        }
+                                                    },
+                                                    error: function () {
+                                                        DevExpress.ui.notify("Error occurred during deletion.", "error", 2000);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    DevExpress.ui.notify("Failed to fetch journal status.", "error", 2000);
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Error fetching journal status.", "error", 2000);
+                            }
+                        });
+                    } else {
+                        DevExpress.ui.dialog.alert("Journal Reference Number is missing.", "Error");
+                    }
+                
+            }
+
+
+               function handleUnlockJournalEntry(journalRefNo, isPosted) {
+        if (!journalRefNo) {
+            DevExpress.ui.notify("Invalid Journal Reference Number.", "error", 2000);
+            return;
+        }
+
+        if (isPosted) {
+            DevExpress.ui.dialog.alert("Claim is already Posted, You can't unlock the Posted JV.", "JV is posted already");
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm(
+            "You are about to unlock the JV.</br>Click Yes if you would like to continue.",
+            "Unlock Confirmation"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: `/api/JournalRegister/UnlockJournalEntry?journalRefNo=${encodeURIComponent(journalRefNo)}`,
+                    type: 'POST',
+                    contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            getAllSubmissionJournal();
+                            DevExpress.ui.notify("Journal Entry unlocked successfully.", "success", 2000);
+                        } else {
+                            DevExpress.ui.notify("Failed to unlock Journal Entry: " + response.message, "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("An error occurred while unlocking the Journal Entry.", "error", 3000);
+                    }
+                });
+            }
+        });
+    }
+
+                   function handleCloneJournalEntry(journalRefNo, requesterId) {
+        if (!journalRefNo) {
+            DevExpress.ui.notify("Invalid Journal Reference Number.", "warning", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm(
+            "You are about to clone the Journal Entry.</br>Click Yes if you would like to continue.",
+            "Confirm Clone"
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                // Step 1: Get new voucher number
+                $.get('/api/JournalEntryEdit/GetNewVoucherNo', function (newVoucherNo) {
+                    // Step 2: Call clone action
+                    $.ajax({
+                        url: '/api/JournalRegister/CloneJournalEntry',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            fromJournalRefNo: journalRefNo,
+                            toJournalRefNo: newVoucherNo,
+                            requesterId: requesterId
+                        }),
+                        success: function (response) {
+                            if (response.success) {
+                                getAllSubmissionJournal();
+                                DevExpress.ui.notify("Journal Entry cloned successfully.", "success", 2000);
+                            } else {
+                                DevExpress.ui.notify("Clone failed: " + response.message, "error", 3000);
+                            }
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Error: " + xhr.statusText, "error", 3000);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+
+
+            // $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+            //     e.preventDefault(); // Prevent the default browser context menu
+            //     e.stopPropagation(); // Stop the event from bubbling to document
+
+            //     const rowIndex = $(this).index();
+            //     const rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+
+            //     console.log(rowData);
+
+            //     // Clear previous context
+            //     $("#contextMenuContent").empty();
+
+            //     // Optionally display key info in hidden input or div
+            //     $("#contextMenuContent").append("<div style='display:none'><strong>Voucher No:</strong> " + rowData.VoucherNo + "</div>");
+
+            //     // Show context menu at cursor position
+            //     $("#contextMenu").css({
+            //         top: e.pageY + "px",
+            //         left: e.pageX + "px"
+            //     }).show();
+            // });
+
+        $("#dataGrid").dxDataGrid({
+            onRowUpdating: function (e) {
+                console.log("Row is updating", e);
+            },
+            onSaving: function (e) {
+                const changes = e.changes;
+
+                // Prepare data to send to the server
+                //alert(JSON.stringify(changes));
+                const updatedData = changes.map(change => change.data);
+
+                // If no changes are made, exit early
+                if (updatedData.length === 0) {
+                    return;
+                }
+
+                // Send the data to the server via AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "/api/JournalRegister/UpdateData", // Adjust the URL to your controller and action
+                    contentType: "application/json",
+                    data: JSON.stringify(updatedData),
+                    success: function (response) {
+                        if (response.success) {
+                            // Reload or refresh the grid if needed
+                            $("#dataGrid").dxDataGrid("instance").refresh();
+                        } else {
+                            alert("Update failed: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // alert("Error occurred while updating data: " + error);
+                    }
+                });
+            }
+        });
+    });
+    function formatedate(dateval) {
+        var dateObject = new Date(dateval);
+        // Extract year, month, and day
+        var year = dateObject.getFullYear(); // 2024
+        var month = ('0' + (dateObject.getMonth() + 1)).slice(-2); // Months are 0-based, so add 1 and format
+        var day = ('0' + dateObject.getDate()).slice(-2); // Format day to ensure two digits
+        // Format as YYYY-MM-DD
+        var formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+    function getJournalOnLoad() {
+        var requesterID = @requesterIdByte
+        // Get the current date
+        var currentDate = new Date();
+        // Get the start date of the current month
+        var startDateval = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        var startDate = formatedate(startDateval);
+        // Get the end date of the current month
+        var endDateval = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        var endDate = formatedate(endDateval);
+
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterID, // Set this according to your logic
+                StartDate: startDate, // Start date
+                EndDate: endDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectCurrencyToCards();
+                        injectHeaderSVG();
+                     updateCards(data);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+              //  DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+
+    }
+    function getAllSubmissionJournal() {
+        var requestedByInstance = $("#requestedBy").dxDropDownBox("instance");
+        var requesterId = requestedByInstance.option("value");
+
+        var startDateInstance = $("#startDate").dxDateBox("instance");
+        var startDateval = startDateInstance.option("value");
+        var startDate = formatedate(startDateval);
+
+        var endDateInstance = $("#endDate").dxDateBox("instance");
+        var endDateval = endDateInstance.option("value");
+        var endDate = formatedate(endDateval);
+
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: accheadid || '@requesterIdByte', // Set this according to your logic
+                StartDate: startDate, // Start date
+                EndDate: endDate, // End date
+                IfShowAll: true
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectCurrencyToCards();
+                        injectHeaderSVG();
+                             updateCards(data);
+                // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                // DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+
+
+    // This function used to call API to get records for the selected values.
+    function ddBtnShowRecords_click(duration) {
+        var requestedByInstance = $("#requestedBy").dxDropDownBox("instance");
+        var selectedUserName = requestedByInstance.option("value");
+
+
+
+        var requesterId = accheadid || '@requesterIdByte';
+
+
+        var frmDateBox = $("#startDate").dxDateBox("instance");
+        var toDateBox = $("#endDate").dxDateBox("instance");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        switch (duration) {
+            case 'today':
+                frmDate = toDate = currentDate;
+                break;
+            case 'yesterday':
+                var dateObj = new Date();
+                // Subtract one day from current time
+                dateObj.setDate(dateObj.getDate() - 1);
+                frmDate = toDate = dateObj;
+                break;
+            case 'week':
+                var dayOfWeek = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
+
+                // Calculate the start of the week (Saturday)
+                var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; // Adjust to get Saturday
+
+                // Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+                frmDate = new Date(currentDate.setDate(startOfWeek - 7)); // 7 days before Saturday
+                toDate = new Date(currentDate.setDate(startOfWeek - 1));
+                break;
+            case 'tillmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = currentDate; //Today
+                break;
+            case 'fullmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'tillyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = currentDate;// Today
+                break;
+            case 'fullyear':
+                // Get the first and last day of the current year
+                frmDate = new Date(currentDate.getFullYear(), 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); // Last day of month
+                break;
+            case 'lastyear':
+                // Get the first and last day of the last year
+                frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); // First day of year (January 1)
+                toDate = new Date(currentDate.getFullYear() - 1, 11, 31); // Last day of month
+                break;
+            case 'lastmonth':
+                // Get the first and last day of the current month
+                frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
+                toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+                break;
+        }
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterId, // Set this according to your logic
+                StartDate: frmDate, // Start date
+                EndDate: toDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectHeaderSVG();
+                                injectCurrencyToCards();
+                                 updateCards(data);
+                DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+              //  DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+    // Function to format date in required format
+
+
+
+    $(document).ready(function () {
+        if (sessionStorage.getItem("refreshPage") === "true") {
+            sessionStorage.removeItem("refreshPage"); // Clear flag
+            location.reload(); // Refresh the page
+        }
+        $(".limited-footer .btn-containerIvoiceEdit").each(function () {
+            if (!$(this).find("#btnPrint, #btnToggleSearch, #btntoggleGroupPanel, #btnCreateNew, #ddButtonLayout").length) {
+                $(this).remove();
+            }
+        });
+    });
+
+    function Refreshgrid() {
+
+        var dropDownBoxInstance = $("#requestedBy").dxSelectBox("instance");
+        var selectedValue = dropDownBoxInstance.option("value");
+        var requesterID = selectedValue ? selectedValue.UserId : null;
+
+        if (dropDownBoxInstance.option("value") === null) {
+            alert("Please select a requestedBy.");
+            return;
+        }
+        var frmDateBox = $("#startDate").dxDateBox("instance");
+        var toDateBox = $("#endDate").dxDateBox("instance");
+        var frmDate = new Date(frmDateBox.option("value"));
+        var toDate = new Date(toDateBox.option("value"));
+        var currentDate = new Date();
+        frmDate = frmDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        toDate = toDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        frmDateBox.option("value", frmDate);  // Set frmDateBox value
+        toDateBox.option("value", toDate);    // Set toDateBox value
+        $.ajax({
+            url: '/api/JournalRegister/GetJournalview',  // API endpoint
+            type: 'GET',
+            data: {
+                RequesterID: requesterID, // Set this according to your logic
+                StartDate: frmDate, // Start date
+                EndDate: toDate, // End date
+                IfShowAll: false // Set to
+            },
+            success: function (data) {
+                // Bind the data to the DataGrid
+                $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                DevExpress.ui.notify("Data fetched successfully", "success", 2000);
+            },
+            error: function () {
+                //  DevExpress.ui.notify("Error while loading data", "error", 2000);
+            }
+        });
+    }
+
+    function dataGridAccountHeadSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#requestedBy").dxDropDownBox("instance");
+        acchead = selectedKey;
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+            var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            // Get ReferenceNo from selected row
+            debugger
+            if (selectedRowData.length > 0) {
+                accheadid = selectedRowData[0].UserId;
+                accheadname = selectedRowData[0].UserName;
+
+
+            } else {
+                DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+                return;
+            }
+        }
+    }
+
+
+    function dataGridAccountHeadInitialized(e) {
+        dataGrid = e.component;
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else {
+            let focusedIndex = dataGrid.option("focusedRowIndex");
+            let visibleRows = dataGrid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+        }
+    }
+              function ChangeRowHeight(height) {
+                const grid = $("#dataGrid").dxDataGrid("instance");
+
+                // Set row height
+                $(".dx-datagrid-rowsview .dx-row").css("height", height + "px");
+
+                // Remove previous line-limit classes
+                $(".narration-cell").removeClass("max-lines-1 max-lines-2 max-lines-4 max-lines-8");
+
+                // Apply based on height
+                let classToAdd = "";
+
+                if (height <= 30) classToAdd = "max-lines-1";
+                else if (height <= 60) classToAdd = "max-lines-2";
+                else if (height <= 90) classToAdd = "max-lines-4";
+                else classToAdd = "max-lines-8";
+    }
+
+        function injectHeaderSVG() {
+            $.ajax({
+                url: '/api/AccountingLedgers/GetCurrencyIcon',
+                type: 'GET',
+                success: function (response) {
+                    
+                    let svgIcon = response.Icon;
+                    if (!svgIcon) return;
+
+                    // Set default width/height for SVG if needed
+                    if (svgIcon.startsWith("<svg")) {
+                        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                    } else {
+                        // If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+                        svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+                    }
+
+                    let $grid = $('#dataGrid');
+                    let gridInstance = $grid.dxDataGrid("instance");
+                    if (!gridInstance) return;
+
+                    $grid.find(".dx-header-row td").each(function () {
+                        const $cell = $(this);
+
+                        const $debitHeader = $(".debit-header");
+                        const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                        $debitHeader.data("original-text", debitText);
+                        $debitHeader.html(`
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                ${svgIcon}
+                                <span style="font-weight: bold;">${debitText}</span>
+                            </div>
+                        `);
+
+                        const $creditHeader = $(".credit-header");
+                        const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                        $creditHeader.data("original-text", creditText);
+                        $creditHeader.html(`
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                ${svgIcon}
+                                <span style="font-weight: bold;">${creditText}</span>
+                            </div>
+                        `);
+
+                        
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Failed to load currency icon:", xhr.responseText);
+                }
+            });
+        }
+
+        function injectCurrencyToCards() {
+            $.ajax({
+                url: "/api/AccountingLedgers/GetCurrencyIcon",
+                method: "GET",
+                success: function (response) {
+                    
+                    if (!response || !response.Icon) return;
+
+                    const icon = response.Icon.trim();
+
+
+
+                    // Inject into Debit
+                    $('#cardDebit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+
+                    // Inject into Credit
+                    $('#cardCredit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+                },
+                error: function (err) {
+                    console.error("Failed to load currency icon:", err);
+                }
+            });
+        }
+                 function updateCards(data) {
+        const now = new Date();
+
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const thisWeekStart = new Date(today);
+        thisWeekStart.setDate(today.getDate() - today.getDay());
+        const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        let totalDr = 0, totalCr = 0;
+        let todayDr = 0, weekDr = 0, monthDr = 0;
+        let todayCr = 0, weekCr = 0, monthCr = 0;
+
+        const uniqueVoucherToday = new Set();
+        const uniqueVoucherWeek = new Set();
+        const uniqueVoucherMonth = new Set();
+
+        data.forEach(item => {
+            if (!item.JournalEntryDate) return;
+
+            const voucherDate = new Date(item.JournalEntryDate);
+            const dateOnly = new Date(voucherDate.getFullYear(), voucherDate.getMonth(), voucherDate.getDate());
+
+            const dr = parseFloat(item.DrAmountTotal || 0);
+            const cr = parseFloat(item.CrAmountTotal || 0);
+
+            totalDr += dr;
+            totalCr += cr;
+
+            const voucherNo = item.JournalRefNo;
+
+            if (+dateOnly === +today) {
+                todayDr += dr;
+                todayCr += cr;
+                if (voucherNo) uniqueVoucherToday.add(voucherNo);
+            }
+
+            if (dateOnly >= thisWeekStart && dateOnly <= today) {
+                weekDr += dr;
+                weekCr += cr;
+                if (voucherNo) uniqueVoucherWeek.add(voucherNo);
+            }
+
+            if (dateOnly >= thisMonthStart && dateOnly <= today) {
+                monthDr += dr;
+                monthCr += cr;
+                if (voucherNo) uniqueVoucherMonth.add(voucherNo);
+            }
+        });
+
+        const format = num => num.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        // ===== Update Total Debit Card =====
+        $("#cardDebit .value-slider span").eq(0).html(format(todayDr));
+        $("#cardDebit .value-slider span").eq(1).html(format(weekDr));
+        $("#cardDebit .value-slider span").eq(2).html(format(monthDr));
+        $("#cardDebit .overlay .detail").eq(0).html(formatMessage("Today") + `: ${format(todayDr)}`);
+        $("#cardDebit .overlay .detail").eq(1).html(formatMessage("This Week") + `: ${format(weekDr)}`);
+        $("#cardDebit .overlay .detail").eq(2).html(formatMessage("This Month") + `: ${format(monthDr)}`);
+
+        // ===== Update Total Credit Card =====
+        $("#cardCredit .value-slider span").eq(0).html(format(todayCr));
+        $("#cardCredit .value-slider span").eq(1).html(format(weekCr));
+        $("#cardCredit .value-slider span").eq(2).html(format(monthCr));
+        $("#cardCredit .overlay .detail").eq(0).html(formatMessage("Today") + `: ${format(todayCr)}`);
+        $("#cardCredit .overlay .detail").eq(1).html(formatMessage("This Week") + `: ${format(weekCr)}`);
+        $("#cardCredit .overlay .detail").eq(2).html(formatMessage("This Month") + `: ${format(monthCr)}`);
+
+        function getVoucherStatus(voucherSet, startDate, endDate) {
+            let approved = 0, posted = 0;
+            voucherSet.forEach(voucherNo => {
+                const filtered = data.filter(item =>
+                    item.JournalRefNo === voucherNo &&
+                    item.JournalEntryDate &&
+                    new Date(item.JournalEntryDate) >= startDate &&
+                    new Date(item.JournalEntryDate) <= endDate
+                );
+                if (filtered.some(x => x.IsApproved)) approved++;
+                if (filtered.some(x => x.IsPosted)) posted++;
+            });
+            return { total: voucherSet.size, approved, posted };
+        }
+
+        // ===== Voucher Summary =====
+        let totalCount = 0, approvedCount = 0, postedCount = 0;
+        const countedVouchers = new Set();
+
+        data.forEach(item => {
+            if (!item.JournalRefNo) return;
+            totalCount++;
+            if (!countedVouchers.has(item.JournalRefNo)) {
+                const matching = data.filter(x => x.JournalRefNo === item.JournalRefNo);
+                if (matching.some(x => x.IsApproved)) approvedCount++;
+                if (matching.some(x => x.IsPosted)) postedCount++;
+                countedVouchers.add(item.JournalRefNo);
+            }
+        });
+
+        const todayStatus = getVoucherStatus(uniqueVoucherToday, today, today);
+        const weekStatus = getVoucherStatus(uniqueVoucherWeek, thisWeekStart, today);
+        const monthStatus = getVoucherStatus(uniqueVoucherMonth, thisMonthStart, today);
+
+        $("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Today")}: ${todayStatus.total}`);
+        $("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Week")}: ${weekStatus.total}`);
+        $("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Month")}: ${monthStatus.total}`);
+
+        $("#cardVoucher .overlay .detail").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Total")}: ${totalCount}`);
+        $("#cardVoucher .overlay .detail").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Approved")}: ${approvedCount}`);
+        $("#cardVoucher .overlay .detail").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Posted")}: ${postedCount}`);
+    }
+
+
+
+
+        // Utility: check if two dates are the same (ignoring time)
+        function isSameDate(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
+        }
+
+    function handleGridOptionChanged(e) {
+        if (e.name === "columns" || e.name === "visible") {
+            // Columns changed, so re-inject SVG
+             injectHeaderSVG();
+             injectCurrencyToCards();// slight delay to wait for DOM re-render
+        }
+    }
+        $(function () {
+            $("#Journalregister").text(formatMessage("Journal Register"));
+        });
+        $(function () {
+            $("#QuickDiceERPSolutions5").text(formatMessage("Quick Dice ERP Solutions"));
+        });
+        $(function () {
+            $("#accountingvoucherstotal").text(formatMessage("Total Vouchers"));
+        });
+        $(function () {
+            $("#TotalsDebitjournal").text(formatMessage("Total Debit"));
+        });
+        $(function () {
+            $("#Totalscreditjournal").text(formatMessage("Total Credit"));
+        });
+      
+       function accountHeadToolbarPreparing(e) {
+        const grid = e.component;
+        const items = e.toolbarOptions.items;
+
+        // Build our toggle button
+        const searchToggle = {
+            location: "after",
+            widget: "dxButton",
+            options: {
+                icon: "search",
+                hint: "Toggle Search Panel",
+               onClick: function () {
+                    const visible = grid.option("filterRow.visible");
+                    grid.option("filterRow.visible", !visible);
+                }
+
+            }
+        };
+
+        // Insert right after the built-in Column Chooser button if present
+        const ccIndex = items.findIndex(i => i.name === "columnChooserButton");
+        if (ccIndex >= 0) {
+            items.splice(ccIndex + 1, 0, searchToggle);
+        } else {
+            // Fallback: just add it to the right side
+            items.push(searchToggle);
+        }
+    }
+</script>
+

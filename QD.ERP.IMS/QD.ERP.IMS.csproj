@@ -1,0 +1,97 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Areas\IMS\Reports\DeliveryNote\DeliveryNoteWithCostPrice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\DeliveryNote\DotMatrics.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\DeliveryNote\previewDeliveryNote.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\DeliveryNote\PreviewDeliveryNotewithPrice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\DeliveryNote\ReportforMaterialIssueNote .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\Materialrequest\MaterialPurcchaseRequestion.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\Materialrequest\MaterialRequestInventory.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\PurchaseOrder\PreviewPurchaseOrder.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\PurchaseOrder\PreviewPurchaseOrderForeignCurrency.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\PurchaseOrder\PreviewPurchaseOrderWithoutVAT.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\PurchaseOrder\PreviewPurchaseOrderWithoutVATwWithoutTotalPrice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\GroupCode.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\IMSContext.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\PreviewQuotations.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\PreviewQuotationwithadditionalDetails.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\PreviewQuotationWithImage.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\PreviewQuotationwithoutPrice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\PreviewQuotationWithSubGroup.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\QuotationWOvat.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\vatTotalPricewithout.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\withoutvatDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\quotationstoClients\wtDiscount.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\RFQ\RFQEdit .cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\SalesOrder\SalesOrderReport.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\SalesOrder\SalesOrderReportWithoutPrice.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+    <Compile Update="Areas\IMS\Reports\StockInventory\InventoryReportWithExpireDates.cs">
+      <SubType>XtraReport</SubType>
+    </Compile>
+  </ItemGroup>
+
+
+
+</Project>
