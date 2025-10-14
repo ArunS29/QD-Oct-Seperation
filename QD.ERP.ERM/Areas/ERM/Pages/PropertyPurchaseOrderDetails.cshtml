@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.ERM.Areas.ERM.Pages.PropertyPurchaseOrderDetailsModel
+@model QD.ERP.Web.Areas.ERM.Pages.PropertyPurchaseOrderDetailsModel
 @{
 }
 
@@ -283,53 +283,190 @@
 </div>
 
 <script>
-		   $(function () {
-	 $("#PurchaseInvoiceWithDetails").text(formatMessage("Purchase Order Details"));
+		$(function () {
+			var now = new Date();
+			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
+			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
+			ddBtnShowRecords_click('range');
+	});
+
+	function ddBtnShowRecords_click(duration) {
+		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		var toDateBox = $("#todateBox").dxDateBox("instance");
+		var frmDate = new Date(frmDateBox.option("value"));
+		var toDate = new Date(toDateBox.option("value"));
+		var currentDate = new Date();
+
+		switch (duration) {
+			case 'today':
+				frmDate = toDate = currentDate;
+				break;
+			case 'yesterday':
+				var dateObj = new Date();
+				dateObj.setDate(dateObj.getDate() - 1);
+				frmDate = toDate = dateObj;
+				break;
+			case 'week':
+				var dayOfWeek = currentDate.getDay();
+				var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
+				frmDate = new Date(currentDate.setDate(startOfWeek));
+				toDate = new Date(currentDate.setDate(startOfWeek + 6));
+				break;
+			case 'tillmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = currentDate;
+				break;
+			case 'fullmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+				break;
+			case 'tillyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = currentDate;
+				break;
+			case 'fullyear':
+				frmDate = new Date(currentDate.getFullYear(), 0, 1);
+				toDate = new Date(currentDate.getFullYear(), 11, 31);
+				break;
+			case 'lastyear':
+				frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
+				toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
+				break;
+			case 'lastmonth':
+				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+				break;
+		}
+
+		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		FromDate = frmDate;
+		ToDate = toDate;
+
+		frmDateBox.option("value", frmDate);
+		toDateBox.option("value", toDate);
+
+		$.ajax({
+			url: '/api/EQPurchaseOrder/GetpurchaseDetails',
+			type: 'GET',
+			data: {
+				frmDate: frmDate,
+				toDate: toDate
+			},
+			success: function (data) {
+			// Handle data whether it's an array or an object with 'data' property
+			var dataArray = [];
+
+			if (Array.isArray(data)) {
+				// // If data itself is an array
+				dataArray = data;
+			} else if (data && Array.isArray(data.data)) {
+				// If data has a 'data' array property (DevExtreme style)
+				dataArray = data.data;
+			} else {
+				// Fallback: wrap single object in array
+				dataArray = [data];
+			}
+
+			// Set DataGrid data source
+			var dataGrid = $("#dataGrid").dxDataGrid("instance");
+			dataGrid.option("dataSource", dataArray);
+
+			// Access first and last elements safely
+			if (dataArray.length > 0) {
+				var firstRow = dataArray[0];
+				var lastRow = dataArray[dataArray.length - 1];
+
+				var firstRowVoucherAmountFormatted = firstRow.VoucherAmountFormatted || 0;
+				var lastRowVoucherAmountFormatted = lastRow.VoucherAmountFormatted || 0;
+
+				console.log("First Row:", firstRowVoucherAmountFormatted);
+				console.log("Last Row:", lastRowVoucherAmountFormatted);
+			}
+		},
+
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+
+	$(function () {
+		 $("#PurchaseInvoiceWithDetails").text(formatMessage("Purchase Order Details"));
+	});
+
 	
-		   var now = new Date();
-		   var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-		   var toDateBox = $("#todateBox").dxDateBox("instance");
-		   frmDateBox.option("value", new Date(now.getFullYear(), now.getMonth(), 1));
-		   toDateBox.option("value", new Date(now.getFullYear(), now.getMonth() + 1, 0));
+	
+		  //  var now = new Date();
+		  //  var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		  //  var toDateBox = $("#todateBox").dxDateBox("instance");
+		  //  frmDateBox.option("value", new Date(now.getFullYear(), now.getMonth(), 1));
+		  //  toDateBox.option("value", new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
-		   // load initial
-		   ddBtnShowRecords_click('range');
-	   });
+		  //  load initial
+		  //  ddBtnShowRecords_click('range');
+	   // });
 
-	   function ddBtnShowRecords_click(duration) {
-		   var frmDateBox = $("#frmdateBox").dxDateBox("instance");
-		   var toDateBox = $("#todateBox").dxDateBox("instance");
+	   // function ddBtnShowRecords_click(duration) {
+		  //  var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+		  //  var toDateBox = $("#todateBox").dxDateBox("instance");
 
-		   var frmDate = new Date(frmDateBox.option("value"));
-		   var toDate = new Date(toDateBox.option("value"));
-		   var currentDate = new Date();
+		  //  var frmDate = new Date(frmDateBox.option("value"));
+		  //  var toDate = new Date(toDateBox.option("value"));
+		  //  var currentDate = new Date();
 
-		   switch (duration) {
-			   case 'today': frmDate = toDate = currentDate; break;
-			   case 'yesterday': var d = new Date(); d.setDate(d.getDate() - 1); frmDate = toDate = d; break;
-			   case 'week': var day = currentDate.getDay(); var start = currentDate.getDate() - day; frmDate = new Date(currentDate.setDate(start)); toDate = new Date(currentDate.setDate(start + 6)); break;
-			   case 'tillmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); toDate = currentDate; break;
-			   case 'fullmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); break;
-			   case 'tillyear': frmDate = new Date(currentDate.getFullYear(), 0, 1); toDate = currentDate; break;
-			   case 'fullyear': frmDate = new Date(currentDate.getFullYear(), 0, 1); toDate = new Date(currentDate.getFullYear(), 11, 31); break;
-			   case 'lastmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); break;
-			   case 'lastyear': frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); toDate = new Date(currentDate.getFullYear() - 1, 11, 31); break;
-		   }
+		  //  switch (duration) {
+			 //   case 'today': frmDate = toDate = currentDate; break;
+			 //   case 'yesterday': var d = new Date(); d.setDate(d.getDate() - 1); frmDate = toDate = d; break;
+			 //   case 'week': var day = currentDate.getDay(); var start = currentDate.getDate() - day; frmDate = new Date(currentDate.setDate(start)); toDate = new Date(currentDate.setDate(start + 6)); break;
+			 //   case 'tillmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); toDate = currentDate; break;
+			 //   case 'fullmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); break;
+			 //   case 'tillyear': frmDate = new Date(currentDate.getFullYear(), 0, 1); toDate = currentDate; break;
+			 //   case 'fullyear': frmDate = new Date(currentDate.getFullYear(), 0, 1); toDate = new Date(currentDate.getFullYear(), 11, 31); break;
+			 //   case 'lastmonth': frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); break;
+			 //   case 'lastyear': frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); toDate = new Date(currentDate.getFullYear() - 1, 11, 31); break;
+		  //  }
 
-		   frmDateBox.option("value", frmDate);
-		   toDateBox.option("value", toDate);
+		  //  frmDateBox.option("value", frmDate);
+		  //  toDateBox.option("value", toDate);
 
-		   $.ajax({
-			   url: '/api/EQPurchaseOrder/GetpurchaseDetails',
-			   type: 'GET',
-			   data: { fromDate: frmDate.toISOString().split('T')[0], toDate: toDate.toISOString().split('T')[0] },
-			   success: function (data) {
-				   $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-			   },
-			   error: function (xhr) {
-				   DevExpress.ui.notify("Error while loading data", "error", 2000);
-			   }
-		   });
-	   }
+		  //  $.ajax({
+			 //   url: '/api/EQPurchaseOrder/GetpurchaseDetails',
+			 //   type: 'GET',
+			 //   data: { fromDate: frmDate.toISOString().split('T')[0], toDate: toDate.toISOString().split('T')[0] },
+			 //   success: function (data) {
+				//    $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+			 //   },
+			 //   error: function (xhr) {
+				//    DevExpress.ui.notify("Error while loading data", "error", 2000);
+			 //   }
+		  //  });
+	   // }
 
 </script>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.ERM.Areas.ERM.Pages
+namespace QD.ERP.Web.Areas.ERM.Pages
 {
     public class EQDetailedDescriptionSalesOrderModel : PageModel
     {

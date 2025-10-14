@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.ERM.Areas.ERM.Pages.AddNewQuotationModel
+@model QD.ERP.Web.Areas.ERM.Pages.AddNewQuotationModel
 @{
 }
 <style>
@@ -271,7 +271,7 @@
         <div id="AddNewQuotation1" class="no-border-title"></div>
     </div>
 </div>
-<div class="form-container1">
+<div class="form-container1"> 
     <div class="form-container">
         <!-- Tab Menu -->
         @(
@@ -1118,6 +1118,8 @@
             </div>
 
         </text>);
+
+
 		  item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
     <div class="p-3">
     <table style="width:100%; font-size:14px; margin:5px;">
@@ -6457,25 +6459,33 @@ const unitMethodText = quoteMethodDD.option("text");
 
            let grid = $("#B2BdataGrid").dxDataGrid("instance");
             let children = grid.getDataSource().items();   // gets current visible data
+			let quoteNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+
 
                  if (!children || children.length === 0) {
                        DevExpress.ui.notify("No child records to save.", "error", 3000);
                       return;
                  }
 			
-			// map grid rows to exactly the 8 fields API expects
-			let mappedChildren = children.map(row => ({
-				QuoteChildId: row.QuoteChildId || 0, 
-				LineOrderNo: row.LineOrderNo,
-				AddlNotes: row.Description,     // <-- maps to EquipmentQuotedFor
-				PropertyAddlDescription: row.DetailedDescription,
-				QuotedQuantity: row.Qty,
-				UnitRateMethod1 : row.QuoteMethod,
-				//QuoteMethod: row.UnitMethod,
-				UnitRate1: row.Rate1,
-				MobRate: row.MobRate,
-				DemobRate: row.DemobRate
-			}));
+
+
+			
+					let mappedChildren = children.map(row => ({
+					QuoteChildId: row.QuoteChildId || 0,
+					QuoteNo: quoteNo,  // <--- important: must be sent
+					LineOrderNo: row.LineOrderNo,
+					AddlNotes: row.Description,
+					PropertyAddlDescription: row.DetailedDescription,
+					QuotedQuantity: row.Qty,
+					QuotedUom: row.UOM || null,      
+					UnitRateMethod1: row.UnitRateMethod1,
+					UnitRate1: row.Rate1,
+					MobRate: row.MobRate,
+					DemobRate: row.DemobRate
+		}));
+
+
+
 
 
 
@@ -6484,6 +6494,7 @@ const unitMethodText = quoteMethodDD.option("text");
 				...master,
 				QuotationDetailses: mappedChildren
 			};
+
 
 
 
