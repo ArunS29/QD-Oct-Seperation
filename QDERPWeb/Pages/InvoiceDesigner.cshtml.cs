@@ -8,22 +8,21 @@ using QD.ERP.Finance.Areas.Finance.Reports.AccountRegister;
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.summary_Report;
-//using QD.ERP.Web.Areas.IMS.Inventory_Reports;
-//using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
-//using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
-//using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
-//using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
-//using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
-//using QD.ERP.Web.Areas.IMS.Reports.SalesOrder;
-//using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
-//using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
-//using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
-//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-//using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
-//using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
+using QD.ERP.IMS.Areas.IMS.Inventory_Reports;
+using QD.ERP.IMS.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+using QD.ERP.IMS.Areas.IMS.Report.Inventory_Report;
+using QD.ERP.IMS.Areas.IMS.Reports.DeliveryNote;
+using QD.ERP.IMS.Areas.IMS.Reports.InventoryReports;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.Delivery_Note;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.RFQ;
+using QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.IMS.Areas.IMS.Reports.SalesOrder;
+using QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister;
+using QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote;
+using QD.ERP.VAT.Areas.VAT.Reports.VATReturns;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Models.DAL;
 using System;
@@ -102,218 +101,218 @@ namespace QD.ERP.Web.Pages
                 }
             }
 
-  //          // Instantiate reports
-  //          if (!string.IsNullOrEmpty(quotationNo) )
-  //          {
+            //          // Instantiate reports
+            if (!string.IsNullOrEmpty(quotationNo))
+            {
 
-  //              switch (reportName)
-  //              {
-  //                  case "PreviewQuotations":
+                switch (reportName)
+                {
+                    case "PreviewQuotations":
 
-  //                      Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
-  //                  case "PreviewQuotationwithadditionalDetails":
+                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithadditionalDetails":
 
-  //                      Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
-  //                  case "PreviewQuotationwithoutPrice":
+                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithoutPrice":
 
-  //                      Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "QuotationWOvat":
+                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "QuotationWOvat":
 
-  //                      Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "vatTotalPricewithout":
+                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "vatTotalPricewithout":
 
-  //                      Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "withoutvatDiscount":
+                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "withoutvatDiscount":
 
-  //                      Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
+                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
 
-  //                  case "GroupCode":
+                    case "GroupCode":
 
-  //                      Report = new GroupCode(showSeal, showSignature, printLetterhead,pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "wtDiscount":
+                        Report = new GroupCode(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "wtDiscount":
 
-  //                      Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "PreviewQuotationWithImage":
+                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithImage":
 
-  //                      Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
-  //                  case "PreviewQuotationWithSubGroup":
+                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithSubGroup":
 
-  //                      Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
+                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
 
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
-
-
-  //         else  if (!string.IsNullOrEmpty(RequestNo))
-  //          {
-
-  //              switch (reportName)
-  //              {
-  //                  case "MaterialRequestInventory":
-
-  //                      Report = new MaterialRequestInventory(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-  //                      break;
-  //                  case "MaterialPurcchaseRequestion":
-
-  //                      Report = new MaterialPurcchaseRequestion(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-  //                      break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
 
 
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
+            else if (!string.IsNullOrEmpty(RequestNo))
+            {
 
-  //          else if (!string.IsNullOrEmpty(salesOrderNo))
-  //          {
+                switch (reportName)
+                {
+                    //case "MaterialRequestInventory":
 
-  //              switch (reportName)
-  //              {
-  //                  case "SalesOrderReport":
+                    //    Report = new MaterialRequestInventory(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                    //    break;
+                    case "MaterialPurcchaseRequestion":
 
-  //                      Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "SalesOrderReportWithoutPrice":
-
-  //                      Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
+                        Report = new MaterialPurcchaseRequestion(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                        break;
 
 
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
-  //        else  if (!string.IsNullOrEmpty(deliveryNoteNo))
-  //          {
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
 
-  //              switch (reportName)
-  //              {
-  //                  case "PreviewDeliveryNote":
+            else if (!string.IsNullOrEmpty(salesOrderNo))
+            {
 
-  //                      Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "ReportforMaterialIssueNote":
+                switch (reportName)
+                {
+                    case "SalesOrderReport":
 
-  //                      Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "PreviewDeliveryNotewithPrice":
+                        Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "SalesOrderReportWithoutPrice":
 
-  //                      Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-  //                      break;
-  //                  case "DotMatrics":
-
-  //                      Report = new DotMatrics(deliveryNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
-  //                  case "DeliveryNoteWithCostPrice":
-
-  //                      Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-  //                      break;
+                        Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
 
 
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
-  //         else  if (!string.IsNullOrEmpty(rfqNo))
-  //          {
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
+            else if (!string.IsNullOrEmpty(deliveryNoteNo))
+            {
 
-  //              switch (reportName)
-  //              {
-  //                  case "RFQEdit":
+                switch (reportName)
+                {
+                    case "PreviewDeliveryNote":
 
-  //                      Report = new RFQEdit(showSeal, showSignature, printLetterhead, rfqNo,
-  //                                            tenantName,
-  //                                            companyName,
-  //                                            logoImage,
-  //                                            companySealImage,
-  //                                            companyAddress,
-  //                                            companyNameAr,
-  //                                            companyAddressAr,
-  //                                            userName,
-  //                                            _tenantDbContextHelper
-  //                                        ); break;
+                        Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "ReportforMaterialIssueNote":
 
+                        Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "PreviewDeliveryNotewithPrice":
 
+                        Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "DotMatrics":
 
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
-  //          else if (!string.IsNullOrEmpty(purchaseOrderNo))
-  //          {
+                        Report = new DotMatrics(deliveryNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "DeliveryNoteWithCostPrice":
 
-  //              switch (reportName)
-  //              {
-  //                  case "PreviewPurchaseOrder":
-
-  //                      Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
-  //    ShowitemPartNumberinsteadStockCode,
-  //    ShowHSCodeinsteadStockCode,
-  //    showSeal,
-  //    showSignature,
-  //    printLetterhead,
-  //    pageBreakAfter,
-  //    pageBreakBefore,
-  //    purchaseOrderNo,
-  //    tenantName,
-  //    companyName,
-  //    companySealImage,
-  //    companyAddress,
-  //    companyNameAr,
-  //    companyAddressAr,
-  //    _tenantDbContextHelper
-  //); break;
-  //                  case "PreviewPurchaseOrderForeignCurrency":
-
-  //                      Report = new PreviewPurchaseOrderForeignCurrency(
-  //                     companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
-  //                      _tenantDbContextHelper
-  //                  ); break;
-  //                  case "PreviewPurchaseOrderWithoutVAT":
-
-  //                      Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-  //                                             pageBreakAfter, pageBreakBefore,
-  //                                            purchaseOrderNo,
-  //                                            tenantName,
-  //                                            companyName,
-
-  //                                            companySealImage,
-  //                                            companyAddress,
-  //                                            companyNameAr,
-  //                                            companyAddressAr,
-  //                                            _tenantDbContextHelper
-  //                                        ); break;
-  //                  case "WithoutVATTotalPrice":
+                        Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
 
 
-  //                      Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-  //                              pageBreakAfter, pageBreakBefore,
-  //                          purchaseOrderNo,
-  //                          tenantName,
-  //                          companyName,
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
+            else if (!string.IsNullOrEmpty(rfqNo))
+            {
 
-  //                          companySealImage,
-  //                          companyAddress,
-  //                          companyNameAr,
-  //                          companyAddressAr,
-  //                          _tenantDbContextHelper
-  //                      ); break;
-  //                  default:
-  //                      return NotFound("Report not found.");
-  //              }
-  //          }
+                switch (reportName)
+                {
+                    case "RFQEdit":
+
+                        Report = new RFQEdit(showSeal, showSignature, printLetterhead, rfqNo,
+                                              tenantName,
+                                              companyName,
+                                              logoImage,
+                                              companySealImage,
+                                              companyAddress,
+                                              companyNameAr,
+                                              companyAddressAr,
+                                              userName,
+                                              _tenantDbContextHelper
+                                          ); break;
+
+
+
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
+            else if (!string.IsNullOrEmpty(purchaseOrderNo))
+            {
+
+                switch (reportName)
+                {
+                    case "PreviewPurchaseOrder":
+
+                        Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
+      ShowitemPartNumberinsteadStockCode,
+      ShowHSCodeinsteadStockCode,
+      showSeal,
+      showSignature,
+      printLetterhead,
+      pageBreakAfter,
+      pageBreakBefore,
+      purchaseOrderNo,
+      tenantName,
+      companyName,
+      companySealImage,
+      companyAddress,
+      companyNameAr,
+      companyAddressAr,
+      _tenantDbContextHelper
+  ); break;
+                    case "PreviewPurchaseOrderForeignCurrency":
+
+                        Report = new PreviewPurchaseOrderForeignCurrency(
+                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
+                        _tenantDbContextHelper
+                    ); break;
+                    case "PreviewPurchaseOrderWithoutVAT":
+
+                        Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                                               pageBreakAfter, pageBreakBefore,
+                                              purchaseOrderNo,
+                                              tenantName,
+                                              companyName,
+
+                                              companySealImage,
+                                              companyAddress,
+                                              companyNameAr,
+                                              companyAddressAr,
+                                              _tenantDbContextHelper
+                                          ); break;
+                    case "WithoutVATTotalPrice":
+
+
+                        Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                                pageBreakAfter, pageBreakBefore,
+                            purchaseOrderNo,
+                            tenantName,
+                            companyName,
+
+                            companySealImage,
+                            companyAddress,
+                            companyNameAr,
+                            companyAddressAr,
+                            _tenantDbContextHelper
+                        ); break;
+                    default:
+                        return NotFound("Report not found.");
+                }
+            }
             return Page();
         }
     }
