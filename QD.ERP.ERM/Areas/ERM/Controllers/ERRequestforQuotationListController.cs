@@ -8,19 +8,21 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-//using QD.ERP.Web.Areas.Finance.Models;
-//using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+//using QD.ERP.Shared.Models;
+//using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

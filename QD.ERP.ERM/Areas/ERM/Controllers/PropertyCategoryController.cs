@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-namespace QD.ERP.Web.Areas.ERM.Controllers
+using QD.ERP.Shared.Service;
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

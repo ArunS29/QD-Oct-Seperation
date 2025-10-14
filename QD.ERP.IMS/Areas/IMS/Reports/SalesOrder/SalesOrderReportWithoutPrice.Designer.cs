@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.SalesOrder
 {
     partial class SalesOrderReportWithoutPrice
     {

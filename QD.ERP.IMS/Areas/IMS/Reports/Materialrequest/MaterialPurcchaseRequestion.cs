@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
+namespace QD.ERP.IMS.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
 {
     public partial class MaterialPurcchaseRequestion : DevExpress.XtraReports.UI.XtraReport
     {

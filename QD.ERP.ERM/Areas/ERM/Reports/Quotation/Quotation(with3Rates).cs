@@ -2,9 +2,9 @@
 using DevExpress.XtraReports.UI;
 using Microsoft.Extensions.Configuration;
 using QD.ERP.Web.Areas.ERM.Reports.Quotation;
-using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
-using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
-using QD.ERP.Web.Service;
+using QD.ERP.Finance.Areas.Finance.Reports.cashPayments;
+using QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.Shared.Service;
 using Svg;
 using System;
 using System.ComponentModel;

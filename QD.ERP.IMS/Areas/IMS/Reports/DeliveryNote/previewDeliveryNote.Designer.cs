@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.DeliveryNote
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.DeliveryNote
 {
     partial class previewDeliveryNote
     {

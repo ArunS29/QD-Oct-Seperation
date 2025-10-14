@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 {
     partial class PreviewPurchaseOrderWithoutVAT
     {
@@ -3091,7 +3091,7 @@
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(22.83302F, 221.9192F);
             this.xrSubreport1.Name = "xrSubreport1";
-            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.IMS.Reports.quotationstoClients.IMSContext();
+            this.xrSubreport1.ReportSource = new QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients.IMSContext();
             this.xrSubreport1.SizeF = new System.Drawing.SizeF(731.2498F, 33.1667F);
             // 
             // xrPictureBox14

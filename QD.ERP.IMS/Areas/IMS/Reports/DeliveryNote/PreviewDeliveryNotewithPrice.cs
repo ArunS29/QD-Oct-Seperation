@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note
+namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.Delivery_Note
 {
     public partial class PreviewDeliveryNotewithPrice : DevExpress.XtraReports.UI.XtraReport
     {

@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.InventoryReports
 {
     partial class ReportforMaterialIssueNote
     {

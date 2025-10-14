@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.DeliveryNote
+namespace QD.ERP.IMS.Areas.IMS.Reports.DeliveryNote
 {
     public partial class DotMatrics : DevExpress.XtraReports.UI.XtraReport
     {

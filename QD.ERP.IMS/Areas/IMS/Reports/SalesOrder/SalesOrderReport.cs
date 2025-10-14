@@ -6,7 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
+namespace QD.ERP.IMS.Areas.IMS.Reports.InventoryReports
 {
     public partial class SalesOrderReport : DevExpress.XtraReports.UI.XtraReport
     {

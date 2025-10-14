@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace QD.ERP.Web.Areas.IMS.Pages
+namespace QD.ERP.IMS.Areas.IMS.Pages
 {
     public class AddNewRFQModel : PageModel
     {

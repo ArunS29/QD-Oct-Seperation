@@ -5,18 +5,20 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
-//using QD.ERP.Web.Areas.Finance.Models;
+//using QD.ERP.Shared.Models;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using SkiaSharp;
 using System.Collections.Generic;
 using System.IO;
 using System.IO;
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

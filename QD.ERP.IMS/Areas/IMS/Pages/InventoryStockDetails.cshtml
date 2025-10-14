@@ -1,9 +1,9 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.InventoryStockDetailsModel
+@model QD.ERP.IMS.Areas.IMS.Pages.InventoryStockDetailsModel
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@using QD.ERP.Web.Areas.IMS.Pages
-@using QD.ERP.Web.Pages.Shared.IMS
+@using Microsoft.AspNetCore.Http
+@using QD.ERP.IMS.Areas.IMS.Pages
 @{
      var sessionID = HttpContext.Session.GetString("currencyID");
     int baseCurrencyIdnew = 0;

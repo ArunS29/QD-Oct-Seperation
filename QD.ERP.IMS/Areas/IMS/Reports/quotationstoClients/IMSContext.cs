@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
+namespace QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients
 {
     public partial class IMSContext : DevExpress.XtraReports.UI.XtraReport
     {

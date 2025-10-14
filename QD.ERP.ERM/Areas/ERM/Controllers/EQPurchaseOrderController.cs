@@ -2,21 +2,22 @@
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-//using QD.ERP.Web.Areas.Finance.Models;
-//using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
-using QD.ERP.Web.Areas.IMS.Controllers;
+//using QD.ERP.Shared.Models;
+//using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.IMS.Areas.IMS.Controllers;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
