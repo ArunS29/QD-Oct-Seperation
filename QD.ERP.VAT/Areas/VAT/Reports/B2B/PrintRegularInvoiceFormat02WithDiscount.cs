@@ -1,8 +1,8 @@
 ﻿using DevExpress.XtraPrinting;
 using DevExpress.XtraPrinting.Drawing;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Areas.VAT.Reports.B2B;
-using QD.ERP.Web.Service;
+using QD.ERP.VAT.Areas.VAT.Reports.B2B;
+using QD.ERP.Shared.Service;
 using Svg;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Text;
 
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 {
     public partial class PrintRegularInvoiceFormat02WithDiscount : XtraReport
     {

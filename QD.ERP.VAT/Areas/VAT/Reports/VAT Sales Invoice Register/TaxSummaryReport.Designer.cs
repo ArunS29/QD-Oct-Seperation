@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register
 {
     partial class TaxSummaryReport
     {

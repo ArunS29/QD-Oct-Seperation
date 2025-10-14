@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Text;
 
 
-namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
+namespace QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister
 {
     public partial class BillsPurchases : DevExpress.XtraReports.UI.XtraReport
     {

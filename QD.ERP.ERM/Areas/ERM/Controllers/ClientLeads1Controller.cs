@@ -5,11 +5,11 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Areas.ERM.Controllers;
+using QD.ERP.Shared.Service;
+using QD.ERP.ERM.Areas.ERM.Controllers;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

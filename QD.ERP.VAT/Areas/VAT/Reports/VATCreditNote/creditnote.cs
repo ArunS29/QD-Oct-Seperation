@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
+namespace QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote
 {
 	public partial class creditnote : DevExpress.XtraReports.UI.XtraReport
 	{	

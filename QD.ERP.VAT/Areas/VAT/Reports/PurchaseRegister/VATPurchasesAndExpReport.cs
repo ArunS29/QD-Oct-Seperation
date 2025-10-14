@@ -10,7 +10,7 @@ using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Svg;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
+namespace QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister
 {
     public partial class VATPurchasesAndExpReport : DevExpress.XtraReports.UI.XtraReport
     {

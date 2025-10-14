@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE
 {
     partial class PrintsimplifiedTaxInvoices
     {

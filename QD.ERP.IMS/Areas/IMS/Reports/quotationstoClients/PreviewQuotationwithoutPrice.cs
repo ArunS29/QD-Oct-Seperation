@@ -1,9 +1,8 @@
 ﻿using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Microsoft.Extensions.Configuration;
-using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
-using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
+using QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients;
 using Svg;
 using System;
 using System.ComponentModel;
@@ -13,7 +12,7 @@ using System.Drawing;
 using System.Drawing.Printing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.IMS.Inventory_Reports
+namespace QD.ERP.IMS.Areas.IMS.Inventory_Reports
 {
     public partial class PreviewQuotationwithoutPrice : DevExpress.XtraReports.UI.XtraReport
     {

@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
+namespace QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices
 {
     public partial class WithoutDiscountInvoice : DevExpress.XtraReports.UI.XtraReport
     {

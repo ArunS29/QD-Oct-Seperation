@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using QD.ERP.Web.Areas.Finance.Controllers;
+using QD.ERP.Finance.Areas.Finance.Controllers;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

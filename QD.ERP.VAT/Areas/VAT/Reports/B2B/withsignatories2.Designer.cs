@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 {
     partial class withsignatories2
     {

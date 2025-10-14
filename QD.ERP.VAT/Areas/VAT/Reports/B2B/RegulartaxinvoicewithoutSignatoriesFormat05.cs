@@ -1,7 +1,7 @@
 ﻿using DevExpress.XtraPrinting;
 using DevExpress.XtraPrinting.Drawing;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using Svg;
 using System;
 using System.Data;
@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE
 {
     public partial class RegulartaxinvoicewithoutSignatoriesFormat05 : XtraReport
     {

@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.RFQ
 {
     partial class RFQEdit
     {

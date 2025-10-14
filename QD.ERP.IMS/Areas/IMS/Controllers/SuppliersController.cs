@@ -2,11 +2,12 @@
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Areas.Finance.Controllers;
+using Microsoft.Extensions.Logging;
+using QD.ERP.Finance.Areas.Finance.Controllers;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 
-namespace QD.ERP.Web.Areas.IMS.Controllers
+namespace QD.ERP.IMS.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

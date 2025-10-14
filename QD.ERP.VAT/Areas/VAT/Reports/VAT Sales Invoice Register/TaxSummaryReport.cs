@@ -3,13 +3,13 @@ using System.Drawing;
 using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using DevExpress.XtraPrinting;
 using Svg;
 using System.Text;
 using System.Data.SqlClient;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
+namespace QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register
 {
     public partial class TaxSummaryReport : DevExpress.XtraReports.UI.XtraReport
     {

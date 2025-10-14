@@ -15,12 +15,12 @@ using ERPMasterWtDataContext = QD.ERP.Shared.DAL.Entities.ERPMasterWtDataContext
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Finance.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
-//using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
-//using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
-//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-//using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
+//using QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+//using QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister;
+//using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
+//using QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote;
 using QD.ERP.Finance.Areas.Finance.Reports.ImportReports;
-//using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
+//using QD.ERP.VAT.Areas.VAT.Reports.VATReturns;
 
 namespace QD.ERP.Web.Pages
 {

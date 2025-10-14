@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 
 
-namespace QD.ERP.Web.Areas.IMS.Reports.SalesOrder
+namespace QD.ERP.IMS.Areas.IMS.Reports.SalesOrder
 {
     public partial class SalesOrderReportWithoutPrice : DevExpress.XtraReports.UI.XtraReport
     {

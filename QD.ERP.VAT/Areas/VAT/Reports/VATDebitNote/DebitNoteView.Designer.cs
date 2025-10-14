@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote
 {
     partial class DebitNoteView
     {

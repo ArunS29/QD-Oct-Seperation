@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices
 {
     partial class ForeignCurrencyProformaWithoutDiscount
     {

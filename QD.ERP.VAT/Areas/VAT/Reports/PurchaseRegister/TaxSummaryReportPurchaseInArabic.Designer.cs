@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
+﻿namespace QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister
 {
     partial class TaxSummaryReportPurchaseInArabic
     {

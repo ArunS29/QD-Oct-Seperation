@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
-namespace QD.ERP.Web.Areas.VAT.Reports.VATReturns
+namespace QD.ERP.VAT.Areas.VAT.Reports.VATReturns
 {
 	public partial class VATReturnsform : DevExpress.XtraReports.UI.XtraReport
     {

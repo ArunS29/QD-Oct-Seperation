@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QD.ERP.Web.Areas.VAT.Pages
+namespace QD.ERP.VAT.Areas.VAT.Pages
 {
     public class CreditDetailDescriptionModel : PageModel
     {

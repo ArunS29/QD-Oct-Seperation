@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
+﻿namespace QD.ERP.IMS.Areas.IMS.InventoryReports.MaterialPurchaseRequistion
 {
     partial class MaterialPurcchaseRequestion
     {

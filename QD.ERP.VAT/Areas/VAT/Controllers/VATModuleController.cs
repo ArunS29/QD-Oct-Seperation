@@ -6,12 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.Areas.VAT.Models;
-using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.Shared.Models;
+using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Services.Logging;
 using QDERPWeb.Models;
 using QRCoder;
 using SkiaSharp;
@@ -25,7 +24,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using static QD.ERP.Web.Service.UserAccessService;
+using static QD.ERP.Shared.Service.UserAccessService;
+using Microsoft.Extensions.Logging;
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers

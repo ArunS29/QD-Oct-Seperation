@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Text;
 
 
-namespace QD.ERP.Web.Areas.VAT.Reports.B2B
+namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 {
     public partial class PrintSimplifiedTaxInvoiceWithOutDiscount : DevExpress.XtraReports.UI.XtraReport
     {

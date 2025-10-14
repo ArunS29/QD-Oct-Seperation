@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.InventoryReports
 {
     partial class PreviewQuotations
     {
@@ -1488,7 +1488,7 @@
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrSubreport1.Name = "xrSubreport1";
-            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.IMS.Reports.quotationstoClients.IMSContext();
+            this.xrSubreport1.ReportSource = new QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients.IMSContext();
             this.xrSubreport1.SizeF = new System.Drawing.SizeF(780.9999F, 33.1667F);
             // 
             // xrLabel61

@@ -8,12 +8,12 @@ using System.Text;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.UI;
 using Microsoft.Extensions.Configuration;
-using QD.ERP.Web.Areas.Finance.Reports.cashPayments;
-using QD.ERP.Web.Service;
+
+using QD.ERP.Shared.Service;
 using Svg;
 
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
+namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 {
     public partial class PreviewPurchaseOrderForeignCurrency : DevExpress.XtraReports.UI.XtraReport
     {

@@ -129,6 +129,10 @@ builder.Services.AddScoped<TenantDbContextHelper>();
 builder.Services.AddHttpClient();
 builder.Services.AddHostedService<AttachmentCleanupService>();
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddControllers(options =>
+{
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+});
 
 var excludedAreas = new[] { "Security", "Help" };
 builder.Services.AddSingleton<IEnumerable<string>>(excludedAreas);
