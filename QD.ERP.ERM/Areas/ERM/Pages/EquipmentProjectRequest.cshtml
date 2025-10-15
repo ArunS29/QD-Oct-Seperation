@@ -2148,7 +2148,7 @@
 			});
 
 
-				$(function () {
+					$(function () {
     $("#btnAddNew").on("click", function () {
         var button = $("#btnSave").dxButton("instance");
         button.option("text", "Update");
@@ -2163,10 +2163,10 @@
 			UnitsRequested: 0
 		}).done(function () {
 			var rowIndex = grid.getVisibleRows().length - 1;
-			grid.editCell(rowIndex, 0);
+			grid.editCell(rowIndex, 1);
 		});
     });
-});		
+});	
 
 	function onGridRightClick(e) {
 				if (e.row && e.row.rowType === "data") {
@@ -3582,9 +3582,6 @@
 
 
 
-	</script>
-
-	<script>
 								   function PageClose() {
 
 										 window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
@@ -5927,4 +5924,3 @@
     }).dxForm("instance");
 }
 	</script>
-

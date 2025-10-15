@@ -322,9 +322,17 @@
                 subColumns.AddFor(m => m.CordinatorName).Caption(new JS("formatMessage('CordinatorName')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
 
             });
-
         })
-
+        .Summary(summary =>
+        {
+            summary.TotalItems(items =>
+            {
+                items.Add().Column("SupplierCode") // Use KeyExpr or any column
+            .ShowInColumn("PropertyNo") // Optional: show summary under a specific column
+            .SummaryType(DevExtreme.AspNet.Mvc.SummaryType.Count)
+            .DisplayFormat("Total Rows: {0}");
+            });
+        })
         )
 
 </div>

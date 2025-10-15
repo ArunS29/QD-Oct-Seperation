@@ -2083,8 +2083,8 @@ $(function () {
                     contentType: 'application/json',
                     data: JSON.stringify({Pono: pono}),
                     success: function (response) {
-                        const poNo = master.Pono;
-                        loadPurchaseOrder(poNo);
+                        const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+                        loadPurchaseOrder(pono);
                         if (response.success) {
                             DevExpress.ui.notify("Submitted successfully.", "success", 3000);
                         } else {
@@ -2116,8 +2116,8 @@ $(function () {
                     contentType: 'application/json',
                     data: JSON.stringify({ Pono: pono }),
                     success: function (response) {
-                        const poNo = master.Pono;
-                        loadPurchaseOrder(poNo);
+                         const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+                        loadPurchaseOrder(pono);
                         if (response.success) {
                             DevExpress.ui.notify("Verified successfully.", "success", 3000);
                         } else {
@@ -2149,29 +2149,29 @@ $(function () {
                         contentType: 'application/json',
                         data: JSON.stringify({ Pono: pono }),
                         success: function (response) {
-                            const poNo = master.Pono;
-                            loadPurchaseOrder(poNo);
+                             const pono = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+                            loadPurchaseOrder(pono);
                             if (response.success) {
                             DevExpress.ui.notify("Approved successfully.", "success", 3000);
 
-        // ✅ Disable grid (keep visible)
-        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
-        itemGridInstance.option({
-            editing: {
-                allowUpdating: false,
-                allowAdding: false,
-                allowDeleting: false
-            },
-            selection: { mode: "none" },
-            hoverStateEnabled: false,
-            focusedRowEnabled: false
-        });
+                            // ✅ Disable grid (keep visible)
+                            const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+                            itemGridInstance.option({
+                                editing: {
+                                    allowUpdating: false,
+                                    allowAdding: false,
+                                    allowDeleting: false
+                                },
+                                selection: { mode: "none" },
+                                hoverStateEnabled: false,
+                                focusedRowEnabled: false
+                            });
 
-        // ✅ Hide buttons except these
-        hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+                            // ✅ Hide buttons except these
+                            hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
 
-        // ✅ Make fields readonly
-        disableSpecificControls();
+                            // ✅ Make fields readonly
+                            disableSpecificControls();
 
                                 	
                             } else {

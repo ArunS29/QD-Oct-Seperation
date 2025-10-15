@@ -379,29 +379,26 @@
     }
 
 
-  //    $(document).on("click", "#btnSave", btnSaveClick);
 
-    function btnSaveClick() {
-               const OperatorName = $("#OperatorName").dxTextBox("instance").option("value");
-           const PropertyOperatorTypeID = $("#OperatorType").dxDropDownBox("instance").option("value");
+       function btnSaveClick() {
+        const OperatorName = $("#OperatorName").dxTextBox("instance").option("value");
+        const PropertyOperatorTypeID = $("#OperatorType").dxDropDownBox("instance").option("value");
 
-       // ===== Validation Start =====
-           if (!OperatorName || OperatorName.trim() === "") {
-             DevExpress.ui.notify("Operator Name is required!", "error", 3000);
-             $("#OperatorName").dxTextBox("instance").focus();
-           return; // Stop function
-       }
+        // ===== Validation Start =====
+        if (!OperatorName || OperatorName.trim() === "") {
+            DevExpress.ui.notify("Operator Name is required!", "error", 3000);
+            $("#OperatorName").dxTextBox("instance").focus();
+            return; // Stop function
+        }
 
-           if (!PropertyOperatorTypeID || PropertyOperatorTypeID.length === 0) {
-             DevExpress.ui.notify("OperatorType is required!", "error", 3000);
-             $("#OperatorType").dxDropDownBox("instance").focus();
-           return; // Stop function
-       }
+        if (!PropertyOperatorTypeID || PropertyOperatorTypeID.length === 0) {
+            DevExpress.ui.notify("OperatorType is required!", "error", 3000);
+            $("#OperatorType").dxDropDownBox("instance").focus();
+            return; // Stop function
+        }
 
         try {
-            
             const data = {
-               // PropertyOperatorTypeId: PropertyOperatorTypeId ? parseInt(PropertyOperatorTypeId) : 0, // Fixed here
                 EquipmentNo: $("#PropertyNo").dxTextBox("instance")?.option("value") || "",
                 PropertyOperatorTypeID: $("#OperatorType").dxDropDownBox("instance")?.option("value") || "",
                 OperatorName: $("#OperatorName").dxTextBox("instance")?.option("value") || "",
@@ -414,7 +411,7 @@
                 WorkingShift: $("#Shift").dxSelectBox("instance")?.option("value") || "",
             };
 
-               $.ajax({
+            $.ajax({
                 url: "/api/PropertyOperator/SaveOrUpdate",
                 method: "POST",
                 contentType: "application/json",
@@ -423,6 +420,35 @@
                     if (result?.success) {
                         DevExpress.ui.notify(result.message, "success", 3000);
                         refreshFields();
+
+                        // Call GET method to fetch latest data
+                        const equipmentNo = $("#PropertyNo").dxTextBox("instance").option("value");
+                        const propertyOperatorCode = $("#HiddenID").dxTextBox("instance").option("value");
+                        $.ajax({
+                            url: `/api/PropertyOperator/GetOperators?equipmentNo=${encodeURIComponent(equipmentNo)}&propertyOperatorCode=${encodeURIComponent(propertyOperatorCode)}`,
+                            type: 'GET',
+                            success: function (data) {
+                                if (data && data.length > 0) {
+                                    data.forEach(function (item) {
+                                        $("#HiddenID").dxTextBox("instance").option("value", item.PropertyOperatorCode);
+                                        $("#OperatorName").dxTextBox("instance").option("value", item.OperatorName);
+                                        $("#HourlyRate").dxNumberBox("instance").option("value", item.OperatorRegHourlyRate || 0);
+                                        $("#OvertimeRate").dxNumberBox("instance").option("value", item.OperatorOthourlyRate || 0);
+                                        $("#WorkStartDate").dxDateBox("instance").option("value", item.WorkStartDate || null);
+                                        $("#DemobilizedOn").dxDateBox("instance").option("value", item.WorkEndDate || null);
+                                        $("#EmployeeNo").dxDropDownBox("instance").option("value", item.EmployeeId);
+                                        $("#OperatorType").dxDropDownBox("instance").option("value", item.PropertyOperatorTypeId);
+                                        $("#Remarks").dxTextArea("instance").option("value", item.OperatorRemarks || "");
+                                        $("#Shift").dxSelectBox("instance").option("value", item.WorkingShift);
+                                    });
+                                } else {
+                                    console.warn("No operator data found.");
+                                }
+                            }
+                        });
+                         if (window.parent && typeof window.parent.loadItemReceivedGrid === "function") {
+                                window.parent.loadItemReceivedGrid(equipmentNo);
+                            }
                     } else {
                         DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
                     }

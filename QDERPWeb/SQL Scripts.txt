@@ -4559,7 +4559,7 @@ VALUES
 
 Service Maintenance
 ===================
-INSERT INTO dbo.tbl901UserAccessMasterWeb 
+INSERT INTO Aicon.tbl901UserAccessMasterWeb 
     (SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
 VALUES 
     (1099,'Equipment Service Edit','ServiceMaintenanceEdit_btnSave','Save',1,1,null,'ERM',null,null,null,null), 

@@ -38,100 +38,110 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
 
 
         }
-		[HttpGet]
-		public ActionResult<string> GetNewRequestNoApi()
-		{
-			try
-			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
-
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
-					if (company == null)
-					{
-						return NotFound("Company not found.");
-					}
-
-					string EquipmentRequestAbbrv = company.EquipmentRequestAbbrv;
-					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
-					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-					DateTime invoiceDate = DateTime.Now;
-
-					// Generate new debit note number
-					string newDebitNoteNo = GetNewDebitNoteNo(EquipmentRequestAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
-
-					return Ok(newDebitNoteNo);
-				}
-				else
-				{
-					return BadRequest("Tenant or DB Context not found.");
-				}
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetNewRequestNoApi: {ex.Message}");
-				return StatusCode(500, "Internal server error: " + ex.Message);
-			}
-		}
+        [HttpGet]
+        public ActionResult<string> GetNewRequestNoApi()
+        {
+            try
+            {
 
 
-		private string GetNewDebitNoteNo(string EquipmentRequestAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
-		{
-			try
-			{
-				// Retrieve MPR numbers into memory
-				var mprNumbers = dbContext.Tbl40136PropertyRequestMasters
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string EquipmentRequestAbbrv = company.EquipmentRequestAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+                    DateTime invoiceDate = DateTime.Now;
+
+                    // Generate new debit note number
+                    string newDebitNoteNo = GetNewDebitNoteNo(EquipmentRequestAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+
+                    return Ok(newDebitNoteNo);
+                }
+                else
+                {
+                    return BadRequest("Tenant or DB Context not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetNewRequestNoApi: {ex.Message}");
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+
+        private string GetNewDebitNoteNo(string EquipmentRequestAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+        {
+            try
+            {
+                // Retrieve MPR numbers into memory
+                var mprNumbers = dbContext.Tbl40136PropertyRequestMasters
                     .Where(d => d.EqiupmentRequestNo != null && d.EqiupmentRequestNo.Length >= 5 &&
-								(!isResetByYear || (d.RequestDate.HasValue && d.RequestDate.Value.Year == invoiceDate.Year)))
-					.Select(d => d.EqiupmentRequestNo)
-					.ToList();
+                                (!isResetByYear || (d.RequestDate.HasValue && d.RequestDate.Value.Year == invoiceDate.Year)))
+                    .Select(d => d.EqiupmentRequestNo)
+                    .ToList();
 
-				// Extract numeric parts and determine the maximum
-				int maxRunningNumber = mprNumbers
-					.Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
-					.DefaultIfEmpty(0)
-					.Max();
+                // Extract numeric parts and determine the maximum
+                int maxRunningNumber = mprNumbers
+                    .Select(no => int.TryParse(no.Substring(no.Length - 5), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max();
 
-				maxRunningNumber += 1;
+                maxRunningNumber += 1;
 
-				// Format the new debit note number
-				string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
+                // Format the new debit note number
+                string strNewDebitNoteNo = maxRunningNumber.ToString().PadLeft(5, '0');
 
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-				return $"{EquipmentRequestAbbrv}{strYear}-{strNewDebitNoteNo}";
-			}
-			catch (Exception)
-			{
-				string strYear = invoiceDate.Year.ToString();
-				if (yearInDigit > 0)
-				{
-					strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
-				}
-				else
-				{
-					strYear = "";
-				}
+                return $"{EquipmentRequestAbbrv}{strYear}-{strNewDebitNoteNo}";
+            }
+            catch (Exception)
+            {
+                string strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
 
-				return $"{EquipmentRequestAbbrv}{strYear}-00001";
-			}
-		}
+                return $"{EquipmentRequestAbbrv}{strYear}-00001";
+            }
+        }
         [HttpGet]
         public async Task<IActionResult> GetClientDetails(DataSourceLoadOptions loadOptions)
         {

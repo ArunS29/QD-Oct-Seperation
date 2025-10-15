@@ -171,46 +171,52 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
         public IActionResult SaveOrUpdate([FromBody] PropertyOperatorModel model)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
                 return Unauthorized(new { success = false, message = "Invalid tenant context." });
-            }
 
             if (model == null || string.IsNullOrEmpty(model.EquipmentNo))
-            {
                 return BadRequest(new { success = false, message = "Equipment No. is required." });
-            }
 
             try
             {
+                // 🔹 Check if employee is already assigned to any other equipment in overlapping period
+                bool isEmployeeMobilizedElsewhere = dbContext.Tbl40107PropertyOperators
+                    .Any(o =>
+                        o.EmployeeId == model.EmployeeId &&
+                        o.EquipmentNo != model.EquipmentNo &&
+                        (model.WorkStartDate <= o.WorkEndDate && model.WorkEndDate >= o.WorkStartDate) &&
+                        (model.PropertyOperatorCode == 0 || o.PropertyOperatorCode != model.PropertyOperatorCode)
+                    );
+
+                if (isEmployeeMobilizedElsewhere)
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "This employee is already mobilized on another property during the selected period."
+                    });
+
                 if (model.PropertyOperatorCode > 0)
                 {
-                    // ✅ UPDATE LOGIC
-
-                    // Find existing record
+                    // ✅ UPDATE existing record
                     var existing = dbContext.Tbl40107PropertyOperators
                         .FirstOrDefault(o => o.PropertyOperatorCode == model.PropertyOperatorCode);
 
                     if (existing == null)
-                    {
                         return NotFound(new { success = false, message = "Record not found." });
-                    }
 
-                    // Check for duplicates against other records
-                    bool duplicateExists = dbContext.Tbl40107PropertyOperators
-                        .Any(o => o.EquipmentNo == model.EquipmentNo
-                               && o.EmployeeId == model.EmployeeId
-                               && o.PropertyOperatorCode != model.PropertyOperatorCode);
+                    // 🔹 Check if this Employee is already assigned to this Equipment (other than current record)
+                    bool duplicate = dbContext.Tbl40107PropertyOperators
+                        .Any(o => o.EquipmentNo == model.EquipmentNo &&
+                                  o.EmployeeId == model.EmployeeId &&
+                                  o.PropertyOperatorCode != model.PropertyOperatorCode);
 
-                    if (duplicateExists)
-                    {
+                    if (duplicate)
                         return Ok(new
                         {
                             success = false,
-                            message = "You cannot assign. This Equipment/Property already has the same operator assigned."
+                            message = "This Equipment already has the same operator assigned."
                         });
-                    }
 
-                    // Update fields
+                    // 🔹 Update fields
                     existing.EquipmentNo = model.EquipmentNo;
                     existing.PropertyOperatorTypeId = model.PropertyOperatorTypeId;
                     existing.OperatorName = model.OperatorName;
@@ -233,22 +239,18 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
                 }
                 else
                 {
-                    // ✅ INSERT LOGIC
+                    // ✅ INSERT new record
+                    bool duplicate = dbContext.Tbl40107PropertyOperators
+                        .Any(o => o.EquipmentNo == model.EquipmentNo &&
+                                  o.EmployeeId == model.EmployeeId);
 
-                    // Check if Employee is already assigned to the same Equipment
-                    bool duplicateExists = dbContext.Tbl40107PropertyOperators
-                        .Any(o => o.EquipmentNo == model.EquipmentNo && o.EmployeeId == model.EmployeeId);
-
-                    if (duplicateExists)
-                    {
+                    if (duplicate)
                         return Ok(new
                         {
                             success = false,
-                            message = "You cannot assign. This Equipment/Property already has the same operator assigned."
+                            message = "This Equipment already has the same operator assigned."
                         });
-                    }
 
-                    // Create new record
                     var entity = new Tbl40107PropertyOperator
                     {
                         EquipmentNo = model.EquipmentNo,
@@ -276,10 +278,11 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in SaveOrUpdate PropertyOperator: {ex.Message}");
+                _logger.LogError($"Error in SaveOrUpdate PropertyOperator: {ex}");
                 return StatusCode(500, new { success = false, message = "Error saving data: " + ex.Message });
             }
         }
+
 
 
         [HttpGet]

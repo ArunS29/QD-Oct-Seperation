@@ -1869,6 +1869,25 @@
             grid.focus(grid.getRowElement(focusedIndex));
         }
     }
+    let PropertyImageBase64 = null;
+
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file && selectedContainer) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64Image = e.target.result;
+                selectedContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = base64Image;
+                img.style.maxWidth = '100%';
+                selectedContainer.appendChild(img);
+                PropertyImageBase64 = base64Image; // <-- Save for backend
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+    });
      //  let PropertyImage = null;
      function onSaveClicked() {
         var isUpdate = $("#btnSave").data("is-update");
@@ -1975,7 +1994,7 @@
             // ================== Return Info ==================
             IsReturned: $("#IsReturned").dxCheckBox("instance").option("value"),
             ReturnedOn: $("#ReturnedOn").dxDateBox("instance").option("value"),
-            // PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null,
+            PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null
         };
 
         $.ajax({
@@ -2086,8 +2105,7 @@
             // ================== Return Info ==================
             IsReturned: $("#IsReturned").dxCheckBox("instance").option("value"),
             ReturnedOn: $("#ReturnedOn").dxDateBox("instance").option("value"),
-         //   PropertyImage: PropertyImage ? PropertyImage.split(',')[1] : null
-       //   PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null,
+            PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null
         };
 
         $.ajax({
@@ -2333,10 +2351,22 @@
             $("#HourlyRate").dxNumberBox("instance").option("value", data.OperatorRate);
             $("#IsReturned").dxCheckBox("instance").option("value", data.IsReturned);
             $("#ReturnedOn").dxDateBox("instance").option("value", data.ReturnedOn);
+                   // ================== PROPERTY IMAGE ==================
+                    if (data.PropertyImage) {
+                        let base64String = data.PropertyImage.trim();
+                        if (!base64String.startsWith("data:image")) {
+                            base64String = "data:image/png;base64," + base64String;
+                        }
+                        $("#imgBox1").html(`
+                            <img src="${base64String}" alt="Property Image" class="property-preview" />
+                        `);
+                    } else {
+                        $("#imgBox1").html(`<span>No image data</span>`);
+                    }
                 },
                 error: function (xhr) {
+                    console.error("❌ Error fetching property data:", xhr);
                     DevExpress.ui.notify("Failed to load property data", "error", 3000);
-                    console.error("Error fetching data:", xhr);
                 }
             });
         }
