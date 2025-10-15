@@ -2221,72 +2221,71 @@
 						</tr>
 
 
-
+	<tr>
+									<td>
+										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
+											.ID("ArabicNumInvoice")
+											.Value(false) // Default value
+											)
+										<input type="hidden" id="hdnArabicNumInvoice" name="hdnArabicNumInvoice" value="false" />
+										</td>
+									<td>
+										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY-MM-DD)with Time')"))
+											.ID("UseDateFormatWithTime")
+											.Value(false) // Default value
+											)
+										<input type="hidden" id="hdnUseDateFormatWithTime" name="hdnUseDateFormatWithTime" value="false" />
+									</td>
+									<td>
+										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signatures At Bottom')"))
+											.ID("UseDateFormat")
+											.Value(false) // Default value
+											)
+								<input type="hidden" id="hdnUseDateFormat" name="hdnUseDateFormat" value="false" />
+								</td>
+							</tr>
+ 
+							<tr>
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
+								</td>
+								<td>
+									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
+										.ID("UseDateFormat1")
+										.Value(false) // Default value
+										)
+									<input type="hidden" id="hdnUseDateFormat1" name="hdnUseDateFormat1" value="false" />
+								</td>
+								<td>
+									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Items')"))
+										.ID("TaxInLineItems")
+										.Value(false) // Default value
+										)
+									<input type="hidden" id="hdnTaxInLineItems" name="hdnTaxInLineItems" value="false" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+ 
+								</td>
+								<td>
+									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(DD - MM - YYYY)')"))
+										.ID("UseDateFormat2")
+										.Value(false) // Default value
+										)
+									<input type="hidden" id="hdnUseDateFormat2" name="hdnUseDateFormat2" value="false" />
+								</td>
+ 
+						</tr>
 						<tr>
 							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Arabic Numbers in Invoice')"))
-																						.ID("ArabicNumInvoice")
-																						.Value(null) // Default value
-																						)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY-MM-DD)with Time')"))
-																						.ID("UseDateFormatWithTime")
-																						.Value(null) // Default value
-																						)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Signatures At Bottom')"))
-																						.ID("UseDateFormat")
-																						.Value(null) // Default value
-																						)
+								@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print Invoice in Letter Head')")) )
+								<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
 							</td>
 						</tr>
-
-						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Company Seal')"))
-																						.ID("CompanySeal")
-																						.Value(null) // Default value
-																						)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
-																						.ID("UseDateFormat1")
-																						.Value(null) // Default value
-																						)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use 2 Digits in Total Before Tax in Line Items')"))
-																						.ID("TaxInLineItems")
-																						.Value(null) // Default value
-																						)
-							</td>
-						</tr>
-						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Show Signature')"))
-																						.ID("ShowSignature1")
-																						.Value(null) // Default value
-																						)
-							</td>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Use Date Format(YYYY - MM - DD)')"))
-																						.ID("UseDateFormat2")
-																						.Value(null) // Default value
-																						)
-							</td>
-
-						</tr>
-						<tr>
-							<td>
-								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Print Invoice in Letter Head')"))
-																						.ID("PrintInvoiceinLetterHead")
-																						.Value(null) // Default value
-																						)
-							</td>
-						</tr>
-
 					</table>
 				</div>
 			</div>
@@ -3792,6 +3791,132 @@
 <!-- Modal Structure -->
 
 <script>
+
+	  $(function() {
+
+    $("#UseDateFormat2").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnUseDateFormat2").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#TaxInLineItems").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnTaxInLineItems").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#UseDateFormat1").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnUseDateFormat1").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#UseDateFormat").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnUseDateFormat").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#ArabicNumInvoice").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnArabicNumInvoice").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#UseDateFormatWithTime").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnUseDateFormatWithTime").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#printLetterhead").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#showSignature").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnshowSignature").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
+
+  $(function() {
+
+    $("#showSeal").dxCheckBox({
+
+        onValueChanged: function(e) {
+
+            $("#hdnshowSeal").val(e.value ? "true" : "false");
+
+        }
+
+    });
+
+});
 
 	let companyBranchList = [],currencyDecimals = 2,AccGroup="";
 

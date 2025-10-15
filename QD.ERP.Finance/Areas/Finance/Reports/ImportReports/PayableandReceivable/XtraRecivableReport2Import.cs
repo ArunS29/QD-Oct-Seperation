@@ -120,18 +120,18 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
                     Console.WriteLine("Invalid AccountHeadNo format.");
                     return;
                 }
-                selectQuery.Name = "tbl201SubLedgerPayablesMaster";
-                selectQuery.Sql = $"SELECT * FROM tbl201SubLedgerPayablesMaster WHERE AccountHeadNo IN ({selectedFilter})";
+                selectQuery.Name = "tbl20105BillsReceivableAgeingMaster";
+                selectQuery.Sql = $"SELECT * FROM tbl20105BillsReceivableAgeingMaster WHERE AccountHeadNo IN ({selectedFilter})";
             }
             else if (selectionType == "SalesPerson")
             {
-                selectQuery.Name = "tbl201SubLedgerPayablesMaster";
-                selectQuery.Sql = $"SELECT * FROM tbl201SubLedgerPayablesMaster WHERE SalesPersonName IN ({selectedFilter})";
+                selectQuery.Name = "tbl20105BillsReceivableAgeingMaster";
+                selectQuery.Sql = $"SELECT * FROM tbl20105BillsReceivableAgeingMaster WHERE SalesPersonName IN ({selectedFilter})";
             }
             else if (selectionType == "Branch")
             {
-                selectQuery.Name = "tbl201SubLedgerPayablesMaster";
-                selectQuery.Sql = $"SELECT * FROM tbl201SubLedgerPayablesMaster WHERE DivisionName IN ({selectedFilter})";
+                selectQuery.Name = "tbl20105BillsReceivableAgeingMaster";
+                selectQuery.Sql = $"SELECT * FROM tbl20105BillsReceivableAgeingMaster WHERE DivisionName IN ({selectedFilter})";
             }
             else
             {
@@ -141,27 +141,27 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
 
             try
             {
-                if (this.sqlDataSource1 == null)
-                    this.sqlDataSource1 = new SqlDataSource();
+                if (this.sqlDataSource4 == null)
+                    this.sqlDataSource4 = new SqlDataSource();
 
-                this.sqlDataSource1.Queries.Clear();
-                this.sqlDataSource1.Queries.Add(selectQuery);
+                this.sqlDataSource4.Queries.Clear();
+                this.sqlDataSource4.Queries.Add(selectQuery);
 
                 // Multitenant database connection setup
                 if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 {
                     var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
-                    this.sqlDataSource1.ConnectionParameters = connectionParams;
+                    this.sqlDataSource4.ConnectionParameters = connectionParams;
                 }
                 else
                 {
                     throw new Exception("Unable to get tenant context. Please check session and cache.");
                 }
 
-                this.sqlDataSource1.RebuildResultSchema();
-                this.sqlDataSource1.Fill();
+                this.sqlDataSource4.RebuildResultSchema();
+                this.sqlDataSource4.Fill();
 
-                this.DataSource = sqlDataSource1;
+                this.DataSource = sqlDataSource4;
                 this.DataMember = selectQuery.Name;
 
                 Console.WriteLine("Report Data Loaded Successfully.");

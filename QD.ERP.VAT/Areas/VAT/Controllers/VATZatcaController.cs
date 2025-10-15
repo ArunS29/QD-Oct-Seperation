@@ -35,7 +35,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 
-namespace QD.ERP.Web.Areas.VAT.Controllers
+namespace QD.ERP.VAT.Areas.VAT.Controllers
 {
     [Area("VAT")]
     [Route("api/[controller]/[action]")]

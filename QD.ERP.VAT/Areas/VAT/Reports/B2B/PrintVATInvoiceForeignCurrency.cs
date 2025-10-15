@@ -20,6 +20,15 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 
 
         public PrintVATInvoiceForeignCurrency(
+                         bool showSeal,
+bool showSignature,
+bool printLetterhead,
+ bool arabicNumInvoice,
+bool useDateFormatWithTime,
+bool useDateFormat,
+bool useDateFormat1,
+bool taxInLineItems,
+bool useDateFormat2,
         string invoiceNo,
         string tenantName,
         string companyName,
@@ -42,6 +51,21 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
             SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
             LoadReportData(invoiceNo);
             LoadCurrencySymbolAndImage();
+            if (FindControl("txtInvoiceDate", true) is XRTableCell txtInvoiceDate)
+            {
+                if (useDateFormatWithTime)
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd HH:mm:ss}";
+                else if (useDateFormat1)
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd}";
+                else if (useDateFormat2)
+                    txtInvoiceDate.TextFormatString = "{0:dd-MM-yyyy}";
+                else
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd}"; // Default fallback
+            }
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead, useDateFormat);
+
+            
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr, string companyPhone, string companyEmail, string companyWebsite)
@@ -103,12 +127,48 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 
 
 
-            if (FindControl("xrPictureBox3", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox13", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
             if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
                 sealPictureBox.Image = sealImage;
         }
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead,bool useDateFormat)
+        {
+            if (this.Bands["GroupFooter2"] is GroupFooterBand groupFooter2)
+            {
+                groupFooter2.PrintAtBottom = useDateFormat;
+            }
+           
+            if (this.Bands["GroupFooter3"] is GroupFooterBand groupFooter3)
+            {
+                groupFooter3.PrintAtBottom = useDateFormat;
+            }
+           
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
 
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "xrPictureBox2" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel75", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel76", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+
+            if (FindControl("xrPictureBox13", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine1", true) is XRLine line1)
+                line1.Visible = printLetterhead;
+        }
         private void LoadReportData(string invoiceNo)
         {
             DataTable dt = GetReportData(invoiceNo);

@@ -28,7 +28,7 @@ using static QD.ERP.Shared.Service.UserAccessService;
 using Microsoft.Extensions.Logging;
 
 
-namespace QD.ERP.Web.Areas.VAT.Controllers
+namespace QD.ERP.VAT.Areas.VAT.Controllers
 {
 
     [Route("api/[controller]/[action]")]

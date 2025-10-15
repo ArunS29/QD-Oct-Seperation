@@ -5,7 +5,7 @@ using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.Parameters;
 using DevExpress.XtraReports.UI;
 using Microsoft.Data.SqlClient;
-using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Service; // Make sure this namespace is included
 using Svg;
 using System;
 using System.Data.SqlClient;

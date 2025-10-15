@@ -23,6 +23,15 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
         private bool _isApproved;
 
         public Foreigncurrency1(
+             bool showSeal,
+            bool showSignature,
+            bool printLetterhead,
+             bool arabicNumInvoice,
+            bool useDateFormatWithTime,
+            bool useDateFormat,
+            bool useDateFormat1,
+            bool taxInLineItems,
+            bool useDateFormat2,
             string invoiceNo,
             string tenantName,
             string companyName,
@@ -44,7 +53,22 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
             SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr, companyPhone, companyEmail, companyWebsite);
             LoadReportData(invoiceNo);
             LoadCurrencySymbolAndImage();
+            if (FindControl("txtInvoiceDate", true) is XRTableCell txtInvoiceDate)
+            {
+                if (useDateFormatWithTime)
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd HH:mm:ss}";
+                else if (useDateFormat1)
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd}";
+                else if (useDateFormat2)
+                    txtInvoiceDate.TextFormatString = "{0:dd-MM-yyyy}";
+                else
+                    txtInvoiceDate.TextFormatString = "{0:yyyy-MM-dd}"; // Default fallback
+            }
+
+            ApplyConditionalVisibility(showSeal, showSignature, printLetterhead, useDateFormat);
+
             
+
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr, string companyPhone, string companyEmail, string companyWebsite)
@@ -126,7 +150,42 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
                 SetWatermark();
             }
         }
+        private void ApplyConditionalVisibility(bool showSeal, bool showSignature, bool printLetterhead,bool useDateFormat)
+        {
 
+            if (this.Bands["GroupFooter2"] is GroupFooterBand groupFooter2)
+            {
+                groupFooter2.PrintAtBottom = useDateFormat;
+            }
+            if (this.Bands["ReportFooter"] is ReportFooterBand reportFooter)
+            {
+                reportFooter.PrintAtBottom = useDateFormat;
+            }
+            // 🔹 Seal logic (xrPictureBox1)
+            if (FindControl("imgCompanySeal", true) is XRPictureBox sealPicture)
+                sealPicture.Visible = showSeal;
+
+            // 🔹 Signature logic (xrPictureBox5, xrPictureBox6, xrPictureBox7)
+            foreach (string signatureBox in new[] { "txtPreparedBySign", "txtApprovedBySign" })
+            {
+                if (FindControl(signatureBox, true) is XRPictureBox sigBox)
+                    sigBox.Visible = showSignature;
+            }
+
+            // 🔹 Letterhead logic (xrLabel75, xrLabel76, xrPictureBox11, xrLine3)
+            if (FindControl("xrLabel75", true) is XRLabel lbl75)
+                lbl75.Visible = printLetterhead;
+
+            if (FindControl("xrLabel76", true) is XRLabel lbl76)
+                lbl76.Visible = printLetterhead;
+
+
+            if (FindControl("xrPictureBox11", true) is XRPictureBox logoBox)
+                logoBox.Visible = printLetterhead;
+
+            if (FindControl("xrLine3", true) is XRLine line3)
+                line3.Visible = printLetterhead;
+        }
         private DataTable GetReportData(string invoiceNo)
         {
             DataTable dt = new DataTable();
@@ -253,7 +312,7 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
                     return;
                 }
 
-                string[] pictureBoxNames = {  "xrPictureBox6", "xrPictureBox8", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", };
+                string[] pictureBoxNames = {  "xrPictureBox6", "xrPictureBox8", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",  "xrPictureBox12", };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -272,7 +331,7 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = {  "xrPictureBox6", "xrPictureBox8",  "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", };
+            string[] pictureBoxNames = {  "xrPictureBox6", "xrPictureBox8",  "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",  "xrPictureBox12", };
 
             foreach (string name in pictureBoxNames)
             {
@@ -292,7 +351,7 @@ namespace QD.ERP.VAT.Areas.VAT.Reports.B2B
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] {  "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16" };
+            var fixedPictureBoxes = new[] {  "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16" };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)
