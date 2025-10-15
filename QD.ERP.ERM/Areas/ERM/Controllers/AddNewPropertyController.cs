@@ -10,16 +10,19 @@ using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using Microsoft.Data.SqlClient;
-using QD.ERP.Web.Areas.ERM.Pages;
+//using QD.ERP.ERM.Areas.ERM.Pages;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Services.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.IO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

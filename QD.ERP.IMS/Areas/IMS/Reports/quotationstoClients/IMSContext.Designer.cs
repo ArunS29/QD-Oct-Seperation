@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients
 {
     partial class IMSContext
     {

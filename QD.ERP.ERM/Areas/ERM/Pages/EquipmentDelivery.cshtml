@@ -1,4 +1,4 @@
-@page
+﻿@page
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.ERM.Pages.EquipmentDeliveryModel
 @{
@@ -141,21 +141,133 @@
 		width: 100%;
 		overflow: hidden;
 	}
+
+
+	
+	.card-section {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 20px;
+		align-items: stretch;
+		margin: 15px 0;
+	}
+
+	.card {
+		min-width: 0;
+		color: white;
+		border-radius: 12px;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.delivery-note {
+		background: linear-gradient(135deg, #ff3366, #ff6699);
+	}
+
+	.verified-card {
+		background: linear-gradient(135deg, #2a6cf4, #5aa9ff);
+		position: relative;
+		text-align: center;
+	}
+
+	.invoice-card {
+		background: linear-gradient(135deg, #6a11cb, #2575fc);
+	}
+
+	.voucher-card {
+		background: linear-gradient(135deg, #00c9a7, #92fe9d);
+	}
+
+	/* Responsive - stack cards below 992px */
+	@@media (max-width: 992px) {
+		.card-section
+
+	{
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	}
+
+	@@media (max-width: 576px) {
+		.card-section
+
+	{
+		grid-template-columns: 1fr;
+	}
+
+	}
+
+
+
+	/* @@media (max-width: 1000px) {
+		.card-section {
+			flex-wrap: wrap;
+		}
+	} */
+
+
+
+
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
+<!-- Existing title container -->
 <div class="title">
-	<div class="header-container">
-		<div id="EquipmentDelivery" class="no-border-input"></div>
+	
+
+	<!-- === Added Title Cards === -->
+	<div class="card-section">
+		<!-- Delivery Note Card -->
+		<div class="card delivery-note">
+			<div class="card-body">
+				<h2>Delivery Note</h2>
+				<p>Quick Dice ERP Solutions</p>
+				<div class="card-icon">
+					<i class="fas fa-truck"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Verified / Approved / Submitted Card -->
+		<div class="card verified-card">
+			<div class="tabs">
+				<div class="tab active">Verified</div>
+				<div class="tab">Approved</div>
+				<div class="tab">Submitted</div>
+			</div>
+			<div class="count">0</div>
+			<div class="check-icon">
+				<i class="fas fa-check-circle"></i>
+			</div>
+		</div>
+
+		<!-- Invoice Details Card -->
+		<div class="card invoice-card">
+			<h2>Invoice Details</h2>
+			<p>VAT Value</p>
+			<div class="amount">0.00</div>
+		</div>
+
+		<!-- Voucher Count Card -->
+		<div class="card voucher-card">
+			<h2>Voucher Count</h2>
+			<p>Last 5 Years</p>
+			<div class="count">0</div>
+		</div>
 	</div>
+
 </div>
+
 
 
 		@await Html.PartialAsync("/Pages/Shared/ERM/DeliveryNoteFooter.cshtml")
 <div class="context-menuInvoice" id="contextMenu">
-	<div class="context-menu-itemInvoice" onclick="viewRecord()">
+	@* <div class="context-menu-itemInvoice" onclick="viewRecord()">
 		<i class="dx-icon-search"></i> View
-	</div>
+	</div> *@
 	<div class="context-menu-itemInvoice" onclick="editRecord()">
 		<i class="dx-icon-edit"></i> Edit
 	</div>
@@ -400,21 +512,120 @@
 	function viewRecord() {
 		if (selectedRowData) {
 			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/ERM/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
-		}
-	}
-
-	function editRecord() {
-		if (selectedRowData) {
-			const DeliveryNoteNo = selectedRowData.DeliveryNoteNo;
-			window.location.href = `/${tenantName}/ERM/DeliveryEditForm?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=edit`;
+			window.location.href = `/${tenantName}/ERM/PropertyDeliveryNote?DeliveryNoteNo=${encodeURIComponent(DeliveryNoteNo)}&mode=view`;
 		}
 	}
 
 
-		function deleteRecord() {
+
+
+
+
+ //    function editRecord() {
+	// 	if (selectedRowData) {
+	// 		const PropertyIssueNo = selectedRowData.PropertyIssueNo;
+
+	// 		if (!PropertyIssueNo) {
+	// 			DevExpress.ui.notify("Delivery Note No not found!", "error", 3000);
+	// 			return;
+	// 		}
+
+	// 		window.location.href = `/${tenantName}/ERM/PropertyDeliveryNote?DeliveryNoteNo=${encodeURIComponent(PropertyIssueNo)}&mode=edit`;
+	// 	}
+	// }
+
+
+
+
+
+	   function editRecord() {
+		if (!selectedRowData) return;
+
+		const PropertyIssueNo = selectedRowData.PropertyIssueNo;
+
+		if (!PropertyIssueNo) {
+			DevExpress.ui.notify("Delivery Note No not found!", "error", 3000);
+			return;
+		}
+
+		$.ajax({
+			// ✅ Include tenantName before /api
+			url: `/api/DeliveryNote1/GetDeliveryType?propertyIssueNo=${encodeURIComponent(PropertyIssueNo)}`,
+			method: "GET",
+			success: function (deliveryType) {
+				if (deliveryType === 1) {
+					window.location.href = `/${tenantName}/ERM/PropertyDeliveryNote?DeliveryNoteNo=${encodeURIComponent(PropertyIssueNo)}&mode=edit`;
+				} else {
+					window.location.href = `/${tenantName}/ERM/AddNewProjectRequest?DeliveryNoteNo=${encodeURIComponent(PropertyIssueNo)}&mode=edit`;
+				}
+			},
+			error: function (xhr) {
+				console.error("Error fetching Delivery Type:", xhr.responseText);
+				DevExpress.ui.notify("Error occurred while fetching Delivery Type", "error", 3000);
+			}
+		});
+	}
+
+
+
+
+
+
+
+
+
+ //    function deleteRecord() {
+	// 	debugger;
+	// 	if (selectedRowData) {
+	// 		const code = selectedRowData.DeliveryNoteNo;
+
+	// 		DevExpress.ui.dialog.confirm(
+	// 			`Are you sure you want to delete stock item: <b>${code}</b>?`,
+	// 			"Confirm Deletion"
+	// 		).done(function (dialogResult) {
+	// 			if (dialogResult) {
+	// 				$.ajax({
+	// 					url: "/api/DeliveryNote1/DeleteDeliveryItem",
+	// 					method: "POST",
+	// 					contentType: "application/json",
+	// 					data: JSON.stringify(code),
+	// 					success: function (result) {
+	// 						const messageType = result.success ? "Success" : "Error";
+	// 						const messageColor = result.success ? "green" : "red";
+
+	// 						DevExpress.ui.dialog.alert(
+	// 							`<div style="color: ${messageColor}; font-weight: bold;">
+	// 								${result.message}
+	// 							</div>`,
+	// 							messageType
+	// 						).done(function () {
+	// 							if (result.success) {
+	// 								window.refreshPage();
+	// 							}
+	// 						});
+	// 					},
+	// 					error: function (xhr) {
+	// 						DevExpress.ui.dialog.alert(
+	// 							`<div style="color: red; font-weight: bold;">
+	// 								Error deleting stock item.
+	// 							</div>`,
+	// 							"Error"
+	// 						);
+	// 						console.error(xhr);
+	// 					}
+	// 				});
+	// 			}
+	// 		});
+	// 	} else {
+	// 		DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
+	// 	}
+	// }
+
+
+	function deleteRecord() {
+		debugger;
 		if (selectedRowData) {
-			const code = selectedRowData.DeliveryNoteNo;
+			   const code = selectedRowData.PropertyIssueNo;
 
 			DevExpress.ui.dialog.confirm(
 				`Are you sure you want to delete stock item: <b>${code}</b>?`,
@@ -425,7 +636,8 @@
 						url: "/api/DeliveryNote1/DeleteDeliveryItem",
 						method: "POST",
 						contentType: "application/json",
-						data: JSON.stringify(code),
+						// Wrap the code in an object
+						data: JSON.stringify({ code: code }),
 						success: function (result) {
 							const messageType = result.success ? "Success" : "Error";
 							const messageColor = result.success ? "green" : "red";
@@ -437,7 +649,12 @@
 								messageType
 							).done(function () {
 								if (result.success) {
-									window.refreshPage();
+									// Refresh your grid/page
+									if (window.refreshPage) {
+										window.refreshPage();
+									} else {
+										location.reload();
+									}
 								}
 							});
 						},
@@ -457,6 +674,9 @@
 			DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
 		}
 	}
+
+
+	
 
 
 

@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder
 {
     partial class PreviewPurchaseOrderForeignCurrency
     {
@@ -2427,7 +2427,7 @@
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(13.00037F, 192.4428F);
             this.xrSubreport1.Name = "xrSubreport1";
-            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.IMS.Reports.quotationstoClients.IMSContext();
+            this.xrSubreport1.ReportSource = new QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients.IMSContext();
             this.xrSubreport1.SizeF = new System.Drawing.SizeF(745.8505F, 33.1667F);
             // 
             // xrPictureBox14

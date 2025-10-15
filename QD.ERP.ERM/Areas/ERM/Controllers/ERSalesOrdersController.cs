@@ -7,18 +7,19 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
+using QD.ERP.Shared.Models;
+using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
+using QD.ERP.Shared.Service;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static QD.ERP.Web.Areas.ERM.Controllers.AddNewQuotation1Controller;
+using static QD.ERP.ERM.Areas.ERM.Controllers.AddNewQuotation1Controller;
+using Microsoft.AspNetCore.Http;
 
-namespace QD.ERP.Web.Areas.ERM.Controllers
+namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Area("ERM")]
     [Route("api/[controller]/[action]")]

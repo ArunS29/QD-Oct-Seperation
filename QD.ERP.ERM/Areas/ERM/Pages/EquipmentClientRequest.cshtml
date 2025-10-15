@@ -612,7 +612,7 @@
 <div id="tab-content-2" class="tab-content" style="height: 150px;">
     <div class="card-container">
         <!-- First Card (Left Side) -->
-        <table width="100%" style="font-size:14px; margin:5px 0;" cellpadding="5">
+        <table width="30%" style="font-size:14px; margin:5px 0;" cellpadding="5">
             <tr>
                 <td colspan="1" style="display:flex; gap: 5px;">
                     @(Html.DevExtreme().DateBox()
@@ -620,6 +620,7 @@
                         .ID("txtExpectedDate")
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
+						.Width(400)
                         .LabelMode(EditorLabelMode.Floating)
                     )
                 </td>
@@ -996,7 +997,7 @@
 						columns.Add()
 						.DataField("PropertyTypeId") 
 						.Caption(new JS("formatMessage('Description')"))
-						.Width(350)
+						.Width(400)
 						.EditCellTemplate(new JS("descriptionDropDownTemplate"))
 						.CellTemplate(new JS(@"
 						function(container, options) {
@@ -1015,7 +1016,7 @@
 						columns.Add()
 						.DataField("UnitRateMethod")
 						.Caption(new JS("formatMessage('Unit Rate Method')"))
-						.Width(150)
+						.Width(400)
 						.EditCellTemplate(new JS("unitRateMethodDropDownTemplate"))
 						.CellTemplate(new JS("function (container, options) { const unit = unitCodesList.find(u => u.UnitCode === options.value); container.text(unit ? unit.UnitDesc : options.value); }"));
 						columns.Add()
@@ -1969,16 +1970,24 @@
 				key: "ItemCode",
 				data: []
 			});
+
 			$(function () {
     $("#btnAddNew").on("click", function () {
         var button = $("#btnSave").dxButton("instance");
         button.option("text", "Update");
 
         var grid = $("#itemGrid").dxDataGrid("instance");
-        grid.addRow().done(function () {
-            var rowIndex = grid.getVisibleRows().length - 1;
-            grid.editCell(rowIndex, 0);
-        });
+			  grid.addRow({
+			PropertyType: "",
+			PropertyTypeId: "",
+			UnitRateMethod: "",
+			QtyRequested: 0,
+			ExpectedUnitRate: 0,
+			UnitsRequested: 0
+		}).done(function () {
+			var rowIndex = grid.getVisibleRows().length - 1;
+			grid.editCell(rowIndex, 1);
+		});
     });
 });			
 				function onGridRightClick(e) {
@@ -2222,8 +2231,8 @@
 
 						// Optional (if you decide to use later)
 						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.SubmittedBy);
-						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
-						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
+						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
+						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
 						 $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
 						 $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 						 $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
@@ -2342,7 +2351,7 @@
 						}
 						 // Make an AJAX call to fetch contact details
 					$.ajax({
-						url: '/api/AddNewClientRequest/GetClientContactDetails',
+						url: '/api/AddNewClientRequest1/GetClientContactDetails',
 						type: 'GET',
 						data: { clientCode: selectedKey },
 						success: function (data) {
@@ -3526,6 +3535,9 @@
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					 const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+					loadRequestChildren(EquipmentRequestNo);
+					loadRequestData(EquipmentRequestNo);
 					isVoucherSaved = true; // Mark Updated step as done
 					// updateWorkflowVisual(getWorkflowStatusFromFields());
 
@@ -3618,8 +3630,8 @@
 					$("#ddRequestedBy").dxDropDownBox("instance").option("value", data.TypeOfMpr ?? "");
 					$("#ddGetCompany").dxDropDownBox("instance").option("value", data.CompanyBranch ?? "");
 					$("#ddPreparedby").dxDropDownBox("instance").option("value",data.SubmittedBy);
-					$("#ddVerifiedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
-					$("#ddApprovedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
+					$("#ddVerifiedby").dxDropDownBox("instance").option("value", data.VerifiedBy);
+					$("#ddApprovedby").dxDropDownBox("instance").option("value", data.ApprovedBy);
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", data.CurrencyRate);
 					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId);
 					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId);
@@ -3737,6 +3749,9 @@
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+						loadRequestChildren(EquipmentRequestNo);
+						loadRequestData(EquipmentRequestNo);
 					isVoucherSaved = true;
 					DevExpress.ui.notify(response.message, "success", 3000);
 
@@ -3956,7 +3971,7 @@
 
 
 						$("#btnBack").on("click", function () {
-							window.history.back();
+							window.location.href = `/${tenantName}/ERM/EquipmentEnquiry`;
 						});
 
 
@@ -3991,6 +4006,10 @@
 							url: `/api/AddNewClientRequest1/SubmitMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
 							contentType: "application/json",
 							success: function (response) {
+								const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+							   // ✅ pass the correctly spelled variable
+								loadRequestChildren(EquipmentRequestNo);
+								loadRequestData(EquipmentRequestNo);
 								console.log("Submit API Response:", response);
 
 								// ✅ Always pick success message (API or fallback)
@@ -4085,6 +4104,10 @@
 							url: `/api/AddNewClientRequest1/VerifyMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
 						contentType: "application/json",
 						success: function (response) {
+						const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+					    // ✅ pass the correctly spelled variable
+						loadRequestChildren(EquipmentRequestNo);
+						loadRequestData(EquipmentRequestNo);
 						console.log("API Response:", response);
 
 						// ✅ Always pick up message or fallback
@@ -4094,8 +4117,8 @@
 
 						// ✅ Update dropdown if value exists
 						const VerifiedBy = $("#ddVerifiedby").dxDropDownBox("instance");
-						if (approvedByBox && response && response.VoucherApprovedBy) {
-							approvedByBox.option("value", response.VoucherApprovedBy);
+						if (VerifiedBy && response && response.VerifiedBy) {
+							VerifiedBy.option("value", response.VerifiedBy);
 						}
 
 						// ✅ Show success message
@@ -4165,14 +4188,18 @@
 					type: 'POST',
 					contentType: 'application/json',
 					success: function (response) {
+							const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+								// ✅ pass the correctly spelled variable
+						loadRequestChildren(EquipmentRequestNo);
+						loadRequestData(EquipmentRequestNo);
 						if (response && (response.success || response.Message)) {
 							DevExpress.ui.notify(response.message || response.Message, "success", 2000);
 							disableAllControls();
 							// Optionally update workflow or dropdowns here
-							if (response.VoucherApprovedBy) {
+							if (response.ApprovedBy) {
 								const ApprovedBy = $("#ddApprovedby").dxDropDownBox("instance");
 								if (ApprovedBy) {
-									ApprovedBy.option("value", response.VoucherApprovedBy);
+									ApprovedBy.option("value", response.ApprovedBy);
 								}
 							}
 							syncWorkflowFromFields && syncWorkflowFromFields();

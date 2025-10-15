@@ -1,4 +1,4 @@
-﻿namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
+﻿namespace QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients
 {
     partial class GroupCode
     {
@@ -1954,7 +1954,7 @@
             // 
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(2.999973F, 0F);
             this.xrSubreport1.Name = "xrSubreport1";
-            this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.IMS.Reports.quotationstoClients.IMSContext();
+            this.xrSubreport1.ReportSource = new QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients.IMSContext();
             this.xrSubreport1.SizeF = new System.Drawing.SizeF(869.0001F, 33.1667F);
             // 
             // xrLabel26

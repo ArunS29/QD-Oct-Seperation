@@ -6,18 +6,19 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Shared.Models;
 using QD.ERP.Web.Areas.VAT.Controllers;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Services.Logging;
 using SkiaSharp;
 using System.Dynamic;
 using System.Linq;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Extensions.Logging;
 
 
-namespace QD.ERP.Web.Areas.IMS.Controllers
+namespace QD.ERP.IMS.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

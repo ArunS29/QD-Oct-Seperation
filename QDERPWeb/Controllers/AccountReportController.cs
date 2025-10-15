@@ -8,10 +8,10 @@ using QD.ERP.Finance.Areas.Finance.Reports.AccountStatement;
 using QD.ERP.Finance.Areas.Finance.Reports.BillsReceivable;
 using QD.ERP.Finance.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Finance.Areas.Finance.Reports.Receivable_Statements;
-//using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
-//using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
-//using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
+//using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
+//using QD.ERP.VAT.Areas.VAT.Reports.Inventory_Reports;
+//using QD.ERP.IMS.Areas.IMS.Reports.InventoryReports;
+//using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Models.DAL;
 using QD.ERP.Web.Reports;
@@ -185,7 +185,7 @@ namespace QD.ERP.Web.Controllers
     //    {
     //        XtraReport report = reportName switch
     //        {
-    //            "MaterialRequestInventory" => new QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports.MaterialRequestInventory(
+    //            "MaterialRequestInventory" => new QD.ERP.VAT.Areas.VAT.Reports.Inventory_Reports.MaterialRequestInventory(
     //                logoImage,
     //                sealImage,
     //                showSeal,
@@ -201,7 +201,7 @@ namespace QD.ERP.Web.Controllers
     //                isApproved,
     //                tenantHelper),
 
-    //            "PreviewQuotations" => new QD.ERP.Web.Areas.IMS.Reports.InventoryReports.PreviewQuotations(
+    //            "PreviewQuotations" => new QD.ERP.IMS.Areas.IMS.Reports.InventoryReports.PreviewQuotations(
     //                showSeal,
     //                showSignature,
     //                printLetterhead,
@@ -221,7 +221,7 @@ namespace QD.ERP.Web.Controllers
     //                companyAddressAr,
     //                tenantHelper),
 
-    //            "SalesOrderReport" => new QD.ERP.Web.Areas.IMS.Reports.InventoryReports.SalesOrderReport(
+    //            "SalesOrderReport" => new QD.ERP.IMS.Areas.IMS.Reports.InventoryReports.SalesOrderReport(
     //                showSeal,
     //                showSignature,
     //                printLetterhead,
@@ -239,7 +239,7 @@ namespace QD.ERP.Web.Controllers
     //                username,
     //                tenantHelper),
 
-    //            "PreviewPurchaseOrder" => new QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder.PreviewPurchaseOrder(
+    //            "PreviewPurchaseOrder" => new QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder.PreviewPurchaseOrder(
     //                companyPhone,
     //                companyEmail,
     //                companyWebsite,
@@ -534,7 +534,7 @@ namespace QD.ERP.Web.Controllers
     //        switch (reportName)
     //        {
     //            case "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS":
-    //                report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
+    //                report = new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE
     //                    .TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
     //                        invoiceNo, // Only invoiceNo for this report
     //                        tenantName,
@@ -550,7 +550,7 @@ namespace QD.ERP.Web.Controllers
     //                break;
 
     //            case "PrintsimplifiedTaxInvoices":
-    //                report = new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
+    //                report = new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
     //                    invoiceNo, // This also uses invoiceNo
     //                    tenantName,
     //                    companyName,
@@ -567,7 +567,7 @@ namespace QD.ERP.Web.Controllers
     //                break;
 
     //            case "creditnote":
-    //                report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
+    //                report = new QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote.creditnote(
     //                    creditNoteNo, tenantName, companyName, companyAddress,  companyNameAr, companyAddressAr, isApproved, username,
     //                    tenantHelper
     //                );
@@ -575,13 +575,13 @@ namespace QD.ERP.Web.Controllers
 
 
     //            case "DebitNoteView":
-    //                report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
+    //                report = new QD.ERP.VAT.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
     //                     debitNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, username,
     //                    tenantHelper
     //                );
     //                break;
     //            case "BillsPurchases":
-    //                report = new QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister.BillsPurchases(
+    //                report = new QD.ERP.VAT.Areas.VAT.Reports.PurchaseRegister.BillsPurchases(
     //             invoiceNo, tenantName, companyName, companyAddress, logoImage,
     //             companyNameAr, companyAddressAr, isApproved, tenantHelper);
     //                                    break;

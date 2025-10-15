@@ -8,16 +8,16 @@ using QD.ERP.Finance.Areas.Finance.Reports.ExpensesClaims;
 using QD.ERP.Finance.Areas.Finance.Reports.Journal_Register;
 using QD.ERP.Finance.Areas.Finance.Reports.test;
 //using QD.ERP.Web.Areas.General.Pages.Report;
-//using QD.ERP.Web.Areas.IMS.Inventory_Reports;
-//using QD.ERP.Web.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
-//using QD.ERP.Web.Areas.IMS.Report.Inventory_Report;
-//using QD.ERP.Web.Areas.IMS.Reports.DeliveryNote;
-//using QD.ERP.Web.Areas.IMS.Reports.InventoryReports;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.Delivery_Note;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
-//using QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ;
-//using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
-//using QD.ERP.Web.Areas.IMS.Reports.SalesOrder;
+using QD.ERP.IMS.Areas.IMS.Inventory_Reports;
+using QD.ERP.IMS.Areas.IMS.InventoryReports.MaterialPurchaseRequistion;
+using QD.ERP.IMS.Areas.IMS.Report.Inventory_Report;
+using QD.ERP.IMS.Areas.IMS.Reports.DeliveryNote;
+using QD.ERP.IMS.Areas.IMS.Reports.InventoryReports;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.Delivery_Note;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.PurchaseOrder;
+using QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.RFQ;
+using QD.ERP.IMS.Areas.IMS.Reports.quotationstoClients;
+using QD.ERP.IMS.Areas.IMS.Reports.SalesOrder;
 using QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE;
 //using QD.ERP.VAT.Areas.VAT.Reports.Inventory_Reports;
 using QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
@@ -468,300 +468,301 @@ namespace QD.ERP.Web.Pages
                                return Page();
                           }
 
-                //            if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
-                //            {
-                //                if (string.IsNullOrEmpty(RequestNo))
-                //                {
-                //                    return BadRequest("requestNo is required for IMS reports.");
-                //                }
+            if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
+            {
+                if (string.IsNullOrEmpty(RequestNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
 
-                //                RequestNo = RequestNo;
+                //RequestNo = RequestNo;
 
-                //                if (reportName == "MaterialRequestInventory")
+                //if (reportName == "MaterialRequestInventory")
 
-                //                {
-                //                    Report = new MaterialRequestInventory(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                //                }
+                //{
+                //    Report = new MaterialRequestInventory(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                //}
 
-                //                else if (reportName == "MaterialPurcchaseRequestion")
+                else if (reportName == "MaterialPurcchaseRequestion")
 
-                //                {
-                //                    Report = new MaterialPurcchaseRequestion(logoImage, sealImage,showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                //                }
+                {
+                    Report = new MaterialPurcchaseRequestion(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
 
 
-                //                return Page();
-                //            }
+                return Page();
+            }
 
 
-                //            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" || 
-                //                reportName == "withoutvatDiscount" || reportName == "GroupCode" || reportName == "wtDiscount" || reportName == "PreviewQuotationWithImage" ||  reportName == "PreviewQuotationWithSubGroup")
-                //            {
-                //                if (string.IsNullOrEmpty(quotationNo))
-                //                {
-                //                    return BadRequest("is required for IMS reports.");
-                //                }
+            if (reportName == "PreviewQuotations" || reportName == "PreviewQuotationwithadditionalDetails" || reportName == "PreviewQuotationwithoutPrice" || reportName == "QuotationWOvat" || reportName == "vatTotalPricewithout" ||
+                reportName == "withoutvatDiscount" || reportName == "GroupCode" || reportName == "wtDiscount" || reportName == "PreviewQuotationWithImage" || reportName == "PreviewQuotationWithSubGroup")
+            {
+                if (string.IsNullOrEmpty(quotationNo))
+                {
+                    return BadRequest("is required for IMS reports.");
+                }
 
-                //                quotationNo = quotationNo;
-                //                switch (reportName)
-                //                {
-                //                    case "PreviewQuotations":
+                quotationNo = quotationNo;
+                switch (reportName)
+                {
+                    case "PreviewQuotations":
 
-                //                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                //                        break;
-                //                    case "PreviewQuotationwithadditionalDetails":
+                        Report = new PreviewQuotations(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithadditionalDetails":
 
-                //                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                //                        break;
-                //                    case "PreviewQuotationwithoutPrice":
+                        Report = new PreviewQuotationwithadditionalDetails(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationwithoutPrice":
 
-                //                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                        break;
-                //                    case "QuotationWOvat":
+                        Report = new PreviewQuotationwithoutPrice(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "QuotationWOvat":
 
-                //                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                        break;
-                //                    case "vatTotalPricewithout":
+                        Report = new QuotationWOvat(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "vatTotalPricewithout":
 
-                //                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                        break;
-                //                    case "withoutvatDiscount":
+                        Report = new vatTotalPricewithout(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "withoutvatDiscount":
 
-                //                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                        break;
+                        Report = new withoutvatDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
 
-                //                    case "GroupCode":
+                    case "GroupCode":
 
-                //                        Report = new GroupCode(showSeal, showSignature, printLetterhead,pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                        break;
-                //                    case "wtDiscount":
+                        Report = new GroupCode(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "wtDiscount":
 
-                //                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
-                //                        break;
-                //                    case "PreviewQuotationWithImage":
+                        Report = new wtDiscount(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithImage":
 
-                //                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                //                        break;
-                //                    case "PreviewQuotationWithSubGroup":
+                        Report = new PreviewQuotationWithImage(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
+                    case "PreviewQuotationWithSubGroup":
 
-                //                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-                //                        break;
+                        Report = new PreviewQuotationWithSubGroup(showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, clientAcknowledgement, printItemCodeDesc, printItemPartNoDesc, printItemPartArabicDesc, quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        break;
 
-                //                    default:
-                //                        return NotFound("Report not found.");
-                //                }
-                //                return Page();
-                //            }
+                    default:
+                        return NotFound("Report not found.");
+                }
+                return Page();
+            }
 
 
-                //            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
-                //            {
-                //                if (string.IsNullOrEmpty(salesOrderNo))
-                //                {
-                //                    return BadRequest("requestNo is required for IMS reports.");
-                //                }
+            if (reportName == "SalesOrderReport" || reportName == "SalesOrderReportWithoutPrice")
+            {
+                if (string.IsNullOrEmpty(salesOrderNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
 
-                //                salesOrderNo = salesOrderNo;
+                salesOrderNo = salesOrderNo;
 
-                //                if (reportName == "SalesOrderReport")
+                if (reportName == "SalesOrderReport")
 
-                //                {
-                //                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                }
-                //                else if (reportName == "SalesOrderReportWithoutPrice")
+                {
+                    Report = new SalesOrderReport(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                else if (reportName == "SalesOrderReportWithoutPrice")
 
-                //                {
-                //                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                }
+                {
+                    Report = new SalesOrderReportWithoutPrice(showSeal, showSignature, printLetterhead, salesOrderNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyPhone, emailAddress, website, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
 
 
 
 
-                //                return Page();
-                //            }
+                return Page();
+            }
 
 
 
 
 
-                //            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
-                //            {
-                //                if (string.IsNullOrEmpty(deliveryNoteNo))
-                //                {
-                //                    return BadRequest("requestNo is required for IMS reports.");
-                //                }
+            if (reportName == "PreviewDeliveryNote" || reportName == "PreviewDeliveryNotewithPrice" || reportName == "ReportforMaterialIssueNote" || reportName == "DotMatrics" || reportName == "DeliveryNoteWithCostPrice")
+            {
+                if (string.IsNullOrEmpty(deliveryNoteNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
 
-                //                deliveryNoteNo = deliveryNoteNo;
+                deliveryNoteNo = deliveryNoteNo;
 
-                //                if (reportName == "PreviewDeliveryNote")
-
-                //                {
-                //                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress,companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                }
-                //                if (reportName == "ReportforMaterialIssueNote")
-
-                //                {
-                //                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                }
-                //                if (reportName == "PreviewDeliveryNotewithPrice")
-
-                //                {
-                //                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                //                }
-                //                if (reportName == "DotMatrics")
-
-                //                {
-                //                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName,  companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-                //                }
-                //                if (reportName == "DeliveryNoteWithCostPrice")
-
-                //                {
-                //                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr,  _tenantDbContextHelper);
-                //                }
-
-
-
-
-                //                return Page();
-                //            }
-
-                //            if (reportName == "RFQEdit")
-                //            {
-                //                if (string.IsNullOrEmpty(rfqNo))
-                //                {
-                //                    return BadRequest("rfqNo is required for IMS reports.");
-                //                }
-
-                //                if (reportName == "RFQEdit") {
-                //                    Report = new RFQEdit(
-                //                        showSeal, showSignature, printLetterhead,
-                //                        rfqNo,
-                //                        tenantName,
-                //                        companyName,
-                //                        logoImage,
-                //                        companySealImage,
-                //                        companyAddress,
-                //                        companyNameAr,
-                //                        companyAddressAr,
-                //                        userName,
-                //                        _tenantDbContextHelper
-                //                    );
-                //                }
-
-                //                return Page();
-                //            }
-
-
-                //            if (reportName == "CompanyDetail1")
-                //            {
-                //                if (string.IsNullOrEmpty(CompanyId))
-                //                {
-                //                    return BadRequest("rfqNo is required for IMS reports.");
-                //                }
-
-                //                if (reportName == "CompanyDetail1")
-                //                {
-                //                    Report = new CompanyDetail1(
-
-                //                        CompanyId,
-                //                        _tenantDbContextHelper
-                //                    );
-                //                }
-
-                //                return Page();
-                //            }
-                //            if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT" 
-                //                || reportName == "WithoutVATTotalPrice")
-
-
-                //            {
-                //                if (string.IsNullOrEmpty(purchaseOrderNo))
-                //                {
-                //                    return BadRequest("purchaseOrderNo is required for IMS reports.");
-                //                }
-                //                if (reportName == "PreviewPurchaseOrder")
-                //                {
-                //                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
-                //    ShowitemPartNumberinsteadStockCode,
-                //    ShowHSCodeinsteadStockCode,
-                //    showSeal,
-                //    showSignature,
-                //    printLetterhead,
-                //    pageBreakAfter,
-                //    pageBreakBefore,
-                //    purchaseOrderNo,
-                //    tenantName,
-                //    companyName,
-                //    companySealImage,    
-                //    companyAddress,
-                //    companyNameAr,
-                //    companyAddressAr,
-                //    _tenantDbContextHelper
-                //);
-                //                }
-                //                if (reportName == "PreviewPurchaseOrderForeignCurrency")
-                //                {
-                //                    Report = new PreviewPurchaseOrderForeignCurrency(
-                //                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
-                //                        _tenantDbContextHelper
-                //                    );
-                //                }
-                //                if (reportName == "PreviewPurchaseOrderWithoutVAT")
-                //                {
-                //                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-                //                         pageBreakAfter, pageBreakBefore,
-                //                        purchaseOrderNo,
-                //                        tenantName,
-                //                        companyName,
-
-                //                        companySealImage,
-                //                        companyAddress,
-                //                        companyNameAr,
-                //                        companyAddressAr,
-                //                        _tenantDbContextHelper
-                //                    );
-                //                }
-                //                if (reportName == "WithoutVATTotalPrice")
-                //                {
-                //                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
-                //                            pageBreakAfter, pageBreakBefore,
-                //                        purchaseOrderNo,
-                //                        tenantName,
-                //                        companyName,
-
-                //                        companySealImage,
-                //                        companyAddress,
-                //                        companyNameAr,
-                //                        companyAddressAr,
-                //                        _tenantDbContextHelper
-                //                    );
-                //                }
-
-
-                //                return Page();
-                //            }
-                //            if (reportName == "printExpensesClaimBydateSimplified" )
-                //            {
-                //                if (string.IsNullOrEmpty(salesOrderNo))
-                //                {
-                //                    return BadRequest("requestNo is required for IMS reports.");
-                //                }
-
-                //                claimer = claimer;
-
-                //                if (reportName == "printExpensesClaimBydateSimplified")
-
-                //                {
-                //                    Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                //                }
-
-
-                //                return Page();
-                //            }
-
-
-                // 👉 Existing CASE 1: Old voucher reports
-                if (string.IsNullOrEmpty(voucherNo))
+                if (reportName == "PreviewDeliveryNote")
+
+                {
+                    Report = new previewDeliveryNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "ReportforMaterialIssueNote")
+
+                {
+                    Report = new ReportforMaterialIssueNote(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "PreviewDeliveryNotewithPrice")
+
+                {
+                    Report = new PreviewDeliveryNotewithPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                }
+                if (reportName == "DotMatrics")
+
+                {
+                    Report = new DotMatrics(deliveryNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                }
+                if (reportName == "DeliveryNoteWithCostPrice")
+
+                {
+                    Report = new DeliveryNoteWithCostPrice(PrintFooterAtBottom, ShowItemLineNo, printItemPartArabicDesc, showSeal, showSignature, printLetterhead, printItemCodeDesc, printItemPartNoDesc, deliveryNoteNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                }
+
+
+
+
+                return Page();
+            }
+
+            if (reportName == "RFQEdit")
+            {
+                if (string.IsNullOrEmpty(rfqNo))
+                {
+                    return BadRequest("rfqNo is required for IMS reports.");
+                }
+
+                if (reportName == "RFQEdit")
+                {
+                    Report = new RFQEdit(
+                        showSeal, showSignature, printLetterhead,
+                        rfqNo,
+                        tenantName,
+                        companyName,
+                        logoImage,
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        userName,
+                        _tenantDbContextHelper
+                    );
+                }
+
+                return Page();
+            }
+
+
+            //if (reportName == "CompanyDetail1")
+            //{
+            //    if (string.IsNullOrEmpty(CompanyId))
+            //    {
+            //        return BadRequest("rfqNo is required for IMS reports.");
+            //    }
+
+            //    if (reportName == "CompanyDetail1")
+            //    {
+            //        Report = new CompanyDetail1(
+
+            //            CompanyId,
+            //            _tenantDbContextHelper
+            //        );
+            //    }
+
+            //    return Page();
+            //}
+            if (reportName == "PreviewPurchaseOrder" || reportName == "PreviewPurchaseOrderForeignCurrency" || reportName == "PreviewPurchaseOrderWithoutVAT"
+                || reportName == "WithoutVATTotalPrice")
+
+
+            {
+                if (string.IsNullOrEmpty(purchaseOrderNo))
+                {
+                    return BadRequest("purchaseOrderNo is required for IMS reports.");
+                }
+                if (reportName == "PreviewPurchaseOrder")
+                {
+                    Report = new PreviewPurchaseOrder(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails,
+    ShowitemPartNumberinsteadStockCode,
+    ShowHSCodeinsteadStockCode,
+    showSeal,
+    showSignature,
+    printLetterhead,
+    pageBreakAfter,
+    pageBreakBefore,
+    purchaseOrderNo,
+    tenantName,
+    companyName,
+    companySealImage,
+    companyAddress,
+    companyNameAr,
+    companyAddressAr,
+    _tenantDbContextHelper
+);
+                }
+                if (reportName == "PreviewPurchaseOrderForeignCurrency")
+                {
+                    Report = new PreviewPurchaseOrderForeignCurrency(
+                       companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead, pageBreakAfter, pageBreakBefore, purchaseOrderNo, tenantName, companyName, sealImage, companyAddress, companyNameAr, companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+                if (reportName == "PreviewPurchaseOrderWithoutVAT")
+                {
+                    Report = new PreviewPurchaseOrderWithoutVAT(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                         pageBreakAfter, pageBreakBefore,
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+                if (reportName == "WithoutVATTotalPrice")
+                {
+                    Report = new PreviewPurchaseOrderWithoutVATwWithoutTotalPrice(companyPhone, emailAddress, website, logoImage, ShowFullSupplierAcceptance, ShowSimpleSuppilerAcceptance, ShowSignatoryPositionOnly, ShowPaymentTermsShippingDetails, ShowitemPartNumberinsteadStockCode, ShowHSCodeinsteadStockCode, showSeal, showSignature, printLetterhead,
+                            pageBreakAfter, pageBreakBefore,
+                        purchaseOrderNo,
+                        tenantName,
+                        companyName,
+
+                        companySealImage,
+                        companyAddress,
+                        companyNameAr,
+                        companyAddressAr,
+                        _tenantDbContextHelper
+                    );
+                }
+
+
+                return Page();
+            }
+            if (reportName == "printExpensesClaimBydateSimplified")
+            {
+                if (string.IsNullOrEmpty(salesOrderNo))
+                {
+                    return BadRequest("requestNo is required for IMS reports.");
+                }
+
+                claimer = claimer;
+
+                if (reportName == "printExpensesClaimBydateSimplified")
+
+                {
+                    Report = new printExpensesClaimBydateSimplified(claimer, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                }
+
+
+                return Page();
+            }
+
+
+            // 👉 Existing CASE 1: Old voucher reports
+            if (string.IsNullOrEmpty(voucherNo))
             {
                 return BadRequest("Voucher number is required.");
             }

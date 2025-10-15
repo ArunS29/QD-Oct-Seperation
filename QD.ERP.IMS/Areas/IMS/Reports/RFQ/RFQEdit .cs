@@ -5,7 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 
-namespace QD.ERP.Web.Areas.IMS.Reports.InventroryReports.RFQ
+namespace QD.ERP.IMS.Areas.IMS.Reports.InventroryReports.RFQ
 {
     public partial class RFQEdit : DevExpress.XtraReports.UI.XtraReport
     {

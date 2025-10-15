@@ -460,9 +460,9 @@
         @(Html.DevExtreme().Tabs()
                 .Items(subTabs =>
                 {
-                    subTabs.Add().Icon("user").Text(new JS("formatMessage('General')"));
-                    subTabs.Add().Icon("info").Text(new JS("formatMessage('Attributes')"));
-                    subTabs.Add().Icon("dots").Text(new JS("formatMessage('Others')"));
+                    subTabs.Add().Icon("user").Text(new JS("formatMessage('Property Details')"));
+                    subTabs.Add().Icon("info").Text(new JS("formatMessage('Additional Details')"));
+                    subTabs.Add().Icon("dots").Text(new JS("formatMessage('Image')"));
                 })
                 .SelectedIndex(0)
                 .OnSelectionChanged("onNestedTabSelectionChanged")
@@ -2183,23 +2183,23 @@
                                     var modalUrl = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
                                   openModal(modalUrl, "Property Operators", "70%", "70%");
                                 }
-                                  function ShowDatePopup() {
-                                        // Get the values first
-                                        var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
-                                        var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
+                            function ShowDatePopup() {
+                                // Get the values first
+                                var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
+                                var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
 
-                                        // Validate PropertyNo
-                                        if (!PropertyNo) {
-                                            DevExpress.ui.notify("Please enter a Property No.", "warning", 2000);
-                                            return;
-                                        }
+                                // Validate PropertyNo
+                                if (!PropertyNo) {
+                                    DevExpress.ui.notify("Please enter a Property No.", "warning", 2000);
+                                    return;
+                                }
 
-                                        // Build the URL safely
-                                        var url = `/${tenantName}/ERM/DetailsCostSummary?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+                                // Build the URL safely
+                                var url = `/${tenantName}/ERM/DetailsCostSummary?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
 
-                                        // Redirect
-                                        window.location.href = url;
-                                    }
+                                var title = "";
+                                openModal(url, title ,"100%","100%" );
+                            }
         function Progroup(){
                   const url = `/${tenantName}/ERM/PropertyGroup`;
                 const title = "Property Group";
@@ -2430,7 +2430,7 @@
                                                 if (window.parent) {
                                                     const grid = window.parent.$("#OperatorGrid").dxDataGrid("instance");
                                                     if (grid) {
-                                                        grid.refresh();   // reloads data from server or store
+                                                        grid.refresh(); 
                                                     }
                                                 }
                                             } else {
@@ -2611,4 +2611,7 @@
             });
         }
     }
+
+    window.parent.$("#OperatorGrid").dxDataGrid("instance").refresh();
+
 </script>

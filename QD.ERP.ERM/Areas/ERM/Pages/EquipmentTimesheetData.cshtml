@@ -2,6 +2,9 @@
 @model QD.ERP.Web.Areas.ERM.Pages.EquipmentTimesheetDataModel
 @{
 }
+<!-- Add these before your export JS code -->
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script> *@
 
 <style>
     .timesheet-container {
@@ -180,6 +183,11 @@
                         .Paging(p => p.Enabled(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Standard))
                         .Editing(edit => edit.Mode(GridEditMode.Cell).AllowUpdating(true))
+                @* .OnInitialized("onGridInitialized")
+                .Selection(s => s
+                .Mode(SelectionMode.Multiple)      // ✅ Allow multiple selection
+                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always) // ✅ Show checkboxes
+                ) *@
                         .Columns(columns =>
                         {
                             // Equipment columns with dynamic caption
@@ -221,8 +229,8 @@
                     .DataField("ClientRegHours")
                     .Caption(new JS("formatMessage('Reg Hours (C)')"))
                     .Format("fixedPoint")
+                    .Format("#,##0.00")
                     .Alignment(HorizontalAlignment.Center)
-
                     .EditCellTemplate(new JS("function(cellElement, cellInfo){ timeSlotDropDownEditor(cellElement, cellInfo); }"))
                     .CellTemplate(new JS(
                     "function(container, options) { " +
@@ -235,7 +243,7 @@
                     .DataField("ClientOthours")
                     .Caption(new JS("formatMessage('OT Hours (C)')"))
                     .Alignment(HorizontalAlignment.Center)
-
+                    .Format("#,##0.00")
                     .EditCellTemplate(new JS("function(cellElement, cellInfo){ timeSlotDropDownEditor(cellElement, cellInfo); }"))
                     .CellTemplate(new JS(
                     "function(container, options) { " +
@@ -249,22 +257,16 @@
                         subColumns.Add().DataField("ClientRatePerHour").Caption(new JS("formatMessage('Rate/Hour (C)')")).Format("fixedPoint").Alignment(HorizontalAlignment.Center);
                         subColumns.Add().DataField("ClientOtratePerHour").Caption(new JS("formatMessage('OT Rate/Hour (C)')")).Format("fixedPoint").Alignment(HorizontalAlignment.Center);
                     });
-
-
                 })
                 .Height("60vh")
                 .Width("100%")
                 .ColumnFixing(fixing => fixing.Enabled(true))
                 .HeaderFilter(filter => filter.Visible(true))
                 .FilterRow(f => f.Visible(true))
-                .ShowRowLines(true)
-                
-                    )
-
-
-
+                .ShowRowLines(true)               
+                 )
     </div>
-
+   
 
 
     <!-- Footer / Summary Panels -->
@@ -289,10 +291,15 @@
             <label>Total Hours:</label> @(Html.DevExtreme().NumberBox().ID("supplierTotal").Format("#0.0").ReadOnly(true).ElementAttr("class", "total-box"))
         </div> </div> 
         
-        <div class="timesheet-box"> <div class="timesheet-header">Day Shift Operator Timesheet:</div> <div class="timesheet-row"> <label>Reg.Hours:</label> @(Html.DevExtreme().NumberBox().ID("dayReg").Value(0.0).Format("#0.0").OnValueChanged("updateDayTotal")) </div>
+        <div class="timesheet-box"> <div class="timesheet-header">Day Shift Operator Timesheet:</div>
+            @(Html.DevExtreme().Button().ID("SuptoDay").Icon("send").OnClick("copySupplierToDayOperator"))
+        <div class="timesheet-row"> <label>Reg.Hours:</label> @(Html.DevExtreme().NumberBox().ID("dayReg").Value(0.0).Format("#0.0").OnValueChanged("updateDayTotal")) </div>
         <div class="timesheet-row"> <label>OT Hours:</label> @(Html.DevExtreme().NumberBox().ID("dayOT").Format("#0.0").OnValueChanged("updateDayTotal")) </div> 
         <div class="timesheet-row"> <label>Total Hours:</label> @(Html.DevExtreme().NumberBox().ID("dayTotal").Format("#0.0").ReadOnly(true).ElementAttr("class", "total-box")) </div> </div>
-        <div class="timesheet-box"> <div class="timesheet-header">Night Shift Operator Timesheet:</div> <div class="timesheet-row"> <label>Reg.Hours:</label> @(Html.DevExtreme().NumberBox().ID("nightReg").Value(0.0).Format("#0.0").OnValueChanged("updateNightTotal")) </div>
+
+        <div class="timesheet-box"> <div class="timesheet-header">Night Shift Operator Timesheet:</div>
+            @(Html.DevExtreme().Button().ID("Suptonight").Icon("send").OnClick("copyDayOperatortonight"))
+        <div class="timesheet-row"> <label>Reg.Hours:</label> @(Html.DevExtreme().NumberBox().ID("nightReg").Value(0.0).Format("#0.0").OnValueChanged("updateNightTotal")) </div>
         <div class="timesheet-row"> <label>OT Hours:</label> @(Html.DevExtreme().NumberBox().ID("nightOT").Format("#0.0").OnValueChanged("updateNightTotal")) </div>
         <div class="timesheet-row"> <label>Total Hours:</label> @(Html.DevExtreme().NumberBox().ID("nightTotal").Format("#0.0").ReadOnly(true).ElementAttr("class", "total-box")) </div> </div>
     </div>
@@ -302,6 +309,358 @@
 </div>
 
 <script>
+    //     function onUploadButtonClick() {
+    //         const gridInstance = $("#timesheetGrid").dxDataGrid("instance");
+    //     const totalCount = gridInstance.totalCount();
+    //     console.log("Total Count from DataSource:", totalCount);
+    //         const requestNo = $('#txtPropertyNo').dxTextBox("instance").option("value");
+    //     if (!requestNo) {
+    //         DevExpress.ui.notify("Request No is required.", "error", 2000);
+    //         return;
+    //     }
+    //     const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+    //     const clientnameValidation = clientnameValidator.validate();
+    //     if (!clientnameValidation.isValid) {
+    //         DevExpress.ui.dialog.alert(
+    //             "Cannot continue saving with errors, please clear the errors and continue.",
+    //             "Clear Errors"
+    //         );
+    //         return;
+    //     }
+    //     const requestBody = {
+    //                PropertyNo: propertyNo,
+    //             PropertyDesc: $("#txtPropertyDesc").dxTextBox("instance").option("value") || null,
+    //             Comments: $("#txtComments").dxTextArea("instance").option("value") || null,
+    //             Deductions: parseFloat($("#txtSupplierDeduction").dxNumberBox("instance").option("value")) || null,
+    //             PlateNo: $("#txtPlateNo").dxTextBox("instance").option("value") || null,
+    //             SerialNo: $("#txtSerialNo").dxTextBox("instance").option("value") || null,
+    //             DoorNo: $("#txtDoorNo").dxTextBox("instance").option("value") || null,
+    //             MonthID: parseInt($("#txtMonthId").dxTextBox("instance").option("value")) || 0,
+    //             StartDate: null, can calculate from grid first row if needed
+    //             EndDate: null,   can calculate from grid last row if needed
+    //             RatePerHour: parseFloat($("#txtRatePerHour").dxNumberBox("instance")?.option("value")) || 0
+    //     };
+    //     $.ajax({
+    //         url: "/api/InventoryUpload/SaveMprno",
+    //         method: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify(requestBody),
+    //         success: function (result) {
+    //             DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+    //             if(totalCount > 0){
+    //                 handleUploadConfirm(requestNo);
+    //             }else{
+    //                 window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             console.error("UploadStock error:", xhr);
+    //             DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+    //         }
+    //     });
+    // }
+    //    let gridInstance;
+
+    // function onGridInitialized(e) {
+    //     gridInstance = e.component; store grid reference
+    //     console.log("Grid initialized:", gridInstance);
+    // }
+
+    // ✅ Handles dropdown item clicks
+    // function onExportItemClick(e) {
+    //     const itemId = e.itemData.id;
+
+    //     if (itemId === "exportSelected") {
+    //         exportIssuesToExcel(true); Only selected rows
+    //     } else if (itemId === "exportAll") {
+    //         exportIssuesToExcel(false); All rows
+    //     }
+    // }
+
+    // ✅ Main export logic
+    // function exportIssuesToExcel(selectedOnly) {
+    //     if (!gridInstance) {
+    //         DevExpress.ui.notify("Grid is not ready yet!", "error", 2000);
+    //         return;
+    //     }
+
+    //       const workbook = new ExcelJS.Workbook();
+
+    // 👇 This will create an Excel sheet tab named "Timesheet Data"
+    // const worksheet = workbook.addWorksheet("Timesheet Data");
+
+
+    //     DevExpress.excelExporter.exportDataGrid({
+    //         component: gridInstance,
+    //         worksheet: worksheet,
+    //         selectedRowsOnly: selectedOnly,
+    //         autoFilterEnabled: true
+    //     }).then(() => {
+    //         return workbook.xlsx.writeBuffer();
+    //     }).then((buffer) => {
+    //         saveAs(new Blob([buffer], { type: "application/octet-stream" }), "Timesheet_Export.xlsx");
+    //     });
+    // }
+
+          $("#btnSave").on("click", function () {
+        const $btn = $(this).dxButton("instance");
+        $btn.option("disabled", true); // Disable button while processing
+
+        const propertyNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+        if (!propertyNo) {
+            DevExpress.ui.notify("Property number is mandatory.", "error", 3000);
+            $btn.option("disabled", false);
+            return;
+        }
+
+        const children = $("#timesheetGrid").dxDataGrid("instance").getDataSource().items();
+        if (!children || children.length === 0) {
+            DevExpress.ui.notify("No timesheet records to save.", "error", 3000);
+            $btn.option("disabled", false);
+            return;
+        }
+
+        // Optional: compute monthID from first child date if needed
+        const monthID = $("#ddlMonthID").dxDropDownBox("instance").option("value") ||
+            (children[0].TimeSheetDate ? new Date(children[0].TimeSheetDate).getMonth() + 1 : null);
+
+        const master = {
+            PropertyNo: propertyNo,
+            MonthID: monthID,
+            RatePerHour: $("#txtRatePerHour").dxNumberBox("instance").option("value") || 0
+        };
+
+        const model = { ...master, TimesheetChild: children };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/ERRequestforQuotationList/UpdatePropertyTimesheet",
+            contentType: "application/json",
+            data: JSON.stringify(model),
+            success: function (response) {
+                DevExpress.ui.notify(response.message || "Timesheet saved successfully", "success", 3000);
+                const dataGrid = $("#timesheetGrid").dxDataGrid("instance");
+                if (dataGrid) dataGrid.refresh();
+            },
+            error: function (xhr) {
+                DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+            },
+            complete: function () {
+                $btn.option("disabled", false);
+            }
+        });
+    });
+
+
+
+    //         $("#btnSave").on("click", function (e) {
+    //     const $btn = $(this).dxButton("instance");
+
+    //     ✅ Step 1: Validate required field
+    //     const propertyNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+    //     if (!propertyNo) {
+    //         DevExpress.ui.dialog.alert(
+    //             "Property No is required.",
+    //             "Validation Error"
+    //         );
+    //         return;
+    //     }
+
+    //     ✅ Step 2: Collect header fields with proper type conversion
+    //     const master = {
+    //         PropertyNo: propertyNo,
+    //         PropertyDesc: $("#txtPropertyDesc").dxTextBox("instance").option("value") || null,
+    //         Comments: $("#txtComments").dxTextArea("instance").option("value") || null,
+    //         Deductions: parseFloat($("#txtSupplierDeduction").dxNumberBox("instance").option("value")) || null,
+    //         PlateNo: $("#txtPlateNo").dxTextBox("instance").option("value") || null,
+    //         SerialNo: $("#txtSerialNo").dxTextBox("instance").option("value") || null,
+    //         DoorNo: $("#txtDoorNo").dxTextBox("instance").option("value") || null,
+    //         MonthID: parseInt($("#txtMonthId").dxTextBox("instance").option("value")) || 0,
+    //         StartDate: null, can calculate from grid first row if needed
+    //         EndDate: null,   can calculate from grid last row if needed
+    //         RatePerHour: parseFloat($("#txtRatePerHour").dxNumberBox("instance")?.option("value")) || 0
+    //     };
+    //         const items = $("#timesheetGrid").dxDataGrid("instance").getDataSource().items();
+
+    // if (!items || items.length === 0) {
+    //     DevExpress.ui.notify("No timesheet entries to save.", "error", 3000);
+    //     return;
+    // }
+
+
+    //     const model = {
+    //         ...master,
+    //         Items: items
+    //     };
+
+    //     ✅ Step 5: Call API to save
+    //     $.ajax({
+    //         type: "POST",
+    //             url: "/api/ERRequestforQuotationList/UpdatePropertyTimesheet",
+    //         contentType: "application/json",
+    //         data: JSON.stringify(model),
+    //         success: function (response) {
+    //             if (response.success) {
+    //                 DevExpress.ui.notify(response.message, "success", 3000);
+    //                 gridInstance.refresh(); Refresh the DataGrid
+    //             } else {
+    //                 DevExpress.ui.notify(response.message || "Failed to save timesheet.", "error", 3000);
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+    //         }
+    //     });
+    // });
+-
+
+        function printFun() {
+        exportDataGridToPDF('timesheetGrid');
+    }
+        function submitSupplierTimesheet() {
+        debugger;
+        const $btn = $("#btnSubmit");
+        const dxBtn = $btn.dxButton("instance");
+        $btn.prop("disabled", true);
+        dxBtn.option("disabled", true);
+
+        const propertyNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+        if (!propertyNo) {
+            DevExpress.ui.notify("Property number is required!", "error", 2000);
+            $btn.prop("disabled", false);
+            dxBtn.option("disabled", false);
+            return;
+        }
+
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Submission",
+            message: "Are you sure you want to submit the Supplier Timesheet?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ]
+        }).show().done(function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: `/api/ERRequestforQuotationList/SubmitSupplierTimesheet?propertyNo=${encodeURIComponent(propertyNo)}`,
+                    contentType: "application/json",
+                    success: function (res) {
+                        DevExpress.ui.notify(res.message || "Supplier Timesheet submitted successfully.", "success", 3000);
+                    },
+                    error: function (xhr) {
+                        const errMsg = xhr.responseJSON?.message || "Submission failed.";
+                        DevExpress.ui.notify(errMsg, "error", 3000); // ✅ show error message
+                    },
+                    complete: function () {
+                        $btn.prop("disabled", false);
+                        dxBtn.option("disabled", false);
+                    }
+                });
+            } else {
+                $btn.prop("disabled", false);
+                dxBtn.option("disabled", false);
+            }
+        });
+    }
+
+        $("#btnApprove").on("click", function () {
+        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+        if (!dataGrid) {
+            console.error("DataGrid instance not found.");
+            return;
+        }
+
+        const rowCount = dataGrid.getVisibleRows().length;
+        if (rowCount === 0) {
+            DevExpress.ui.dialog.custom({
+                title: "Equipment Enquiry Request approval has failed.",
+                message: "Equipment Enquiry Request has not been approved. Please enter transactions to proceed with approval.",
+                buttons: [{ text: "Ok", onClick: () => false }],
+                showTitle: true
+            }).show();
+            return;
+        }
+
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Approval",
+            message: "Are you sure you want to approve this Enquiry Request?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (dialogResult) proceedWithApproval();
+        });
+    });
+
+            function approveSupplierTimesheet() {
+        const propertyNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+        if (!propertyNo) {
+            DevExpress.ui.notify("Property number is required!", "error", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Approval",
+            message: "Are you sure you want to approve the Supplier Timesheet?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ]
+        }).show().done(result => {
+            if (result) {
+                $.ajax({
+                    url: `/api/ERRequestforQuotationList/ApproveSupplierTimesheet?propertyNo=${encodeURIComponent(propertyNo)}`,
+                    type: "POST",
+                    contentType: "application/json",
+                    success: res => {
+                        DevExpress.ui.notify(res.message || "Supplier Timesheet approved successfully.", "success", 3000);
+                    },
+                    error: xhr => {
+                        const errMsg = xhr.responseJSON?.message || "Approval failed or already approved.";
+                        DevExpress.ui.notify(errMsg, "error", 3000);
+                    }
+                });
+            }
+        });
+    }
+
+
+
+    function unlockTimesheet() {
+        const propertyNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+        if (!propertyNo) {
+            DevExpress.ui.notify("Property number is required!", "error", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Unlock",
+            message: "Are you sure you want to unlock the timesheet?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ]
+        }).show().done(result => {
+            if (result) {
+                $.ajax({
+                    url: `/api/ERRequestforQuotationList/UnlockTimesheet?propertyNo=${encodeURIComponent(propertyNo)}`,
+                    type: "POST",
+                    contentType: "application/json",
+                    success: res => {
+                        DevExpress.ui.notify(res.message || "Timesheet unlocked successfully.", "success", 3000);
+                    },
+                    error: xhr => {
+                        DevExpress.ui.notify(xhr.responseJSON?.message || "Unlock failed.", "error", 3000);
+                    }
+                });
+            }
+        });
+    }
+
+      
     function updateClientTotal() { var reg = $("#clientReg").dxNumberBox("instance").option("value") || 0; 
     var ot = $("#clientOT").dxNumberBox("instance").option("value") || 0; $("#clientTotal").dxNumberBox("instance").option("value", reg + ot); } 
     function updateSupplierTotal() { var reg = $("#supplierReg").dxNumberBox("instance").option("value") || 0;
@@ -311,30 +670,37 @@
     function updateNightTotal() { var reg = $("#nightReg").dxNumberBox("instance").option("value") || 0;
     var ot = $("#nightOT").dxNumberBox("instance").option("value") || 0; $("#nightTotal").dxNumberBox("instance").option("value", reg + ot); }
 
-              function copyClientToSupplier() {
-                    var grid = $("#timesheetGrid").dxDataGrid("instance");
-                    var allRows = grid.getDataSource().items();
+                function copyClientToSupplier() {
+        var grid = $("#timesheetGrid").dxDataGrid("instance");
+        var allRows = grid.getDataSource().items();
 
-                    var dataToSend = allRows.map(row => ({
-                        PropertyNo: row.PropertyNo,
-                        TimeSheetMasterID: row.TimeSheetMasterId
-                    }));
+        var dataToSend = allRows.map(row => ({
+            PropertyNo: row.PropertyNo,
+            TimeSheetMasterID: row.TimeSheetMasterId
+        }));
 
-                    $.ajax({
-                        url: '/api/ERRequestforQuotationList/CopyClientToSuppliers',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify(dataToSend),
-                        success: function(res) {
-                            console.log(res.message);
-                            grid.getDataSource().reload();
-                            showSupplierTimesheet();
-                        },
-                        error: function(err) {
-                            console.error(err);
-                        }
-                    });
-                }
+        DevExpress.ui.dialog.confirm(
+            "You are about to Copy Client Timesheet Data to Supplier Timesheet for this Equipment.\nAre you sure you want to copy this Timesheet Data?",
+            "Copy Timesheet Data."
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/ERRequestforQuotationList/CopyClientToSuppliers',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function(res) {
+                        console.log(res.message);
+                        grid.getDataSource().reload();
+                        showSupplierTimesheet();
+                    },
+                    error: function(err) {
+                        console.error(err);
+                    }
+                });
+            }
+        });
+    }
 
 
        // Query param helper
@@ -373,31 +739,71 @@
                if (propVal && monthVal) loadTimeSheetByPropertyAndMonth(propVal, monthVal);
            });
        });
-       function copyClientToSupplier() {
-       debugger;
-                 var grid = $("#timesheetGrid").dxDataGrid("instance");
-                 var allRows = grid.getDataSource().items();
+       function copyDayOperatortonight() {
+        var grid = $("#timesheetGrid").dxDataGrid("instance");
+        var allRows = grid.getDataSource().items();
 
-                 var dataToSend = allRows.map(row => ({
-                     PropertyNo: row.PropertyNo,
-                     TimeSheetMasterID: row.TimeSheetMasterId
-                 }));
+        var dataToSend = allRows.map(row => ({
+            PropertyNo: row.PropertyNo,
+            TimeSheetMasterID: row.TimeSheetMasterId
+        }));
 
-                 $.ajax({
-                     url: '/api/ERRequestforQuotationList/CopyClientToSuppliers',
-                     type: 'POST',
-                     contentType: 'application/json',
-                     data: JSON.stringify(dataToSend),
-                     success: function(res) {
-                         console.log(res.message);
-                         grid.getDataSource().reload();
-                         showSupplierTimesheet();
-                     },
-                     error: function(err) {
-                         console.error(err);
-                     }
-                 });
-             }
+        DevExpress.ui.dialog.confirm(
+            "You are about to Copy Supplier Timesheet Data to Night Shift Operator Timesheet for this Equipment.\nAre you sure you want to copy this Timesheet Data?",
+            "Copy Timesheet Data."
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/ERRequestforQuotationList/copyDayOperatortonight',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function (res) {
+                        DevExpress.ui.notify(res.message, "success", 3000);
+                        grid.getDataSource().reload();
+                        showOperatorNightShiftTimesheet();
+                    },
+                    error: function (err) {
+                        DevExpress.ui.notify("Error copying Supplier Timesheet Data: " + err.responseText, "error", 4000);
+                    }
+                });
+            }
+        });
+    }
+
+                 function copySupplierToDayOperator() {
+                     debugger;
+        var grid = $("#timesheetGrid").dxDataGrid("instance");
+        var allRows = grid.getDataSource().items();
+
+        var dataToSend = allRows.map(row => ({
+            PropertyNo: row.PropertyNo,
+            TimeSheetMasterID: row.TimeSheetMasterId
+        }));
+
+        DevExpress.ui.dialog.confirm(
+            "You are about to Copy Supplier Timesheet Data to Day Shift Operator Timesheet for this Equipment.\nAre you sure you want to copy this Timesheet Data?",
+            "Copy Timesheet Data."
+        ).done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/ERRequestforQuotationList/CopySupplierToDayOperator',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function (res) {
+                        DevExpress.ui.notify(res.message, "success", 3000);
+                        grid.getDataSource().reload();
+                        showOperatorDayShiftTimesheet();
+                    },
+                    error: function (err) {
+                        DevExpress.ui.notify("Error copying Supplier Timesheet Data: " + err.responseText, "error", 4000);
+                    }
+                });
+            }
+        });
+    }
+
        function loadTimeSheetByPropertyAndMonth(propertyNo, timeSheetMaster) {
            $.ajax({
                url: '/api/ERRequestforQuotationList/GetTimesheetGrid',
@@ -409,6 +815,7 @@
                    grid.option("dataSource", data && data.data ? data.data : data);
                    grid.refresh();
                    showClientTimesheet();
+                   getDocumentCount();
                },
                error: function (xhr) {
                    console.error("AJAX Error", xhr.responseText || xhr);
@@ -416,11 +823,7 @@
                }
            });
        }
-                // ✅ Reusable DropDownBox + DataGrid editor function
-     // ----------------------------
-    // Global variable
-    // ----------------------------
-
+ 
 
     // ----------------------------
     // Generic DropDownGrid Creator
@@ -534,7 +937,36 @@
             width: 220
         });
     };
+    function onIMSAttachmentButtonClicks(e) {
+            debugger;
+            var dataGrid = $("#timesheetGrid").dxDataGrid("instance");
+            var rowCount = dataGrid.getVisibleRows().length;
+            var dataSource = dataGrid.option("dataSource");
 
+            // if (rowCount === 0 || rowCount === null) {
+            //     DevExpress.ui.notify(
+            //         "Not allow to Add Attachments. Please enter some transactions in Grid.",
+            //         "warning",
+            //         4000
+            //         );
+            //     return;
+            // }
+            // Get Voucher No safely
+            const requestNoBox = $("#txtPropertyNo").dxTextBox("instance");
+            const requestNo = requestNoBox ? requestNoBox.option("value") : null;
+            var menuType = "erm";
+
+
+            var formType ="Property Eqiupment TimeSheet Data";
+            // Log and build URL
+            console.log("Voucher No:", requestNo);
+            console.log("Voucher Type:", formType);
+
+            const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+
+            openModal(url, "");
+        }
     // ----------------------------------------------------------------------
     // ✅ Initial Data Preload (optional, speeds up first render)
     // ----------------------------------------------------------------------

@@ -1474,8 +1474,8 @@
     // }
     
 		$("#btnBack").on("click", function (e) {
-    window.location.href = `/${tenantName}/ERM/PurchaseOrder`;
-});
+            window.location.href = `/${tenantName}/ERM/PurchaseOrder`;
+        });
         function onSupplierChanged(e) {
         const supplierCode = e.value;
         if (!supplierCode) return;
@@ -1899,24 +1899,29 @@ $(function () {
 				data: []
 			});
 
-            $(function () {
-        $("#btnAddNew").on("click", function () {
-            var button = $("#btnSave").dxButton("instance");
-            button.option("text", "Update");
+           $(function () {
+                $("#btnAddNew").on("click", function () {
+                    var button = $("#btnSave").dxButton("instance");
+                    button.option("text", "Update");
 
-            var grid = $("#itemGrid").dxDataGrid("instance");
-            // Get total row count
-            var totalCount = grid.totalCount();
-            var pageSize = grid.pageSize();
+                    var grid = $("#itemGrid").dxDataGrid("instance");
 
-            // Go to last page
-            grid.pageIndex(Math.floor(totalCount / pageSize));
-            grid.addRow();
+                    var totalCount = grid.totalCount();
+                    var pageSize = grid.pageSize();
+                    grid.pageIndex(Math.floor(totalCount / pageSize));
 
-            // ✅ Show a success toast
-            DevExpress.ui.notify("Cost Center created", "success", 2000);
-        });
-    });
+                    grid.addRow({
+                        PropertyType: "",
+                        PropertyTypeId: "",
+                        Descriptions: "",
+                        UnitRateMethod: "",
+                        QuotedQuantity: 0,
+                        UnitRate: 0
+                    });
+
+                    DevExpress.ui.notify("New row added with default values.", "success", 2000);
+                });
+            });
                
              function getDropdownData() {
                 return $.ajax({
@@ -2078,6 +2083,8 @@ $(function () {
                     contentType: 'application/json',
                     data: JSON.stringify({Pono: pono}),
                     success: function (response) {
+                        const poNo = master.Pono;
+                        loadPurchaseOrder(poNo);
                         if (response.success) {
                             DevExpress.ui.notify("Submitted successfully.", "success", 3000);
                         } else {
@@ -2109,6 +2116,8 @@ $(function () {
                     contentType: 'application/json',
                     data: JSON.stringify({ Pono: pono }),
                     success: function (response) {
+                        const poNo = master.Pono;
+                        loadPurchaseOrder(poNo);
                         if (response.success) {
                             DevExpress.ui.notify("Verified successfully.", "success", 3000);
                         } else {
@@ -2140,6 +2149,8 @@ $(function () {
                         contentType: 'application/json',
                         data: JSON.stringify({ Pono: pono }),
                         success: function (response) {
+                            const poNo = master.Pono;
+                            loadPurchaseOrder(poNo);
                             if (response.success) {
                             DevExpress.ui.notify("Approved successfully.", "success", 3000);
 
@@ -2334,6 +2345,8 @@ $("#btnSave").on("click", function () {
         contentType: "application/json",
         success: function (res) {
             if (res.success) {
+                   const poNo = master.Pono;
+                  loadPurchaseOrder(poNo);
                 DevExpress.ui.notify(res.message, "success", 3000);
 
                 const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
@@ -2431,6 +2444,8 @@ $("#btnSave").on("click", function () {
         contentType: "application/json",
         success: function (res) {
             if (res.success) {
+                  const poNo = master.Pono;
+                  loadPurchaseOrder(poNo);
                 DevExpress.ui.notify(res.message, "success", 2000);
 
                 // Refresh grid with new children

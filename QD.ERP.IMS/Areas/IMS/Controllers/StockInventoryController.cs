@@ -2,21 +2,24 @@
 using DevExpress.Printing.Utils.DocumentStoring;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using QD.ERP.Shared.DAL.Entities;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.Services.Logging;
+using QD.ERP.Shared.Service;
+using QD.ERP.Shared.Services.Logging;
 using SkiaSharp;
 using System.Collections.Generic;
 using System.IO;
 using System.IO;
 
-namespace QD.ERP.Web.Areas.IMS.Controllers
+namespace QD.ERP.IMS.Areas.IMS.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
