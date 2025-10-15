@@ -130,6 +130,7 @@
     .footer-fixed {
         bottom: 35px !important;
     }
+
 </style>
 
 <div class="dx-fieldset horizontal-container mt-2">
@@ -172,7 +173,7 @@
             .ID("btnAttach")
             .Icon("attach")
             .Text(new JS("formatMessage('Attach')"))
-          //  .OnClick("onIMSAttachmentButtonClick")
+            .OnClick("onERMAttachmentButtonClick")
             .ElementAttr(new { @class = "dx-button-custom btn-attach" })
             )
     </div>
@@ -371,6 +372,46 @@
         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 
+
+
+
+
+    $("#btnAttach").on("click", function (e) {
+        const dialog = DevExpress.ui.dialog.custom({
+            title: "Attach File",
+            messageHtml: "Click OK to select file(s)",
+            buttons: [
+                {
+                    text: "OK",
+                    onClick: function () {
+                        handleFileSelection();
+                    }
+                },
+                {
+                    text: "Cancel"
+                }
+            ]
+        });
+
+        dialog.show(); // Show the dialog
+    });
+
+    function handleFileSelection() {
+        const fileInput = document.getElementById("fileInput");
+
+        const isMultiple = true; // or false based on your requirement
+
+        if (fileInput) {
+            fileInput.multiple = isMultiple;
+            fileInput.click();
+        } else {
+            console.error("fileInput element not found");
+        }
+    }
+
+
+
+
        function toggleHeaderFilter() {
            var dataGrid = $("#itemGrid").dxDataGrid("instance");
 
@@ -460,6 +501,66 @@
            // Trigger the file input click event
            input.click();
        }
+
+
+
+
+
+
+
+
+
+       async  function onERMAttachmentButtonClick(e) {
+        debugger;
+
+         let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let children = grid.getDataSource().items();   // gets current visible data
+
+                 if (!children || children.length === 0) {
+                       DevExpress.ui.notify("Data Not found  within the Grid", "Can't Enable Attachment", "error", 3000);
+                      return;
+                 }
+
+
+        // Get Voucher No safely
+        const invoiceNoBox = $("#SalesOrderNO ").dxTextBox("instance");
+        const QuoteNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+        var menuType = "ERM";
+        var formType = "Equipment Sales Order";
+        // const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+        // const invoiceData = await invoiceRes.json();
+        // let folderId2 = "";
+        // if (invoiceData) {
+        //     folderId2 = [
+        //             invoiceData.SalesOrderNo,
+        //             invoiceData.QuotationNo,
+        //             invoiceData.DeliveryNoteNos,
+        //             invoiceData.ProformaInvoiceNo
+        //     ]
+        //     .filter(Boolean)   remove null/empty
+        //     .join(",");
+        // }
+        // Log and build URL
+
+
+        const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(QuoteNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
        function loadGridState() {
            var form = $('#formId').val();
@@ -609,4 +710,11 @@
 
         window.location.href = url;
     }
+
+
+
+
+
+
+
 </script>

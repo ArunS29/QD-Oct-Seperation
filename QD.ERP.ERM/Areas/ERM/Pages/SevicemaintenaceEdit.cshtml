@@ -159,7 +159,7 @@
                         padding: 0 2px;
                     }
                     #SupplierTabs{
-                        height:250px;
+                        height:210px;
                     }
    </style>
 <meta charset="UTF-8">
@@ -542,7 +542,7 @@
                     </div>
                  </div>
                 <div>
-    @await Html.PartialAsync("~/Pages/Shared/RichTextEditor.cshtml")
+  @*   @await Html.PartialAsync("~/Pages/Shared/RichTextEditor.cshtml") *@
 </div>
 
              </div>
@@ -595,22 +595,33 @@
                                     .Caption(new JS("formatMessage('Item Code')"))
                                     .Width(120)
                                     .AllowEditing(false)
-                                    .CellTemplate(new JS(@"
+                                   @*  .CellTemplate(new JS(@"
                                         function(container, options) {
                                             container.text(options.data?.GSCode || '');
                                         }
-                                    "));
+                                    ") *@
+                                    ;
 
-                                columns.Add()
-                                    .DataField("Gsdescription")
-                                    .Caption(new JS("formatMessage('Item Description')"))
-                                    .Width(400)
-                                    .EditCellTemplate(new JS("descriptionDropDownTemplate"))
-                                    .CellTemplate(new JS(@"
-                                        function(container, options) {
-                                            container.text(options.data?.GSDescrpition || '');
+                               columns.Add()
+                                .DataField("Gsdescription")
+                                .Caption(new JS("formatMessage('Item Description')"))
+                                .Width(400)
+                                .EditCellTemplate(new JS("descriptionDropDownTemplate"))
+                                .CellTemplate(new JS(@"
+                                    function(container, options) {
+                                        // Show description if present, else fetch by Gscode
+                                        if (options.data?.GSDescrpition) {
+                                            container.text(options.data.GSDescrpition);
+                                        } else if (options.data?.Gscode) {
+                                            $.getJSON('/api/GoodsandServices/GetGoodsAndServiceByCode?code=' + options.data.Gscode)
+                                                .done(function(data) {
+                                                    container.text(data.GSDescrpition || '');
+                                                });
+                                        } else {
+                                            container.text('');
                                         }
-                                    "));
+                                    }
+                                "));
 
                                 columns.Add()
                                     .DataField("GsuoM")
@@ -1046,8 +1057,7 @@ $("#btnSaveAndClose").on("click", function () {
 });
 
 
-
- function descriptionDropDownTemplate(cellElement, cellInfo) {
+function descriptionDropDownTemplate(cellElement, cellInfo) {
     const $container = $("<div>").css({
         display: "flex",
         alignItems: "center",
@@ -1058,7 +1068,7 @@ $("#btnSaveAndClose").on("click", function () {
     const dropdownStore = new DevExpress.data.CustomStore({
         key: "GSCode",
         load: function (loadOptions) {
-            const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+            const pageNumber = Math.floor((loadOptions.skip || 0) / (loadOptions.take || 20)) + 1;
             const pageSize = loadOptions.take || 20;
             return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", { pageNumber, pageSize })
                 .then(response => ({
@@ -1071,8 +1081,7 @@ $("#btnSaveAndClose").on("click", function () {
         }
     });
 
-    // ✅ Main DropDownBox
-    const dropDownBox = $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+    $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
         valueExpr: "GSCode",
         displayExpr: "GSDescrpition",
         value: cellInfo.value,
@@ -1097,14 +1106,17 @@ $("#btnSaveAndClose").on("click", function () {
                     const item = selected.selectedRowsData[0];
                     if (!item) return;
 
-                    cellInfo.setValue(item.GSCode);
+                    // Set the description field value
+                    cellInfo.setValue(item.GSDescrpition);
+
+                    // Update Gscode in the grid row
                     const grid = $("#itemGrid").dxDataGrid("instance");
                     const rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
                     if (rowIndex !== -1) {
-                        grid.cellValue(rowIndex, "GSDescrpition", item.GSDescrpition);
+                        grid.cellValue(rowIndex, "Gscode", item.GSCode); // <-- Binds Gscode
                         grid.cellValue(rowIndex, "CostPrice", item.CostPrice || 0);
-                        grid.cellValue(rowIndex, "UnitDesc", item.GsuoM);
+                        grid.cellValue(rowIndex, "GsuoM", item.GsuoM || "");
+                        grid.cellvalue(rowIndex, "QtyUsed", item.QtyUsed || 1 );
                     }
                     e.component.close();
                 }
@@ -1112,7 +1124,7 @@ $("#btnSaveAndClose").on("click", function () {
         }
     });
 
-    // ✅ Add new item button
+    // Add new item button (optional)
     $("<div>").dxButton({
         icon: "plus",
         hint: "Add new item",
@@ -1121,7 +1133,7 @@ $("#btnSaveAndClose").on("click", function () {
         }
     }).appendTo($container);
 }
-
+ 
 
     // 	function dataGridInitialized1(e) {
 				// 	dataGrid = e.component;
@@ -1255,9 +1267,6 @@ $("#btnSaveAndClose").on("click", function () {
                         const urlParams = new URLSearchParams(window.location.search);
                         let ServiceSheetNo = urlParams.get('code');
                         ServiceSheetNo = ServiceSheetNo ? ServiceSheetNo.split("?")[0] : null;
-
-                        getSalesPersonByUser();
-                        getDefaultCompany();
 
                         if (ServiceSheetNo) {
                             // Load existing details

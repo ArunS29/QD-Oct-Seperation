@@ -31,8 +31,6 @@
     .context-menu {
         display: none;
         position: absolute;
-        /* background-color: aliceblue;
-                        border: 1px solid aliceblue; */
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
     }
@@ -52,10 +50,6 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
-
-    /* #previewModal {
-                        border: 1px solid aliceblue;
-                    } */
 
     .bold-button .dx-button-text {
         font-weight: bold;
@@ -80,7 +74,7 @@
             .Text(new JS("formatMessage('Save')"))
             .Icon("save")
             .Hint("Click to save")
-            .ElementAttr(new { @class = "bold-button" })
+            .ElementAttr(new { @class = "dx-button-custom btn-save" })
             .OnClick("onSaveClicked") // Bind JS function here
             )
     </div>
@@ -104,7 +98,7 @@
             .Text(new JS("formatMessage('Delete')"))
             .Hint("Delete")
             .Width(150)
-                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+            .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
             .OnClick("onDeleteClick")  // <-- Call JS function here
             )
     </div>
@@ -124,7 +118,7 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("ddButtonLayout")
+                .ID("ddBtnLayout")
                 .Icon("smalliconslayout")
                 .Text(new JS("formatMessage('Layout')"))
                 .DropDownOptions(options => options.Width(230))
@@ -132,8 +126,6 @@
                 {
                     items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
                     items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
                 })
                 .ShowArrowIcon(false)
                 )
@@ -215,49 +207,8 @@
             }
         });
     }
-    function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-    function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+     
  
-
     function ChangeRowHeight(newHeight) {
         // Update the row height
         $("#dataGrid .dx-data-row").css("height", newHeight + "px");
