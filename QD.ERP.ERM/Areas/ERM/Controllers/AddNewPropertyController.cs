@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using Microsoft.Data.SqlClient;
-using QD.ERP.ERM.Areas.ERM.Pages;
+//using QD.ERP.ERM.Areas.ERM.Pages;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Service;
 using QD.ERP.Shared.Services.Logging;

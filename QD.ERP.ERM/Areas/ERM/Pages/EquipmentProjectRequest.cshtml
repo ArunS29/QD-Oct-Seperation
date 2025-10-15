@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.ERM.Areas.ERM.Pages.EquipmentProjectRequestModel
+@model QD.ERP.Web.Areas.ERM.Pages.EquipmentProjectRequestModel
 @{
 }
 
@@ -598,16 +598,6 @@
 														})
 														)
 						</td>
-
-						<td colspan="2" style="width:100%;">
-							@(Html.DevExtreme().TextBox()
-														.Label(new JS("formatMessage('Client Reference No:')"))
-														.ID("txtReferenceNo")
-														.Disabled(true)
-														.LabelMode(EditorLabelMode.Floating)
-														.Width("100%")
-														)
-						</td>
 						<td style="display: flex;align-items:end;width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 											.Label(new JS("formatMessage('Project:')"))
@@ -641,7 +631,7 @@
 			<div id="tab-content-2" class="tab-content" style="height: 150px;">
 				<div class="card-container">
 					<!-- First Card (Left Side) -->
-					<table width="100%" style="font-size:14px; margin:5px 0;" cellpadding="5">
+					<table width="30%" style="font-size:14px; margin:5px 0;" cellpadding="5">
 						<tr>
 							<td colspan="1" style="display:flex; gap: 5px;">
 								@(Html.DevExtreme().DateBox()
@@ -649,6 +639,7 @@
 																.ID("txtExpectedDate")
 																.Type(DateBoxType.Date)
 																.DisplayFormat("dd-MMM-yyyy")
+																.Width(400)
 																.LabelMode(EditorLabelMode.Floating)
 																)
 							</td>
@@ -2158,17 +2149,24 @@
 
 
 				$(function () {
-					$("#btnAddNew").on("click", function () {
-						var button = $("#btnSave").dxButton("instance");
-						button.option("text", "Update");
+    $("#btnAddNew").on("click", function () {
+        var button = $("#btnSave").dxButton("instance");
+        button.option("text", "Update");
 
-						var grid = $("#itemGrid").dxDataGrid("instance");
-						grid.addRow().done(function() {
-							var rowIndex = grid.getVisibleRows().length - 1;
-							grid.editCell(rowIndex, 0);
-						});
-					});
-				});
+        var grid = $("#itemGrid").dxDataGrid("instance");
+			  grid.addRow({
+			PropertyType: "",
+			PropertyTypeId: "",
+			UnitRateMethod: "",
+			QtyRequested: 0,
+			ExpectedUnitRate: 0,
+			UnitsRequested: 0
+		}).done(function () {
+			var rowIndex = grid.getVisibleRows().length - 1;
+			grid.editCell(rowIndex, 0);
+		});
+    });
+});		
 
 	function onGridRightClick(e) {
 				if (e.row && e.row.rowType === "data") {
@@ -2204,18 +2202,13 @@
 							url: `/api/AddNewClientRequest1/DeletePurchaseRequestChild/${encodeURIComponent(requestChildSlNo)}`,
 							type: "DELETE",
 							success: function (response) {
-							DevExpress.ui.notify(response.message, "success", 2000);
+								DevExpress.ui.notify(response.message, "success", 2000);
 
-							const grid = $("#itemGrid").dxDataGrid("instance");
-							if (grid) {
-								const ds = grid.getDataSource();
-								if (ds) {
-									ds.reload();
-								} else {
-									grid.refresh();
-								}
-							}
-						},
+								// Get the current request number
+								const EqiupmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+								// Reload the grid with fresh data from the server
+								loadRequestChildren(EqiupmentRequestNo);
+							},
 							error: function (xhr) {
 								DevExpress.ui.notify(
 									"Error: " + (xhr.responseJSON?.error || "Something went wrong"),
@@ -2400,27 +2393,20 @@
 						$('#ContactNo').dxTextBox("instance").option("value", response.RequesterContact);
 						$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", response.ModeOfRequest);
 						$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", response.TypeOfRequest);
-						$('#txtReferenceNo').dxTextBox("instance").option("value", response.ClientRefNo);
-						//$('#txtPurpose').dxTextBox("instance").option("value", response.PurposeOfRequest);
+						// $('#txtReferenceNo').dxTextBox("instance").option("value", response.ClientRefNo);
 						$("#txtExpectedDate").dxDateBox("instance").option("value", response.ExpectedDate);
 						$('#txtRemarks').dxTextArea("instance").option("value", response.Remarks);
+						$("#ddPreparedby").dxDropDownBox("instance").option("value", response.SubmittedBy);
+						$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.VerifiedBy);
+						$("#ddApprovedby").dxDropDownBox("instance").option("value", response.ApprovedBy);
 						$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
 						$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 						$("#ddProject").dxDropDownBox("instance").option("value", data.ProjectMasterCode);
 
-						// Optional (if you decide to use later)
-						// $("#ddPreparedby").dxDropDownBox("instance").option("value", response.RequestSignatory);
-						// $("#ddVerifiedby").dxDropDownBox("instance").option("value", response.MprverifiedSign);
-						// $("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
-						// $('#currencyexchangerate').dxNumberBox("instance").option("value", response.CurrencyRate);
-						// $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
-						// $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
-
-
 						   // Fetch and initialize the data grid with invoice details
 							$.ajax({
 								type: "GET",
-								url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
+								url: `/api/AddNewClientRequest1/GetEnquiryProperty?Mprno=${encodeURIComponent(mprno)}`,
 								dataType: 'json',
 								success: function (gridResponse) {
 									console.log("Grid", gridResponse);
@@ -2540,7 +2526,7 @@
 						}
 						 // Make an AJAX call to fetch contact details
 					$.ajax({
-						url: '/api/AddNewClientRequest/GetClientContactDetails',
+						url: '/api/AddNewClientRequest1/GetClientContactDetails',
 						type: 'GET',
 						data: { clientCode: selectedKey },
 						success: function (data) {
@@ -3953,7 +3939,7 @@
 					RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
 					ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
 					TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-					ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+					// ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
 					ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
 					Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
 					TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
@@ -3990,6 +3976,9 @@
 					contentType: "application/json",
 					data: JSON.stringify(model),
 					success: function (response) {
+							 const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+				loadRequestChildren(EqiupmentRequestNo);
+				loadRequestData(EqiupmentRequestNo);	
 						isVoucherSaved = true; // Mark Updated step as done
 						// updateWorkflowVisual(getWorkflowStatusFromFields());
 
@@ -4078,7 +4067,7 @@
 						$("#ContactNo").dxTextBox("instance").option("value", data.RequesterContact ?? "");
 						$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", data.ModeOfRequest ?? "");
 						$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", data.TypeOfRequest ?? "");
-						$("#txtReferenceNo").dxTextBox("instance").option("value", data.ClientRefNo ?? "");
+						// $("#txtReferenceNo").dxTextBox("instance").option("value", data.ClientRefNo ?? "");
 						$("#txtExpectedDate").dxDateBox("instance").option("value", data.ExpectedDate ?? null);
 						$("#txtRemarks").dxTextArea("instance").option("value", data.Remarks ?? "");
 						$("#ddRequestedBy").dxDropDownBox("instance").option("value", data.TypeOfMpr ?? "");
@@ -4142,7 +4131,7 @@
 				RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
 				ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-				ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+				// ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
 				ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
 				Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
 				TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
@@ -4178,6 +4167,10 @@
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+						 const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+				        // ✅ pass the correctly spelled variable
+						loadRequestChildren(EquipmentRequestNo);
+						loadRequestData(EquipmentRequestNo);
 					isVoucherSaved = true;
 					DevExpress.ui.notify(response.message, "success", 3000);
 
@@ -4191,7 +4184,7 @@
 
 					// ✅ Extra step: Close/Go back
 					setTimeout(() => {
-						history.back();   // 👈 navigates back to previous page
+						window.location.href = `/${tenantName}/ERM/EquipmentEnquiry`;
 						// OR window.close(); if it's in popup
 					}, 500);
 				},
@@ -4419,9 +4412,9 @@
 								var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);
 								dataGrid1.refresh();
 							}
-						$("#btnBack").on("click", function () {
-							window.history.back();
-						});
+					$("#btnBack").on("click", function () {
+						window.location.href = `/${tenantName}/ERM/EquipmentEnquiry`;
+					});
 				$("#btnSubmit").on("click", function () {
 					const $btn = $(this);
 					$btn.prop("disabled", true);
@@ -4453,8 +4446,10 @@
 								url: `/api/AddNewClientRequest1/SubmitMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
 								contentType: "application/json",
 								success: function (response) {
+									const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+									loadRequestChildren(EquipmentRequestNo);
+									loadRequestData(EquipmentRequestNo);
 									console.log("Submit API Response:", response);
-
 									// ✅ Always pick success message (API or fallback)
 									const message = response && response.message
 										? response.message
@@ -4509,8 +4504,8 @@
 								// Check if DataGrid contains rows
 								if (rowCount === 0) {
 									DevExpress.ui.dialog.custom({
-										title: "Material Purchase Request verification has failed.",
-								message: "Material Purchase Request has not been Verified. Please enter transactions to proceed with verification.",
+										title: "Enquiry Request verification has failed.",
+								message: "Enquiry Request has not been Verified. Please enter transactions to proceed with verification.",
 										buttons: [{ text: "Ok", onClick: () => false }],
 										showTitle: true
 									}).show();
@@ -4518,7 +4513,7 @@
 									DevExpress.ui.dialog.custom({
 										title: "Confirm Verification",
 										// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-										message: "Are you sure want to verify this Material Purchase Request?",
+										message: "Are you sure want to verify this Enquiry Request?",
 										buttons: [
 											{ text: "Yes", onClick: () => true },
 											{ text: "No", onClick: () => false }
@@ -4547,6 +4542,10 @@
 								url: `/api/AddNewClientRequest1/VerifyMPR?EqiupmentRequestNo=${encodeURIComponent(EqiupmentRequestNo)}`,
 							contentType: "application/json",
 							success: function (response) {
+								const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+									loadRequestChildren(EquipmentRequestNo);
+									loadRequestData(EquipmentRequestNo);
+
 							console.log("API Response:", response);
 
 							// ✅ Always pick up message or fallback
@@ -4555,7 +4554,7 @@
 								: "Enquiry Request has been Verified successfully!";
 
 							// ✅ Update dropdown if value exists
-							const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+							const VerifiedBy = $("#ddVerifiedby").dxDropDownBox("instance");
 							if (approvedByBox && response && response.VoucherApprovedBy) {
 								approvedByBox.option("value", response.VoucherApprovedBy);
 							}
@@ -4627,14 +4626,17 @@
 					type: 'POST',
 					contentType: 'application/json',
 					success: function (response) {
+						 const EquipmentRequestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+							loadRequestChildren(EquipmentRequestNo);
+							loadRequestData(EquipmentRequestNo);
 						if (response && (response.success || response.Message)) {
 							DevExpress.ui.notify(response.message || response.Message, "success", 2000);
 							disableAllControls();
 							// Optionally update workflow or dropdowns here
-							if (response.VoucherApprovedBy) {
-								const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
-								if (approvedByBox) {
-									approvedByBox.option("value", response.VoucherApprovedBy);
+							if (response.ApprovedBy) {
+								const ApprovedBy = $("#ddApprovedby").dxDropDownBox("instance");
+								if (ApprovedBy) {
+									ApprovedBy.option("value", response.ApprovedBy);
 								}
 							}
 							syncWorkflowFromFields && syncWorkflowFromFields();
@@ -4660,7 +4662,7 @@
 					{ selector: "#ContactNo", type: "dxTextBox" },
 					{ selector: "#ddGetModeOfRequest", type: "dxDropDownBox" },
 					{ selector: "#ddGetTypeOfRequest", type: "dxDropDownBox" },
-					{ selector: "#txtReferenceNo", type: "dxTextBox" },
+					// { selector: "#txtReferenceNo", type: "dxTextBox" },
 					{ selector: "#txtExpectedDate", type: "dxDateBox" },
 					{ selector: "#txtRemarks", type: "dxTextArea" },
 					{ selector: "#ddRequestedBy", type: "dxDropDownBox" },

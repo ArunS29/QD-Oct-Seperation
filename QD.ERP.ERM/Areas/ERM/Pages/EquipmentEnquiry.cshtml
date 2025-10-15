@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.ERM.Areas.ERM.Pages.EquipmentEnquiryModel
+@model QD.ERP.Web.Areas.ERM.Pages.EquipmentEnquiryModel
 @{
 }
 @using DevExtreme.AspNet.Mvc
@@ -693,6 +693,7 @@
 			url: `/api/AddNewClientRequest1/DeleteGridEnquiry?EquipmentRequestNo=${EqiupmentRequestNo}`,
 			method: 'POST',
 			success: function (response) {
+				ddBtnShowRecords_click('range');
 				if (response.success) {
 					DevExpress.ui.notify(response.message, 'success', 2000);
 					$("#dataGrid").dxDataGrid("instance").refresh();
@@ -783,5 +784,7 @@
 
 		console.log('End permission handling');
 	});
-
+		function printFun() {
+		exportDataGridToPDF('dataGrid');
+	}
 </script>	
