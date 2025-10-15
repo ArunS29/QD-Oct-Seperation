@@ -3833,7 +3833,36 @@ namespace QD.ERP.Finance.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant" });
         }
-                   
+
+        [HttpGet]
+        public async Task<IActionResult> GetUnitCodeByDesc(string unitDesc)
+        {
+            if (string.IsNullOrWhiteSpace(unitDesc))
+                return BadRequest("UnitDesc is required.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Invalid tenant context.");
+
+            try
+            {
+                byte? unitCode = await dbContext.Tbl40111PropertyUnitCodes
+                    .Where(u => u.UnitDesc == unitDesc)
+                    .Select(u => u.UnitCode)
+                    .FirstOrDefaultAsync();
+
+                if (unitCode == null || unitCode == 0)
+                    return NotFound($"No UnitCode found for UnitDesc: {unitDesc}");
+
+                return Ok(unitCode);
+            }
+            catch (Exception ex)
+            {
+                // Log exception as needed
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
 
     }
 

@@ -4695,6 +4695,7 @@
 						],
 						onSelectionChanged: function (selectedItems) {
 							let selectedItem = selectedItems.selectedRowsData[0];
+							let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 							if (selectedItem) {
 								e.component.option("value", selectedItem.UnitDesc);
 								cellInfo.setValue(selectedItem.UnitDesc);
@@ -4705,8 +4706,11 @@
 									UnitCode = selectedItem.UnitCode;
 								}
 								e.component.close();
+								dataGrid.saveEditData();
+								updateInvoiceChildren();
 							}
 						}
+					   
 					});
 				}
 			});
@@ -5109,9 +5113,9 @@ $("#btnAddNew").on("click", function (e) {
             // ✅ Wrap newRow in array for .map()
             let updatedDataSource = [newRow].map(item => ({
                 ...item,
-                InvoiceNo: InvoiceNo          // Make sure this variable exists
-               // UnitRateMethod: UnitCode || "",  // Provide default if not declared
-               // TaxAmount: amt || 0              // Provide default if not declared
+                InvoiceNo: InvoiceNo,          // Make sure this variable exists
+                //UnitRateMethod: UnitCode || null,  // Provide default if not declared
+                TaxAmount: amt || 0              // Provide default if not declared
             }));
 
             $.ajax({
@@ -5563,6 +5567,7 @@ if (popover.option("visible")) {
 				}
 					if(IsCurrent!="true" && IsClienCodeEdit=="true")
 				{
+					debugger;
 		                     var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
@@ -6522,12 +6527,18 @@ if (popover.option("visible")) {
 
 			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
+          // ✅ Replace empty string "" with null in UnitRateMethod
+          InvoiceChildren.forEach(item => {
+              if (item.UnitRateMethod === "") {
+                  item.UnitRateMethod = null;
+              }
+          });
 
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
 			InvoiceNo: InVoiceNo,
-			UnitRateMethod:UnitCode,
-			TaxAmount:amt
+			//UnitRateMethod:UnitCode || null,
+			TaxAmount:amt || 0
 		}));
 			getDocumentCount();
 			console.log("InvoiceMaster:", InvoiceMaster);
@@ -6547,59 +6558,62 @@ if (popover.option("visible")) {
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function (response) {
-					// Send AJAX request to update the invoice child details after master is updated
-					$.ajax({
-						type: "POST",
-						url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
-						contentType: "application/json",
-						data: JSON.stringify(updatedDataSource),
-						success: function (response) {
+					// Send AJAX reques
+					// t to update the invoice child details after master is updated
+	// 				$.ajax({
+	// 					type: "POST",
+	// 					url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+	// 					contentType: "application/json",
+	// 					data: JSON.stringify(updatedDataSource),
+	// 					success: function (response) {
 									
-								$.ajax({
-									type: "GET",
-											url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
-										dataType: 'json',
-									success: function (response) {
-											console.log("Grid",response)
+	// 							$.ajax({
+	// 								type: "GET",
+	// 										url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+	// 									dataType: 'json',
+	// 								success: function (response) {
+	// 										console.log("Grid",response)
 									
 
-											let rowData = response.map((item, index) => {
+	// 										let rowData = response.map((item, index) => {
 		
-		return {
-			SNo: index + 1,
-			...item
-			//LineTotal: currencyRate // overwrite with converted value
-		};
-	});
+	// 	return {
+	// 		SNo: index + 1,
+	// 		...item
+	// 		//LineTotal: currencyRate // overwrite with converted value
+	// 	};
+	// });
 
 
-										// ✅ Now safely initialize the grid here
-										//initializeDataGrid(rowData);
-                                       let grid = $("#B2BdataGrid").dxDataGrid("instance");
-                                                 grid.option("dataSource", rowData);
-                                                 grid.refresh();
-										getDocumentCount();
-									},
-									error: function (xhr, status, error) {
+	// 									// ✅ Now safely initialize the grid here
+	// 									//initializeDataGrid(rowData);
+ //                                       let grid = $("#B2BdataGrid").dxDataGrid("instance");
+ //                                                 grid.option("dataSource", rowData);
+ //                                                 grid.refresh();
+	// 									getDocumentCount();
+	// 								},
+	// 								error: function (xhr, status, error) {
 
-										console.error("Error fetching grid data:", error);
-	                                 document.getElementById('loadingSpinner').style.display = 'none';
-									}
-								});
-								 isVoucherSaved = true; // Mark Updated step as done
-								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+	// 									console.error("Error fetching grid data:", error);
+	//                                  document.getElementById('loadingSpinner').style.display = 'none';
+	// 								}
+	// 							});
+	// 							 isVoucherSaved = true; // Mark Updated step as done
+	// 							updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+	// 							 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 								
-								  getDocumentCount();
-						 document.getElementById('loadingSpinner').style.display = 'none';
+	// 							  getDocumentCount();
+	// 					 document.getElementById('loadingSpinner').style.display = 'none';
 							 
-						},
-						error: function (xhr) {
-							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+	// 					},
+	// 					error: function (xhr) {
+	// 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						
-							 document.getElementById('loadingSpinner').style.display = 'none';
-						}
-					});
+	// 						 document.getElementById('loadingSpinner').style.display = 'none';
+	// 					}
+	// 				});
+
+	updateInvoiceChildren();
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6748,13 +6762,19 @@ if (popover.option("visible")) {
 		
 
 			  InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+            // ✅ Replace empty string "" with null in UnitRateMethod
+            InvoiceChildren.forEach(item => {
+                if (item.UnitRateMethod === "") {
+                    item.UnitRateMethod = null;
+                }
+            });
 
 
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
 			InvoiceNo: InVoiceNo,
-			UnitRateMethod:UnitCode,
-			TaxAmount:amt
+			//UnitRateMethod:UnitCode || null,
+			TaxAmount:amt || 0
 		}));
 
 			console.log("InvoiceMaster:", InvoiceMaster);
@@ -6775,58 +6795,59 @@ if (popover.option("visible")) {
 				data: JSON.stringify(InvoiceMaster),
 				success: function (response) {
 					// Send AJAX request to update the invoice child details after master is updated
-					$.ajax({
-						type: "POST",
-						url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
-						contentType: "application/json",
-						data: JSON.stringify(updatedDataSource),
-						success: function (response) {
+				// 	$.ajax({
+				// 		type: "POST",
+				// 		url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+				// 		contentType: "application/json",
+				// 		data: JSON.stringify(updatedDataSource),
+				// 		success: function (response) {
 									
-								$.ajax({
-									type: "GET",
-											url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
-										dataType: 'json',
-									success: function (response) {
-											console.log("Grid",response)
-										// if (!response || !response.data || response.data.length === 0) {
-										// 	console.warn("No voucher entries found.");
-										// 	return;
-										// }
+				// 				$.ajax({
+				// 					type: "GET",
+				// 							url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+				// 						dataType: 'json',
+				// 					success: function (response) {
+				// 							console.log("Grid",response)
+				// 						// if (!response || !response.data || response.data.length === 0) {
+				// 						// 	console.warn("No voucher entries found.");
+				// 						// 	return;
+				// 						// }
 
-											let rowData = response.map((item, index) => {
+				// 							let rowData = response.map((item, index) => {
 		
-                                        		return {
-                                        			SNo: index + 1,
-                                        			...item
-                                        			//LineTotal: currencyRate // overwrite with converted value
-                                        		};
-                                        	});
+    //                                     		return {
+    //                                     			SNo: index + 1,
+    //                                     			...item
+    //                                     			//LineTotal: currencyRate // overwrite with converted value
+    //                                     		};
+    //                                     	});
 
-										// ✅ Now safely initialize the grid here
-										//initializeDataGrid(rowData);
-									    let grid = $("#B2BdataGrid").dxDataGrid("instance");
-                                        grid.option("dataSource", rowData);
-                                        grid.refresh();
+				// 						// ✅ Now safely initialize the grid here
+				// 						//initializeDataGrid(rowData);
+				// 					    let grid = $("#B2BdataGrid").dxDataGrid("instance");
+    //                                     grid.option("dataSource", rowData);
+    //                                     grid.refresh();
 
-										getDocumentCount();
-									},
-									error: function (xhr, status, error) {
-										console.error("Error fetching grid data:", error);
-										 document.getElementById('loadingSpinner').style.display = 'none';
-									}
-								});
-								 isVoucherSaved = true; // Mark Updated step as done
-								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-							 history.back();
-			 document.getElementById('loadingSpinner').style.display = 'none';
-						},
+				// 						getDocumentCount();
+				// 					},
+				// 					error: function (xhr, status, error) {
+				// 						console.error("Error fetching grid data:", error);
+				// 						 document.getElementById('loadingSpinner').style.display = 'none';
+				// 					}
+				// 				});
+				// 				 isVoucherSaved = true; // Mark Updated step as done
+				// 				updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+				// 				 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+				// 			 history.back();
+			 // document.getElementById('loadingSpinner').style.display = 'none';
+				// 		},
 
-						error: function (xhr) {
-							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-             document.getElementById('loadingSpinner').style.display = 'none';
-						}
-					});
+				// 		error: function (xhr) {
+				// 			DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+    //          document.getElementById('loadingSpinner').style.display = 'none';
+				// 		}
+				// 	});
+					updateInvoiceChildren();
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -7888,7 +7909,9 @@ if (popover.option("visible")) {
 
                                 const updatedDataSource = [newRow].map(item => ({
                                     ...item,
-                                    InvoiceNo: InvoiceNo
+                                    InvoiceNo: InvoiceNo,
+									//UnitRateMethod:UnitCode || null,
+			                         TaxAmount:amt || 0
                                 }));
 
                                 $.ajax({
@@ -9232,64 +9255,149 @@ async function getDocumentCount() {
     }	
 }
 
-function updateInvoiceChildren() {
-    let grid = $("#B2BdataGrid").dxDataGrid("instance");
+// function updateInvoiceChildren() {
+//     let grid = $("#B2BdataGrid").dxDataGrid("instance");
+//     let InvoiceChildren = grid.option("dataSource") || [];
+
+// 	const InVoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+
+// 	// ✅ Replace empty string "" with null in UnitRateMethod
+//     InvoiceChildren.forEach(item => {
+//         if (item.UnitRateMethod === "") {
+//             item.UnitRateMethod = null;
+//         }
+//     });
+
+//     // prepare updated datasource
+//     let updatedDataSource = InvoiceChildren.map(item => ({
+//         ...item,
+//         InvoiceNo: InVoiceNo,
+//         //UnitRateMethod: UnitCode || null,
+//         TaxAmount: amt || 0
+//     }));
+
+//     // show spinner if you want
+//     document.getElementById('loadingSpinner').style.display = 'block';
+
+//     $.ajax({
+//         type: "POST",
+//         url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+//         contentType: "application/json",
+//         data: JSON.stringify(updatedDataSource),
+//         success: function () {
+//             // after update -> refresh grid data
+//             $.ajax({
+//                 type: "GET",
+//                 url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+//                 dataType: 'json',
+//                 success: function (response) {
+//                     let rowData = response.map((item, index) => ({
+//                         SNo: index + 1,
+//                         ...item
+//                     }));
+
+//                     grid.option("dataSource", rowData);
+//                     grid.refresh();
+
+//                     getDocumentCount();
+//                 },
+//                 error: function (xhr, status, error) {
+//                     console.error("Error fetching grid data:", error);
+//                 },
+//                 complete: function () {
+//                     document.getElementById('loadingSpinner').style.display = 'none';
+//                 }
+//             });
+
+//             isVoucherSaved = true; // Mark Updated step as done
+//             updateWorkflowVisual(getWorkflowStatusFromFields());
+//             ///DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+//         },
+//         error: function (xhr) {
+//             DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+//             document.getElementById('loadingSpinner').style.display = 'none';
+//         }
+//     });
+// }
+
+
+async function updateInvoiceChildren() {
+	debugger;
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
     let InvoiceChildren = grid.option("dataSource") || [];
 
-	const InVoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+    const InVoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+    const spinner = document.getElementById('loadingSpinner');
 
-    // prepare updated datasource
-    let updatedDataSource = InvoiceChildren.map(item => ({
-        ...item,
-        InvoiceNo: InVoiceNo
-		//,
-        // UnitRateMethod: UnitCode,
-        // TaxAmount: amt
-    }));
+    spinner.style.display = 'block'; // show spinner
 
-    // show spinner if you want
-    document.getElementById('loadingSpinner').style.display = 'block';
+    try {
+        // 🔹 Step 1: Update UnitRateMethod with corresponding UnitCode
+        for (const item of InvoiceChildren) {
+            // If UnitRateMethod is empty → set null and skip
+            if (!item.UnitRateMethod || item.UnitRateMethod.trim() === "") {
+                item.UnitRateMethod = null;
+                continue;
+            }
 
-    $.ajax({
-        type: "POST",
-        url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
-        contentType: "application/json",
-        data: JSON.stringify(updatedDataSource),
-        success: function () {
-            // after update -> refresh grid data
-            $.ajax({
-                type: "GET",
-                url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
-                dataType: 'json',
-                success: function (response) {
-                    let rowData = response.map((item, index) => ({
-                        SNo: index + 1,
-                        ...item
-                    }));
+            try {
+                const unitCode = await $.get("/api/VoucherMaster/GetUnitCodeByDesc", {
+                    unitDesc: item.UnitRateMethod
+                });
 
-                    grid.option("dataSource", rowData);
-                    grid.refresh();
+                // Replace description with UnitCode
+                item.UnitRateMethod = unitCode ?? null;
 
-                    getDocumentCount();
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching grid data:", error);
-                },
-                complete: function () {
-                    document.getElementById('loadingSpinner').style.display = 'none';
-                }
-            });
-
-            isVoucherSaved = true; // Mark Updated step as done
-            updateWorkflowVisual(getWorkflowStatusFromFields());
-            ///DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-        },
-        error: function (xhr) {
-            DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
-            document.getElementById('loadingSpinner').style.display = 'none';
+            } catch (xhr) {
+                console.error(`❌ Error fetching UnitCode for ${item.UnitRateMethod}:`, xhr.responseText);
+                item.UnitRateMethod = null; // fallback
+            }
         }
-    });
+
+        // 🔹 Step 2: Prepare updated data
+        const updatedDataSource = InvoiceChildren.map(item => ({
+            ...item,
+            InvoiceNo: InVoiceNo,
+            TaxAmount: item.TaxAmount || 0
+        }));
+
+        // 🔹 Step 3: POST to UpdateInvoiceChildDetails API
+        await $.ajax({
+            type: "POST",
+            url: `/api/VoucherMaster/UpdateInvoiceChildDetails`,
+            contentType: "application/json",
+            data: JSON.stringify(updatedDataSource)
+        });
+
+        // 🔹 Step 4: Refresh grid after update
+        const response = await $.ajax({
+            type: "GET",
+            url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
+            dataType: 'json'
+        });
+
+        const rowData = response.map((item, index) => ({
+            SNo: index + 1,
+            ...item
+        }));
+
+        grid.option("dataSource", rowData);
+        grid.refresh();
+
+        getDocumentCount();
+        isVoucherSaved = true;
+        updateWorkflowVisual(getWorkflowStatusFromFields());
+
+        DevExpress.ui.notify("✅ Invoice details updated successfully.", "success", 2000);
+
+    } catch (err) {
+        console.error("Error updating invoice children:", err);
+        DevExpress.ui.notify("Error updating invoice children.", "error", 3000);
+    } finally {
+        spinner.style.display = 'none'; // always hide spinner
+    }
 }
+
 
 		function onSetDefaultClick() {
 			 //  const defaultNote = $("#txtInvoiceNotes").val();
@@ -9802,6 +9910,7 @@ $(document).ready(function () {
           return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
   });
+
 
 </script>
 
