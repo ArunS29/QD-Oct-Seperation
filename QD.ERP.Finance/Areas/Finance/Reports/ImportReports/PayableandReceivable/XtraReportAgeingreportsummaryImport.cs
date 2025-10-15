@@ -112,8 +112,8 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
 
             var customQuery = new CustomSqlQuery
             {
-                Name = "tbl205_027AgeingBillsReceivableWtColumns",
-                Sql = "SELECT * FROM tbl205_027AgeingBillsReceivableWtColumns"
+                Name = "tbl20105BillsReceivableAgeingMaster",
+                Sql = "SELECT * FROM tbl20105BillsReceivableAgeingMaster"
             };
 
             sqlDataSource2.Queries.Add(customQuery);

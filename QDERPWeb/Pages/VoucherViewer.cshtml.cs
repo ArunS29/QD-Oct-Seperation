@@ -22,6 +22,8 @@ using QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE;
 //using QD.ERP.VAT.Areas.VAT.Reports.Inventory_Reports;
 using QD.ERP.VAT.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
 using QD.ERP.VAT.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.VAT.Areas.VAT.Reports.ProformaInvoices;
+using QD.ERP.VAT.Areas.VAT.Reports.B2B;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Models.DAL;
 using System;
@@ -31,6 +33,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using ERPMasterWtDataContext = QD.ERP.Shared.DAL.Entities.ERPMasterWtDataContext;
+using QD.ERP.Web.Areas.VAT.Reports.Inventory_Reports;
 
 
 namespace QD.ERP.Web.Pages
@@ -64,7 +67,7 @@ namespace QD.ERP.Web.Pages
 
         public IActionResult OnGet(string reportName, string claimer,string voucherNo, string CompanyId, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false, bool pageBreakAfter = false ,
             bool clientAcknowledgement = false,bool printItemCodeDesc = false,bool printItemPartNoDesc = false,bool printItemPartArabicDesc = false,bool showSign1 = false, bool showSeal = false,bool showSignature = false,bool printLetterhead = false,bool ShowItemLineNo = false,bool PrintFooterAtBottom = false,bool ShowitemPartNumberinsteadStockCode = false,bool ShowHSCodeinsteadStockCode = false,bool ShowPaymentTermsShippingDetails = false,
-            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false)
+            bool ShowFullSupplierAcceptance=false,bool ShowSimpleSuppilerAcceptance=false,bool ShowSignatoryPositionOnly=false, bool arabicNumInvoice = false, bool useDateFormatWithTime = false, bool useDateFormat = false, bool useDateFormat1 = false, bool taxInLineItems = false, bool useDateFormat2 = false)
         {
             // Set the properties for Razor
             ReportName = reportName;
@@ -185,7 +188,7 @@ namespace QD.ERP.Web.Pages
                 return BadRequest("Report name is required.");
 
             if (
-                  reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+                reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
                   reportName == "PrintRegularTaxInvoiceWithOutDiscounts" ||
                   reportName == "PrintVATInvoiceEnglishOnly" ||
                   reportName == "PrintVATInvoiceForeignCurrency" ||
@@ -223,6 +226,15 @@ namespace QD.ERP.Web.Pages
                 {
                     "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS(
+                                             showSeal,
+                                 showSignature,
+                                 printLetterhead,
+                                  arabicNumInvoice,
+                                 useDateFormatWithTime,
+                                 useDateFormat,
+                                 useDateFormat1,
+                                 taxInLineItems,
+                                 useDateFormat2,
 
 
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
@@ -231,20 +243,45 @@ namespace QD.ERP.Web.Pages
 
                     "PrintRegularTaxInvoiceWithOutDiscounts" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithOutDiscounts(
-
+                              showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
                             companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
                     "PrintsimplifiedTaxInvoices" => new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
+                          showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                               invoiceNo, tenantName, companyName, companyAddress, logoImage,
                               companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                               isApproved, _tenantDbContextHelper),
                     "PrintVATInvoiceForeignCurrency" =>
             new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintVATInvoiceForeignCurrency(
 
-
+                 showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
                 invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
@@ -254,7 +291,15 @@ namespace QD.ERP.Web.Pages
                     "PrintVATInvoiceEnglishOnly" =>
                           new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintVATInvoiceEnglishOnly(
 
-
+                               showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
                               invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
@@ -263,6 +308,15 @@ namespace QD.ERP.Web.Pages
 
 
                     "PrintSimplifiedTaxInvoiceWithOutDiscount" => new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintSimplifiedTaxInvoiceWithOutDiscount(
+                          showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                               invoiceNo, tenantName, companyName, companyAddress, logoImage,
                               companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                               isApproved, _tenantDbContextHelper),
@@ -271,7 +325,15 @@ namespace QD.ERP.Web.Pages
                     "PrintRegularInvoiceFormat02" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
 
-
+                              showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
@@ -280,7 +342,15 @@ namespace QD.ERP.Web.Pages
 
                     "PrintRegularInvoiceFormat02WithDiscount" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularInvoiceFormat02WithDiscount(
-
+                              showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
 
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
@@ -291,7 +361,15 @@ namespace QD.ERP.Web.Pages
                     "Foreigncurrency1" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B.Foreigncurrency1(
 
-
+                              showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
 
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
 
@@ -300,6 +378,15 @@ namespace QD.ERP.Web.Pages
 
                     "RegulartaxinvoicewithoutSignatoriesFormat05" =>
                         new QD.ERP.VAT.Areas.VAT.Reports.B2B_INVOICE.RegulartaxinvoicewithoutSignatoriesFormat05(
+                             showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                             invoiceNo, tenantName, companyName, companyAddress, logoImage,
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
@@ -369,31 +456,85 @@ namespace QD.ERP.Web.Pages
 
                     "PrintRegularTaxInvoiceWtDocumentLevelDiscount" =>
                              new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWtDocumentLevelDiscount(
+                                   showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                                  invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                                  companyNameAr, companyAddressAr,
                                  isApproved, _tenantDbContextHelper),
                     "Withoutsignatories" =>
                     new QD.ERP.VAT.Areas.VAT.Reports.B2B.Withoutsignatories(
+                         showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                    invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                    companyNameAr, companyAddressAr,
                    isApproved, _tenantDbContextHelper),
                     "withsignatories" =>
                  new QD.ERP.VAT.Areas.VAT.Reports.B2B.withsignatories2(
+                      showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                 companyNameAr, companyAddressAr,
                 isApproved, _tenantDbContextHelper),
                     "RegularTaxInvoiceFormat06" =>
                     new QD.ERP.VAT.Areas.VAT.Reports.B2B.RegularTaxInvoiceFormat06(
+                         showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                    invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                    companyNameAr, companyAddressAr,
                    isApproved, _tenantDbContextHelper),
                     "PrintRegularTaxInvoiceWithSignatories_Format05_" =>
                  new QD.ERP.VAT.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithSignatories_Format05_(
+                       showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                 invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                 companyNameAr, companyAddressAr,
                 isApproved, _tenantDbContextHelper),
                     "taxinvoicewithSignatoriesWithSymbols" =>
                     new QD.ERP.VAT.Areas.VAT.Reports.B2B.taxinvoicewithSignatoriesWithSymbols(
+                         showSeal,
+             showSignature,
+             printLetterhead,
+              arabicNumInvoice,
+             useDateFormatWithTime,
+             useDateFormat,
+             useDateFormat1,
+             taxInLineItems,
+             useDateFormat2,
                    invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                    companyNameAr, companyAddressAr,
                    isApproved, _tenantDbContextHelper),
@@ -465,8 +606,8 @@ namespace QD.ERP.Web.Pages
 
 
 
-                               return Page();
-                          }
+                return Page();
+            }
 
             if (reportName == "MaterialRequestInventory" || reportName == "MaterialPurcchaseRequestion")
             {
@@ -475,13 +616,13 @@ namespace QD.ERP.Web.Pages
                     return BadRequest("requestNo is required for IMS reports.");
                 }
 
-                //RequestNo = RequestNo;
+                RequestNo = RequestNo;
 
-                //if (reportName == "MaterialRequestInventory")
+                if (reportName == "MaterialRequestInventory")
 
-                //{
-                //    Report = new MaterialRequestInventory(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                //}
+                {
+                    Report = new MaterialRequestInventory(logoImage, sealImage, showSeal, showSignature, printLetterhead, RequestNo, showSign1, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                }
 
                 else if (reportName == "MaterialPurcchaseRequestion")
 
@@ -790,7 +931,7 @@ namespace QD.ERP.Web.Pages
                     Report = new cashPayments(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                     break;
                 case "PreviewClaimRequestForm":
-                    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,userName);
+                    Report = new PreviewClaimRequestForm(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);
                     break;
                 case "ClaimDetailed":
                     Report = new ClaimDetailed(VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName);

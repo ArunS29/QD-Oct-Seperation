@@ -3,7 +3,7 @@ using DevExpress.DataAccess.Sql;
 using DevExpress.XtraPrinting;
 using DevExpress.XtraReports.Parameters;
 using DevExpress.XtraReports.UI;
-using QD.ERP.Shared.Service; // Needed for TenantDbContextHelper
+//using QD.ERP.Shared.Service; // Make sure this namespace is included
 using Svg;
 using System;
 using System.Data.SqlClient;

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Shared.Models;
-using QD.ERP.Web.Areas.VAT.Controllers;
+using QD.ERP.VAT.Areas.VAT.Controllers;
 using QD.ERP.Shared.DAL.Entities;
 using QD.ERP.Shared.Service;
 using QD.ERP.Shared.Services.Logging;

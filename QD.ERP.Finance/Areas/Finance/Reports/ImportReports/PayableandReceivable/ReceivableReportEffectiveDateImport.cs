@@ -101,7 +101,7 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
             var customQuery = new CustomSqlQuery
             {
                 Name = "tbl201SubLedgerReceivablesMaster",
-                Sql = "SELECT * FROM tbl201SubLedgerReceivablesMaster"
+                Sql = "SELECT * FROM qry201SubLedgerReceivablesMaster"
             };
 
             sqlDataSource2.Queries.Add(customQuery);

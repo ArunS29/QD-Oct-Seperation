@@ -34,7 +34,7 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
 
             try
             {
-                this.sqlDataSource2.Fill();
+                this.sqlDataSource3.Fill();
             }
             catch (Exception ex)
             {
@@ -108,19 +108,19 @@ namespace QD.ERP.Finance.Areas.Finance.Reports.ImportReports.PayableandReceivabl
 
         private void ConfigureSqlDataSource()
         {
-            sqlDataSource2.Queries.Clear();
+            sqlDataSource3.Queries.Clear();
 
             var customQuery = new CustomSqlQuery
             {
-                Name = "tbl205_027AgeingBillsReceivableWtColumns",
-                Sql = "SELECT * FROM tbl205_027AgeingBillsReceivableWtColumns"
+                Name = "tbl20105BillsReceivableAgeingMaster",
+                Sql = "SELECT * FROM tbl20105BillsReceivableAgeingMaster"
             };
 
-            sqlDataSource2.Queries.Add(customQuery);
+            sqlDataSource3.Queries.Add(customQuery);
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource2.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource3.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
             }
             else
             {
