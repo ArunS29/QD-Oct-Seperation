@@ -1534,6 +1534,10 @@
                             initializeDataGrid(data);
                             savedetailsonload();
                             getDocumentCount();
+                                     // ✅ Add claimRefNo to URL without reloading
+                            const currentUrl = new URL(window.location.href);
+                            currentUrl.searchParams.set("claimRefNo", data); // add or replace
+                            window.history.replaceState({}, '', currentUrl);
                         },
                         error: function () {
                             alert("Error generating voucher number.");
@@ -1594,6 +1598,11 @@
                             onRadioGroupValueChanged({ value: entry.PaymentType });
                         }
                          $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccount);
+                          const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+                                if (grid) {
+                                    grid.selectRows([Accountname], false);
+                                    grid.option("focusedRowKey", Accountname);
+                                }
                         $("#IsSubmitted").dxCheckBox("instance").option("value", entry.IsSubmittedToFinance || false);
                         $("#SubmittedBytext").dxTextBox("instance").option("value", entry.SubmittedBy || "");
                         $("#IsVerified").dxCheckBox("instance").option("value", entry.IsVerified || false);
@@ -2220,7 +2229,7 @@
         const data = grid.getDataSource().items();
         const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
             const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            const selectedAccountHead = accheadId;
+            const accountHeadValue = accountHeadInstance ? accountHeadInstance.option("value") : null;
 
 
         const hasValidAmounts = data.every(row => {
@@ -2232,18 +2241,7 @@
         const hasValidCost = data.every(row => {
             return (row.CostCenterCode);
         });
-        if (!hasValidAccount) {
-            DevExpress.ui.dialog.alert("Please check your Claim Request, Ledger is not Selected", "Ledger Invalid");
-            return;
-        }
-        if (!hasValidCost) {
-            DevExpress.ui.dialog.alert("Please check your Claim Request, Cost Center is not Selected", "Cost Center Invalid");
-            return;
-        }
-        if (!hasValidAmounts) {
-            DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
-            return;
-        }
+      
         if (!claimRefNo) {
             DevExpress.ui.dialog.alert("Claim Reference No. is missing.", "Missing Reference");
             return;
@@ -2261,14 +2259,18 @@
                     DevExpress.ui.dialog.alert("Claim is not yet Approved , Please get it approved and continue for Payment.", "Approval Required");
                     return;
                 }
+                if (!hasValidAmounts) {
+                    DevExpress.ui.dialog.alert("Please check your Claim Request, no amount to submit the claim", "Claim Amount Invalid");
+                    return;
+                }
                 if (!hasValidAccount) {
-            DevExpress.ui.dialog.alert("Please review the Claim, Some Ledger Account is not chosen", "Choose Ledger Accounts");
-            return;
-        }
-        if (!hasValidCost) {
-            DevExpress.ui.dialog.alert("Please review the Claim, Some Cost Center Code is not chosen", "Choose Cost Center");
-            return;
-        }
+                    DevExpress.ui.dialog.alert("Please check your Claim Request, Ledger is not Selected", "Ledger Invalid");
+                    return;
+                }
+                if (!hasValidCost) {
+                    DevExpress.ui.dialog.alert("Please check your Claim Request, Cost Center is not Selected", "Cost Center Invalid");
+                    return;
+                }
                 // Step 2: Proceed with voucher number generation
                 let apiUrl = "";
                 if (selectedPaymentType === "Cash Payment") {
@@ -2284,7 +2286,7 @@
 
                         return;
                 }
-                    if (!selectedAccountHead) {
+                    if (!accountHeadValue) {
                         DevExpress.ui.dialog.alert("Cannot continue with saving the errors.<br/>Please clear the errors and continue.", "Validation Error");
 
                         // Show visual validation error by setting a custom invalid state
