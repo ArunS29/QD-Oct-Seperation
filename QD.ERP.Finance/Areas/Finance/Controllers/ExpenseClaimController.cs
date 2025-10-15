@@ -417,15 +417,74 @@ namespace QD.ERP.Finance.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var data = dbContext.Qry201SubLedgerPayablesMasters
-                .Where(x => x.AccountHeadNo == accountId && x.AccountHead == accountHead)
-                .ToList();
+                var data = dbContext.Qry201SubLedgerPayablesMasters.Where(x => x.AccountHeadNo == accountId && x.AccountHead == accountHead).Select(i => new
+                {
+                    i.AccountHeadNo,
+                    i.AccountHead,
+                    i.ReferenceNo,
+                    i.VoucherDate,
+                    i.VoucherRefNo,
+                    i.InvoiceAmountBeforeRetention,
+                    i.Paid,
+                    i.Balance,
+                    i.InvoiceDueDate,
+                    i.NoOfDaysCreditPeriod,
+                    i.OverdueDays,
+                    i.PayableAmount,
 
-                return Json(data);
+                    i.VoucherNarration,
+                    i.AccountGroup,
+
+                    i.VoucherEffectiveDate,
+                    i.InvoiceSubmittedDate,
+                    i.VoucherType,
+                    i.BankAccountNo,
+                    i.BankIban,
+                    i.BankName,
+                    i.BankBranch,
+                    i.LedgerRemarks,
+                    i.AccountHeadArabic,
+                    i.AccountGroupId,
+                    i.AccountBranch,
+                    i.SalesPersonCode,
+                    i.BranchName,
+                    i.CostCenterCode,
+                    i.CostAllocationUnit,
+                    i.CostAllocationGroup,
+                    i.CostAllocationMasterGroup,
+                    i.AccountSubGroup,
+                    i.SubGroupName,
+                    i.BankAccountName,
+                    i.RetentionAmount,
+
+                    i.TotalPayableAmount,
+                    i.BalanceDueWithOutRetention,
+                    i.RetentionPayable,
+                    i.BalanceDueWithRetention,
+                    i.ReferenceNote,
+                    i.PurchaseBillNo,
+                    i.PurchaseBillDate,
+                    i.PurchaseOrderNo,
+                    i.MaterialReceiptNo,
+                    i.Expr1,
+                    i.ConvertedInvoiceAmountBeforeRetention,
+                    i.ConvertedBalance,
+                    i.ConvertedPaid
+
+                });
+
+                if (data == null)
+                {
+                    // Return a JSON response with success=false so the client knows no data found
+                    return Json(new { success = false, message = "Data is not available for this AccountHead", data = new List<object>() });
+                }
+
+                return Json(new { success = true, data });
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpGet]
         public IActionResult SupplierPaymentfooter()
         {

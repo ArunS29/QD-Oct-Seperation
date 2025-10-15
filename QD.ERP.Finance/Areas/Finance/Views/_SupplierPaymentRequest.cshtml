@@ -324,7 +324,7 @@
                                 columns.AddFor(m => m.ReferenceNo)
                             .Caption(new JS("formatMessage('Reference No')"));
 
-                                columns.AddFor(m => m.PurchaseBillNo)
+                                columns.AddFor(m => m.VoucherRefNo)
             .Caption(new JS("formatMessage('Supplier Bill No')"));
 
                                 columns.AddFor(m => m.PurchaseOrderNo)
@@ -511,22 +511,30 @@
                 supplieraccheadId = selectedRowData[0].AccountId;
                 supplieraccheadname = selectedRowData[0].AccountHead;
 
-                $.ajax({
-    url: '/api/ExpenseClaim/GetSubLedgerData',
-    type: 'GET',
-    data: {
-        accountId: supplieraccheadId,
-        accountHead: supplieraccheadname
-    },
-    success: function (data) {
-            const targetGrid = $("#SupplierdataGrid").dxDataGrid("instance");
-        targetGrid.option("dataSource", data);
-    },
-    error: function (err) {
-        DevExpress.ui.notify("Failed to load data", "error", 2000);
-        console.error(err);
-    }
-});
+                  $.ajax({
+                        url: '/api/ExpenseClaim/GetSubLedgerData',
+                        type: 'GET',
+                        data: {
+                            accountId: supplieraccheadId,
+                            accountHead: supplieraccheadname
+                        },
+                        success: function (response) {
+                            if (!response.success) {
+                                DevExpress.ui.notify(response.message || "Data is not available for this AccountHead", "warning", 3000);
+                                const targetGrid = $("#SupplierdataGrid").dxDataGrid("instance");
+                                targetGrid.option("dataSource", []); // clear the grid
+                                return;
+                            }
+
+                            const targetGrid = $("#SupplierdataGrid").dxDataGrid("instance");
+                            targetGrid.option("dataSource", response.data);
+                        },
+                        error: function (err) {
+                            DevExpress.ui.notify("Failed to load data", "error", 2000);
+                            console.error(err);
+                        }
+                  });
+
 
 
 
@@ -625,7 +633,7 @@
 
                 const childRecords = selectedRows.map(row => ({
                     ClaimRefNo: newClaimNo,
-                    BillRefNo: row.PurchaseBillNo,
+                    BillRefNo: row.VoucherRefNo,
                     BillDate: row.VoucherDate,
                     ExpenseDescription: row.VoucherNarration,
                     ClaimedAmount: Math.abs(row.Balance),

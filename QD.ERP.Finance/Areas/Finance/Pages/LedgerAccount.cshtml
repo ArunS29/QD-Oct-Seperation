@@ -1063,9 +1063,12 @@
                              .Width("100%") // Set the width to 50%
                              .InputAttr("aria-label", "txtGrouptVATNo")
                              .MaxLength(15)
-                             .Mask("000000000000000")
-                             .MaskChar(" ")
-                             
+                              .Width("100%")
+                                .Mask("3#########1####") // total 12 chars, fixed 3 at start, 1 at 11th position
+                                .MaskChar(" ")
+                                .ShowClearButton(false)
+                                .OnFocusIn("function(e) { e.component.option('value', e.component.option('value') || ''); }")
+                                
                             // .OnValueChanged("validateClientVATNo")
                               )
                                   
