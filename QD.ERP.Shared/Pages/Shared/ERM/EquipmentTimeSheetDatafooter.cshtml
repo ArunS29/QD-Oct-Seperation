@@ -131,6 +131,14 @@
     .footer-fixed {
         bottom: 35px !important;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 @* <div class="WorkFlow">
     <div class="workflow-container">
@@ -177,13 +185,25 @@
                 )
 
     </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Text(new JS("formatMessage('Print')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("search")
+                .OnClick("printFun")
+                .ElementAttr(new { @class = "bold-button" })// Apply custom CSS class
+                )
+
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
                 .Icon("attach")
-        @* .OnClick("onIMSAttachmentButtonClick") *@
+                .OnClick("onIMSAttachmentButtonClicks") 
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })// Apply custom CSS class
                 )
     </div>
@@ -229,7 +249,7 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Show All Timesheet')")).Icon("list").Option("color", "#4CAF50");
+                    items.Add().Text(new JS("formatMessage('Show All Timesheet')")).Icon("group").Option("color", "#4CAF50");
                     items.Add().Text(new JS("formatMessage('Show Client Timesheet')")).Icon("user").Option("color", "#00ACC1");
                     items.Add().Text(new JS("formatMessage('Show Supplier Timesheet')")).Icon("group").Option("color", "#AB47BC");
                     items.Add().Text(new JS("formatMessage('Show Operator - Day Shift Timesheet')")).Icon("sun").Option("color", "#FFB300");
@@ -253,42 +273,66 @@
 
 
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnApprove")
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnApproveActions")
                 .Text(new JS("formatMessage('Approve')"))
                 .Icon("exportselected")
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Approve Supplier Timesheet')"))
+                    .Icon("check")
+                    .Option("color", "#4CAF50"); // green
+
+                    items.Add()
+                    .Text(new JS("formatMessage('Unlock Timesheet')"))
+                    .Icon("unlock")
+                    .Option("color", "#F44336"); // red
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("onApproveActionClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-approve" })
                 )
-
     </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnSubmit")
                 .Text(new JS("formatMessage('Submit')"))
                 .Icon("check")
                 .ElementAttr(new { @class = "bold-button" })
+                .OnClick("submitSupplierTimesheet")  // 👈 Attach JS function
                 )
     </div>
+
+
+
     @* <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" })
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnExport")
+                .Text("Export")
+                .Icon("download")
+                .ElementAttr(new { @class = "bold-button" }) // match your style
+                .Items(items =>
+                {
+                    items.Add().Text("Export Selected").Icon("exportselected").Option("id", "exportSelected");
+                    items.Add().Text("Export All").Icon("export").Option("id", "exportAll");
+                })
+                .OnItemClick("onExportItemClick") // ✅ event handled below
                 )
     </div> *@
 
-    @*  <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnCancel")
-                .Text(new JS("formatMessage('Cancel')"))
-                .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-                )
-    </div> *@
-
-    @* <div class="btn-container">
+    <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnUpload")
                 .Text(new JS("formatMessage('Upload')"))
@@ -296,7 +340,7 @@
                 .ElementAttr(new { @class = "bold-button" })
                 .OnClick("onUploadButtonClick")
                 )
-    </div> *@
+    </div>
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -323,6 +367,81 @@
 </div>
 
 <script>
+            function updateAttachButtonCount(buttonSelector, count) {
+                var btn = $(buttonSelector);
+                var btnInstance = btn.dxButton("instance");
+                if (!btnInstance) return;
+
+                var originalText = btnInstance.option("text");
+                var color = count > 0 ? "green" : "red";
+
+                btnInstance.option({
+                    template: function() {
+                        // Icon element
+                        var iconElement = $("<span>")
+                        .addClass("dx-icon dx-icon-attach")
+                        .addClass(count > 0 ? "icon-green" : "icon-red")
+                        .css({
+                            "font-size": "15px",
+                            "vertical-align": "middle",
+                            "margin-right": "4px"
+                        })[0];
+
+                        // Create fragment
+                        var fragment = document.createDocumentFragment();
+                        fragment.appendChild(iconElement);
+
+                        // Append count only if > 0
+                        if (count > 0) {
+                            var countSpan = document.createElement("span");
+                            countSpan.style.color = color;
+                            countSpan.style.fontWeight = "bold";
+                            countSpan.style.fontSize = "15px";
+                            countSpan.style.marginRight = "2px";
+                            countSpan.textContent = count;
+                            fragment.appendChild(countSpan);
+                        }
+
+                        // Append original text
+                        fragment.appendChild(document.createTextNode(originalText));
+
+                        return fragment;
+                    }
+                });
+            }
+                //1. Get Document Count from Grid Load in Ledger Documents
+                function setAttachCount(count) {
+                    updateAttachButtonCount("#btnAttach", count);
+                }
+                //2. Get Document Count
+                async function getDocumentCount() {
+                        var voucherNo = $("#txtPropertyNo").dxTextBox("instance").option("value");
+                        var formType ="Property Eqiupment TimeSheet Data";
+                   // var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
+                    var folderNo2 = ''; // <-- parse as text
+
+                        var menuType = "erm";
+
+                        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+                    const docs = await res.json();
+                    const count = docs.length;
+
+                    updateAttachButtonCount("#btnAttach", count);
+
+                    // No need to return anything if you don't want to
+                }
+            function onApproveActionClick(e) {
+        const itemText = e.itemData.text;
+
+        // Use formatMessage if needed
+        if (itemText === "Approve Supplier Timesheet" || itemText === formatMessage("Approve Supplier Timesheet")) {
+            approveSupplierTimesheet();
+        }
+        else if (itemText === "Unlock Timesheet" || itemText === formatMessage("Unlock Timesheet")) {
+            unlockTimesheet();
+        }
+    }
+
      function handleShowTimesheet(e) {
         switch(e.itemData.text) {
             case "Show All Timesheet":

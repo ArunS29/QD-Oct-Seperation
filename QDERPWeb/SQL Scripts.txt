@@ -4569,6 +4569,48 @@ VALUES
     (1103,'Equipment Service Edit', 'ServiceMaintenanceEdit_btnPrint4','Print', 1, 1,null, 'ERM',null,null,null,null), 
     (1104,'Equipment Service Edit', 'ServiceMaintenanceEdit_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
 
+    sales order
+    ==========
+INSERT INTO Aicon.tbl901UserAccessMasterWeb
+ 
+(SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+(1090,'Equipment Sales Order', 'EquipmentSalesorder_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null), 
+(1091,'Equipment Sales Order', 'EquipmentSalesorder_rowHeightProperties','Row Height Properties',1, 1,null,'ERM',null,null,null,null), 
+(1092,'Equipment Sales Order', 'EquipmentSalesorder_btnAddSalesOrder','Add New Sales Order', 1, 1,null, 'ERM',null,null,null,null),
+(1093,'Equipment Sales Order', 'EquipmentSalesorder_btnSalesOrderDetails','Sales Order Details', 1, 1,null, 'ERM',null,null,null,null),
+(1094,'Equipment Sales Order', 'EquipmentSalesorder_btnToggleSearch','Search', 1, 1,null, 'ERM',null,null,null,null),
+(1095,'Equipment Sales Order', 'EquipmentSalesorder_btntoggleGroupPanel','Group', 1, 1,null, 'ERM',null,null,null,null),
+(1096,'Equipment Sales Order', 'EquipmentSalesorder_btnColumnChooser','Column Chooser', 1, 1,null, 'ERM',null,null,null,null),
+(1097,'Equipment Sales Order', 'EquipmentSalesorder_btnPrint','Print', 1, 1,null, 'ERM',null,null,null,null), 
+(1098,'Equipment Sales Order', 'EquipmentSalesorder_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
+
+
+INSERT INTO Aicon.tbl901UserAccessMasterWeb
+ 
+(SlNo, ItemForm, ItemName, ItemDescription, ItemEnabled, ItemVisible, ItemRemarks, Module, MasterSlNo, GroupSlNo, ItemSlNo, IsFullAccess)  
+VALUES 
+(1099,'Equipment Sales Order View', 'EquipmentSalesOrder_btnMoveUp','Move Up', 1, 1,null, 'ERM',null,null,null,null), 
+(1100,'Equipment Sales Order View', 'EquipmentSalesorder_btnMoveDown','Move Down', 1, 1,null, 'ERM',null,null,null,null), 
+(1101,'Equipment Sales Order View', 'EquipmentSalesorder_btnSave','Save',1, 1,null, 'ERM',null,null,null,null), 
+(1102,'Equipment Sales Order View', 'EquipmentSalesorder_btnSaveAndClose','Save and Close',1, 1,null,'ERM',null,null,null,null), 
+(1103,'Equipment Sales Order View', 'EquipmentSalesorder_btnDelete','Delete', 1, 1,null, 'ERM',null,null,null,null),
+(1104,'Equipment Sales Order View', 'EquipmentSalesorder_btnBack','Back', 1, 1,null, 'ERM',null,null,null,null),
+(1105,'Equipment Sales Order View', 'EquipmentSalesorder_btnAttach','Attach', 1, 1,null, 'ERM',null,null,null,null),
+(1106,'Equipment Sales Order View', 'EquipmentSalesorder_btnSubmit','Submit', 1, 1,null, 'ERM',null,null,null,null),
+(1107,'Equipment Sales Order View', 'EquipmentSalesorder_btnVerify','Verify', 1, 1,null, 'ERM',null,null,null,null),
+(1108,'Equipment Sales Order View', 'EquipmentSalesorder_btnApprove','Approve', 1, 1,null, 'ERM',null,null,null,null),
+(1109,'Equipment Sales Order View', 'EquipmentSalesorder_btnAddNew','Add New Item', 1, 1,null, 'ERM',null,null,null,null),
+(1110,'Equipment Sales Order View', 'EquipmentSalesorder_btnSoreStock','Stock Availability', 1, 1,null, 'ERM',null,null,null,null),
+(1111,'Equipment Sales Order View', 'EquipmentSalesorder_ddButtonLayout','Layout',1,1,null,'ERM',null,null,null,null),
+(1112,'Equipment Sales Order View', 'EquipmentSalesorder_btnToggleSearch','Search', 1, 1,null, 'ERM',null,null,null,null),
+(1113,'Equipment Sales Order View', 'EquipmentSalesorder_btntoggleGroupPanel','Group', 1, 1,null, 'ERM',null,null,null,null),
+(1114,'Equipment Sales Order View', 'EquipmentSalesorder_btnColumnChooser','Column Chooser', 1, 1,null, 'ERM',null,null,null,null),
+(1115,'Equipment Sales Order View', 'EquipmentSalesorder_btnPrint','Print', 1, 1,null, 'ERM',null,null,null,null),
+(1116,'Equipment Sales Order View', 'EquipmentSalesorder_rowHeightProperties','Row Height Properties',1, 1,null,'ERM',null,null,null,null), 
+(1117,'Equipment Sales Order View', 'EquipmentSalesorder_FullAccess','Full Access', 1, 1,null, 'ERM',null,null,null,null);
+
     -- tbl40126_PropertyPOMaster
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
                WHERE TABLE_SCHEMA = 'Aicon' 

@@ -188,7 +188,7 @@
             .OnClick("onDeleteClick")  // <-- Call JS function here
             )
     </div>
-    <div class="btn-container">
+   @*  <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNewPayment")
             .Icon("money")
@@ -197,7 +197,7 @@
             )
 
 
-    </div>
+    </div> *@
 
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -214,11 +214,37 @@
         @(Html.DevExtreme().Button()
             .ID("btnAttach")
             .Icon("attach")
-            .Text(new JS("formatMessage('')"))
+            .Text(new JS("formatMessage('Attach')"))
             .Width(200)
+                .OnClick("onERMAttachmentButtonClick")
             )
 
     </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Submit')"))
+                .Icon("check")
+                .OnClick("submitDeliveryNote")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .OnClick("verifyDeliveryNote")
+
+                .Icon("check")
+                               // .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .ElementAttr(new { @class = "btn-verify" }) // 🟡
+                )
+    </div>
+
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnApprove")
@@ -229,7 +255,7 @@
             )
 
     </div>
-    <div class="btn-container">
+    @* <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPostbooks")
             .Icon("book")
@@ -237,8 +263,8 @@
             .Width(200)
             )
 
-    </div>
-    <div class="btn-container">
+    </div> *@
+   @*  <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnReceive")
             .Icon("grid")
@@ -246,7 +272,7 @@
             .Width(200)
             )
 
-    </div>
+    </div> *@
 </div>
 <script type="text/javascript">
 
@@ -439,6 +465,72 @@
             }
         });
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async  function onERMAttachmentButtonClick(e) {
+        debugger;
+
+         let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let children = grid.getDataSource().items();   // gets current visible data
+
+                 if (!children || children.length === 0) {
+                       DevExpress.ui.notify("Data Not found  within the Grid", "Can't Enable Attachment", "error", 3000);
+                      return;
+                 }
+
+
+        // Get Voucher No safely
+        const invoiceNoBox = $("#deliveryNoteNo").dxTextBox("instance");
+        const QuoteNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+        var menuType = "ERM";
+        var formType = "Equipment Delivery";
+        // const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+        // const invoiceData = await invoiceRes.json();
+        // let folderId2 = "";
+        // if (invoiceData) {
+        //     folderId2 = [
+        //             invoiceData.SalesOrderNo,
+        //             invoiceData.QuotationNo,
+        //             invoiceData.DeliveryNoteNos,
+        //             invoiceData.ProformaInvoiceNo
+        //     ]
+        //     .filter(Boolean)   remove null/empty
+        //     .join(",");
+        // }
+        // Log and build URL
+
+
+        const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(QuoteNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function resetLayoutClick(e) {
         var grid = $("#dataGrid").dxDataGrid("instance");
         var form = $('#formId').val();
@@ -718,7 +810,7 @@
             }
 
             // Proceed with approval if confirmed
-            fetch('/api/DeliveryNote/ApproveDeliveryNote', {
+            fetch('/api/DeliveryNote1/ApproveDeliveryNote', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -740,10 +832,91 @@
             });
         });
     }
+        function verifyDeliveryNote() {
+        const deliveryNoteNo = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+
+        if (!deliveryNoteNo) {
+            DevExpress.ui.notify("Delivery Note No is required", "error", 3000);
+            return;
+        }
+
+        // Show confirmation dialog
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Verification",
+            message: "Are you sure you want to verify this Delivery Note?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (!dialogResult) return;
+
+            // Proceed with verification
+            fetch('/api/DeliveryNote1/VerifyDeliveryNote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(deliveryNoteNo)
+            })
+            .then(response => {
+                if (!response.ok) return response.json().then(error => { throw error; });
+                return response.json();
+            })
+            .then(result => {
+                DevExpress.ui.notify(result.message, "success", 3000);
+               // disableEditing(); // Optional: disable form after verification
+               $("#btnVerify").dxButton("instance").option("disabled", true);
+
+            })
+            .catch(error => {
+                DevExpress.ui.notify(error.message || "Verification failed", "error", 3000);
+            });
+        });
+    }
+
+    function submitDeliveryNote() {
+        const deliveryNoteNo = $("#deliveryNoteNo").dxTextBox("instance").option("value");
+
+        if (!deliveryNoteNo) {
+            DevExpress.ui.notify("Delivery Note No is required", "error", 3000);
+            return;
+        }
+
+        // Show confirmation dialog
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Submission",
+            message: "Are you sure you want to submit this Delivery Note?",
+            buttons: [
+                { text: "Yes", onClick: () => true },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show().done(function (dialogResult) {
+            if (!dialogResult) return;
+
+            // Proceed with submission
+            fetch('/api/DeliveryNote1/SubmitDeliveryNote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(deliveryNoteNo)
+            })
+            .then(response => {
+                if (!response.ok) return response.json().then(error => { throw error; });
+                return response.json();
+            })
+            .then(result => {
+                DevExpress.ui.notify(result.message, "success", 3000);
+                $("#btnSubmit").dxButton("instance").option("disabled", true);
+            })
+            .catch(error => {
+                DevExpress.ui.notify(error.message || "Submission failed", "error", 3000);
+            });
+        });
+    }
 
 
 
-          function disableEditing() {
+    function disableEditing() {
         // Disable all standard HTML form fields
         $('input, select, textarea').prop('disabled', true);
 

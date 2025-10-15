@@ -10,48 +10,46 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ServiceMaintenanceController : Controller
+    public class ServiceMaintenanceController(ILogger<ServiceMaintenanceController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger) : Controller
     {
-        private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<ServiceMaintenanceController> _logger;
-        private readonly IUserActionLogger _userActionLogger;
+        private readonly TenantDbContextHelper _tenantDbContextHelper = tenantDbContextHelper;
+        private readonly ILogger<ServiceMaintenanceController> _logger = logger;
+        private readonly IUserActionLogger _userActionLogger = userActionLogger;
 
-
-        public ServiceMaintenanceController(ILogger<ServiceMaintenanceController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
-        {
-            _userActionLogger = userActionLogger;
-            _tenantDbContextHelper = tenantDbContextHelper;
-            _logger = logger;
-        }
         [HttpGet]
         public ActionResult<string> GetNewRequestNoApi()
         {
             try
             {
-                // Retrieve tenant name from session
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                {
-                    return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-                }
-
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Use tenantName to find the company
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0;
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    }
+
+                    byte companyId = defaultCompanyByte;
+
                     var company = dbContext.Tbl901CompanyDetails
-                        .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                        .FirstOrDefault(c => c.CompanyId == companyId);
+
                     if (company == null)
                     {
                         return NotFound("Company not found.");
                     }
 
+                    // Retrieve required values from company
                     string EquipServiceOrderAbbrv = company.EquipServiceOrderAbbrv;
                     int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
                     bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
-                    DateTime invoiceDate = DateTime.Now;
+                    DateTime ServiceDate = DateTime.Now;
+                    bool isResetByYear = isResetInvoiceInYear;
 
                     // Generate new debit note number
-                    string newDebitNoteNo = GetNewDebitNoteNo(EquipServiceOrderAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, dbContext);
+                    string newDebitNoteNo = GetNewDebitNoteNo(EquipServiceOrderAbbrv, invoiceYearDigits, ServiceDate, isResetByYear, dbContext);
 
                     return Ok(newDebitNoteNo);
                 }
@@ -67,16 +65,15 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
             }
         }
 
-
-        private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
+        private string GetNewDebitNoteNo(string EquipServiceOrderAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
         {
             try
             {
                 // Retrieve MPR numbers into memory
-                var mprNumbers = dbContext.Tbl40132PropertyServiceMasters
-                    .Where(d => d.ServiceSheetNo != null && d.ServiceSheetNo.Length >= 5 &&
-                                (!isResetByYear || (d.ServiceDate.HasValue && d.ServiceDate.Value.Year == invoiceDate.Year)))
-                    .Select(d => d.ServiceSheetNo)
+                var mprNumbers = dbContext.Tbl40136PropertyRequestMasters
+                    .Where(d => d.EqiupmentRequestNo != null && d.EqiupmentRequestNo.Length >= 5 &&
+                      (!isResetByYear || (d.RequestDate.HasValue && d.RequestDate.Value.Year == invoiceDate.Year)))
+                    .Select(d => d.EqiupmentRequestNo)
                     .ToList();
 
                 // Extract numeric parts and determine the maximum
@@ -100,7 +97,7 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
                     strYear = "";
                 }
 
-                return $"{invoiceAbbrv}{strYear}-{strNewDebitNoteNo}";
+                return $"{EquipServiceOrderAbbrv}{strYear}-{strNewDebitNoteNo}";
             }
             catch (Exception)
             {
@@ -114,7 +111,7 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
                     strYear = "";
                 }
 
-                return $"{invoiceAbbrv}{strYear}-00001";
+                return $"{EquipServiceOrderAbbrv}{strYear}-00001";
             }
         }
         [HttpGet]
@@ -275,7 +272,7 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
 
                         // Get currency rate safely
                         var currencyRate = requestNo.CurrencyRate;
-                        if (currencyRate == 0) currencyRate = 1m; // avoid divide by zero
+                        if (currencyRate == 0) currencyRate = 1m; // avoid divide by zero 
 
                         // Get children records
                         var children = await dbContext.Qry40503propertyServiceSpareUseds
@@ -291,6 +288,7 @@ namespace QD.ERP.ERM.Areas.ERM.Controllers
                             c.ServiceSheetNo,
                             c.Gscode,
                             c.UnitDesc,
+                            c.GsuoM,
                             c.QtyUsed,
                             CostPrice = c.CostPrice / currencyRate, // adjusted
                             TotalCost = c.TotalCost / currencyRate, // adjusted
