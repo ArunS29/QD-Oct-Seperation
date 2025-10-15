@@ -746,7 +746,7 @@ namespace QD.ERP.Finance.Areas.Finance.Controllers
 			try
             {
                 var qryListOfAccountlists = dbContext.Qry201ListOfAccounts
-
+                     .Where(i => i.AccountId != null)
                 .Select(i => new
                 {
                     i.AccountId,
